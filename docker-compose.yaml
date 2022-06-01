@@ -1,0 +1,24 @@
+version: '3.3'
+
+services:
+  webapp-c4e:
+    build: ./
+    container_name: webapp-c4e
+    image: webapp-c4e-image
+    restart: always
+    ports:
+      - 3010:3000
+    depends_on:
+      - webapp-c4e-db
+
+  webapp-c4e-db:
+    container_name: webapp-c4e-db
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: c4e
+      MYSQL_USER: ovoo
+      MYSQL_PASSWORD: ovoo
+    ports:
+      - 3366:3306

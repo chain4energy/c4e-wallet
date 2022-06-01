@@ -1,0 +1,49 @@
+{
+  "TTT": "oko",
+  "LOGIN": {
+    "username": "login",
+    "password": "hasło",
+    "log_in": "zaloguj"
+  },
+  "TABLES": {
+    "CONTRACTS": {
+      "NUMBER": "Numer",
+      "TYPE": "Typ",
+      "TITLE": "Nazwa",
+      "CREATION_DATE": "Data utworzenia",
+      "STATE": "Status"
+    }
+  },
+  "SIDEBAR_MENU": {
+    "TITLE": "Menu_PL"
+  },
+  "HOME_VIEW": {
+    "TITLE": "Informacje",
+    "DETAILS": "Szczegóły klienta",
+    "RESET_PASSWORD_BUTTON": "Resetuj hasło",
+    "FORMS": {
+      "BANK_ACCOUNT_NUMBER": "Numer konta bankowego",
+      "STREET": "Ulica",
+      "POSTAL_CODE": "Kod pocztowy",
+      "CITY": "Miasto",
+      "PROVINCE": "Województwo",
+      "COUNTRY": "Kraj",
+      "PESEL": "PESEL",
+      "NIP": "NIP",
+      "REGON": "REGON"
+    }
+  },
+  "CUSTOMERS_VIEW": {
+    "TITLE": "Klienci",
+    "TABLE_HEADERS": {
+      "ID": "Id",
+      "FIRST_NAME": "Imię",
+      "LAST_NAME": "Nazwisko",
+      "EMAIL": "E-mail",
+      "PHONE": "Nr telefonu",
+      "PROVINCE": "Województwo",
+      "TYPE": "Type",
+      "INFORMATION": "Informacje"
+    }
+  }
+}

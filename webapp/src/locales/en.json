@@ -1,0 +1,20 @@
+{
+  "TTT": "noga",
+  "LOGIN" : {
+    "username" : "login",
+    "password" : "hasło",
+    "log_in" : "zaloguj"
+  },
+  "TABLES": {
+    "CONTRACTS": {
+      "NUMBER": "Numer",
+      "TYPE": "Typ",
+      "TITLE": "Nazwa",
+      "CREATION_DATE": "Data utworzenia",
+      "STATE": "Status"
+    }
+  },
+  "SIDEBAR_MENU": {
+    "TITLE" : "Menu_EN"
+  }
+}

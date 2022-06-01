@@ -1,0 +1,32 @@
+<template>
+  <div class="footer">
+    <span>FAQ</span>
+    <span>Help</span>
+    <span>Terms & Conditions</span>
+    <span>Privacy Policy</span>
+    <span class="right">c4e</span>
+  </div>
+</template>
+
+<script setup lang="ts">
+
+</script>
+
+<style scoped lang="scss">
+.footer {
+  width: 100%;
+  min-height: 50px;
+  background-color: white;
+
+  padding: 20px 0 20px 8%;
+
+  span {
+    float:left;
+    margin-left:15px;
+  }
+  .right {
+    float: right;
+    padding-right: 20px;
+  }
+}
+</style>
