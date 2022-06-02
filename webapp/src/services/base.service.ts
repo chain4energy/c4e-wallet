@@ -113,13 +113,9 @@ export default abstract class BaseService<T> extends LoggedService {
       if (value.error === null) {
         if (value.data!.data !== null) {
           this.setListDataToStore(value.data!.data);
-          this.logToConsole(LogLevel.INFO, this.getServiceType() + JSON.stringify(value.data!.data, null, 2));
-        } else {
-          this.logToConsole(LogLevel.INFO, this.getServiceType() + ' are EMPTY');
         }
-      } else {
-        this.logToConsole(LogLevel.ERROR, this.getServiceType()  + ' Response value error: ' + value.error + ' data:' + value.data?.data);
       }
+      //handle errors or do nothing
     }).finally(() => {
       // this.after(lockScreen, localSpinner);
     });
