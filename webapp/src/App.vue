@@ -52,8 +52,9 @@ onMounted(() => createRouterBeforeEach(logger));
 
   .content {
     width: 100%;
-    padding-left: 100px;
-    padding-right: 100px;
+    //padding-left: 100px;
+    //padding-right: 100px;
+    margin: auto;
 
   }
 

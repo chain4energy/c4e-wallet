@@ -25,6 +25,7 @@
     "vue": "^3.2.13",
     "vue-country-flag-next": "^2.3.2",
     "vue-debounce": "^4.0.0",
+    "vue-echarts": "^6.0.3",
     "vue-i18n": "^9.1.9",
     "vue-loading-overlay": "5.0",
     "vue-router": "^4.0.3",

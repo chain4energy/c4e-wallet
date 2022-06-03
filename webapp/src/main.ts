@@ -47,7 +47,7 @@ import { vue3Debounce } from 'vue-debounce';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 import IconComponent from "@/components/features/IconComponent.vue";
-
+import ECharts from 'vue-echarts'
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
 
@@ -78,6 +78,7 @@ app.use(router)
   .component('Column', Column)
   .component('Image' , Image)
   .component('Icon', IconComponent)
+  .component('v-chart', ECharts)
   .directive('debounce', vue3Debounce({lock: true}))
   // .component('font-awesome-icon', FontAwesomeIcon)
   .mount('#app');

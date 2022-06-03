@@ -1,5 +1,6 @@
 export enum ServiceTypeEnum {
   ROUTER = 'ROUTER',
   VALIDATORS_SERVICE = 'VALIDATORS_SERVICE',
+  POOLS_SERVICE = 'POOLS_SERVICE',
 
 }
