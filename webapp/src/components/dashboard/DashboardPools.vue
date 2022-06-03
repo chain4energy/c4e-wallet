@@ -50,7 +50,7 @@ use([
 ]);
 
 onMounted(async () => {
-  await poolsService.getData();
+  await poolsService.getDataToStore();
   communityPool.value = usePoolsStore().getCommunityPool;
   console.log(communityPool.value)
 })

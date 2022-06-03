@@ -5,10 +5,8 @@ import { RequestResponse } from '@/models/request-response';
 import { LogLevel } from '@/services/logger/log-level';
 import { LoggedService } from '@/services/logged.service';
 import {useUserStore} from "@/store/user.store";
-import {DataHolder} from "@/models/data-holder";
 import {PagingModel} from "@/services/model/paging.model";
 import {LocalSpinner} from "@/services/model/localSpinner";
-// import {AuthResponse} from "@/models/auth-response";
 
 const toast = useToast();
 const refreshUrl = '/api/management/refresh';
@@ -30,16 +28,6 @@ export default abstract class BaseService<T> extends LoggedService {
 
   setListDataToStore(dataHolder: T) :void{
     toast.error("Method 'setListDataToStore' Not Implemented in:" + this.getServiceType());
-    throw new Error("Not Implemented");
-  }
-
-  getSingleDataUrlByRole(): string{
-    toast.error("Method 'getSingleDataUrlByRole' Not Implemented in:" + this.getServiceType());
-    throw new Error("Not Implemented");
-  }
-
-  setSingleDataToStore(singleData: T) :void {
-    toast.error("Method 'setSingleDataToStore' Not Implemented in:" + this.getServiceType());
     throw new Error("Not Implemented");
   }
 
@@ -121,24 +109,25 @@ export default abstract class BaseService<T> extends LoggedService {
     });
   }
 
-  public getSingleData(lockScreen: boolean, localSpinner: LocalSpinner | null){
-    const promise: Promise<RequestResponse<T>> = this.axiosCall({
+  public getDataFromUrl<X>(url: string, lockScreen: boolean, localSpinner: LocalSpinner | null, onSuccess:(data:X)=> void, onError:((error:any) =>void )| null) {
+    this.axiosCall<X>({
       method: 'GET',
-      url: this.getSingleDataUrlByRole()
-    }, lockScreen, localSpinner);
-    promise.then(value => {
+      url: url
+    }, true, null, onError!=null).then(value => {
       if (value.error === null) {
         if (value.data!.data !== null) {
-          this.setSingleDataToStore(value.data!.data);
-          this.logToConsole(LogLevel.INFO, this.getServiceType() + JSON.stringify(value.data!.data, null, 2));
-        } else {
-          this.logToConsole(LogLevel.INFO, this.getServiceType() + ' are EMPTY');
+          onSuccess(value.data!.data);
+        }
+        if(onError != null) {
+          onError("Data is null");
         }
       } else {
-        this.logToConsole(LogLevel.ERROR, this.getServiceType()  + ' Response value error: ' + value.error + ' data:' + value.data?.data);
+        if(onError != null) {
+          onError(value.error);
+        }
       }
     }).finally(() => {
-      // this.after(lockScreen, localSpinner);
+      //
     });
   }
 
