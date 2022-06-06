@@ -17,20 +17,20 @@ export class LoggerService {
     }
 
     this.logs.push(logInfo);
-
+    const now = this.dateToString(new Date());
     switch (logInfo.level) {
       case LogLevel.ERROR:
         if (logInfo.data !== undefined && logInfo.data.length > 0) {
-          console.error(logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
+          console.error(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
         } else {
-          console.error(logInfo.objectType + ' -> ' + logInfo.message);
+          console.error(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message);
         }
         break;
       case LogLevel.WARNING:
         if (logInfo.data !== undefined && logInfo.data.length > 0) {
-          console.warn(logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
+          console.warn(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
         } else {
-          console.warn(logInfo.objectType + ' -> ' + logInfo.message);
+          console.warn(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message);
         }
         break;
     }
@@ -39,25 +39,25 @@ export class LoggerService {
       switch (logInfo.level) {
         case LogLevel.INFO:
           if (logInfo.data !== undefined && logInfo.data.length > 0) {
-            console.info(logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
+            console.info(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
           } else {
-            console.info(logInfo.objectType + ' -> ' + logInfo.message);
+            console.info(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message);
           }
           // console.info(logInfo.toString());
           break;
         case LogLevel.DEBUG:
           if (logInfo.data !== undefined && logInfo.data.length > 0) {
-            console.log(logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
+            console.log(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
           } else {
-            console.log(logInfo.objectType + ' -> ' + logInfo.message);
+            console.log(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message);
           }
           // console.log(logInfo.toString());
           break;
         case LogLevel.TRACE:
           if (logInfo.data !== undefined && logInfo.data.length > 0) {
-            console.trace(logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
+            console.trace(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
           } else {
-            console.trace(logInfo.objectType + ' -> ' + logInfo.message);
+            console.trace(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message);
           }
           break;
       }
@@ -66,5 +66,22 @@ export class LoggerService {
 
   getLogs (): LogInfo[] {
     return this.logs;
+  }
+
+  private dateToString(date:Date) : string{
+    const day = date.getDate();
+    const monthIndex = date.getMonth();
+    const year = date.getFullYear();
+    const minutes = date.getMinutes();
+    const hours = date.getHours();
+    const seconds = date.getSeconds();
+    const milliseconds = date.getMilliseconds();
+    return '' + year + '.' + this.pad(monthIndex,2) + '.' + this.pad(day,2) + ' ' + this.pad(hours,2) + ':' + this.pad(minutes,2) + ':' + this.pad(seconds,2) + '.' + this.pad(milliseconds,4);
+  }
+
+  private pad(num:number, size:number):string {
+    let numStr = num.toString();
+    while (numStr.length < size) numStr = "0" + numStr;
+    return numStr;
   }
 }
