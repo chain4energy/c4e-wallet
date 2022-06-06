@@ -131,6 +131,7 @@ export default abstract class BaseService<T> extends LoggedService {
     });
   }
 
+
   before (lockScreen: boolean, localSpinner: LocalSpinner | null) {
     if(lockScreen) {
       useSplashStore().increment();

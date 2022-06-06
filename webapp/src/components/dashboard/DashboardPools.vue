@@ -4,24 +4,24 @@
       <div class="top">Pools</div>
       <div class="info">
         <div >
-          <div>Community pool</div>
+          <div><div class="color-div" style="background-color:#fff1a9"></div> Community pool</div>
           <div style="font-weight: bold">
             {{ usePoolsStore().getCommunityPool.amount }} {{usePoolsStore().getCommunityPool.denom}}
           </div>
         </div>
         <div >
-          <div>Strategic reverse pool</div>
+          <div><div class="color-div" style="background-color:#72bf44"></div> Strategic reverse pool</div>
           <div style="font-weight: bold">{{ usePoolsStore().getStrategicReversePool.amount }} {{usePoolsStore().getStrategicReversePool.denom}}</div>
         </div>
         <div >
-          <div>Airdrop</div>
+          <div><div class="color-div" style="background-color:#26697f"></div> Airdrop</div>
           <div style="font-weight: bold">{{ usePoolsStore().getAirdropPool.amount }} {{usePoolsStore().getAirdropPool.denom}}</div>
         </div>
       </div>
     </div>
     <div class="right">
       <div id="chartdiv">
-        <v-chart :option="option" />
+        <v-chart :option="option" autoresize />
       </div>
 
     </div>
@@ -49,11 +49,11 @@ use([
   LegendComponent
 ]);
 
-onMounted(async () => {
-  await poolsService.getDataToStore();
-  communityPool.value = usePoolsStore().getCommunityPool;
-  console.log(communityPool.value)
-})
+onMounted( () => {
+
+  poolsService.getDataToStore();
+
+});
 
 const poolsService = new PoolsService();
 const communityPool = ref();
@@ -66,7 +66,7 @@ const option = ref({
   series: [{
     width: '90%',
     height: '90%',
-    name: 'Test one',
+    name: 'Pools',
     type: 'pie',
     radius: ['50%', '100%'],
 
@@ -110,8 +110,8 @@ const option = ref({
       show: false
     },
     data: [{
-      value: 10,
-      name: 'Success',
+      value: Number(usePoolsStore().getCommunityPool.amount),
+      name: 'Community pool',
       itemStyle: {
         normal: {
           label: {
@@ -120,13 +120,13 @@ const option = ref({
           labelLine: {
             show: false
           },
-          color: '#5E50A1'
+          color: '#fff1a9'
         }
       }
     },
       {
-        value: 20,
-        name: 'Failed',
+        value: Number(usePoolsStore().getStrategicReversePool.amount),
+        name: 'Strategic reverse pool',
         itemStyle: {
           normal: {
             label: {
@@ -135,13 +135,13 @@ const option = ref({
             labelLine: {
               show: false
             },
-            color: '#FFB200'
+            color: '#72bf44'
           }
         }
       },
       {
-        value: 30,
-        name: 'Onprocess',
+        value: usePoolsStore().getAirdropPool.amount,
+        name: 'Airdrop',
         itemStyle: {
           normal: {
             label: {
@@ -150,7 +150,7 @@ const option = ref({
             labelLine: {
               show: false
             },
-            color: '#FF434F'
+            color: '#26697f'
           }
         }
       }
@@ -177,6 +177,12 @@ const option = ref({
     width: 50%;
     .info {
       word-wrap: break-word;
+      .color-div{
+        width:20px;
+        height:20px;
+        float:left;
+        border-radius: 50%;
+      }
     }
   }
   .right{
@@ -186,6 +192,7 @@ const option = ref({
     height: 100%;
   }
 }
+
 #chartdiv {
   width: 100%;
   height: 100%;
