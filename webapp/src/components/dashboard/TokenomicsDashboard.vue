@@ -1,27 +1,29 @@
 <template>
   <div class="container">
     <div class="top">
-      <span style="font-weight:bold">Tokenomics</span>
+      <span style="font-weight:bold;">Tokenomics</span>
     </div>
     <div class="main-content">
-      <div>
-        <div>{{ useTokenomicsStore().getTokenomics.bonded }}</div>
-        <div><div class="color-div" style="background-color:#72bf44"></div>Bounded</div>
+      <div class="left">
+        <div class="info">{{ bounded }}</div>
+        <div><div class="color-div me-2" style="background-color:#26697f"></div>Bounded</div>
         <div>{{ boundedPercentage }}%</div>
       </div>
-      <div>
-        <div>{{ useTokenomicsStore().getTokenomics.unbonded }}</div>
-        <div><div class="color-div" style="background-color:#fff1a9"></div>Unbounded</div>
+      <div class="middle">
+        <div class="info">{{ unBounded }}</div>
+        <div><div class="color-div me-2" style="background-color:#fff1a9"></div>Unbounded</div>
         <div>{{unboundedPercentage}}%</div>
       </div>
       <div id="chartdiv">
-        <v-chart :option="option" autoresize />
+        <div>
+          <v-chart :option="option" autoresize />
+        </div>
       </div>
     </div>
     <div class="bottom">
-      <div>Bounded</div>
-      <div>Unbounded</div>
-      <div>Unbounding</div>
+      <div><div class="color-div me-2" style="background-color:#26697f"></div>Bounded</div>
+      <div><div class="color-div me-2" style="background-color:#fff1a9"></div>Unbounded</div>
+      <div><div class="color-div me-2" style="background-color:#72bf44"></div>Unbounding</div>
     </div>
 
   </div>
@@ -62,6 +64,17 @@ const unboundedPercentage = computed(() => {
   return res.toFixed(2);
 });
 
+const bounded = computed((): number => {
+  return Number(useTokenomicsStore().getTokenomics.bonded);
+});
+
+const unBounded = computed(() :number => {
+  return Number(useTokenomicsStore().getTokenomics.unbonded);
+});
+
+const sumOfBounded = computed(() :number => {
+  return Number(useTokenomicsStore().getTokenomics.unbonded)+Number(useTokenomicsStore().getTokenomics.bonded);
+});
 
 const option = ref( {
 
@@ -71,11 +84,13 @@ const option = ref( {
   },
   series: [
     {
-
+      width: '100%',
+      height: '100%',
       startAngle: 180,
       endAngle: 360,
       type: 'pie',
       radius: ['50%', '90%'],
+      center: ['50%', '43%'],
       avoidLabelOverlap: true,
       label: {
         show: false,
@@ -94,7 +109,8 @@ const option = ref( {
         show: false
       },
       data: [
-        {value: useTokenomicsStore().getTokenomics.bonded ,   itemStyle: {
+        {value: bounded ,
+          itemStyle: {
             normal: {
               label: {
                 show: false
@@ -105,7 +121,7 @@ const option = ref( {
               color: '#26697f'
             }
           }},
-        {value: useTokenomicsStore().getTokenomics.unbonded*100 ,   itemStyle: {
+        {value: unBounded.value,   itemStyle: {
             normal: {
               label: {
                 show: false
@@ -117,7 +133,7 @@ const option = ref( {
             }
           }},
         {
-          value: Number(useTokenomicsStore().getTokenomics.bonded) + Number(useTokenomicsStore().getTokenomics.unbonded),
+          value: sumOfBounded,
           name: null,
           itemStyle:{opacity:0},
           tooltip:{show:false }
@@ -147,12 +163,32 @@ const option = ref( {
   }
   .top {
     height: 15%;
+    text-align: left;
+    padding-left: 30px;
   }
   .main-content {
     height: 70%;
     display: flex;
+    flex-wrap: wrap;
     div {
       padding-left: 10px;
+    }
+    .left {
+      width: 25%;
+      text-align: left;
+    }
+    .middle {
+      width: 25%;
+      text-align: left;
+    }
+    #chartdiv {
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      div {
+        padding-bottom: 30px;
+        height: 200%;
+      }
     }
   }
   .bottom {
@@ -163,13 +199,46 @@ const option = ref( {
       padding-left: 8px;
     }
   }
+
 }
 
-#chartdiv {
-  width: 250px;
-  height: 250px;
-  padding-bottom: 30px;
-  padding-top: 10px;
+@media only screen and (max-width: 500px) {
+
+  .container{
+    overflow: hidden;
+    height:fit-content;
+    .top {
+      height: 40px;
+    }
+    .main-content{
+      height: 250px;
+      .left,
+      .middle{
+        order: 0;
+        flex: 0 50%;
+      }
+      #chartdiv {
+        flex: 1 100%;
+
+      }
+    }
+    .bottom {
+      display: flex;
+      margin-top: 50px;
+    }
+    #chartdiv {
+      top:0px;
+      width: 50%;
+      height: 150px;
+      overflow: hidden;
+      div {
+        padding-bottom: 30px;
+        height: 100%;
+      }
+    }
+  }
+
+
 }
 
 

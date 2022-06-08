@@ -5,7 +5,6 @@ import {DataHolder} from "@/models/data-holder";
 import {ListDataService} from "@/services/list_data.service";
 import {useValidatorsStore} from "@/store/validators.store";
 import { Validators} from "@/models/validators";
-import {Validator} from "@/models/validator";
 
 const API_URL = 'https://lcd.chain4energy.org/cosmos/staking/v1beta1/validators';
 

@@ -52,7 +52,7 @@ onMounted(() => createRouterBeforeEach(logger));
 
   .content {
     width: 100%;
-    //padding-left: 100px;
+    padding-left: 100px;
     //padding-right: 100px;
     margin: auto;
 
@@ -76,5 +76,13 @@ nav {
       color: #42b983;
     }
   }
+}
+@media only screen and (max-width: 600px) {
+  .main-container {
+    .content {
+      padding-left: 0px;
+    }
+  }
+
 }
 </style>
