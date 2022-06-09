@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import DashboardView from '../views/DashboardView.vue';
 import StakingView from '../views/StakingView.vue';
 import GovernanceView from '../views/GovernanceView.vue';
+import GovernanceDetailsView from '../views/GovernanceDetailsView.vue';
 import ValidatorsView from '../views/ValidatorsView.vue';
 
 const routes: Array<RouteRecordRaw> = [
@@ -32,6 +33,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/governance',
     name: 'governance',
     component: GovernanceView,
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/governance/:id',
+    name: 'governanceDetails',
+    component: GovernanceDetailsView,
     meta: {
       requiresAuth: false
     }

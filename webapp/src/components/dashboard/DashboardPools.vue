@@ -39,8 +39,6 @@ import {computed, onMounted, ref} from "vue";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import PoolsService from "@/services/pools.service";
 import {usePoolsStore} from "@/store/pools.store";
-import {useTokenomicsStore} from "@/store/tokenomics.store";
-
 
 use([
   CanvasRenderer,

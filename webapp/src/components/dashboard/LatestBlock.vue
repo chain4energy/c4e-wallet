@@ -2,7 +2,7 @@
   <div class="container">
     <div>Latest Block</div>
     <div class="info">
-      {{useLatestBlockStore().getLatestBlock}}
+      {{ useLatestBlockStore().getLatestBlock }}
     </div>
 
   </div>
