@@ -105,7 +105,7 @@ const noWithVetoPercentage = computed(() => {
 const sumOfVotes = computed(() => {
   return Number(props.proposal.final_tally_result.yes) + Number(props.proposal.final_tally_result.no)
     + Number(props.proposal.final_tally_result.no_with_veto) + Number(props.proposal.final_tally_result.abstain);
-})
+});
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');
 };
@@ -134,6 +134,7 @@ const option = ref({
     {
       name: 'Yes',
       type: 'bar',
+
       color:'#72bf44',
       stack: 'total',
       emphasis: {
@@ -172,7 +173,8 @@ const option = ref({
       color: '#fff1a9',
       data: [noWithVetoPercentage.value]
     }
-  ]
+  ],
+
 } );
 
 </script>
