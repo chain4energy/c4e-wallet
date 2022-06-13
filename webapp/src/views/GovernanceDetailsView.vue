@@ -18,11 +18,13 @@ import ProposalService from "@/services/proposal.service";
 import DetailsChart from "@/components/governance/DetailsChart.vue";
 import ProposalDetails from "@/components/governance/ProposalDetails.vue";
 import ProposalDescription from "@/components/governance/ProposalDescription.vue";
+import {useProposalStore} from "@/store/proposal.store";
 
 const route = useRoute();
 const proposalService = new ProposalService();
 
 onMounted(async () => {
+
   await proposalService.getProposalById(route.params.id.toString())
     .then((data) => {
       proposal.value = data;

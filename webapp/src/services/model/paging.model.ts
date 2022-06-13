@@ -78,5 +78,10 @@ export class PagingModel{
   clearFilter(){
     this.filterValues = [];
   }
-
+  setOffset(offset: number) {
+    this.offset = offset;
+  }
+  setLimit(limit: number) {
+    this.limit = limit;
+  }
 }

@@ -9,7 +9,7 @@
 <script setup lang="ts">
 
 import ProposalGovernance from "@/components/governance/ProposalGovernance.vue";
-import {onMounted} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import ProposalService from "@/services/proposal.service";
 import {useProposalStore} from "@/store/proposal.store";
 import {storeToRefs} from "pinia";
@@ -18,9 +18,24 @@ const proposalService = new ProposalService();
 const { getProposals } = storeToRefs(useProposalStore());
 
 onMounted(()=> {
-
-  proposalService.getDataToStore();
+  useProposalStore().deleteProposals();
+  proposalService.getDataToStore(0);
+  window.addEventListener('scroll', load);
+  load();
 });
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', load);
+});
+const page = ref(1);
+
+const load = () => {
+  let bottomOfWindow = Math.ceil(document.documentElement.scrollTop) + window.innerHeight === document.documentElement.offsetHeight;
+  if (bottomOfWindow) {
+    proposalService.getDataToStore(page.value);
+    page.value += 1;
+  }
+};
 
 </script>
 

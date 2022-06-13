@@ -1,6 +1,7 @@
 import BaseService from "@/services/base.service";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {useProposalStore} from "@/store/proposal.store";
+import {PagingModel} from "@/services/model/paging.model";
 
 export default class ProposalService extends BaseService<any> {
   getServiceType(): ServiceTypeEnum {
@@ -12,9 +13,12 @@ export default class ProposalService extends BaseService<any> {
 
   URL =  'https://api.data.kava.io/cosmos/gov/v1beta1/proposals';
 
-  public getDataToStore() {
+  public getDataToStore(page: number) {
+    const pagination = new PagingModel([]);
+    pagination.setOffset(page * 10);
+    pagination.setLimit(10);
 
-    this.getDataFromUrl(this.URL,true, null, this.setProposals ,null);
+    this.getDataFromUrl(this.URL,true, null, this.setProposals ,null, pagination);
   }
 
   public async getProposalById(id: string): Promise<any> {

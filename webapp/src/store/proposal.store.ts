@@ -3,14 +3,20 @@ import {defineStore} from "pinia";
 export const useProposalStore = defineStore({
   id: 'proposalStore',
   state: () => {
+
     return {
-      proposals: Object(Array),
+      proposals: [],
     };
   },
   actions: {
     setProposals(proposals:  any) {
-      this.proposals = proposals;
+
+      this.proposals = this.proposals.concat(proposals);
+      console.log(this.proposals)
     },
+    deleteProposals() {
+      this.proposals = [];
+    }
   },
   getters: {
 

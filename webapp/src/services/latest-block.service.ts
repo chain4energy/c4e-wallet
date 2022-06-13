@@ -1,6 +1,7 @@
 import BaseService from "@/services/base.service";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {useLatestBlockStore} from "@/store/latest-block.store";
+import {PagingModel} from "@/services/model/paging.model";
 
 export default class LatestBlockService extends BaseService<any> {
   getServiceType(): ServiceTypeEnum {
@@ -12,6 +13,7 @@ export default class LatestBlockService extends BaseService<any> {
 
 
   public getDataToStore() {
+
     this.getDataFromUrl(this.URL, true, null, this.setLatestBlock ,null);
   }
 
