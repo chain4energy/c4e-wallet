@@ -109,7 +109,8 @@ export default abstract class BaseService<T> extends LoggedService {
     });
   }
 
-  public getDataFromUrl<X>(url: string, lockScreen: boolean, localSpinner: LocalSpinner | null, onSuccess:(data:X)=> void, onError:((error:any) =>void )| null) {
+  public getDataFromUrl<X>(url: string,  lockScreen: boolean, localSpinner: LocalSpinner | null, onSuccess:(data:X)=> void, onError:((error:any) =>void )| null) {
+
     this.axiosCall<X>({
       method: 'GET',
       url: url

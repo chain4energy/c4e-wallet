@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="bottom">
-      <div><div class="color-div me-2" style="background-color:#26697f"></div>Bounded</div>
+      <div><div class="color-div me-2" style="background-color:#27697F"></div>Bounded</div>
       <div><div class="color-div me-2" style="background-color:#fff1a9"></div>Unbounded</div>
       <div><div class="color-div me-2" style="background-color:#72bf44"></div>Unbounding</div>
     </div>
@@ -39,6 +39,7 @@ import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
+import {useTotalSupplyStore} from "@/store/total-supply.store";
 
 use([
   CanvasRenderer,
@@ -49,18 +50,25 @@ use([
 ]);
 
 const tokenomicsService = new TokenomicsService();
-
+const totalSupplyStore = useTotalSupplyStore();
 
 onMounted(()=>{
   tokenomicsService.getDataToStore();
 })
 
 const boundedPercentage = computed(() => {
-  let res:number = Number(useTokenomicsStore().getTokenomics.bonded) / ( Number(useTokenomicsStore().getTokenomics.bonded) +  Number(useTokenomicsStore().getTokenomics.unbonded))*100;
+  let res:number = Number(useTokenomicsStore().getTokenomics.bonded) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 const unboundedPercentage = computed(() => {
-  let res:number = Number(useTokenomicsStore().getTokenomics.unbonded) / ( Number(useTokenomicsStore().getTokenomics.bonded) +  Number(useTokenomicsStore().getTokenomics.unbonded))*100;
+  let res:number = (Number(totalSupplyStore.getTotalSupply.amount)
+    - Number(useTokenomicsStore().getTokenomics.bonded)
+    - Number(useTokenomicsStore().getTokenomics.unbonded)) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
+  return res.toFixed(2);
+});
+
+const unboundingPercentage = computed(() => {
+  let res:number = Number(useTokenomicsStore().getTokenomics.unbonded) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 
@@ -69,11 +77,17 @@ const bounded = computed((): number => {
 });
 
 const unBounded = computed(() :number => {
+  return Number(totalSupplyStore.getTotalSupply.amount)
+    - Number(useTokenomicsStore().getTokenomics.bonded)
+    - Number(useTokenomicsStore().getTokenomics.unbonded);
+});
+
+const unBounding = computed(() :number => {
   return Number(useTokenomicsStore().getTokenomics.unbonded);
 });
 
-const sumOfBounded = computed(() :number => {
-  return Number(useTokenomicsStore().getTokenomics.unbonded)+Number(useTokenomicsStore().getTokenomics.bonded);
+const totalSupply = computed(() :number => {
+  return Number(totalSupplyStore.getTotalSupply.amount);
 });
 
 const option = ref( {
@@ -118,10 +132,10 @@ const option = ref( {
               labelLine: {
                 show: false
               },
-              color: '#26697f'
+              color: '#27697F'
             }
           }},
-        {value: unBounded.value,   itemStyle: {
+        {value: unBounded,   itemStyle: {
             normal: {
               label: {
                 show: false
@@ -132,8 +146,19 @@ const option = ref( {
               color: '#fff1a9'
             }
           }},
+        {value: unBounding,   itemStyle: {
+            normal: {
+              label: {
+                show: false
+              },
+              labelLine: {
+                show: false
+              },
+              color: '#72bf44'
+            }
+          }},
         {
-          value: sumOfBounded,
+          value: totalSupply,
           name: null,
           itemStyle:{opacity:0},
           tooltip:{show:false }
@@ -144,6 +169,8 @@ const option = ref( {
 </script>
 
 <style scoped lang="scss">
+@import '../../styles/variables.scss';
+
 .color-div{
   width:20px;
   height:20px;

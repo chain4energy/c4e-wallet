@@ -9,7 +9,7 @@ export const useProposalStore = defineStore({
   },
   actions: {
     setProposals(proposals:  any) {
-      this.proposals=proposals;
+      this.proposals = proposals;
     },
   },
   getters: {
@@ -17,8 +17,5 @@ export const useProposalStore = defineStore({
     getProposals(): any {
       return this.proposals;
     },
-    getProposalById: (state): any => {
-      return (proposalId:any) => state.proposals.find((proposal:any) => proposal.proposal_id === proposalId);
-    }
   }
 });

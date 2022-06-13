@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import moment from 'moment';
-import {computed, ref} from "vue";
+import {computed, onBeforeMount, ref} from "vue";
 import {BarChart, PieChart} from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
@@ -80,6 +80,8 @@ const props = defineProps({
   }
 });
 const router = useRouter();
+
+
 
 const yesPercentage = computed(() => {
   let res:number = Number(props.proposal.final_tally_result.yes) / sumOfVotes.value * 100;

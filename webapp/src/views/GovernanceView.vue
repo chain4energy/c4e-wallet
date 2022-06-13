@@ -18,6 +18,7 @@ const proposalService = new ProposalService();
 const { getProposals } = storeToRefs(useProposalStore());
 
 onMounted(()=> {
+
   proposalService.getDataToStore();
 });
 

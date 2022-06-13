@@ -13,7 +13,23 @@ export default class ProposalService extends BaseService<any> {
   URL =  'https://api.data.kava.io/cosmos/gov/v1beta1/proposals';
 
   public getDataToStore() {
-    this.getDataFromUrl(this.URL, true, null, this.setProposals ,null);
+
+    this.getDataFromUrl(this.URL,true, null, this.setProposals ,null);
+  }
+
+  public async getProposalById(id: string): Promise<any> {
+    return this.axiosCall<any>({
+      method: 'GET',
+      url: this.URL+"/"+id
+    }, true, null).then(value => {
+      if (value.error === null) {
+        if (value.data!.data !== null) {
+          return value.data!.data.proposal;
+        }
+      }
+    }).finally(() => {
+      //
+    });
   }
 
   setProposals(data: any ) :void{
