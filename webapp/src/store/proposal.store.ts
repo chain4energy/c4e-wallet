@@ -10,9 +10,7 @@ export const useProposalStore = defineStore({
   },
   actions: {
     setProposals(proposals:  any) {
-
       this.proposals = this.proposals.concat(proposals);
-      console.log(this.proposals)
     },
     deleteProposals() {
       this.proposals = [];

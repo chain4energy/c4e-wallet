@@ -21,7 +21,6 @@ onMounted(()=> {
   useProposalStore().deleteProposals();
   proposalService.getDataToStore(0);
   window.addEventListener('scroll', load);
-  load();
 });
 
 onUnmounted(() => {
