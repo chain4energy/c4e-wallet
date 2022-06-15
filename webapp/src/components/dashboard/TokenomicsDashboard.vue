@@ -31,8 +31,7 @@
 
 <script setup lang="ts">
 
-import TokenomicsService from "@/services/tokenomics.service";
-import {computed, onMounted, ref} from "vue";
+import {computed, onBeforeMount, ref} from "vue";
 import {useTokenomicsStore} from "@/store/tokenomics.store";
 import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
@@ -49,12 +48,11 @@ use([
   LegendComponent
 ]);
 
-const tokenomicsService = new TokenomicsService();
 const totalSupplyStore = useTotalSupplyStore();
 
-onMounted(()=>{
-  tokenomicsService.getDataToStore();
-})
+onBeforeMount(()=>{
+  useTokenomicsStore().fetchTokenomics();
+});
 
 const boundedPercentage = computed(() => {
   let res:number = Number(useTokenomicsStore().getTokenomics.bonded_tokens) / Number(totalSupplyStore.getTotalSupply.amount) * 100;

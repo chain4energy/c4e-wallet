@@ -114,7 +114,7 @@ const formattedDate = (value: Date) => {
 
 const showDetailsClick = () => {
   router.push({name: 'governanceDetails', params: {id: props.proposal.proposal_id}});
-}
+};
 
 const option = ref({
   tooltip: {

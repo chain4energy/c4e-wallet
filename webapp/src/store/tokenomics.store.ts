@@ -1,18 +1,28 @@
 import {defineStore} from "pinia";
-import {Tokenomics} from "@/models/tokenomics";
+import {Tokenomics, Pool} from "@/models/tokenomics";
+import apiFactory from "@/api/factory.api";
+
 
 export const useTokenomicsStore = defineStore({
 
   id: 'tokenomicsStore',
   state: () => {
     return {
-      tokenomics: Object(Tokenomics),
+      tokenomics: Object() as Tokenomics,
     };
   },
   actions: {
-    setTokenomics(tokenomics:  Tokenomics) {
-      this.tokenomics=tokenomics;
+    fetchTokenomics() {
+      apiFactory.tokenomicsApi().fetchTokenomics().then( response => {
+        if (response.error == null && response.data != undefined) {
+          const pool:Pool = response.data;
+          this.tokenomics = pool.pool;
+        } else {
+          //TODO: error handling
+        }
+      });
     },
+
   },
   getters: {
 
