@@ -21,9 +21,9 @@
         <div>{{ proposal.content['@type'] }}</div>
         <div>{{ formattedDate(proposal.submit_time) }}</div>
         <div>{{formattedDate(proposal.deposit_end_time) }}</div>
-        <div>132</div>
-        <div>123</div>
-        <div>123</div>
+        <div>{{ Number(tallyingStore.getTallyParams.quorum).toFixed(2) }}%</div>
+        <div>{{ Number(tallyingStore.getTallyParams.threshold).toFixed(2) }}%</div>
+        <div>{{ Number(tallyingStore.getTallyParams.veto_threshold).toFixed(2) }}%</div>
       </div>
     </div>
   </div>
@@ -32,6 +32,7 @@
 <script setup lang="ts">
 
 import moment from "moment";
+import {useTallyingStore} from "@/store/tallying.store";
 
 const props = defineProps({
   proposal: {
@@ -40,6 +41,7 @@ const props = defineProps({
   }
 });
 
+const tallyingStore = useTallyingStore();
 
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');

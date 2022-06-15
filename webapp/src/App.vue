@@ -4,7 +4,7 @@
     <app-header/>
     <div class="main-container">
       <div class="content">
-        <router-view/>
+        <router-view />
       </div>
     </div>
     <app-footer class="footer"/>

@@ -43,9 +43,6 @@ import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import VoteModal from "@/components/governance/VoteModal.vue";
-import ProposalService from "@/services/proposal.service";
-import {useProposalStore} from "@/store/proposal.store";
-import {useRoute} from "vue-router";
 
 
 use([

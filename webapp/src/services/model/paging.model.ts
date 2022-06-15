@@ -23,6 +23,7 @@ export class PagingModel{
   private sortOrder = '';
   private filterFields : string[] = [];
   private filterValues: string[] = [];
+  private key = '';
 
   constructor(filterFields: string[]) {
     this.filterFields = filterFields;
@@ -83,5 +84,8 @@ export class PagingModel{
   }
   setLimit(limit: number) {
     this.limit = limit;
+  }
+  setKey(key: string) {
+    this.key = key;
   }
 }

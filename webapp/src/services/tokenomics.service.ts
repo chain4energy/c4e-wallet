@@ -8,16 +8,13 @@ export default class TokenomicsService extends BaseService<any> {
   }
 
   //TODO: MS: move to global configuration service
-  URL =  'https://hasura-testnet.chain4energy.org/v1/graphql';
-
+  //URL =  'https://hasura-testnet.chain4energy.org/v1/graphql';
+  URL = 'https://lcd.chain4energy.org/cosmos/staking/v1beta1/pool'
 
   public getDataToStore() {
     this.axiosCall({
-      method: 'POST',
-      url: this.URL,
-      data: {
-        query: "query Tokenomics { stakingPool: staking_pool(order_by: {height: desc}, limit: 1) { bonded: bonded_tokens unbonded: not_bonded_tokens } } ",
-      }
+      method: 'GET',
+      url: this.URL
     }, true, null).then(value => {
       if (value.error === null) {
         this.setTokenomics(value.data);
@@ -27,7 +24,7 @@ export default class TokenomicsService extends BaseService<any> {
   }
 
   setTokenomics(data: any) :void{
-    useTokenomicsStore().setTokenomics(data.data.stakingPool[0]);
+    useTokenomicsStore().setTokenomics(data.pool);
   }
 
 }

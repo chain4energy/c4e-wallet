@@ -13,7 +13,6 @@ export const usePoolsStore = defineStore({
   actions: {
     setCommunityPool(communityPool:  Pool) {
       this.communityPool=communityPool;
-      console.log(this.communityPool)
     },
     setStrategicReversePool(strategicReversePool : Pool){
       this.strategicReversePool = strategicReversePool;

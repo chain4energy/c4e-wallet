@@ -57,33 +57,33 @@ onMounted(()=>{
 })
 
 const boundedPercentage = computed(() => {
-  let res:number = Number(useTokenomicsStore().getTokenomics.bonded) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
+  let res:number = Number(useTokenomicsStore().getTokenomics.bonded_tokens) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 const unboundedPercentage = computed(() => {
   let res:number = (Number(totalSupplyStore.getTotalSupply.amount)
-    - Number(useTokenomicsStore().getTokenomics.bonded)
-    - Number(useTokenomicsStore().getTokenomics.unbonded)) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
+    - Number(useTokenomicsStore().getTokenomics.bonded_tokens)
+    - Number(useTokenomicsStore().getTokenomics.not_bonded_tokens)) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 
 const unboundingPercentage = computed(() => {
-  let res:number = Number(useTokenomicsStore().getTokenomics.unbonded) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
+  let res:number = Number(useTokenomicsStore().getTokenomics.not_bonded_tokens) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 
 const bounded = computed((): number => {
-  return Number(useTokenomicsStore().getTokenomics.bonded);
+  return Number(useTokenomicsStore().getTokenomics.bonded_tokens);
 });
 
 const unBounded = computed(() :number => {
   return Number(totalSupplyStore.getTotalSupply.amount)
-    - Number(useTokenomicsStore().getTokenomics.bonded)
-    - Number(useTokenomicsStore().getTokenomics.unbonded);
+    - Number(useTokenomicsStore().getTokenomics.bonded_tokens)
+    - Number(useTokenomicsStore().getTokenomics.not_bonded_tokens);
 });
 
 const unBounding = computed(() :number => {
-  return Number(useTokenomicsStore().getTokenomics.unbonded);
+  return Number(useTokenomicsStore().getTokenomics.not_bonded_tokens);
 });
 
 const totalSupply = computed(() :number => {

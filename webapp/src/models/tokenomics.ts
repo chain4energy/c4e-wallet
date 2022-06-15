@@ -1,4 +1,4 @@
 export declare class Tokenomics {
-  bonded: number;
-  unbonded: number;
+  bonded_tokens: number;
+  not_bonded_tokens: number;
 }

@@ -4,6 +4,7 @@ import StakingView from '../views/StakingView.vue';
 import GovernanceView from '../views/GovernanceView.vue';
 import GovernanceDetailsView from '../views/GovernanceDetailsView.vue';
 import ValidatorsView from '../views/ValidatorsView.vue';
+import ProposalsList from '@/components/governance/ProposalsList.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -35,16 +36,31 @@ const routes: Array<RouteRecordRaw> = [
     component: GovernanceView,
     meta: {
       requiresAuth: false
-    }
+    },
+    children: [
+      {
+        path: '',
+        name: 'proposalsList',
+        component: ProposalsList,
+
+      },
+      {
+        path: ':id',
+        name: 'governanceDetails',
+        component: GovernanceDetailsView,
+
+      }
+    ]
   },
-  {
-    path: '/governance/:id',
-    name: 'governanceDetails',
-    component: GovernanceDetailsView,
-    meta: {
-      requiresAuth: false
-    }
-  },
+  // {
+  //   path: '/governance/:id',
+  //   name: 'governanceDetails',
+  //   component: GovernanceDetailsView,
+  //   meta: {
+  //     requiresAuth: false
+  //   },
+  //
+  // },
   {
     path: '/validators',
     name: 'validators',

@@ -109,12 +109,12 @@ export default abstract class BaseService<T> extends LoggedService {
     });
   }
 
-  public getDataFromUrl<X>(url: string,  lockScreen: boolean, localSpinner: LocalSpinner | null, onSuccess:(data:X)=> void, onError:((error:any) =>void )| null, pagination?: PagingModel) {
+  public getDataFromUrl<X>(url: string,  lockScreen: boolean, localSpinner: LocalSpinner | null, onSuccess:(data:X)=> void, onError:((error:any) =>void )| null, pagination?: any) {
 
     this.axiosCall<X>({
       method: 'GET',
       url: url,
-      params: pagination?.toAxiosParams()
+      params: pagination
     }, true, null, onError!=null).then(value => {
       if (value.error === null) {
         if (value.data !== undefined) {
