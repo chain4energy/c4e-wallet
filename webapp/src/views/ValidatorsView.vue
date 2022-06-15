@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import DataTableWrapper from '@/components/utils/DataTableWrapper.vue';
-import {DataTableService} from "@/services/dataTableService";
+import {DataTableService} from "@/services/data-table.service";
 import {DataHolder} from "@/models/data-holder";
 import {PagingModel} from "@/services/model/paging.model";
 import {LocalSpinner} from "@/services/model/localSpinner";
