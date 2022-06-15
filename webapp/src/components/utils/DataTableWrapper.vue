@@ -60,7 +60,7 @@
 
 import {onMounted, PropType, ref, watch, useSlots} from "vue";
 import {DataTablePageEvent, DataTableSortEvent} from "primevue/datatable";
-import {Service} from "@/services/service";
+import {DataTableService} from "@/services/data-table.service";
 import {PagingModel} from "@/services/model/paging.model";
 import {useGlobalFilterStore} from "@/store/global-filter.store";
 import {LocalSpinner} from "@/services/model/localSpinner";
@@ -75,7 +75,7 @@ const slots = useSlots();
 
 const props = defineProps({
   service: {
-    type: Object as PropType<Service>,
+    type: Object as PropType<DataTableService<any>>,
     required: true
   },
   globalFilterFields: {
@@ -94,18 +94,18 @@ function slotPassed(slotName: string) {
 
 onMounted(() => {
   paging = new PagingModel(props.globalFilterFields as string[]);
-  props.service.getListData(paging, true, null);
+  props.service.fetchListData(paging, true, null);
 });
 
 
 function pageEvent (event: DataTablePageEvent) {
   console.log('onPage: ' + JSON.stringify(event, null, 2));
-  props.service.getListData( paging.fromDataTablePageEvent( event), true, null);
+  props.service.fetchListData( paging.fromDataTablePageEvent( event), true, null);
 }
 
 function sortEvent (event: DataTableSortEvent) {
   console.log('onPage: ' + JSON.stringify(event, null, 2));
-  props.service.getListData( paging.fromDataTableSortEvent( event), true, null);
+  props.service.fetchListData( paging.fromDataTableSortEvent( event), true, null);
 }
 
 const localSpinner: LocalSpinner = {
@@ -119,7 +119,7 @@ function onFilterInput() {
   console.log('onFilterInput: ' + globalFilter.getFilter);
   clearTimeout(timerId);
   timerId = setTimeout(() => {
-    props.service.getListData(paging.updateFilter( globalFilter.getFilter), false, localSpinner);
+    props.service.fetchListData(paging.updateFilter( globalFilter.getFilter), false, localSpinner);
   }, 500);
 }
 
@@ -128,7 +128,7 @@ watch(()=>globalFilter.getFilter, () => onFilterInput());
 
 function reload(){
   console.log('reload: ');
-  props.service.getListData(paging, true, null);
+  props.service.fetchListData(paging, true, null);
 }
 
 </script>

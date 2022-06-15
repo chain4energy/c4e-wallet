@@ -19,9 +19,23 @@
 
 <script setup lang="ts">
 import DataTableWrapper from '@/components/utils/DataTableWrapper.vue';
-import ValidatorsService from "@/services/validators.service";
+import {DataTableService} from "@/services/dataTableService";
+import {DataHolder} from "@/models/data-holder";
+import {PagingModel} from "@/services/model/paging.model";
+import {LocalSpinner} from "@/services/model/localSpinner";
+import {useValidatorsStore} from "@/store/validators.store";
+import {Validator} from "@/models/validator";
 
-const validatorsService = new ValidatorsService();
+const validatorsStore = useValidatorsStore();
+
+const validatorsService:DataTableService<Validator> = {
+  fetchListData(pagination: PagingModel | null, lockScreen: boolean, localSpinner: LocalSpinner | null): void {
+    validatorsStore.fetchValidators(pagination, lockScreen, localSpinner);
+  },
+  getListDataHolder(): DataHolder<Validator> {
+    return validatorsStore.getValidators;
+  }
+}
 
 function getStateColor(status: string) {
   if(status === 'accepted') return '#ccffcc';

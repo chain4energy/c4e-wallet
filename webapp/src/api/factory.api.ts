@@ -1,10 +1,10 @@
-import {ActiveValidatorsApi} from "@/services/active-validators.api";
+import {ValidatorsApi} from "@/api/validators.api";
 
 class ApiFactory {
 
   private static instance: ApiFactory;
 
-  private readonly _activeValidatorsService = new ActiveValidatorsApi();
+  private readonly _validatorsApi = new ValidatorsApi();
 
   private constructor() {
  //
@@ -17,8 +17,8 @@ class ApiFactory {
     return ApiFactory.instance;
   }
 
-  public activeValidatorsApi(): ActiveValidatorsApi{
-    return this._activeValidatorsService;
+  public validatorsApi(): ValidatorsApi{
+    return this._validatorsApi;
   }
 
 }

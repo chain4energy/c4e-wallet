@@ -2,7 +2,7 @@
   <div class="container">
     <div>Validators</div>
     <div class="info">
-      {{useActiveValidatorsStore().getActiveValidators}}
+      {{useValidatorsStore().getActiveValidators}}
     </div>
 
   </div>
@@ -10,16 +10,11 @@
 
 <script setup lang="ts">
 
-// import activeValidatorsService from "@/services/active-validators.service";
-import apiFactory from "@/services/ApiFactory";
 import {onMounted} from "vue";
-import {useActiveValidatorsStore} from "@/store/active-validators.store";
-
-// const activeValidatorsService = new ActiveValidatorsService();
+import {useValidatorsStore} from "@/store/validators.store";
 
 onMounted(() => {
-  useActiveValidatorsStore().fetchNumberOfActiveValidators();
-  // apiFactory.activeValidatorsService().fetchNumberOfActiveValidators();
+  useValidatorsStore().fetchNumberOfActiveValidators();
 });
 </script>
 

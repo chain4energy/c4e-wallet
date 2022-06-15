@@ -1,35 +1,53 @@
 import {defineStore} from "pinia";
 import {DataHolder} from "@/models/data-holder";
 import {Validator} from "@/models/validator";
-import {Validators} from "@/models/validators";
+import {PagingModel} from "@/services/model/paging.model";
+import {LocalSpinner} from "@/services/model/localSpinner";
+import apiFactory from "@/api/factory.api";
 
 export const useValidatorsStore = defineStore({
   id: 'validatorsStore',
   state: () => {
     return {
-      validators:  Object(DataHolder),
-      validator: new Validator
+      validators: Object(DataHolder),
+      validator: new Validator,
+      numberOfActiveValidators: Object(Number),
     };
   },
   actions: {
-    setValidators (validators:  Validators) {
-      const dataHolder = new DataHolder;
-      for(const element of validators.validators){
-        dataHolder.elements.push(element);
-      }
-      dataHolder.amount = Number(validators.pagination.total);
-      this.validators = dataHolder;
+    fetchValidators(pagination: PagingModel | null, lockScreen: boolean, localSpinner: LocalSpinner | null) {
+      apiFactory.validatorsApi().fetchAllValidators(pagination, lockScreen, localSpinner)
+        .then((response) => {
+            if (response.error == null && response.data != undefined) {
+              // create DataHolder object from received data
+              const dataHolder = new DataHolder<Validator>();
+              for (const element of response.data.validators) {
+                dataHolder.elements.push(element);
+              }
+              dataHolder.amount = Number(response.data.pagination.total);
+              this.validators = dataHolder;
+            } else {
+              //TODO: error handling
+            }
+          }
+        )
     },
-    setValidator(validator : Validator){
-      this.validator = validator;
+    fetchNumberOfActiveValidators(){
+      apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
+        if( response.error == null ) {
+          this.numberOfActiveValidators = response.data?.data.activeTotal.aggregate.count;
+        } else {
+          //TODO: error handling
+        }
+      });
     }
   },
   getters: {
-    listDataHolder ():DataHolder {
-      return this.validators;
+    getValidators(): DataHolder<Validator> {
+     return this.validators;
     },
-    singleData ():Validator{
-      return this.validator;
-    }
+    getActiveValidators(): number {
+      return this.numberOfActiveValidators;
+    },
   }
 });

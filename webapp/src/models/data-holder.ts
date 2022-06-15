@@ -1,4 +1,4 @@
-export class DataHolder {
+export class DataHolder<T> {
   amount = 0;
-  elements: any[] = [];
+  elements: T[] = [];
 }
