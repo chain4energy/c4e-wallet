@@ -45,7 +45,7 @@ export default abstract class BaseService<T> extends LoggedService {
       this.logToConsole(LogLevel.DEBUG, 'Axios Request: ', JSON.stringify(config));
       const data = await this.axiosInstance.request<T>(config);
       this.logToConsole(LogLevel.DEBUG, 'Axios Response', JSON.stringify(data));
-      return new RequestResponse<T>(null, data);
+      return new RequestResponse<T>(null, data.data);
     } catch (err) {
       this.logToConsole(LogLevel.ERROR, 'Axios Response', JSON.stringify(err));
       //Check if 401 and refresh token once
@@ -99,8 +99,8 @@ export default abstract class BaseService<T> extends LoggedService {
     }, lockScreen, localSpinner);
     promise.then(value => {
       if (value.error === null) {
-        if (value.data!.data !== null) {
-          this.setListDataToStore(value.data!.data);
+        if (value.data !== undefined) {
+          this.setListDataToStore(value.data);
         }
       }
       //handle errors or do nothing
@@ -117,8 +117,8 @@ export default abstract class BaseService<T> extends LoggedService {
       params: pagination?.toAxiosParams()
     }, true, null, onError!=null).then(value => {
       if (value.error === null) {
-        if (value.data!.data !== null) {
-          onSuccess(value.data!.data);
+        if (value.data !== undefined) {
+          onSuccess(value.data);
         }
         if(onError != null) {
           onError("Data is null");

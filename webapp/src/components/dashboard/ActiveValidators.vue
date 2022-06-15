@@ -10,15 +10,16 @@
 
 <script setup lang="ts">
 
-import ActiveValidatorsService from "@/services/active-validators.service";
+// import activeValidatorsService from "@/services/active-validators.service";
+import apiFactory from "@/services/ApiFactory";
 import {onMounted} from "vue";
 import {useActiveValidatorsStore} from "@/store/active-validators.store";
 
-const activeValidatorsService = new ActiveValidatorsService();
+// const activeValidatorsService = new ActiveValidatorsService();
 
 onMounted(() => {
-
-  activeValidatorsService.getDataToStore();
+  useActiveValidatorsStore().fetchNumberOfActiveValidators();
+  // apiFactory.activeValidatorsService().fetchNumberOfActiveValidators();
 });
 </script>
 

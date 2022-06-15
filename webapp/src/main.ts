@@ -48,6 +48,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 import IconComponent from "@/components/features/IconComponent.vue";
 import ECharts from 'vue-echarts'
+import ApiFactory from "@/services/ApiFactory";
+
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
 
@@ -63,6 +65,8 @@ const app = createApp(App);
 const pinia = createPinia();
 pinia.use(piniaPersist);
 const logger = new LoggerService();
+
+
 
 app.use(router)
   .use(pinia)
@@ -83,6 +87,8 @@ app.use(router)
   // .component('font-awesome-icon', FontAwesomeIcon)
   .mount('#app');
 
+const apiFactory = ApiFactory;
+console.log("apiFactory created:" + apiFactory);
 // app.config.errorHandler = (err, instance, info) => {
 //   logger.logToConsole(LogLevel.ERROR, ServiceTypeEnum.GLOBAL_ERROR_HANDLER, 'ErrorHandler', JSON.stringify(err), info);
 // };

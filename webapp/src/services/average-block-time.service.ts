@@ -23,8 +23,7 @@ export default class AverageBlockTimeService extends BaseService<any> {
       }
     }, true, null).then(value => {
       if (value.error === null) {
-        this.setAverageBlockTime(value.data!.data);
-
+        this.setAverageBlockTime(value.data);
       }
     });
   }

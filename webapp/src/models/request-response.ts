@@ -2,9 +2,9 @@ import { AxiosResponse } from 'axios';
 
 export class RequestResponse<T> {
   error: any;
-  data?: AxiosResponse<T>;
+  data?: T;
 
-  constructor (error: any, data?: AxiosResponse<T>) {
+  constructor (error: any, data?: T) {
     this.error = error;
     this.data = data;
   }

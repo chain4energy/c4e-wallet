@@ -20,7 +20,7 @@ export default class TokenomicsService extends BaseService<any> {
       }
     }, true, null).then(value => {
       if (value.error === null) {
-        this.setTokenomics(value.data!.data);
+        this.setTokenomics(value.data);
 
       }
     });
