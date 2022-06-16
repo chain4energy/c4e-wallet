@@ -36,13 +36,14 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeMount, onMounted, ref} from "vue";
+import {computed, ref} from "vue";
 import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import VoteModal from "@/components/governance/VoteModal.vue";
+import {useProposalsStore} from "@/store/proposals.store";
 
 
 use([
@@ -52,15 +53,13 @@ use([
   TooltipComponent,
   LegendComponent
 ]);
-
+const proposalsStore = useProposalsStore();
 const props = defineProps({
   proposal: {
     type: Object,
     required: true
   }
 });
-
-
 
 const sumOfVotes = computed(() => {
   return Number(props.proposal.final_tally_result.yes) + Number(props.proposal.final_tally_result.no)

@@ -1,13 +1,16 @@
 import {ValidatorsApi} from "@/api/validators.api";
-import {TokenomicsApi} from "@/api/tokenomics.api";
+import {TokensApi} from "@/api/tokensApi";
+import {BlockApi} from "@/api/block.api";
+import {ProposalsApi} from "@/api/proposals.api";
 
 class ApiFactory {
 
   private static instance: ApiFactory;
 
   private readonly _validatorsApi = new ValidatorsApi();
-  private readonly _tokenomicsApi = new TokenomicsApi();
-
+  private readonly _tokensApi = new TokensApi();
+  private readonly _blockApi = new BlockApi();
+  private readonly _proposalsApi = new ProposalsApi();
   private constructor() {
  //
   }
@@ -22,10 +25,15 @@ class ApiFactory {
   public validatorsApi(): ValidatorsApi{
     return this._validatorsApi;
   }
-  public tokenomicsApi(): TokenomicsApi{
-    return this._tokenomicsApi;
+  public tokensApi(): TokensApi{
+    return this._tokensApi;
   }
-
+  public blockApi(): BlockApi {
+    return this._blockApi;
+  }
+  public proposalsApi(): ProposalsApi {
+    return this._proposalsApi;
+  }
 }
 
 export default ApiFactory.getInstance();

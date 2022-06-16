@@ -2,7 +2,8 @@
   <div class="container">
     <div>Total supply</div>
     <div class="info">
-      {{useTotalSupplyStore().getTotalSupply.amount}}  {{useTotalSupplyStore().getTotalSupply.denom}}
+      {{ tokensStore.totalSupply.amount}}  {{ tokensStore.totalSupply.denom }}
+
     </div>
 
   </div>
@@ -10,15 +11,13 @@
 
 <script setup lang="ts">
 
+import {onBeforeMount} from "vue";
+import {useTokensStore} from "@/store/tokens.store";
 
-import TotalSupplyService from "@/services/total-supply.service";
-import {onMounted} from "vue";
-import {useTotalSupplyStore} from "@/store/total-supply.store";
+const tokensStore = useTokensStore();
 
-const totalSupplyService = new TotalSupplyService();
-
-onMounted(() => {
-  totalSupplyService.getDataToStore();
+onBeforeMount(() => {
+  tokensStore.fetchTotalSupply();
 });
 </script>
 

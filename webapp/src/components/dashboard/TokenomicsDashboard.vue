@@ -32,13 +32,13 @@
 <script setup lang="ts">
 
 import {computed, onBeforeMount, ref} from "vue";
-import {useTokenomicsStore} from "@/store/tokenomics.store";
+import {useTokensStore} from "@/store/tokens.store";
 import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
-import {useTotalSupplyStore} from "@/store/total-supply.store";
+
 
 use([
   CanvasRenderer,
@@ -48,44 +48,44 @@ use([
   LegendComponent
 ]);
 
-const totalSupplyStore = useTotalSupplyStore();
+const tokensStore = useTokensStore();
 
-onBeforeMount(()=>{
-  useTokenomicsStore().fetchTokenomics();
+onBeforeMount(() => {
+  tokensStore.fetchStakingPool();
 });
 
 const boundedPercentage = computed(() => {
-  let res:number = Number(useTokenomicsStore().getTokenomics.bonded_tokens) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
+  let res:number = Number(tokensStore.getStakingPool.bonded_tokens) / Number(tokensStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 const unboundedPercentage = computed(() => {
-  let res:number = (Number(totalSupplyStore.getTotalSupply.amount)
-    - Number(useTokenomicsStore().getTokenomics.bonded_tokens)
-    - Number(useTokenomicsStore().getTokenomics.not_bonded_tokens)) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
+  let res:number = (Number(tokensStore.getTotalSupply.amount)
+    - Number(tokensStore.getStakingPool.bonded_tokens)
+    - Number(tokensStore.getStakingPool.not_bonded_tokens)) / Number(tokensStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 
 const unboundingPercentage = computed(() => {
-  let res:number = Number(useTokenomicsStore().getTokenomics.not_bonded_tokens) / Number(totalSupplyStore.getTotalSupply.amount) * 100;
+  let res:number = Number(tokensStore.getStakingPool.not_bonded_tokens) / Number(tokensStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 
 const bounded = computed((): number => {
-  return Number(useTokenomicsStore().getTokenomics.bonded_tokens);
+  return Number(tokensStore.getStakingPool.bonded_tokens);
 });
 
 const unBounded = computed(() :number => {
-  return Number(totalSupplyStore.getTotalSupply.amount)
-    - Number(useTokenomicsStore().getTokenomics.bonded_tokens)
-    - Number(useTokenomicsStore().getTokenomics.not_bonded_tokens);
+  return Number(tokensStore.getTotalSupply.amount)
+    - Number(tokensStore.getStakingPool.bonded_tokens)
+    - Number(tokensStore.getStakingPool.not_bonded_tokens);
 });
 
 const unBounding = computed(() :number => {
-  return Number(useTokenomicsStore().getTokenomics.not_bonded_tokens);
+  return Number(tokensStore.getStakingPool.not_bonded_tokens);
 });
 
 const totalSupply = computed(() :number => {
-  return Number(totalSupplyStore.getTotalSupply.amount);
+  return Number(tokensStore.getTotalSupply.amount);
 });
 
 const option = ref( {

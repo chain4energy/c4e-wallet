@@ -1,6 +1,6 @@
 <template>
 
-  <div v-for="proposal in getProposals" :key="proposal" >
+  <div v-for="proposal in getProposals.elements" :key="proposal" >
     <proposal-governance :proposal="proposal"></proposal-governance>
   </div>
 
@@ -11,13 +11,11 @@
 
 import ProposalGovernance from "@/components/governance/ProposalGovernance.vue";
 import {onActivated, onBeforeMount, onDeactivated, onUnmounted} from "vue";
-import ProposalService from "@/services/proposal.service";
-import {useProposalStore} from "@/store/proposal.store";
+import {useProposalsStore} from "@/store/proposals.store";
 import {storeToRefs} from "pinia";
 
-
-const proposalService = new ProposalService();
-const { getProposals } = storeToRefs(useProposalStore());
+const proposalsStore = useProposalsStore();
+const { getProposals } = storeToRefs(useProposalsStore());
 
 onActivated(() => {
   window.addEventListener('scroll', load);
@@ -28,18 +26,20 @@ onDeactivated(() => {
 });
 
 onBeforeMount(()=> {
-  proposalService.getDataToStore();
+  proposalsStore.fetchProposals();
+
 });
 
 onUnmounted(() => {
-  useProposalStore().deleteProposals();
+  proposalsStore.$reset();
 });
 
 const load = () => {
   let bottomOfWindow = Math.abs(Math.ceil(document.documentElement.scrollTop) + window.innerHeight - document.documentElement.offsetHeight) < 2;
 
-  if (bottomOfWindow && useProposalStore().getPaginationKey) {
-      proposalService.getDataToStore(useProposalStore().getPaginationKey);
+  if (bottomOfWindow && useProposalsStore().getPaginationKey) {
+
+    proposalsStore.fetchProposals();
   }
 };
 

@@ -2,7 +2,7 @@
   <div class="container">
     <div>Latest Block</div>
     <div class="info">
-      {{ useLatestBlockStore().getLatestBlock }}
+      {{ blockStore.getLatestBlockHeight }}
     </div>
 
   </div>
@@ -10,15 +10,14 @@
 
 <script setup lang="ts">
 
-import {useLatestBlockStore} from "@/store/latest-block.store";
-import LatestBlockService from "@/services/latest-block.service";
 import {onMounted} from "vue";
+import {useBlockStore} from "@/store/block.store";
 
-const latestBlockService = new LatestBlockService();
 
+const blockStore = useBlockStore();
 onMounted(() => {
-  latestBlockService.getDataToStore();
 
+  blockStore.fetchLatestBlock();
 });
 
 </script>

@@ -14,7 +14,7 @@
 // GTE = "gte"
 // EQ  = "eq"
 // )
-import {DataTableFilterEvent, DataTablePageEvent, DataTableSortEvent} from "primevue/datatable";
+import { DataTablePageEvent, DataTableSortEvent} from "primevue/datatable";
 
 export class PagingModel{
   private limit = 20;

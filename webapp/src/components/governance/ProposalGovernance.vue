@@ -56,8 +56,8 @@
 
 <script setup lang="ts">
 import moment from 'moment';
-import {computed, onBeforeMount, ref} from "vue";
-import {BarChart, PieChart} from "echarts/charts";
+import {computed, ref} from "vue";
+import {BarChart} from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import {CanvasRenderer} from "echarts/renderers";

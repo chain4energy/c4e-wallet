@@ -1,6 +1,4 @@
 import {PagesEnum} from "@/services/permissions/pages-enum";
-import {useUserStore} from "@/store/user.store";
-import {RoleEnum} from "@/services/permissions/role-enum";
 import {SidebarConfig, SidebarElement} from "@/services/permissions/sidebar.config";
 
 export class PermissionsService{

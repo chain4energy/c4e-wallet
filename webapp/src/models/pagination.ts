@@ -1,4 +1,4 @@
 export class Pagination {
-  nextKey = '';
+  next_key = '';
   total = '0' ;
  }
