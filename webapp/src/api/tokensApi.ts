@@ -11,12 +11,11 @@ export class TokensApi extends BaseApi {
     return ServiceTypeEnum.TOKENS_SERVICE;
   }
 
-  //TODO: MS: move to global configuration service
-  private STAKING_POOL_URL = 'https://lcd.chain4energy.org/cosmos/staking/v1beta1/pool';
-  private TOTAL_SUPPLY_URL = 'https://lcd.chain4energy.org/cosmos/bank/v1beta1/supply/uc4e';
-  private COMMUNITY_POOL_URL =  'https://lcd.chain4energy.org/cosmos/distribution/v1beta1/community_pool';
-  private STRATEGIC_RESERVE_POOL_URL = 'https://lcd.chain4energy.org/cosmos/bank/v1beta1/balances/c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422/by_denom?denom=uc4e';
-  private AIRDROP_POOL_URL = 'https://lcd.chain4energy.org/cosmos/bank/v1beta1/balances/c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts/by_denom?denom=uc4e';
+  private STAKING_POOL_URL = process.env.VUE_APP_STAKING_POOL_URL;
+  private TOTAL_SUPPLY_URL = process.env.VUE_APP_TOTAL_SUPPLY_URL;
+  private COMMUNITY_POOL_URL =  process.env.VUE_APP_COMMUNITY_POOL_URL;
+  private STRATEGIC_RESERVE_POOL_URL = process.env.VUE_APP_STRATEGIC_RESERVE_POOL_URL;
+  private AIRDROP_POOL_URL = process.env.VUE_APP_AIRDROP_POOL_URL;
 
   public async fetchStakingPool(): Promise<RequestResponse<StakingPool>> {
     return this.axiosCall({

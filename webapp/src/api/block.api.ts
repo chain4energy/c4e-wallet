@@ -10,9 +10,8 @@ export class BlockApi extends BaseApi {
     return ServiceTypeEnum.BLOCK_SERVICE;
   }
 
-  //TODO: MS: move to global configuration service
-  private LATEST_BLOCK_URL = 'https://lcd.chain4energy.org/cosmos/base/tendermint/v1beta1/blocks/latest';
-  private AVERAGE_BLOCK_TIME_URL = 'https://hasura-testnet.chain4energy.org/v1/graphql';
+  private LATEST_BLOCK_URL = process.env.VUE_APP_LATEST_BLOCK_URL;
+  private AVERAGE_BLOCK_TIME_URL = process.env.VUE_APP_AVERAGE_BLOCK_TIME_URL;
 
   public async fetchLatestBlock(): Promise<RequestResponse<LatestBlock>> {
     return this.axiosCall({
