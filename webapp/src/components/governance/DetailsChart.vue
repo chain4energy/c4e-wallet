@@ -43,7 +43,6 @@ import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import VoteModal from "@/components/governance/VoteModal.vue";
-import {useProposalsStore} from "@/store/proposals.store";
 
 
 use([
@@ -53,7 +52,7 @@ use([
   TooltipComponent,
   LegendComponent
 ]);
-const proposalsStore = useProposalsStore();
+
 const props = defineProps({
   proposal: {
     type: Object,
@@ -88,6 +87,11 @@ const noWithVetoPercentage = computed(() => {
 });
 
 const option = ref({
+  title: {
+    text: props.proposal.status,
+    left: 'center',
+    top: 'center'
+  },
   tooltip: {
     trigger: 'item',
     formatter: '{a} <br/>{b}: {c} ({d}%)'
@@ -108,7 +112,6 @@ const option = ref({
       fontSize: '80',
       position: 'center'
     },
-
 
     data: [{
 

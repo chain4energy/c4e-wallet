@@ -11,11 +11,11 @@ export class ProposalsApi extends BaseApi {
     return ServiceTypeEnum.PROPOSAL_SERVICE;
   }
 
-  //TODO: MS: move to global configuration service
-  private PROPOSALS_URL = 'https://api.data.kava.io/cosmos/gov/v1beta1/proposals';
-  private TALLYING_URL =  'https://lcd.chain4energy.org/cosmos/gov/v1beta1/params/tallying';
+  private PROPOSALS_URL = process.env.VUE_APP_PROPOSALS_URL;
+  private TALLYING_URL = process.env.VUE_APP_TALLYING_URL
 
   public async fetchProposals(paginationKey?: string): Promise<RequestResponse<Proposals>> {
+    console.log(process.env.APP_VUE_PROPOSALS_URL);
     const pagination:any = {};
     if(paginationKey)
       pagination['pagination.key'] = paginationKey;

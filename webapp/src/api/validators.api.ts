@@ -12,8 +12,7 @@ export class ValidatorsApi extends BaseApi {
     return ServiceTypeEnum.ACTIVE_VALIDATORS_SERVICE;
   }
 
-  //TODO: MS: move to global configuration service
-  private ACTIVE_VALIDATORS_URL = 'https://hasura-testnet.chain4energy.org/v1/graphql';
+  private ACTIVE_VALIDATORS_URL = process.env.VUE_APP_ACTIVE_VALIDATORS_URL;
 
   public async fetchActiveValidatorCount(): Promise<RequestResponse<ActiveValidatorCount>> {
     return this.axiosCall({
