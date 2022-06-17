@@ -35,7 +35,7 @@ const validatorsService:DataTableService<Validator> = {
   getListDataHolder(): DataHolder<Validator> {
     return validatorsStore.getValidators;
   }
-}
+};
 
 function getStateColor(status: string) {
   if(status === 'accepted') return '#ccffcc';

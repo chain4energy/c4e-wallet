@@ -2,21 +2,21 @@
   <div class="container">
     <div>Average Block Time</div>
     <div class="info">
-      {{ useAverageBlockTime().getAverageBlockTime }}
+      {{ blockStore.getAverageBlockTime }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 
-import {onMounted} from "vue";
-import AverageBlockTimeService from "@/services/average-block-time.service";
-import {useAverageBlockTime} from "@/store/average-block-time.store";
-const averageBlockTimeService = new AverageBlockTimeService();
+import {onBeforeMount} from "vue";
+import {useBlockStore} from "@/store/block.store";
 
-onMounted(() => {
-  averageBlockTimeService.getDataToStore();
+const blockStore = useBlockStore();
 
+onBeforeMount(() => {
+
+  blockStore.fetchAverageBlockTime();
 });
 
 </script>

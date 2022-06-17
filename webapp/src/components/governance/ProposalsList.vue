@@ -1,9 +1,7 @@
 <template>
 
-  <div v-for="proposal in getProposals" :key="proposal">
-
+  <div v-for="proposal in getProposals.elements" :key="proposal" >
     <proposal-governance :proposal="proposal"></proposal-governance>
-
   </div>
 
 
@@ -12,34 +10,36 @@
 <script setup lang="ts">
 
 import ProposalGovernance from "@/components/governance/ProposalGovernance.vue";
-import {onBeforeMount, onUnmounted, ref} from "vue";
-import ProposalService from "@/services/proposal.service";
-import {useProposalStore} from "@/store/proposal.store";
+import {onActivated, onBeforeMount, onDeactivated, onUnmounted} from "vue";
+import {useProposalsStore} from "@/store/proposals.store";
 import {storeToRefs} from "pinia";
 
-const proposalService = new ProposalService();
-const { getProposals } = storeToRefs(useProposalStore());
+const proposalsStore = useProposalsStore();
+const { getProposals } = storeToRefs(useProposalsStore());
 
-onBeforeMount(()=> {
-  proposalService.getDataToStore();
+onActivated(() => {
   window.addEventListener('scroll', load);
 });
 
-onUnmounted(() => {
-  useProposalStore().deleteProposals();
-});
-
-onUnmounted(() => {
+onDeactivated(() => {
   window.removeEventListener('scroll', load);
 });
-const page = ref(1);
+
+onBeforeMount(()=> {
+  proposalsStore.fetchProposals();
+
+});
+
+onUnmounted(() => {
+  proposalsStore.$reset();
+});
 
 const load = () => {
-  let bottomOfWindow = Math.ceil(document.documentElement.scrollTop) + window.innerHeight === document.documentElement.offsetHeight;
-  if (bottomOfWindow) {
-    console.log(useProposalStore().getPaginationKey)
-    proposalService.getDataToStore(useProposalStore().getPaginationKey);
-    page.value += 1;
+  let bottomOfWindow = Math.abs(Math.ceil(document.documentElement.scrollTop) + window.innerHeight - document.documentElement.offsetHeight) < 2;
+
+  if (bottomOfWindow && useProposalsStore().getPaginationKey) {
+
+    proposalsStore.fetchProposals();
   }
 };
 

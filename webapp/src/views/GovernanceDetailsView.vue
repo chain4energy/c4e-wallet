@@ -10,30 +10,28 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, onMounted, ref} from "vue";
+import {onBeforeMount, ref} from "vue";
 import { useRoute } from "vue-router";
-import ProposalService from "@/services/proposal.service";
 import DetailsChart from "@/components/governance/DetailsChart.vue";
 import ProposalDetails from "@/components/governance/ProposalDetails.vue";
 import ProposalDescription from "@/components/governance/ProposalDescription.vue";
-import TallyingService from "@/services/tallying.service";
+import {useProposalsStore} from "@/store/proposals.store";
+import {Proposal} from "@/models/Proposal";
 
 const route = useRoute();
-const proposalService = new ProposalService();
-const tallyingService = new TallyingService();
+
+const proposalsStore = useProposalsStore();
 onBeforeMount(async () => {
+  await proposalsStore.fetchProposalById(route.params.id.toString()).then( () => {
+    proposal.value = proposalsStore.getProposal;
+    everythingIsReady.value = true;
+  });
 
-  await proposalService.getProposalById(route.params.id.toString())
-    .then((data) => {
-      proposal.value = data.proposal;
-      everythingIsReady.value = true;
-
-    });
-
-  tallyingService.getDataToStore();
 });
-
-const proposal = ref(Object);
+onBeforeMount(() => {
+  useProposalsStore().fetchTallyParams();
+});
+const proposal = ref<Proposal>(Object);
 const everythingIsReady = ref(false);
 
 </script>

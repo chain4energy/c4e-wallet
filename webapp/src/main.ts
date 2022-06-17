@@ -29,8 +29,6 @@ import i18n from '@/plugins/i18n';
 // https://github.com/eladcandroid/v-idle-3
 import Vidle from 'v-idle-3';
 import { LoggerService } from '@/services/logger/logger.service';
-import { LogLevel } from '@/services/logger/log-level';
-import { ServiceTypeEnum } from '@/services/logger/service-type.enum';
 // https://www.primefaces.org/primevue/setup
 import PrimeVue from 'primevue/config';
 
@@ -41,13 +39,13 @@ import InputText from "primevue/inputtext";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Image from 'primevue/image';
-import piniaPersist from 'pinia-plugin-persist'
+import piniaPersist from 'pinia-plugin-persist';
 //https://www.npmjs.com/package/vue-debounce
 import { vue3Debounce } from 'vue-debounce';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 import IconComponent from "@/components/features/IconComponent.vue";
-import ECharts from 'vue-echarts'
+import ECharts from 'vue-echarts';
 
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next

@@ -30,7 +30,7 @@ export const useValidatorsStore = defineStore({
               //TODO: error handling
             }
           }
-        )
+        );
     },
     fetchNumberOfActiveValidators(){
       apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{

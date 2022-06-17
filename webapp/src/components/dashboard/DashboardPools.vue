@@ -6,16 +6,16 @@
         <div >
           <div><div class="color-div" style="background-color:#fff1a9"></div> Community pool</div>
           <div style="font-weight: bold">
-            {{ communityPool }} {{usePoolsStore().getCommunityPool.denom}}
+            {{ communityPool }} {{tokensStore.getCommunityPool.denom}}
           </div>
         </div>
         <div >
           <div><div class="color-div" style="background-color:#72bf44"></div> Strategic reverse pool</div>
-          <div style="font-weight: bold">{{ strategicReversePool }} {{usePoolsStore().getStrategicReversePool.denom}}</div>
+          <div style="font-weight: bold">{{ strategicReversePool }} {{tokensStore.getStrategicReversePool.denom}}</div>
         </div>
         <div >
           <div><div class="color-div" style="background-color:#26697f"></div> Airdrop</div>
-          <div style="font-weight: bold">{{ airdropPool }} {{usePoolsStore().getAirdropPool.denom}}</div>
+          <div style="font-weight: bold">{{ airdropPool }} {{tokensStore.getAirdropPool.denom}}</div>
         </div>
       </div>
     </div>
@@ -35,10 +35,9 @@ import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
-import {computed, onMounted, ref} from "vue";
+import {computed, onBeforeMount, ref} from "vue";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
-import PoolsService from "@/services/pools.service";
-import {usePoolsStore} from "@/store/pools.store";
+import {useTokensStore} from "@/store/tokens.store";
 
 use([
   CanvasRenderer,
@@ -47,23 +46,24 @@ use([
   TooltipComponent,
   LegendComponent
 ]);
-onMounted(() => {
-  poolsService.getDataToStore();
-})
+
+const tokensStore = useTokensStore();
+onBeforeMount(() => {
+  tokensStore.fetchPools();
+});
 
 const communityPool = computed(() => {
-  return Number(usePoolsStore().getCommunityPool.amount);
+  return Number(tokensStore.getCommunityPool.amount);
 });
 
 const strategicReversePool = computed(() => {
-  return Number(usePoolsStore().getStrategicReversePool.amount);
+  return Number(tokensStore.getStrategicReversePool.amount);
 });
 
 const airdropPool = computed(() => {
-  return Number(usePoolsStore().getAirdropPool.amount);
+  return Number(tokensStore.getAirdropPool.amount);
 });
 
-const poolsService = new PoolsService();
 const option = ref({
   tooltip: {
     trigger: 'item',

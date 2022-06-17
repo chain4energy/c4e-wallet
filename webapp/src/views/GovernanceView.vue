@@ -10,10 +10,6 @@
 
 <script setup lang="ts">
 
-import ProposalsList from "@/components/governance/ProposalsList.vue";
-
-
-
 </script>
 
 <style scoped>

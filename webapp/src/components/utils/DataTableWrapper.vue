@@ -81,7 +81,7 @@ const props = defineProps({
   globalFilterFields: {
     type: Array
   }
-})
+});
 
 
 function slotPassed(slotName: string) {
