@@ -46,7 +46,7 @@ import {PagingModel} from "@/services/model/paging.model";
 import {LocalSpinner} from "@/services/model/localSpinner";
 import {useValidatorsStore} from "@/store/validators.store";
 import {Validator} from "@/models/validator";
-import StackingPopup from '@/components/Stacking/StackingPopup.vue';
+import StackingPopup from '@/components/stacking/StackingPopup.vue';
 import {watch, ref} from "vue";
 import { useKeplrStore } from "@/store/keplr.store";
 

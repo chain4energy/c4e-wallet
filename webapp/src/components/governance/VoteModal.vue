@@ -8,16 +8,24 @@
           </div>
           <div> #{{ proposalId }} {{ title }} </div>
           <div class="vote-options">
-            <input type="radio" id="yes" value="Yes" v-model="picked">
+            <input type="radio" id="yes" value="1" v-model="picked">
             <label for="yes">Yes</label>
-            <input type="radio" id="no" value="No" v-model="picked">
+            <input type="radio" id="no" value="3" v-model="picked">
             <label for="no">No</label>
-            <input type="radio" id="no with veto" value="No with Veto" v-model="picked">
+            <input type="radio" id="no with veto" value="4" v-model="picked">
             <label for="no with veto">No with veto</label>
-            <input type="radio" id="abstain" value="Abstain" v-model="picked">
+            <input type="radio" id="abstain" value="2" v-model="picked">
             <label for="abstain">Abstain</label>
           </div>
-          <Button @click="onVoteClick" label="Vote" class="p-button-raised p-button-rounded"  data-bs-dismiss="modal" />
+          <span v-if="useKeplrStore().getKeplr && useUserStore().isLoggedIn">
+            <Button
+              @click="onVoteClick" label="Vote" class="p-button-raised p-button-rounded"  data-bs-dismiss="modal" />
+          </span>
+          <span v-else>
+          <p>To make voting you have to be loged in</p>
+          <Button
+            @click="useKeplrStore().checkKeplr()" label="login" class="p-button-raised p-button-rounded" />
+          </span>
         </div>
       </div>
     </div>
@@ -27,6 +35,8 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
+import { useKeplrStore } from "@/store/keplr.store";
+import {useUserStore} from "@/store/user.store";
 
 const props = defineProps({
   title: {
@@ -42,7 +52,9 @@ const props = defineProps({
 const picked = ref();
 
 const onVoteClick = () => {
-  console.log(picked.value);
+  console.log(props.proposalId)
+  useKeplrStore().vote(picked.value, props.proposalId)
+
 };
 </script>
 

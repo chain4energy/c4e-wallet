@@ -10,14 +10,24 @@ export const useUserStore = defineStore({
   state: () => {
     return {
       account: Object(Account),
-      _isLoggedIn: false
+      type: String,
+      _isLoggedIn: false,
+      basicAccount: false,
+      vestingAccount: false
     };
   },
   actions: {
+
+    typeShow(type: string){
+      console.log(type)
+    },
     async fetchAccount(id: string) {
       await apiFactory.accountApi().fetchAccount(id).then(response => {
+
         if (response.error == null && response.data != undefined) {
-          this.account = response.data.account;
+          this.account = response.data?.account;
+          const type = this.account["@type"].split('.');
+          this.type = type[type.length-1];
           this._isLoggedIn = true;
         } else {
           this._isLoggedIn = false;
@@ -28,6 +38,7 @@ export const useUserStore = defineStore({
     async logOut(){
       this._isLoggedIn = false;
       this.account = {};
+      this.type = String;
       await useKeplrStore().logOutKeplr()
     }
   },
@@ -37,6 +48,9 @@ export const useUserStore = defineStore({
     },
     getAccount(): Account{
       return this.account;
+    },
+    getAccType(): any {
+      return this.type;
     },
   },
   // persist: {

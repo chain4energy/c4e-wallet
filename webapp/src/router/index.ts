@@ -5,7 +5,8 @@ import GovernanceView from '../views/GovernanceView.vue';
 import GovernanceDetailsView from '../views/GovernanceDetailsView.vue';
 import ValidatorsView from '../views/ValidatorsView.vue';
 import ProposalsList from '@/components/governance/ProposalsList.vue'
-import BaseAccount from "@/components/Stacking/BaseAccount.vue";
+import BaseAccount from "@/components/stacking/BaseAccount.vue";
+import stakingRoutes from "@/router/stakingRoutes";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -23,36 +24,11 @@ const routes: Array<RouteRecordRaw> = [
       requiresAuth: false
     }
   },
-  {
-    path: '/staking',
-    name: 'staking',
-    component: StakingView,
-    redirect: to => {
-      return {name: 'baseAccount'};
-    },
-    meta: {
-      accountType: {}
-    },
-    children:[
-      {
-        path: '',
-        name: 'baseAccount',
-        component: BaseAccount,
-      },
-      {
-        path: '',
-        name: 'vesting',
-        component: BaseAccount,
-      },
-    ]
-  },
+  stakingRoutes,
   {
     path: '/governance',
     name: 'governance',
     component: GovernanceView,
-    meta: {
-      requiresAuth: false
-    },
     children: [
       {
         path: '',

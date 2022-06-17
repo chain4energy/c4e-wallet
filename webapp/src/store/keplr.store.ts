@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import {assertIsDeliverTxSuccess, SigningStargateClient} from "@cosmjs/stargate";
 import {transaction} from "@/models/transaction";
 import { useUserStore } from "@/store/user.store";
+import { voting } from "@/models/voting";
 
 export const useKeplrStore = defineStore({
 
@@ -120,6 +121,9 @@ export const useKeplrStore = defineStore({
 
 
     },
+    async vote(voting: voting, proposalId: number) {
+      console.log( proposalId)
+    }
   },
   getters: {
     getKeplr(state) {

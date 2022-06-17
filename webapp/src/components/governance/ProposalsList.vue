@@ -27,7 +27,6 @@ onDeactivated(() => {
 
 onBeforeMount(()=> {
   proposalsStore.fetchProposals();
-
 });
 
 onUnmounted(() => {
