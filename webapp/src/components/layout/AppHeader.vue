@@ -45,10 +45,23 @@
             <Button icon="pi pi-bell" class="nav-link p-button-rounded p-button-text p-button-lg mx-1" ></Button>
             <div class="badge">2</div>
           </span>
-          <div v-if="useKeplrStore().getKeplr.address">
+          <div v-if="useKeplrStore().getKeplr.address && useUserStore().isLoggedIn">
             {{useKeplrStore().getKeplr.address}}
           </div>
-          <Button icon=" pi pi-power-off" class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logOut()"></Button>
+          <div v-else-if="useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn">
+            You don't have a coins
+          </div>
+          <div v-else-if="!useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn">
+            Login
+          </div>
+          <Button
+            v-if="useKeplrStore().getKeplr.address && useUserStore().isLoggedIn"
+            icon=" pi pi-power-off"
+            class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logOut()"></Button>
+          <Button
+            v-if="!useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn"
+            icon=" pi pi-power-off"
+            class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logIn()"></Button>
         </div>
       </div>
 
@@ -68,14 +81,20 @@ import AutoLogOut from "@/components/fetures/AutoLogOut.vue";
 import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
 import {useKeplrStore} from "@/store/keplr.store";
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
+import { useUserStore } from "@/store/user.store";
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
 
 const keplerStore = useKeplrStore();
-function logOut(){
+
+function logIn(){
   keplerStore.checkKeplr()
+}
+
+function logOut(){
+  useUserStore().logOut()
 }
 onMounted(()=> {
   keplerStore.checkKeplr()
@@ -83,6 +102,7 @@ onMounted(()=> {
 window.addEventListener('keplr_keystorechange', () => {
   keplerStore.checkKeplr()
 });
+
 </script>
 
 <style scoped lang="scss">

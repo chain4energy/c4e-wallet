@@ -84,14 +84,9 @@ const popupOpened = ref(false);
 const currentValidator = ref({})
 
 async function checkBTN(item: Validator){
-  await useKeplrStore().checkKeplr();
-  if(useKeplrStore().getKeplr) {
-    currentValidator.value = item;
-    popupOpened.value = !popupOpened.value;
-    return popupOpened;
-  } else {
-    return;
-  }
+  currentValidator.value = item;
+  popupOpened.value = !popupOpened.value;
+  return popupOpened;
 }
 function valuesToFixed(value: string) {
   return parseFloat(value).toFixed(2);

@@ -67,11 +67,13 @@ export const useKeplrStore = defineStore({
         const offlineSigner = window.keplr.getOfflineSigner(chainId);
         const account = await offlineSigner.getAccounts();
         this.$state.keplrAccount = account[0];
-        console.log(account[0].address)
-        useUserStore().fetchAccount(account[0].address)
+        useUserStore().fetchAccount(account[0].address);
       } else {
         console.log('Please install keplr extension');
       }
+    },
+    logOutKeplr(){
+      this.$state.keplrAccount = {};
     },
     async delegeteTokens(transaction: transaction) {
       if(window.keplr){
@@ -110,7 +112,7 @@ export const useKeplrStore = defineStore({
               break;
           }
         } catch (err) {
-          console.log(err)
+          console.log(err);
         }
       } else {
         console.log('No Keplr installed');
@@ -121,7 +123,7 @@ export const useKeplrStore = defineStore({
   },
   getters: {
     getKeplr(state) {
-      return state.keplrAccount
+      return state.keplrAccount;
     },
   }
 });

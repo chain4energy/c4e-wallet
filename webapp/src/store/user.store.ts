@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { Account } from "@/models/account";
 import apiFactory from "@/api/factory.api";
+import { useKeplrStore } from "@/store/keplr.store";
 // import { RoleEnum } from '@/services/permissions/role-enum';
 // import {TokenObject} from "@/models/token-object";
 
@@ -24,6 +25,11 @@ export const useUserStore = defineStore({
 
       });
     },
+    async logOut(){
+      this._isLoggedIn = false;
+      this.account = {};
+      await useKeplrStore().logOutKeplr()
+    }
   },
   getters: {
     isLoggedIn (): boolean {
