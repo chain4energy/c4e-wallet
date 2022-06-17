@@ -1,4 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
@@ -14,7 +15,13 @@ module.exports = defineConfig({
     }
   },
   configureWebpack: {
-    devtool: 'source-map'
+    devtool: 'source-map',
+    plugins: [new NodePolyfillPlugin()],
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+      },
+    },
   },
   pluginOptions: {
     i18n: {

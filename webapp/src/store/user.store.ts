@@ -6,45 +6,18 @@ export const useUserStore = defineStore({
   id: 'userStore',
   state: () => {
     return {
-      // accessTokenObject: Object(TokenObject),
-      // refreshTokenObject: Object(TokenObject),
       _isLoggedIn: false
     };
   },
   actions: {
-    // setAccessToken (accessToken: TokenObject) {
-    //   this.accessTokenObject = accessToken;
-    // },
-    // setRefreshToken (refreshToken: TokenObject) {
-    //   this.refreshTokenObject = refreshToken;
-    // },
     setIsLoggedIn () {
       this._isLoggedIn = true;
     },
     loggedOut () {
       this._isLoggedIn = false;
-      // this.accessTokenObject = null;
-      // this.refreshTokenObject = null;
     },
-    // getCurrentRole (): RoleEnum{
-    //     const role = decodeToken(this.accessTokenObject.token).role as string;
-    //     return RoleEnum[role as keyof typeof RoleEnum];
-    //
-    // },
-    // getProviderId () {
-    //   return decodeToken(this.accessTokenObject.token).providerId as string;
-    // }
-    // getAccessToken (): string {
-    //   return this.accessToken;
-    // }
   },
   getters: {
-    // accessToken (): string {
-    //   return this.accessTokenObject.token;
-    // },
-    // refreshToken (): string {
-    //   return this.refreshTokenObject.token;
-    // },
     isLoggedIn (): boolean {
        return this._isLoggedIn;
     }

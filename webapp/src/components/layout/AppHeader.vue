@@ -45,7 +45,9 @@
             <Button icon="pi pi-bell" class="nav-link p-button-rounded p-button-text p-button-lg mx-1" ></Button>
             <div class="badge">2</div>
           </span>
-
+          <div v-if="useKeplrStore().getKeplr.address">
+            {{useKeplrStore().getKeplr.address}}
+          </div>
           <Button icon=" pi pi-power-off" class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logOut()"></Button>
         </div>
       </div>
@@ -65,14 +67,22 @@ import AutoLogOut from "@/components/fetures/AutoLogOut.vue";
 
 import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
+import {useKeplrStore} from "@/store/keplr.store";
+import { onMounted } from "vue";
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
 
+const keplerStore = useKeplrStore();
 function logOut(){
-  // authService.logout();
-  router.push("/");
+  keplerStore.checkKeplr()
 }
+onMounted(()=> {
+  keplerStore.checkKeplr()
+})
+window.addEventListener('keplr_keystorechange', () => {
+  keplerStore.checkKeplr()
+});
 </script>
 
 <style scoped lang="scss">

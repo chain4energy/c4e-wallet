@@ -48,6 +48,7 @@ import {useValidatorsStore} from "@/store/validators.store";
 import {Validator} from "@/models/validator";
 import StackingPopup from '@/components/Stacking/StackingPopup.vue';
 import {watch, ref} from "vue";
+import { useKeplrStore } from "@/store/keplr.store";
 
 const validatorsStore = useValidatorsStore();
 
@@ -82,10 +83,15 @@ function getStatus (status: string) {
 const popupOpened = ref(false);
 const currentValidator = ref({})
 
-function checkBTN(item: Validator){
+async function checkBTN(item: Validator){
+  await useKeplrStore().checkKeplr();
+  if(useKeplrStore().getKeplr) {
     currentValidator.value = item;
-    popupOpened.value = !popupOpened.value
+    popupOpened.value = !popupOpened.value;
     return popupOpened;
+  } else {
+    return;
+  }
 }
 function valuesToFixed(value: string) {
   return parseFloat(value).toFixed(2);

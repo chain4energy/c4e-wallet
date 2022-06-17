@@ -37,20 +37,34 @@
         </div>
       </div>
       <div class="validationPopup__btns">
-        <button>Undelegate</button>
-        <button>Delegate</button>
+        <button @click="delegate({type : validator}, 'undelegate')">Undelegate</button>
+        <button @click="delegate({type : validator}, 'delegate')">Delegate</button>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'ValidationPopup',
-  props:{
-    validator: Object,
+<script setup lang="ts">
+import { PropType} from "vue";
+import { useKeplrStore } from "@/store/keplr.store";
+import { Validator } from '@/models/validator';
+
+const props = defineProps({
+  validator: {
+    type: Object as PropType<Validator>,
+    required: true
   },
-};
+});
+
+function delegate( _ , type ){
+      const transaction = {
+        address: props.validator.operator_address,
+        amount: '12',
+        type: type,
+      }
+      console.log(transaction);
+      useKeplrStore().delegeteTokens(transaction)
+    }
 </script>
 
 <style scoped lang="scss">
