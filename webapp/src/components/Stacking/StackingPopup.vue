@@ -36,9 +36,13 @@
 
         </div>
       </div>
-      <div class="validationPopup__btns">
+      <div v-if="useKeplrStore().getKeplr && useUserStore().isLoggedIn" class="validationPopup__btns">
         <button @click="delegate({type : validator}, 'undelegate')">Undelegate</button>
         <button @click="delegate({type : validator}, 'delegate')">Delegate</button>
+      </div>
+      <div v-else class="validationPopup__btns">
+        <p> Sorry Log in into Keplr </p>
+        <button @click="useKeplrStore().checkKeplr()">Login</button>
       </div>
     </div>
   </div>
@@ -47,6 +51,7 @@
 <script setup lang="ts">
 import { PropType} from "vue";
 import { useKeplrStore } from "@/store/keplr.store";
+import {useUserStore} from "@/store/user.store";
 import { Validator } from '@/models/validator';
 
 const props = defineProps({

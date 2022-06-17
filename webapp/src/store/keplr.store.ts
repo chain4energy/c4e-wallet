@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {assertIsDeliverTxSuccess, SigningStargateClient} from "@cosmjs/stargate";
 import {transaction} from "@/models/transaction";
-
+import { useUserStore } from "@/store/user.store";
 
 export const useKeplrStore = defineStore({
 
@@ -66,8 +66,9 @@ export const useKeplrStore = defineStore({
         await window.keplr.enable(chainId);
         const offlineSigner = window.keplr.getOfflineSigner(chainId);
         const account = await offlineSigner.getAccounts();
-        console.log(account[0])
-        this.$state.keplrAccount = account[0]
+        this.$state.keplrAccount = account[0];
+        console.log(account[0].address)
+        useUserStore().fetchAccount(account[0].address)
       } else {
         console.log('Please install keplr extension');
       }

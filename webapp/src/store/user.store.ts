@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia';
+import { Account } from "@/models/account";
+import apiFactory from "@/api/factory.api";
 // import { RoleEnum } from '@/services/permissions/role-enum';
 // import {TokenObject} from "@/models/token-object";
 
@@ -6,25 +8,34 @@ export const useUserStore = defineStore({
   id: 'userStore',
   state: () => {
     return {
+      account: Object(Account),
       _isLoggedIn: false
     };
   },
   actions: {
-    setIsLoggedIn () {
-      this._isLoggedIn = true;
-    },
-    loggedOut () {
-      this._isLoggedIn = false;
+    async fetchAccount(id: string) {
+      await apiFactory.accountApi().fetchAccount(id).then(response => {
+        if (response.error == null && response.data != undefined) {
+          this.account = response.data.account;
+          this._isLoggedIn = true;
+        } else {
+          this._isLoggedIn = false;
+        }
+
+      });
     },
   },
   getters: {
     isLoggedIn (): boolean {
        return this._isLoggedIn;
-    }
+    },
+    getAccount(): Account{
+      return this.account;
+    },
   },
-  persist: {
-    enabled: true
-  }
+  // persist: {
+  //   enabled: true
+  // }
 });
 
 // function decodeToken (accessToken: string) : any {
