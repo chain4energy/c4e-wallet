@@ -19,12 +19,17 @@
       </Column>
       <Column field="commission.commission_rates.rate" :header="'commission'" >
         <template #body="{data}">
-          <span>{{valuesToFixed(data.commission.commission_rates.rate)}}</span>
+          <span>{{valuesToFixed(data.commission.commission_rates.rate, 2)}}%</span>
         </template>
       </Column>
       <Column field="commission.commission_rates.rate" :header="'Voting power'" >
         <template #body="{data}">
-          <span>{{valuesToFixed(data.commission.commission_rates.rate)}}</span>
+          <span>{{valuesToFixed(data.vp, 5)}}%</span>
+        </template>
+      </Column>
+      <Column :service="validatorsService" field="commission.commission_rates.rate" :header="'Voting power'" >
+        <template #body="{data}">
+          <span>{{valuesToFixed(data.vp, 5)}}%</span>
         </template>
       </Column>
       <Column field="operator_address">
@@ -88,8 +93,8 @@ async function checkBTN(item: Validator){
   popupOpened.value = !popupOpened.value;
   return popupOpened;
 }
-function valuesToFixed(value: string) {
-  return parseFloat(value).toFixed(2);
+function valuesToFixed(value: string, number: number) {
+  return parseFloat(value).toFixed(number);
 }
 
 function getStateColor(status: string) {
