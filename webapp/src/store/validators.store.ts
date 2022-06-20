@@ -19,13 +19,14 @@ export const useValidatorsStore = defineStore({
     async fetchValidators(pagination: PagingModel | null, lockScreen: boolean, localSpinner: LocalSpinner | null) {
       await useTokensStore().fetchTotalSupply();
       apiFactory.validatorsApi().fetchAllValidators(pagination, lockScreen, localSpinner)
-        .then(async (response) => {
+        .then( (response) => {
             if (response.error == null && response.data != undefined) {
-              const total = await useTokensStore().getTotalSupply;
+              const total = useTokensStore().getTotalSupply;
               // create DataHolder object from received data
               const dataHolder = new DataHolder<Validator>();
               for (const element of response.data.validators) {
                 element.vp = element.tokens / Math.floor(total.amount) * 100;
+                console.log(element.vp)
                 dataHolder.elements.push(element);
               }
               dataHolder.amount = Number(response.data.pagination.total);

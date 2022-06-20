@@ -27,11 +27,6 @@
           <span>{{valuesToFixed(data.vp, 5)}}%</span>
         </template>
       </Column>
-      <Column :service="validatorsService" field="commission.commission_rates.rate" :header="'Voting power'" >
-        <template #body="{data}">
-          <span>{{valuesToFixed(data.vp, 5)}}%</span>
-        </template>
-      </Column>
       <Column field="operator_address">
         <template #body="{data}">
           <button class="btn__main" @click="checkBTN(data)">Manage</button>
@@ -53,7 +48,7 @@ import {useValidatorsStore} from "@/store/validators.store";
 import {Validator} from "@/models/validator";
 import StackingPopup from '@/components/stacking/StackingPopup.vue';
 import {watch, ref} from "vue";
-import { useKeplrStore } from "@/store/keplr.store";
+import { useUserStore } from "@/store/user.store";
 
 const validatorsStore = useValidatorsStore();
 
