@@ -1,6 +1,7 @@
 <template>
   <div class="chart-container">
     <div class="top">
+
       <span>Total</span>
       <span>6.02M c4e</span>
     </div>
@@ -26,7 +27,7 @@
       </div>
     </div>
     <div class="bottom">
-      <Button label="Vote" class="p-button-raised p-button-rounded" data-bs-toggle="modal" data-bs-target="#voteModal" />
+      <Button label="Vote" class="p-button-raised p-button-rounded" data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="proposal.status!=='PROPOSAL_STATUS_VOTING_PERIOD'" />
 
       <VoteModal id="voteModal" :proposalId="proposal.proposal_id" :title="proposal.content.title"></VoteModal>
 
@@ -43,7 +44,7 @@ import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import VoteModal from "@/components/governance/VoteModal.vue";
-
+import Icon from "../features/IconComponent.vue";
 
 use([
   CanvasRenderer,
@@ -88,7 +89,7 @@ const noWithVetoPercentage = computed(() => {
 
 const option = ref({
   title: {
-    text: props.proposal.status,
+    text:  props.proposal.status,
     left: 'center',
     top: 'center'
   },

@@ -45,5 +45,9 @@
       "TYPE": "Type",
       "INFORMATION": "Informacje"
     }
+  },
+  "GOVERNANCE_VIEW": {
+    "PROPOSAL_STATUS_PASSED": "Accepted",
+    "PROPOSAL_STATUS_REJECTED": "Rejected"
   }
 }

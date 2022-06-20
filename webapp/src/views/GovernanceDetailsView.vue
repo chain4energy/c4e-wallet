@@ -31,6 +31,8 @@ onBeforeMount(async () => {
 onBeforeMount(() => {
   useProposalsStore().fetchTallyParams();
 });
+
+
 const proposal = ref<Proposal>(Object);
 const everythingIsReady = ref(false);
 
