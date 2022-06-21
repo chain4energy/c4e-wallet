@@ -2,7 +2,7 @@
   <div class="chart-container">
     <div class="top">
 
-      <span>Total</span>
+      <span>{{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
       <span>6.02M c4e</span>
     </div>
     <div class="chartdiv">
@@ -14,24 +14,24 @@
     </div>
     <div class="voting-result">
       <div>
-        <div>Yes</div>
+        <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
         <div>{{ yesPercentage }}%</div>
       </div>
       <div>
-        <div>Abstain</div>
+        <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
         <div>{{ abstainPercentage }}%</div>
       </div>
       <div>
-        <div>No</div>
+        <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
         <div>{{ noPercentage }}%</div>
       </div>
       <div>
-        <div>No with veto</div>
+        <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
         <div>{{ noWithVetoPercentage }}%</div>
       </div>
     </div>
     <div class="bottom">
-      <Button label="Vote" class="p-button-raised p-button-rounded" data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="proposal.status!==ProposalStatusEnum.PROPOSAL_STATUS_VOTING_PERIOD" />
+      <Button :label="$t('GOVERNANCE_VIEW.VOTE')" class="p-button-raised p-button-rounded" data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="proposal.status!==ProposalStatusEnum.PROPOSAL_STATUS_VOTING_PERIOD" />
 
       <VoteModal id="voteModal" :proposalId="proposal.proposal_id" :title="proposal.content.title"></VoteModal>
     </div>

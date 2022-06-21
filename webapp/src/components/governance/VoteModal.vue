@@ -4,27 +4,27 @@
       <div class="modal-content">
         <div class="modal-body">
           <div>
-            <h4 class="modal-title" id="exampleModalLabel">Your vote</h4>
+            <h4 class="modal-title" id="exampleModalLabel">{{ $t("GOVERNANCE_VIEW.YOUR_VOTE") }}</h4>
           </div>
           <div> #{{ proposalId }} {{ title }} </div>
           <div class="vote-options">
             <input type="radio" id="yes" value="1" v-model="picked">
-            <label for="yes">Yes</label>
+            <label for="yes">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</label>
             <input type="radio" id="no" value="3" v-model="picked">
-            <label for="no">No</label>
+            <label for="no">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</label>
             <input type="radio" id="no with veto" value="4" v-model="picked">
-            <label for="no with veto">No with veto</label>
+            <label for="no with veto">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</label>
             <input type="radio" id="abstain" value="2" v-model="picked">
-            <label for="abstain">Abstain</label>
+            <label for="abstain">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</label>
           </div>
           <span v-if="useKeplrStore().getKeplr && useUserStore().isLoggedIn">
             <Button
-              @click="onVoteClick" label="Vote" class="p-button-raised p-button-rounded"  data-bs-dismiss="modal" />
+              @click="onVoteClick" :label="$t('GOVERNANCE_VIEW.VOTE')" class="p-button-raised p-button-rounded"  data-bs-dismiss="modal" />
           </span>
           <span v-else>
-          <p>To make voting you have to be loged in</p>
+          <p>{{ $t("GOVERNANCE_VIEW.VOTE_CONDITION") }}</p>
           <Button
-            @click="useKeplrStore().checkKeplr()" label="login" class="p-button-raised p-button-rounded" />
+            @click="useKeplrStore().checkKeplr()" :label="$t('GOVERNANCE_VIEW.LOGIN')" class="p-button-raised p-button-rounded" />
           </span>
         </div>
       </div>
@@ -52,7 +52,6 @@ const props = defineProps({
 const picked = ref();
 
 const onVoteClick = () => {
-  console.log(props.proposalId);
   useKeplrStore().vote(picked.value, props.proposalId)
 
 };

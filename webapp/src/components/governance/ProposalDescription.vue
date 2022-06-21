@@ -1,9 +1,9 @@
 <template>
   <div class="description">
-    <h2>Description</h2>
-    <div>Author: </div>
+    <h2>{{ $t("GOVERNANCE_VIEW.DESCRIPTION") }}</h2>
+    <div>{{ $t("GOVERNANCE_VIEW.AUTHOR") }}: </div>
     <div>Jan Kowalski</div>
-    <div>Parameter being changed with this proposal</div>
+    <div>{{ $t("GOVERNANCE_VIEW.CHANGED_PARAMETER") }}</div>
     <div>
       {{ proposal.content.description }}
     </div>

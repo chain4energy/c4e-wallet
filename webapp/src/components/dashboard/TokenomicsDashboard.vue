@@ -1,17 +1,17 @@
 <template>
   <div class="container">
     <div class="top">
-      <span style="font-weight:bold;">Tokenomics</span>
+      <span style="font-weight:bold;">{{ $t("DASHBOARD_VIEW.TOKENOMICS") }}</span>
     </div>
     <div class="main-content">
       <div class="left">
         <div class="info">{{ bounded }}</div>
-        <div><div class="color-div me-2" style="background-color:#26697f"></div>Bounded</div>
+        <div><div class="color-div me-2" style="background-color:#26697f"></div>{{ $t("DASHBOARD_VIEW.BOUNDED") }}</div>
         <div>{{ boundedPercentage }}%</div>
       </div>
       <div class="middle">
         <div class="info">{{ unBounded }}</div>
-        <div><div class="color-div me-2" style="background-color:#fff1a9"></div>Unbounded</div>
+        <div><div class="color-div me-2" style="background-color:#fff1a9"></div>{{ $t("DASHBOARD_VIEW.UNBOUNDED") }}</div>
         <div>{{unboundedPercentage}}%</div>
       </div>
       <div id="chartdiv">
@@ -21,9 +21,9 @@
       </div>
     </div>
     <div class="bottom">
-      <div><div class="color-div me-2" style="background-color:#27697F"></div>Bounded</div>
-      <div><div class="color-div me-2" style="background-color:#fff1a9"></div>Unbounded</div>
-      <div><div class="color-div me-2" style="background-color:#72bf44"></div>Unbounding</div>
+      <div><div class="color-div me-2" style="background-color:#27697F"></div>{{ $t("DASHBOARD_VIEW.BOUNDED") }}</div>
+      <div><div class="color-div me-2" style="background-color:#fff1a9"></div>{{ $t("DASHBOARD_VIEW.UNBOUNDED") }}</div>
+      <div><div class="color-div me-2" style="background-color:#72bf44"></div>{{ $t("DASHBOARD_VIEW.UNBOUNDING") }}</div>
     </div>
 
   </div>
@@ -182,7 +182,8 @@ const option = ref( {
   width: 100%;
   height: 250px;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
-
+  max-width: 550px;
+  margin: auto auto 30px;
   .info {
     font-weight:bold;
   }

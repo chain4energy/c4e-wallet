@@ -1,12 +1,12 @@
 <template>
   <div class="container">
     <div class="left">
-      <Icon name="Circle"></Icon>
+      <Icon name="Coins"></Icon>
     </div>
     <div class="right">
-      <div>Circulating supply</div>
+      <div>Staking APR</div>
       <div class="info">
-        <span>1231231231 c4e</span>
+        <span>17,84%</span>
       </div>
     </div>
   </div>
@@ -24,8 +24,8 @@ import Icon from "../features/IconComponent.vue";
   flex-wrap: wrap;
 
   padding: 15px 10px;
-  width: 227px;
-  height: 90px;
+  width: 244px;
+  height: 112px;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   .left {
 

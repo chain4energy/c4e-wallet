@@ -14,13 +14,13 @@
           <div>
             {{ formattedDate(proposal.voting_start_time ) }}
           </div>
-          <div class="green-background">Voting start</div>
+          <div class="green-background">{{ $t("GOVERNANCE_VIEW.VOTING_START") }}</div>
         </div>
         <div class="end-date">
           <div>
             {{ formattedDate(proposal.voting_end_time ) }}
           </div>
-          <div class="blue-background">Voting end</div>
+          <div class="blue-background">{{ $t("GOVERNANCE_VIEW.VOTING_END") }}</div>
         </div>
       </div>
     </div>
@@ -30,19 +30,19 @@
       </div>
       <div class="voting-result">
         <div>
-          <div>Yes</div>
+          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
           <div>{{ yesPercentage }}%</div>
         </div>
         <div>
-          <div>Abstain</div>
+          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
           <div>{{ abstainPercentage }}%</div>
         </div>
         <div>
-          <div>No</div>
+          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
           <div>{{ noPercentage }}%</div>
         </div>
         <div>
-          <div>No with veto</div>
+          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
           <div>{{ noWithVetoPercentage }}%</div>
         </div>
       </div>

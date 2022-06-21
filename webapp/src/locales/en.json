@@ -16,5 +16,48 @@
   },
   "SIDEBAR_MENU": {
     "TITLE" : "Menu_EN"
+  },
+  "GOVERNANCE_VIEW": {
+    "PROPOSAL_STATUS_PASSED": "Accepted",
+    "PROPOSAL_STATUS_REJECTED": "Rejected",
+    "PROPOSAL_STATUS_VOTING_PERIOD": "Voting",
+    "VOTING_OPTIONS": {
+      "YES": "Yes",
+      "NO": "No",
+      "ABSTAIN": "Abstain",
+      "NO_WITH_VETO": "No with veto"
+    },
+    "TOTAL": "Total",
+    "DESCRIPTION": "Description",
+    "AUTHOR": "Author",
+    "CHANGED_PARAMETER": "Parameter bring changed with this proposal",
+    "TOTAL_DEPOSIT": "Total deposit",
+    "VOTING_START": "Voting start",
+    "VOTING_END": "Voting end",
+    "TYPE": "Type",
+    "SUBMIT_TIME": "Submit time",
+    "DEPOSIT_END_TIME": "Deposit end time",
+    "QUORUM": "Quorum",
+    "THRESHOLD": "Threshold",
+    "VETO_THRESHOLD": "Veto threshold",
+    "YOUR_VOTE": "Your vote",
+    "VOTE_CONDITION": "To make voting you have to be logged in",
+    "VOTE": "Vote",
+    "LOGIN": "Login"
+  },
+  "DASHBOARD_VIEW": {
+    "VALIDATORS": "Validators",
+    "LATEST_BLOCK": "Latest block",
+    "TOTAL_SUPPLY": "Total supply",
+    "MAX_SUPPLY": "Max supply",
+    "POOLS": "Pools",
+    "COMMUNITY_POOL": "Community pool",
+    "STRATEGIC_REVERSE_POOL": "Strategic reverse pool",
+    "AIRDROP": "Airdrop",
+    "TOKENOMICS": "Tokenomics",
+    "BOUNDED": "Bounded",
+    "UNBOUNDED": "Unbounded",
+    "UNBOUNDING": "Unbounding",
+    "AVERAGE_BLOCK_TIME": "Average block time"
   }
 }
