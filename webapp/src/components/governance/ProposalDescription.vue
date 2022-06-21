@@ -12,9 +12,11 @@
 
 <script setup lang="ts">
 
+import {Proposal} from "@/models/Proposal";
+
 const props = defineProps({
   proposal: {
-    type: Object,
+    type: Object(Proposal),
     required: true
   }
 });

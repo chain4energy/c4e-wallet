@@ -48,6 +48,7 @@
   },
   "GOVERNANCE_VIEW": {
     "PROPOSAL_STATUS_PASSED": "Accepted",
-    "PROPOSAL_STATUS_REJECTED": "Rejected"
+    "PROPOSAL_STATUS_REJECTED": "Rejected",
+    "PROPOSAL_STATUS_VOTING_PERIOD": "Voting"
   }
 }

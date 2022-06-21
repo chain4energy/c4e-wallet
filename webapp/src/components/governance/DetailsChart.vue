@@ -7,6 +7,10 @@
     </div>
     <div class="chartdiv">
       <v-chart :option="option" autoresize />
+      <div class="inside">
+        <Icon :name=icons.get(proposal.status)></Icon>
+        {{ $t("GOVERNANCE_VIEW."+proposal.status)}}
+      </div>
     </div>
     <div class="voting-result">
       <div>
@@ -27,10 +31,9 @@
       </div>
     </div>
     <div class="bottom">
-      <Button label="Vote" class="p-button-raised p-button-rounded" data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="proposal.status!=='PROPOSAL_STATUS_VOTING_PERIOD'" />
+      <Button label="Vote" class="p-button-raised p-button-rounded" data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="proposal.status!==ProposalStatusEnum.PROPOSAL_STATUS_VOTING_PERIOD" />
 
       <VoteModal id="voteModal" :proposalId="proposal.proposal_id" :title="proposal.content.title"></VoteModal>
-
     </div>
   </div>
 </template>
@@ -38,13 +41,16 @@
 <script setup lang="ts">
 
 import {computed, ref} from "vue";
-import { PieChart } from "echarts/charts";
+import {PieChart} from "echarts/charts";
 import VChart from "vue-echarts";
-import { use } from "echarts/core";
-import { CanvasRenderer } from "echarts/renderers";
+import {use} from "echarts/core";
+import {CanvasRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import VoteModal from "@/components/governance/VoteModal.vue";
 import Icon from "../features/IconComponent.vue";
+import {Proposal} from "@/models/Proposal";
+import {ProposalStatusEnum} from "@/models/proposalStatus-enum";
+
 
 use([
   CanvasRenderer,
@@ -56,14 +62,21 @@ use([
 
 const props = defineProps({
   proposal: {
-    type: Object,
+    type: Object(Proposal),
     required: true
   }
 });
 
+const icons  = new Map<string, string>([
+  [ProposalStatusEnum.PROPOSAL_STATUS_PASSED, "CheckSquare"],
+  [ProposalStatusEnum.PROPOSAL_STATUS_REJECTED, "XCircle"],
+  [ProposalStatusEnum.PROPOSAL_STATUS_DEPOSIT_PERIOD, ""]
+]);
+
 const sumOfVotes = computed(() => {
-  return Number(props.proposal.final_tally_result.yes) + Number(props.proposal.final_tally_result.no)
-    + Number(props.proposal.final_tally_result.no_with_veto) + Number(props.proposal.final_tally_result.abstain);
+  const val = Number(props.proposal.final_tally_result.yes) + Number(props.proposal.final_tally_result.no)
+    + Number(props.proposal.final_tally_result.no_with_veto) + Number(props.proposal.final_tally_result.abstain)
+  return val > 0 ? val : -1;
 });
 
 const yesPercentage = computed(() => {
@@ -88,11 +101,7 @@ const noWithVetoPercentage = computed(() => {
 });
 
 const option = ref({
-  title: {
-    text:  props.proposal.status,
-    left: 'center',
-    top: 'center'
-  },
+
   tooltip: {
     trigger: 'item',
     formatter: '{a} <br/>{b}: {c} ({d}%)'
@@ -166,6 +175,19 @@ const option = ref({
           },
           color: '#fff1a9'
         }
+      },
+      {
+        value: sumOfVotes.value === -1 ? 1 : 0,
+        name: '',
+        itemStyle: {
+          label: {
+            show: false
+          },
+          labelLine: {
+            show: false
+          },
+          color: '#797777'
+        }
       }
     ],
 
@@ -189,6 +211,16 @@ const option = ref({
   .chartdiv {
     width: 100%;
     height: 70%;
+    position: relative;
+    .inside{
+      position: absolute;
+      top: 42%;
+      margin:auto;
+      text-align: center;
+      left: 0;
+      right: 0;
+
+    }
   }
   .voting-result {
     border-bottom: 1px solid;

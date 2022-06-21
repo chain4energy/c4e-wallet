@@ -15,12 +15,12 @@ export class ProposalsApi extends BaseApi {
   private TALLYING_URL = process.env.VUE_APP_TALLYING_URL
 
   public async fetchProposals(paginationKey?: string): Promise<RequestResponse<Proposals>> {
-    console.log(process.env.APP_VUE_PROPOSALS_URL);
     const pagination:any = {};
     if(paginationKey)
       pagination['pagination.key'] = paginationKey;
 
     pagination['pagination.limit'] = 10;
+    pagination['pagination.reverse'] = true;
     return this.axiosCall({
       method: 'GET',
       url: this.PROPOSALS_URL,

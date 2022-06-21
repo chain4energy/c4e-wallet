@@ -52,7 +52,7 @@ const props = defineProps({
 const picked = ref();
 
 const onVoteClick = () => {
-  console.log(props.proposalId)
+  console.log(props.proposalId);
   useKeplrStore().vote(picked.value, props.proposalId)
 
 };
