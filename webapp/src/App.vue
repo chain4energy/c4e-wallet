@@ -17,9 +17,11 @@ import LoadingScreen from '@/components/LoadingScreen.vue';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import AppSidebar from '@/components/layout/AppSidebar.vue';
 
-import {inject, onMounted} from 'vue';
+import { computed, inject, onMounted } from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
 import {createRouterBeforeEach} from '@/router/before_each';
+import { useKeplrStore } from "@/store/keplr.store";
+
 
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
 import "primeicons/primeicons.css";
@@ -27,8 +29,11 @@ import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
 
 const logger = inject<LoggerService>('logger') as LoggerService;
+useKeplrStore().checkKeplr();
 
-onMounted(() => createRouterBeforeEach(logger));
+onMounted(() => {
+  createRouterBeforeEach(logger)
+});
 
 </script>
 

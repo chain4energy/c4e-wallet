@@ -1,6 +1,6 @@
 <template>
 <div>
-  <StackingPopup :validator="currentValidator" v-if="popupOpened" @close="checkBTN"/>
+  <StackingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
   <DataTableWrapper :service="validatorsService" >
     <template v-slot:empty>No customers found.</template>
     <template v-slot:columns>
@@ -25,6 +25,11 @@
       <Column field="commission.commission_rates.rate" :header="'Voting power'" >
         <template #body="{data}">
           <span>{{valuesToFixed(data.vp, 5)}}%</span>
+        </template>
+      </Column>
+      <Column field="userSpend" :header="'user Spend'" >
+        <template #body="{data}">
+          <span v-if="data.userSpend">{{data.userSpend}}</span>
         </template>
       </Column>
       <Column field="operator_address">
@@ -87,6 +92,9 @@ async function checkBTN(item: Validator){
   currentValidator.value = item;
   popupOpened.value = !popupOpened.value;
   return popupOpened;
+}
+function trsansactionSuccess(arg:string){
+  checkBTN();
 }
 function valuesToFixed(value: string, number: number) {
   return parseFloat(value).toFixed(number);

@@ -15,7 +15,7 @@
           </svg>
           <h2>Disperze</h2>
         </div>
-        <button @click="$emit('close')">close</button>
+        <button @click="$emit('close', '')">close</button>
       </div>
       <div class="validationPopup__body">
         <h3>My delegation</h3>
@@ -33,7 +33,10 @@
             <p>The {{validator.description.moniker}} Validator for SmartContract chains</p>
             <a :href="validator.description.website">{{validator.description.website}}</a>
           </div>
-
+        </div>
+        <span v-if="keplrResult">{{keplrResult}}</span>
+        <div class="validationPopup__description">
+          <input style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">
         </div>
       </div>
       <div v-if="useKeplrStore().getKeplr && useUserStore().isLoggedIn" class="validationPopup__btns">
@@ -53,6 +56,8 @@ import { PropType} from "vue";
 import { useKeplrStore } from "@/store/keplr.store";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from '@/models/validator';
+import { transaction } from "@/models/transaction";
+import {ref, defineEmits} from "vue";
 
 const props = defineProps({
   validator: {
@@ -60,15 +65,23 @@ const props = defineProps({
     required: true
   },
 });
-
-function delegate( _ , type ){
-      const transaction = {
+const amount = ref(null)
+const keplrResult = ref(null)
+const emit = defineEmits(['close']);
+function delegate( _ , type: string ){
+      const transaction: transaction = {
         address: props.validator.operator_address,
-        amount: '12',
-        type: type,
-      }
-      console.log(transaction);
-      useKeplrStore().delegeteTokens(transaction)
+        amount: amount.value,
+        type,
+      };
+      useKeplrStore().delegeteTokens(transaction).then((result: any) => {
+          if (result.code === 0) {
+            emit('success', 'success')
+          } else {
+            keplrResult.value = result;
+          }
+        }
+      );
     }
 </script>
 
@@ -145,6 +158,7 @@ function delegate( _ , type ){
   }
   &__description{
     width: 100%;
+    margin-top: 10px;
     display: flex;
     align-items: center;
     justify-content: space-evenly;

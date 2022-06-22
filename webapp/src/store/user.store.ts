@@ -1,16 +1,18 @@
-import { defineStore } from 'pinia';
-import { Account } from "@/models/account";
+import { defineStore } from "pinia";
+import { Account, account } from "@/models/account";
 import apiFactory from "@/api/factory.api";
 import { useKeplrStore } from "@/store/keplr.store";
-// import { RoleEnum } from '@/services/permissions/role-enum';
-// import {TokenObject} from "@/models/token-object";
+import { Amount } from "@/models/TotalSupply";
 
 export const useUserStore = defineStore({
   id: 'userStore',
   state: () => {
     return {
-      account: Object(Account),
-      type: String,
+      account: Object() as account,
+      balances: 0,
+      stacked: 0,
+      unstacked: 0,
+      rewards: 0,
       _isLoggedIn: false,
       basicAccount: false,
       vestingAccount: false
@@ -19,39 +21,96 @@ export const useUserStore = defineStore({
   actions: {
 
     typeShow(type: string){
-      console.log(type)
+      console.log(type);
     },
     async fetchAccount(id: string) {
       await apiFactory.accountApi().fetchAccount(id).then(response => {
-
         if (response.error == null && response.data != undefined) {
-          this.account = response.data?.account;
-          const type = this.account["@type"].split('.');
-          this.type = type[type.length-1];
+          const account:Account = response.data;
+          this.account = account.account;
           this._isLoggedIn = true;
+          this.fetchBalance(id);
+          this.fetchRewards(id);
+          this.fetchStackedAmount(id);
+          this.fetchUnstackedAmount(id);
         } else {
           this._isLoggedIn = false;
         }
-
       });
+    },
+    async fetchBalance(id: string) {
+      await apiFactory.accountApi().fetchBalances(id)
+        .then(response => {
+          const balance: any = response.data;
+          this.balances = parseFloat(balance.balances[0].amount);
+        });
+    },
+    async fetchStackedAmount(id: string) {
+      await apiFactory.accountApi().fetchStackedTokens(id)
+        .then(response => {
+          const totalStacked = [];
+          for (const element of response.data.delegation_responses){
+            totalStacked.push( parseInt(element.balance.amount));
+          }
+          const sumWithInitial = totalStacked.reduce(
+            (previousValue, currentValue) => previousValue + currentValue,
+            0
+          );
+          this.stacked= sumWithInitial;
+        });
+    },
+    async fetchUnstackedAmount(id: string){
+      await apiFactory.accountApi().fetchUnstackedTokens(id)
+        .then(response => {
+          console.log(response.data.unbonding_responses[0].entries);
+          const totalUnstacked = []
+          for (const element of response.data.unbonding_responses[0].entries){
+            totalUnstacked.push(parseInt(element.balance))
+          }
+          this.unstacked= totalUnstacked.reduce(
+            (previousValue, currentValue) => previousValue + currentValue,
+            0
+          );
+        });
+    },
+    async fetchRewards(id: string){
+      await apiFactory.accountApi().fetchRewards(id)
+        .then(response => {
+          const rew = response.data.total[0].amount;
+          this.rewards = parseFloat(rew);
+        })
     },
     async logOut(){
       this._isLoggedIn = false;
-      this.account = {};
-      this.type = String;
-      await useKeplrStore().logOutKeplr()
+      this.account = Object() as account;
+      await useKeplrStore().logOutKeplr();
     }
   },
   getters: {
     isLoggedIn (): boolean {
        return this._isLoggedIn;
     },
-    getAccount(): Account{
+    getAccount(): account{
       return this.account;
     },
-    getAccType(): any {
-      return this.type;
+    getAccType(): account {
+      return this.account;
     },
+    getBalances(): number{
+      return this.balances;
+    },
+    getRewards(): number {
+      return this.rewards;
+    },
+    getStacked(): number {
+      return this.stacked;
+    },
+    getUnstacked(): number{
+      return this.unstacked;
+    }
+    // getBalance(): balances {
+    //   return this.balance
+    // }
   },
   // persist: {
   //   enabled: true

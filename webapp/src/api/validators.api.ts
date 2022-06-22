@@ -5,6 +5,7 @@ import BaseApi from "@/api/base.api";
 import {Validators} from "@/models/validators";
 import {PagingModel} from "@/services/model/paging.model";
 import {LocalSpinner} from "@/services/model/localSpinner";
+import { Account } from "@/models/account";
 
 export class ValidatorsApi extends BaseApi {
 
@@ -38,6 +39,12 @@ export class ValidatorsApi extends BaseApi {
       url: this.VALIDATORS_URL,
       params: pagination?.toAxiosParams()
     }, lockScreen, localSpinner);
+  }
+  public async fetchValidatorUser(id: string, acc: StringConstructor): Promise<RequestResponse<Account>>{
+    return this.axiosCall({
+      method: "GET",
+      url: this.VALIDATORS_URL+ "/"+ id + "/delegations/" + acc
+    }, true, null, true);
   }
 
 }

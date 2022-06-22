@@ -37,20 +37,20 @@ export const useKeplrStore = defineStore({
             stakeCurrency: {
               coinDenom: 'C4E',
               coinMinimalDenom: 'uc4e',
-              coinDecimals: 6,
+              coinDecimals: parseInt('0.000001'),
             },
             feeCurrencies: [
               {
                 coinDenom: 'C4E',
                 coinMinimalDenom: 'uc4e',
-                coinDecimals: 6,
+                coinDecimals: parseInt('0.000001'),
               },
             ],
             currencies: [
               {
                 coinDenom: 'C4E',
                 coinMinimalDenom: 'uc4e',
-                coinDecimals: 6,
+                coinDecimals: parseInt('0.000001'),
               },
             ],
             coinType: 118,
@@ -69,8 +69,23 @@ export const useKeplrStore = defineStore({
         const account = await offlineSigner.getAccounts();
         this.$state.keplrAccount = account[0];
         useUserStore().fetchAccount(account[0].address);
+        // this.connectKeplr(account) // linking on brodcast ??
       } else {
         console.log('Please install keplr extension');
+      }
+    },
+    async connectKeplr(account: any){
+      if(window.keplr){
+        const chainId = 'c4e-testnet-0.1.0';
+        await window.keplr.enable(chainId);
+        const offlineSigner = window.keplr.getOfflineSigner(chainId);
+        const client = await SigningStargateClient.connectWithSigner(
+          'https://rpc.chain4energy.org/',
+          offlineSigner,
+        );
+        const result = await client.broadcastTx(account[0].pubkey, 1000000, 0);
+      } else {
+        console.log('1');
       }
     },
     logOutKeplr(){
@@ -109,20 +124,48 @@ export const useKeplrStore = defineStore({
               result = await client.undelegateTokens(accounts[0].address, recipient, amountFinal, fee, '');
               await assertIsDeliverTxSuccess(result);
               break;
-            default: console.log('choose your operation');
+            default: result = 'choose your operation';
               break;
           }
+          return result;
         } catch (err) {
-          console.log(err);
+          return err;
         }
       } else {
         console.log('No Keplr installed');
       }
-
+    },
+    async claimReward(){
+      if(window.keplr) {
+        const chainId = 'c4e-testnet-0.1.0';
+        await window.keplr.enable(chainId);
+        const offlineSigner = window.keplr.getOfflineSigner(chainId);
+        const accounts = await offlineSigner.getAccounts();
+        const recipient = accounts[0].address;
+        const client = await SigningStargateClient.connectWithSigner(
+          'https://rpc.chain4energy.org/',
+          offlineSigner,
+        );
+        // const fee = {
+        //   amount: [{
+        //     denom: 'uc4e',
+        //     amount: '0',
+        //   }],
+        //   gas: '2000',
+        // };
+        try {
+          const result = await client.getChainId();
+          console.log(result);
+        } catch (err){
+          console.log(err);
+        }
+      } else {
+        console.log('err');
+      }
 
     },
     async vote(voting: voting, proposalId: number) {
-      console.log( proposalId)
+      console.log( proposalId);
     }
   },
   getters: {

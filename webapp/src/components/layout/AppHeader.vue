@@ -16,72 +16,73 @@
   <!--      </div>-->
   <!--    </div>-->
   <!--  </div>-->
-  <nav class="navbar navbar-expand-lg navbar-dark background">
-    <div class="container-fluid">
-      <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-              aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav left">
-          <i class="pi pi-user me-3" style="font-size: 1.5rem;" />
-          <span>Hello <span style="font-weight:bold">Jan Kowalski</span> </span>
-          <i class="pi pi-sun ms-4" style="font-size: 1.5rem;" />
-          <span class="fw-bold mx-2">Monday</span>
-          <span>11.05.2022</span>
-        </div>
-        <div class="navbar-nav right">
-<!--          <div class="nav-link">-->
-          <span class="p-input-icon-left p-input-icon-right mx-5 " >
+    <nav class="navbar navbar-expand-lg navbar-dark background">
+      <div class="container-fluid">
+        <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav left">
+            <i class="pi pi-user me-3" style="font-size: 1.5rem;" />
+            <span>Hello <span style="font-weight:bold">Jan Kowalski</span> </span>
+            <i class="pi pi-sun ms-4" style="font-size: 1.5rem;" />
+            <span class="fw-bold mx-2">Monday</span>
+            <span>11.05.2022</span>
+          </div>
+          <div class="navbar-nav right">
+            <!--          <div class="nav-link">-->
+            <span class="p-input-icon-left p-input-icon-right mx-5 " >
             <i class="pi pi-times-circle" @click="globalFilter.clearFilter()"/>
             <InputText type="text" v-model="globalFilter.filter" placeholder="Search" />
             <i class="pi" :class="{'pi-search': !globalFilter.isLoading, 'pi-spin pi-spinner': globalFilter.isLoading}"/>
           </span>
-<!--          </div>-->
+            <!--          </div>-->
 
-          <LangSwitch class="nav-link mx-1"/>
-          <span class="">
+            <LangSwitch class="nav-link mx-1"/>
+            <span class="">
             <Button icon="pi pi-bell" class="nav-link p-button-rounded p-button-text p-button-lg mx-1" ></Button>
             <div class="badge">2</div>
           </span>
-          <div v-if="useKeplrStore().getKeplr.address && useUserStore().isLoggedIn">
-            {{useKeplrStore().getKeplr.address}}
+            <div v-if="useKeplrStore().getKeplr.address && useUserStore().isLoggedIn">
+              {{useKeplrStore().getKeplr.address}}
+            </div>
+            <div v-else-if="useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn">
+              You don't have a coins
+            </div>
+            <div v-else-if="!useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn">
+              Login
+            </div>
+            <Button
+              v-if="useKeplrStore().getKeplr.address && useUserStore().isLoggedIn"
+              icon=" pi pi-power-off"
+              class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logOut()"></Button>
+            <Button
+              v-if="!useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn"
+              icon=" pi pi-power-off"
+              class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logIn()"></Button>
           </div>
-          <div v-else-if="useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn">
-            You don't have a coins
-          </div>
-          <div v-else-if="!useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn">
-            Login
-          </div>
-          <Button
-            v-if="useKeplrStore().getKeplr.address && useUserStore().isLoggedIn"
-            icon=" pi pi-power-off"
-            class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logOut()"></Button>
-          <Button
-            v-if="!useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn"
-            icon=" pi pi-power-off"
-            class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logIn()"></Button>
         </div>
+
       </div>
-
-    </div>
-    <div class="bottom-container">
-       <span class="breadcrumb">Home / Jan Kowalski</span>
-       <AutoLogOut class="right" style="top: 7vh;" />
-    </div>
-  </nav>
-
+      <div class="bottom-container">
+        <span class="breadcrumb">Home / Jan Kowalski</span>
+        <AutoLogOut class="right" style="top: 7vh;" />
+      </div>
+      <UserData v-if="useUserStore().isLoggedIn"/>
+    </nav>
 </template>
 
 <script setup lang="ts">
 import LangSwitch from '@/components/lang/LangSwitch.vue';
 import AutoLogOut from "@/components/fetures/AutoLogOut.vue";
+import  UserData from "@/components/userData/UserData.vue";
 
 import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
 import {useKeplrStore} from "@/store/keplr.store";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 import { useUserStore } from "@/store/user.store";
 
 const router = useRouter();
@@ -102,6 +103,10 @@ onMounted(()=> {
 window.addEventListener('keplr_keystorechange', () => {
   keplerStore.checkKeplr()
 });
+
+onUnmounted(()=>{
+  window.removeEventListener('keplr_keystorechange', ()=> null)
+})
 
 </script>
 
