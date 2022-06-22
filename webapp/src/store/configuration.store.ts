@@ -11,7 +11,6 @@ export const useConfigurationStore = defineStore({
   actions: {
     fetchConfig(configName: string) {
       this.config = require("../config/json/"+configName);
-      console.log(this.config);
     }
   },
   getters: {

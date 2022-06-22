@@ -3,6 +3,7 @@ import {RequestResponse} from "@/models/request-response";
 import BaseApi from "@/api/base.api";
 import {Proposal, Proposals} from "@/models/Proposal";
 import {GovernanceParameters} from "@/models/GovernanceParameters";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 
 export class ProposalsApi extends BaseApi {
@@ -36,7 +37,7 @@ export class ProposalsApi extends BaseApi {
   public async fetchTallyParams(): Promise<RequestResponse<GovernanceParameters>> {
     return this.axiosCall<GovernanceParameters>({
       method: 'GET',
-      url: this.TALLYING_URL
+      url: useConfigurationStore().config.bcApiURL+this.TALLYING_URL
     }, true, null);
   }
 }
