@@ -1,0 +1,11 @@
+{
+  "bcApiURL": "bcApiURL22",
+  "bcRpcURL": "bcRpcURL22",
+  "hasuraURL": "hasuraURL22",
+  "stakingPageURL": "stakingPageURL22",
+  "addressPrefix": "addressPrefix22",
+  "stakingDenom": "stakingDenom22",
+  "strategicPoolAddress": "strategicPoolAddress22",
+  "airdropPoolAddress": "airdropPoolAddress22",
+  "coinConversion": "coinConversion22"
+}

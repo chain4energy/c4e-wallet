@@ -1,5 +1,9 @@
 <template>
+
   <div class="footer">
+    <span>
+      <CurrentBlockchain></CurrentBlockchain>
+    </span>
     <span>FAQ</span>
     <span>Help</span>
     <span>Terms & Conditions</span>
@@ -9,6 +13,14 @@
 </template>
 
 <script setup lang="ts">
+import {useConfigurationStore} from "@/store/configuration.store";
+import {onBeforeMount} from "vue";
+import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
+
+onBeforeMount(() => {
+  useConfigurationStore().fetchConfig("config1.json");
+  console.log(useConfigurationStore().config.airdropPoolAddress);
+});
 
 </script>
 
