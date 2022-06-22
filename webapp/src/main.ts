@@ -46,6 +46,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 import IconComponent from "@/components/features/IconComponent.vue";
 import ECharts from 'vue-echarts';
+import {useConfigurationStore} from "@/store/configuration.store";
 
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
@@ -62,8 +63,6 @@ const app = createApp(App);
 const pinia = createPinia();
 pinia.use(piniaPersist);
 const logger = new LoggerService();
-
-
 
 app.use(router)
   .use(pinia)

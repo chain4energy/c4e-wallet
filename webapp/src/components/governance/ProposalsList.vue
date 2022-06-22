@@ -6,7 +6,13 @@
 
 
 </template>
-
+<script lang="ts">
+export default {
+  name: 'ProposalsList',
+  inheritAttrs: false,
+  customOptions: {}
+};
+</script>
 <script setup lang="ts">
 
 import ProposalGovernance from "@/components/governance/ProposalGovernance.vue";

@@ -1,5 +1,6 @@
 <template>
   <span v-if="menu.length > 0">
+
     <div @click="showSidebar" class="open-sidebar">
       <Icon name="SidebarOpen"/>
     </div>
@@ -26,6 +27,7 @@ import {computed, ref} from "vue";
 // import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import Icon from "../features/IconComponent.vue";
 import {PermissionsService} from "../../services/permissions/permissions.service";
+import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
 
 const permissionsService = new PermissionsService();
 const menu = computed(() => {

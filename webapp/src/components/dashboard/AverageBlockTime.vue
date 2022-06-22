@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div>Average Block Time</div>
+    <div>{{ $t("DASHBOARD_VIEW.AVERAGE_BLOCK_TIME") }}</div>
     <div class="info">
       {{ blockStore.getAverageBlockTime }}
     </div>
@@ -24,6 +24,8 @@ onBeforeMount(() => {
 <style scoped lang="scss">
 .container {
 
+  max-width: 210px;
+  margin: auto auto 30px;
   flex-wrap: wrap;
   padding: 15px 10px;
   width: 100%;

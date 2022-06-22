@@ -4,15 +4,15 @@
     <h4 style="padding-left:20px">{{ proposal.content.title }}</h4>
     <div class="info">
       <div class="left">
-        <div>Total deposit:</div>
-        <div>Voting start:</div>
-        <div>Voting end:</div>
-        <div>Type:</div>
-        <div>Submit time:</div>
-        <div>Deposit end time:</div>
-        <div>Quorum:</div>
-        <div>Threshold:</div>
-        <div>Veto threshold:</div>
+        <div>{{ $t("GOVERNANCE_VIEW.TOTAL_DEPOSIT") }}:</div>
+        <div>{{ $t("GOVERNANCE_VIEW.VOTING_START") }}:</div>
+        <div>{{ $t("GOVERNANCE_VIEW.VOTING_END") }}:</div>
+        <div>{{ $t("GOVERNANCE_VIEW.TYPE") }}:</div>
+        <div>{{ $t("GOVERNANCE_VIEW.SUBMIT_TIME") }}:</div>
+        <div>{{ $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") }}:</div>
+        <div>{{ $t("GOVERNANCE_VIEW.QUORUM") }}:</div>
+        <div>{{ $t("GOVERNANCE_VIEW.THRESHOLD") }}:</div>
+        <div>{{ $t("GOVERNANCE_VIEW.VETO_THRESHOLD") }}:</div>
       </div>
       <div class="right">
         <div>{{ proposal.total_deposit[0].amount }} {{ proposal.total_deposit[0].denom }}</div>

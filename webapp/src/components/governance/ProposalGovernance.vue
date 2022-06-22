@@ -2,7 +2,7 @@
   <div class="proposal-container" v-on:click="showDetailsClick">
     <div class="top">
       <span class="id fw-bold"><h2>#{{ proposal.proposal_id }}</h2> </span>
-      <div class="voting-status"> {{ proposal.status }}</div>
+      <div class="voting-status">    <Icon :name=icons.get(proposal.status)></Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}</div>
     </div>
     <div class="middle">
       <div>
@@ -14,35 +14,35 @@
           <div>
             {{ formattedDate(proposal.voting_start_time ) }}
           </div>
-          <div class="green-background">Voting start</div>
+          <div class="green-background">{{ $t("GOVERNANCE_VIEW.VOTING_START") }}</div>
         </div>
         <div class="end-date">
           <div>
             {{ formattedDate(proposal.voting_end_time ) }}
           </div>
-          <div class="blue-background">Voting end</div>
+          <div class="blue-background">{{ $t("GOVERNANCE_VIEW.VOTING_END") }}</div>
         </div>
       </div>
     </div>
-    <div class="bottom">
+    <div class="bottom" v-if="proposal.status !== ProposalStatusEnum.PROPOSAL_STATUS_DEPOSIT_PERIOD">
       <div style="width:100%; height:20px" class="chartdiv">
         <v-chart :option="option" autoresize />
       </div>
       <div class="voting-result">
         <div>
-          <div>Yes</div>
+          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
           <div>{{ yesPercentage }}%</div>
         </div>
         <div>
-          <div>Abstain</div>
+          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
           <div>{{ abstainPercentage }}%</div>
         </div>
         <div>
-          <div>No</div>
+          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
           <div>{{ noPercentage }}%</div>
         </div>
         <div>
-          <div>No with veto</div>
+          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
           <div>{{ noWithVetoPercentage }}%</div>
         </div>
       </div>
@@ -63,6 +63,8 @@ import { use } from "echarts/core";
 import {CanvasRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent, GridComponent} from "echarts/components";
 import {useRouter} from "vue-router";
+import {Proposal} from "@/models/Proposal";
+import {ProposalStatusEnum} from "@/models/proposalStatus-enum";
 
 use([
   CanvasRenderer,
@@ -75,13 +77,17 @@ use([
 
 const props = defineProps({
   proposal: {
-    type: Object,
+    type: Object(Proposal),
     required: true
   }
 });
 const router = useRouter();
 
-
+const icons  = new Map<string, string>([
+  [ProposalStatusEnum.PROPOSAL_STATUS_PASSED, "CheckSquare"],
+  [ProposalStatusEnum.PROPOSAL_STATUS_REJECTED, "XCircle"],
+  [ProposalStatusEnum.PROPOSAL_STATUS_DEPOSIT_PERIOD, ""]
+]);
 
 const yesPercentage = computed(() => {
   let res:number = Number(props.proposal.final_tally_result.yes) / sumOfVotes.value * 100;
@@ -105,8 +111,9 @@ const noWithVetoPercentage = computed(() => {
 });
 
 const sumOfVotes = computed(() => {
-  return Number(props.proposal.final_tally_result.yes) + Number(props.proposal.final_tally_result.no)
-    + Number(props.proposal.final_tally_result.no_with_veto) + Number(props.proposal.final_tally_result.abstain);
+  const val = Number(props.proposal.final_tally_result.yes) + Number(props.proposal.final_tally_result.no)
+    + Number(props.proposal.final_tally_result.no_with_veto) + Number(props.proposal.final_tally_result.abstain)
+  return val > 0 ? val : -1;
 });
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');
@@ -174,6 +181,16 @@ const option = ref({
       },
       color: '#fff1a9',
       data: [noWithVetoPercentage.value]
+    },
+    {
+      name: '',
+      type: 'bar',
+      stack: 'total',
+      emphasis: {
+        focus: 'series'
+      },
+      color: '#797777',
+      data: [sumOfVotes.value === -1 ? 1 : 0]
     }
   ],
 
@@ -185,8 +202,8 @@ const option = ref({
 @import '../../styles/variables.scss';
 
 .proposal-container {
-  width: 562px;
-  height: 317px;
+  max-width: 562px;
+  min-height: 317px;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   border-radius: 10px;
   .top {
@@ -199,7 +216,10 @@ const option = ref({
     .voting-status {
       float: right;
       height: 50px;
-      padding: 15px 30px;
+      min-width: 150px;
+      padding: 15px 0px;
+      margin-left: auto;
+      margin-right: auto;
       background-color: $primary-blue-color;
       color: white;
       border-radius: 0 10px 0 10px;

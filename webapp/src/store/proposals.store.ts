@@ -10,7 +10,7 @@ export const useProposalsStore = defineStore({
 
     return {
       proposals: new DataHolder<Proposal>(),
-      proposal: Object(),
+      proposal: Object(Proposal),
       paginationKey: '',
       tallyParams: new TallyParams()
     };

@@ -1,20 +1,20 @@
 <template>
   <div class="container">
     <div class="left">
-      <div class="top">Pools</div>
+      <div class="top">{{ $t("DASHBOARD_VIEW.POOLS") }}</div>
       <div class="info">
         <div >
-          <div><div class="color-div" style="background-color:#fff1a9"></div> Community pool</div>
+          <div><div class="color-div" style="background-color:#fff1a9"></div> {{ $t("DASHBOARD_VIEW.COMMUNITY_POOL") }}</div>
           <div style="font-weight: bold">
             {{ communityPool }} {{tokensStore.getCommunityPool.denom}}
           </div>
         </div>
         <div >
-          <div><div class="color-div" style="background-color:#72bf44"></div> Strategic reverse pool</div>
+          <div><div class="color-div" style="background-color:#72bf44"></div> {{ $t("DASHBOARD_VIEW.STRATEGIC_REVERSE_POOL") }}</div>
           <div style="font-weight: bold">{{ strategicReversePool }} {{tokensStore.getStrategicReversePool.denom}}</div>
         </div>
         <div >
-          <div><div class="color-div" style="background-color:#26697f"></div> Airdrop</div>
+          <div><div class="color-div" style="background-color:#26697f"></div> {{ $t("DASHBOARD_VIEW.AIRDROP") }}</div>
           <div style="font-weight: bold">{{ airdropPool }} {{tokensStore.getAirdropPool.denom}}</div>
         </div>
       </div>
@@ -173,6 +173,9 @@ const option = ref({
   flex-wrap: wrap;
   height: 250px;
   width: 100%;
+  max-width: 450px;
+  margin: auto auto 30px;
+
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   .top {
     height: 15%;
