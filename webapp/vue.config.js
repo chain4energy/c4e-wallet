@@ -17,6 +17,16 @@ module.exports = defineConfig({
   configureWebpack: {
     devtool: 'source-map',
     plugins: [new NodePolyfillPlugin()],
+    resolve: {
+      fallback: {
+        buffer: false,
+        crypto: false,
+        events: false,
+        path: false,
+        stream: false,
+        string_decoder: false,
+      },
+    },
     optimization: {
       splitChunks: {
         chunks: 'all',

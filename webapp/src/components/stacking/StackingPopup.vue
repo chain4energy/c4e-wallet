@@ -42,6 +42,7 @@
       <div v-if="useKeplrStore().getKeplr && useUserStore().isLoggedIn" class="validationPopup__btns">
         <button @click="delegate({type : validator}, 'undelegate')">Undelegate</button>
         <button @click="delegate({type : validator}, 'delegate')">Delegate</button>
+        <button @click="redelegate">Redelegate</button>
       </div>
       <div v-else class="validationPopup__btns">
         <p> Sorry Log in into Keplr </p>
@@ -83,6 +84,9 @@ function delegate( _ , type: string ){
         }
       );
     }
+function redelegate(){
+  useKeplrStore().redelagate(transaction);
+}
 </script>
 
 <style scoped lang="scss">

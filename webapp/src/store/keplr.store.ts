@@ -3,6 +3,15 @@ import {assertIsDeliverTxSuccess, SigningStargateClient} from "@cosmjs/stargate"
 import {transaction} from "@/models/transaction";
 import { useUserStore } from "@/store/user.store";
 import { voting } from "@/models/voting";
+import { useValidatorsStore } from "@/store/validators.store";
+import { validator } from "@cosmjs/stargate/build/testutils.spec";
+import { PagingModel } from "@/services/model/paging.model";
+import {
+  MsgBeginRedelegate,
+} from "cosmjs-types/cosmos/staking/v1beta1/tx";
+
+
+
 
 export const useKeplrStore = defineStore({
 
@@ -111,7 +120,7 @@ export const useKeplrStore = defineStore({
             denom: 'uc4e',
             amount: '0',
           }],
-          gas: '200000',
+          gas: '2000',
         };
         try {
           let result;
@@ -119,20 +128,64 @@ export const useKeplrStore = defineStore({
             case 'delegate':
               result = await client.delegateTokens(accounts[0].address, recipient, amountFinal, fee, '');
               await assertIsDeliverTxSuccess(result);
+              console.log(result);
               break;
             case 'undelegate':
               result = await client.undelegateTokens(accounts[0].address, recipient, amountFinal, fee, '');
               await assertIsDeliverTxSuccess(result);
+              console.log(result);
               break;
             default: result = 'choose your operation';
               break;
           }
+          await useUserStore().fetchAccount(accounts[0].address);
           return result;
         } catch (err) {
           return err;
         }
       } else {
         console.log('No Keplr installed');
+      }
+    },
+    redelagate: async function(transaction: transaction, amountFinal: object) {
+      if (window.keplr) {
+        const chainId = "c4e-testnet-0.1.0";
+        await window.keplr.enable(chainId);
+        const offlineSigner = window.keplr.getOfflineSigner(chainId);
+        const accounts = await offlineSigner.getAccounts();
+        const client = await SigningStargateClient.connectWithSigner(
+          "https://rpc.chain4energy.org/",
+          offlineSigner
+        );
+        const am: object = {
+          amount: {
+            denom: "uc4e",
+            amount: 12
+          }
+        };
+        const fee = {
+          amount: [{
+            denom: 'uc4e',
+            amount: '0',
+          }],
+          gas: '100000',
+        };
+        const reDelegateMsg = {
+          typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
+          value: MsgBeginRedelegate.fromPartial({
+            delegatorAddress: "c4e17dffs6qldsh30un0jm68ggr40rzkm7tmvh0e78",
+            validatorSrcAddress: "c4evaloper1jghcfqgq7kkwfpk4luazlzx83df96e2azcflth",
+            validatorDstAddress: "c4evaloper19473sdmlkkvcdh6z3tqedtqsdqj4jjv782dku2",
+            amount: {
+              denom: "uc4e",
+              amount: '1'
+            }
+          })
+        };
+        const result = await client.signAndBroadcast(accounts[0].address, [reDelegateMsg], fee, '');
+        console.log(result);
+      } else {
+        console.log("1");
       }
     },
     async claimReward(){
@@ -146,16 +199,41 @@ export const useKeplrStore = defineStore({
           'https://rpc.chain4energy.org/',
           offlineSigner,
         );
-        // const fee = {
-        //   amount: [{
-        //     denom: 'uc4e',
-        //     amount: '0',
-        //   }],
-        //   gas: '2000',
-        // };
+        const fee = {
+          amount: [{
+            denom: 'uc4e',
+            amount: '12',
+          }],
+          gas: '2000',
+        };
         try {
-          const result = await client.getChainId();
-          console.log(result);
+          await useValidatorsStore().fetchValidators(null, true, null);
+          const validators = await useValidatorsStore().getValidators;
+          const approvedValidators = [];
+          for (const element of validators.elements){
+            console.log(element.operator_address);
+            const result = await client.getDelegation(recipient, element.operator_address);
+            if(result !== null){
+              const unit= {
+                val : element,
+                coin: result
+              };
+              approvedValidators.push(unit);
+            } else {
+              console.log('NO');
+            }
+          }
+          for (const element of approvedValidators){
+            const client2 = await SigningStargateClient.connectWithSigner(
+              'https://rpc.chain4energy.org/',
+              offlineSigner,
+            );
+            console.log(recipient, element.val.operator_address, client2);
+            const result = await client2.withdrawRewards(recipient, element.val.operator_address , fee, '');
+            await assertIsDeliverTxSuccess(result);
+          }
+
+
         } catch (err){
           console.log(err);
         }
