@@ -9,6 +9,9 @@ import { PagingModel } from "@/services/model/paging.model";
 import {
   MsgBeginRedelegate,
 } from "cosmjs-types/cosmos/staking/v1beta1/tx";
+import {
+  MsgWithdrawDelegatorReward
+} from "cosmjs-types/cosmos/distribution/v1beta1/tx"
 
 
 
@@ -120,7 +123,7 @@ export const useKeplrStore = defineStore({
             denom: 'uc4e',
             amount: '0',
           }],
-          gas: '2000',
+          gas: '250000',
         };
         try {
           let result;
@@ -204,14 +207,13 @@ export const useKeplrStore = defineStore({
             denom: 'uc4e',
             amount: '12',
           }],
-          gas: '2000',
+          gas: '400000',
         };
         try {
           await useValidatorsStore().fetchValidators(null, true, null);
           const validators = await useValidatorsStore().getValidators;
           const approvedValidators = [];
           for (const element of validators.elements){
-            console.log(element.operator_address);
             const result = await client.getDelegation(recipient, element.operator_address);
             if(result !== null){
               const unit= {
@@ -223,17 +225,25 @@ export const useKeplrStore = defineStore({
               console.log('NO');
             }
           }
+          const a = []
           for (const element of approvedValidators){
             const client2 = await SigningStargateClient.connectWithSigner(
               'https://rpc.chain4energy.org/',
               offlineSigner,
             );
+
             console.log(recipient, element.val.operator_address, client2);
-            const result = await client2.withdrawRewards(recipient, element.val.operator_address , fee, '');
-            await assertIsDeliverTxSuccess(result);
+            const reDelegateMsg = {
+              typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
+              value: MsgWithdrawDelegatorReward.fromPartial({
+                delegatorAddress: recipient,
+                validatorAddress: element.val.operator_address,
+              }),
+            };
+            a.push(reDelegateMsg);
           }
-
-
+          const result = await client.signAndBroadcast(accounts[0].address, a, fee, '');
+          console.log(result);
         } catch (err){
           console.log(err);
         }

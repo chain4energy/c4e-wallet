@@ -39,6 +39,7 @@
           <input style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">
         </div>
       </div>
+        <component class="auth-page__form" v-bind:is="operation"></component>
       <div v-if="useKeplrStore().getKeplr && useUserStore().isLoggedIn" class="validationPopup__btns">
         <button @click="delegate({type : validator}, 'undelegate')">Undelegate</button>
         <button @click="delegate({type : validator}, 'delegate')">Delegate</button>
@@ -66,8 +67,8 @@ const props = defineProps({
     required: true
   },
 });
-const amount = ref(null)
-const keplrResult = ref(null)
+const amount = ref(null);
+const keplrResult = ref(null);
 const emit = defineEmits(['close']);
 function delegate( _ , type: string ){
       const transaction: transaction = {
@@ -77,7 +78,7 @@ function delegate( _ , type: string ){
       };
       useKeplrStore().delegeteTokens(transaction).then((result: any) => {
           if (result.code === 0) {
-            emit('success', 'success')
+            emit('success', 'success');
           } else {
             keplrResult.value = result;
           }
@@ -129,10 +130,9 @@ function redelegate(){
     align-items: flex-start;
     justify-content: space-between;
     width: 800px;
-    height: 500px;
     background-color: #FFFFFF;
     padding: 46px 20px 30px 20px;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.11);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
     border-radius: 8px;
     opacity: 120%;
   }
@@ -166,7 +166,7 @@ function redelegate(){
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.11);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
     background: #FFFFFF;
     border-radius: 8px;
     padding: 22px;
@@ -183,9 +183,10 @@ function redelegate(){
     padding: 15px;
     background-color: #FFFFFF;
     border-radius: 50%;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.11);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
   }
   &__btns{
+    margin-top: 10px;
     display: flex;
     width: 100%;
     justify-content: flex-end;
