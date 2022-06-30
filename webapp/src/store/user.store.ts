@@ -3,6 +3,9 @@ import { Account, account } from "@/models/account";
 import apiFactory from "@/api/factory.api";
 import { useKeplrStore } from "@/store/keplr.store";
 import { Amount } from "@/models/TotalSupply";
+import { useValidatorsStore } from "@/store/validators.store";
+import { Rewards } from "@/models/validator";
+import { stackingList } from "@/models/stacking";
 
 export const useUserStore = defineStore({
   id: 'userStore',
@@ -12,10 +15,12 @@ export const useUserStore = defineStore({
       balances: 0,
       stacked: 0,
       unstacked: 0,
-      rewards: 0,
+      totalRewards: 0,
+      rewards: Object() as Rewards,
       _isLoggedIn: false,
       basicAccount: false,
-      vestingAccount: false
+      vestingAccount: false,
+      stackingList: Object() as stackingList,
     };
   },
   actions: {
@@ -33,6 +38,7 @@ export const useUserStore = defineStore({
           this.fetchRewards(id);
           this.fetchStackedAmount(id);
           this.fetchUnstackedAmount(id);
+          useValidatorsStore().fetchValidators()
         } else {
           this._isLoggedIn = false;
         }
@@ -48,6 +54,7 @@ export const useUserStore = defineStore({
     async fetchStackedAmount(id: string) {
       await apiFactory.accountApi().fetchStackedTokens(id)
         .then(response => {
+          this.stackingList = response.data;
           const totalStacked = [];
           for (const element of response.data.delegation_responses){
             totalStacked.push( parseInt(element.balance.amount));
@@ -76,8 +83,9 @@ export const useUserStore = defineStore({
     async fetchRewards(id: string){
       await apiFactory.accountApi().fetchRewards(id)
         .then(response => {
+          this.rewards = response.data
           const rew = response.data.total[0].amount;
-          this.rewards = parseFloat(rew);
+          this.totalRewards = parseFloat(rew);
         })
     },
     async logOut(){
@@ -100,6 +108,9 @@ export const useUserStore = defineStore({
       return this.balances;
     },
     getRewards(): number {
+      return this.totalRewards;
+    },
+    getRewardList():Rewards{
       return this.rewards;
     },
     getStacked(): number {
@@ -107,7 +118,10 @@ export const useUserStore = defineStore({
     },
     getUnstacked(): number{
       return this.unstacked;
-    }
+    },
+    getStackedList(): stackingList{
+      return this.stackingList
+    },
     // getBalance(): balances {
     //   return this.balance
     // }

@@ -4,7 +4,7 @@ export interface account{
     delegation_response: object;
     type : string,
     "@type": string,
-    address: StringConstructor,
+    address: string,
     pub_key: {
       type: string,
       key: string,

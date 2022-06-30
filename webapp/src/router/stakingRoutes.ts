@@ -1,6 +1,6 @@
 import { RouteRecordRaw, useRouter } from "vue-router";
 import StakingView from "@/views/StakingView.vue";
-import BaseAccount from "@/components/stacking/BaseAccount.vue";
+import NewBaseAccount from '@/components/stacking/NewBaseAcc.vue';
 import { LogLevel } from "@/services/logger/log-level";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { useUserStore } from "@/store/user.store";
@@ -12,7 +12,7 @@ const stakingRoutes = {
   path: '/staking',
     name: 'staking',
   component: StakingView,
-  query: { redirect: BaseAccount },
+  query: { redirect: NewBaseAccount },
   meta: {
   requiresAuth: false,
 },
@@ -20,7 +20,7 @@ const stakingRoutes = {
     {
       path: '',
       name: 'baseAccount',
-      component: BaseAccount,
+      component: NewBaseAccount,
       meta: {
         accType: 'BaseAccount',
         requiresAuth: false
@@ -29,7 +29,7 @@ const stakingRoutes = {
     {
       path: '',
       name: 'vesting',
-      component: BaseAccount,
+      component: NewBaseAccount,
       meta: {
         accType: 'VestingAccount',
         requiresAuth: false

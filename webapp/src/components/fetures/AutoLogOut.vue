@@ -18,7 +18,7 @@ const userStore = useUserStore();
 
 function onIdle () {
   alert('You have been logged out');
-  userStore.loggedOut();
+  userStore.logOut();
   route.push('Home');
 }
 function onRemind () {

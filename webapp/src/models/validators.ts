@@ -7,3 +7,6 @@ export class Validators {
   validators: Validator[] = Array<Validator>();
 
 }
+export interface ValidatorsList{
+  validators: Array<Validator>
+}

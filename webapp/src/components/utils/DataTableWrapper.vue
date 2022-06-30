@@ -1,8 +1,6 @@
 <template>
-
   <DataTable :value="service.getListDataHolder().elements"
              class="row-spacing"
-
              selectionMode="single"
              :showGridlines="false"
              :lazy="true"

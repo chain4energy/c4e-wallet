@@ -205,15 +205,15 @@ export const useKeplrStore = defineStore({
         const fee = {
           amount: [{
             denom: 'uc4e',
-            amount: '12',
+            amount: '',
           }],
           gas: '400000',
         };
         try {
-          await useValidatorsStore().fetchValidators(null, true, null);
           const validators = await useValidatorsStore().getValidators;
           const approvedValidators = [];
-          for (const element of validators.elements){
+          for (const element of validators.validators){
+            console.log(element)
             const result = await client.getDelegation(recipient, element.operator_address);
             if(result !== null){
               const unit= {
@@ -225,7 +225,7 @@ export const useKeplrStore = defineStore({
               console.log('NO');
             }
           }
-          const a = []
+          const a = [];
           for (const element of approvedValidators){
             const client2 = await SigningStargateClient.connectWithSigner(
               'https://rpc.chain4energy.org/',
@@ -250,7 +250,6 @@ export const useKeplrStore = defineStore({
       } else {
         console.log('err');
       }
-
     },
     async vote(voting: voting, proposalId: number) {
       console.log( proposalId);
