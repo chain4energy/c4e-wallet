@@ -28,6 +28,7 @@ export const useKeplrStore = defineStore({
   },
   actions: {
     async checkKeplr() {
+      console.log('1118394iorhfnkjfhskbxcnlkfhkjl')
       if (window.keplr) {
         const chainId = 'c4e-testnet-0.1.0';
         try {

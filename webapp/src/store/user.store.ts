@@ -41,6 +41,7 @@ export const useUserStore = defineStore({
           this.fetchStackedAmount(id);
           this.fetchUnstackedAmount(id);
           useValidatorsStore().fetchValidators()
+          localStorage.setItem('account', account.account.address);
         } else {
           this._isLoggedIn = false;
         }

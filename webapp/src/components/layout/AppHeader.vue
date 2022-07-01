@@ -82,7 +82,7 @@ import  UserData from "@/components/userData/UserData.vue";
 import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
 import {useKeplrStore} from "@/store/keplr.store";
-import { computed, onMounted, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted, onUpdated } from "vue";
 import { useUserStore } from "@/store/user.store";
 
 const router = useRouter();
@@ -93,13 +93,12 @@ const keplerStore = useKeplrStore();
 function logIn(){
   keplerStore.checkKeplr()
 }
-
+onMounted(()=> {
+  setTimeout(useKeplrStore().checkKeplr,500)
+})
 function logOut(){
   useUserStore().logOut()
 }
-onMounted(()=> {
-  keplerStore.checkKeplr()
-})
 window.addEventListener('keplr_keystorechange', () => {
   keplerStore.checkKeplr()
 });
