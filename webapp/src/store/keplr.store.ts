@@ -12,6 +12,7 @@ import {
 import {
   MsgWithdrawDelegatorReward
 } from "cosmjs-types/cosmos/distribution/v1beta1/tx"
+import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
 
 
 
@@ -251,8 +252,27 @@ export const useKeplrStore = defineStore({
         console.log('err');
       }
     },
-    async vote(voting: voting, proposalId: number) {
-      console.log( proposalId);
+    async vote(option: string, proposalId: number) {
+      if (window.keplr) {
+        const chainId = "c4e-testnet-0.1.0";
+        await window.keplr.enable(chainId);
+        const offlineSigner = window.keplr.getOfflineSigner(chainId);
+        const accounts = await offlineSigner.getAccounts();
+        const client = await SigningStargateClient.connectWithSigner(
+          "https://rpc.chain4energy.org/",
+          offlineSigner
+        );
+        console.log(typeof option);
+        const reDelegateMsg = {
+          typeUrl: '/cosmos.gov.v1beta1.MsgVote',
+          value: MsgVote.fromPartial({
+            proposalId,
+            voter: accounts[0].address,
+          }),
+        }
+        console.log( voting);
+      }
+
     }
   },
   getters: {

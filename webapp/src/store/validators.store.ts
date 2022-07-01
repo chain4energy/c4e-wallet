@@ -24,6 +24,8 @@ export const useValidatorsStore = defineStore({
   },
   actions: {
     async fetchValidators(){
+      this.rewardsFetched = false;
+      this.stackingFetch = false;
       let validatorsList = Object() as Validators;
       await apiFactory.validatorsApi().fetchAllValidators(null, true, null)
         .then((resp) => {
@@ -37,7 +39,7 @@ export const useValidatorsStore = defineStore({
       if(useUserStore().isLoggedIn) {
         await useUserStore().fetchRewards(useUserStore().getAccount.address);
         this.setStacked();
-        this.setRewards()
+        this.rewardsFetched = this.setRewards()
       }
     },
 
@@ -125,33 +127,30 @@ export const useValidatorsStore = defineStore({
     async setVotingPower(validators : Validators) {
       if(useTokensStore().getTotalSupply.amount){
         const supply = await useTokensStore().getTotalSupply;
-        console.log(typeof supply.amount);
         const total = Number(supply.amount);
         validators.validators.forEach((element:Validator) => {
           const votingPower = (Number(element.tokens) / total) * 100;
           element.votingPower = Number(votingPower);
-          console.log(element.votingPower);
           return element;
         });
         return validators;
       }
       else {
         useTokensStore().fetchTotalSupply()
-        console.log(1111)
         return validators;
       }
 
     },
 
-    // fetchNumberOfActiveValidators(){
-    //   apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
-    //     if( response.error == null ) {
-    //       this.numberOfActiveValidators = response.data?.data.activeTotal.aggregate.count;
-    //     } else {
-    //       //TODO: error handling
-    //     }
-    //   });
-    // },
+    fetchNumberOfActiveValidators(){
+      apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
+        if( response.error == null ) {
+          this.numberOfActiveValidators = response.data?.data.activeTotal.aggregate.count;
+        } else {
+          //TODO: error handling
+        }
+      });
+    },
     setRewards(){
       const rewards = useUserStore().getRewardList
       if(useUserStore().getRewardList && useUserStore().getAccount){
@@ -169,16 +168,16 @@ export const useValidatorsStore = defineStore({
             };
           }
         }
-        this.rewardsFetched = true;
+        return true
       }else {
         useKeplrStore().checkKeplr()
+        return false
       }
     },
     setStacked() {
       const stacked = useUserStore().getStackedList
       if(stacked.delegation_responses.length > 0){
         for(const el of this.validators.validators){
-          console.log(el.operator_address);
           const data = stacked.delegation_responses.find((stackD: stackItem) => stackD.delegation.validator_address === el.operator_address)
           if(data){
             el.stacked = data.balance

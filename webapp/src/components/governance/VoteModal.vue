@@ -52,8 +52,8 @@ const props = defineProps({
 const picked = ref();
 
 const onVoteClick = () => {
+  picked.value = parseFloat(picked.value)
   useKeplrStore().vote(picked.value, props.proposalId)
-
 };
 </script>
 

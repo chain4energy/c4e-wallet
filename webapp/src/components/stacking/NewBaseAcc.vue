@@ -4,7 +4,7 @@
     <TabPanel header="All">
       <DataTableWraper :expanded="true" :validators="validators.fullList"/>
     </TabPanel>
-    <TabPanel v-if="rewardsFetched" header="Staked">
+    <TabPanel v-if="rewardsFetched && validators.stacked !== []" header="Staked">
       <DataTableWraper :validators="validators.stacked" :expanded="true"/>
     </TabPanel>
     <TabPanel header="Active">
@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { useValidatorsStore } from "@/store/validators.store";
-import { computed, ComputedRef, reactive, ref, UnwrapNestedRefs, watch } from "vue";
+import { computed, ComputedRef, onBeforeMount, onUnmounted, reactive, ref, UnwrapNestedRefs, watch } from "vue";
 import { useUserStore } from "@/store/user.store";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
@@ -31,8 +31,14 @@ const userStore = useUserStore();
 
 const rewardsFetched = computed(()=> validatorsStore.getRewardsFetchetStatus)
 const isLoggedIn = computed(() => userStore.isLoggedIn);
-validatorsStore.fetchValidators();
 
+onBeforeMount(()=>{
+    validatorsStore.fetchValidators();
+})
+
+
+
+onUnmounted(() => validatorsStore.logoutValidatorModule())
 
 const validators : validatorsComponent = reactive({
   fullList: computed(() => validatorsStore.getValidators.validators),
@@ -51,10 +57,10 @@ const validators : validatorsComponent = reactive({
     }
   }),
   stacked: computed(() => {
-    if (!validators.fullList && rewardsFetched) {
-      return [];
+    if (validators.fullList && rewardsFetched.value) {
+      return validators.fullList.filter((el: Validator) => el.rewards.amount !== "0");
     } else {
-      return validators.fullList.filter((el: Validator) => el.rewards.amount != "0");
+      return []
     }
   }),
 });

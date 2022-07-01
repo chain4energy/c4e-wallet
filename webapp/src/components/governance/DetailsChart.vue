@@ -31,7 +31,10 @@
       </div>
     </div>
     <div class="bottom">
-      <Button :label="$t('GOVERNANCE_VIEW.VOTE')" class="p-button-raised p-button-rounded" data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="proposal.status!==ProposalStatusEnum.PROPOSAL_STATUS_VOTING_PERIOD" />
+      <Button
+        :label="$t('GOVERNANCE_VIEW.VOTE')"
+        class="p-button-raised p-button-rounded"
+        data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="proposal.status!==ProposalStatusEnum.PROPOSAL_STATUS_VOTING_PERIOD" />
 
       <VoteModal id="voteModal" :proposalId="proposal.proposal_id" :title="proposal.content.title"></VoteModal>
     </div>
