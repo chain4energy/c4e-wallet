@@ -38,7 +38,11 @@ import StakingApr from "@/components/dashboard/StakingApr.vue";
 
 <style scoped lang="scss">
 .container {
+  margin-top: 20px;
   padding-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 </style>

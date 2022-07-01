@@ -12,6 +12,7 @@ export const useUserStore = defineStore({
   state: () => {
     return {
       account: Object() as account,
+      type: '',
       balances: 0,
       stacked: 0,
       unstacked: 0,
@@ -33,6 +34,7 @@ export const useUserStore = defineStore({
         if (response.error == null && response.data != undefined) {
           const account:Account = response.data;
           this.account = account.account;
+          this.type = account.account["@type"]
           this._isLoggedIn = true;
           this.fetchBalance(id);
           this.fetchRewards(id);
@@ -92,6 +94,7 @@ export const useUserStore = defineStore({
       this._isLoggedIn = false;
       this.account = Object() as account;
       await useKeplrStore().logOutKeplr();
+      await useValidatorsStore().logoutValidatorModule()
     }
   },
   getters: {
@@ -101,8 +104,8 @@ export const useUserStore = defineStore({
     getAccount(): account{
       return this.account;
     },
-    getAccType(): account {
-      return this.account;
+    getAccType(): string {
+      return this.type;
     },
     getBalances(): number{
       return this.balances;

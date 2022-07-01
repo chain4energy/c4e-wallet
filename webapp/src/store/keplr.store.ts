@@ -123,7 +123,7 @@ export const useKeplrStore = defineStore({
             denom: 'uc4e',
             amount: '0',
           }],
-          gas: '250000',
+          gas: '2500000',
         };
         try {
           let result;

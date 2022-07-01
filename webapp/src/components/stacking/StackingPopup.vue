@@ -39,7 +39,6 @@
           <input style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">
         </div>
       </div>
-        <component class="auth-page__form" v-bind:is="operation"></component>
       <div v-if="useKeplrStore().getKeplr && useUserStore().isLoggedIn" class="validationPopup__btns">
         <button @click="delegate({type : validator}, 'undelegate')">Undelegate</button>
         <button @click="delegate({type : validator}, 'delegate')">Delegate</button>
@@ -54,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType} from "vue";
+import { onUnmounted, PropType } from "vue";
 import { useKeplrStore } from "@/store/keplr.store";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from '@/models/validator';
@@ -67,24 +66,32 @@ const props = defineProps({
     required: true
   },
 });
-const amount = ref(null);
-const keplrResult = ref(null);
+document.body.style.overflow = "hidden";
+onUnmounted(() => document.body.style.overflow = "auto");
+
+const amount = ref('');
+const keplrResult = ref('');
 const emit = defineEmits(['close']);
 function delegate( _ , type: string ){
-      const transaction: transaction = {
-        address: props.validator.operator_address,
-        amount: amount.value,
-        type,
-      };
-      useKeplrStore().delegeteTokens(transaction).then((result: any) => {
-          if (result.code === 0) {
-            emit('success', 'success');
-          } else {
-            keplrResult.value = result;
-          }
+  if (amount.value === '') {
+    keplrResult.value = 'please input amount';
+  } else {
+    const transaction: transaction = {
+      address: props.validator.operator_address,
+      amount: amount.value,
+      type
+    };
+    useKeplrStore().delegeteTokens(transaction).then((result: any) => {
+        if (result.code === 0) {
+          keplrResult.value = result;
+          emit("success", "success");
+        } else {
+          keplrResult.value = result;
         }
-      );
-    }
+      }
+    );
+  }
+}
 function redelegate(){
   useKeplrStore().redelagate(transaction);
 }

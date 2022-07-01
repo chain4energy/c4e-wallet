@@ -9,6 +9,7 @@ import { useUserStore } from "@/store/user.store";
 import { logs } from "@cosmjs/stargate";
 import { Validators } from "@/models/validators";
 import { stackItem } from "@/models/stacking";
+import { useKeplrStore } from "@/store/keplr.store";
 
 export const useValidatorsStore = defineStore({
   id: 'validatorsStore',
@@ -122,43 +123,56 @@ export const useValidatorsStore = defineStore({
       });
     },
     async setVotingPower(validators : Validators) {
-      await useTokensStore().fetchTotalSupply();
-      const supply = await useTokensStore().getTotalSupply;
-      const total = Number(supply.amount);
-      validators.validators.forEach((element:Validator) => {
-        const votingPower = (Number(element.tokens) / total) * 100;
-        element.votingPower = Number(votingPower);
-        return element;
-      });
-      return validators;
+      if(useTokensStore().getTotalSupply.amount){
+        const supply = await useTokensStore().getTotalSupply;
+        console.log(typeof supply.amount);
+        const total = Number(supply.amount);
+        validators.validators.forEach((element:Validator) => {
+          const votingPower = (Number(element.tokens) / total) * 100;
+          element.votingPower = Number(votingPower);
+          console.log(element.votingPower);
+          return element;
+        });
+        return validators;
+      }
+      else {
+        useTokensStore().fetchTotalSupply()
+        console.log(1111)
+        return validators;
+      }
+
     },
 
-    fetchNumberOfActiveValidators(){
-      apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
-        if( response.error == null ) {
-          this.numberOfActiveValidators = response.data?.data.activeTotal.aggregate.count;
-        } else {
-          //TODO: error handling
-        }
-      });
-    },
+    // fetchNumberOfActiveValidators(){
+    //   apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
+    //     if( response.error == null ) {
+    //       this.numberOfActiveValidators = response.data?.data.activeTotal.aggregate.count;
+    //     } else {
+    //       //TODO: error handling
+    //     }
+    //   });
+    // },
     setRewards(){
       const rewards = useUserStore().getRewardList
-      for (const el of this.validators.validators) {
-        const rew = rewards.rewards.filter(
-          (element) => element.validator_address === el.operator_address,
-        );
-        if (rew[0]) {
-          // eslint-disable-next-line prefer-destructuring
-          el.rewards = rew[0].reward[0];
-        } else {
-          el.rewards = {
-            amount: '0',
-            denom: '',
-          };
+      if(useUserStore().getRewardList && useUserStore().getAccount){
+        for (const el of this.validators.validators) {
+          const rew = rewards.rewards.filter(
+            (element) => element.validator_address === el.operator_address,
+          );
+          if (rew[0]) {
+            // eslint-disable-next-line prefer-destructuring
+            el.rewards = rew[0].reward[0];
+          } else {
+            el.rewards = {
+              amount: '0',
+              denom: '',
+            };
+          }
         }
+        this.rewardsFetched = true;
+      }else {
+        useKeplrStore().checkKeplr()
       }
-      this.rewardsFetched = true;
     },
     setStacked() {
       const stacked = useUserStore().getStackedList
@@ -178,6 +192,11 @@ export const useValidatorsStore = defineStore({
         this.stackingFetch = true;
       }
     },
+    logoutValidatorModule(){
+      this.stackingFetch = false;
+      this.rewardsFetched = false;
+      this.fetchValidators()
+    }
   },
   getters: {
     getValidators(): Validators{

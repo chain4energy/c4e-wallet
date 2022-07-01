@@ -75,7 +75,7 @@
         <button class="btn__main" @click="checkBTN(data)">Manage</button>
       </template>
     </Column>
-    <Column v-if="rewardsFetched && expanded && stackingFetched ">
+    <Column v-if="rewardsFetched && stackingFetched">
       <template  #body="{data}">
         <button
           @click="onRowExpande(data)"
@@ -106,6 +106,7 @@ import { computed, PropType, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
 import { Validator } from "@/models/validator";
 import { ValidatorsList } from "@/models/validators";
+import { useKeplrStore } from "@/store/keplr.store";
 
 
 const props = defineProps({
@@ -154,22 +155,29 @@ const filters = ref({
   },
 });
 function onRowExpande(data: Validator) {
-expandedRow.value = (expandedRow.value[0] === data) ? [{}] : [data]
+  expandedRow.value = (expandedRow.value[0] === data) ? [{}] : [data]
 }
-async function checkBTN(item: Validator){
-currentValidator.value = item;
-popupOpened.value = !popupOpened.value;
-return popupOpened;
+function checkBTN(item: Validator){
+  currentValidator.value = item;
+  popupOpened.value = !popupOpened.value;
+  return popupOpened;
 }
-function trsansactionSuccess(arg:string){
-checkBTN();
+
+async function trsansactionSuccess(arg: string) {
+  checkBTN();
+  await useUserStore().logOut()
+  await useKeplrStore().checkKeplr()
+
+
+  // useValidatorsStore().fetchValidators()
+  //
 }
 const showPopupVal = ref(false);
 const address = ref('');
 function showPopup(valaddress : string) {
-showPopupVal.value = !showPopupVal.value;
-address.value = valaddress;
-// store.dispatch('keplr/fetchKeplr');
+  showPopupVal.value = !showPopupVal.value;
+  address.value = valaddress;
+  useKeplrStore().checkKeplr()
 }
 </script>
 

@@ -3,6 +3,7 @@ import {StakingPool, Pool} from "@/models/StakingPool";
 import {Amount, TotalSupply} from "@/models/TotalSupply";
 import apiFactory from "@/api/factory.api";
 import {AirdropPool, CommunityPool, StrategicReversePool} from "@/models/Pools";
+import { useValidatorsStore } from "@/store/validators.store";
 
 
 export const useTokensStore = defineStore({
@@ -32,6 +33,9 @@ export const useTokensStore = defineStore({
         if (response.error == null && response.data != undefined) {
           const totalSupply: TotalSupply = response.data;
           this.totalSupply = totalSupply.amount;
+          if(useValidatorsStore().getValidators){
+            useValidatorsStore().setVotingPower(useValidatorsStore().getValidators)
+          }
         } else {
           //TODO: error handling
         }

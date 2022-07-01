@@ -4,22 +4,22 @@
     <TabPanel header="All">
       <DataTableWraper :expanded="true" :validators="validators.fullList"/>
     </TabPanel>
-    <TabPanel v-if="rewardsFetched" header="Staked">
-      <DataTableWraper :validators="validators.stacked" :expanded="true"/>
-    </TabPanel>
-    <TabPanel header="Active">
-      <DataTableWraper :validators="validators.activeList" :expanded="true"/>
-    </TabPanel>
-    <TabPanel header="Inactive">
-      <DataTableWraper :validators="validators.notActive" :expanded="true"/>
-    </TabPanel>
+<!--    <TabPanel v-if="rewardsFetched" header="Staked">-->
+<!--      <DataTableWraper :validators="validators.stacked" :expanded="true"/>-->
+<!--    </TabPanel>-->
+<!--    <TabPanel header="Active">-->
+<!--      <DataTableWraper :validators="validators.activeList" :expanded="true"/>-->
+<!--    </TabPanel>-->
+<!--    <TabPanel header="Inactive">-->
+<!--      <DataTableWraper :validators="validators.notActive" :expanded="true"/>-->
+<!--    </TabPanel>-->
   </TabView>
 </div>
 </template>
 
 <script setup lang="ts">
 import { useValidatorsStore } from "@/store/validators.store";
-import { computed, ComputedRef, reactive, ref, UnwrapNestedRefs, watch } from "vue";
+import { computed, ComputedRef, reactive, UnwrapNestedRefs } from "vue";
 import { useUserStore } from "@/store/user.store";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
@@ -31,7 +31,7 @@ const userStore = useUserStore();
 
 const rewardsFetched = computed(()=> validatorsStore.getRewardsFetchetStatus)
 const isLoggedIn = computed(() => userStore.isLoggedIn);
-validatorsStore.fetchValidators();
+useValidatorsStore().fetchValidators();
 
 
 const validators : validatorsComponent = reactive({

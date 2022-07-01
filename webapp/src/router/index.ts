@@ -7,6 +7,7 @@ import ValidatorsView from '../views/ValidatorsView.vue';
 import ProposalsList from '@/components/governance/ProposalsList.vue'
 import BaseAccount from "@/components/stacking/BaseAccount.vue";
 import stakingRoutes from "@/router/stakingRoutes";
+import { useUserStore } from "@/store/user.store";
 
 const routes: Array<RouteRecordRaw> = [
   {
