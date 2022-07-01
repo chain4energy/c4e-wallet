@@ -10,7 +10,6 @@ export class SidebarConfig{
     this.config.set(PagesEnum.DASHBOARD, this.createDashboard());
     this.config.set(PagesEnum.STAKING, this.createStaking());
     this.config.set(PagesEnum.GOVERNANCE, this.createGovernance());
-    this.config.set(PagesEnum.VALIDATORS, this.createValidators());
   }
 
   getConfigForPage(page: PagesEnum): SidebarElement | undefined{

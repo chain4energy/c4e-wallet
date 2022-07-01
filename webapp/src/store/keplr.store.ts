@@ -252,7 +252,7 @@ export const useKeplrStore = defineStore({
         console.log('err');
       }
     },
-    async vote(option: string, proposalId: number) {
+    async vote(option: number, proposalId: number) {
       if (window.keplr) {
         const chainId = "c4e-testnet-0.1.0";
         await window.keplr.enable(chainId);
@@ -262,15 +262,24 @@ export const useKeplrStore = defineStore({
           "https://rpc.chain4energy.org/",
           offlineSigner
         );
+        const fee = {
+          amount: [{
+            denom: 'uc4e',
+            amount: '0',
+          }],
+          gas: '100000',
+        };
         console.log(typeof option);
         const reDelegateMsg = {
           typeUrl: '/cosmos.gov.v1beta1.MsgVote',
           value: MsgVote.fromPartial({
+            option: option,
             proposalId,
             voter: accounts[0].address,
           }),
         }
-        console.log( voting);
+        const result = await client.signAndBroadcast(accounts[0].address, [reDelegateMsg], fee, '');
+        console.log(result);
       }
 
     }
