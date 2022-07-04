@@ -23,6 +23,9 @@ export const useTokensStore = defineStore({
         if (response.error == null && response.data != undefined) {
           const stakingPool:StakingPool = response.data;
           this.stakingPool = stakingPool.pool;
+          if(useValidatorsStore().getValidators){
+            useValidatorsStore().setVotingPower(useValidatorsStore().getValidators)
+          }
         } else {
           //TODO: error handling
         }
@@ -33,9 +36,6 @@ export const useTokensStore = defineStore({
         if (response.error == null && response.data != undefined) {
           const totalSupply: TotalSupply = response.data;
           this.totalSupply = totalSupply.amount;
-          if(useValidatorsStore().getValidators){
-            useValidatorsStore().setVotingPower(useValidatorsStore().getValidators)
-          }
         } else {
           //TODO: error handling
         }

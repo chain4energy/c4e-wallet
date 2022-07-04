@@ -3,8 +3,6 @@
   <div v-for="proposal in getProposals.elements" :key="proposal" >
     <proposal-governance :proposal="proposal"></proposal-governance>
   </div>
-
-
 </template>
 <script lang="ts">
 export default {

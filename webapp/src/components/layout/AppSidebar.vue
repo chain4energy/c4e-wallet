@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 // import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import Icon from "../features/IconComponent.vue";
 import {PermissionsService} from "../../services/permissions/permissions.service";
@@ -53,7 +53,6 @@ function hideSidebar() {
   showSidebar.classList.remove('display-none');
   showSidebar.classList.add('display-flex');
 }
-
 function changeSelected(index: number) {
   selected.value = index;
 }

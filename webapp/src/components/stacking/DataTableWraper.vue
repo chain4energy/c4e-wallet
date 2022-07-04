@@ -60,10 +60,10 @@
       </template>
     </Column>
     <Column
-      v-if="isLoggedIn"
-      field="rewards"
-      header="rewards"
+      field="stacked.amount"
+      header="Your stake"
       :sortable="true"
+      v-if="isLoggedIn"
     >
       <template #body="{data}">
         <span v-if="data.stacked && isLoggedIn">{{toFixedAm(data.stacked.amount, 4)}}</span>
@@ -79,11 +79,10 @@
       <template  #body="{data}">
         <button
           @click="onRowExpande(data)"
-          type="checkbox"
           v-if="data.stacked.amount!=='0'"   headerStyle="width: 4rem">open</button>
       </template>
     </Column>
-    <template #expansion="{data}">
+    <template v-if="rewardsFetched && stackingFetched" #expansion="{data}">
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
           <p>Your stacked</p>

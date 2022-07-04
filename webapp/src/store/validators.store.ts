@@ -125,9 +125,9 @@ export const useValidatorsStore = defineStore({
       });
     },
     async setVotingPower(validators : Validators) {
-      if(useTokensStore().getTotalSupply.amount){
-        const supply = await useTokensStore().getTotalSupply;
-        const total = Number(supply.amount);
+      if(useTokensStore().getStakingPool.bonded_tokens){
+        const supply = await useTokensStore().getStakingPool;
+        const total = Number(supply.bonded_tokens);
         validators.validators.forEach((element:Validator) => {
           const votingPower = (Number(element.tokens) / total) * 100;
           element.votingPower = Number(votingPower);
@@ -136,7 +136,7 @@ export const useValidatorsStore = defineStore({
         return validators;
       }
       else {
-        useTokensStore().fetchTotalSupply()
+        useTokensStore().fetchStakingPool()
         return validators;
       }
 
