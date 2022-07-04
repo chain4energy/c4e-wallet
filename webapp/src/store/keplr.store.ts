@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {assertIsDeliverTxSuccess, SigningStargateClient} from "@cosmjs/stargate";
-import {transaction} from "@/models/transaction";
+import { redelegation, transaction } from "@/models/transaction";
 import { useUserStore } from "@/store/user.store";
 import { voting } from "@/models/voting";
 import { useValidatorsStore } from "@/store/validators.store";
@@ -152,7 +152,7 @@ export const useKeplrStore = defineStore({
         console.log('No Keplr installed');
       }
     },
-    redelagate: async function(transaction: transaction, amountFinal: object) {
+    async redelagate(redelegation: redelegation) {
       if (window.keplr) {
         const chainId = "c4e-testnet-0.1.0";
         await window.keplr.enable(chainId);
@@ -173,22 +173,22 @@ export const useKeplrStore = defineStore({
             denom: 'uc4e',
             amount: '0',
           }],
-          gas: '100000',
+          gas: '250000',
         };
         const reDelegateMsg = {
           typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
           value: MsgBeginRedelegate.fromPartial({
-            delegatorAddress: "c4e17dffs6qldsh30un0jm68ggr40rzkm7tmvh0e78",
-            validatorSrcAddress: "c4evaloper1jghcfqgq7kkwfpk4luazlzx83df96e2azcflth",
-            validatorDstAddress: "c4evaloper19473sdmlkkvcdh6z3tqedtqsdqj4jjv782dku2",
+            delegatorAddress: redelegation.delegatorAddress,
+            validatorSrcAddress: redelegation.validatorSrcAddress,
+            validatorDstAddress: redelegation.validatorDstAddress,
             amount: {
               denom: "uc4e",
-              amount: '1'
+              amount: redelegation.amount
             }
           })
         };
         const result = await client.signAndBroadcast(accounts[0].address, [reDelegateMsg], fee, '');
-        console.log(result);
+        return result
       } else {
         console.log("1");
       }

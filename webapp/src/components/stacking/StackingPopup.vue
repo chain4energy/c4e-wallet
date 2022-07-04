@@ -35,15 +35,30 @@
           </div>
         </div>
         <span v-if="keplrResult">{{keplrResult}}</span>
+        <div v-if="actionRedelegate" class="validationPopup__description">
+          <label style="width: 100%" for="validators">
+            <select v-model="redelegateTo" style="width: 100%"  id="validators" name="cars">
+              <option :value="items" v-for="items in validators" :key="items">{{items.description.moniker}}</option>
+            </select>
+          </label>
+<!--          <input type="" style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">-->
+        </div>
         <div class="validationPopup__description">
           <input style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">
         </div>
       </div>
-      <div v-if="useKeplrStore().getKeplr && useUserStore().isLoggedIn" class="validationPopup__btns">
-        <button @click="delegate({type : validator}, 'undelegate')">Undelegate</button>
-        <button @click="delegate({type : validator}, 'delegate')">Delegate</button>
-        <button @click="redelegate">Redelegate</button>
+      <div class="validationPopup__btnHolder" v-if="useKeplrStore().getKeplr && useUserStore().isLoggedIn" >
+        <div class="validationPopup__btns" v-if="!actionRedelegate">
+          <button @click="delegate({type : validator}, 'undelegate')">Undelegate</button>
+          <button @click="delegate({type : validator}, 'delegate')">Delegate</button>
+          <button @click="redelegateState(true)">Redelegate</button>
+        </div>
+        <div class="validationPopup__btns" v-if="actionRedelegate">
+          <button @click="redelegateState(false)">Return</button>
+          <button @click="redelegate">Redelegate</button>
+        </div>
       </div>
+
       <div v-else class="validationPopup__btns">
         <p> Sorry Log in into Keplr </p>
         <button @click="useKeplrStore().checkKeplr()">Login</button>
@@ -53,12 +68,13 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, PropType } from "vue";
+import { computed, onUnmounted, PropType } from "vue";
 import { useKeplrStore } from "@/store/keplr.store";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from '@/models/validator';
-import { transaction } from "@/models/transaction";
+import { redelegation, transaction } from "@/models/transaction";
 import {ref, defineEmits} from "vue";
+import { useValidatorsStore } from "@/store/validators.store";
 
 const props = defineProps({
   validator: {
@@ -69,6 +85,12 @@ const props = defineProps({
 document.body.style.overflow = "hidden";
 onUnmounted(() => document.body.style.overflow = "auto");
 
+const redelegateTo = ref()
+const validators = computed(() => {
+    return useValidatorsStore().getValidators.validators.filter(element => element.operator_address !== props.validator.operator_address)
+  // return props.validator.operator_address
+  })
+const actionRedelegate = ref(false)
 const amount = ref('');
 const keplrResult = ref('');
 const emit = defineEmits(['close']);
@@ -84,7 +106,7 @@ function delegate( _ , type: string ){
     useKeplrStore().delegeteTokens(transaction).then((result: any) => {
         if (result.code === 0) {
           keplrResult.value = result;
-          emit("success", "success");
+          emit('success', "success");
         } else {
           keplrResult.value = result;
         }
@@ -93,7 +115,32 @@ function delegate( _ , type: string ){
   }
 }
 function redelegate(){
-  useKeplrStore().redelagate(transaction);
+  console.log(redelegateTo.value);
+  if(!redelegateTo.value && amount.value === ''){
+    keplrResult.value = 'please choose validator and ammount';
+  } else {
+    const redelegation: redelegation = {
+      delegatorAddress: useUserStore().getAccount.address,
+      validatorSrcAddress: props.validator.operator_address,
+      validatorDstAddress: redelegateTo.value.operator_address,
+      amount: amount.value,
+    };
+    useKeplrStore().redelagate(redelegation).then((result: any) => {
+        if (result.code === 0) {
+          keplrResult.value = result;
+          emit('success', "success");
+        } else {
+          keplrResult.value = result.raw_log;
+        }
+      }
+    );
+    console.log(redelegation)
+  }
+
+  // useKeplrStore().redelagate(transaction);
+}
+function redelegateState(state: boolean){
+  actionRedelegate.value = state
 }
 </script>
 
@@ -191,6 +238,9 @@ function redelegate(){
     background-color: #FFFFFF;
     border-radius: 50%;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
+  }
+  &__btnHolder{
+    width: 100%;
   }
   &__btns{
     margin-top: 10px;
