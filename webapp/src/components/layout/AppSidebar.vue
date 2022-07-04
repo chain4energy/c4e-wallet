@@ -28,11 +28,22 @@ import {computed, ref, watch} from "vue";
 import Icon from "../features/IconComponent.vue";
 import {PermissionsService} from "../../services/permissions/permissions.service";
 import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
+import {useRoute} from "vue-router";
 
+const route = useRoute();
 const permissionsService = new PermissionsService();
 const menu = computed(() => {
-  console.log(permissionsService.createSideBar());
-  return permissionsService.createSideBar();
+  console.debug('SideBar - watch route.name changed to' + JSON.stringify(route));
+  const temp = permissionsService.createSideBar()
+  if(route.name != undefined) {
+    const sidebarElement = temp.find(element => element.href == "/" + route.name?.toString());
+    if(sidebarElement != undefined) {
+      //TODO: czy da się to zrobić inaczej
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      selected.value = temp.indexOf(sidebarElement);
+    }
+  }
+  return temp;
 });
 const selected = ref(0);
 
