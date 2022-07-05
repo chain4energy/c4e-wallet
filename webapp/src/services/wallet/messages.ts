@@ -45,7 +45,7 @@ export class DelegetionMsg{
         typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
         value: MsgDelegate.fromPartial({
           delegatorAddress: transaction.delegatorAddress,
-          validatorAddress: transaction.validatorDstAddress,
+          validatorAddress: transaction.validatorSrcAddress,
           amount: {
             denom: keplrConfig.stakeCurrency.coinMinimalDenom,
             amount: transaction.amount,
@@ -57,7 +57,7 @@ export class DelegetionMsg{
         typeUrl: '/cosmos.staking.v1beta1.MsgUndelegate',
         value: MsgUndelegate.fromPartial({
           delegatorAddress: transaction.delegatorAddress,
-          validatorAddress: transaction.address,
+          validatorAddress: transaction.validatorSrcAddress,
           amount: {
             denom: keplrConfig.stakeCurrency.coinMinimalDenom,
             amount: transaction.amount,
@@ -69,7 +69,7 @@ export class DelegetionMsg{
         typeUrl: '/cosmos.staking.v1beta1.MsgBeginRedelegate',
         value: MsgBeginRedelegate.fromPartial({
           delegatorAddress: transaction.delegatorAddress,
-          validatorSrcAddress: transaction.address,
+          validatorSrcAddress: transaction.validatorSrcAddress,
           validatorDstAddress: transaction.validatorDstAddress,
           amount: {
             denom: keplrConfig.stakeCurrency.coinMinimalDenom,
@@ -82,7 +82,7 @@ export class DelegetionMsg{
         typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
         value: MsgBeginRedelegate.fromPartial({
           delegatorAddress: transaction.delegatorAddress,
-          validatorSrcAddress: transaction.address,
+          validatorSrcAddress: transaction.validatorSrcAddress,
           validatorDstAddress: transaction.validatorDstAddress,
           amount: {
             denom: "uc4e",

@@ -1,7 +1,7 @@
 export declare class transaction {
   delegatorAddress: string;
   amount : string;
-  address : string;
+  validatorSrcAddress : string;
   validatorDstAddress: string;
   type : string;
 }

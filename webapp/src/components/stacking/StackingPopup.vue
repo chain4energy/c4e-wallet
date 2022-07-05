@@ -93,16 +93,20 @@ const actionRedelegate = ref(false)
 const amount = ref('');
 const keplrResult = ref('');
 const emit = defineEmits(['close']);
-function delegate(_ ,type: string ){
+async function delegate(_, type: string) {
   if (amount.value === '') {
     keplrResult.value = 'please input amount';
   } else {
     const transaction: transaction = {
-      address: props.validator.operator_address,
+      validatorSrcAddress: props.validator.operator_address,
       amount: amount.value,
       type: type
     };
-    useUserStore().tokensTransaction(transaction)
+    await useUserStore().tokensTransaction(transaction).then((res) => {
+        console.log()
+        keplrResult.value = JSON.stringify(res);
+      }
+    )
   }
 }
 function redelegate(){

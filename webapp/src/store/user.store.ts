@@ -102,6 +102,7 @@ export const useUserStore = defineStore({
     async tokensTransaction(transaction :transaction){
       walletService.getOfflineSigner(keplrConfig).then((responce) => {
           if(responce){
+            transaction.delegatorAddress = this.account.address
             const msg = new DelegetionMsg(transaction, keplrConfig)
             const result = responce.client.signAndBroadcast(responce.account, [msg.delegation], msg.fee, '');
             return result

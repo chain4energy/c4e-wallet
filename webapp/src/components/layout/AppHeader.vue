@@ -88,9 +88,6 @@ const globalFilter = useGlobalFilterStore();
 function logIn(){
   useUserStore().fetchAccount()
 }
-// onMounted(()=> {
-//   setTimeout(useUserStore().fetchAccount,500)
-// })
 function logOut(){
   useUserStore().logOut()
 }

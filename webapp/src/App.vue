@@ -34,9 +34,15 @@ onBeforeMount(() => {
   useConfigurationStore().fetchConfig("config1.json");
 });
 
-
 onMounted(() => {
   createRouterBeforeEach(logger);
+  setTimeout(() =>{
+    if (localStorage.getItem('account')){
+      useUserStore().fetchAccount()
+    } else {
+      return
+    }
+  },200)
 });
 </script>
 
