@@ -34,7 +34,7 @@
             <a :href="validator.description.website">{{validator.description.website}}</a>
           </div>
         </div>
-        <span v-if="keplrResult">{{keplrResult}}</span>
+<!--        <span v-if="keplrResult">{{keplrResult}}</span>-->
         <div v-if="actionRedelegate" class="validationPopup__description">
           <label style="width: 100%" for="validators">
             <select v-model="redelegateTo" style="width: 100%"  id="validators" name="cars">
@@ -44,7 +44,10 @@
 <!--          <input type="" style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">-->
         </div>
         <div class="validationPopup__description">
-          <input style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">
+          <label style="width: 100%;" for="amount">
+            <span v-for="item in keplrResult" :key="item">{{item}}</span>
+            <input placeholder="import amount" autocomplete="off" style="width: 100%;" name="amount"  v-model="amount">
+          </label>
         </div>
       </div>
       <div class="validationPopup__btnHolder" v-if="useUserStore().isLoggedIn" >
@@ -74,6 +77,8 @@ import { Validator } from '@/models/validator';
 import { transaction } from "@/models/transaction";
 import {ref, defineEmits} from "vue";
 import { useValidatorsStore } from "@/store/validators.store";
+import { object, string, number, date, InferType, setLocale } from 'yup';
+import { useToast } from "vue-toastification";
 
 const props = defineProps({
   validator: {
@@ -83,6 +88,7 @@ const props = defineProps({
 });
 document.body.style.overflow = "hidden";
 onUnmounted(() => document.body.style.overflow = "auto");
+const toast = useToast()
 
 const redelegateTo = ref()
 const validators = computed(() => {
@@ -93,22 +99,44 @@ const actionRedelegate = ref(false)
 const amount = ref('');
 const keplrResult = ref('');
 const emit = defineEmits(['close']);
+
+let max = useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances
+
+setLocale({
+  number: {
+    lessThan: `must be less than ${max}`
+  },
+  mixed: {
+    defined: `this is required field`,
+    notType: `must be a number more than 0`,
+  }
+});
+
+let amountSchema = object({
+  value:
+    number()
+    .defined()
+    .lessThan(useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances)
+});
+
 async function delegate(_, type: string) {
-  if (amount.value === '') {
-    keplrResult.value = 'please input amount';
-  } else {
+  try {
+    await amountSchema.validate(amount);
     const transaction: transaction = {
       validatorSrcAddress: props.validator.operator_address,
       amount: amount.value,
       type: type
     };
-    await useUserStore().tokensTransaction(transaction).then((res) => {
-        console.log()
-        keplrResult.value = JSON.stringify(res);
-      }
-    )
+      await useUserStore().tokensTransaction(transaction).then((res) =>{
+        emit('success', "success");
+        toast.success('transaction passed')
+      })
+  } catch (err) {
+    keplrResult.value = err.errors;
+    toast.error('transaction failed')
   }
 }
+
 function redelegate(){
   if(!redelegateTo.value && amount.value === ''){
     keplrResult.value = 'please choose validator and ammount';

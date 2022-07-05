@@ -99,17 +99,16 @@ export const useUserStore = defineStore({
           this.totalRewards = parseFloat(rew);
         })
     },
-    async tokensTransaction(transaction :transaction){
-      walletService.getOfflineSigner(keplrConfig).then((responce) => {
-          if(responce){
-            transaction.delegatorAddress = this.account.address
-            const msg = new DelegetionMsg(transaction, keplrConfig)
-            const result = responce.client.signAndBroadcast(responce.account, [msg.delegation], msg.fee, '');
-            return result
-          } else {
-            toast.error('transaction Failed')
-          }
-
+    async tokensTransaction(transaction :transaction): Promise<void>{
+      await walletService.getOfflineSigner(keplrConfig).then(async (responce) => {
+        if (responce) {
+          transaction.delegatorAddress = this.account.address
+          const msg = await new DelegetionMsg(transaction, keplrConfig)
+          const result = await responce.client.signAndBroadcast(responce.account, [msg.delegation], msg.fee, '');
+          return result
+        } else {
+          toast.error('transaction Failed')
+        }
       })
     },
     async claimReawards() {
