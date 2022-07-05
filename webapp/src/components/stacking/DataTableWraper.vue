@@ -105,7 +105,6 @@ import { computed, PropType, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
 import { Validator } from "@/models/validator";
 import { ValidatorsList } from "@/models/validators";
-import { useKeplrStore } from "@/store/keplr.store";
 
 
 const props = defineProps({
@@ -165,7 +164,7 @@ function checkBTN(item: Validator){
 async function trsansactionSuccess(arg: string) {
   checkBTN();
   await useUserStore().logOut()
-  await useKeplrStore().checkKeplr()
+  await useUserStore().fetchAccount()
 
 
   // useValidatorsStore().fetchValidators()
@@ -176,7 +175,7 @@ const address = ref('');
 function showPopup(valaddress : string) {
   showPopupVal.value = !showPopupVal.value;
   address.value = valaddress;
-  useKeplrStore().checkKeplr()
+  useUserStore().fetchAccount()
 }
 </script>
 

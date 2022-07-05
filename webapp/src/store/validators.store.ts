@@ -7,9 +7,8 @@ import apiFactory from "@/api/factory.api";
 import {useTokensStore} from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
 import { logs } from "@cosmjs/stargate";
-import { Validators } from "@/models/validators";
+import { Validators, ValidatorsList } from "@/models/validators";
 import { stackItem } from "@/models/stacking";
-import { useKeplrStore } from "@/store/keplr.store";
 
 export const useValidatorsStore = defineStore({
   id: 'validatorsStore',
@@ -19,7 +18,8 @@ export const useValidatorsStore = defineStore({
       validator: Object,
       numberOfActiveValidators: Object(Number),
       rewardsFetched: false,
-      stackingFetch: false
+      stackingFetch: false,
+      validatorsWithReward: Array<Validator>()
     };
   },
   actions: {
@@ -42,65 +42,6 @@ export const useValidatorsStore = defineStore({
         this.rewardsFetched = this.setRewards()
       }
     },
-
-    // fetchValidators: async function(pagination: PagingModel | null, lockScreen: boolean, localSpinner: LocalSpinner | null) {
-    //   await useTokensStore().fetchTotalSupply();
-    //   apiFactory.validatorsApi().fetchAllValidators(pagination, lockScreen, localSpinner)
-    //     .then(async (response) => {
-    //         if (response.error == null && response.data != undefined) {
-    //           const total = await useTokensStore().getTotalSupply;
-    //           let rewards;
-    //           const acc = await useUserStore().getAccount;
-    //           if(acc.address){
-    //             const account = useUserStore().getAccount.address;
-    //             rewards = await useUserStore().fetchRewards(account);
-    //           } else {
-    //             rewards = {
-    //               reward:[{
-    //                 amount: '0',
-    //                 denom: '',
-    //               }],
-    //               validator_address: '',
-    //             };
-    //           }
-    //           const dataHolder = new DataHolder<Validator>();
-    //           let id = 1;
-    //           for (const element of response.data.validators) {
-    //             element.vp = element.tokens / Math.floor(total.amount) * 100;
-    //             element.userSpend = '0';
-    //             element.status = await this.checkStatus(element.status);
-    //             element.id = id;
-    //             id += 1;
-    //             if (rewards){
-    //               const rew = rewards.reward.filter((el: any) => {
-    //                   return el.validator_address === element.operator_address;
-    //                 },
-    //               );
-    //               if (rew[0]) {
-    //                 // eslint-disable-next-line prefer-destructuring
-    //                 return element.rewards = rew[0];
-    //             } else {
-    //               return rewards = {
-    //                 reward:[{
-    //                   amount: '0',
-    //                   denom: '',
-    //                 }],
-    //                 validator_address: '',
-    //               };
-    //               }
-    //             }
-    //
-    //             dataHolder.elements.push(element);
-    //             element.rewards = rewards;
-    //           }
-    //           dataHolder.amount = Number(response.data.pagination.total);
-    //           this.validators = dataHolder;
-    //         } else {
-    //           //TODO: error handling
-    //         }
-    //       }
-    //     );
-    // },
     setStatusAndId() {
       let id = 1;
       this.validators.validators.forEach((element: Validator) => {
@@ -133,6 +74,7 @@ export const useValidatorsStore = defineStore({
           element.votingPower = Number(votingPower);
           return element;
         });
+        console.log(validators.validators.length)
         return validators;
       }
       else {
@@ -157,6 +99,7 @@ export const useValidatorsStore = defineStore({
         for (const el of this.validators.validators) {
           const rew = rewards.rewards.filter(
             (element) => element.validator_address === el.operator_address,
+            this.validatorsWithReward.push(el)
           );
           if (rew[0]) {
             // eslint-disable-next-line prefer-destructuring
@@ -170,7 +113,7 @@ export const useValidatorsStore = defineStore({
         }
         return true
       }else {
-        useKeplrStore().checkKeplr()
+        useUserStore().fetchAccount()
         return false
       }
     },
@@ -194,6 +137,7 @@ export const useValidatorsStore = defineStore({
     logoutValidatorModule(){
       this.stackingFetch = false;
       this.rewardsFetched = false;
+      this.validatorsWithReward = [];
       this.fetchValidators()
     }
   },
@@ -206,6 +150,9 @@ export const useValidatorsStore = defineStore({
     },
     getRewardsFetchetStatus() : boolean {
       return this.rewardsFetched;
+    },
+    getValidatorsWithReward(): Array<Validator>{
+      return this.validatorsWithReward;
     },
     getStackingFetchResult(): boolean{
       return this.stackingFetch;

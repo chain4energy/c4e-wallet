@@ -15,3 +15,12 @@ declare global{
     getEnigmaUtils?: (chainId: string) => SecretUtils;
   }
 }
+
+export declare interface KeplrResponce{
+  err: object | string | unknown,
+  address: string,
+}
+export declare interface amount{
+  denom: string,
+  amount: string,
+}

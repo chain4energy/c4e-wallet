@@ -1,11 +1,16 @@
 import { defineStore } from "pinia";
 import { Account, account } from "@/models/account";
 import apiFactory from "@/api/factory.api";
-import { useKeplrStore } from "@/store/keplr.store";
-import { Amount } from "@/models/TotalSupply";
+import walletService from "@/services/walletService"
+import { KeplrResponce } from "@/models/keplr";
 import { useValidatorsStore } from "@/store/validators.store";
 import { Rewards } from "@/models/validator";
 import { stackingList } from "@/models/stacking";
+import { useToast } from "vue-toastification";
+import { transaction } from "@/models/transaction";
+import { ClaimRewards, DelegetionMsg, VoteMsg } from "@/services/wallet/messages";
+import { keplrConfig } from "@/config/keplrConfigTest";
+const toast = useToast();
 
 export const useUserStore = defineStore({
   id: 'userStore',
@@ -25,27 +30,30 @@ export const useUserStore = defineStore({
     };
   },
   actions: {
-
-    typeShow(type: string){
-      console.log(type);
-    },
-    async fetchAccount(id: string) {
-      await apiFactory.accountApi().fetchAccount(id).then(response => {
-        if (response.error == null && response.data != undefined) {
-          const account:Account = response.data;
-          this.account = account.account;
-          this.type = account.account["@type"]
-          this._isLoggedIn = true;
-          this.fetchBalance(id);
-          this.fetchRewards(id);
-          this.fetchStackedAmount(id);
-          this.fetchUnstackedAmount(id);
-          useValidatorsStore().fetchValidators()
-          localStorage.setItem('account', account.account.address);
-        } else {
+    async fetchAccount() {
+      await walletService.checkWallet().then(async (response) => {
+        if (response.err) {
           this._isLoggedIn = false;
+        } else {
+          const id =response.address;
+          await apiFactory.accountApi().fetchAccount(id).then(response => {
+            if (response.error == null && response.data != undefined) {
+              const account: Account = response.data;
+              this.account = account.account;
+              this.type = account.account["@type"]
+              this._isLoggedIn = true;
+              this.fetchBalance(id);
+              this.fetchRewards(id);
+              this.fetchStackedAmount(id);
+              this.fetchUnstackedAmount(id);
+              useValidatorsStore().fetchValidators()
+              localStorage.setItem('account', account.account.address);
+            } else {
+              this._isLoggedIn = false;
+            }
+          });
         }
-      });
+      })
     },
     async fetchBalance(id: string) {
       await apiFactory.accountApi().fetchBalances(id)
@@ -91,12 +99,58 @@ export const useUserStore = defineStore({
           this.totalRewards = parseFloat(rew);
         })
     },
+    async tokensTransaction(transaction :transaction){
+      walletService.getOfflineSigner(keplrConfig).then((responce) => {
+          if(responce){
+            const msg = new DelegetionMsg(transaction, keplrConfig)
+            const result = responce.client.signAndBroadcast(responce.account, [msg.delegation], msg.fee, '');
+            return result
+          } else {
+            toast.error('transaction Failed')
+          }
+
+      })
+    },
+    async claimReawards() {
+      walletService.getOfflineSigner(keplrConfig).then(async (responce) => {
+        if (responce) {
+          const validators = await useValidatorsStore().getValidatorsWithReward;
+           const fee = {
+            amount: [{
+              denom: 'uc4e',
+              amount: '0',
+            }],
+            gas: '2500000',
+          };
+          const messages = []
+          for (const element of validators) {
+            const msg = new ClaimRewards(responce.account, element.operator_address, keplrConfig)
+            messages.push(msg.rewardMSG)
+          }
+          const result = responce.client.signAndBroadcast(responce.account, messages, fee, '');
+          return result
+        } else {
+          toast.error('Claiming rewards failed')
+        }
+      })
+    },
+    async voting(option: number, proposalId: number){
+      walletService.getOfflineSigner(keplrConfig).then(async (responce) => {
+        if (responce) {
+          const msg = new VoteMsg(option, proposalId, responce.account, keplrConfig)
+          const result = responce.client.signAndBroadcast(responce.account, msg.votingMSG, msg.fee, '');
+          return result
+        } else {
+          toast.error('Claiming rewards failed')
+        }
+      })
+    },
     async logOut(){
       this._isLoggedIn = false;
       this.account = Object() as account;
-      await useKeplrStore().logOutKeplr();
       await useValidatorsStore().logoutValidatorModule()
-    }
+      localStorage.removeItem('account')
+    },
   },
   getters: {
     isLoggedIn (): boolean {
@@ -126,20 +180,5 @@ export const useUserStore = defineStore({
     getStackedList(): stackingList{
       return this.stackingList
     },
-    // getBalance(): balances {
-    //   return this.balance
-    // }
   },
-  // persist: {
-  //   enabled: true
-  // }
 });
-
-// function decodeToken (accessToken: string) : any {
-//   const base64Url = accessToken.split('.')[1];
-//   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-//   const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-//     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-//   }).join(''));
-//   return JSON.parse(jsonPayload);
-// }

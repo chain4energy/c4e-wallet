@@ -47,7 +47,7 @@
           <input style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">
         </div>
       </div>
-      <div class="validationPopup__btnHolder" v-if="useKeplrStore().getKeplr && useUserStore().isLoggedIn" >
+      <div class="validationPopup__btnHolder" v-if="useUserStore().isLoggedIn" >
         <div class="validationPopup__btns" v-if="!actionRedelegate">
           <button @click="delegate({type : validator}, 'undelegate')">Undelegate</button>
           <button @click="delegate({type : validator}, 'delegate')">Delegate</button>
@@ -61,7 +61,7 @@
 
       <div v-else class="validationPopup__btns">
         <p> Sorry Log in into Keplr </p>
-        <button @click="useKeplrStore().checkKeplr()">Login</button>
+        <button @click="useUserStore().fetchAccount()">Login</button>
       </div>
     </div>
   </div>
@@ -69,10 +69,9 @@
 
 <script setup lang="ts">
 import { computed, onUnmounted, PropType } from "vue";
-import { useKeplrStore } from "@/store/keplr.store";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from '@/models/validator';
-import { redelegation, transaction } from "@/models/transaction";
+import { transaction } from "@/models/transaction";
 import {ref, defineEmits} from "vue";
 import { useValidatorsStore } from "@/store/validators.store";
 
@@ -94,50 +93,31 @@ const actionRedelegate = ref(false)
 const amount = ref('');
 const keplrResult = ref('');
 const emit = defineEmits(['close']);
-function delegate( _ , type: string ){
+function delegate(_ ,type: string ){
   if (amount.value === '') {
     keplrResult.value = 'please input amount';
   } else {
     const transaction: transaction = {
       address: props.validator.operator_address,
       amount: amount.value,
-      type
+      type: type
     };
-    useKeplrStore().delegeteTokens(transaction).then((result: any) => {
-        if (result.code === 0) {
-          keplrResult.value = result;
-          emit('success', "success");
-        } else {
-          keplrResult.value = result;
-        }
-      }
-    );
+    useUserStore().tokensTransaction(transaction)
   }
 }
 function redelegate(){
-  console.log(redelegateTo.value);
   if(!redelegateTo.value && amount.value === ''){
     keplrResult.value = 'please choose validator and ammount';
   } else {
-    const redelegation: redelegation = {
+    const transaction: transaction= {
       delegatorAddress: useUserStore().getAccount.address,
-      validatorSrcAddress: props.validator.operator_address,
+      address: props.validator.operator_address,
       validatorDstAddress: redelegateTo.value.operator_address,
       amount: amount.value,
+      type: 'redelegate'
     };
-    useKeplrStore().redelagate(redelegation).then((result: any) => {
-        if (result.code === 0) {
-          keplrResult.value = result;
-          emit('success', "success");
-        } else {
-          keplrResult.value = result.raw_log;
-        }
-      }
-    );
-    console.log(redelegation)
+    useUserStore().tokensTransaction(transaction)
   }
-
-  // useKeplrStore().redelagate(transaction);
 }
 function redelegateState(state: boolean){
   actionRedelegate.value = state

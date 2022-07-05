@@ -17,14 +17,14 @@
             <input type="radio" id="abstain" value="2" v-model="picked">
             <label for="abstain">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</label>
           </div>
-          <span v-if="useKeplrStore().getKeplr && useUserStore().isLoggedIn">
+          <span v-if="useUserStore().isLoggedIn">
             <Button
               @click="onVoteClick" :label="$t('GOVERNANCE_VIEW.VOTE')" class="p-button-raised p-button-rounded"  data-bs-dismiss="modal" />
           </span>
           <span v-else>
           <p>{{ $t("GOVERNANCE_VIEW.VOTE_CONDITION") }}</p>
           <Button
-            @click="useKeplrStore().checkKeplr()" :label="$t('GOVERNANCE_VIEW.LOGIN')" class="p-button-raised p-button-rounded" />
+            @click="useUserStore().fetchAccount()" :label="$t('GOVERNANCE_VIEW.LOGIN')" class="p-button-raised p-button-rounded" />
           </span>
         </div>
       </div>
@@ -35,7 +35,6 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import { useKeplrStore } from "@/store/keplr.store";
 import {useUserStore} from "@/store/user.store";
 
 const props = defineProps({
@@ -53,7 +52,7 @@ const picked = ref();
 
 const onVoteClick = () => {
   picked.value = Number(picked.value)
-  useKeplrStore().vote(picked.value, props.proposalId)
+  useUserStore().voting(picked.value, props.proposalId)
 };
 </script>
 

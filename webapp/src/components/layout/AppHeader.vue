@@ -45,21 +45,18 @@
             <Button icon="pi pi-bell" class="nav-link p-button-rounded p-button-text p-button-lg mx-1" ></Button>
             <div class="badge">2</div>
           </span>
-            <div v-if="useKeplrStore().getKeplr.address && useUserStore().isLoggedIn">
-              {{useKeplrStore().getKeplr.address}}
+            <div v-if="useUserStore().isLoggedIn">
+              {{useUserStore().getAccount.address}}
             </div>
-            <div v-else-if="useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn">
-              You don't have a coins
-            </div>
-            <div v-else-if="!useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn">
+            <div v-else>
               Login
             </div>
             <Button
-              v-if="useKeplrStore().getKeplr.address && useUserStore().isLoggedIn"
+              v-if="useUserStore().isLoggedIn"
               icon=" pi pi-power-off"
               class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logOut()"></Button>
             <Button
-              v-if="!useKeplrStore().getKeplr.address && !useUserStore().isLoggedIn"
+              v-if="!useUserStore().isLoggedIn"
               icon=" pi pi-power-off"
               class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logIn()"></Button>
           </div>
@@ -81,26 +78,24 @@ import  UserData from "@/components/userData/UserData.vue";
 
 import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
-import {useKeplrStore} from "@/store/keplr.store";
 import { computed, onMounted, onUnmounted, onUpdated } from "vue";
 import { useUserStore } from "@/store/user.store";
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
 
-const keplerStore = useKeplrStore();
 
 function logIn(){
-  keplerStore.checkKeplr()
+  useUserStore().fetchAccount()
 }
-onMounted(()=> {
-  setTimeout(useKeplrStore().checkKeplr,500)
-})
+// onMounted(()=> {
+//   setTimeout(useUserStore().fetchAccount,500)
+// })
 function logOut(){
   useUserStore().logOut()
 }
 window.addEventListener('keplr_keystorechange', () => {
-  keplerStore.checkKeplr()
+  useUserStore().fetchAccount()
 });
 
 onUnmounted(()=>{

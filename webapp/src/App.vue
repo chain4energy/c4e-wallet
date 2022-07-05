@@ -20,7 +20,6 @@ import AppSidebar from '@/components/layout/AppSidebar.vue';
 import { inject, onBeforeMount, onMounted, watch } from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
 import {createRouterBeforeEach} from '@/router/before_each';
-import { useKeplrStore } from "@/store/keplr.store";
 
 
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css";

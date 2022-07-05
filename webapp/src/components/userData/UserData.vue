@@ -47,13 +47,10 @@
 
 <script setup lang="ts">
 import { useUserStore } from "@/store/user.store";
-import { useKeplrStore } from "@/store/keplr.store";
-import { transaction } from "@/models/transaction";
 import { computed } from "vue";
-import * as icons from "lucide-vue-next";
 
 function claimRewards(){
-  useKeplrStore().claimReward();
+  useUserStore().claimReawards();
 }
 const total = computed(() => useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances);
 </script>
