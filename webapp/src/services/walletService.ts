@@ -1,10 +1,18 @@
-import { SigningStargateClient } from "@cosmjs/stargate";
+import { SigningStargateClient, isDeliverTxFailure } from "@cosmjs/stargate";
 import { KeplrResponce } from "@/models/keplr";
 import { useToast } from "vue-toastification";
 import { DelegetionMsg, KeplrObj } from "@/services/wallet/messages";
 import { keplrConfig } from "@/config/keplrConfigTest";
 import { keplrModel } from "@/config/model/keplrModel";
 import { useSplashStore } from "@/store/splash.store";
+// import {
+//   MsgBeginRedelegate,
+//   MsgCreateValidator,
+//   MsgDelegate,
+//   MsgEditValidator,
+//   MsgUndelegate,
+// } from "cosmjs-types/cosmos/staking/v1beta1/tx";
+import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
 
 const toast = useToast()
 
@@ -13,6 +21,45 @@ declare interface wallet{
   client: any,
 }
 
+async function vote(config: keplrModel, option: number, proposalId: number): Promise<KeplrResponce> {
+  const signer = await getOfflineSigner(config)
+  if (signer == undefined) {
+    const response : KeplrResponce = {
+      err: 'Install Kepplr',
+      address: ''
+    }
+    return response
+  }
+  const msg = {
+    typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
+    value: MsgVote.fromPartial({
+      option: option,
+      proposalId,
+      voter: signer.account,
+    }),
+  }
+
+  const fee = {
+    amount: [{
+      denom: 'uc4e',
+      amount: '0',
+    }],
+    gas: '2500000',
+  };
+  const response = await signer.client.signAndBroadcast(signer?.account, [msg], fee, '');
+  if (isDeliverTxFailure(response)) {
+    const response : KeplrResponce = {
+      err: 'Some Err',
+      address: ''
+    }
+    return response
+  }
+  const result: KeplrResponce = {
+    err: '',
+    address: signer.account
+  }
+  return result
+}
 
 async function getOfflineSigner(config: keplrModel){
   useSplashStore().increment();
@@ -70,4 +117,4 @@ async function checkWallet(): Promise<KeplrResponce> {
   }
 }
 
-export default { getOfflineSigner, checkWallet};
+export default { vote, getOfflineSigner, checkWallet};

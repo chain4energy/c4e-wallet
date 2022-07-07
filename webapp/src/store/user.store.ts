@@ -12,10 +12,16 @@ import { ClaimRewards, DelegetionMsg, VoteMsg } from "@/services/wallet/messages
 import { keplrConfig } from "@/config/keplrConfigTest";
 const toast = useToast();
 
+interface LoggedInfo{
+  account : string;
+  modifiable: boolean;
+}
+
 export const useUserStore = defineStore({
   id: 'userStore',
   state: () => {
     return {
+      logged: Object() as LoggedInfo,
       account: Object() as account,
       type: '',
       balances: 0,
@@ -30,6 +36,54 @@ export const useUserStore = defineStore({
     };
   },
   actions: {
+
+    async connect() {
+      await walletService.checkWallet().then(async (response) => {
+        if (response.err) {
+          this._isLoggedIn = false;
+        } else {
+          this.logged = {
+            account: response.address,
+            modifiable: true
+          } as LoggedInfo
+          this._isLoggedIn = true;
+          this.fetchAccountData()
+        }
+      })
+    },
+    async connectAsAddress(address: string) {
+      this.logged = {
+        account: address,
+        modifiable: false
+      } as LoggedInfo
+      this._isLoggedIn = true;
+      this.fetchAccountData()
+    },
+    async fetchAccountData() {
+      // await walletService.checkWallet().then(async (response) => {
+      //   if (response.err) {
+      //     this._isLoggedIn = false;
+      //   } else {
+          const id =this.logged.account;
+          await apiFactory.accountApi().fetchAccount(id).then(response => {
+            if (response.error == null && response.data != undefined) {
+              const account: Account = response.data;
+              this.account = account.account;
+              this.type = account.account["@type"]
+
+              this.fetchBalance(id);
+              this.fetchRewards(id);
+              this.fetchStackedAmount(id);
+              this.fetchUnstackedAmount(id);
+              useValidatorsStore().fetchValidators()
+              localStorage.setItem('account', account.account.address);
+            } else {
+              this._isLoggedIn = false;
+            }
+      //     });
+      //   }
+      })
+    },
     async fetchAccount() {
       await walletService.checkWallet().then(async (response) => {
         if (response.err) {
@@ -131,6 +185,15 @@ export const useUserStore = defineStore({
           return result
         } else {
           toast.error('Claiming rewards failed')
+        }
+      })
+    },
+    async vote(option: number, proposalId: number){
+      walletService.vote(keplrConfig, option, proposalId).then(async (responce) => {
+        if (responce.err != '') {
+          toast.error('vote failed')
+        } else {
+          // TODO refresh data ??
         }
       })
     },
