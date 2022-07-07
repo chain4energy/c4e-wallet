@@ -1,5 +1,4 @@
 import { SigningStargateClient, isDeliverTxFailure } from "@cosmjs/stargate";
-import { KeplrResponce } from "@/models/keplr";
 import { useToast } from "vue-toastification";
 // import { DelegetionMsg, KeplrObj } from "@/services/wallet/messages";
 import { useSplashStore } from "@/store/splash.store";
@@ -66,13 +65,7 @@ async function delegate(connection: ConnectionInfo, validator: string, amount: s
     }),
   };
 
-  const fee = {
-    amount: [{
-      denom: config.stakingDenom,
-      amount: '0',
-    }],
-    gas: config.operationGas.delegate,
-  };
+  const fee = createFee(config.operationGas.delegate, config.stakingDenom);
   return await signAndBroadcast(connection, [msg], fee, '');
 }
 
@@ -91,13 +84,7 @@ async function undelegate(connection: ConnectionInfo, validator: string, amount:
     }),
   };
 
-  const fee = {
-    amount: [{
-      denom: config.stakingDenom,
-      amount: '0',
-    }],
-    gas: config.operationGas.undelegate,
-  };
+  const fee = createFee(config.operationGas.undelegate, config.stakingDenom);
   return await signAndBroadcast(connection, [msg], fee, '');
 }
 
@@ -116,14 +103,7 @@ async function redelegate(connection: ConnectionInfo, validatorSrc: string, vali
       }
     }),
   };
-
-  const fee = {
-    amount: [{
-      denom: config.stakingDenom,
-      amount: '0',
-    }],
-    gas: config.operationGas.redelegate,
-  };
+  const fee = createFee(config.operationGas.redelegate, config.stakingDenom);
   return await signAndBroadcast(connection, [msg], fee, '');
 }
 
@@ -138,14 +118,7 @@ async function vote(connection: ConnectionInfo, option: number, proposalId: numb
       voter: connection.account,
     }),
   }
-
-  const fee = {
-    amount: [{
-      denom: config.stakingDenom,
-      amount: '0',
-    }],
-    gas: config.operationGas.vote,
-  };
+  const fee = createFee(config.operationGas.vote, config.stakingDenom);
   return await signAndBroadcast(connection, [msg], fee, '');
 }
 
@@ -163,14 +136,20 @@ async function claimRewards(connection: ConnectionInfo, validators: Array<Valida
     }
     messages.push(msg)
   }
-  const fee = {
+
+  const fee = createFee(config.operationGas.claimRewards, config.stakingDenom);
+  return await signAndBroadcast(connection, messages, fee, '');
+}
+
+function createFee(gas: string, denom: string): StdFee {
+  const fee: StdFee = {
     amount: [{
-      denom: config.stakingDenom,
+      denom: denom,
       amount: '0',
     }],
-    gas: config.operationGas.claimRewards,
+    gas: gas,
   };
-  return await signAndBroadcast(connection, messages, fee, '');
+  return fee
 }
 
 async function signAndBroadcast(connection: ConnectionInfo, messages: readonly EncodeObject[], fee: StdFee | "auto" | number, memo?: string): Promise<WalletResponse> {
@@ -220,23 +199,18 @@ function createClient(connectionType: ConnectionType) {
 }
 
 function getOfflineSigner(connectionType: ConnectionType) {
-  useSplashStore().increment();
-  try {
-    switch(connectionType) {
-      case ConnectionType.Keplr: {
-        if(window.keplr) {
-          const chainId = useConfigurationStore().config.chainId
-          const offlineSigner = window.keplr.getOfflineSigner(chainId);
-          return offlineSigner
-        }
-        return undefined
+  switch(connectionType) {
+    case ConnectionType.Keplr: {
+      if(window.keplr) {
+        const chainId = useConfigurationStore().config.chainId
+        const offlineSigner = window.keplr.getOfflineSigner(chainId);
+        return offlineSigner
       }
-      default: {
-        return undefined
-      }
+      return undefined
     }
-  } finally {
-    useSplashStore().decrement();
+    default: {
+      return undefined
+    }
   }
 }
 

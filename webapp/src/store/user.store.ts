@@ -4,7 +4,6 @@ import apiFactory from "@/api/factory.api";
 import walletService, { WalletResponseCode } from "@/services/walletService"
 import { ConnectionInfo } from "@/services/walletService"
 
-import { KeplrResponce } from "@/models/keplr";
 import { useValidatorsStore } from "@/store/validators.store";
 import { Rewards } from "@/models/validator";
 import { stackingList } from "@/models/stacking";
