@@ -9,6 +9,7 @@ export interface Block {
 }
 export interface Header {
   height: number
+  time: string,
 }
 export class BlockId {
 

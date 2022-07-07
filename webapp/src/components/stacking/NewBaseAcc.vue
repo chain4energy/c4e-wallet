@@ -2,6 +2,7 @@
 <div>
   <TabView>
     <TabPanel header="All">
+      <button @click="useValidatorsStore().sortValidators()">sort validators</button>
       <DataTableWraper :expanded="true" :validators="validators.fullList"/>
     </TabPanel>
     <TabPanel v-if="rewardsFetched && validators.stacked !== []" header="Staked">

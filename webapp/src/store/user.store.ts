@@ -22,6 +22,7 @@ export const useUserStore = defineStore({
       stacked: 0,
       unstacked: 0,
       totalRewards: 0,
+      vestimgAccLocked: Number() as number,
       rewards: Object() as Rewards,
       _isLoggedIn: false,
       basicAccount: false,
@@ -36,17 +37,23 @@ export const useUserStore = defineStore({
           this._isLoggedIn = false;
         } else {
           const id =response.address;
-          await apiFactory.accountApi().fetchAccount(id).then(response => {
+          await apiFactory.accountApi().fetchAccount(id).then(async response => {
             if (response.error == null && response.data != undefined) {
               const account: Account = response.data;
               this.account = account.account;
+              if (account.account["@type"] === "/cosmos.vesting.v1beta1.ContinuousVestingAccount") {
+                this.account.address = account.account.base_vesting_account.base_account.address
+              } else {
+                this.account.address = account.account.address
+              }
               this.type = account.account["@type"]
               this._isLoggedIn = true;
-              this.fetchBalance(id);
-              this.fetchRewards(id);
-              this.fetchStackedAmount(id);
-              this.fetchUnstackedAmount(id);
-              useValidatorsStore().fetchValidators()
+
+              await this.fetchBalance(id);
+              await this.fetchRewards(id);
+              await this.fetchStackedAmount(id);
+              await this.fetchUnstackedAmount(id);
+              await useValidatorsStore().fetchValidators()
               localStorage.setItem('account', account.account.address);
             } else {
               this._isLoggedIn = false;
@@ -77,26 +84,41 @@ export const useUserStore = defineStore({
           this.stacked= sumWithInitial;
         });
     },
+    async calculateVestingLocked(latestBlTime: string){
+      const validtime = await Date.parse(latestBlTime)/1000
+      const x = validtime - Number(this.account.start_time)
+      const y = Number(this.account.base_vesting_account.end_time) - Number(this.account.start_time)
+      const diference = x/y;
+      const unlocked = Number(this.account.base_vesting_account.original_vesting[0].amount) * diference
+      console.log(this.account.base_vesting_account.original_vesting[0].amount * diference)
+      const locked = Number(this.account.base_vesting_account.original_vesting[0].amount) - unlocked
+      this.vestimgAccLocked = locked;
+    },
     async fetchUnstackedAmount(id: string){
       await apiFactory.accountApi().fetchUnstackedTokens(id)
         .then(response => {
-          console.log(response.data.unbonding_responses[0].entries);
           const totalUnstacked = []
-          for (const element of response.data.unbonding_responses[0].entries){
-            totalUnstacked.push(parseInt(element.balance))
+          if(response.data.unbonding_responses.length > 0){
+            for (const element of response.data.unbonding_responses[0].entries){
+              totalUnstacked.push(parseInt(element.balance))
+            }
+            this.unstacked= totalUnstacked.reduce(
+              (previousValue, currentValue) => previousValue + currentValue, 0);
+          } else {
+            this.unstacked = 0;
           }
-          this.unstacked= totalUnstacked.reduce(
-            (previousValue, currentValue) => previousValue + currentValue,
-            0
-          );
         });
     },
     async fetchRewards(id: string){
       await apiFactory.accountApi().fetchRewards(id)
         .then(response => {
           this.rewards = response.data
-          const rew = response.data.total[0].amount;
-          this.totalRewards = parseFloat(rew);
+          if(response.data.rewards.length > 0){
+            const rew = response.data.total[0].amount;
+            this.totalRewards = parseFloat(rew);
+          } else {
+            this.totalRewards = 0;
+          }
         })
     },
     async tokensTransaction(transaction :transaction): Promise<void>{
@@ -137,7 +159,7 @@ export const useUserStore = defineStore({
     async voting(option: number, proposalId: number){
       walletService.getOfflineSigner(keplrConfig).then(async (responce) => {
         if (responce) {
-          const msg = new VoteMsg(option, proposalId, responce.account, keplrConfig)
+          const msg = new VoteMsg(option, proposalId, responce.account, keplrConfig);
           const result = responce.client.signAndBroadcast(responce.account, msg.votingMSG, msg.fee, '');
           return result
         } else {
@@ -180,5 +202,8 @@ export const useUserStore = defineStore({
     getStackedList(): stackingList{
       return this.stackingList
     },
+    getVestingLockAmount() : number{
+      return this.vestimgAccLocked
+    }
   },
 });

@@ -17,7 +17,7 @@ export class BlockApi extends BaseApi {
     return this.axiosCall({
       method: 'GET',
       url: useConfigurationStore().config.bcApiURL+this.LATEST_BLOCK_URL
-    }, true, null);
+    }, false, null);
   }
 
   public async fetchAverageBlockTime(): Promise<RequestResponse<AverageBlockTimeResponse>> {

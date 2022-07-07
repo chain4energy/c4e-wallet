@@ -104,11 +104,12 @@ let max = useUserStore().getUnstacked + useUserStore().getStacked + useUserStore
 
 setLocale({
   number: {
-    lessThan: `must be less than ${max}`
+    lessThan: `must be less than ${max}`,
+    moreThan: 'should be more than 0'
   },
   mixed: {
     defined: `this is required field`,
-    notType: `must be a number more than 0`,
+    notType: `must be a number`,
   }
 });
 
@@ -116,6 +117,7 @@ let amountSchema = object({
   value:
     number()
     .defined()
+    .moreThan(0)
     .lessThan(useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances)
 });
 

@@ -122,7 +122,7 @@ export class VoteMsg{
         typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
         value: MsgVote.fromPartial({
           option: option,
-          proposalId,
+          proposalId: proposalId,
           voter: delegator,
         }),
       };

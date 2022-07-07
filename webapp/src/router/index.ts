@@ -9,6 +9,7 @@ import BaseAccount from "@/components/stacking/BaseAccount.vue";
 import stakingRoutes from "@/router/stakingRoutes";
 import { useUserStore } from "@/store/user.store";
 
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',

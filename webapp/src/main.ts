@@ -64,8 +64,8 @@ const pinia = createPinia();
 pinia.use(piniaPersist);
 const logger = new LoggerService();
 
-app.use(router)
-  .use(pinia)
+app.use(pinia)
+  .use(router)
   .use(i18n)
   .use(Toast, toastOptions)
   // .use(vuetify)
