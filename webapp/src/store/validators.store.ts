@@ -35,12 +35,14 @@ export const useValidatorsStore = defineStore({
       });
 
       this.validators = await this.setVotingPower(validatorsList);
+      await this.sortValidators()
       await useValidatorsStore().setStatusAndId();
-      if(useUserStore().isLoggedIn) {
+      if(useUserStore().isLoggedIn && useUserStore().getRewardList) {
         await useUserStore().fetchRewards(useUserStore().getAccount.address);
-        this.setStacked();
+        this.stackingFetch = this.setStacked();
         this.rewardsFetched = this.setRewards()
       }
+
     },
     setStatusAndId() {
       let id = 1;
@@ -74,14 +76,12 @@ export const useValidatorsStore = defineStore({
           element.votingPower = Number(votingPower);
           return element;
         });
-        console.log(validators.validators.length)
         return validators;
       }
       else {
         useTokensStore().fetchStakingPool()
         return validators;
       }
-
     },
 
     fetchNumberOfActiveValidators(){
@@ -117,8 +117,27 @@ export const useValidatorsStore = defineStore({
         return false
       }
     },
+    sortValidators(){
+      const validatorsValues: Array<number> = []
+      const sortedValidators: Array<Validator> = []
+      this.validators.validators.forEach((el: Validator)=> {
+        validatorsValues.push(Number(el.tokens))
+      })
+      let id = 1;
+      const o = validatorsValues.length
+      for (let i = 0; i < o; i++) {
+        const max = Math.max(...validatorsValues)
+        const element = this.validators.validators.find((element: Validator)=> Number(element.tokens) === max )
+        element.id = id
+        id += 1;
+        sortedValidators.push(element)
+        validatorsValues.splice(validatorsValues.indexOf(max),1);
+      }
+      this.validators.validators = sortedValidators
+    },
     setStacked() {
       const stacked = useUserStore().getStackedList
+      console.log(stacked)
       if(stacked.delegation_responses.length > 0){
         for(const el of this.validators.validators){
           const data = stacked.delegation_responses.find((stackD: stackItem) => stackD.delegation.validator_address === el.operator_address)
@@ -131,7 +150,15 @@ export const useValidatorsStore = defineStore({
             }
           }
         }
-        this.stackingFetch = true;
+        return true
+      } else {
+        for(const el of this.validators.validators){
+          el.stacked = {
+            amount: '0',
+            denom: '',
+          }
+        }
+        return true
       }
     },
     logoutValidatorModule(){

@@ -52,7 +52,7 @@ const picked = ref();
 
 const onVoteClick = () => {
   picked.value = Number(picked.value)
-  useUserStore().vote(picked.value, props.proposalId)
+  useUserStore().vote(picked.value, Number(props.proposalId))
 };
 </script>
 

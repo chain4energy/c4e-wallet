@@ -1,34 +1,35 @@
 <template>
   <div>
+    <div>{{accType}}</div>
     <router-view/>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUpdated, ref, shallowRef } from "vue";
 import { useUserStore } from "@/store/user.store";
-import NewBaseAcc from "@/components/stacking/NewBaseAcc.vue"
-import VestingAcc from "@/components/stacking/VestingAcc.vue"
+import router from "@/router";
+import { mapGetters } from "pinia";
+import { onMounted, watch } from "vue";
 
-const userStore= useUserStore()
-const component = shallowRef()
-onMounted(()=>{
-  checkAccType()
-})
-
-onUpdated(() => {
-  checkAccType()
-})
-
-function checkAccType() {
-  if (userStore.getAccount) {
-    if (userStore.getAccType == "/cosmos.vesting.v1beta1.ContinuousVestingAccount") {
-      component.value = VestingAcc
-    }
-    component.value = NewBaseAcc
+onMounted(()=> {
+  if(!useUserStore().getAccType|| useUserStore().getAccType === '/cosmos.auth.v1beta1.BaseAccount'){
+    router.push({name: 'base'})
+  } else {
+    router.push({name: 'vesting'})
   }
-  component.value = NewBaseAcc
-}
+})
+watch(
+  () => useUserStore().getAccType,
+  (accType) => {
+    if(!accType || accType === '/cosmos.auth.v1beta1.BaseAccount'){
+      router.push({name: 'base'})
+    } else {
+      router.push({name: 'vesting'})
+    }
+    console.log(accType)
+  }
+)
+
 </script>
 
 <style scoped lang="scss">

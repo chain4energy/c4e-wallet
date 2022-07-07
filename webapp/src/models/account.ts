@@ -1,4 +1,5 @@
 import {Amount} from "@/models/TotalSupply";
+import { array } from "yup";
 export interface account{
     accountNumber : number;
     delegation_response: object;
@@ -11,6 +12,16 @@ export interface account{
     },
     account_number: string,
     sequence: string,
+    base_vesting_account:{
+      base_account: {
+        account_number:string,
+        address: string
+      },
+      end_time: string,
+      original_vesting: Array<Amount>,
+    }
+    start_time: string,
+
 }
 
 export interface Account{

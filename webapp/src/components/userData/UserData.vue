@@ -1,6 +1,7 @@
 <template>
 <div class="userdata">
   <div class="userdata__accountData">
+    <div class="userdata__accountData-base" >
     <div class="userdata__icon">
       <svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.268 27.8207C11.4745 27.8139 8.74571 26.9973 6.42638 25.4741C4.10705 23.9509 2.30123 21.7894 1.23702 19.2627C0.172818 16.7359 -0.102009 13.9573 0.447245 11.2779C0.996499 8.59846 2.34519 6.13838 4.32296 4.20841C6.30073 2.27844 8.81884 0.965187 11.5592 0.434548C14.2995 -0.0960907 17.1392 0.179693 19.7194 1.22705C22.2996 2.27441 24.5046 4.04637 26.0559 6.31907C27.6071 8.59177 28.4351 11.2632 28.4351 13.996C28.4258 17.6657 26.929 21.182 24.2732 23.7736C21.6174 26.3653 18.0192 27.8207 14.268 27.8207ZM14.268 1.22863C11.6881 1.23469 9.16786 1.98862 7.02574 3.3952C4.88362 4.80178 3.21571 6.79789 2.23271 9.13136C1.2497 11.4648 0.99571 14.031 1.50282 16.5056C2.00993 18.9802 3.25539 21.2522 5.08186 23.0347C6.90833 24.8172 9.23387 26.0302 11.7647 26.5203C14.2955 27.0105 16.918 26.7559 19.301 25.7886C21.6839 24.8214 23.7204 23.185 25.1531 21.086C26.5858 18.9871 27.3504 16.5199 27.3504 13.996C27.3421 10.6071 25.9602 7.35972 23.5076 4.96624C21.0551 2.57277 17.7323 1.22862 14.268 1.22863Z" fill="#0F3153"/>
@@ -26,7 +27,20 @@
       <p>Unstaking</p>
       <p>{{useUserStore().getUnstacked || 0}}</p>
     </div>
+    </div>
+    <div class="userdata__accountData-vesting" v-if="useUserStore().getAccType==='/cosmos.vesting.v1beta1.ContinuousVestingAccount'">
+      <div>
+        <p>{{locked}}</p>
+      </div>
+      <div>
+        <p>{{new Date(useUserStore().getAccount.start_time*1000).toLocaleString()}}</p>
+      </div>
+      <div>
+        <p>{{new Date(useUserStore().getAccount.base_vesting_account.end_time*100).toLocaleString()}}</p>
+      </div>
+    </div>
   </div>
+
   <div class="userdata__rewards">
     <div class="userdata__rewardAmount">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -47,12 +61,17 @@
 
 <script setup lang="ts">
 import { useUserStore } from "@/store/user.store";
-import { computed } from "vue";
+import {useBlockStore} from "@/store/block.store";
+import { computed, ref } from "vue";
 
 function claimRewards(){
   useUserStore().claimRewards();
 }
+useBlockStore().fetchLatestBlock()
+setInterval(useBlockStore().fetchLatestBlock, 6000)
+
 const total = computed(() => useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances);
+const locked = computed(()=> useUserStore().getVestingLockAmount.toFixed(0))
 </script>
 
 <style scoped lang="scss">
@@ -75,7 +94,23 @@ const total = computed(() => useUserStore().getUnstacked + useUserStore().getSta
     display: flex;
     width: 60%;
     align-items: center;
-    padding: 20px 25px;
+    //padding: 20px 25px;
+    justify-content: space-between;
+    &-base{
+      display: flex;
+      align-items: center;
+      max-width: 50%;
+      margin-left: 20px;
+    }
+    &-vesting{
+      padding-left: 3%;
+      background: #E6FFF1;
+      display: flex;
+      align-items: center;
+      width: 40%;
+      min-height: 100%;
+      clip-path: polygon(100% 0%, 100% 100%, 0 100%, 5% 50%, 0 0);
+    }
   }
   &__amounts{
     text-align: left;
@@ -103,6 +138,7 @@ const total = computed(() => useUserStore().getUnstacked + useUserStore().getSta
       margin-right: 16px;
     }
   }
+
   button{
     margin-left: 10px;
     border: 1px solid #72BF44;

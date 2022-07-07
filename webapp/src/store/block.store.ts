@@ -1,12 +1,14 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {LatestBlock} from "@/models/LatestBlock";
+import { useUserStore } from "@/store/user.store";
 
 export const useBlockStore = defineStore( 'block', {
   state: () => {
     return {
       averageBlockTime: Object(Number),
-      latestBlockHeight: Object(Number)
+      latestBlockHeight: Object(Number),
+      latestBlockTime: Object(String),
     };
   },
   actions: {
@@ -18,6 +20,14 @@ export const useBlockStore = defineStore( 'block', {
           const latestBlock: LatestBlock = response.data;
 
           this.latestBlockHeight = latestBlock.block.header.height;
+
+          this.latestBlockTime = latestBlock.block.header.time;
+
+          if(useUserStore().getAccount
+            && useUserStore().getAccType ==='/cosmos.vesting.v1beta1.ContinuousVestingAccount'){
+            useUserStore().calculateVestingLocked(latestBlock.block.header.time)
+          }
+
 
         } else {
           //TODO: error handling
