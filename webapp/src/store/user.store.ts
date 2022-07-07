@@ -77,11 +77,11 @@ export const useUserStore = defineStore({
                 this.account.address = account.account.address
               }
               this.type = account.account["@type"]
-              this.fetchBalance(id);
-              this.fetchRewards(id);
-              this.fetchStackedAmount(id);
-              this.fetchUnstackedAmount(id);
-              useValidatorsStore().fetchValidators()
+              await this.fetchBalance(id);
+              await this.fetchRewards(id);
+              await this.fetchStackedAmount(id);
+              await this.fetchUnstackedAmount(id);
+              await useValidatorsStore().fetchValidators()
               localStorage.setItem('account', account.account.address);
             } else {
               // this._isLoggedIn = false;
