@@ -67,7 +67,7 @@ export const useUserStore = defineStore({
           return
         }
           const id =this.logged.account;
-          await apiFactory.accountApi().fetchAccount(id).then(response => {
+          await apiFactory.accountApi().fetchAccount(id).then(async response => {
             if (response.error == null && response.data != undefined) {
               const account: Account = response.data;
               this.account = account.account;
