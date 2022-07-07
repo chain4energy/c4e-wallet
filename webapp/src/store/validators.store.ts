@@ -113,7 +113,7 @@ export const useValidatorsStore = defineStore({
         }
         return true
       }else {
-        useUserStore().fetchAccount()
+        useUserStore().fetchAccountData()
         return false
       }
     },

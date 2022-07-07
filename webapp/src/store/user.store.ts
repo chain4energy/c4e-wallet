@@ -1,27 +1,25 @@
 import { defineStore } from "pinia";
 import { Account, account } from "@/models/account";
 import apiFactory from "@/api/factory.api";
-import walletService from "@/services/walletService"
+import walletService, { WalletResponseCode } from "@/services/walletService"
+import { ConnectionInfo } from "@/services/walletService"
+
 import { KeplrResponce } from "@/models/keplr";
 import { useValidatorsStore } from "@/store/validators.store";
 import { Rewards } from "@/models/validator";
 import { stackingList } from "@/models/stacking";
 import { useToast } from "vue-toastification";
 import { transaction } from "@/models/transaction";
-import { ClaimRewards, DelegetionMsg, VoteMsg } from "@/services/wallet/messages";
-import { keplrConfig } from "@/config/keplrConfigTest";
+// import { ClaimRewards, DelegetionMsg, VoteMsg } from "@/services/wallet/messages";
 const toast = useToast();
 
-interface LoggedInfo{
-  account : string;
-  modifiable: boolean;
-}
+
 
 export const useUserStore = defineStore({
   id: 'userStore',
   state: () => {
     return {
-      logged: Object() as LoggedInfo,
+      logged: Object() as ConnectionInfo,
       account: Object() as account,
       type: '',
       balances: 0,
@@ -37,40 +35,42 @@ export const useUserStore = defineStore({
   },
   actions: {
 
-    async connect() {
-      await walletService.checkWallet().then(async (response) => {
-        if (response.err) {
+    async connectKeplr() {
+      await walletService.connectKeplr().then(async (response) => {
+        if (response.code == WalletResponseCode.NOK) {
           this._isLoggedIn = false;
         } else {
-          this.logged = {
-            account: response.address,
-            modifiable: true
-          } as LoggedInfo
+          this.logged = response.connectionInfo
           this._isLoggedIn = true;
           this.fetchAccountData()
         }
       })
     },
     async connectAsAddress(address: string) {
-      this.logged = {
-        account: address,
-        modifiable: false
-      } as LoggedInfo
-      this._isLoggedIn = true;
-      this.fetchAccountData()
+      await walletService.connectAddress(address).then(async (response) => {
+        if (response.code == WalletResponseCode.NOK) {
+          this._isLoggedIn = false;
+        } else {
+          this.logged = response.connectionInfo
+          this._isLoggedIn = true;
+          this.fetchAccountData()
+        }
+      })
     },
     async fetchAccountData() {
       // await walletService.checkWallet().then(async (response) => {
       //   if (response.err) {
       //     this._isLoggedIn = false;
       //   } else {
+        if (!this._isLoggedIn) {
+          return
+        }
           const id =this.logged.account;
           await apiFactory.accountApi().fetchAccount(id).then(response => {
             if (response.error == null && response.data != undefined) {
               const account: Account = response.data;
               this.account = account.account;
               this.type = account.account["@type"]
-
               this.fetchBalance(id);
               this.fetchRewards(id);
               this.fetchStackedAmount(id);
@@ -78,37 +78,37 @@ export const useUserStore = defineStore({
               useValidatorsStore().fetchValidators()
               localStorage.setItem('account', account.account.address);
             } else {
-              this._isLoggedIn = false;
+              // this._isLoggedIn = false;
             }
       //     });
       //   }
       })
     },
-    async fetchAccount() {
-      await walletService.checkWallet().then(async (response) => {
-        if (response.err) {
-          this._isLoggedIn = false;
-        } else {
-          const id =response.address;
-          await apiFactory.accountApi().fetchAccount(id).then(response => {
-            if (response.error == null && response.data != undefined) {
-              const account: Account = response.data;
-              this.account = account.account;
-              this.type = account.account["@type"]
-              this._isLoggedIn = true;
-              this.fetchBalance(id);
-              this.fetchRewards(id);
-              this.fetchStackedAmount(id);
-              this.fetchUnstackedAmount(id);
-              useValidatorsStore().fetchValidators()
-              localStorage.setItem('account', account.account.address);
-            } else {
-              this._isLoggedIn = false;
-            }
-          });
-        }
-      })
-    },
+    // async fetchAccount() {
+    //   await walletService.checkWallet().then(async (response) => {
+    //     if (response.err) {
+    //       this._isLoggedIn = false;
+    //     } else {
+    //       const id =response.address;
+    //       await apiFactory.accountApi().fetchAccount(id).then(response => {
+    //         if (response.error == null && response.data != undefined) {
+    //           const account: Account = response.data;
+    //           this.account = account.account;
+    //           this.type = account.account["@type"]
+    //           this._isLoggedIn = true;
+    //           this.fetchBalance(id);
+    //           this.fetchRewards(id);
+    //           this.fetchStackedAmount(id);
+    //           this.fetchUnstackedAmount(id);
+    //           useValidatorsStore().fetchValidators()
+    //           localStorage.setItem('account', account.account.address);
+    //         } else {
+    //           this._isLoggedIn = false;
+    //         }
+    //       });
+    //     }
+    //   })
+    // },
     async fetchBalance(id: string) {
       await apiFactory.accountApi().fetchBalances(id)
         .then(response => {
@@ -153,63 +153,100 @@ export const useUserStore = defineStore({
           this.totalRewards = parseFloat(rew);
         })
     },
-    async tokensTransaction(transaction :transaction): Promise<void>{
-      await walletService.getOfflineSigner(keplrConfig).then(async (responce) => {
-        if (responce) {
-          transaction.delegatorAddress = this.account.address
-          const msg = await new DelegetionMsg(transaction, keplrConfig)
-          const result = await responce.client.signAndBroadcast(responce.account, [msg.delegation], msg.fee, '');
-          return result
+    // async tokensTransaction(transaction :transaction): Promise<void>{
+    //   await walletService.getOfflineSigner(keplrConfig).then(async (responce) => {
+    //     if (responce) {
+    //       transaction.delegatorAddress = this.account.address
+    //       const msg = await new DelegetionMsg(transaction, keplrConfig)
+    //       const result = await responce.client.signAndBroadcast(responce.account, [msg.delegation], msg.fee, '');
+    //       return result
+    //     } else {
+    //       toast.error('transaction Failed')
+    //     }
+    //   })
+    // },
+    async delegate(validator: string, amount: string) {
+      await walletService.delegate(this.logged, validator, amount).then(async (resp) => {
+        if (resp.code == WalletResponseCode.NOK) {
+          toast.error('delegate failed')
         } else {
-          toast.error('transaction Failed')
+          // TODO refresh data ??
         }
       })
     },
-    async claimReawards() {
-      walletService.getOfflineSigner(keplrConfig).then(async (responce) => {
-        if (responce) {
-          const validators = await useValidatorsStore().getValidatorsWithReward;
-           const fee = {
-            amount: [{
-              denom: 'uc4e',
-              amount: '0',
-            }],
-            gas: '2500000',
-          };
-          const messages = []
-          for (const element of validators) {
-            const msg = new ClaimRewards(responce.account, element.operator_address, keplrConfig)
-            messages.push(msg.rewardMSG)
-          }
-          const result = responce.client.signAndBroadcast(responce.account, messages, fee, '');
-          return result
+    async redelegate(validatorSrc: string, validatorDst: string, amount: string) {
+      await walletService.redelegate(this.logged, validatorSrc, validatorDst, amount).then(async (resp) => {
+        if (resp.code == WalletResponseCode.NOK) {
+          toast.error('redelegate failed')
         } else {
-          toast.error('Claiming rewards failed')
+          // TODO refresh data ??
         }
       })
+    },
+    async undelegate(validator: string, amount: string) {
+      await walletService.undelegate(this.logged, validator, amount).then(async (resp) => {
+        if (resp.code == WalletResponseCode.NOK) {
+          toast.error('undelegate failed')
+        } else {
+          // TODO refresh data ??
+        }
+      })
+    },
+    async claimRewards() {
+      const validators = await useValidatorsStore().getValidatorsWithReward;
+      walletService.claimRewards(this.logged, validators).then(async (resp) => {
+        if (resp.code == WalletResponseCode.NOK) {
+          toast.error('claimRewards failed')
+        } else {
+          // TODO refresh data ??
+        }
+      })
+
+      // walletService.getOfflineSigner(keplrConfig).then(async (responce) => {
+      //   if (responce) {
+      //     const validators = await useValidatorsStore().getValidatorsWithReward;
+      //      const fee = {
+      //       amount: [{
+      //         denom: 'uc4e',
+      //         amount: '0',
+      //       }],
+      //       gas: '2500000',
+      //     };
+      //     const messages = []
+      //     for (const element of validators) {
+      //       const msg = new ClaimRewards(responce.account, element.operator_address, keplrConfig)
+      //       messages.push(msg.rewardMSG)
+      //     }
+      //     const result = responce.client.signAndBroadcast(responce.account, messages, fee, '');
+      //     return result
+      //   } else {
+      //     toast.error('Claiming rewards failed')
+      //   }
+      // })
     },
     async vote(option: number, proposalId: number){
-      walletService.vote(keplrConfig, option, proposalId).then(async (responce) => {
-        if (responce.err != '') {
+      walletService.vote(this.logged, option, proposalId).then(async (resp) => {
+        if (resp.code == WalletResponseCode.NOK) {
           toast.error('vote failed')
         } else {
           // TODO refresh data ??
         }
       })
     },
-    async voting(option: number, proposalId: number){
-      walletService.getOfflineSigner(keplrConfig).then(async (responce) => {
-        if (responce) {
-          const msg = new VoteMsg(option, proposalId, responce.account, keplrConfig)
-          const result = responce.client.signAndBroadcast(responce.account, msg.votingMSG, msg.fee, '');
-          return result
-        } else {
-          toast.error('Claiming rewards failed')
-        }
-      })
-    },
+    // async voting(option: number, proposalId: number){
+    //   walletService.getOfflineSigner(keplrConfig).then(async (responce) => {
+    //     if (responce) {
+    //       const msg = new VoteMsg(option, proposalId, responce.account, keplrConfig)
+    //       const result = responce.client.signAndBroadcast(responce.account, msg.votingMSG, msg.fee, '');
+    //       return result
+    //     } else {
+    //       toast.error('Claiming rewards failed')
+    //     }
+    //   })
+    // },
     async logOut(){
       this._isLoggedIn = false;
+      this.logged = Object() as ConnectionInfo,
       this.account = Object() as account;
       await useValidatorsStore().logoutValidatorModule()
       localStorage.removeItem('account')

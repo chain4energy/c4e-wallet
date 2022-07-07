@@ -38,7 +38,7 @@ onMounted(() => {
   createRouterBeforeEach(logger);
   setTimeout(() =>{
     if (localStorage.getItem('account')){
-      useUserStore().fetchAccount()
+      useUserStore().fetchAccountData()
     } else {
       return
     }

@@ -8,4 +8,5 @@ export interface Configuration {
   strategicPoolAddress: string,
   airdropPoolAddress: string,
   coinConversion: string
+  chainId: string
 }

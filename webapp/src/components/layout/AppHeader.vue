@@ -86,13 +86,13 @@ const globalFilter = useGlobalFilterStore();
 
 
 function logIn(){
-  useUserStore().fetchAccount()
+  useUserStore().connectKeplr()
 }
 function logOut(){
   useUserStore().logOut()
 }
 window.addEventListener('keplr_keystorechange', () => {
-  useUserStore().fetchAccount()
+  useUserStore().connectKeplr()
 });
 
 onUnmounted(()=>{

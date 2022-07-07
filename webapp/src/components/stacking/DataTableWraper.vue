@@ -164,7 +164,7 @@ function checkBTN(item: Validator){
 async function trsansactionSuccess(arg: string) {
   checkBTN();
   await useUserStore().logOut()
-  await useUserStore().fetchAccount()
+  await useUserStore().fetchAccountData()
 
 
   // useValidatorsStore().fetchValidators()
@@ -175,7 +175,7 @@ const address = ref('');
 function showPopup(valaddress : string) {
   showPopupVal.value = !showPopupVal.value;
   address.value = valaddress;
-  useUserStore().fetchAccount()
+  useUserStore().fetchAccountData()
 }
 </script>
 

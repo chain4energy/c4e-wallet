@@ -50,7 +50,7 @@ import { useUserStore } from "@/store/user.store";
 import { computed } from "vue";
 
 function claimRewards(){
-  useUserStore().claimReawards();
+  useUserStore().claimRewards();
 }
 const total = computed(() => useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances);
 </script>
