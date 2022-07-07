@@ -1,3 +1,11 @@
+export interface Gas {
+  vote: string,
+  delegate: string,
+  undelegate: string,
+  redelegate: string,
+  claimRewards: string,
+}
+
 export interface Configuration {
   bcApiURL: string,
   bcRpcURL: string,
@@ -9,4 +17,5 @@ export interface Configuration {
   airdropPoolAddress: string,
   coinConversion: string
   chainId: string
+  operationGas: Gas
 }

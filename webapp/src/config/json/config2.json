@@ -7,5 +7,13 @@
   "stakingDenom": "uc4e",
   "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
   "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-  "coinConversion": ""
+  "coinConversion": "",
+  "chainId": "c4e-testnet-0.1.0",
+  "operationGas": {
+    "vote": "250000",
+    "delegate": "250000",
+    "undelegate": "250000",
+    "redelegate": "250000",
+    "claimRewards": "250000"
+  }
 }

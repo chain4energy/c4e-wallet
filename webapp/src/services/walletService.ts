@@ -52,7 +52,7 @@ export interface WalletConnectionResponse extends WalletResponse {
 }
 
 async function delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<WalletResponse> {
-  const denom = useConfigurationStore().config.stakingDenom
+  const config = useConfigurationStore().config
 
   const msg = {
     typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
@@ -60,7 +60,7 @@ async function delegate(connection: ConnectionInfo, validator: string, amount: s
       delegatorAddress: connection.account,
       validatorAddress: validator,
       amount: {
-        denom: denom,
+        denom: config.stakingDenom,
         amount: amount,
       }
     }),
@@ -68,16 +68,16 @@ async function delegate(connection: ConnectionInfo, validator: string, amount: s
 
   const fee = {
     amount: [{
-      denom: 'uc4e',
+      denom: config.stakingDenom,
       amount: '0',
     }],
-    gas: '2500000',
+    gas: config.operationGas.delegate,
   };
   return await signAndBroadcast(connection, [msg], fee, '');
 }
 
 async function undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<WalletResponse> {
-  const denom = useConfigurationStore().config.stakingDenom
+  const config = useConfigurationStore().config
 
   const msg = {
     typeUrl: '/cosmos.staking.v1beta1.MsgUndelegate',
@@ -85,7 +85,7 @@ async function undelegate(connection: ConnectionInfo, validator: string, amount:
       delegatorAddress: connection.account,
       validatorAddress: validator,
       amount: {
-        denom: denom,
+        denom: config.stakingDenom,
         amount: amount,
       }
     }),
@@ -93,16 +93,16 @@ async function undelegate(connection: ConnectionInfo, validator: string, amount:
 
   const fee = {
     amount: [{
-      denom: 'uc4e',
+      denom: config.stakingDenom,
       amount: '0',
     }],
-    gas: '2500000',
+    gas: config.operationGas.undelegate,
   };
   return await signAndBroadcast(connection, [msg], fee, '');
 }
 
 async function redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: string): Promise<WalletResponse> {
-  const denom = useConfigurationStore().config.stakingDenom
+  const config = useConfigurationStore().config
 
   const msg = {
     typeUrl: '/cosmos.staking.v1beta1.MsgBeginRedelegate',
@@ -111,7 +111,7 @@ async function redelegate(connection: ConnectionInfo, validatorSrc: string, vali
       validatorSrcAddress: validatorSrc,
       validatorDstAddress: validatorDst,
       amount: {
-        denom: denom,
+        denom: config.stakingDenom,
         amount: amount,
       }
     }),
@@ -119,15 +119,17 @@ async function redelegate(connection: ConnectionInfo, validatorSrc: string, vali
 
   const fee = {
     amount: [{
-      denom: 'uc4e',
+      denom: config.stakingDenom,
       amount: '0',
     }],
-    gas: '2500000',
+    gas: config.operationGas.redelegate,
   };
   return await signAndBroadcast(connection, [msg], fee, '');
 }
 
 async function vote(connection: ConnectionInfo, option: number, proposalId: number): Promise<WalletResponse> {
+  const config = useConfigurationStore().config
+
   const msg = {
     typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
     value: MsgVote.fromPartial({
@@ -139,15 +141,17 @@ async function vote(connection: ConnectionInfo, option: number, proposalId: numb
 
   const fee = {
     amount: [{
-      denom: 'uc4e',
+      denom: config.stakingDenom,
       amount: '0',
     }],
-    gas: '2500000',
+    gas: config.operationGas.vote,
   };
   return await signAndBroadcast(connection, [msg], fee, '');
 }
 
 async function claimRewards(connection: ConnectionInfo, validators: Array<Validator>): Promise<WalletResponse> {
+  const config = useConfigurationStore().config
+
   const messages = []
   for (const validator of validators) {
     const msg = {
@@ -161,10 +165,10 @@ async function claimRewards(connection: ConnectionInfo, validators: Array<Valida
   }
   const fee = {
     amount: [{
-      denom: 'uc4e',
+      denom: config.stakingDenom,
       amount: '0',
     }],
-    gas: '2500000',
+    gas: config.operationGas.claimRewards,
   };
   return await signAndBroadcast(connection, messages, fee, '');
 }
