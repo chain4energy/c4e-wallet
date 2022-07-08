@@ -5,16 +5,23 @@ import apiFactory from "@/api/factory.api";
 import {AirdropPool, CommunityPool, StrategicReversePool} from "@/models/Pools";
 import { useValidatorsStore } from "@/store/validators.store";
 
+interface TokensState {
+  stakingPool: Pool
+  totalSupply: Amount
+  communityPool: Amount
+  strategicReversePool: Amount
+  airdropPool: Amount
+}
 
 export const useTokensStore = defineStore({
   id: 'tokensStore',
-  state: () => {
+  state: (): TokensState => {
     return {
-      stakingPool: Object() as Pool,
-      totalSupply: Object() as Amount,
-      communityPool: Object() as Amount,
-      strategicReversePool: Object() as Amount,
-      airdropPool: Object() as Amount
+      stakingPool: Object(),
+      totalSupply: Object(),
+      communityPool: Object(),
+      strategicReversePool: Object(),
+      airdropPool: Object()
     };
   },
   actions: {

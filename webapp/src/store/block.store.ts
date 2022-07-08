@@ -3,10 +3,16 @@ import apiFactory from "@/api/factory.api";
 import {LatestBlock} from "@/models/LatestBlock";
 import { useUserStore } from "@/store/user.store";
 
+interface BlockState {
+  averageBlockTime: number
+  latestBlockHeight: number
+  latestBlockTime: string
+}
+
 export const useBlockStore = defineStore( 'block', {
-  state: () => {
+  state: (): BlockState => {
     return {
-      averageBlockTime: Object(Number),
+      averageBlockTime: Object(String),
       latestBlockHeight: Object(Number),
       latestBlockTime: Object(String),
     };

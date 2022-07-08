@@ -65,7 +65,7 @@ import {useBlockStore} from "@/store/block.store";
 import { computed, ref } from "vue";
 
 function claimRewards(){
-  useUserStore().claimReawards();
+  useUserStore().claimRewards();
 }
 useBlockStore().fetchLatestBlock()
 setInterval(useBlockStore().fetchLatestBlock, 6000)

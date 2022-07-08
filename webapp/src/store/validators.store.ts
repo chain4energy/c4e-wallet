@@ -6,12 +6,20 @@ import { useUserStore } from "@/store/user.store";
 import { Validators } from "@/models/validators";
 import { stackItem } from "@/models/stacking";
 
+interface ValidatorsState {
+  validators: Validators
+  numberOfActiveValidators: number
+  rewardsFetched: boolean
+  stackingFetch: boolean
+  validatorsWithReward: Array<Validator>
+}
+
 export const useValidatorsStore = defineStore({
   id: 'validatorsStore',
-  state: () => {
+  state: (): ValidatorsState => {
     return {
       validators: Object(Validators),
-      validator: Object,
+      // validator: Object,
       numberOfActiveValidators: Object(Number),
       rewardsFetched: false,
       stackingFetch: false,
@@ -83,7 +91,11 @@ export const useValidatorsStore = defineStore({
     fetchNumberOfActiveValidators(){
       apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
         if( response.error == null ) {
-          this.numberOfActiveValidators = response.data?.data.activeTotal.aggregate.count;
+          if (response.data == undefined) {
+            this.numberOfActiveValidators = 0 // TODO maybe some error ???
+          } else {
+            this.numberOfActiveValidators = response.data.data.activeTotal.aggregate.count;
+          }
         } else {
           //TODO: error handling
         }
@@ -109,7 +121,7 @@ export const useValidatorsStore = defineStore({
         }
         return true
       }else {
-        useUserStore().fetchAccount()
+        useUserStore().fetchAccountData()
         return false
       }
     },
@@ -124,10 +136,12 @@ export const useValidatorsStore = defineStore({
       for (let i = 0; i < o; i++) {
         const max = Math.max(...validatorsValues)
         const element = this.validators.validators.find((element: Validator)=> Number(element.tokens) === max )
-        element.id = id
-        id += 1;
-        sortedValidators.push(element)
-        validatorsValues.splice(validatorsValues.indexOf(max),1);
+        if (element != undefined) {
+          element.id = id
+          id += 1;
+          sortedValidators.push(element)
+          validatorsValues.splice(validatorsValues.indexOf(max),1);
+        }
       }
       this.validators.validators = sortedValidators
     },

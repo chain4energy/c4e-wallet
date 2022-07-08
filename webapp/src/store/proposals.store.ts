@@ -4,9 +4,16 @@ import {DataHolder} from "@/models/data-holder";
 import {Proposal} from "@/models/Proposal";
 import {TallyParams} from "@/models/GovernanceParameters";
 
+interface ProposalsState {
+  proposals: DataHolder<Proposal>
+  proposal: Proposal
+  paginationKey: string
+  tallyParams: TallyParams
+}
+
 export const useProposalsStore = defineStore({
   id: 'proposalsStore',
-  state: () => {
+  state: (): ProposalsState => {
 
     return {
       proposals: new DataHolder<Proposal>(),

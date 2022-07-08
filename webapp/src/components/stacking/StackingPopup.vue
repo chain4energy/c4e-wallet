@@ -52,8 +52,8 @@
       </div>
       <div class="validationPopup__btnHolder" v-if="useUserStore().isLoggedIn" >
         <div class="validationPopup__btns" v-if="!actionRedelegate">
-          <button @click="delegate({type : validator}, 'undelegate')">Undelegate</button>
-          <button @click="delegate({type : validator}, 'delegate')">Delegate</button>
+          <button @click="undelegate()">Undelegate</button>
+          <button @click="delegate()">Delegate</button>
           <button @click="redelegateState(true)">Redelegate</button>
         </div>
         <div class="validationPopup__btns" v-if="actionRedelegate">
@@ -64,7 +64,7 @@
 
       <div v-else class="validationPopup__btns">
         <p> Sorry Log in into Keplr </p>
-        <button @click="useUserStore().fetchAccount()">Login</button>
+        <button @click="useUserStore().fetchAccountData()">Login</button>
       </div>
     </div>
   </div>
@@ -121,20 +121,42 @@ let amountSchema = object({
     .lessThan(useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances)
 });
 
-async function delegate(_, type: string) {
+async function delegate() {
   try {
     await amountSchema.validate(amount);
-    const transaction: transaction = {
-      validatorSrcAddress: props.validator.operator_address,
-      amount: amount.value,
-      type: type
-    };
-      await useUserStore().tokensTransaction(transaction).then((res) =>{
-        emit('success', "success");
-        toast.success('transaction passed')
-      })
+    // const transaction: transaction = {
+    //   validatorSrcAddress: props.validator.operator_address,
+    //   amount: amount.value,
+    //   type: type
+    // };
+    //   await useUserStore().tokensTransaction(transaction).then((res) =>{
+    //     emit('success', "success");
+    //     toast.success('transaction passed')
+    //   })
+    await useUserStore().delegate(props.validator.operator_address, amount.value)
   } catch (err) {
-    keplrResult.value = err.errors;
+    // keplrResult.value = err.errors;
+    keplrResult.value = 'error';
+    toast.error('transaction failed')
+  }
+}
+
+async function undelegate() {
+  try {
+    await amountSchema.validate(amount);
+    // const transaction: transaction = {
+    //   validatorSrcAddress: props.validator.operator_address,
+    //   amount: amount.value,
+    //   type: type
+    // };
+      // await useUserStore().tokensTransaction(transaction).then((res) =>{
+      //   emit('success', "success");
+      //   toast.success('transaction passed')
+      // })
+    await useUserStore().undelegate(props.validator.operator_address, amount.value)
+  } catch (err) {
+    // keplrResult.value = err.errors;
+     keplrResult.value = 'error';
     toast.error('transaction failed')
   }
 }
@@ -143,14 +165,16 @@ function redelegate(){
   if(!redelegateTo.value && amount.value === ''){
     keplrResult.value = 'please choose validator and ammount';
   } else {
-    const transaction: transaction= {
-      delegatorAddress: useUserStore().getAccount.address,
-      address: props.validator.operator_address,
-      validatorDstAddress: redelegateTo.value.operator_address,
-      amount: amount.value,
-      type: 'redelegate'
-    };
-    useUserStore().tokensTransaction(transaction)
+    // const transaction: transaction= {
+    //   delegatorAddress: useUserStore().getAccount.address,
+    //   address: props.validator.operator_address,
+    //   validatorDstAddress: redelegateTo.value.operator_address,
+    //   amount: amount.value,
+    //   type: 'redelegate'
+    // };
+    // useUserStore().tokensTransaction(transaction)
+    useUserStore().redelegate(props.validator.operator_address, redelegateTo.value.operator_address, amount.value)
+
   }
 }
 function redelegateState(state: boolean){

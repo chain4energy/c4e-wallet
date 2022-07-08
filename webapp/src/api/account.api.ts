@@ -1,9 +1,21 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
-import BaseApi from "@/api/base.api";
+import TxBroadcastBaseApi from "@/api/tx.broadcast.base.api";
 import { RequestResponse } from "@/models/request-response";
 import { Account, balances } from "@/models/account";
+import { useConfigurationStore } from "@/store/configuration.store";
+import { ConnectionInfo, WalletResponse } from "@/api/wallet.connecton.api";
+import {
+  MsgBeginRedelegate,
+  MsgDelegate,
+  MsgUndelegate,
+} from "cosmjs-types/cosmos/staking/v1beta1/tx";
+import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
+import {
+  MsgWithdrawDelegatorReward
+} from "cosmjs-types/cosmos/distribution/v1beta1/tx"
+import { Validator } from "@/models/validator";
 
-export class AccountApi extends BaseApi {
+export class AccountApi extends TxBroadcastBaseApi {
 
   getServiceType(): ServiceTypeEnum {
     return ServiceTypeEnum.ACCOUNT_SERVICE;
@@ -45,5 +57,95 @@ export class AccountApi extends BaseApi {
       method: 'GET',
       url: this.REWARDS_URL + id + '/rewards'
     }, true, null)
+  }
+  public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<WalletResponse> {
+    const config = useConfigurationStore().config
+  
+    const msg = {
+      typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
+      value: MsgDelegate.fromPartial({
+        delegatorAddress: connection.account,
+        validatorAddress: validator,
+        amount: {
+          denom: config.stakingDenom,
+          amount: amount,
+        }
+      }),
+    };
+  
+    const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
+    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+  }
+  
+  public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<WalletResponse> {
+    const config = useConfigurationStore().config
+  
+    const msg = {
+      typeUrl: '/cosmos.staking.v1beta1.MsgUndelegate',
+      value: MsgUndelegate.fromPartial({
+        delegatorAddress: connection.account,
+        validatorAddress: validator,
+        amount: {
+          denom: config.stakingDenom,
+          amount: amount,
+        }
+      }),
+    };
+  
+    const fee = this.createFee(config.operationGas.undelegate, config.stakingDenom);
+    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+  }
+  
+  public async redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: string): Promise<WalletResponse> {
+    const config = useConfigurationStore().config
+  
+    const msg = {
+      typeUrl: '/cosmos.staking.v1beta1.MsgBeginRedelegate',
+      value: MsgBeginRedelegate.fromPartial({
+        delegatorAddress: connection.account,
+        validatorSrcAddress: validatorSrc,
+        validatorDstAddress: validatorDst,
+        amount: {
+          denom: config.stakingDenom,
+          amount: amount,
+        }
+      }),
+    };
+    const fee = this.createFee(config.operationGas.redelegate, config.stakingDenom);
+    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+  }
+  
+  public async vote(connection: ConnectionInfo, option: number, proposalId: number): Promise<WalletResponse> {
+    const config = useConfigurationStore().config
+  
+    const msg = {
+      typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
+      value: MsgVote.fromPartial({
+        option: option,
+        proposalId,
+        voter: connection.account,
+      }),
+    }
+    const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
+    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+  }
+  
+  public async claimRewards(connection: ConnectionInfo, validators: Array<Validator>): Promise<WalletResponse> {
+    const config = useConfigurationStore().config
+  
+    const messages = []
+    for (const validator of validators) {
+      const msg = {
+        typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
+        value: MsgWithdrawDelegatorReward.fromPartial({
+          delegatorAddress: connection.account,
+          validatorAddress: validator.operator_address,
+        })
+      }
+      messages.push(msg)
+    }
+  
+    const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
+    return await this.signAndBroadcast(connection, messages, fee, '', true, null);
   }
 }
