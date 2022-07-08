@@ -1,18 +1,13 @@
 import { defineStore } from "pinia";
 import { Account, account } from "@/models/account";
 import apiFactory from "@/api/factory.api";
-import walletService, { WalletResponseCode } from "@/services/walletService"
-import { ConnectionInfo } from "@/services/walletService"
-
+import { ConnectionInfo, WalletResponseCode } from "@/api/wallet.connecton.api";
 import { useValidatorsStore } from "@/store/validators.store";
 import { Rewards } from "@/models/validator";
 import { stackingList } from "@/models/stacking";
 import { useToast } from "vue-toastification";
-import { transaction } from "@/models/transaction";
 // import { ClaimRewards, DelegetionMsg, VoteMsg } from "@/services/wallet/messages";
 const toast = useToast();
-
-
 
 export const useUserStore = defineStore({
   id: 'userStore',
@@ -36,7 +31,7 @@ export const useUserStore = defineStore({
   actions: {
 
     async connectKeplr() {
-      await walletService.connectKeplr().then(async (response) => {
+      await apiFactory.walletApi().connectKeplr().then(async (response) => {
         if (response.code == WalletResponseCode.NOK) {
           this._isLoggedIn = false;
         } else {
@@ -47,7 +42,7 @@ export const useUserStore = defineStore({
       })
     },
     async connectAsAddress(address: string) {
-      await walletService.connectAddress(address).then(async (response) => {
+      await apiFactory.walletApi().connectAddress(address).then(async (response) => {
         if (response.code == WalletResponseCode.NOK) {
           this._isLoggedIn = false;
         } else {
@@ -186,7 +181,7 @@ export const useUserStore = defineStore({
     //   })
     // },
     async delegate(validator: string, amount: string) {
-      await walletService.delegate(this.logged, validator, amount).then(async (resp) => {
+      await apiFactory.accountApi().delegate(this.logged, validator, amount).then(async (resp) => {
         if (resp.code == WalletResponseCode.NOK) {
           toast.error('delegate failed')
         } else {
@@ -195,7 +190,7 @@ export const useUserStore = defineStore({
       })
     },
     async redelegate(validatorSrc: string, validatorDst: string, amount: string) {
-      await walletService.redelegate(this.logged, validatorSrc, validatorDst, amount).then(async (resp) => {
+      await apiFactory.accountApi().redelegate(this.logged, validatorSrc, validatorDst, amount).then(async (resp) => {
         if (resp.code == WalletResponseCode.NOK) {
           toast.error('redelegate failed')
         } else {
@@ -204,7 +199,7 @@ export const useUserStore = defineStore({
       })
     },
     async undelegate(validator: string, amount: string) {
-      await walletService.undelegate(this.logged, validator, amount).then(async (resp) => {
+      await apiFactory.accountApi().undelegate(this.logged, validator, amount).then(async (resp) => {
         if (resp.code == WalletResponseCode.NOK) {
           toast.error('undelegate failed')
         } else {
@@ -214,7 +209,7 @@ export const useUserStore = defineStore({
     },
     async claimRewards() {
       const validators = await useValidatorsStore().getValidatorsWithReward;
-      walletService.claimRewards(this.logged, validators).then(async (resp) => {
+      apiFactory.accountApi().claimRewards(this.logged, validators).then(async (resp) => {
         if (resp.code == WalletResponseCode.NOK) {
           toast.error('claimRewards failed')
         } else {
@@ -245,7 +240,7 @@ export const useUserStore = defineStore({
       // })
     },
     async vote(option: number, proposalId: number){
-      walletService.vote(this.logged, option, proposalId).then(async (resp) => {
+      apiFactory.accountApi().vote(this.logged, option, proposalId).then(async (resp) => {
         if (resp.code == WalletResponseCode.NOK) {
           toast.error('vote failed')
         } else {

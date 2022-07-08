@@ -3,6 +3,7 @@ import {TokensApi} from "@/api/tokensApi";
 import {BlockApi} from "@/api/block.api";
 import {ProposalsApi} from "@/api/proposals.api";
 import {AccountApi} from "@/api/account.api";
+import WalletConnectionApi from "./wallet.connecton.api";
 
 class ApiFactory {
 
@@ -13,6 +14,7 @@ class ApiFactory {
   private readonly _blockApi = new BlockApi();
   private readonly _proposalsApi = new ProposalsApi();
   private readonly _accountApi = new AccountApi()
+  private readonly _walletApi = new WalletConnectionApi()
 
   private constructor() {
  //
@@ -40,7 +42,9 @@ class ApiFactory {
   public accountApi(): AccountApi{
     return this._accountApi;
   }
-
+  public walletApi(): WalletConnectionApi{
+    return this._walletApi;
+  }
 }
 
 export default ApiFactory.getInstance();
