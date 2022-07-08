@@ -1,13 +1,9 @@
 import {defineStore} from "pinia";
-import {DataHolder} from "@/models/data-holder";
-import { BasicQuantity, Rewards, rewards, Validator } from "@/models/validator";
-import {PagingModel} from "@/services/model/paging.model";
-import {LocalSpinner} from "@/services/model/localSpinner";
+import { Validator } from "@/models/validator";
 import apiFactory from "@/api/factory.api";
 import {useTokensStore} from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
-import { logs } from "@cosmjs/stargate";
-import { Validators, ValidatorsList } from "@/models/validators";
+import { Validators } from "@/models/validators";
 import { stackItem } from "@/models/stacking";
 
 export const useValidatorsStore = defineStore({
@@ -137,7 +133,6 @@ export const useValidatorsStore = defineStore({
     },
     setStacked() {
       const stacked = useUserStore().getStackedList
-      console.log(stacked)
       if(stacked.delegation_responses.length > 0){
         for(const el of this.validators.validators){
           const data = stacked.delegation_responses.find((stackD: stackItem) => stackD.delegation.validator_address === el.operator_address)
