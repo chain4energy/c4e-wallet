@@ -1,8 +1,12 @@
 import { defineStore } from 'pinia';
 
+interface SplashState {
+  splashCounter: number
+}
+
 export const useSplashStore = defineStore({
   id: 'splashStore',
-  state: () => {
+  state: (): SplashState => {
     return {
       splashCounter: 0
     };

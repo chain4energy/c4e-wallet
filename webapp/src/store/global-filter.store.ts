@@ -2,9 +2,14 @@ import { defineStore } from 'pinia';
 // import {UsersHolder} from "@/models/users-holder";
 // import {User} from "@/models/user";
 
+interface GlobalFilterState {
+  filter: string
+  isLoading: boolean
+}
+
 export const useGlobalFilterStore = defineStore({
   id: 'globalFilterStore',
-  state: () => {
+  state: (): GlobalFilterState => {
     return {
       filter : '',
       isLoading : false

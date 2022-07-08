@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { Account, account } from "@/models/account";
 import apiFactory from "@/api/factory.api";
-import { ConnectionInfo, WalletResponseCode } from "@/api/wallet.connecton.api";
+import { ConnectionInfo, WalletConnectionResponse, WalletResponseCode } from "@/api/wallet.connecton.api";
 import { useValidatorsStore } from "@/store/validators.store";
 import { Rewards } from "@/models/validator";
 import { stackingList } from "@/models/stacking";
@@ -9,40 +9,70 @@ import { useToast } from "vue-toastification";
 // import { ClaimRewards, DelegetionMsg, VoteMsg } from "@/services/wallet/messages";
 const toast = useToast();
 
+interface UserState {
+  logged: ConnectionInfo
+  account: account
+  type: string
+  balances: number
+  stacked: number
+  unstacked: number
+  totalRewards: number
+  vestimgAccLocked: number
+  rewards: Rewards
+  _isLoggedIn: boolean
+  basicAccount: boolean
+  vestingAccount: boolean
+  stackingList: stackingList
+}
+
 export const useUserStore = defineStore({
   id: 'userStore',
-  state: () => {
+  state: (): UserState => {
     return {
-      logged: Object() as ConnectionInfo,
-      account: Object() as account,
+      logged: Object(),
+      account: Object(),
       type: '',
       balances: 0,
       stacked: 0,
       unstacked: 0,
       totalRewards: 0,
-      vestimgAccLocked: Number() as number,
-      rewards: Object() as Rewards,
+      vestimgAccLocked: Number(),
+      rewards: Object(),
       _isLoggedIn: false,
       basicAccount: false,
       vestingAccount: false,
-      stackingList: Object() as stackingList,
+      stackingList: Object(),
     };
   },
   actions: {
 
     async connectKeplr() {
-      await apiFactory.walletApi().connectKeplr().then(async (response) => {
-        if (response.code == WalletResponseCode.NOK) {
-          this._isLoggedIn = false;
-        } else {
-          this.logged = response.connectionInfo
-          this._isLoggedIn = true;
-          this.fetchAccountData()
-        }
-      })
+      await this.connect(apiFactory.walletApi().connectKeplr())
+      // await apiFactory.walletApi().connectKeplr().then(async (response) => {
+      //   if (response.code == WalletResponseCode.NOK) {
+      //     this._isLoggedIn = false;
+      //   } else {
+      //     this.logged = response.connectionInfo
+      //     this._isLoggedIn = true;
+      //     this.fetchAccountData()
+      //   }
+      // })
     },
     async connectAsAddress(address: string) {
-      await apiFactory.walletApi().connectAddress(address).then(async (response) => {
+      await this.connect(apiFactory.walletApi().connectAddress(address))
+
+      // await apiFactory.walletApi().connectAddress(address).then(async (response) => {
+      //   if (response.code == WalletResponseCode.NOK) {
+      //     this._isLoggedIn = false;
+      //   } else {
+      //     this.logged = response.connectionInfo
+      //     this._isLoggedIn = true;
+      //     this.fetchAccountData()
+      //   }
+      // })
+    },
+    async connect(connectionResponse: Promise<WalletConnectionResponse>) {
+      await connectionResponse.then(async (response) => {
         if (response.code == WalletResponseCode.NOK) {
           this._isLoggedIn = false;
         } else {

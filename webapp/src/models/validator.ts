@@ -21,6 +21,7 @@ export interface Validator{
   votingPower: number
   userTouched: boolean
   rewards: BasicQuantity
+  stacked: BasicQuantity
 }
 export interface BasicQuantity{
   denom: string,
