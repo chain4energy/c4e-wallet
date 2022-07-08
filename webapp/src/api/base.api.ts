@@ -14,29 +14,41 @@ export class ErrorData<D> {
   message: string;
   status?: number;
   data?: D;
+  dataToInfo?: (data:D)=> string
 
-  constructor (name: string, message: string, status?: number, data?: D) {
+  constructor (name: string, message: string, status?: number, data?: D, dataToInfo?: (data:D)=> string) {
     this.name = name;
     this.message = message;
     this.status = status;
     this.data = data;
+    this.dataToInfo = dataToInfo;
+  }
+
+  getInfo(): string {
+    let result = 'Name: ' + this.name + '\r\nMessage: ' + this.message
+    if (this.status !== undefined) {
+      result += '\r\nStatus: ' + this.status
+    }
+    
+    if (this.data !== undefined) {
+      if (this.dataToInfo == undefined) {
+        result += '\r\nData: ' + this.data
+      } else {
+        result += '\r\nData:\r\n' + this.dataToInfo(this.data)
+      }
+    }
+    result += ')'
+    return result
   }
 
 }
 
-export class BlockchainApiErrorData {
+export interface BlockchainApiErrorData {
   code: string;
   message: string;
   details?: string;
 
-  constructor (code: string, message: string, details?: string) {
-    this.code = code;
-    this.message = message;
-    this.details = details;
-  }
-
 }
-
 
 export default abstract class BaseApi extends LoggedService {
   protected axiosInstance: AxiosInstance;
@@ -48,14 +60,14 @@ export default abstract class BaseApi extends LoggedService {
   }
 
   protected async axiosBlockchainApiCall<T> (config: AxiosRequestConfig, lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast = false): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>> {
-    return await this.axiosCall<T, BlockchainApiErrorData>(config, lockScreen, localSpinner, skipErrorToast)
+    return await this.axiosCall<T, BlockchainApiErrorData>(config, lockScreen, localSpinner, skipErrorToast, (data:BlockchainApiErrorData)=> {return '\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')'})
   }
 
   protected async axiosHasuraCall<T> (config: AxiosRequestConfig, lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast = false): Promise<RequestResponse<T, ErrorData<any>>> {
     return await this.axiosCall<T, any>(config, lockScreen, localSpinner, skipErrorToast)
   }
 
-  private async axiosCall<T, E> (config: AxiosRequestConfig, lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast = false): Promise<RequestResponse<T, ErrorData<E>>> {
+  private async axiosCall<T, E> (config: AxiosRequestConfig, lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast: boolean, dataToInfo?: (data:E)=> string): Promise<RequestResponse<T, ErrorData<E>>> {
     this.before(lockScreen, localSpinner);
     try {
       this.logToConsole(LogLevel.DEBUG, 'Axios Request: ', JSON.stringify(config));
@@ -69,7 +81,7 @@ export default abstract class BaseApi extends LoggedService {
       
       let errorResp: ErrorData<E>
       if (error instanceof AxiosError && error.response != undefined) {
-        errorResp = new ErrorData<E>(error.name, error.message, error.response.status, error.response.data)
+        errorResp = new ErrorData<E>(error.name, error.message, error.response.status, error.response.data, dataToInfo)
         this.logToConsole(LogLevel.ERROR, 'Axios Response name' + errorResp.name);
         this.logToConsole(LogLevel.ERROR, 'Axios Response message' + errorResp.message);
         this.logToConsole(LogLevel.ERROR, 'Axios Response status' + errorResp.status);
@@ -81,7 +93,7 @@ export default abstract class BaseApi extends LoggedService {
       }
 
       if (!skipErrorToast) {
-        toast.error('Error requesting service:' + this.getServiceType());
+        toast.error('Error requesting service:' + this.getServiceType() + '\r\n' + errorResp.getInfo());
       }
       return new RequestResponse<T, ErrorData<E>>(errorResp, undefined);
     } finally {

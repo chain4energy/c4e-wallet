@@ -1,14 +1,48 @@
 import BaseApi from "@/api/base.api";
-import { ConnectionType, ConnectionInfo, WalletResponse, WalletResponseCode } from "@/api/wallet.connecton.api";
+import { ConnectionType, ConnectionInfo } from "@/api/wallet.connecton.api";
 import { useToast } from 'vue-toastification';
 import { StdFee } from "@cosmjs/amino";
 import { EncodeObject } from "@cosmjs/proto-signing";
-import {LocalSpinner} from "@/services/model/localSpinner";
+import { LocalSpinner } from "@/services/model/localSpinner";
 import { LogLevel } from '@/services/logger/log-level';
-import { SigningStargateClient, isDeliverTxFailure } from "@cosmjs/stargate";
+import { SigningStargateClient, isDeliverTxFailure, DeliverTxResponse } from "@cosmjs/stargate";
 import { useConfigurationStore } from "@/store/configuration.store";
+import { RequestResponse } from '@/models/request-response';
 
 const toast = useToast();
+
+export class TxData {
+  readonly height: number;
+  readonly code: number;
+  readonly transactionHash: string;
+  readonly rawLog?: string;
+  readonly gasUsed: number;
+  readonly gasWanted: number;
+
+  constructor (txResponse: DeliverTxResponse) {
+    this.height = txResponse.height;
+    this.code = txResponse.code;
+    this.transactionHash = txResponse.transactionHash;
+    this.rawLog = txResponse.rawLog;
+    this.gasUsed = txResponse.gasUsed;
+    this.gasWanted = txResponse.gasWanted;
+
+  }
+
+}
+
+export class TxBroadcastError {
+  readonly message: string;
+  readonly txData?: TxData;
+
+  constructor (message: string, txResponse?: DeliverTxResponse) {
+    this.message = message;
+    if (txResponse !== undefined) {
+      this.txData = new TxData(txResponse);
+    }
+  }
+
+}
 
 export default abstract class TxBroadcastBaseApi extends BaseApi {
 
@@ -25,43 +59,28 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
   
   protected async signAndBroadcast(connection: ConnectionInfo, 
                                   messages: readonly EncodeObject[], fee: StdFee | "auto" | number, memo: string,
-                                  lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast = false): Promise<WalletResponse> {
+                                  lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast = false): Promise<RequestResponse<TxData, TxBroadcastError>> {
     this.before(lockScreen, localSpinner);
     try {
       if (!connection.modifiable) {
-        return {
-          code: WalletResponseCode.NOK,
-          error: 'Cannot modify using: ' + connection.connectionType + ' signer'
-        }
+        return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot modify using: ' + connection.connectionType + ' signer'));
       }
       const client = await this.createClient(connection.connectionType)
       if (client == undefined) {
-        return {
-          code: WalletResponseCode.NOK,
-          error: 'Cannot get client'
-        }
+        return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot get client'));
       }
       const response = await client.signAndBroadcast(connection.account, messages, fee, memo);
       if (isDeliverTxFailure(response)) {
-        return {
-          code: WalletResponseCode.NOK,
-          error: 'Tx Error'
-        }
+        return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot get client', response));
       }
-      return {
-        code: WalletResponseCode.OK,
-        error: ''
-      }
+      return new RequestResponse<TxData, TxBroadcastError>(undefined, new TxData(response));
     } catch (err) {
       this.logToConsole(LogLevel.ERROR, 'Axios Response', JSON.stringify(err));
       const error = err as Error;
       if (!skipErrorToast) {
         toast.error('Error requesting service:' + this.getServiceType());
       }
-      return {
-        code: WalletResponseCode.NOK,
-        error: 'err'
-      };
+      return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('err'));
     }finally {
       this.after(lockScreen, localSpinner);
     }

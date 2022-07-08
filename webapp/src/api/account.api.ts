@@ -1,11 +1,12 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
-import TxBroadcastBaseApi from "@/api/tx.broadcast.base.api";
+import TxBroadcastBaseApi, { TxData, TxBroadcastError } from "@/api/tx.broadcast.base.api";
 import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
 
 import { RequestResponse } from "@/models/request-response";
 import { Account, balances } from "@/models/account";
 import { useConfigurationStore } from "@/store/configuration.store";
-import { ConnectionInfo, WalletResponse } from "@/api/wallet.connecton.api";
+import { ConnectionInfo } from "@/api/wallet.connecton.api";
+
 import {
   MsgBeginRedelegate,
   MsgDelegate,
@@ -60,7 +61,7 @@ export class AccountApi extends TxBroadcastBaseApi {
       url: this.REWARDS_URL + id + '/rewards'
     }, true, null)
   }
-  public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<WalletResponse> {
+  public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const msg = {
@@ -79,7 +80,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
   
-  public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<WalletResponse> {
+  public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const msg = {
@@ -98,7 +99,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
   
-  public async redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: string): Promise<WalletResponse> {
+  public async redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const msg = {
@@ -117,7 +118,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
   
-  public async vote(connection: ConnectionInfo, option: number, proposalId: number): Promise<WalletResponse> {
+  public async vote(connection: ConnectionInfo, option: number, proposalId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const msg = {
@@ -132,7 +133,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
   
-  public async claimRewards(connection: ConnectionInfo, validators: Array<Validator>): Promise<WalletResponse> {
+  public async claimRewards(connection: ConnectionInfo, validators: Array<Validator>): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const messages = []
