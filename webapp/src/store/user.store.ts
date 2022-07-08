@@ -208,5 +208,9 @@ export const useUserStore = defineStore({
   },
   persist: {
     enabled: true,
+    strategies: [
+      { storage: sessionStorage, paths: ['type', 'balances', 'stacked', 'unstacked', 'totalRewards'] },
+      { storage: localStorage, paths:['account']}
+    ]
   }
 });

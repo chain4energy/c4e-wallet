@@ -6,7 +6,8 @@
     dataKey="operator_address"
     selectionMode="multiple"
     :rowHover="true"
-    :showGridlines="true"
+    :paginator="true" :rows="10"
+    :showGridlines="false"
     v-model:expandedRows="expandedRow"
     v-model:filters="filters"
     filterDisplay="menu"
@@ -35,10 +36,33 @@
       Loading customers data. Please wait.
     </template>
     <Column
+      v-if="useUserStore().isLoggedIn && useValidatorsStore().getStackingFetchResult"
+      header=""
+    >
+      <template #body="data">
+        <p v-if="data.stacked.amount!=='0'">stacked</p>
+        <p v-else></p>
+      </template>
+
+    </Column>
+<!--    <Column-->
+<!--      field="stacked"-->
+<!--      v-if="useUserStore().isLoggedIn && useValidatorsStore().getStackingFetchResult"-->
+<!--    >-->
+<!--      <template v-if="useUserStore().isLoggedIn && useValidatorsStore().getStackingFetchResult"-->
+<!--                #body="data">-->
+<!--        <p v-if="data.stacked.amount !=='0'">stacked</p>-->
+<!--      </template>-->
+<!--    </Column>-->
+    <Column
       field="id"
       header="Rank"
       :sortable="true"
-    ></Column>
+    >
+<!--      <template v-if="useUserStore().isLoggedIn && useValidatorsStore().getStackingFetchResult" #body="{data}">-->
+<!--        <p :class="data?.stacked.amount!=='0' ? 'rank': '' ">{{data.id}}</p>-->
+<!--      </template>-->
+    </Column>
     <Column
       field="description.moniker"
       header="name"
@@ -202,6 +226,15 @@ function showPopup(valaddress : string) {
 
   &:active {
     transform: translateY(2px);
+  }
+}
+.rank{
+  &:after{
+    position: absolute;
+    margin-left: -70px;
+    content: 'stacked';
+    z-index: 20;
+    background-color: #42b983;
   }
 }
 </style>
