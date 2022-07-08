@@ -84,19 +84,22 @@ import { useUserStore } from "@/store/user.store";
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
 
+const keystoreChangeListener = () => {
+      useUserStore().connectKeplr()
+    }
 
 function logIn(){
-  useUserStore().connectKeplr()
+  useUserStore().connectKeplr().then(() => {
+    window.addEventListener('keplr_keystorechange', keystoreChangeListener);
+  })
 }
 function logOut(){
   useUserStore().logOut()
+  window.removeEventListener('keplr_keystorechange', keystoreChangeListener)
 }
-window.addEventListener('keplr_keystorechange', () => {
-  useUserStore().connectKeplr()
-});
 
 onUnmounted(()=>{
-  window.removeEventListener('keplr_keystorechange', ()=> null)
+  window.removeEventListener('keplr_keystorechange', keystoreChangeListener)
 })
 
 </script>
