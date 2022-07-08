@@ -206,4 +206,7 @@ export const useUserStore = defineStore({
       return this.vestimgAccLocked
     }
   },
+  persist: {
+    enabled: true,
+  }
 });
