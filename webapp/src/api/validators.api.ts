@@ -7,6 +7,7 @@ import {PagingModel} from "@/services/model/paging.model";
 import {LocalSpinner} from "@/services/model/localSpinner";
 import {useConfigurationStore} from "@/store/configuration.store";
 import { Account } from "@/models/account";
+import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
 
 export class ValidatorsApi extends BaseApi {
 
@@ -14,8 +15,8 @@ export class ValidatorsApi extends BaseApi {
     return ServiceTypeEnum.ACTIVE_VALIDATORS_SERVICE;
   }
 
-  public async fetchActiveValidatorCount(): Promise<RequestResponse<ActiveValidatorCount>> {
-    return this.axiosCall({
+  public async fetchActiveValidatorCount(): Promise<RequestResponse<ActiveValidatorCount, ErrorData<any>>> {
+    return this.axiosHasuraCall({
       method: 'POST',
       url: useConfigurationStore().config.hasuraURL,
       data: {
@@ -32,15 +33,15 @@ export class ValidatorsApi extends BaseApi {
 
   private VALIDATORS_URL = process.env.VUE_APP_VALIDATORS_URL;
 
-  public async fetchAllValidators(pagination: PagingModel | null, lockScreen: boolean, localSpinner: LocalSpinner | null): Promise<RequestResponse<Validators>> {
-    return this.axiosCall({
+  public async fetchAllValidators(pagination: PagingModel | null, lockScreen: boolean, localSpinner: LocalSpinner | null): Promise<RequestResponse<Validators, ErrorData<BlockchainApiErrorData>>> {
+    return this.axiosBlockchainApiCall({
       method: 'GET',
       url: useConfigurationStore().config.bcApiURL+this.VALIDATORS_URL,
       params: pagination?.toAxiosParams()
     }, lockScreen, localSpinner);
   }
-  public async fetchValidatorUser(id: string, acc: StringConstructor): Promise<RequestResponse<Account>>{
-    return this.axiosCall({
+  public async fetchValidatorUser(id: string, acc: StringConstructor): Promise<RequestResponse<Account, ErrorData<BlockchainApiErrorData>>>{
+    return this.axiosBlockchainApiCall({
       method: "GET",
       url: this.VALIDATORS_URL+ "/"+ id + "/delegations/" + acc
     }, true, null, true);

@@ -1,5 +1,7 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import TxBroadcastBaseApi from "@/api/tx.broadcast.base.api";
+import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
+
 import { RequestResponse } from "@/models/request-response";
 import { Account, balances } from "@/models/account";
 import { useConfigurationStore } from "@/store/configuration.store";
@@ -28,32 +30,32 @@ export class AccountApi extends TxBroadcastBaseApi {
   private UNSTACKED_AMOUNT_URL = 'https://lcd.chain4energy.org/cosmos/staking/v1beta1/delegators/'
   private REWARDS_URL = 'https://lcd.chain4energy.org//cosmos/distribution/v1beta1/delegators/';
 
-  public async fetchAccount(id: string): Promise<RequestResponse<Account>> {
-    return this.axiosCall({
+  public async fetchAccount(id: string): Promise<RequestResponse<Account, ErrorData<BlockchainApiErrorData>>> {
+    return this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.ACCOUNT_URL + id
     }, true, null);
   }
-  public async fetchBalances(id: string): Promise<RequestResponse<balances>>{
-    return this.axiosCall({
+  public async fetchBalances(id: string): Promise<RequestResponse<balances, ErrorData<BlockchainApiErrorData>>>{
+    return this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.BALANCE_URL + id
     }, true, null)
   }
-  public async fetchStackedTokens(id: string): Promise<RequestResponse<any>>{
-    return this.axiosCall({
+  public async fetchStackedTokens(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
+    return this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.STACKED_AMOUNT_URL + id
     }, true, null)
   }
-  public async fetchUnstackedTokens(id: string): Promise<RequestResponse<any>>{
-    return this.axiosCall({
+  public async fetchUnstackedTokens(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
+    return this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.UNSTACKED_AMOUNT_URL + id + '/unbonding_delegations'
     }, true, null)
   }
-  public async fetchRewards(id: string): Promise<RequestResponse<any>>{
-    return this.axiosCall({
+  public async fetchRewards(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
+    return this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.REWARDS_URL + id + '/rewards'
     }, true, null)
