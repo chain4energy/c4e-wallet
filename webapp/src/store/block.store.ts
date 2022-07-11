@@ -30,7 +30,7 @@ export const useBlockStore = defineStore( 'block', {
           this.latestBlockTime = latestBlock.block.header.time;
 
           if(useUserStore().getAccount
-            && useUserStore().getAccType ==='/cosmos.vesting.v1beta1.ContinuousVestingAccount'){
+            && useUserStore().isContinuousVestingAccount){
             useUserStore().calculateVestingLocked(latestBlock.block.header.time)
           }
 

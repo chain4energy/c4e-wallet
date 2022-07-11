@@ -1,5 +1,5 @@
-import { Account as BcAccount, BaseAccount, ContinuousVestingAccount} from "@/models/blockchain/account";
-import { Account as StoreAccount, AccountType, ContinuousVestingData, Coin} from "@/models/store/account";
+import { Account as BcAccount } from "@/models/blockchain/account";
+import { Account as StoreAccount, AccountType, ContinuousVestingData } from "@/models/store/account";
 import { mapAccount } from "@/models/mapper/account.mapper";
 
 describe('map account', () => {
@@ -213,7 +213,7 @@ describe('map account', () => {
           sequence: "43"
     } as BcAccount;
 
-    expect(() => {mapAccount(bcAccount)}).toThrowError(new Error(`Unsupported type: '/cosmos.auth.v1beta1.UnsupportedAccount'`))
+    expect(() => {mapAccount(bcAccount)}).toThrowError(new Error(`Unsupported account type: '/cosmos.auth.v1beta1.UnsupportedAccount'`))
   });
 
   it('maps unexpected data', async () => {
@@ -221,6 +221,14 @@ describe('map account', () => {
           address: "c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg",
     } as unknown as BcAccount;
 
-    expect(() => {mapAccount(bcAccount)}).toThrowError(new Error(`Unsupported type: 'undefined'`))
+    expect(() => {mapAccount(bcAccount)}).toThrowError(new Error(`Unsupported account type: 'undefined'`))
+  });
+
+  it('maps undefined data', async () => {
+    const bcAccount: BcAccount = {
+          address: "c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg",
+    } as unknown as BcAccount;
+
+    expect(() => {mapAccount(undefined)}).toThrowError(new Error('Account is undefined'))
   });
 });

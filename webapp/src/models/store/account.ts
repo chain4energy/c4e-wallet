@@ -4,7 +4,8 @@ import { array } from "yup";
 export enum AccountType {
   BaseAccount,
   ContinuousVestingAccount,
-  Unknown
+  Unknown,
+  Nonexistent
 }
 
 export class Account {
@@ -28,6 +29,14 @@ export class ContinuousVestingData {
     this.startTime = startTime
     this.endTime = endTime
     this.originalVesting = originalVesting
+  }
+
+  public getStartTimeDateString(): string {
+    return new Date(Number(this.startTime)).toLocaleString()
+  }
+
+  public getEndTimeDateString(): string {
+    return new Date(Number(this.endTime)).toLocaleString()
   }
 }
 

@@ -28,15 +28,15 @@
       <p>{{useUserStore().getUnstacked || 0}}</p>
     </div>
     </div>
-    <div class="userdata__accountData-vesting" v-if="useUserStore().getAccType==='/cosmos.vesting.v1beta1.ContinuousVestingAccount'">
+    <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
       <div>
         <p>{{locked}}</p>
       </div>
       <div>
-        <p>{{new Date(useUserStore().getAccount.start_time*1000).toLocaleString()}}</p>
+        <p>{{useUserStore().getAccount.continuousVestingData?.getStartTimeDateString()}}</p>
       </div>
       <div>
-        <p>{{new Date(useUserStore().getAccount.base_vesting_account.end_time*100).toLocaleString()}}</p>
+        <p>{{useUserStore().getAccount.continuousVestingData?.getEndTimeDateString()}}</p>
       </div>
     </div>
   </div>
@@ -63,6 +63,7 @@
 import { useUserStore } from "@/store/user.store";
 import {useBlockStore} from "@/store/block.store";
 import { computed, ref } from "vue";
+import { AccountType } from "@/models/store/account";
 
 function claimRewards(){
   useUserStore().claimRewards();

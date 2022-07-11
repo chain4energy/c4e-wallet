@@ -1,11 +1,16 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import TxBroadcastBaseApi, { TxData, TxBroadcastError } from "@/api/tx.broadcast.base.api";
 import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
+import { LogLevel } from '@/services/logger/log-level';
 
 import { RequestResponse } from "@/models/request-response";
-import { Account, balances } from "@/models/account";
+import { balances } from "@/models/account";
+import { Account as StoreAccount} from "@/models/store/account";
+import { AccountResponse, Account as BcAccount} from "@/models/blockchain/account";
+
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ConnectionInfo } from "@/api/wallet.connecton.api";
+import { mapAccount, createNonexistentAccount } from "@/models/mapper/account.mapper";
 
 import {
   MsgBeginRedelegate,
@@ -31,11 +36,31 @@ export class AccountApi extends TxBroadcastBaseApi {
   private UNSTACKED_AMOUNT_URL = 'https://lcd.chain4energy.org/cosmos/staking/v1beta1/delegators/'
   private REWARDS_URL = 'https://lcd.chain4energy.org//cosmos/distribution/v1beta1/delegators/';
 
-  public async fetchAccount(id: string): Promise<RequestResponse<Account, ErrorData<BlockchainApiErrorData>>> {
-    return this.axiosBlockchainApiCall({
+  public async fetchAccount(address: string): Promise<RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>> {
+    const result: RequestResponse<AccountResponse, ErrorData<BlockchainApiErrorData>> =  await this.axiosBlockchainApiCall({
       method: 'GET',
-      url: this.ACCOUNT_URL + id
+      url: this.ACCOUNT_URL + address
     }, true, null);
+    if (result.isSuccess()) {
+      this.logToConsole(LogLevel.DEBUG, 'get Account success');
+
+      try {
+        const storeAccount = mapAccount(result.data?.account);
+        return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(undefined, storeAccount);
+      } catch (err) {
+        const error = err as Error;
+        this.logToConsole(LogLevel.ERROR, 'mapAccount error: ', error.message);
+        return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(new ErrorData<BlockchainApiErrorData>(error.name, error.message));
+      }
+    } else {
+      const code = result.error?.data?.code
+      const message = result.error?.data?.message
+      const status = result.error?.status
+      if (status === 404 && code === 5 && message !== undefined && /rpc error: code = NotFound/i.test(message)) {
+        return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(undefined, createNonexistentAccount(address));
+      }
+      return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(result.error);
+    }
   }
   public async fetchBalances(id: string): Promise<RequestResponse<balances, ErrorData<BlockchainApiErrorData>>>{
     return this.axiosBlockchainApiCall({

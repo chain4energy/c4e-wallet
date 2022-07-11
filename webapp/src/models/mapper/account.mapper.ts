@@ -1,12 +1,19 @@
 import { Account as BcAccount, BaseAccount, ContinuousVestingAccount} from "@/models/blockchain/account";
 import { Account as StoreAccount, AccountType, ContinuousVestingData, Coin} from "@/models/store/account";
 
-export function mapAccount(account: BcAccount): StoreAccount  {
+export function createNonexistentAccount(address: string): StoreAccount  {
+  return new StoreAccount(AccountType.Nonexistent, address);
+}
+export function mapAccount(account: BcAccount | undefined): StoreAccount  {
+  if (account === undefined) {
+      throw new Error('Account is undefined');
+  }
   const typeUrl = account["@type"]
   switch (typeUrl) {
-    case "/cosmos.auth.v1beta1.BaseAccount":
+    case "/cosmos.auth.v1beta1.BaseAccount": {
       const bcAccount = account as unknown as BaseAccount;
       return new StoreAccount(AccountType.BaseAccount, bcAccount.address);
+    }
     case "/cosmos.auth.v1beta1.ModuleAccount": {
       const bcAccount = (account as any).base_account as BaseAccount
       return new StoreAccount(AccountType.Unknown, bcAccount.address);
@@ -23,7 +30,7 @@ export function mapAccount(account: BcAccount): StoreAccount  {
         const c = new Coin(coin.amount, coin.denom);
         origVesting.push(c)
       });
-      const vestingData = new ContinuousVestingData(bcAccount.start_time, bcAccount.base_vesting_account.end_time, origVesting)
+      const vestingData = new ContinuousVestingData(bcAccount.start_time + '000', bcAccount.base_vesting_account.end_time + '000', origVesting)
       result.continuousVestingData = vestingData
       return result;
 
@@ -38,6 +45,6 @@ export function mapAccount(account: BcAccount): StoreAccount  {
     }
 
     default:
-      throw new Error(`Unsupported type: '${typeUrl}'`);
+      throw new Error(`Unsupported account type: '${typeUrl}'`);
   }
 }
