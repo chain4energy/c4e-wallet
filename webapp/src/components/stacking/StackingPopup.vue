@@ -272,7 +272,9 @@ function redelegateState(state: boolean){
   &__descriptionIcon{
     width: 50px;
     height: 50px;
-    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #FFFFFF;
     border-radius: 50%;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);

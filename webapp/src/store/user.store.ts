@@ -114,6 +114,11 @@ export const useUserStore = defineStore({
       //   }
       })
     },
+    async fetchAccByEmail(id: string){
+      await apiFactory.accountApi().fetchAccount(id).then((response) => {
+        console.log(response);
+      })
+    },
     // async fetchAccount() {
     //   await walletService.checkWallet().then(async (response) => {
     //     if (response.err) {

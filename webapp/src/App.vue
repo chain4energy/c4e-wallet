@@ -21,13 +21,13 @@ import { inject, onBeforeMount, onMounted, watch } from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
 import {createRouterBeforeEach} from '@/router/before_each';
 
-
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
 import "primeicons/primeicons.css";
 import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import {useConfigurationStore} from "@/store/configuration.store";
 import { useUserStore } from "@/store/user.store";
+import LogingPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 onBeforeMount(() => {
