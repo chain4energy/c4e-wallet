@@ -10,11 +10,11 @@ export class RequestResponse<T, E> {
   }
 
   public isSuccess(): boolean {
-    return this.error !== undefined
+    return this.error === undefined
   }
 
   public isError(): boolean {
-    return this.error === undefined
+    return this.error !== undefined
   }
 
 }

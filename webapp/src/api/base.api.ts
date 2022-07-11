@@ -10,11 +10,11 @@ import {LocalSpinner} from "@/services/model/localSpinner";
 const toast = useToast();
 
 export class ErrorData<D> {
-  name: string;
-  message: string;
-  status?: number;
-  data?: D;
-  dataToInfo?: (data:D)=> string
+  readonly name: string;
+  readonly message: string;
+  readonly status?: number;
+  readonly data?: D;
+  private readonly dataToInfo?: (data:D)=> string
 
   constructor (name: string, message: string, status?: number, data?: D, dataToInfo?: (data:D)=> string) {
     this.name = name;
@@ -44,7 +44,7 @@ export class ErrorData<D> {
 }
 
 export interface BlockchainApiErrorData {
-  code: string;
+  code: number;
   message: string;
   details?: string;
 
@@ -80,16 +80,19 @@ export default abstract class BaseApi extends LoggedService {
       const error = err as Error | AxiosError<E, any>;
       
       let errorResp: ErrorData<E>
+
       if (error instanceof AxiosError && error.response != undefined) {
         errorResp = new ErrorData<E>(error.name, error.message, error.response.status, error.response.data, dataToInfo)
-        this.logToConsole(LogLevel.ERROR, 'Axios Response name' + errorResp.name);
-        this.logToConsole(LogLevel.ERROR, 'Axios Response message' + errorResp.message);
-        this.logToConsole(LogLevel.ERROR, 'Axios Response status' + errorResp.status);
-        this.logToConsole(LogLevel.ERROR, 'Axios Response data' + errorResp.data);
+        this.logToConsole(LogLevel.ERROR, 'Axios Response name ' + errorResp.name);
+        this.logToConsole(LogLevel.ERROR, 'Axios Response message ' + errorResp.message);
+        this.logToConsole(LogLevel.ERROR, 'Axios Response status ' + errorResp.status);
+        this.logToConsole(LogLevel.ERROR, 'Axios Response data ' + errorResp.data);
+        this.logToConsole(LogLevel.ERROR, 'Axios Response code ' + error.code);
+
       } else {
         errorResp = new ErrorData<E>(error.name, error.message)
-        this.logToConsole(LogLevel.ERROR, 'Axios Response name' + errorResp.name);
-        this.logToConsole(LogLevel.ERROR, 'Axios Response message' + errorResp.message);
+        this.logToConsole(LogLevel.ERROR, 'Axios Response name ' + errorResp.name);
+        this.logToConsole(LogLevel.ERROR, 'Axios Response message ' + errorResp.message);
       }
 
       if (!skipErrorToast) {
