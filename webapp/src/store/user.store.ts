@@ -7,6 +7,7 @@ import { Rewards } from "@/models/validator";
 import { stackingList } from "@/models/stacking";
 import { useToast } from "vue-toastification";
 import { RequestResponse } from '@/models/request-response';
+import { useConfigurationStore } from "./configuration.store";
 
 const toast = useToast();
 
@@ -86,11 +87,14 @@ export const useUserStore = defineStore({
         }
       })
     },
-    async fetchBalance(id: string) {
-      await apiFactory.accountApi().fetchBalances(id)
+    async fetchBalance(address: string) {
+      const denom = useConfigurationStore().config.stakingDenom
+      await apiFactory.accountApi().fetchBalance(address, denom)
         .then(response => {
-          const balance: any = response.data;
-          this.balances = parseFloat(balance.balances[0].amount);
+          if (response.isSuccess() && response.data !== undefined) {
+            const balance = response.data;
+            this.balances = parseInt(balance.amount); // TODO use bigint recalculate with decimal
+          }
         });
     },
     async fetchStackedAmount(id: string) {
@@ -110,17 +114,19 @@ export const useUserStore = defineStore({
     },
     async calculateVestingLocked(latestBlTime: string){ // TODO number to BigInt
       const validtime = await Date.parse(latestBlTime);
-      const startTime = Number(this.account?.continuousVestingData?.startTime);
       const endTime = Number(this.account?.continuousVestingData?.endTime);
-      const origVesting = Number(this.account?.continuousVestingData?.originalVesting[0].amount) // TODO getting by denom
-      if (validtime <= startTime) {
-        this.vestimgAccLocked =  origVesting;
-        return
-      }
       if (validtime >= endTime) {
         this.vestimgAccLocked = 0;
         return;
       }
+      const startTime = Number(this.account?.continuousVestingData?.startTime);
+      const denom = useConfigurationStore().config.stakingDenom
+      const origVesting = Number(this.account?.continuousVestingData?.getOriginalVestingByDenom(denom).amount)
+      if (validtime <= startTime) {
+        this.vestimgAccLocked =  origVesting;
+        return
+      }
+
       const x = validtime - startTime
       const y = endTime - startTime
       const diference = x/y;

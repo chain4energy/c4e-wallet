@@ -95,8 +95,8 @@ describe('get account', () => {
     expect(result.data?.address).toBe('c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55');
     expect(result.data?.type).toBe(AccountType.ContinuousVestingAccount);
     expect(result.data?.continuousVestingData).toBeInstanceOf(ContinuousVestingData);
-    expect(result.data?.continuousVestingData?.endTime).toBe('1657372098');
-    expect(result.data?.continuousVestingData?.startTime).toBe('1657112898');
+    expect(result.data?.continuousVestingData?.endTime).toBe('1657372098000');
+    expect(result.data?.continuousVestingData?.startTime).toBe('1657112898000');
     expect(result.data?.continuousVestingData?.originalVesting.length).toBe(1);
     const origVesting = result.data?.continuousVestingData?.originalVesting[0]
     expect(origVesting?.amount).toBe('100000000000');
@@ -239,4 +239,51 @@ describe('get account', () => {
     expect(result.error?.data?.code).toBe(5);
     expect(result.error?.data?.message).toBe('rpc error: code = NotFound desc = account c4e1xe3x4w0ma4dv805q0rhe0c7xk3mv24vatg7pm3 not found: key not found');
   });
+
+  it('gets balance', async () => {
+    const balance = {
+      data: {
+        balance: {
+          denom: "uc4e",
+          amount: "43"
+        }
+      }
+    };
+
+    mockedAxios.request.mockResolvedValue(balance);
+    const result = await api.fetchBalance('c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg', 'uc4e')
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data?.amount).toBe('43')
+    expect(result.data?.denom).toBe('uc4e')
+  });
+
+  it('gets balance wth error', async () => {
+    const response = {
+      data: {
+        "code": 3,
+        "message": "rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request",
+        "details": []
+      },
+      status: 400,
+      statusText: '',
+      // headers: "AxiosResponseHeaders",
+    };
+    const error = new AxiosError();
+    error.name = 'AxiosError';
+    error.message = 'Request failed with status code 400';
+    error.response = response as AxiosResponse
+
+    mockedAxios.request.mockRejectedValue(error);
+    const result = await api.fetchBalance('c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg', 'uc4e')
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe('AxiosError');
+    expect(result.error?.message).toBe('Request failed with status code 400');
+    expect(result.error?.data?.code).toBe(3);
+    expect(result.error?.data?.message).toBe('rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request');
+  
+  });
+
 });

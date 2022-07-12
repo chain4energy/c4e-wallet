@@ -63,7 +63,6 @@
 import { useUserStore } from "@/store/user.store";
 import {useBlockStore} from "@/store/block.store";
 import { computed, ref } from "vue";
-import { AccountType } from "@/models/store/account";
 
 function claimRewards(){
   useUserStore().claimRewards();

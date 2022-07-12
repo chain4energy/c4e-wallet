@@ -37,16 +37,15 @@ export interface ContinuousVestingAccount {
   start_time: string
 }
 
-
-
 export interface AccountResponse {
   account: Account
 }
-// export interface Balances{
-//   balances: Array<Amount>,
-//   pagination: object,
-// }
-export interface balances {
-  balances: Array<Amount>,
-  pagination: object
+
+export interface BalanceResponse {
+  balance: Balance,
+}
+
+export interface Balance {
+  denom: string,
+  amount: string
 }

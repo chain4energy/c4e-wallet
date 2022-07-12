@@ -5,12 +5,12 @@ import { LogLevel } from '@/services/logger/log-level';
 
 import { RequestResponse } from "@/models/request-response";
 import { balances } from "@/models/account";
-import { Account as StoreAccount} from "@/models/store/account";
-import { AccountResponse, Account as BcAccount} from "@/models/blockchain/account";
+import { Account as StoreAccount, Coin} from "@/models/store/account";
+import { AccountResponse, Account as BcAccount, BalanceResponse} from "@/models/blockchain/account";
 
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ConnectionInfo } from "@/api/wallet.connecton.api";
-import { mapAccount, createNonexistentAccount } from "@/models/mapper/account.mapper";
+import { mapAccount, createNonexistentAccount, mapBalance } from "@/models/mapper/account.mapper";
 
 import {
   MsgBeginRedelegate,
@@ -62,12 +62,23 @@ export class AccountApi extends TxBroadcastBaseApi {
       return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(result.error);
     }
   }
-  public async fetchBalances(id: string): Promise<RequestResponse<balances, ErrorData<BlockchainApiErrorData>>>{
-    return this.axiosBlockchainApiCall({
+  public async fetchBalance(address: string, denom: string): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{
+    const result: RequestResponse<BalanceResponse, ErrorData<BlockchainApiErrorData>> =  await this.axiosBlockchainApiCall({
       method: 'GET',
-      url: this.BALANCE_URL + id
+      url: this.BALANCE_URL + address + '/by_denom?denom=' + denom
     }, true, null)
+    if (result.isError()) {
+      return new RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>(result.error);
+    }
+    const coin = mapBalance(result.data?.balance, denom);
+    return new RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>(undefined, coin);
   }
+  // public async fetchBalances(address: string): Promise<RequestResponse<balances, ErrorData<BlockchainApiErrorData>>>{
+  //   return this.axiosBlockchainApiCall({
+  //     method: 'GET',
+  //     url: this.BALANCE_URL + address
+  //   }, true, null)
+  // }
   public async fetchStackedTokens(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
     return this.axiosBlockchainApiCall({
       method: 'GET',

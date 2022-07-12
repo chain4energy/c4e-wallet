@@ -38,6 +38,11 @@ export class ContinuousVestingData {
   public getEndTimeDateString(): string {
     return new Date(Number(this.endTime)).toLocaleString()
   }
+
+  public getOriginalVestingByDenom(denom: string): Coin {
+    const result = this.originalVesting.find(coin => coin.denom === denom)
+    return result === undefined ? new Coin('0', denom) : result;
+  }
 }
 
 export class Coin {
@@ -51,24 +56,16 @@ export class Coin {
 
 }
 
+export class Balances {
+  balances: Coin[];
 
+  constructor (balances: Coin[]) {
+    this.balances = balances
+  }
 
-// accountNumber : number;
-// delegation_response: object;
+  public getBalanceByDenom(denom: string): Coin {
+    const result = this.balances.find(coin => coin.denom === denom)
+    return result === undefined ? new Coin('0', denom) : result;
+  }
+}
 
-// "@type": string,
-// pub_key: {
-//   type: string,
-//   key: string,
-// },
-// account_number: string,
-// sequence: string,
-// base_vesting_account:{
-//   base_account: {
-//     account_number:string,
-//     address: string
-//   },
-//   end_time: string,
-//   original_vesting: Array<Amount>,
-// }
-// start_time: string,
