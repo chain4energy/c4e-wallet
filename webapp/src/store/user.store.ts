@@ -3,11 +3,11 @@ import { Account, AccountType } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
 import { ConnectionInfo, ConnectionError } from "@/api/wallet.connecton.api";
 import { useValidatorsStore } from "@/store/validators.store";
-import { Rewards } from "@/models/validator";
-import { stackingList } from "@/models/stacking";
 import { useToast } from "vue-toastification";
 import { RequestResponse } from '@/models/request-response';
 import { useConfigurationStore } from "./configuration.store";
+import { Delegation, Delegations } from "@/models/store/staking";
+import { Rewards, ValidatorRewards } from "@/models/store/distribution";
 
 const toast = useToast();
 
@@ -16,15 +16,13 @@ interface UserState {
   account: Account
   // type: string
   balances: number
-  stacked: number
+  // stacked: number
   unstacked: number
-  totalRewards: number
+  // totalRewards: number
   vestimgAccLocked: number
   rewards: Rewards
   _isLoggedIn: boolean
-  basicAccount: boolean
-  vestingAccount: boolean
-  stackingList: stackingList
+  delegations: Delegations
 }
 
 export const useUserStore = defineStore({
@@ -35,15 +33,12 @@ export const useUserStore = defineStore({
       account: Object(),
       // type: '',
       balances: 0,
-      stacked: 0,
+      // stacked: 0,
       unstacked: 0,
-      totalRewards: 0,
       vestimgAccLocked: Number(),
-      rewards: Object(),
+      rewards: new Rewards(new Map<string, ValidatorRewards>(), 0),
       _isLoggedIn: false,
-      basicAccount: false,
-      vestingAccount: false,
-      stackingList: Object(),
+      delegations: new Delegations(new Map<string, Delegation>(), 0),
     };
   },
   actions: {
@@ -77,9 +72,9 @@ export const useUserStore = defineStore({
           if (account.type !== AccountType.Nonexistent) {
             await this.fetchBalance(id);
             await this.fetchRewards(id);
-            await this.fetchStackedAmount(id);
+            await this.fetchDelegations(id);
             await this.fetchUnstackedAmount(id);
-            await useValidatorsStore().fetchValidators();
+            // await useValidatorsStore().fetchValidators();
             localStorage.setItem('account', account.address);
           } else {
             // TODO clear store
@@ -94,22 +89,29 @@ export const useUserStore = defineStore({
           if (response.isSuccess() && response.data !== undefined) {
             const balance = response.data;
             this.balances = parseInt(balance.amount); // TODO use bigint recalculate with decimal
+          } else {
+            // TODO
           }
         });
     },
-    async fetchStackedAmount(id: string) {
-      await apiFactory.accountApi().fetchStackedTokens(id)
+    async fetchDelegations(address: string) {
+      await apiFactory.accountApi().fetchDelegations(address)
         .then(response => {
-          this.stackingList = response.data;
-          const totalStacked = [];
-          for (const element of response.data.delegation_responses){
-            totalStacked.push( parseInt(element.balance.amount));
+          if (response.isSuccess() && response.data !== undefined) {
+            this.delegations = response.data
+          } else {
+            // TODO
           }
-          const sumWithInitial = totalStacked.reduce(
-            (previousValue, currentValue) => previousValue + currentValue,
-            0
-          );
-          this.stacked= sumWithInitial;
+          // this.stackingList = response.data;
+          // const totalStacked = [];
+          // for (const element of response.data.delegation_responses){
+          //   totalStacked.push( parseInt(element.balance.amount));
+          // }
+          // const sumWithInitial = totalStacked.reduce(
+          //   (previousValue, currentValue) => previousValue + currentValue,
+          //   0
+          // );
+          // this.stacked= sumWithInitial;
         });
     },
     async calculateVestingLocked(latestBlTime: string){ // TODO number to BigInt
@@ -153,13 +155,19 @@ export const useUserStore = defineStore({
     async fetchRewards(id: string){
       await apiFactory.accountApi().fetchRewards(id)
         .then(response => {
-          this.rewards = response.data
-          if(response.data.rewards.length > 0){
-            const rew = response.data.total[0].amount;
-            this.totalRewards = parseFloat(rew);
+          if (response.isSuccess() && response.data !== undefined) {
+            this.rewards = response.data
           } else {
-            this.totalRewards = 0;
+            // TODO
           }
+
+          // this.rewards = response.data
+          // if(response.data.rewards.length > 0){
+          //   const rew = response.data.total[0].amount;
+          //   this.totalRewards = parseFloat(rew);
+          // } else {
+          //   this.totalRewards = 0;
+          // }
         })
     },
     async delegate(validator: string, amount: string) {
@@ -190,7 +198,7 @@ export const useUserStore = defineStore({
       })
     },
     async claimRewards() {
-      const validators = await useValidatorsStore().getValidatorsWithReward;
+      const validators = this.rewards.getAllValidatorsAddresses();
       apiFactory.accountApi().claimRewards(this.logged, validators).then(async (resp) => {
         if (resp.isError()) {
           toast.error('claimRewards failed')
@@ -212,7 +220,7 @@ export const useUserStore = defineStore({
       this._isLoggedIn = false;
       this.logged = Object(),
       this.account = Object();
-      await useValidatorsStore().logoutValidatorModule()
+      // await useValidatorsStore().logoutValidatorModule()
       localStorage.removeItem('account')
     },
   },
@@ -233,19 +241,22 @@ export const useUserStore = defineStore({
       return this.balances;
     },
     getRewards(): number {
-      return this.totalRewards;
+      return this.rewards.totalRewards;
     },
     getRewardList():Rewards {
       return this.rewards;
     },
-    getStacked(): number {
-      return this.stacked;
-    },
+    // getStacked(): number {
+    //   return this.stacked;
+    // },
     getUnstacked(): number{
       return this.unstacked;
     },
-    getStackedList(): stackingList{
-      return this.stackingList
+    // getStackedList(): stackingList{
+    //   return this.stackingList
+    // },
+    getDelegations(): Delegations {
+      return this.delegations
     },
     getVestingLockAmount() : number{
       return this.vestimgAccLocked

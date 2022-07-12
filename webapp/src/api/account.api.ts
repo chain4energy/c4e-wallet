@@ -22,6 +22,12 @@ import {
   MsgWithdrawDelegatorReward
 } from "cosmjs-types/cosmos/distribution/v1beta1/tx"
 import { Validator } from "@/models/validator";
+import { DelegationsResponse } from "@/models/blockchain/staking";
+import { Delegations } from "@/models/store/staking";
+import { mapDelegations } from "@/models/mapper/staking.mapper";
+import { RewardsResponse } from "@/models/blockchain/distribution";
+import { Rewards } from "@/models/store/distribution";
+import { mapReward, mapRewards } from "@/models/mapper/distribution.mapper";
 
 export class AccountApi extends TxBroadcastBaseApi {
 
@@ -79,24 +85,46 @@ export class AccountApi extends TxBroadcastBaseApi {
   //     url: this.BALANCE_URL + address
   //   }, true, null)
   // }
-  public async fetchStackedTokens(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
-    return this.axiosBlockchainApiCall({
+  public async fetchDelegations(id: string): Promise<RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>>{
+    const result: RequestResponse<DelegationsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.STACKED_AMOUNT_URL + id
-    }, true, null)
+    }, true, null) // TODO fetch all with pagination 
+    if (result.isError()) {
+      return new RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>(result.error);
+    }
+    const delegations = mapDelegations(result.data?.delegation_responses);
+    return new RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>(undefined, delegations);
   }
+  // public async fetchDelegations(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
+  //   return this.axiosBlockchainApiCall({
+  //     method: 'GET',
+  //     url: this.STACKED_AMOUNT_URL + id
+  //   }, true, null)
+  // }
   public async fetchUnstackedTokens(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
     return this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.UNSTACKED_AMOUNT_URL + id + '/unbonding_delegations'
     }, true, null)
   }
-  public async fetchRewards(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
-    return this.axiosBlockchainApiCall({
+  public async fetchRewards(id: string): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>>{
+    const result: RequestResponse<RewardsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.REWARDS_URL + id + '/rewards'
     }, true, null)
+    if (result.isError()) {
+      return new RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>(result.error);
+    }
+    const rewards = mapRewards(result.data);
+    return new RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>(undefined, rewards);
   }
+  // public async fetchRewards(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
+  //   return this.axiosBlockchainApiCall({
+  //     method: 'GET',
+  //     url: this.REWARDS_URL + id + '/rewards'
+  //   }, true, null)
+  // }
   public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
@@ -169,19 +197,23 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
   
-  public async claimRewards(connection: ConnectionInfo, validators: Array<Validator>): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  public async claimRewards(connection: ConnectionInfo, validatorsAddresses: IterableIterator<string>): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const messages = []
-    for (const validator of validators) {
+    for (const validator of validatorsAddresses) {
       const msg = {
         typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
         value: MsgWithdrawDelegatorReward.fromPartial({
           delegatorAddress: connection.account,
-          validatorAddress: validator.operator_address,
+          validatorAddress: validator,
         })
       }
       messages.push(msg)
+    }
+
+    if (messages.length === 0) {
+      return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('No rewards to claim'));
     }
   
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);

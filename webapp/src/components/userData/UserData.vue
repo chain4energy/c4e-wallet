@@ -21,7 +21,7 @@
     </div>
     <div class="userdata__amounts">
       <p>Staked</p>
-      <p>{{useUserStore().getStacked || 0}}</p>
+      <p>{{useUserStore().delegations.totalDelegated || 0}}</p>
     </div>
     <div class="userdata__amounts">
       <p>Unstaking</p>
@@ -70,7 +70,7 @@ function claimRewards(){
 useBlockStore().fetchLatestBlock()
 setInterval(useBlockStore().fetchLatestBlock, 6000)
 
-const total = computed(() => useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances);
+const total = computed(() => useUserStore().getUnstacked + useUserStore().delegations.totalDelegated + useUserStore().getBalances);
 const locked = computed(()=> useUserStore().getVestingLockAmount.toFixed(0))
 </script>
 
