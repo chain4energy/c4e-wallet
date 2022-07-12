@@ -17,7 +17,7 @@ interface UserState {
   stacked: number
   unstacked: number
   totalRewards: number
-  vestimgAccLocked: number
+  vestingAccLocked: number
   rewards: Rewards
   _isLoggedIn: boolean
   basicAccount: boolean
@@ -36,7 +36,7 @@ export const useUserStore = defineStore({
       stacked: 0,
       unstacked: 0,
       totalRewards: 0,
-      vestimgAccLocked: Number(),
+      vestingAccLocked: Number(),
       rewards: Object(),
       _isLoggedIn: false,
       basicAccount: false,
@@ -78,7 +78,7 @@ export const useUserStore = defineStore({
         } else {
           this.logged = response.connectionInfo
           this._isLoggedIn = true;
-          this.fetchAccountData()
+          await this.fetchAccountData()
         }
       })
     },
@@ -104,19 +104,15 @@ export const useUserStore = defineStore({
               await this.fetchBalance(id);
               await this.fetchRewards(id);
               await this.fetchStackedAmount(id);
-              await this.fetchUnstackedAmount(id);
+              if(this.logged.connectionType != 0){
+                await this.fetchUnstackedAmount(id);
+              }
               await useValidatorsStore().fetchValidators()
-              localStorage.setItem('account', account.account.address);
             } else {
               // this._isLoggedIn = false;
             }
       //     });
       //   }
-      })
-    },
-    async fetchAccByEmail(id: string){
-      await apiFactory.accountApi().fetchAccount(id).then((response) => {
-        console.log(response);
       })
     },
     // async fetchAccount() {
@@ -172,9 +168,8 @@ export const useUserStore = defineStore({
       const y = Number(this.account.base_vesting_account.end_time) - Number(this.account.start_time)
       const diference = x/y;
       const unlocked = Number(this.account.base_vesting_account.original_vesting[0].amount) * diference
-      console.log(this.account.base_vesting_account.original_vesting[0].amount * diference)
       const locked = Number(this.account.base_vesting_account.original_vesting[0].amount) - unlocked
-      this.vestimgAccLocked = locked;
+      this.vestingAccLocked = locked;
     },
     async fetchUnstackedAmount(id: string){
       await apiFactory.accountApi().fetchUnstackedTokens(id)
@@ -331,14 +326,13 @@ export const useUserStore = defineStore({
       return this.stackingList
     },
     getVestingLockAmount() : number{
-      return this.vestimgAccLocked
+      return this.vestingAccLocked
     }
   },
   persist: {
     enabled: true,
     strategies: [
-      { storage: sessionStorage, paths: ['type', 'balances', 'stacked', 'unstacked', 'totalRewards'] },
-      { storage: localStorage, paths:['account']}
+      { storage: sessionStorage, paths: ['logged', 'account', 'type', 'balances', 'stacked', 'unstacked', 'totalRewards', '_isLoggedIn'] },
     ]
   }
 });

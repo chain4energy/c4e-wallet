@@ -116,7 +116,7 @@ const loginPopupStatus = ref(false)
   position:sticky;
   color: white;
   top: 0px;
-  z-index: 999;
+  z-index: 20;
 
 .badge {
   position: relative;

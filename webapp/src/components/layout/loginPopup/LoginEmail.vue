@@ -35,7 +35,7 @@ import { ref } from "vue";
 const email = ref('')
 
 function submit(){
-  userStore.fetchAccByEmail(email.value)
+  userStore.connectAsAddress(email.value)
 }
 
 </script>

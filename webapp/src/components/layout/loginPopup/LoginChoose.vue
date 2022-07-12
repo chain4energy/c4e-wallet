@@ -36,7 +36,7 @@
           </defs>
         </svg>
       </button>
-      <button @click="$emit('typeChange', LoginKeplr)" class="loginChoose__description">
+      <button @click="$emit('typeChange', LoginKeplr), $emit('keplr')" class="loginChoose__description">
         <div style="display: flex; align-items: center; justify-content: space-evenly;">
           <div class="loginChoose__descriptionIcon">
             <img src="/keplrIcon.jpg">
@@ -73,11 +73,6 @@
 import LoginEmail from '@/components/layout/loginPopup/LoginEmail.vue';
 import LoginKeplr from '@/components/layout/loginPopup/LoginKeplr.vue';
 import { useUserStore } from "@/store/user.store";
-
-function KeplrChosen({ props, context }: { props: any, context: any }){
-  // useUserStore().fetchAccountData()
-  context.$emit('typeChange', LoginKeplr)
-}
 
 </script>
 

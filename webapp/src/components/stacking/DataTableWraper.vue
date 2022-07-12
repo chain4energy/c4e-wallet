@@ -41,7 +41,7 @@
     >
       <template #body="data">
         <p v-if="data.stacked.amount!=='0'">stacked</p>
-        <p v-else></p>
+        <p v-else>updating</p>
       </template>
 
     </Column>
@@ -87,7 +87,7 @@
       field="stacked.amount"
       header="Your stake"
       :sortable="true"
-      v-if="isLoggedIn "
+      v-if="isLoggedIn && rewardsFetched && stackingFetched"
     >
       <template #body="{data}">
         <span v-if="useValidatorsStore().getStackingFetchResult">{{toFixedAm(data.stacked.amount, 4)}}</span>

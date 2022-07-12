@@ -41,7 +41,7 @@ export const useValidatorsStore = defineStore({
       this.validators = await this.setVotingPower(validatorsList);
       await this.sortValidators()
       await useValidatorsStore().setStatusAndId();
-      if(useUserStore().isLoggedIn && useUserStore().getRewardList) {
+      if(useUserStore().isLoggedIn) {
         await useUserStore().fetchRewards(useUserStore().getAccount.address);
         this.stackingFetch = this.setStacked();
         this.rewardsFetched = this.setRewards()

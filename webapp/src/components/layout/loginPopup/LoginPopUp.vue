@@ -3,7 +3,7 @@
   <div class="loginPopup__background" @click="$emit('close')"></div>
   <div class="loginPopup__holder">
     <transition v-bind="loginType" name="slide-fade" mode="out-in">
-      <component @back="loginType = LoginChoose" @typeChange="(comp) => loginType = comp" v-bind:is="loginType"></component>
+      <component @keplr="keplrConnect" @back="loginType = LoginChoose" @typeChange="(comp) => loginType = comp" v-bind:is="loginType"></component>
     </transition>
   </div>
 </div>
@@ -13,6 +13,7 @@
 import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue'
 
 import { onUnmounted, ref, shallowRef } from "vue";
+import { useUserStore } from "@/store/user.store";
 
 
 document.body.style.overflow = "hidden";
@@ -21,6 +22,10 @@ onUnmounted(() => {
 });
 
 const loginType = shallowRef(LoginChoose)
+
+function keplrConnect(){
+  useUserStore().connectKeplr()
+}
 
 </script>
 

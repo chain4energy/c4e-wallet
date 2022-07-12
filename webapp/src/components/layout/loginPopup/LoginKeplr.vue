@@ -3,7 +3,7 @@
     <h2>Wallet</h2>
     <button @click="$emit('back')"> close </button>
     <div class="loginChoose__body">
-      <button @click="login" class="loginChoose__description">
+      <button class="loginChoose__description">
         <div style="display: flex; align-items: center; justify-content: space-evenly;">
           <div class="loginChoose__descriptionIcon">
             <img src="/keplrIcon.jpg">
@@ -11,7 +11,6 @@
 
           <p>Keplr browser extention</p>
         </div>
-
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g filter="url(#filter0_i_1790_25838)">
             <circle cx="20" cy="20" r="20" fill="#72BF44"/>

@@ -30,6 +30,7 @@ const validatorsStore = useValidatorsStore();
 const userStore = useUserStore();
 
 const rewardsFetched = computed(()=> validatorsStore.getRewardsFetchetStatus)
+const stackedFetched = computed(() => validatorsStore.getStackingFetchResult)
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 
 onBeforeMount(()=>{
@@ -55,7 +56,7 @@ const validators : validatorsComponent = reactive({
     }
   }),
   stacked: computed(() => {
-    if (validators.fullList && rewardsFetched.value) {
+    if (validators.fullList && rewardsFetched.value && stackedFetched.value) {
       return validators.fullList.filter((el: Validator) => el.rewards.amount !== "0");
     } else {
       return []
