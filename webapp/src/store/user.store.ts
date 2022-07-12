@@ -45,7 +45,13 @@ export const useUserStore = defineStore({
     };
   },
   actions: {
-
+    async refreshAcc(){
+      if(this.logged.modifiable){
+        await this.connect(apiFactory.walletApi().connectKeplr())
+      } else if(!this.logged.modifiable){
+        await this.connect(apiFactory.walletApi().connectAddress(this.logged.account))
+      } else return
+    },
     async connectKeplr() {
       await this.connect(apiFactory.walletApi().connectKeplr())
       // await apiFactory.walletApi().connectKeplr().then(async (response) => {
@@ -77,7 +83,6 @@ export const useUserStore = defineStore({
           this._isLoggedIn = false;
         } else {
           this.logged = response.connectionInfo
-          this._isLoggedIn = true;
           await this.fetchAccountData()
         }
       })
@@ -87,9 +92,9 @@ export const useUserStore = defineStore({
       //   if (response.err) {
       //     this._isLoggedIn = false;
       //   } else {
-        if (!this._isLoggedIn) {
-          return
-        }
+      //   if (!this._isLoggedIn) {
+      //     return
+      //   }
           const id =this.logged.account;
           await apiFactory.accountApi().fetchAccount(id).then(async response => {
             if (response.error == null && response.data != undefined) {
@@ -101,16 +106,18 @@ export const useUserStore = defineStore({
                 this.account.address = account.account.address
               }
               this.type = account.account["@type"]
+              this._isLoggedIn = true;
               await this.fetchBalance(id);
               await this.fetchRewards(id);
               await this.fetchStackedAmount(id);
-              if(this.logged.connectionType != 0){
-                await this.fetchUnstackedAmount(id);
-              }
+              await this.fetchUnstackedAmount(id);
+
               await useValidatorsStore().fetchValidators()
-            } else {
-              // this._isLoggedIn = false;
+
             }
+            // } else {
+            //   // this._isLoggedIn = false;
+            // }
       //     });
       //   }
       })
@@ -293,13 +300,15 @@ export const useUserStore = defineStore({
       this._isLoggedIn = false;
       this.logged = Object() as ConnectionInfo,
       this.account = Object() as account;
-      await useValidatorsStore().logoutValidatorModule()
-      localStorage.removeItem('account')
+      useValidatorsStore().logoutValidatorModule()
     },
   },
   getters: {
     isLoggedIn (): boolean {
        return this._isLoggedIn;
+    },
+    getAccModifiable (): boolean{
+      return this.logged.modifiable
     },
     getAccount(): account{
       return this.account;
@@ -332,7 +341,7 @@ export const useUserStore = defineStore({
   persist: {
     enabled: true,
     strategies: [
-      { storage: sessionStorage, paths: ['logged', 'account', 'type', 'balances', 'stacked', 'unstacked', 'totalRewards', '_isLoggedIn'] },
+      { storage: sessionStorage, paths: ['logged', 'account', 'type', 'stackingList', 'rewards'] },
     ]
   }
 });

@@ -16,7 +16,7 @@ import { createPinia } from 'pinia';
 // import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import { createApp } from 'vue';
 import App from './App.vue';
-import router from './router';
+import router from '@/router';
 import 'bootstrap/scss/bootstrap.scss';
 // import CountryFlag from 'vue-country-flag-next';// https://www.npmjs.com/package/vue-country-flag-next
 // import { library } from '@fortawesome/fontawesome-svg-core';
@@ -64,8 +64,8 @@ const pinia = createPinia();
 pinia.use(piniaPersist);
 const logger = new LoggerService();
 
-app.use(pinia)
-  .use(router)
+app.use(router)
+  .use(pinia)
   .use(i18n)
   .use(Toast, toastOptions)
   // .use(vuetify)

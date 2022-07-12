@@ -5,14 +5,13 @@
       <Icon name="SidebarOpen"/>
     </div>
     <div class="sidebar display-none">
-      <router-link :to="menuItem.href" v-for="(menuItem,index) of menu" @click="changeSelected(index)" :key="menuItem">
+      <router-link :to="menuItem.href" v-for="(menuItem,index) of menu" :key="index">
         <span class="sidebar-element">
-          <span class="icon" :class="{ 'active': index === selected }">
+          <span :class="menuItem.href === this.$route.path ? 'icon active' : 'icon'">
             <Icon :name="menuItem.icon.element"/>
           </span>
           <span class="title">{{ menuItem.title }}</span>
         </span>
-
       </router-link>
       <span @click="hideSidebar" class="hide-sidebar">
         <Icon name="SidebarClose"/>
@@ -23,29 +22,16 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, watch} from "vue";
-// import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
+import { computed } from "vue";
 import Icon from "../features/IconComponent.vue";
 import {PermissionsService} from "../../services/permissions/permissions.service";
-import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
-import {useRoute} from "vue-router";
 
-const route = useRoute();
 const permissionsService = new PermissionsService();
-const menu = computed(() => {
-  console.debug('SideBar - watch route.name changed to' + JSON.stringify(route));
-  const temp = permissionsService.createSideBar()
-  if(route.name != undefined) {
-    const sidebarElement = temp.find(element => element.href == "/" + route.name?.toString());
-    if(sidebarElement != undefined) {
-      //TODO: czy da się to zrobić inaczej
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      selected.value = temp.indexOf(sidebarElement);
-    }
-  }
-  return temp;
-});
-const selected = ref(0);
+const menu = computed(() =>{
+  return permissionsService.createSideBar()
+})
+
+
 
 function showSidebar() {
   let sidebar = document.getElementsByClassName('sidebar')[0] as HTMLElement;
@@ -64,73 +50,6 @@ function hideSidebar() {
   showSidebar.classList.remove('display-none');
   showSidebar.classList.add('display-flex');
 }
-function changeSelected(index: number) {
-  selected.value = index;
-}
-
-// const menu = computed(() => {return [
-//   {
-//     header: i18n.t('SIDEBAR_MENU.TITLE'),
-//     hiddenOnCollapse: true
-//   },
-//   {
-//     href: '/users',
-//     title: 'Users',
-//     icon: {
-//       element: User
-//     }
-//   },
-//   {
-//     href: '/providers',
-//     title: 'Providers',
-//     icon: {
-//       element: BookOpen
-//     }
-//   },
-//   {
-//     href: '/',
-//     title: 'Dashboard',
-//     icon: {
-//       element: Gem
-//     }
-//   },
-//   {
-//     href: '/',
-//     title: 'Dashboard',
-//     icon: {
-//       element: Locate
-//     }
-//   },
-//   {
-//     href: '/',
-//     title: 'Dashboard',
-//     icon: {
-//       element: BarChart2
-//     }
-//   },
-//   {
-//     href: '/',
-//     title: 'Dashboard',
-//     icon: {
-//       element: FileText
-//     }
-//   },
-//   {
-//     href: '/',
-//     title: 'Dashboard',
-//     icon: {
-//       element: CreditCard
-//     }
-//   },
-//   {
-//     href: '/',
-//     title: 'Dashboard',
-//     icon: {
-//       element: ClipboardList
-//     }
-//   }
-//
-// ]})
 </script>
 
 <style scoped lang="scss">

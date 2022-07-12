@@ -1,93 +1,75 @@
 import {defineStore} from "pinia";
-import { Validator } from "@/models/validator";
+import { rewards, Validator } from "@/models/validator";
 import apiFactory from "@/api/factory.api";
 import {useTokensStore} from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
 import { Validators } from "@/models/validators";
-import { stackItem } from "@/models/stacking";
+import { stackingList, stackItem } from "@/models/stacking";
 
 interface ValidatorsState {
-  validators: Validators
-  numberOfActiveValidators: number
-  rewardsFetched: boolean
-  stackingFetch: boolean
-  validatorsWithReward: Array<Validator>
+  validators: Validators,
+  numberOfActiveValidators: number,
+  rewardsFetched: boolean,
+  stackingFetch: boolean,
+  validatorsFetched: boolean,
+  validatorsWithReward: Array<Validator>,
 }
 
 export const useValidatorsStore = defineStore({
   id: 'validatorsStore',
   state: (): ValidatorsState => {
     return {
-      validators: Object(Validators),
-      // validator: Object,
+      validators: Object() as Validators,
       numberOfActiveValidators: Object(Number),
       rewardsFetched: false,
       stackingFetch: false,
+      validatorsFetched: false,
       validatorsWithReward: Array<Validator>()
     };
   },
   actions: {
     async fetchValidators(){
+      await useTokensStore().fetchStakingPool()
       this.rewardsFetched = false;
       this.stackingFetch = false;
-      let validatorsList = Object() as Validators;
       await apiFactory.validatorsApi().fetchAllValidators(null, true, null)
-        .then((resp) => {
-          if (resp.data){
-            validatorsList = resp.data;
+        .then((responce) => {
+          if(responce.data){
+            responce.data.validators.forEach((el) =>{
+              const votingPower = (Number(el.tokens) / Number(useTokensStore().getStakingPool.bonded_tokens)) * 100;
+              el.votingPower = Number(votingPower);
+              el.status = this.setStatus(el);
+              this.setStacked(el, useUserStore().getStackedList);
+              el.stackedIndicator = true;
+              this.setRewards(el);
+            })
+            this.validators = responce.data
+            this.sortValidators()
+            this.stackingFetch = true
+          } else {
+            this.validators = Object(Validators)
+            this.stackingFetch = false
           }
-      });
-
-      this.validators = await this.setVotingPower(validatorsList);
-      await this.sortValidators()
-      await useValidatorsStore().setStatusAndId();
-      if(useUserStore().isLoggedIn) {
-        await useUserStore().fetchRewards(useUserStore().getAccount.address);
-        this.stackingFetch = this.setStacked();
-        this.rewardsFetched = this.setRewards()
-      }
-
+        })
     },
-    setStatusAndId() {
-      let id = 1;
-      this.validators.validators.forEach((element: Validator) => {
-        element.id = id;
-        id += 1;
-        switch (element.status) {
-          case 'BOND_STATUS_UNSPECIFIED' || 0:
-            element.status = 'Invalid';
-            return element.status;
-          case 'BOND_STATUS_UNBONDED' || 1:
-            element.status = 'NotBounded';
-            return element.status;
-          case 'BOND_STATUS_UNBONDING' || 2:
-            element.status = 'inProccess';
-            return element.status;
-          case 'BOND_STATUS_BONDED' || 3:
-            element.status = 'Active';
-            return element.status;
-          default:
-            return 'Checking';
-        }
-      });
-    },
-    async setVotingPower(validators : Validators) {
-      if(useTokensStore().getStakingPool.bonded_tokens){
-        const supply = await useTokensStore().getStakingPool;
-        const total = Number(supply.bonded_tokens);
-        validators.validators.forEach((element:Validator) => {
-          const votingPower = (Number(element.tokens) / total) * 100;
-          element.votingPower = Number(votingPower);
-          return element;
-        });
-        return validators;
-      }
-      else {
-        useTokensStore().fetchStakingPool()
-        return validators;
+    setStatus(el:Validator){
+      switch (el.status) {
+        case 'BOND_STATUS_UNSPECIFIED' || 0:
+          el.status = 'Invalid';
+          return el.status;
+        case 'BOND_STATUS_UNBONDED' || 1:
+          el.status = 'NotBounded';
+          return el.status;
+        case 'BOND_STATUS_UNBONDING' || 2:
+          el.status = 'inProccess';
+          return el.status;
+        case 'BOND_STATUS_BONDED' || 3:
+          el.status = 'Active';
+          return el.status;
+        default:
+          return 'Checking';
       }
     },
-
     fetchNumberOfActiveValidators(){
       apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
         if( response.error == null ) {
@@ -100,30 +82,6 @@ export const useValidatorsStore = defineStore({
           //TODO: error handling
         }
       });
-    },
-    setRewards(){
-      const rewards = useUserStore().getRewardList
-      if(useUserStore().getRewardList && useUserStore().getAccount){
-        for (const el of this.validators.validators) {
-          const rew = rewards.rewards.filter(
-            (element) => element.validator_address === el.operator_address,
-            this.validatorsWithReward.push(el)
-          );
-          if (rew[0]) {
-            // eslint-disable-next-line prefer-destructuring
-            el.rewards = rew[0].reward[0];
-          } else {
-            el.rewards = {
-              amount: '0',
-              denom: '',
-            };
-          }
-        }
-        return true
-      }else {
-        useUserStore().fetchAccountData()
-        return false
-      }
     },
     sortValidators(){
       const validatorsValues: Array<number> = []
@@ -145,36 +103,46 @@ export const useValidatorsStore = defineStore({
       }
       this.validators.validators = sortedValidators
     },
-    setStacked() {
-      const stacked = useUserStore().getStackedList
-      if(stacked.delegation_responses.length > 0){
-        for(const el of this.validators.validators){
-          const data = stacked.delegation_responses.find((stackD: stackItem) => stackD.delegation.validator_address === el.operator_address)
-          if(data){
-            el.stacked = data.balance
-          } else {
-            el.stacked = {
-              amount: '0',
-              denom: '',
-            }
-          }
-        }
-        return true
-      } else {
-        for(const el of this.validators.validators){
+    setStacked(el:Validator, stackedList: stackingList ){
+      if(useUserStore().isLoggedIn && stackedList){
+        const data = stackedList.delegation_responses
+          .find((stackD: stackItem) => stackD.delegation.validator_address === el.operator_address)
+        if(data){
+          el.stacked = data.balance
+        } else {
           el.stacked = {
             amount: '0',
             denom: '',
           }
         }
-        return true
+      } else {
+        el.stacked = {
+          amount: '0',
+          denom: '',
+        }
+      }
+    },
+    setRewards(el: Validator){
+      if(useUserStore().isLoggedIn && useUserStore().getRewardList){
+        const data = useUserStore().getRewardList.rewards
+          .find((reward: rewards) => reward.validator_address === el.operator_address)
+        if(data !== undefined){
+          el.rewards = data.reward[0]
+        } else {
+          el.rewards = {
+            amount: '0',
+            denom: 'c4e'
+          }
+        }
+        this.rewardsFetched = true;
+      } else {
+        this.rewardsFetched = false
       }
     },
     logoutValidatorModule(){
       this.stackingFetch = false;
       this.rewardsFetched = false;
       this.validatorsWithReward = [];
-      this.fetchValidators()
     }
   },
   getters: {

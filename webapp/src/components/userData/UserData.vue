@@ -33,10 +33,10 @@
         <p>{{locked}}</p>
       </div>
       <div>
-        <p>{{new Date(useUserStore().getAccount.start_time*1000).toLocaleString()}}</p>
+        <p>{{new Date(useUserStore().getAccount.start_time * 1000).toLocaleString()}}</p>
       </div>
       <div>
-        <p>{{new Date(useUserStore().getAccount.base_vesting_account.end_time*100).toLocaleString()}}</p>
+        <p>{{new Date(useUserStore().getAccount.base_vesting_account.end_time * 100).toLocaleString()}}</p>
       </div>
     </div>
   </div>
@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import { useUserStore } from "@/store/user.store";
 import {useBlockStore} from "@/store/block.store";
-import { computed, ref } from "vue";
+import { computed, onUpdated, ref, watch } from "vue";
 
 function claimRewards(){
   useUserStore().claimRewards();
@@ -72,6 +72,14 @@ setInterval(useBlockStore().fetchLatestBlock, 6000)
 
 const total = computed(() => useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances);
 const locked = computed(()=> useUserStore().getVestingLockAmount.toFixed(0))
+const block = computed(() => useBlockStore().getLatestBlock)
+
+// watch(block, (newValue, oldValue) => {
+//   console.log(newValue.block_id.hash)
+//
+//   // useUserStore().refreshAcc()
+// })
+
 </script>
 
 <style scoped lang="scss">

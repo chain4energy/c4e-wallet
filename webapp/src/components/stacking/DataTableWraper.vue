@@ -35,16 +35,16 @@
     <template #loading>
       Loading customers data. Please wait.
     </template>
-    <Column
-      v-if="useUserStore().isLoggedIn && useValidatorsStore().getStackingFetchResult"
-      header=""
-    >
-      <template #body="data">
-        <p v-if="data.stacked.amount!=='0'">stacked</p>
-        <p v-else>updating</p>
-      </template>
+<!--    <Column-->
+<!--      v-if="useUserStore().isLoggedIn && useValidatorsStore().getStackingFetchResult"-->
+<!--      header=""-->
+<!--    >-->
+<!--      <template #body="data">-->
+<!--        <p v-if="data.stacked.amount!=='0'">stacked</p>-->
+<!--        <p v-else>updating</p>-->
+<!--      </template>-->
 
-    </Column>
+<!--    </Column>-->
 <!--    <Column-->
 <!--      field="stacked"-->
 <!--      v-if="useUserStore().isLoggedIn && useValidatorsStore().getStackingFetchResult"-->
@@ -87,11 +87,11 @@
       field="stacked.amount"
       header="Your stake"
       :sortable="true"
-      v-if="isLoggedIn && rewardsFetched && stackingFetched"
+      v-if="isLoggedIn && stackingFetched"
     >
       <template #body="{data}">
-        <span v-if="useValidatorsStore().getStackingFetchResult">{{toFixedAm(data.stacked.amount, 4)}}</span>
-        <span v-else>updating</span>
+        <span v-if="data.stackedIndicator === true">{{toFixedAm(data.stacked.amount, 4)}}</span>
+        <span v-else-if="data.stackedIndicator === false || undefined">updating</span>
       </template>
     </Column>
     <Column field="operator_address">
@@ -133,7 +133,7 @@ import { ValidatorsList } from "@/models/validators";
 
 const props = defineProps({
   validators: {
-    type: Object as PropType<ValidatorsList> || {},
+    type: Object as PropType<ValidatorsList> || [],
   },
   expanded: {
     type: Boolean,
@@ -185,21 +185,8 @@ function checkBTN(item: Validator){
   return popupOpened;
 }
 
-async function trsansactionSuccess(arg: string) {
+async function trsansactionSuccess() {
   checkBTN();
-  await useUserStore().logOut()
-  await useUserStore().fetchAccountData()
-
-
-  // useValidatorsStore().fetchValidators()
-  //
-}
-const showPopupVal = ref(false);
-const address = ref('');
-function showPopup(valaddress : string) {
-  showPopupVal.value = !showPopupVal.value;
-  address.value = valaddress;
-  useUserStore().fetchAccountData()
 }
 </script>
 

@@ -22,18 +22,14 @@ export interface Validator{
   userTouched: boolean
   rewards: BasicQuantity
   stacked: BasicQuantity
+  stackedIndicator: boolean,
 }
 export interface BasicQuantity{
-  denom: string,
   amount: string
+  denom: string,
 }
 export interface rewards{
   reward: Array<BasicQuantity>,
-  validator_address: string
-}
-export interface rewards{
-  reward: Array<BasicQuantity>,
-  // eslint-disable-next-line camelcase
   validator_address: string
 }
 export interface Rewards{

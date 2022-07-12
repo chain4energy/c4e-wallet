@@ -57,6 +57,12 @@
               v-if="!useUserStore().isLoggedIn"
               icon=" pi pi-power-off"
               class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="loginPopupStatus =! loginPopupStatus"></Button>
+            <Button
+              v-if="useUserStore().isLoggedIn"
+              icon=" pi pi-power-off"
+              class="nav-link p-button-rounded p-button-text p-button-lg mx-1"
+              @click="useUserStore().logOut()"
+            ></Button>
           </div>
         </div>
 
