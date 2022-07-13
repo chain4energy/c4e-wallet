@@ -225,10 +225,6 @@ describe('map account', () => {
   });
 
   it('maps undefined data', async () => {
-    const bcAccount: BcAccount = {
-          address: "c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg",
-    } as unknown as BcAccount;
-
     expect(() => {mapAccount(undefined)}).toThrowError(new Error('Account is undefined'))
   });
 

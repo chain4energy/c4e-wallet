@@ -43,6 +43,7 @@ export class ContinuousVestingData {
     const result = this.originalVesting.find(coin => coin.denom === denom)
     return result === undefined ? new Coin('0', denom) : result;
   }
+
 }
 
 export class Coin {

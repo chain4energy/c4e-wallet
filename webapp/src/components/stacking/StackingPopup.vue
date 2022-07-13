@@ -100,7 +100,7 @@ const amount = ref('');
 const keplrResult = ref('');
 const emit = defineEmits(['close']);
 
-let max = useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances
+let max = useUserStore().getTotalUndelegated + useUserStore().getTotalDelegated + useUserStore().getBalances
 
 setLocale({
   number: {
@@ -118,7 +118,7 @@ let amountSchema = object({
     number()
     .defined()
     .moreThan(0)
-    .lessThan(useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances)
+    .lessThan(useUserStore().getTotalUndelegated + useUserStore().getTotalDelegated + useUserStore().getBalances)
 });
 
 async function delegate() {

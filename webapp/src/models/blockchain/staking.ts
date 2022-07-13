@@ -17,3 +17,21 @@ export interface Delegation {
   }
 }
 
+export interface UnbondigDelegationsResponse{
+  delegation_responses: UnbondigDelegation[]
+  pagination: Pagination
+}
+
+export interface UnbondigDelegation {
+  delegator_address: string,
+  validator_address: string,
+  entries: [
+    {
+      creation_height: string,
+      completion_time: string,
+      initial_balance: string,
+      balance: string
+    }
+  ]
+}
+
