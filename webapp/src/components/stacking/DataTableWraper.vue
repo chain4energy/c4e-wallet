@@ -56,7 +56,7 @@
       </template>
     </Column>
     <Column
-      field="votingPower"
+      sortField="tokens"
       header="voting Power"
       :sortable="true"
     >
@@ -66,13 +66,13 @@
       </template>
     </Column>
     <Column
-      field="stacked.amount"
+      sortField="delegatedAmount"
       header="Your stake"
       :sortable="true"
       v-if="isLoggedIn "
     >
       <template #body="{data}">
-        <span >{{toFixedAm(userStore.getDelegations.getAmountByValidator(data.operatorAddress), 4)}}</span>
+        <span >{{toFixedAm(data.delegatedAmount, 4)}}</span>
         <!-- <span v-else>updating</span> -->
       </template>
     </Column>
@@ -85,18 +85,18 @@
       <template  #body="{data}">
         <button
           @click="onRowExpande(data)"
-          v-if="userStore.getDelegations.getAmountByValidator(data.operatorAddress)!=='0'"   headerStyle="width: 4rem">open</button>
+          v-if="data.delegatedAmount!=='0'"   headerStyle="width: 4rem">open</button>
       </template>
     </Column>
     <template v-if="isLoggedIn" #expansion="{data}">
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
           <p>Your stacked</p>
-          <p>{{toFixedAm(userStore.getDelegations.getAmountByValidator(data.operatorAddress), 4)}}</p>
+          <p>{{toFixedAm(data.delegatedAmount, 4)}}</p>
         </div>
         <div style="display: flex; flex-direction: column">
           <p>Reward</p>
-          <p>{{toFixedAm(userStore.getRewardList.getAmountByValidator(data.operatorAddress), 4)}}</p>
+          <p>{{toFixedAm(data.rewardsAmount, 4)}}</p>
         </div>
       </div>
     </template>
