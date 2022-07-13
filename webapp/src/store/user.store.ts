@@ -42,7 +42,13 @@ export const useUserStore = defineStore({
     };
   },
   actions: {
-
+    async reconectAcc(){
+      if(this.logged.connectionType === 1){
+        await this.connect(apiFactory.walletApi().connectKeplr())
+      } else if(this.logged.connectionType === 0){
+        await this.connect(apiFactory.walletApi().connectAddress(this.logged.account))
+      } else return
+    },
     async connectKeplr() {
       await this.connect(apiFactory.walletApi().connectKeplr())
     },
@@ -74,8 +80,6 @@ export const useUserStore = defineStore({
             await this.fetchRewards(id);
             await this.fetchDelegations(id);
             await this.fetchUnstackedAmount(id);
-            // await useValidatorsStore().fetchValidators();
-            localStorage.setItem('account', account.address);
           } else {
             // TODO clear store
           }
@@ -262,4 +266,10 @@ export const useUserStore = defineStore({
       return this.vestimgAccLocked
     }
   },
+  persist: {
+    enabled: true,
+    strategies: [
+      { storage: sessionStorage, paths: ['logged', 'account', 'type', 'stackingList', 'rewards'] },
+    ]
+  }
 });
