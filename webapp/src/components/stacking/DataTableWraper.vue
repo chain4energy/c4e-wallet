@@ -3,10 +3,11 @@
   <StackingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
   <DataTable
     :value="validators"
-    dataKey="operator_address"
+    dataKey="rank"
     selectionMode="multiple"
     :rowHover="true"
-    :paginator="true" :rows="10"
+    :paginator="true"
+    :rows="10"
     :showGridlines="false"
     v-model:expandedRows="expandedRow"
     v-model:filters="filters"
@@ -171,8 +172,7 @@ function checkBTN(item: Validator){
 
 async function trsansactionSuccess(arg: string) {
   checkBTN();
-  await useUserStore().logOut()
-  await useUserStore().fetchAccountData()
+  useUserStore().reconectAcc()
 
 
   // useValidatorsStore().fetchValidators()

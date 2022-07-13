@@ -40,7 +40,7 @@ onMounted(() => {
   createRouterBeforeEach(logger);
   setTimeout(() =>{
       useUserStore().reconectAcc()
-  },200)
+  },300)
 });
 
 </script>
