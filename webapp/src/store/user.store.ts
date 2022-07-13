@@ -240,6 +240,9 @@ export const useUserStore = defineStore({
     },
   },
   getters: {
+    getLogedInfo(): any{
+      return this.logged.connectionType
+    },
     isLoggedIn (): boolean {
        return this._isLoggedIn;
     },

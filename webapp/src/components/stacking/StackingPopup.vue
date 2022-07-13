@@ -92,15 +92,15 @@ const toast = useToast()
 
 const redelegateTo = ref()
 
-const canModify = computed(() => useUserStore().getAccModifiable);
+const canModify = computed(() => useUserStore().getLogedInfo);
 const validators = computed(() => {
-    return useValidatorsStore().getValidators.validators.filter(element => element.operator_address !== props.validator.operator_address)
+    return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress)
   // return props.validator.operator_address
   });
 const actionRedelegate = ref(false)
 const amount = ref('');
 const keplrResult = ref('');
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'success']);
 
 let max = useUserStore().getTotalUndelegated + useUserStore().getTotalDelegated + useUserStore().getBalances
 
@@ -135,11 +135,13 @@ async function delegate() {
     //     emit('success', "success");
     //     toast.success('transaction passed')
     //   })
-    await useUserStore().delegate(props.validator.operator_address, amount.value)
+    await useUserStore().delegate(props.validator.operatorAddress, amount.value)
   } catch (err) {
     // keplrResult.value = err.errors;
     keplrResult.value = 'error';
     toast.error('transaction failed')
+  } finally {
+    emit('success')
   }
 }
 
@@ -155,11 +157,13 @@ async function undelegate() {
       //   emit('success', "success");
       //   toast.success('transaction passed')
       // })
-    await useUserStore().undelegate(props.validator.operator_address, amount.value)
+    await useUserStore().undelegate(props.validator.operatorAddress, amount.value)
   } catch (err) {
     // keplrResult.value = err.errors;
      keplrResult.value = 'error';
     toast.error('transaction failed')
+  }finally {
+    emit('success')
   }
 }
 
@@ -175,7 +179,7 @@ function redelegate(){
     //   type: 'redelegate'
     // };
     // useUserStore().tokensTransaction(transaction)
-    useUserStore().redelegate(props.validator.operator_address, redelegateTo.value.operator_address, amount.value)
+    useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, amount.value)
 
   }
 }

@@ -10,10 +10,10 @@
   "coinConversion": "",
   "chainId": "c4e-testnet-0.1.0",
   "operationGas": {
-    "vote": "120000",
-    "delegate": "130000",
-    "undelegate": "140000",
-    "redelegate": "150000",
-    "claimRewards": "250000"
+    "vote": "1200000",
+    "delegate": "1300000",
+    "undelegate": "1400000",
+    "redelegate": "1500000",
+    "claimRewards": "2500000"
   }
 }

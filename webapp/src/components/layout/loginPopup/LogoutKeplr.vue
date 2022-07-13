@@ -1,48 +1,89 @@
 <template>
+  <div class="loginPopup">
+    <div class="loginPopup__background" @click="$emit('close')"></div>
+    <div class="loginPopup__holder">
   <div class="loginChoose__holder">
     <h2>Wallet</h2>
-    <button @click="$emit('back')"> close </button>
+    <button @click="$emit('close')"> close </button>
     <div class="loginChoose__body">
-      <button class="loginChoose__description">
+      <div class="loginChoose__description">
         <div style="display: flex; align-items: center; justify-content: space-evenly;">
           <div class="loginChoose__descriptionIcon">
             <img src="/keplrIcon.jpg">
           </div>
-
           <p>Keplr browser extention</p>
         </div>
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g filter="url(#filter0_i_1790_25838)">
-            <circle cx="20" cy="20" r="20" fill="#72BF44"/>
-          </g>
-          <path d="M20 28.3333C24.6023 28.3333 28.3333 24.6024 28.3333 20C28.3333 15.3976 24.6023 11.6667 20 11.6667C15.3976 11.6667 11.6666 15.3976 11.6666 20C11.6666 24.6024 15.3976 28.3333 20 28.3333Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M20 23.3333L23.3333 20L20 16.6667" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M16.6666 20H23.3333" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <defs>
-            <filter id="filter0_i_1790_25838" x="0" y="0" width="40" height="44" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-              <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-              <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-              <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-              <feOffset dy="4"/>
-              <feGaussianBlur stdDeviation="2"/>
-              <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-              <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-              <feBlend mode="normal" in2="shape" result="effect1_innerShadow_1790_25838"/>
-            </filter>
-          </defs>
-        </svg>
-      </button>
+        <button class="loginPopup__disconect" @click="logout">Disconnect</button>
+      </div>
     </div>
   </div>
+  </div>
+</div>
 </template>
 
 <script setup lang="ts">
-import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue'
+import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue';
+import { useUserStore } from "@/store/user.store";
+
+const emit = defineEmits(['close']);
+
+function logout(){
+  useUserStore().logOut()
+  emit('close')
+
+}
 
 </script>
 
 <style scoped lang="scss">
-
+.loginPopup {
+  color: #001b31;
+  position: fixed;
+  top:0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  p{
+    margin-bottom: 0;
+  }
+  &__background{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: #0F3153;
+    opacity: 0.85;
+    z-index: -1;
+  }
+  &__holder{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    width: 800px;
+    min-height: 292px;
+    background-color: #FFFFFF;
+    padding: 46px 20px 30px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
+    border-radius: 8px;
+  }
+  &__disconect{
+    margin-left: 10px;
+    border: 1px solid #72BF44;
+    border-radius: 24px;
+    background-color: #FFFFFF;
+    width: 161px;
+    padding:11px 24px 13px 24px;
+    &:hover{
+      background-color: #72BF44;
+      color: #FFFFFF;
+    }
+  }
+}
 .loginChoose{
   position: fixed;
   top:0;

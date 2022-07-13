@@ -36,7 +36,7 @@
           </defs>
         </svg>
       </button>
-      <button @click="$emit('typeChange', LoginKeplr), $emit('keplr')" class="loginChoose__description">
+      <button @click="$emit('keplr')" class="loginChoose__description">
         <div style="display: flex; align-items: center; justify-content: space-evenly;">
           <div class="loginChoose__descriptionIcon">
             <img src="/keplrIcon.jpg">
@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 import LoginEmail from '@/components/layout/loginPopup/LoginEmail.vue';
-import LoginKeplr from '@/components/layout/loginPopup/LoginKeplr.vue';
+import LoginKeplr from '@/components/layout/loginPopup/LogoutKeplr.vue';
 import { useUserStore } from "@/store/user.store";
 
 </script>

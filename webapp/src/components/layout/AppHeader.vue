@@ -16,9 +16,10 @@
   <!--      </div>-->
   <!--    </div>-->
   <!--  </div>-->
-  <div>
-    <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
+
     <nav class="navbar navbar-expand-lg navbar-dark background">
+      <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
+      <LogoutKeplr v-if="logoutPopupStatus === 1" @close="logoutPopupStatus = 0"></LogoutKeplr>
       <div class="container-fluid">
         <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
@@ -61,7 +62,7 @@
               v-if="useUserStore().isLoggedIn"
               icon=" pi pi-power-off"
               class="nav-link p-button-rounded p-button-text p-button-lg mx-1"
-              @click="useUserStore().logOut()"
+              @click="logout"
             ></Button>
           </div>
         </div>
@@ -73,7 +74,6 @@
       </div>
       <UserData v-if="useUserStore().isLoggedIn"/>
     </nav>
-  </div>
 
 </template>
 
@@ -82,6 +82,7 @@ import LangSwitch from '@/components/lang/LangSwitch.vue';
 import AutoLogOut from "@/components/fetures/AutoLogOut.vue";
 import  UserData from "@/components/userData/UserData.vue";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
+import LogoutKeplr from "@/components/layout/loginPopup/LogoutKeplr.vue";
 
 import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
@@ -91,8 +92,19 @@ import { useUserStore } from "@/store/user.store";
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
 
-const loginPopupStatus = ref(false)
+const loginPopupStatus = ref(false);
+const logoutPopupStatus = ref(0);
 
+function logout(){
+  switch (useUserStore().getLogedInfo){
+    case 1: logoutPopupStatus.value = 1;
+      break;
+    case 0: logoutPopupStatus.value = 2;
+      break
+    default: logoutPopupStatus.value = 0;
+      break
+  }
+}
 // const keystoreChangeListener = () => {
 //       useUserStore().connectKeplr()
 //     }

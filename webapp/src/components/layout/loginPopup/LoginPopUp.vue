@@ -14,6 +14,7 @@ import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue'
 
 import { onUnmounted, ref, shallowRef } from "vue";
 import { useUserStore } from "@/store/user.store";
+import { useToast } from "vue-toastification";
 
 
 document.body.style.overflow = "hidden";
@@ -21,16 +22,25 @@ onUnmounted(() => {
   document.body.style.overflow = "auto";
 });
 
+const emit = defineEmits(['close', 'typeChange']);
+
 const loginType = shallowRef(LoginChoose)
 
 function keplrConnect(){
-  useUserStore().connectKeplr()
+  useUserStore().connectKeplr().then(() => {
+    if (useUserStore().isLoggedIn){
+      emit('close')
+    } else {
+      return
+    }
+  });
 }
 
 </script>
 
 <style scoped lang="scss">
 .loginPopup {
+  color: #001b31;
   position: fixed;
   top:0;
   left: 0;
@@ -39,7 +49,6 @@ function keplrConnect(){
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
   width: 100%;
   height: 100vh;
   p{
@@ -64,7 +73,6 @@ function keplrConnect(){
     padding: 46px 20px 30px 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
     border-radius: 8px;
-    opacity: 120%;
   }
 }
 
