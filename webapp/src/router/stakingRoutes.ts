@@ -27,7 +27,7 @@ const stakingRoutes = {
 };
 
 function checkAccType(){
-  if(useUserStore().getAccType === ''){
+  if(!useUserStore().isContinuousVestingAccount){
     return {name: 'base'}
   } else {
     return {name: 'stakingVesting'}

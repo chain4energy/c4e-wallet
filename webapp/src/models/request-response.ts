@@ -1,11 +1,20 @@
 import { AxiosResponse } from 'axios';
 
-export class RequestResponse<T> {
-  error: any;
+export class RequestResponse<T, E> {
+  error?: E;
   data?: T;
 
-  constructor (error: any, data?: T) {
+  constructor (error?: E, data?: T) {
     this.error = error;
     this.data = data;
   }
+
+  public isSuccess(): boolean {
+    return this.error === undefined
+  }
+
+  public isError(): boolean {
+    return this.error !== undefined
+  }
+
 }

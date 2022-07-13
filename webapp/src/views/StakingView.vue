@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>{{accType}}</div>
+    <!-- <div>{{accType}}</div> -->
     <router-view/>
   </div>
 </template>
@@ -10,9 +10,10 @@ import { useUserStore } from "@/store/user.store";
 import router from "@/router";
 import { mapGetters } from "pinia";
 import { onMounted, watch } from "vue";
+import { AccountType } from "@/models/store/account";
 
 onMounted(()=> {
-  if(!useUserStore().getAccType|| useUserStore().getAccType === '/cosmos.auth.v1beta1.BaseAccount'){
+  if(!useUserStore().isContinuousVestingAccount){
     router.push({name: 'base'})
   } else {
     router.push({name: 'vesting'})
@@ -21,7 +22,7 @@ onMounted(()=> {
 watch(
   () => useUserStore().getAccType,
   (accType) => {
-    if(!accType || accType === '/cosmos.auth.v1beta1.BaseAccount'){
+    if(accType !== AccountType.ContinuousVestingAccount){ // TODO check if isContinuousVestingAccount can be used ??
       router.push({name: 'base'})
     } else {
       router.push({name: 'vesting'})

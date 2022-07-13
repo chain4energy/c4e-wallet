@@ -6,8 +6,7 @@
     dataKey="operator_address"
     selectionMode="multiple"
     :rowHover="true"
-    :paginator="true" :rows="10"
-    :showGridlines="false"
+    :showGridlines="true"
     v-model:expandedRows="expandedRow"
     v-model:filters="filters"
     filterDisplay="menu"
@@ -35,63 +34,44 @@
     <template #loading>
       Loading customers data. Please wait.
     </template>
-<!--    <Column-->
-<!--      v-if="useUserStore().isLoggedIn && useValidatorsStore().getStackingFetchResult"-->
-<!--      header=""-->
-<!--    >-->
-<!--      <template #body="data">-->
-<!--        <p v-if="data.stacked.amount!=='0'">stacked</p>-->
-<!--        <p v-else>updating</p>-->
-<!--      </template>-->
-
-<!--    </Column>-->
-<!--    <Column-->
-<!--      field="stacked"-->
-<!--      v-if="useUserStore().isLoggedIn && useValidatorsStore().getStackingFetchResult"-->
-<!--    >-->
-<!--      <template v-if="useUserStore().isLoggedIn && useValidatorsStore().getStackingFetchResult"-->
-<!--                #body="data">-->
-<!--        <p v-if="data.stacked.amount !=='0'">stacked</p>-->
-<!--      </template>-->
-<!--    </Column>-->
     <Column
-      field="id"
+      field="rank"
       header="Rank"
       :sortable="true"
-    >
-<!--      <template v-if="useUserStore().isLoggedIn && useValidatorsStore().getStackingFetchResult" #body="{data}">-->
-<!--        <p :class="data?.stacked.amount!=='0' ? 'rank': '' ">{{data.id}}</p>-->
-<!--      </template>-->
-    </Column>
+    ></Column>
     <Column
       field="description.moniker"
-      header="name"
+      header="Name"
       :sortable="true"
     ></Column>
     <Column
       field="status"
       header="Status"
       :sortable="true"
-    ></Column>
+    >
+      <template #body="{data}">
+        <span>{{toViewStatus(data.status)}}</span>
+      </template>
+    </Column>
     <Column
       field="votingPower"
       header="voting Power"
       :sortable="true"
     >
       <template #body="{data}">
-        <span v-if="data.votingPower">{{toFixedAm(data.votingPower, 4)}}%</span>
-        <span v-else-if="!data.votingPower">updating</span>
+        <span v-if="data.getVotingPower()">{{toFixedAm(data.getVotingPower(), 4)}}%</span>
+        <span v-else>updating</span>
       </template>
     </Column>
     <Column
       field="stacked.amount"
       header="Your stake"
       :sortable="true"
-      v-if="isLoggedIn && stackingFetched"
+      v-if="isLoggedIn "
     >
       <template #body="{data}">
-        <span v-if="data.stackedIndicator === true">{{toFixedAm(data.stacked.amount, 4)}}</span>
-        <span v-else-if="data.stackedIndicator === false || undefined">updating</span>
+        <span >{{toFixedAm(userStore.getDelegations.getAmountByValidator(data.operatorAddress), 4)}}</span>
+        <!-- <span v-else>updating</span> -->
       </template>
     </Column>
     <Column field="operator_address">
@@ -99,22 +79,22 @@
         <button class="btn__main" @click="checkBTN(data)">Manage</button>
       </template>
     </Column>
-    <Column v-if="rewardsFetched && stackingFetched">
+    <Column v-if="isLoggedIn">
       <template  #body="{data}">
         <button
           @click="onRowExpande(data)"
-          v-if="data.stacked.amount!=='0'"   headerStyle="width: 4rem">open</button>
+          v-if="userStore.getDelegations.getAmountByValidator(data.operatorAddress)!=='0'"   headerStyle="width: 4rem">open</button>
       </template>
     </Column>
-    <template v-if="rewardsFetched && stackingFetched" #expansion="{data}">
+    <template v-if="isLoggedIn" #expansion="{data}">
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
           <p>Your stacked</p>
-          <p>{{toFixedAm(data.stacked.amount, 4)}}</p>
+          <p>{{toFixedAm(userStore.getDelegations.getAmountByValidator(data.operatorAddress), 4)}}</p>
         </div>
         <div style="display: flex; flex-direction: column">
           <p>Reward</p>
-          <p>{{toFixedAm(data.rewards.amount, 4)}}</p>
+          <p>{{toFixedAm(userStore.getRewardList.getAmountByValidator(data.operatorAddress), 4)}}</p>
         </div>
       </div>
     </template>
@@ -127,13 +107,13 @@ import { FilterMatchMode, FilterOperator } from "primevue/api";
 import StackingPopup from '@/components/stacking/StackingPopup.vue';
 import { computed, PropType, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
-import { Validator } from "@/models/validator";
+import { Validator, ValidatorStatus } from "@/models/store/validator";
 import { ValidatorsList } from "@/models/validators";
 
 
 const props = defineProps({
   validators: {
-    type: Object as PropType<ValidatorsList> || [],
+    type: Object as PropType<Validator[]> || {},
   },
   expanded: {
     type: Boolean,
@@ -146,8 +126,8 @@ const validators= computed(() => props.validators);
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const popupOpened = ref(false);
 const currentValidator = ref({})
-const rewardsFetched = computed(() => validatorsStore.getRewardsFetchetStatus);
-const stackingFetched = computed(() => validatorsStore.getStackingFetchResult);
+// const rewardsFetched = computed(() => validatorsStore.getRewardsFetchetStatus);
+// const stackingFetched = computed(() => validatorsStore.getStackingFetchResult);
 
 function toFixedAm(amount: string, decimal: number) {
 return parseFloat(amount).toFixed(decimal);
@@ -185,8 +165,30 @@ function checkBTN(item: Validator){
   return popupOpened;
 }
 
-async function trsansactionSuccess() {
+async function trsansactionSuccess(arg: string) {
   checkBTN();
+  await useUserStore().logOut()
+  await useUserStore().fetchAccountData()
+
+
+  // useValidatorsStore().fetchValidators()
+  //
+}
+const showPopupVal = ref(false);
+const address = ref('');
+function showPopup(valaddress : string) {
+  showPopupVal.value = !showPopupVal.value;
+  address.value = valaddress;
+  useUserStore().fetchAccountData()
+}
+
+function toViewStatus (status: ValidatorStatus): string {
+  switch (status) {
+    case ValidatorStatus.Bonded:
+      return 'Active';
+    default:
+      return 'Inactive';
+  }
 }
 </script>
 
@@ -213,15 +215,6 @@ async function trsansactionSuccess() {
 
   &:active {
     transform: translateY(2px);
-  }
-}
-.rank{
-  &:after{
-    position: absolute;
-    margin-left: -70px;
-    content: 'stacked';
-    z-index: 20;
-    background-color: #42b983;
   }
 }
 </style>

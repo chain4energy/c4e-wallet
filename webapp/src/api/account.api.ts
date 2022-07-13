@@ -1,9 +1,17 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
-import TxBroadcastBaseApi from "@/api/tx.broadcast.base.api";
+import TxBroadcastBaseApi, { TxData, TxBroadcastError } from "@/api/tx.broadcast.base.api";
+import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
+import { LogLevel } from '@/services/logger/log-level';
+
 import { RequestResponse } from "@/models/request-response";
-import { Account, balances } from "@/models/account";
+import { balances } from "@/models/account";
+import { Account as StoreAccount, Coin} from "@/models/store/account";
+import { AccountResponse, Account as BcAccount, BalanceResponse} from "@/models/blockchain/account";
+
 import { useConfigurationStore } from "@/store/configuration.store";
-import { ConnectionInfo, WalletResponse } from "@/api/wallet.connecton.api";
+import { ConnectionInfo } from "@/api/wallet.connecton.api";
+import { mapAccount, createNonexistentAccount, mapBalance } from "@/models/mapper/account.mapper";
+
 import {
   MsgBeginRedelegate,
   MsgDelegate,
@@ -14,6 +22,12 @@ import {
   MsgWithdrawDelegatorReward
 } from "cosmjs-types/cosmos/distribution/v1beta1/tx"
 import { Validator } from "@/models/validator";
+import { DelegationsResponse } from "@/models/blockchain/staking";
+import { Delegations } from "@/models/store/staking";
+import { mapDelegations } from "@/models/mapper/staking.mapper";
+import { RewardsResponse } from "@/models/blockchain/distribution";
+import { Rewards } from "@/models/store/distribution";
+import { mapReward, mapRewards } from "@/models/mapper/distribution.mapper";
 
 export class AccountApi extends TxBroadcastBaseApi {
 
@@ -28,37 +42,90 @@ export class AccountApi extends TxBroadcastBaseApi {
   private UNSTACKED_AMOUNT_URL = 'https://lcd.chain4energy.org/cosmos/staking/v1beta1/delegators/'
   private REWARDS_URL = 'https://lcd.chain4energy.org//cosmos/distribution/v1beta1/delegators/';
 
-  public async fetchAccount(id: string): Promise<RequestResponse<Account>> {
-    return this.axiosCall({
+  public async fetchAccount(address: string): Promise<RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>> {
+    const result: RequestResponse<AccountResponse, ErrorData<BlockchainApiErrorData>> =  await this.axiosBlockchainApiCall({
       method: 'GET',
-      url: this.ACCOUNT_URL + id
+      url: this.ACCOUNT_URL + address
     }, true, null);
+    if (result.isSuccess()) {
+      this.logToConsole(LogLevel.DEBUG, 'get Account success');
+
+      try {
+        const storeAccount = mapAccount(result.data?.account);
+        return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(undefined, storeAccount);
+      } catch (err) {
+        const error = err as Error;
+        this.logToConsole(LogLevel.ERROR, 'mapAccount error: ', error.message);
+        return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(new ErrorData<BlockchainApiErrorData>(error.name, error.message));
+      }
+    } else {
+      const code = result.error?.data?.code
+      const message = result.error?.data?.message
+      const status = result.error?.status
+      if (status === 404 && code === 5 && message !== undefined && /rpc error: code = NotFound/i.test(message)) {
+        return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(undefined, createNonexistentAccount(address));
+      }
+      return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(result.error);
+    }
   }
-  public async fetchBalances(id: string): Promise<RequestResponse<balances>>{
-    return this.axiosCall({
+  public async fetchBalance(address: string, denom: string): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{
+    const result: RequestResponse<BalanceResponse, ErrorData<BlockchainApiErrorData>> =  await this.axiosBlockchainApiCall({
       method: 'GET',
-      url: this.BALANCE_URL + id
+      url: this.BALANCE_URL + address + '/by_denom?denom=' + denom
     }, true, null)
+    if (result.isError()) {
+      return new RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>(result.error);
+    }
+    const coin = mapBalance(result.data?.balance, denom);
+    return new RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>(undefined, coin);
   }
-  public async fetchStackedTokens(id: string): Promise<RequestResponse<any>>{
-    return this.axiosCall({
+  // public async fetchBalances(address: string): Promise<RequestResponse<balances, ErrorData<BlockchainApiErrorData>>>{
+  //   return this.axiosBlockchainApiCall({
+  //     method: 'GET',
+  //     url: this.BALANCE_URL + address
+  //   }, true, null)
+  // }
+  public async fetchDelegations(id: string): Promise<RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>>{
+    const result: RequestResponse<DelegationsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.STACKED_AMOUNT_URL + id
-    }, true, null)
+    }, true, null) // TODO fetch all with pagination 
+    if (result.isError()) {
+      return new RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>(result.error);
+    }
+    const delegations = mapDelegations(result.data?.delegation_responses);
+    return new RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>(undefined, delegations);
   }
-  public async fetchUnstackedTokens(id: string): Promise<RequestResponse<any>>{
-    return this.axiosCall({
+  // public async fetchDelegations(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
+  //   return this.axiosBlockchainApiCall({
+  //     method: 'GET',
+  //     url: this.STACKED_AMOUNT_URL + id
+  //   }, true, null)
+  // }
+  public async fetchUnstackedTokens(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
+    return this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.UNSTACKED_AMOUNT_URL + id + '/unbonding_delegations'
     }, true, null)
   }
-  public async fetchRewards(id: string): Promise<RequestResponse<any>>{
-    return this.axiosCall({
+  public async fetchRewards(id: string): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>>{
+    const result: RequestResponse<RewardsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.REWARDS_URL + id + '/rewards'
     }, true, null)
+    if (result.isError()) {
+      return new RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>(result.error);
+    }
+    const rewards = mapRewards(result.data);
+    return new RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>(undefined, rewards);
   }
-  public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<WalletResponse> {
+  // public async fetchRewards(id: string): Promise<RequestResponse<any, ErrorData<BlockchainApiErrorData>>>{
+  //   return this.axiosBlockchainApiCall({
+  //     method: 'GET',
+  //     url: this.REWARDS_URL + id + '/rewards'
+  //   }, true, null)
+  // }
+  public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const msg = {
@@ -77,7 +144,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
   
-  public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<WalletResponse> {
+  public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const msg = {
@@ -96,7 +163,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
   
-  public async redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: string): Promise<WalletResponse> {
+  public async redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const msg = {
@@ -115,7 +182,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
   
-  public async vote(connection: ConnectionInfo, option: number, proposalId: number): Promise<WalletResponse> {
+  public async vote(connection: ConnectionInfo, option: number, proposalId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const msg = {
@@ -130,19 +197,23 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
   
-  public async claimRewards(connection: ConnectionInfo, validators: Array<Validator>): Promise<WalletResponse> {
+  public async claimRewards(connection: ConnectionInfo, validatorsAddresses: IterableIterator<string>): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const messages = []
-    for (const validator of validators) {
+    for (const validator of validatorsAddresses) {
       const msg = {
         typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
         value: MsgWithdrawDelegatorReward.fromPartial({
           delegatorAddress: connection.account,
-          validatorAddress: validator.operator_address,
+          validatorAddress: validator,
         })
       }
       messages.push(msg)
+    }
+
+    if (messages.length === 0) {
+      return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('No rewards to claim'));
     }
   
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);

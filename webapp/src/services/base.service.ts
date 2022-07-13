@@ -33,7 +33,7 @@ export default abstract class BaseService<T> extends LoggedService {
 
   private refreshCounter = 0;
 
-  protected async axiosCall<T> (config: AxiosRequestConfig, lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast = false): Promise<RequestResponse<T>> {
+  protected async axiosCall<T> (config: AxiosRequestConfig, lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast = false): Promise<RequestResponse<T, any>> {
     const userStore = useUserStore();
     // if(userStore.isLoggedIn) {
     //   config.headers = { Authorization: 'Bearer ' + userStore.accessToken};
@@ -45,7 +45,7 @@ export default abstract class BaseService<T> extends LoggedService {
       this.logToConsole(LogLevel.DEBUG, 'Axios Request: ', JSON.stringify(config));
       const data = await this.axiosInstance.request<T>(config);
       this.logToConsole(LogLevel.DEBUG, 'Axios Response', JSON.stringify(data));
-      return new RequestResponse<T>(null, data.data);
+      return new RequestResponse<T, any>(null, data.data);
     } catch (err) {
       this.logToConsole(LogLevel.ERROR, 'Axios Response', JSON.stringify(err));
       //Check if 401 and refresh token once
@@ -64,7 +64,7 @@ export default abstract class BaseService<T> extends LoggedService {
       if (!skipErrorToast) {
         toast.error('Error requesting service:' + this.getServiceType());
       }
-      return new RequestResponse<T>(error);
+      return new RequestResponse<T, any>(error);
     } finally {
       this.after(lockScreen, localSpinner);
     }
@@ -92,7 +92,7 @@ export default abstract class BaseService<T> extends LoggedService {
   // }
 
   public getListData(pagination: PagingModel|null, lockScreen: boolean, localSpinner: LocalSpinner | null){
-    const promise: Promise<RequestResponse<T>> = this.axiosCall({
+    const promise: Promise<RequestResponse<T, any>> = this.axiosCall({
       method: 'GET',
       url: this.getListDataUrlByRole(),
       params: pagination?.toAxiosParams()

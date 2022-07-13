@@ -7,6 +7,10 @@ import {PagingModel} from "@/services/model/paging.model";
 import {LocalSpinner} from "@/services/model/localSpinner";
 import {useConfigurationStore} from "@/store/configuration.store";
 import { Account } from "@/models/account";
+import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
+import { ValidatorsResponse } from "@/models/blockchain/validator";
+import { Validator } from "@/models/store/validator";
+import { mapValidators } from "@/models/mapper/validator.mapper";
 
 export class ValidatorsApi extends BaseApi {
 
@@ -14,8 +18,8 @@ export class ValidatorsApi extends BaseApi {
     return ServiceTypeEnum.ACTIVE_VALIDATORS_SERVICE;
   }
 
-  public async fetchActiveValidatorCount(): Promise<RequestResponse<ActiveValidatorCount>> {
-    return this.axiosCall({
+  public async fetchActiveValidatorCount(): Promise<RequestResponse<ActiveValidatorCount, ErrorData<any>>> {
+    return this.axiosHasuraCall({
       method: 'POST',
       url: useConfigurationStore().config.hasuraURL,
       data: {
@@ -32,15 +36,28 @@ export class ValidatorsApi extends BaseApi {
 
   private VALIDATORS_URL = process.env.VUE_APP_VALIDATORS_URL;
 
-  public async fetchAllValidators(pagination: PagingModel | null, lockScreen: boolean, localSpinner: LocalSpinner | null): Promise<RequestResponse<Validators>> {
-    return this.axiosCall({
+  public async fetchAllValidators(pagination: PagingModel | null, lockScreen: boolean, localSpinner: LocalSpinner | null): Promise<RequestResponse<Validator[], ErrorData<BlockchainApiErrorData>>> {
+    const result: RequestResponse<ValidatorsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
       method: 'GET',
       url: useConfigurationStore().config.bcApiURL+this.VALIDATORS_URL,
       params: pagination?.toAxiosParams()
-    }, lockScreen, localSpinner);
+    }, lockScreen, localSpinner); // TODO fetch all with paging
+    if (result.isError()) {
+      return new RequestResponse<Validator[], ErrorData<BlockchainApiErrorData>>(result.error);
+    }
+    const validators = mapValidators(result.data?.validators);
+    return new RequestResponse<Validator[], ErrorData<BlockchainApiErrorData>>(undefined, validators);
   }
-  public async fetchValidatorUser(id: string, acc: StringConstructor): Promise<RequestResponse<Account>>{
-    return this.axiosCall({
+
+  // public async fetchAllValidators(pagination: PagingModel | null, lockScreen: boolean, localSpinner: LocalSpinner | null): Promise<RequestResponse<Validators, ErrorData<BlockchainApiErrorData>>> {
+  //   return this.axiosBlockchainApiCall({
+  //     method: 'GET',
+  //     url: useConfigurationStore().config.bcApiURL+this.VALIDATORS_URL,
+  //     params: pagination?.toAxiosParams()
+  //   }, lockScreen, localSpinner); // TODO fetch all with paging
+  // }
+  public async fetchValidatorUser(id: string, acc: StringConstructor): Promise<RequestResponse<Account, ErrorData<BlockchainApiErrorData>>>{
+    return this.axiosBlockchainApiCall({
       method: "GET",
       url: this.VALIDATORS_URL+ "/"+ id + "/delegations/" + acc
     }, true, null, true);

@@ -21,22 +21,22 @@
     </div>
     <div class="userdata__amounts">
       <p>Staked</p>
-      <p>{{useUserStore().getStacked || 0}}</p>
+      <p>{{useUserStore().delegations.totalDelegated || 0}}</p>
     </div>
     <div class="userdata__amounts">
       <p>Unstaking</p>
       <p>{{useUserStore().getUnstacked || 0}}</p>
     </div>
     </div>
-    <div class="userdata__accountData-vesting" v-if="useUserStore().getAccType==='/cosmos.vesting.v1beta1.ContinuousVestingAccount'">
+    <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
       <div>
         <p>{{locked}}</p>
       </div>
       <div>
-        <p>{{new Date(useUserStore().getAccount.start_time * 1000).toLocaleString()}}</p>
+        <p>{{useUserStore().getAccount.continuousVestingData?.getStartTimeDateString()}}</p>
       </div>
       <div>
-        <p>{{new Date(useUserStore().getAccount.base_vesting_account.end_time * 100).toLocaleString()}}</p>
+        <p>{{useUserStore().getAccount.continuousVestingData?.getEndTimeDateString()}}</p>
       </div>
     </div>
   </div>
@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import { useUserStore } from "@/store/user.store";
 import {useBlockStore} from "@/store/block.store";
-import { computed, onUpdated, ref, watch } from "vue";
+import { computed, ref } from "vue";
 
 function claimRewards(){
   useUserStore().claimRewards();
@@ -70,16 +70,8 @@ function claimRewards(){
 useBlockStore().fetchLatestBlock()
 setInterval(useBlockStore().fetchLatestBlock, 6000)
 
-const total = computed(() => useUserStore().getUnstacked + useUserStore().getStacked + useUserStore().getBalances);
+const total = computed(() => useUserStore().getUnstacked + useUserStore().delegations.totalDelegated + useUserStore().getBalances);
 const locked = computed(()=> useUserStore().getVestingLockAmount.toFixed(0))
-const block = computed(() => useBlockStore().getLatestBlock)
-
-// watch(block, (newValue, oldValue) => {
-//   console.log(newValue.block_id.hash)
-//
-//   // useUserStore().refreshAcc()
-// })
-
 </script>
 
 <style scoped lang="scss">

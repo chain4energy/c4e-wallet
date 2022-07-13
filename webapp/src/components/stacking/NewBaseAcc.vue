@@ -2,16 +2,17 @@
 <div>
   <TabView>
     <TabPanel header="All">
-      <DataTableWraper :expanded="true" :validators="validators.fullList"/>
+      <!-- <button @click="useValidatorsStore().sortValidators()">sort validators</button> -->
+      <DataTableWraper :expanded="true" :validators="useValidatorsStore().getValidators"/>
     </TabPanel>
-    <TabPanel v-if="isLoggedIn && rewardsFetched && validators.stacked !== []" header="Staked">
-      <DataTableWraper :validators="validators.stacked" :expanded="true"/>
+    <TabPanel v-if="isLoggedIn" header="Staked">
+      <DataTableWraper :validators="useValidatorsStore().getValidatorsWithDelegations" :expanded="true"/>
     </TabPanel>
     <TabPanel header="Active">
-      <DataTableWraper :validators="validators.activeList" :expanded="true"/>
+      <DataTableWraper :validators="useValidatorsStore().getActiveValidators" :expanded="true"/>
     </TabPanel>
     <TabPanel header="Inactive">
-      <DataTableWraper :validators="validators.notActive" :expanded="true"/>
+      <DataTableWraper :validators="useValidatorsStore().getInactiveValidators" :expanded="true"/>
     </TabPanel>
   </TabView>
 </div>
@@ -29,40 +30,41 @@ import { BasicQuantity, Validator, validatorsComponent } from "@/models/validato
 const validatorsStore = useValidatorsStore();
 const userStore = useUserStore();
 
-const rewardsFetched = computed(()=> validatorsStore.getRewardsFetchetStatus)
-const stackedFetched = computed(() => validatorsStore.getStackingFetchResult)
+// const rewardsFetched = computed(()=> validatorsStore.getRewardsFetchetStatus)
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 
 onBeforeMount(()=>{
     validatorsStore.fetchValidators();
 })
 
-onUnmounted(() => validatorsStore.logoutValidatorModule())
 
-const validators : validatorsComponent = reactive({
-  fullList: computed(() => validatorsStore.getValidators.validators),
-  activeList: computed(() => {
-    if (!validators.fullList) {
-      return [];
-    } else {
-      return validators.fullList.filter((el: Validator) => el.status === "Active");
-    }
-  }),
-  notActive: computed(() => {
-    if (!validators.fullList) {
-      return [];
-    } else {
-      return validators.fullList.filter((el: Validator) => el.status !== "Active");
-    }
-  }),
-  stacked: computed(() => {
-    if (!validators.fullList && !rewardsFetched.value && !stackedFetched.value  && !isLoggedIn.value ) {
-      return []
-    } else {
-      return validators.fullList.filter((el: Validator) => el.rewards.amount != "0");
-    }
-  }),
-});
+
+// onUnmounted(() => validatorsStore.logoutValidatorModule())
+
+// const validators : validatorsComponent = reactive({
+//   fullList: computed(() => validatorsStore.getValidators.validators),
+//   activeList: computed(() => {
+//     if (!validators.fullList) {
+//       return [];
+//     } else {
+//       return validators.fullList.filter((el: Validator) => el.status === "Active");
+//     }
+//   }),
+//   notActive: computed(() => {
+//     if (!validators.fullList) {
+//       return [];
+//     } else {
+//       return validators.fullList.filter((el: Validator) => el.status !== "Active");
+//     }
+//   }),
+//   stacked: computed(() => {
+//     if (validators.fullList && rewardsFetched.value) {
+//       return validators.fullList.filter((el: Validator) => el.rewards.amount !== "0");
+//     } else {
+//       return []
+//     }
+//   }),
+// });
 
 
 </script>
