@@ -1,24 +1,12 @@
 import { setActivePinia, createPinia } from 'pinia'
 import axios, { AxiosError, AxiosInstance, AxiosResponse, AxiosResponseHeaders } from 'axios';
-import { AccountApi } from "@/api/account.api";
 import { AccountType, ContinuousVestingData } from "@/models/store/account";
-
-export class TestAccountApi extends AccountApi {
-
-  setAxiosInstance(axios: AxiosInstance) {
-    this.axiosInstance = axios
-  }
-}
+import apiFactory from "@/api/factory.api";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
-
-const api = new TestAccountApi()
-api.setAxiosInstance(axios)
-
-// beforeAll(() => {
-//   mockedAxios.create.mockReturnValue(mockedAxios);
-// });
+const api = apiFactory.accountApi()
+apiFactory.setAxiosInstance(mockedAxios)
 
 describe('get account', () => {
   beforeEach(() => {

@@ -4,20 +4,23 @@ import {BlockApi} from "@/api/block.api";
 import {ProposalsApi} from "@/api/proposals.api";
 import {AccountApi} from "@/api/account.api";
 import WalletConnectionApi from "./wallet.connecton.api";
+import axios, {AxiosInstance} from 'axios';
 
 class ApiFactory {
 
   private static instance: ApiFactory;
 
-  private readonly _validatorsApi = new ValidatorsApi();
-  private readonly _tokensApi = new TokensApi();
-  private readonly _blockApi = new BlockApi();
-  private readonly _proposalsApi = new ProposalsApi();
-  private readonly _accountApi = new AccountApi()
+  private _axios: AxiosInstance;
+
+  private readonly _validatorsApi = new ValidatorsApi(() => this._axios);
+  private readonly _tokensApi = new TokensApi(() => this._axios);
+  private readonly _blockApi = new BlockApi(() => this._axios);
+  private readonly _proposalsApi = new ProposalsApi(() => this._axios);
+  private readonly _accountApi = new AccountApi(() => this._axios)
   private readonly _walletApi = new WalletConnectionApi()
 
   private constructor() {
- //
+    this._axios = axios.create({});  
   }
 
   public static getInstance(): ApiFactory {
@@ -44,6 +47,9 @@ class ApiFactory {
   }
   public walletApi(): WalletConnectionApi{
     return this._walletApi;
+  }
+  public setAxiosInstance(axios: AxiosInstance) {
+    this._axios = axios
   }
 }
 

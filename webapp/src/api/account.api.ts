@@ -44,7 +44,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     const result: RequestResponse<AccountResponse, ErrorData<BlockchainApiErrorData>> =  await this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.ACCOUNT_URL + address
-    }, true, null);
+    }, true, null, 'fetchAccount - ');
     if (result.isSuccess()) {
       this.logToConsole(LogLevel.DEBUG, 'get Account success');
 
@@ -70,7 +70,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     const result: RequestResponse<BalanceResponse, ErrorData<BlockchainApiErrorData>> =  await this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.BALANCE_URL + address + '/by_denom?denom=' + denom
-    }, true, null)
+    }, true, null, 'fetchBalance - ')
     if (result.isError()) {
       return new RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>(result.error);
     }
@@ -87,7 +87,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     const result: RequestResponse<DelegationsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.STACKED_AMOUNT_URL + id
-    }, true, null) // TODO fetch all with pagination 
+    }, true, null, 'fetchDelegations - ') // TODO fetch all with pagination 
     if (result.isError()) {
       return new RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>(result.error);
     }
@@ -104,11 +104,11 @@ export class AccountApi extends TxBroadcastBaseApi {
     const result: RequestResponse<UnbondigDelegationsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.UNSTACKED_AMOUNT_URL + id + '/unbonding_delegations'
-    }, true, null) // TODO fetch all with pagination 
+    }, true, null, 'fetchUnbondingDelegations - ') // TODO fetch all with pagination 
     if (result.isError()) {
       return new RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>(result.error);
     }
-    const undelegations = mapUnbondingDelegations(result.data?.delegation_responses);
+    const undelegations = mapUnbondingDelegations(result.data?.unbonding_responses);
     return new RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>(undefined, undelegations);
   }
 
@@ -122,7 +122,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     const result: RequestResponse<RewardsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
       method: 'GET',
       url: this.REWARDS_URL + id + '/rewards'
-    }, true, null)
+    }, true, null, 'fetchRewards - ')
     if (result.isError()) {
       return new RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>(result.error);
     }

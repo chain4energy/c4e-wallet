@@ -18,7 +18,7 @@ export interface Delegation {
 }
 
 export interface UnbondigDelegationsResponse{
-  delegation_responses: UnbondigDelegation[]
+  unbonding_responses: UnbondigDelegation[]
   pagination: Pagination
 }
 

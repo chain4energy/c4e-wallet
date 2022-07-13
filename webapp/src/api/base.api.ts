@@ -51,31 +51,30 @@ export interface BlockchainApiErrorData {
 }
 
 export default abstract class BaseApi extends LoggedService {
-  protected axiosInstance: AxiosInstance;
+  protected getAxiosInstance: () => AxiosInstance;
 
-  constructor () {
+  constructor (axiosInstanceProvider: () => AxiosInstance) {
     super();
-    this.axiosInstance = axios.create({
-    });
+    this.getAxiosInstance = axiosInstanceProvider;
   }
 
-  protected async axiosBlockchainApiCall<T> (config: AxiosRequestConfig, lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast = false): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>> {
-    return await this.axiosCall<T, BlockchainApiErrorData>(config, lockScreen, localSpinner, skipErrorToast, (data:BlockchainApiErrorData)=> {return '\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')'})
+  protected async axiosBlockchainApiCall<T> (config: AxiosRequestConfig, lockScreen: boolean, localSpinner: LocalSpinner | null, logPrefix = '', skipErrorToast = false): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>> {
+    return await this.axiosCall<T, BlockchainApiErrorData>(config, lockScreen, localSpinner, skipErrorToast, logPrefix, (data:BlockchainApiErrorData)=> {return '\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')'})
   }
 
   protected async axiosHasuraCall<T> (config: AxiosRequestConfig, lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast = false): Promise<RequestResponse<T, ErrorData<any>>> {
-    return await this.axiosCall<T, any>(config, lockScreen, localSpinner, skipErrorToast)
+    return await this.axiosCall<T, any>(config, lockScreen, localSpinner, skipErrorToast, '')
   }
 
-  private async axiosCall<T, E> (config: AxiosRequestConfig, lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast: boolean, dataToInfo?: (data:E)=> string): Promise<RequestResponse<T, ErrorData<E>>> {
+  private async axiosCall<T, E> (config: AxiosRequestConfig, lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast: boolean, logPrefix: string, dataToInfo?: (data:E)=> string): Promise<RequestResponse<T, ErrorData<E>>> {
     this.before(lockScreen, localSpinner);
     try {
-      this.logToConsole(LogLevel.DEBUG, 'Axios Request: ', JSON.stringify(config));
-      const data = await this.axiosInstance.request<T>(config);
-      this.logToConsole(LogLevel.DEBUG, 'Axios Response', JSON.stringify(data));
+      this.logToConsole(LogLevel.DEBUG, logPrefix + 'Axios Request: ', JSON.stringify(config));
+      const data = await this.getAxiosInstance().request<T>(config);
+      this.logToConsole(LogLevel.DEBUG, logPrefix + 'Axios Response', JSON.stringify(data));
       return new RequestResponse<T, ErrorData<E>>(undefined, data.data);
     } catch (err) {
-      this.logToConsole(LogLevel.ERROR, 'Axios Response', JSON.stringify(err));
+      this.logToConsole(LogLevel.ERROR, logPrefix + 'Axios Response', JSON.stringify(err));
 
       const error = err as Error | AxiosError<E, any>;
       
@@ -83,16 +82,16 @@ export default abstract class BaseApi extends LoggedService {
 
       if (error instanceof AxiosError && error.response != undefined) {
         errorResp = new ErrorData<E>(error.name, error.message, error.response.status, error.response.data, dataToInfo)
-        this.logToConsole(LogLevel.ERROR, 'Axios Response name ' + errorResp.name);
-        this.logToConsole(LogLevel.ERROR, 'Axios Response message ' + errorResp.message);
-        this.logToConsole(LogLevel.ERROR, 'Axios Response status ' + errorResp.status);
-        this.logToConsole(LogLevel.ERROR, 'Axios Response data ' + errorResp.data);
-        this.logToConsole(LogLevel.ERROR, 'Axios Response code ' + error.code);
+        this.logToConsole(LogLevel.ERROR, logPrefix + 'Axios Response name ' + errorResp.name);
+        this.logToConsole(LogLevel.ERROR, logPrefix + 'Axios Response message ' + errorResp.message);
+        this.logToConsole(LogLevel.ERROR, logPrefix + 'Axios Response status ' + errorResp.status);
+        this.logToConsole(LogLevel.ERROR, logPrefix + 'Axios Response data ' + errorResp.data);
+        this.logToConsole(LogLevel.ERROR, logPrefix + 'Axios Response code ' + error.code);
 
       } else {
         errorResp = new ErrorData<E>(error.name, error.message)
-        this.logToConsole(LogLevel.ERROR, 'Axios Response name ' + errorResp.name);
-        this.logToConsole(LogLevel.ERROR, 'Axios Response message ' + errorResp.message);
+        this.logToConsole(LogLevel.ERROR, logPrefix + 'Axios Response name ' + errorResp.name);
+        this.logToConsole(LogLevel.ERROR, logPrefix + 'Axios Response message ' + errorResp.message);
       }
 
       if (!skipErrorToast) {
@@ -109,7 +108,7 @@ export default abstract class BaseApi extends LoggedService {
       method: 'GET',
       url: url,
       params: pagination?.toAxiosParams()
-    }, true, null, onError!=null).then(value => {
+    }, true, null, onError!=null, '').then(value => {
       if (value.isSuccess()) {
         if (value.data !== undefined) {
           onSuccess(value.data);
