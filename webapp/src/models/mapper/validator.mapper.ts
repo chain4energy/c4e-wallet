@@ -1,16 +1,23 @@
 import { Validator as BcValidator,} from "@/models/blockchain/validator";
 import { Validator as StoreValidator, ValidatorCommission, ValidatorDescription, ValidatorStatus} from "@/models/store/validator";
 
-export function mapValidators(validators: BcValidator[] | undefined): StoreValidator[]  {
+export function mapValidators(validators: BcValidator[] | undefined): { validators: StoreValidator[], numberOfActive: number}  {
   if (validators === undefined) {
     throw new Error('Validators list is undefined');
   }
   let result = Array<StoreValidator>();
-  validators.forEach(validator => result.push(mapValidator(validator)))
+  let active = 0
+  validators.forEach(validator => {
+    const mapped = mapValidator(validator);
+    result.push(mapped);
+    if (mapped.status === ValidatorStatus.Bonded) {
+      active++;
+    }
+  })
   result = result.sort((a, b) => Number(b.tokens) - Number(a.tokens))
   let i = 1
   result.forEach(val => val.rank = i++)
-  return result;
+  return { validators: result, numberOfActive: active};
 }
 
 export function mapValidator(validator: BcValidator | undefined): StoreValidator  {

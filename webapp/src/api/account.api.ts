@@ -4,7 +4,6 @@ import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
 import { LogLevel } from '@/services/logger/log-level';
 
 import { RequestResponse } from "@/models/request-response";
-import { balances } from "@/models/account";
 import { Account as StoreAccount, Coin} from "@/models/store/account";
 import { AccountResponse, Account as BcAccount, BalanceResponse} from "@/models/blockchain/account";
 
@@ -21,13 +20,12 @@ import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
 import {
   MsgWithdrawDelegatorReward
 } from "cosmjs-types/cosmos/distribution/v1beta1/tx"
-import { Validator } from "@/models/validator";
 import { DelegationsResponse, UnbondigDelegationsResponse } from "@/models/blockchain/staking";
 import { Delegations, UnbondingDelegations } from "@/models/store/staking";
 import { mapDelegations, mapUnbondingDelegations } from "@/models/mapper/staking.mapper";
 import { RewardsResponse } from "@/models/blockchain/distribution";
 import { Rewards } from "@/models/store/distribution";
-import { mapReward, mapRewards } from "@/models/mapper/distribution.mapper";
+import { mapRewards } from "@/models/mapper/distribution.mapper";
 
 export class AccountApi extends TxBroadcastBaseApi {
 
