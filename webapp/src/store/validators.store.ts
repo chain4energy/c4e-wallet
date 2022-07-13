@@ -1,14 +1,6 @@
 import {defineStore} from "pinia";
-import {DataHolder} from "@/models/data-holder";
-import { BasicQuantity, Rewards, rewards } from "@/models/validator";
-import {PagingModel} from "@/services/model/paging.model";
-import {LocalSpinner} from "@/services/model/localSpinner";
 import apiFactory from "@/api/factory.api";
-import {useTokensStore} from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
-import { logs } from "@cosmjs/stargate";
-// import { Validators, ValidatorsList } from "@/models/validators";
-import { stackItem } from "@/models/stacking";
 import { Validator, ValidatorStatus } from "@/models/store/validator";
 
 interface ValidatorsState {
@@ -17,9 +9,6 @@ interface ValidatorsState {
   // rewardsFetched: boolean
   // stackingFetch: boolean
   // validatorsWithReward: Array<Validator>
-  rewardsFetched: boolean,
-  stackingFetch: boolean,
-  validatorsFetched: boolean,
 }
 
 export const useValidatorsStore = defineStore({
@@ -28,10 +17,10 @@ export const useValidatorsStore = defineStore({
     return {
       validators: Array<Validator>(),
       // validator: Object,
-      numberOfActiveValidators: Object(Number),
-      rewardsFetched: false,
-      stackingFetch: false,
-      validatorsFetched: false,
+      numberOfActiveValidators: 0,
+      // rewardsFetched: false,
+      // stackingFetch: false,
+      // validatorsWithReward: Array<Validator>()
     };
   },
   actions: {
@@ -42,7 +31,9 @@ export const useValidatorsStore = defineStore({
       await apiFactory.validatorsApi().fetchAllValidators(null, true, null)
         .then((resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
-            this.validators = resp.data;
+            this.validators = resp.data.validators;
+            this.numberOfActiveValidators = resp.data.numberOfActive
+
           } else {
             // TODO
           }
@@ -119,7 +110,7 @@ export const useValidatorsStore = defineStore({
     //   }
     // },
 
-    fetchNumberOfActiveValidators(){
+    fetchNumberOfActiveValidators(){ // TODO probably remove this func and fetchActiveValidatorCount from validatorsApi
       apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
         if( response.error == null ) {
           if (response.data == undefined) {

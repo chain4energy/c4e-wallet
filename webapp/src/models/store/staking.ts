@@ -23,3 +23,38 @@ export class Delegations {
   }
 
 }
+
+export class UnbondingDelegation {
+  validatorAddress: string;
+  entries: UnbondingDelegationEntry[];
+
+  constructor (validatorAddress: string, entries: UnbondingDelegationEntry[]) {
+    this.validatorAddress = validatorAddress
+    this.entries = entries
+  }
+}
+
+export class UnbondingDelegationEntry {
+  amount: string;
+
+  constructor (amount: string) {
+    this.amount = amount
+  }
+}
+
+export class UnbondingDelegations {
+  undelegations: Map<string, UnbondingDelegation>;
+  totalUndelegated: number;
+
+  constructor (undelegations: Map<string, UnbondingDelegation>, totalUndelegated: number) {
+    this.undelegations = undelegations
+    this.totalUndelegated = totalUndelegated
+  }
+
+  public getAmountByValidator(validatorAddress: string): number {
+    let amount = 0
+    this.undelegations.get(validatorAddress)?.entries.forEach(a => amount += Number(a.amount))
+    return amount
+  }
+
+}

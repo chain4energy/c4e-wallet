@@ -6,7 +6,7 @@
     <div class="right">
       <div>{{ $t("DASHBOARD_VIEW.VALIDATORS") }} </div>
       <div class="info">
-        {{useValidatorsStore().getActiveValidators}}
+        {{useValidatorsStore().getNumberOfActiveValidators}}
       </div>
     </div>
   </div>
@@ -18,7 +18,8 @@ import {onMounted} from "vue";
 import {useValidatorsStore} from "@/store/validators.store";
 
 onMounted(() => {
-  useValidatorsStore().fetchNumberOfActiveValidators();
+  // useValidatorsStore().fetchNumberOfActiveValidators();
+  useValidatorsStore().fetchValidators();
 });
 </script>
 
