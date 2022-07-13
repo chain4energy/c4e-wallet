@@ -1,4 +1,5 @@
 import { useTokensStore } from "@/store/tokens.store";
+import { useUserStore } from "@/store/user.store";
 
 export class Validator{
   operatorAddress: string;
@@ -30,6 +31,14 @@ export class Validator{
       return (Number(this.tokens) / total) * 100;
     }
     return 0;
+  }
+
+  public get delegatedAmount() {
+    return useUserStore().getDelegations.getAmountByValidator(this.operatorAddress)
+  }
+
+  public get rewardsAmount(): string {
+    return useUserStore().getRewardList.getAmountByValidator(this.operatorAddress)
   }
 }
 
