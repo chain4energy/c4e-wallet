@@ -20,7 +20,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/dashboard',
-    name: 'dashboard',
+    name: 'Dashboard',
     component: DashboardView,
     meta: {
       requiresAuth: false
@@ -29,7 +29,7 @@ const routes: Array<RouteRecordRaw> = [
   stakingRoutes,
   {
     path: '/governance',
-    name: 'governance',
+    name: 'Governance',
     component: GovernanceView,
     children: [
       {
@@ -57,7 +57,7 @@ const routes: Array<RouteRecordRaw> = [
   // },
   {
     path: '/validators',
-    name: 'validators',
+    name: 'Validators',
     component: ValidatorsView,
     meta: {
       requiresAuth: false

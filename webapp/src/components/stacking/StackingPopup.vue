@@ -50,7 +50,7 @@
           </label>
         </div>
       </div>
-      <div class="validationPopup__btnHolder" v-if="useUserStore().isLoggedIn" >
+      <div class="validationPopup__btnHolder" v-if="useUserStore().isLoggedIn && canModify" >
         <div class="validationPopup__btns" v-if="!actionRedelegate">
           <button @click="undelegate()">Undelegate</button>
           <button @click="delegate()">Delegate</button>
@@ -63,8 +63,8 @@
       </div>
 
       <div v-else class="validationPopup__btns">
-        <p> Sorry Log in into Keplr </p>
-        <button @click="useUserStore().fetchAccountData()">Login</button>
+        <p> Sorry Log in with Wallet </p>
+        <button @click="useUserStore().connectKeplr">Login</button>
       </div>
     </div>
   </div>
@@ -91,10 +91,12 @@ onUnmounted(() => document.body.style.overflow = "auto");
 const toast = useToast()
 
 const redelegateTo = ref()
+
+const canModify = computed(() => useUserStore().getAccModifiable);
 const validators = computed(() => {
     return useValidatorsStore().getValidators.validators.filter(element => element.operator_address !== props.validator.operator_address)
   // return props.validator.operator_address
-  })
+  });
 const actionRedelegate = ref(false)
 const amount = ref('');
 const keplrResult = ref('');
@@ -272,7 +274,9 @@ function redelegateState(state: boolean){
   &__descriptionIcon{
     width: 50px;
     height: 50px;
-    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #FFFFFF;
     border-radius: 50%;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);

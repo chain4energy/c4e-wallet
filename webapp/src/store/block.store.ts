@@ -7,6 +7,7 @@ interface BlockState {
   averageBlockTime: number
   latestBlockHeight: number
   latestBlockTime: string
+  latestBlock: LatestBlock
 }
 
 export const useBlockStore = defineStore( 'block', {
@@ -15,6 +16,7 @@ export const useBlockStore = defineStore( 'block', {
       averageBlockTime: Object(String),
       latestBlockHeight: Object(Number),
       latestBlockTime: Object(String),
+      latestBlock: Object() as LatestBlock,
     };
   },
   actions: {
@@ -28,6 +30,8 @@ export const useBlockStore = defineStore( 'block', {
           this.latestBlockHeight = latestBlock.block.header.height;
 
           this.latestBlockTime = latestBlock.block.header.time;
+
+          this.latestBlock = latestBlock
 
           if(useUserStore().getAccount
             && useUserStore().isContinuousVestingAccount){
@@ -60,6 +64,9 @@ export const useBlockStore = defineStore( 'block', {
     },
       getAverageBlockTime(): number {
       return this.averageBlockTime;
+    },
+    getLatestBlock(): any{
+      return this.latestBlock
     }
   }
 });

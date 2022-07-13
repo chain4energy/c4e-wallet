@@ -18,6 +18,7 @@ export class SidebarConfig{
 
   private createDashboard(): SidebarElement{
     const retVal = new SidebarElement();
+    retVal.id = 0;
     retVal.href = '/dashboard';
     retVal.title = "Dashboard";
     retVal.icon = new SidebarIcon('LayoutDashboard');
@@ -26,6 +27,7 @@ export class SidebarConfig{
 
   private createStaking(): SidebarElement{
     const retVal = new SidebarElement();
+    retVal.id = 1;
     retVal.href = '/staking';
     retVal.title = 'Staking';
     retVal.icon = new SidebarIcon('Coins');
@@ -34,6 +36,7 @@ export class SidebarConfig{
 
   private createGovernance(): SidebarElement{
     const retVal = new SidebarElement();
+    retVal.id = 2;
     retVal.href = '/governance';
     retVal.title = 'Governance';
     retVal.icon = new SidebarIcon('Wallet');
@@ -51,6 +54,7 @@ export class SidebarConfig{
 }
 
 export class SidebarElement {
+  id = 1;
   href = "" ;
   title ="";
   icon = new SidebarIcon('');

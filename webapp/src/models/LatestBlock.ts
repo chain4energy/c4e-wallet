@@ -1,7 +1,6 @@
 export interface LatestBlock {
   blockId: BlockId,
   block: Block,
-
 }
 
 export interface Block {
@@ -12,5 +11,5 @@ export interface Header {
   time: string,
 }
 export class BlockId {
-
+  hash = String;
 }

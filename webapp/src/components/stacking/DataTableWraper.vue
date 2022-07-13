@@ -3,10 +3,12 @@
   <StackingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
   <DataTable
     :value="validators"
-    dataKey="operator_address"
+    dataKey="rank"
     selectionMode="multiple"
     :rowHover="true"
-    :showGridlines="true"
+    :paginator="true"
+    :rows="10"
+    :showGridlines="false"
     v-model:expandedRows="expandedRow"
     v-model:filters="filters"
     filterDisplay="menu"
@@ -109,6 +111,7 @@ import { computed, PropType, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
 import { Validator, ValidatorStatus } from "@/models/store/validator";
 import { ValidatorsList } from "@/models/validators";
+import { useTokensStore } from "@/store/tokens.store";
 
 
 const props = defineProps({
@@ -132,6 +135,8 @@ const currentValidator = ref({})
 function toFixedAm(amount: string, decimal: number) {
 return parseFloat(amount).toFixed(decimal);
 }
+
+useTokensStore().fetchStakingPool()
 const expandedRow = ref([{}]);
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -167,8 +172,7 @@ function checkBTN(item: Validator){
 
 async function trsansactionSuccess(arg: string) {
   checkBTN();
-  await useUserStore().logOut()
-  await useUserStore().fetchAccountData()
+  useUserStore().reconectAcc()
 
 
   // useValidatorsStore().fetchValidators()

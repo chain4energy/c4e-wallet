@@ -16,6 +16,8 @@
   <!--      </div>-->
   <!--    </div>-->
   <!--  </div>-->
+  <div>
+    <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
     <nav class="navbar navbar-expand-lg navbar-dark background">
       <div class="container-fluid">
         <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
@@ -52,13 +54,15 @@
               Login
             </div>
             <Button
-              v-if="useUserStore().isLoggedIn"
-              icon=" pi pi-power-off"
-              class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logOut()"></Button>
-            <Button
               v-if="!useUserStore().isLoggedIn"
               icon=" pi pi-power-off"
-              class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logIn()"></Button>
+              class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="loginPopupStatus =! loginPopupStatus"></Button>
+            <Button
+              v-if="useUserStore().isLoggedIn"
+              icon=" pi pi-power-off"
+              class="nav-link p-button-rounded p-button-text p-button-lg mx-1"
+              @click="useUserStore().logOut()"
+            ></Button>
           </div>
         </div>
 
@@ -69,38 +73,42 @@
       </div>
       <UserData v-if="useUserStore().isLoggedIn"/>
     </nav>
+  </div>
+
 </template>
 
 <script setup lang="ts">
 import LangSwitch from '@/components/lang/LangSwitch.vue';
 import AutoLogOut from "@/components/fetures/AutoLogOut.vue";
 import  UserData from "@/components/userData/UserData.vue";
+import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 
 import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
-import { computed, onMounted, onUnmounted, onUpdated } from "vue";
+import { computed, onMounted, ref, onUnmounted, onUpdated } from "vue";
 import { useUserStore } from "@/store/user.store";
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
 
-const keystoreChangeListener = () => {
-      useUserStore().connectKeplr()
-    }
+const loginPopupStatus = ref(false)
 
-function logIn(){
-  useUserStore().connectKeplr().then(() => {
-    window.addEventListener('keplr_keystorechange', keystoreChangeListener);
-  })
-}
-function logOut(){
-  useUserStore().logOut()
-  window.removeEventListener('keplr_keystorechange', keystoreChangeListener)
-}
-
-onUnmounted(()=>{
-  window.removeEventListener('keplr_keystorechange', keystoreChangeListener)
-})
+// const keystoreChangeListener = () => {
+//       useUserStore().connectKeplr()
+//     }
+// function logIn(){
+//   useUserStore().connectKeplr().then(() => {
+//     window.addEventListener('keplr_keystorechange', keystoreChangeListener);
+//   })
+// }
+// function logOut(){
+//   useUserStore().logOut()
+//   window.removeEventListener('keplr_keystorechange', keystoreChangeListener)
+// }
+//
+// onUnmounted(()=>{
+//   window.removeEventListener('keplr_keystorechange', keystoreChangeListener)
+// })
 
 </script>
 
@@ -114,7 +122,7 @@ onUnmounted(()=>{
   position:sticky;
   color: white;
   top: 0px;
-  z-index: 999;
+  z-index: 20;
 
 .badge {
   position: relative;

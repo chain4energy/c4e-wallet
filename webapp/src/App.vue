@@ -17,10 +17,9 @@ import LoadingScreen from '@/components/LoadingScreen.vue';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import AppSidebar from '@/components/layout/AppSidebar.vue';
 
-import { inject, onBeforeMount, onMounted, watch } from "vue";
+import { computed, inject, onBeforeMount, onMounted, onUpdated, watch } from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
 import {createRouterBeforeEach} from '@/router/before_each';
-
 
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
 import "primeicons/primeicons.css";
@@ -28,6 +27,9 @@ import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import {useConfigurationStore} from "@/store/configuration.store";
 import { useUserStore } from "@/store/user.store";
+import LogingPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
+import router from "@/router";
+import { useBlockStore } from "@/store/block.store";
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 onBeforeMount(() => {
@@ -37,13 +39,10 @@ onBeforeMount(() => {
 onMounted(() => {
   createRouterBeforeEach(logger);
   setTimeout(() =>{
-    if (localStorage.getItem('account')){
-      useUserStore().fetchAccountData()
-    } else {
-      return
-    }
-  },200)
+      useUserStore().reconectAcc()
+  },300)
 });
+
 </script>
 
 <style lang="scss">
