@@ -15,25 +15,24 @@
 // EQ  = "eq"
 // )
 import { DataTablePageEvent, DataTableSortEvent} from "primevue/datatable";
+import {DefaultSortingModel} from "@/services/model/defaultSorting.model";
 
 export class PagingModel{
-  private limit = 20;
+  private _limit = 10;
   private offset = 0;
   private sortField = '';
   private sortOrder = '';
-  private filterFields : string[] = [];
+  private filterFields : string[] | undefined = [];
   private filterValues: string[] = [];
-  private key = '';
 
-  constructor(filterFields: string[]) {
+  constructor(filterFields: string[] | undefined) {
     this.filterFields = filterFields;
   }
 
   toAxiosParams(): { [k: string]: any } {
     const retVal: { [k: string]: any } = {};
-    retVal['pagination.count_total'] = 'true';
-    retVal['pagination.limit'] = this.limit;
-    retVal['pagination.offset'] = this.offset;
+    retVal.limit = this._limit;
+    retVal.offset = this.offset;
     if (this.sortField !== null && this.sortField.length > 0) {
       retVal.sort = this.sortOrder + ":" + this.sortField;
     }
@@ -48,7 +47,7 @@ export class PagingModel{
 
   fromDataTableSortEvent(event : DataTableSortEvent) : PagingModel{
     this.offset = event.first;
-    this.limit = event.rows;
+    this._limit = event.rows;
     if(  event.sortField !== undefined && event.sortField !== null && event.sortField.length > 0 ){
       this.sortField = event.sortField.toString();
       if (event.sortOrder == 1) {
@@ -56,6 +55,9 @@ export class PagingModel{
       } else {
         this.sortOrder = 'desc';
       }
+    } else {
+      this.sortOrder = '';
+      this.sortField = '';
     }
     return this;
   }
@@ -76,16 +78,24 @@ export class PagingModel{
     return this;
   }
 
+  setDefaultSorting(defaultSorting: DefaultSortingModel){
+    if(this.sortField.length == 0) {
+      this.sortField = defaultSorting.getSortField();
+      this.sortOrder = defaultSorting.getSortOrder();
+    }
+  }
+
+  clearSorting(){
+    this.sortField = '';
+    this.sortOrder = '';
+  }
+
   clearFilter(){
     this.filterValues = [];
   }
-  setOffset(offset: number) {
-    this.offset = offset;
-  }
-  setLimit(limit: number) {
-    this.limit = limit;
-  }
-  setKey(key: string) {
-    this.key = key;
+
+
+  set limit(value: number) {
+    this._limit = value;
   }
 }

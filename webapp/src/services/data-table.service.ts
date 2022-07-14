@@ -1,10 +1,15 @@
+import {DataHolder} from "@/models/data-holder";
 import {PagingModel} from "@/services/model/paging.model";
 import {LocalSpinner} from "@/services/model/localSpinner";
-import {DataHolder} from "@/models/data-holder";
+import {DefaultSortingModel} from "@/services/model/defaultSorting.model";
+// import {DefaultSortingModel} from "@/services/model/defaultSorting.model";
 
-export interface DataTableService<T> {
+export interface DataTableService {
 
-  fetchListData(pagination: PagingModel|null, lockScreen: boolean, localSpinner: LocalSpinner | null) : void;
+  getDefaultSorting(): DefaultSortingModel;
 
-  getListDataHolder() : DataHolder<T>;
+  fetchListData(pagination: PagingModel | null, lockScreen: boolean, localSpinner: LocalSpinner | null) : void;
+
+  getListDataHolder() : DataHolder<any>;
 }
+
