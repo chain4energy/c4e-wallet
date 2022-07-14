@@ -100,7 +100,6 @@ function checkBTN(item: Validator){
 }
 
 function toFixedAm(amount: string, decimal: number) {
-  console.log("amount:" + amount);
   return parseFloat(amount).toFixed(decimal);
 }
 
