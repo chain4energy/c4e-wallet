@@ -22,7 +22,7 @@
       </Column>
       <Column field="votingPower" header="voting Power" :sortable="true" sortField="tokens">
         <template #body="{data}">
-          <span v-if="data.getVotingPower()">{{ toFixedAm(data.getVotingPower(), 4) }}%</span>
+          <span v-if="data.votingPower">{{ toFixedAm(data.votingPower, 4) }}%</span>
           <span v-else>updating</span>
         </template>
       </Column>
