@@ -267,8 +267,11 @@ export const useUserStore = defineStore({
     // getStacked(): number {
     //   return this.stacked;
     // },
-    getTotalUndelegated(): number{
-      return this.undelegations.totalUndelegated;
+    getTotalUndelegating(): number{
+      return this.undelegations.totalUndelegating;
+    },
+    getUndelegations(): UnbondingDelegations {
+      return this.undelegations;
     },
     // getStackedList(): stackingList{
     //   return this.stackingList

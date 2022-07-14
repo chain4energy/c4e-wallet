@@ -25,7 +25,7 @@
     </div>
     <div class="userdata__amounts">
       <p>Unstaking</p>
-      <p>{{useUserStore().getTotalUndelegated || 0}}</p>
+      <p>{{useUserStore().getTotalUndelegating || 0}}</p>
     </div>
     </div>
     <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
@@ -70,7 +70,7 @@ function claimRewards(){
 useBlockStore().fetchLatestBlock()
 setInterval(useBlockStore().fetchLatestBlock, 6000)
 
-const total = computed(() => useUserStore().getTotalUndelegated + useUserStore().getTotalDelegated + useUserStore().getBalances);
+const total = computed(() => useUserStore().getTotalUndelegating + useUserStore().getTotalDelegated + useUserStore().getBalances);
 const locked = computed(()=> useUserStore().getVestingLockAmount.toFixed(0))
 </script>
 

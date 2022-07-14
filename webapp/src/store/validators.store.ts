@@ -33,7 +33,6 @@ export const useValidatorsStore = defineStore({
           if (resp.isSuccess() && resp.data !== undefined){
             this.validators = resp.data.validators;
             this.numberOfActiveValidators = resp.data.numberOfActive
-
           } else {
             // TODO
           }

@@ -34,12 +34,17 @@ export class Validator{
   }
 
   public get delegatedAmount(): string {
-    return useUserStore().getDelegations.getAmountByValidator(this.operatorAddress)
+    return useUserStore().getDelegations.getAmountByValidator(this.operatorAddress);
+  }
+
+  public get undelegatingAmount(): number {
+    return useUserStore().getUndelegations.getAmountByValidator(this.operatorAddress);
   }
 
   public get rewardsAmount(): string {
-    return useUserStore().getRewardList.getAmountByValidator(this.operatorAddress)
+    return useUserStore().getRewardList.getAmountByValidator(this.operatorAddress);
   }
+
 }
 
 export class ValidatorDescription {

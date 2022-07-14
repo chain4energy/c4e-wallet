@@ -20,13 +20,19 @@
           <span>{{ toViewStatus(data.status) }}</span>
         </template>
       </Column>
+      <Column field="commission.rate" header="Commission" :sortable="true" v-if="isLoggedIn" sortField="commission.rate">
+        <template #body="{data}">
+          <span>{{ toFixedAm(data.commission.rate, 6)*100 }}%</span> <!-- TODO create function converting to pecentage -->
+          <!-- <span v-else>updating</span> -->
+        </template>
+      </Column>
       <Column field="votingPower" header="voting Power" :sortable="true" sortField="tokens">
         <template #body="{data}">
-          <span v-if="data.votingPower">{{ toFixedAm(data.votingPower, 4) }}%</span>
+          <span v-if="data.votingPower">{{ toFixedAm(data.votingPower, 4) }}%</span>  <!-- TODO create function converting to pecentage -->
           <span v-else>updating</span>
         </template>
       </Column>
-      <Column field="stacked.amount" header="Your stake" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
+      <Column header="Your stake" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
         <template #body="{data}">
           <span>{{ toFixedAm(data.delegatedAmount, 4) }}</span>
           <!-- <span v-else>updating</span> -->
@@ -48,8 +54,8 @@
     <template v-slot:expanded-columns="{expandedData}">
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
-          <p>Your stacked</p>
-          <p>{{toFixedAm(expandedData.data.delegatedAmount, 4)}}</p>
+          <p>Your unstaking</p>
+          <p>{{toFixedAm(expandedData.data.undelegatingAmount, 4)}}</p>
         </div>
         <div style="display: flex; flex-direction: column">
           <p>Reward</p>

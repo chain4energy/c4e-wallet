@@ -44,11 +44,11 @@ export class UnbondingDelegationEntry {
 
 export class UnbondingDelegations {
   undelegations: Map<string, UnbondingDelegation>;
-  totalUndelegated: number;
+  totalUndelegating: number;
 
-  constructor (undelegations = new Map<string, UnbondingDelegation>(), totalUndelegated = 0) {
+  constructor (undelegations = new Map<string, UnbondingDelegation>(), totalUndelegating = 0) {
     this.undelegations = undelegations
-    this.totalUndelegated = totalUndelegated
+    this.totalUndelegating = totalUndelegating
   }
 
   public getAmountByValidator(validatorAddress: string): number {
