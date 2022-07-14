@@ -34,17 +34,15 @@
       </Column>
       <Column field="operator_address">
         <template #body="{data}">
-          <button class="btn__main" @click="checkBTN(data)">Manage</button>
+          <Button class="btn__main" @click="checkBTN(data)">Manage</Button>
         </template>
       </Column>
 
       <Column v-if="isLoggedIn">
         <template #body="{data}">
-          <button @click="onRowExpand(data)" v-if="data.delegatedAmount!=='0'" headerStyle="width: 4rem">open
-          </button>
+          <Button @click="onRowExpand(data)" v-if="data.delegatedAmount!=='0'" headerStyle="width: 4rem" :label=" data.operatorAddress == expandedRow[0]?.operatorAddress ? 'Close' : 'Open'"></Button>
         </template>
       </Column>
-<!--      <Column v-if="isLoggedIn && delegatedAmount!=='0'" :expander="true" headerStyle="width: 3rem"/>-->
 
     </template>
     <template v-slot:expanded-columns="{expandedData}">
@@ -59,7 +57,7 @@
         </div>
       </div>
     </template>
-    <template v-slot:paginatorstart></template>
+<!--    <template v-slot:paginatorstart></template>-->
   </DataTableWrapper>
 </template>
 
@@ -84,7 +82,7 @@ const props = defineProps({
 });
 const userStore = useUserStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
-const expandedRow = ref([{}]);
+const expandedRow = ref(Array<Validator>());
 
 async function trsansactionSuccess(arg: string) {
   //close popup
@@ -119,7 +117,7 @@ function createEagerLoadingConfig(): EagerLoadingConfig<Validator>{
 }
 
 function onRowExpand(data: Validator) {
-  expandedRow.value = (expandedRow.value[0] === data) ? [{}] : [data]
+  expandedRow.value = (expandedRow.value[0] === data) ? [] : [data]
 }
 
 const filters = ref({
