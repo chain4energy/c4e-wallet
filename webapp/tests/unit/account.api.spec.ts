@@ -2,31 +2,21 @@ import { setActivePinia, createPinia } from 'pinia'
 import axios, { AxiosError, AxiosInstance, AxiosResponse, AxiosResponseHeaders } from 'axios';
 import { AccountType, ContinuousVestingData } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
+import { createBaseAccountResponse, createContinuousVestingAccountResponse, createErrorResponse, createSingleBalanceResponse } from '../utils/blockchain.data.util';
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const api = apiFactory.accountApi()
 apiFactory.setAxiosInstance(mockedAxios)
 
-describe('get account', () => {
+describe('account api tests', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   });
 
   it('gets BaseAccount', async () => {
     const account = {
-      data: {
-        account: {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          address: "c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg",
-          pub_key: {
-            "@type": "/cosmos.crypto.secp256k1.PubKey",
-            key: "Al619Y81/xqLCl6oREVwtBPpcwv0RuR9C4KbdNQnOwbB"
-          },
-          account_number: "25",
-          sequence: "43"
-        }
-      }
+      data: createBaseAccountResponse('c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg')
     };
 
     mockedAxios.request.mockResolvedValue(account);
@@ -42,37 +32,7 @@ describe('get account', () => {
 
   it('gets ContinuousVestingAccount', async () => {
     const account = {
-      data: {
-        account: {
-          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
-          base_vesting_account: {
-            base_account: {
-              address: "c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55",
-              pub_key: {
-                "@type": "/cosmos.crypto.secp256k1.PubKey",
-                key: "dvvcfsvwfevceewcw"
-              },
-              account_number: "52",
-              sequence: "1"
-            },
-            original_vesting: [
-              {
-                denom: "uc4e",
-                amount: "100000000000"
-              }
-            ],
-            delegated_free: [],
-            delegated_vesting: [
-              {
-                denom: "uc4e",
-                amount: "12"
-              }
-            ],
-            end_time: "1657372098"
-          },
-          start_time: "1657112898"
-        }
-      }
+      data: createContinuousVestingAccountResponse('c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55')
     };
 
     mockedAxios.request.mockResolvedValue(account);
@@ -122,12 +82,7 @@ describe('get account', () => {
 
   it('gets not existent address', async () => {
     const response = {
-      data: {
-        "code": 5,
-        "message": "rpc error: code = NotFound desc = account c4e1xe3x4w0ma4dv805q0rhe0c7xk3mv24vatg7pm3 not found: key not found",
-        "details": [
-        ]
-      },
+      data: createErrorResponse(5, "rpc error: code = NotFound desc = account c4e1xe3x4w0ma4dv805q0rhe0c7xk3mv24vatg7pm3 not found: key not found"),
       status: 404,
       statusText: '',
       // headers: "AxiosResponseHeaders",
@@ -149,12 +104,7 @@ describe('get account', () => {
 
   it('gets address with 404 response and error code 0', async () => {
     const response = {
-      data: {
-        "code": 0,
-        "message": "rpc error: code = NotFound desc = account c4e1xe3x4w0ma4dv805q0rhe0c7xk3mv24vatg7pm3 not found: key not found",
-        "details": [
-        ]
-      },
+      data: createErrorResponse(0, "rpc error: code = NotFound desc = account c4e1xe3x4w0ma4dv805q0rhe0c7xk3mv24vatg7pm3 not found: key not found"),
       status: 404,
       statusText: '',
       // headers: "AxiosResponseHeaders",
@@ -176,12 +126,7 @@ describe('get account', () => {
 
   it('gets address with 404 response and error messege <> NotFound', async () => {
     const response = {
-      data: {
-        "code": 5,
-        "message": "some error message",
-        "details": [
-        ]
-      },
+      data: createErrorResponse(5, "some error message"),
       status: 404,
       statusText: '',
       // headers: "AxiosResponseHeaders",
@@ -203,12 +148,7 @@ describe('get account', () => {
 
   it('gets address with not 404 response and error messege <> NotFound', async () => {
     const response = {
-      data: {
-        "code": 5,
-        "message": "rpc error: code = NotFound desc = account c4e1xe3x4w0ma4dv805q0rhe0c7xk3mv24vatg7pm3 not found: key not found",
-        "details": [
-        ]
-      },
+      data: createErrorResponse(5, "rpc error: code = NotFound desc = account c4e1xe3x4w0ma4dv805q0rhe0c7xk3mv24vatg7pm3 not found: key not found"),
       status: 401,
       statusText: '',
       // headers: "AxiosResponseHeaders",
@@ -230,12 +170,7 @@ describe('get account', () => {
 
   it('gets balance', async () => {
     const balance = {
-      data: {
-        balance: {
-          denom: "uc4e",
-          amount: "43"
-        }
-      }
+      data: createSingleBalanceResponse('uc4e', '49031887606805')
     };
 
     mockedAxios.request.mockResolvedValue(balance);
@@ -243,17 +178,13 @@ describe('get account', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.amount).toBe('43')
+    expect(result.data?.amount).toBe('49031887606805')
     expect(result.data?.denom).toBe('uc4e')
   });
 
   it('gets balance wth error', async () => {
     const response = {
-      data: {
-        "code": 3,
-        "message": "rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request",
-        "details": []
-      },
+      data: createErrorResponse(3, "rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request"),
       status: 400,
       statusText: '',
       // headers: "AxiosResponseHeaders",
