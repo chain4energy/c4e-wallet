@@ -30,8 +30,8 @@ export const useUserStore = defineStore({
   id: 'userStore',
   state: (): UserState => {
     return {
-      logged: Object(),
-      account: Object(),
+      logged: ConnectionInfo.disconnected,
+      account: Object(), // TODO probably type - Account | null
       // type: '',
       balances: 0,
       // stacked: 0,
@@ -233,7 +233,7 @@ export const useUserStore = defineStore({
     },
     async logOut(){
       this._isLoggedIn = false;
-      this.logged = Object(),
+      this.logged = ConnectionInfo.disconnected,
       this.account = Object();
       // await useValidatorsStore().logoutValidatorModule()
       localStorage.removeItem('account')
