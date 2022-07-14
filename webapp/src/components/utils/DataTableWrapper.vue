@@ -13,9 +13,10 @@
              @sort="sortEvent($event)"
              sortMode="single"
              :globalFilterFields="getGlobalFilterFields()"
-             v-model:expandedRows="expandedRows"
+             :expandedRows="getExpandedRows()"
              :rowsPerPageOptions="[10,20,50]"
              :filters="getFilters()"
+
   >
 
     <template #header v-if="slotPassed('header')">
@@ -100,8 +101,19 @@ const props = defineProps({
   lazyLoadingConfig: {
     type: LazyLoadingConfig,
     default: undefined
+  },
+  expandedRows:{
+    type: Array
   }
 });
+
+function getExpandedRows(){
+  if(props.expandedRows != undefined){
+    return props.expandedRows;
+  } else {
+    return expandedRows.value;
+  }
+}
 
 function slotPassed(slotName: string) {
   return slots[slotName];

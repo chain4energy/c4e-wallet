@@ -1,6 +1,6 @@
 <template>
   <StackingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
-  <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" >
+  <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" >
     <template v-slot:empty> Empty</template>
     <template #header>
       <div style="display: flex; justify-content: space-between">
@@ -37,23 +37,25 @@
           <button class="btn__main" @click="checkBTN(data)">Manage</button>
         </template>
       </Column>
+
       <Column v-if="isLoggedIn">
         <template #body="{data}">
-          <button @click="onRowExpande(data)" v-if="data.delegatedAmount!=='0'" headerStyle="width: 4rem">open
+          <button @click="onRowExpand(data)" v-if="data.delegatedAmount!=='0'" headerStyle="width: 4rem">open
           </button>
         </template>
       </Column>
-      <Column v-if="isLoggedIn" :expander="true" headerStyle="width: 3rem"/>
+<!--      <Column v-if="isLoggedIn && delegatedAmount!=='0'" :expander="true" headerStyle="width: 3rem"/>-->
+
     </template>
-    <template v-slot:expanded-columns="data">
+    <template v-slot:expanded-columns="{expandedData}">
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
           <p>Your stacked</p>
-          <p>{{toFixedAm(data.delegatedAmount, 4)}}</p>
+          <p>{{toFixedAm(expandedData.data.delegatedAmount, 4)}}</p>
         </div>
         <div style="display: flex; flex-direction: column">
           <p>Reward</p>
-          <p>{{toFixedAm(data.rewardsAmount, 4)}}</p>
+          <p>{{toFixedAm(expandedData.data.rewardsAmount, 4)}}</p>
         </div>
       </div>
     </template>
@@ -82,6 +84,7 @@ const props = defineProps({
 });
 const userStore = useUserStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
+const expandedRow = ref([{}]);
 
 async function trsansactionSuccess(arg: string) {
   //close popup
@@ -97,6 +100,7 @@ function checkBTN(item: Validator){
 }
 
 function toFixedAm(amount: string, decimal: number) {
+  console.log("amount:" + amount);
   return parseFloat(amount).toFixed(decimal);
 }
 
@@ -113,6 +117,10 @@ function createEagerLoadingConfig(): EagerLoadingConfig<Validator>{
   const config = new EagerLoadingConfig<Validator>(props.validators as Validator[]);
   config.setFilters(filters.value);
   return config;
+}
+
+function onRowExpand(data: Validator) {
+  expandedRow.value = (expandedRow.value[0] === data) ? [{}] : [data]
 }
 
 const filters = ref({
