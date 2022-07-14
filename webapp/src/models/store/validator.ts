@@ -25,7 +25,7 @@ export class Validator{
     this.rank = 0
   }
 
-  public getVotingPower(): number {
+  public get votingPower(): number {
     const total = useTokensStore().getStakingPool.bonded_tokens
     if(total){
       return (Number(this.tokens) / total) * 100;
@@ -33,7 +33,7 @@ export class Validator{
     return 0;
   }
 
-  public get delegatedAmount() {
+  public get delegatedAmount(): string {
     return useUserStore().getDelegations.getAmountByValidator(this.operatorAddress)
   }
 

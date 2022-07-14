@@ -20,7 +20,7 @@ export class Rewards {
   rewards: Map<string, ValidatorRewards>;
   totalRewards: number;
 
-  constructor (rewards: Map<string, ValidatorRewards>, totalRewards: number) {
+  constructor (rewards = new Map<string, ValidatorRewards>(), totalRewards = 0) {
     this.rewards = rewards
     this.totalRewards = totalRewards
   }

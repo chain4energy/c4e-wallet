@@ -37,10 +37,10 @@ export const useUserStore = defineStore({
       // stacked: 0,
       // unstacked: 0,
       vestimgAccLocked: Number(),
-      rewards: new Rewards(new Map<string, ValidatorRewards>(), 0),
+      rewards: new Rewards(),
       _isLoggedIn: false,
-      delegations: new Delegations(new Map<string, Delegation>(), 0),
-      undelegations: new UnbondingDelegations(new Map<string, UnbondingDelegation>(), 0),
+      delegations: new Delegations(),
+      undelegations: new UnbondingDelegations(),
 
     };
   },

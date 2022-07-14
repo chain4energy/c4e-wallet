@@ -12,7 +12,7 @@ export class Delegations {
   delegations: Map<string, Delegation>;
   totalDelegated: number;
 
-  constructor (delegations: Map<string, Delegation>, totalDelegated: number) {
+  constructor (delegations = new Map<string, Delegation>(), totalDelegated = 0) {
     this.delegations = delegations
     this.totalDelegated = totalDelegated
   }
@@ -46,7 +46,7 @@ export class UnbondingDelegations {
   undelegations: Map<string, UnbondingDelegation>;
   totalUndelegated: number;
 
-  constructor (undelegations: Map<string, UnbondingDelegation>, totalUndelegated: number) {
+  constructor (undelegations = new Map<string, UnbondingDelegation>(), totalUndelegated = 0) {
     this.undelegations = undelegations
     this.totalUndelegated = totalUndelegated
   }
