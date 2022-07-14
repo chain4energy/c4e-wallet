@@ -36,7 +36,7 @@ export const useUserStore = defineStore({
       balances: 0,
       // stacked: 0,
       // unstacked: 0,
-      vestimgAccLocked: Number(),
+      vestimgAccLocked: 0,
       rewards: new Rewards(),
       _isLoggedIn: false,
       delegations: new Delegations(),

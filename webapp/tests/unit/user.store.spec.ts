@@ -5,7 +5,7 @@ import { AccountType, ContinuousVestingData } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
 import { useUserStore } from '@/store/user.store';
 import { useConfigurationStore } from '@/store/configuration.store';
-import { createBaseAccountResponse, createDelegationsResponse, createRewardsResponse, createSingleBalanceResponse, createUnbondingDelegationsResponse } from '../utils/blockchain.data.util';
+import { createBaseAccountResponse, createDelegationsResponse, createRewardsResponse, createSingleBalanceResponse, createUnbondingDelegationsResponse, defaultDenom } from '../utils/blockchain.data.util';
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -16,16 +16,21 @@ apiFactory.setAxiosInstance(mockedAxios)
 //   mockedAxios.create.mockReturnValue(mockedAxios);
 // });
 
+const denom = defaultDenom
+const address = 'c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg'
+
 describe('get account', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
-    useConfigurationStore().config.stakingDenom = 'uc4e'
+    useConfigurationStore().config.stakingDenom = denom
   });
 
   it('connects to address', async () => {
+
+    const balanceAmount = '49031887606805'
     const userStore = useUserStore();
-    const account = { data: createBaseAccountResponse('c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg') };
-    const balance = { data: createSingleBalanceResponse('uc4e', '49031887606805') };
+    const account = { data: createBaseAccountResponse(address) };
+    const balance = { data: createSingleBalanceResponse(denom, balanceAmount) };
     const rewards = { data: createRewardsResponse() };
     const delegations = { data: createDelegationsResponse() };
     const undelegations = { data: createUnbondingDelegationsResponse() };
@@ -36,7 +41,7 @@ describe('get account', () => {
     mockedAxios.request.mockResolvedValueOnce(delegations);
     mockedAxios.request.mockResolvedValueOnce(undelegations);
 
-    await userStore.connectAsAddress('c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg')
+    await userStore.connectAsAddress(address)
 
 
     // const result = await api.fetchAccount('c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg')

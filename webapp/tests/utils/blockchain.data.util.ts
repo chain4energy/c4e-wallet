@@ -1,10 +1,51 @@
+import { AxiosError, AxiosResponse } from "axios";
+
+export const accountNotFoundErrorMessage = 'rpc error: code = NotFound desc = account c4e1xe3x4w0ma4dv805q0rhe0c7xk3mv24vatg7pm3 not found: key not found';
+export const axiosErrorMessagePrefix = 'Request failed with status code ';
+export const axiosError404Message = axiosErrorMessagePrefix + '404';
+
+export const vestingAccountTimeToSystem = '000';
+export const defaultBaseAccountType = '/cosmos.auth.v1beta1.BaseAccount';
+export const defaultContinuousVestingAccountStartTime = '1657112898';
+export const defaultContinuousVestingAccountEndTime = '1657372098';
+export const defaultDenom = 'uc4e';
+export const defaultContinuousVestingAccountOriginalVesting = [
+  {
+    denom: defaultDenom,
+    amount: '100000000000'
+  }
+];
+export const defaultRewardsValidators = ['c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a', 'c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5']
+export const defaultRewardsCoins = [
+  [
+    {
+      denom: defaultDenom,
+      amount: '94674698.350135527836087568'
+    }
+  ], 
+  [
+    {
+      denom: defaultDenom,
+      amount: '94774371.034393892953000000'
+    }
+  ]
+];
+export const defaultRewardsTotal = [
+  {
+    denom: defaultDenom,
+    amount: '701806492.986585310106087069'
+  }
+];
+export const defaultAxiosErrorName = 'AxiosError';
+export const defaultErrorName = 'Error';
+
 export function createBaseAccountResponse(address: string) {
   return {
     account: createBaseAccount(address)
   }
 }
 
-export function createBaseAccount(address: string, type = "/cosmos.auth.v1beta1.BaseAccount") {
+export function createBaseAccount(address: string, type = defaultBaseAccountType) {
   return {
     "@type": type,
     address: address,
@@ -23,7 +64,10 @@ export function createContinuousVestingAccountResponse(address: string) {
   }
 }
 
-export function createContinuousVestingAccount(address: string) {
+export function createContinuousVestingAccount(address: string, 
+    startTime = defaultContinuousVestingAccountStartTime,
+    endTime = defaultContinuousVestingAccountEndTime,
+    originalVesting = defaultContinuousVestingAccountOriginalVesting) {
   return {
       "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
       base_vesting_account: {
@@ -36,22 +80,17 @@ export function createContinuousVestingAccount(address: string) {
           account_number: "52",
           sequence: "1"
         },
-        original_vesting: [
-          {
-            denom: "uc4e",
-            amount: "100000000000"
-          }
-        ],
+        original_vesting: originalVesting,
         delegated_free: [],
         delegated_vesting: [
           {
-            denom: "uc4e",
+            denom: defaultDenom,
             amount: "12"
           }
         ],
-        end_time: "1657372098"
+        end_time: endTime
       },
-      start_time: "1657112898"
+      start_time: startTime
     }
 }
 
@@ -188,44 +227,33 @@ export function createPeriodicVestingAccount(address: string) {
   }
 }
 
-// 'uc4e', '49031887606805'
 export function createSingleBalanceResponse(denom: string, amount: string) {
   return {
-    balance: {
-      denom: denom,
-      amount: amount
-    }
+    balance: createSingleBalance(denom, amount)
   }
 }
 
-export function createRewardsResponse() {
+export function createSingleBalance(denom: string, amount: string) {
   return {
-    rewards: [
-      {
-        validator_address: "c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a",
-        reward: [
-          {
-            denom: "uc4e",
-            amount: "94674698.350135527836087568"
-          }
-        ]
-      },
-      {
-        validator_address: "c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5",
-        reward: [
-          {
-            denom: "uc4e",
-            amount: "94774371.034393892953000000"
-          }
-        ]
-      },
-    ],
-    total: [
-      {
-        denom: "uc4e",
-        amount: "701806492.986585310106087069"
-      }
-    ]
+    denom: denom,
+    amount: amount
+  }
+}
+
+export function createRewardsResponse(validators = defaultRewardsValidators, rewards = defaultRewardsCoins, total = defaultRewardsTotal) {
+  if (validators.length !== rewards.length) {
+    throw new Error('validators.length !== rewards.length')
+  }
+  const rewardsArray = new Array()
+  for (let i = 0; i < validators.length; i++) {
+    rewardsArray.push({
+      validator_address: validators[i],
+      reward: rewards[i]
+    })
+  }
+  return {
+    rewards: rewardsArray,
+    total: total
   }
 }
 
@@ -294,4 +322,12 @@ export function createErrorResponse(code: number, message: string) {
     message: message,
     details: []
   }
+}
+
+export function createAxiosError(message: string, response: AxiosResponse, name = defaultAxiosErrorName): AxiosError {
+  const error = new AxiosError();
+  error.name = name;
+  error.message = message;
+  error.response = response;
+  return error;
 }
