@@ -1,76 +1,59 @@
 <template>
-<div>
-  <TabView>
-    <TabPanel header="All">
-      <!-- <button @click="useValidatorsStore().sortValidators()">sort validators</button> -->
-      <DataTableWraper :expanded="true" :validators="useValidatorsStore().getValidators"/>
-    </TabPanel>
-    <TabPanel v-if="isLoggedIn" header="Staked">
-      <DataTableWraper :validators="useValidatorsStore().getValidatorsWithDelegations" :expanded="true"/>
-    </TabPanel>
-    <TabPanel header="Active">
-      <DataTableWraper :validators="useValidatorsStore().getActiveValidators" :expanded="true"/>
-    </TabPanel>
-    <TabPanel header="Inactive">
-      <DataTableWraper :validators="useValidatorsStore().getInactiveValidators" :expanded="true"/>
-    </TabPanel>
-  </TabView>
-</div>
+  <div>
+    <TabView>
+
+      <TabPanel header="All">
+        <DataTableWraper :expanded="true" :validators="useValidatorsStore().getValidators" />
+      </TabPanel>
+      <TabPanel v-if="isLoggedIn" header="Staked">
+        <DataTableWraper :validators="useValidatorsStore().getValidatorsWithDelegations" :expanded="true"/>
+      </TabPanel>
+      <TabPanel header="Active">
+        <DataTableWraper :validators="useValidatorsStore().getActiveValidators" :expanded="true"/>
+      </TabPanel>
+      <TabPanel header="Inactive">
+        <DataTableWraper :validators="useValidatorsStore().getInactiveValidators" :expanded="true"/>
+      </TabPanel>
+
+      <TabPanel header="New All">
+        <ValidatorsDataTable :validators="useValidatorsStore().getValidators"/>
+      </TabPanel>
+      <TabPanel v-if="isLoggedIn" header="New Staked">
+        <ValidatorsDataTable :validators="useValidatorsStore().getValidatorsWithDelegations"/>
+      </TabPanel>
+      <TabPanel header="New Active">
+        <ValidatorsDataTable :validators="useValidatorsStore().getActiveValidators"/>
+      </TabPanel>
+      <TabPanel header="New Inactive">
+        <ValidatorsDataTable :validators="useValidatorsStore().getInactiveValidators"/>
+      </TabPanel>
+    </TabView>
+
+  </div>
 </template>
 
 <script setup lang="ts">
-import { useValidatorsStore } from "@/store/validators.store";
-import { computed, ComputedRef, onBeforeMount, onUnmounted, reactive, ref, UnwrapNestedRefs, watch } from "vue";
-import { useUserStore } from "@/store/user.store";
+import {useValidatorsStore} from "@/store/validators.store";
+import {computed, ComputedRef, onBeforeMount, onUnmounted, reactive, ref, UnwrapNestedRefs, watch} from "vue";
+import {useUserStore} from "@/store/user.store";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import DataTableWraper from "@/components/stacking/DataTableWraper.vue";
-import { BasicQuantity, Validator, validatorsComponent } from "@/models/validator";
+import ValidatorsDataTable from "@/components/stacking/ValidatorsDataTable.vue";
 
 const validatorsStore = useValidatorsStore();
 const userStore = useUserStore();
 
-// const rewardsFetched = computed(()=> validatorsStore.getRewardsFetchetStatus)
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 
-onBeforeMount(()=>{
-    validatorsStore.fetchValidators();
+onBeforeMount(() => {
+  validatorsStore.fetchValidators();
 })
-
-
-
-// onUnmounted(() => validatorsStore.logoutValidatorModule())
-
-// const validators : validatorsComponent = reactive({
-//   fullList: computed(() => validatorsStore.getValidators.validators),
-//   activeList: computed(() => {
-//     if (!validators.fullList) {
-//       return [];
-//     } else {
-//       return validators.fullList.filter((el: Validator) => el.status === "Active");
-//     }
-//   }),
-//   notActive: computed(() => {
-//     if (!validators.fullList) {
-//       return [];
-//     } else {
-//       return validators.fullList.filter((el: Validator) => el.status !== "Active");
-//     }
-//   }),
-//   stacked: computed(() => {
-//     if (validators.fullList && rewardsFetched.value) {
-//       return validators.fullList.filter((el: Validator) => el.rewards.amount !== "0");
-//     } else {
-//       return []
-//     }
-//   }),
-// });
-
 
 </script>
 
 <style scoped lang="scss">
-.btn__main{
+.btn__main {
   display: flex;
   flex-direction: row;
   justify-content: center;
