@@ -65,13 +65,13 @@
 
 <script setup lang="ts">
 
-import DataTableWrapper from "@/components/utils/DataTableWrapper.vue";
-import {computed, PropType, ref} from "vue";
+import DataTableWrapper from "@/components/commons/DataTableWrapper.vue";
+import {computed, ref} from "vue";
 import {Validator, ValidatorStatus} from "@/models/store/validator";
 import {useUserStore} from "@/store/user.store";
 import StackingPopup from "@/components/stacking/StackingPopup.vue";
 import {FilterMatchMode, FilterOperator} from "primevue/api";
-import {EagerLoadingConfig} from "@/components/utils/EagerLoadingConfig";
+import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 
 const popupOpened = ref(false);
 const currentValidator = ref({})

@@ -73,8 +73,8 @@ import {useGlobalFilterStore} from "@/store/global-filter.store";
 import {LocalSpinner} from "@/services/model/localSpinner";
 import {onBeforeMount} from "@vue/runtime-core";
 import {DefaultSortingModel} from "@/services/model/defaultSorting.model";
-import {EagerLoadingConfig} from "@/components/utils/EagerLoadingConfig";
-import {LazyLoadingConfig} from "@/components/utils/LazyLoadingConfig";
+import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
+import {LazyLoadingConfig} from "@/components/commons/LazyLoadingConfig";
 import {DataTableService} from "@/services/data-table.service";
 
 const globalFilter = useGlobalFilterStore();
