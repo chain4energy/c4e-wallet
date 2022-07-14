@@ -7,11 +7,7 @@ export function mapDelegations(delegations: BcDelegation[] | undefined): Delegat
   }
 
   const map = new Map<string, StoreDelegation>();
-  let total = 0;
-  delegations.forEach(del => {
-    map.set(del.delegation.validator_address, mapDelegation(del))
-    total += Number(del.balance.amount);
-  })
+  const total = mapAndAddDelegationsToMap(map, delegations);
   return new Delegations(map, total);
 }
 
@@ -19,13 +15,20 @@ export function mapAndAddDelegations(delegationsToAdd: Delegations, bcDelegation
   if (bcDelegations === undefined) {
     throw new Error('BcDelegations list is undefined');
   }
+  delegationsToAdd.totalDelegated +=  mapAndAddDelegationsToMap(delegationsToAdd.delegations, bcDelegations);
+  return delegationsToAdd;
+}
+
+function mapAndAddDelegationsToMap(map: Map<string, StoreDelegation>, bcDelegations: BcDelegation[] | undefined): number  {
+  if (bcDelegations === undefined) {
+    throw new Error('BcDelegations list is undefined');
+  }
   let total = 0;
   bcDelegations.forEach(del => {
-    delegationsToAdd.delegations.set(del.delegation.validator_address, mapDelegation(del))
+    map.set(del.delegation.validator_address, mapDelegation(del))
     total += Number(del.balance.amount);
   })
-  delegationsToAdd.totalDelegated += total
-  return delegationsToAdd;
+  return total;
 }
 
 export function mapDelegation(delegation: BcDelegation | undefined): StoreDelegation  {

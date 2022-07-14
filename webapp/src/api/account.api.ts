@@ -78,26 +78,28 @@ export class AccountApi extends TxBroadcastBaseApi {
     return new RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>(undefined, coin);
   }
   public async fetchDelegations(address: string): Promise<RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>>{
-    let result = await this.fetchBcDelegations(this.STACKED_AMOUNT_URL + address);
-    if (result.isError()) {
-      return new RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>(result.error);
-    }
-    let delegations = mapDelegations(result.data?.delegation_responses);
-
-    if (result.data != undefined && result.data.pagination.next_key !== null) {
-      let nextKey: string | undefined = result.data.pagination.next_key
-      do {
-        result = await this.fetchBcDelegations(this.STACKED_AMOUNT_URL + address + '?pagination.key=' + nextKey);
-        if (result.isError()) {
-          return new RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>(result.error);
-        }
-        nextKey = result.data?.pagination.next_key
+    let delegations: Delegations | undefined = undefined;
+    let nextKey: string | null | undefined = undefined
+    do {
+      const result: RequestResponse<DelegationsResponse, ErrorData<BlockchainApiErrorData>> 
+          = await this.fetchBcDelegations(address, delegations !== undefined, nextKey);
+      if (result.isError()) {
+        return new RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>(result.error);
+      }
+      nextKey = result.data?.pagination.next_key
+      if (delegations === undefined) {
+        delegations = mapDelegations(result.data?.delegation_responses);
+      } else {
         delegations = mapAndAddDelegations(delegations, result.data?.delegation_responses);
-      } while (nextKey !== null && nextKey !== undefined);
-    }
+      }
+    } while (delegations === undefined || (nextKey !== null && nextKey !== undefined));
     return new RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>(undefined, delegations);
   }
-  private async fetchBcDelegations(url: string): Promise<RequestResponse<DelegationsResponse, ErrorData<BlockchainApiErrorData>>> {
+  private async fetchBcDelegations(address: string, pagination: boolean, nextKey: string | null | undefined): Promise<RequestResponse<DelegationsResponse, ErrorData<BlockchainApiErrorData>>> {
+    let url = this.STACKED_AMOUNT_URL + address
+    if (pagination) {
+      url += '?pagination.key=' + nextKey
+    }
     const result: RequestResponse<DelegationsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
       method: 'GET',
       url: url
