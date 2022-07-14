@@ -15,14 +15,17 @@ export const defaultContinuousVestingAccountOriginalVesting = [
     amount: '100000000000'
   }
 ];
-export const defaultRewardsValidators = ['c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a', 'c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5']
+export const defaultRewardsValidators = [
+  'c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a',
+  'c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5'
+]
 export const defaultRewardsCoins = [
   [
     {
       denom: defaultDenom,
       amount: '94674698.350135527836087568'
     }
-  ], 
+  ],
   [
     {
       denom: defaultDenom,
@@ -38,8 +41,56 @@ export const defaultRewardsTotal = [
 ];
 export const defaultAxiosErrorName = 'AxiosError';
 export const defaultErrorName = 'Error';
+export const defaultDelegatorDelegationsValidators = [
+  'c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a',
+  'c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5',
+  'c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8',
+  'c4evaloper19473sdmlkkvcdh6z3tqedtqsdqj4jjv782dku2',
+  'c4evaloper1tavkv9fpqwmw2v9drsm7s3yk7xlll9q8n7e6yl',
+  'c4evaloper1e0ddzmhw2ze2glszkgjk6tfvcfzv68cmrg7euh',
+];
+export const defaultDelegatorDelegationsBalances = [
+  '100011000000',
+  '98012949002',
+  '100013000000',
+  '100014000000',
+  '100015000000',
+  '100016000000',
+];
 
-export function createBaseAccountResponse(address: string) {
+export const defaultDelegatorUnbondingDelegationsValidators = [
+  'c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a',
+  'c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5'
+];
+export const defaultDelegatorUnbondingDelegationsEntriesAmounts = [
+  ['30000000', '40000000'],
+  ['10000000'],
+];
+
+export function findDelegatorDelegationAmountByValidator(validatorAddress: string,
+    validators = defaultDelegatorDelegationsValidators,
+    balancesAmount = defaultDelegatorDelegationsBalances) {
+  if (validators.length !== balancesAmount.length) {
+    throw new Error('validators.length !== balancesAmount.length')
+  } 
+  for (let i = 0; i < validators.length; i++) {
+    if (validators[i] === validatorAddress) {
+      return balancesAmount[i];
+    }
+  }
+  return null;
+}
+
+export function findDelegatorDelegationTotalAmount(
+  balancesAmount = defaultDelegatorDelegationsBalances) {
+  let amount = 0
+  balancesAmount.forEach(ba => {
+    amount += Number(ba);
+  })
+  return amount;
+}
+
+export function createBaseAccountResponseData(address: string) {
   return {
     account: createBaseAccount(address)
   }
@@ -58,43 +109,43 @@ export function createBaseAccount(address: string, type = defaultBaseAccountType
   }
 }
 
-export function createContinuousVestingAccountResponse(address: string) {
+export function createContinuousVestingAccountResponseData(address: string) {
   return {
     account: createContinuousVestingAccount(address)
   }
 }
 
-export function createContinuousVestingAccount(address: string, 
-    startTime = defaultContinuousVestingAccountStartTime,
-    endTime = defaultContinuousVestingAccountEndTime,
-    originalVesting = defaultContinuousVestingAccountOriginalVesting) {
+export function createContinuousVestingAccount(address: string,
+  startTime = defaultContinuousVestingAccountStartTime,
+  endTime = defaultContinuousVestingAccountEndTime,
+  originalVesting = defaultContinuousVestingAccountOriginalVesting) {
   return {
-      "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
-      base_vesting_account: {
-        base_account: {
-          address: address,
-          pub_key: {
-            "@type": "/cosmos.crypto.secp256k1.PubKey",
-            key: "dvvcfsvwfevceewcw"
-          },
-          account_number: "52",
-          sequence: "1"
+    "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+    base_vesting_account: {
+      base_account: {
+        address: address,
+        pub_key: {
+          "@type": "/cosmos.crypto.secp256k1.PubKey",
+          key: "dvvcfsvwfevceewcw"
         },
-        original_vesting: originalVesting,
-        delegated_free: [],
-        delegated_vesting: [
-          {
-            denom: defaultDenom,
-            amount: "12"
-          }
-        ],
-        end_time: endTime
+        account_number: "52",
+        sequence: "1"
       },
-      start_time: startTime
-    }
+      original_vesting: originalVesting,
+      delegated_free: [],
+      delegated_vesting: [
+        {
+          denom: defaultDenom,
+          amount: "12"
+        }
+      ],
+      end_time: endTime
+    },
+    start_time: startTime
+  }
 }
 
-export function createModuleAccountResponse(address: string) {
+export function createModuleAccountResponseData(address: string) {
   return {
     account: createModuleAccount(address)
   }
@@ -116,7 +167,7 @@ export function createModuleAccount(address: string) {
   }
 }
 
-export function createBaseVestingAccountResponse(address: string) {
+export function createBaseVestingAccountResponseData(address: string) {
   return {
     account: createBaseVestingAccount(address)
   }
@@ -151,7 +202,7 @@ export function createBaseVestingAccount(address: string) {
   }
 }
 
-export function createDelayedVestingAccountResponse(address: string) {
+export function createDelayedVestingAccountResponseData(address: string) {
   return {
     account: createDelayedVestingAccount(address)
   }
@@ -188,7 +239,7 @@ export function createDelayedVestingAccount(address: string) {
   }
 }
 
-export function createPeriodicVestingAccountResponse(address: string) {
+export function createPeriodicVestingAccountResponseData(address: string) {
   return {
     account: createPeriodicVestingAccount(address)
   }
@@ -227,7 +278,7 @@ export function createPeriodicVestingAccount(address: string) {
   }
 }
 
-export function createSingleBalanceResponse(denom: string, amount: string) {
+export function createSingleBalanceResponseData(denom: string, amount: string) {
   return {
     balance: createSingleBalance(denom, amount)
   }
@@ -240,7 +291,7 @@ export function createSingleBalance(denom: string, amount: string) {
   }
 }
 
-export function createRewardsResponse(validators = defaultRewardsValidators, rewards = defaultRewardsCoins, total = defaultRewardsTotal) {
+export function createRewardsResponseData(validators = defaultRewardsValidators, rewards = defaultRewardsCoins, total = defaultRewardsTotal) {
   if (validators.length !== rewards.length) {
     throw new Error('validators.length !== rewards.length')
   }
@@ -257,66 +308,74 @@ export function createRewardsResponse(validators = defaultRewardsValidators, rew
   }
 }
 
-export function createDelegationsResponse() {
-  return {
-    "delegation_responses": [
-      {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a","shares":"100011000012.000000000000000000"},"balance":{"denom":"uc4e","amount":"100011000012"}},
-      {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5","shares":"100013000000.000000000000000000"},"balance":{"denom":"uc4e","amount":"100013000000"}},
-      {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8","shares":"100003000000.000000000000000000"},"balance":{"denom":"uc4e","amount":"98012949002"}},
-      {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper19473sdmlkkvcdh6z3tqedtqsdqj4jjv782dku2","shares":"100013000000.000000000000000000"},"balance":{"denom":"uc4e","amount":"100013000000"}},
-      {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1tavkv9fpqwmw2v9drsm7s3yk7xlll9q8n7e6yl","shares":"100013000000.000000000000000000"},"balance":{"denom":"uc4e","amount":"100013000000"}},
-      {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1e0ddzmhw2ze2glszkgjk6tfvcfzv68cmrg7euh","shares":"100011000000.000000000000000000"},"balance":{"denom":"uc4e","amount":"100011000000"}},
-      {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1arwuhz0tg28ld0sry5s083qs6djjqt5vl8dtjl","shares":"100012000000.000000000000000000"},"balance":{"denom":"uc4e","amount":"100012000000"}}
-    ],
-    "pagination": {
-      "next_key": null,
-      "total": "7"
-    }
+export function createDelegatorDelegationsResponseData(address: string,
+    validators = defaultDelegatorDelegationsValidators,
+    balancesAmount = defaultDelegatorDelegationsBalances,
+    denom = defaultDenom,
+    total: number | undefined = undefined,
+    nextKey: string | null = null) {
+  if (validators.length !== balancesAmount.length) {
+    throw new Error('validators.length !== balancesAmount.length')
   }
-}
-
-export function createUnbondingDelegationsResponse() {
-  return {
-    "unbonding_responses": [
-      {
-        "delegator_address": "c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg",
-        "validator_address": "c4evaloper1r2ennr6ywv567lks3qfsdsdafsdfa",
-        "entries": [
-          {
-            "creation_height": "764970",
-            "completion_time": "2022-08-03T11:18:32.854838508Z",
-            "initial_balance": "100000000",
-            "balance": "100000000"
-          },
-          {
-            "creation_height": "764970",
-            "completion_time": "2022-08-03T11:18:32.854838508Z",
-            "initial_balance": "30000000",
-            "balance": "30000000"
-          }
-        ]
+  const delegations = new Array();
+  for (let i = 0; i < validators.length; i++) {
+    delegations.push({
+      delegation: { 
+        delegator_address: address,
+        validator_address: validators[i],
+        shares: balancesAmount[i] + '.000000000000000000'
       },
-      {
-        "delegator_address": "c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg",
-        "validator_address": "c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8",
-        "entries": [
-          {
-            "creation_height": "764970",
-            "completion_time": "2022-08-03T11:18:32.854838508Z",
-            "initial_balance": "10000000",
-            "balance": "10000000"
-          }
-        ]
-      }
-    ],
-    "pagination": {
-      "next_key": null,
-      "total": "1"
+      balance: { 
+        denom: denom,
+        amount: balancesAmount[i] 
+      } 
+    })
+  }
+  return {
+    delegation_responses: delegations,
+    pagination: {
+      next_key: nextKey,
+      total: total === undefined ? validators.length : total
     }
   }
 }
 
-export function createErrorResponse(code: number, message: string) {
+export function createDelegatorUnbondingDelegationsResponseData(address: string,
+    validators = defaultDelegatorUnbondingDelegationsValidators,
+    entriesAmounts = defaultDelegatorUnbondingDelegationsEntriesAmounts,
+    total: number | undefined = undefined,
+    nextKey: string | null = null) {
+  if (validators.length !== entriesAmounts.length) {
+    throw new Error('validators.length !== entriesAmounts.length')
+  }
+  const undelegations = new Array();
+  for (let i = 0; i < validators.length; i++) {
+    const entries = new Array();
+    entriesAmounts[i].forEach(amount => {
+      entries.push({
+        creation_height: "764970",
+        completion_time: "2022-08-03T11:18:32.854838508Z",
+        initial_balance: amount,
+        balance: amount
+      })
+    })
+
+    undelegations.push({ 
+      delegator_address: address,
+      validator_address: validators[i],
+      entries: entries
+    })
+  }
+  return {
+    unbonding_responses: undelegations,
+    pagination: {
+      next_key: nextKey,
+      total: total === undefined ? validators.length : total
+    }
+  }
+}
+
+export function createErrorResponseData(code: number, message: string) {
   return {
     code: code,
     message: message,

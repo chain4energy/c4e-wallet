@@ -2,7 +2,7 @@ import { setActivePinia, createPinia } from 'pinia'
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { AccountType, ContinuousVestingData } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
-import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createBaseAccountResponse, createContinuousVestingAccountResponse, createErrorResponse, createSingleBalanceResponse, defaultAxiosErrorName, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, defaultDenom, defaultErrorName, vestingAccountTimeToSystem } from '../utils/blockchain.data.util';
+import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createBaseAccountResponseData, createContinuousVestingAccountResponseData, createDelegatorDelegationsResponseData, createErrorResponseData, createSingleBalanceResponseData, defaultAxiosErrorName, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, defaultDelegatorDelegationsValidators, defaultDenom, defaultErrorName, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, vestingAccountTimeToSystem } from '../utils/blockchain.data.util';
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -17,9 +17,13 @@ describe('account api tests', () => {
     setActivePinia(createPinia())
   });
 
+  afterEach(() => {
+    mockedAxios.request.mockClear();
+  })
+
   it('gets BaseAccount', async () => {
     const account = {
-      data: createBaseAccountResponse(address)
+      data: createBaseAccountResponseData(address)
     };
 
     mockedAxios.request.mockResolvedValue(account);
@@ -35,7 +39,7 @@ describe('account api tests', () => {
 
   it('gets ContinuousVestingAccount', async () => {
     const account = {
-      data: createContinuousVestingAccountResponse(address)
+      data: createContinuousVestingAccountResponseData(address)
     };
 
     mockedAxios.request.mockResolvedValue(account);
@@ -85,7 +89,7 @@ describe('account api tests', () => {
 
   it('gets not existent address', async () => {
     const response = {
-      data: createErrorResponse(5, accountNotFoundErrorMessage),
+      data: createErrorResponseData(5, accountNotFoundErrorMessage),
       status: 404,
       statusText: '',
     };
@@ -103,7 +107,7 @@ describe('account api tests', () => {
 
   it('gets address with 404 response and error code 0', async () => {
     const response = {
-      data: createErrorResponse(0, accountNotFoundErrorMessage),
+      data: createErrorResponseData(0, accountNotFoundErrorMessage),
       status: 404,
       statusText: '',
       // headers: "AxiosResponseHeaders",
@@ -123,7 +127,7 @@ describe('account api tests', () => {
   it('gets address with 404 response and error messege <> NotFound', async () => {
     const errorMessage = 'some error message';
     const response = {
-      data: createErrorResponse(5, errorMessage),
+      data: createErrorResponseData(5, errorMessage),
       status: 404,
       statusText: '',
       // headers: "AxiosResponseHeaders",
@@ -143,7 +147,7 @@ describe('account api tests', () => {
   it('gets address with not 404 response and error messege <> NotFound', async () => {
     const axiosErrorMessage = axiosErrorMessagePrefix + '401';
     const response = {
-      data: createErrorResponse(5, accountNotFoundErrorMessage),
+      data: createErrorResponseData(5, accountNotFoundErrorMessage),
       status: 401,
       statusText: '',
       // headers: "AxiosResponseHeaders",
@@ -162,7 +166,7 @@ describe('account api tests', () => {
 
   it('gets balance', async () => {
     const balance = {
-      data: createSingleBalanceResponse(denom, '49031887606805')
+      data: createSingleBalanceResponseData(denom, '49031887606805')
     };
 
     mockedAxios.request.mockResolvedValue(balance);
@@ -174,12 +178,12 @@ describe('account api tests', () => {
     expect(result.data?.denom).toBe(denom)
   });
 
-  it('gets balance wth error', async () => {
+  it('gets balance with error', async () => {
     const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
     const axiosErrorMessage = axiosErrorMessagePrefix + '400';
 
     const response = {
-      data: createErrorResponse(3, errorMessage),
+      data: createErrorResponseData(3, errorMessage),
       status: 400,
       statusText: '',
       // headers: "AxiosResponseHeaders",
@@ -197,4 +201,108 @@ describe('account api tests', () => {
   
   });
 
+  it('gets delegator delegations', async () => {
+    const delegations = {
+      data: createDelegatorDelegationsResponseData(address)
+    };
+
+    mockedAxios.request.mockResolvedValue(delegations);
+    const result = await api.fetchDelegations(address)
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data?.delegations.size).toBe(defaultDelegatorDelegationsValidators.length);
+    expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount());
+    defaultDelegatorDelegationsValidators.forEach(validatorAddress => {
+      const delegation = result.data?.delegations.get(validatorAddress);
+      expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress));
+      expect(delegation?.validatorAddress).toBe(validatorAddress);
+    });
+  });
+
+  it('gets delegator delegations - no delegations', async () => {
+    const delegations = {
+      data: createDelegatorDelegationsResponseData(address, new Array(), new Array())
+    };
+
+    mockedAxios.request.mockResolvedValue(delegations);
+    const result = await api.fetchDelegations(address)
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data?.delegations.size).toBe(0);
+    expect(result.data?.totalDelegated).toBe(0);
+  });
+
+  it('gets delegator delegations paginated', async () => {
+    const validators1 = [
+      'c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a',
+      'c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5',
+      'c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8',
+    ];
+    const balances1 = [
+      '100011000000',
+      '98012949002',
+      '100013000000',
+    ];
+
+    const validators2 = [
+      'c4evaloper19473sdmlkkvcdh6z3tqedtqsdqj4jjv782dku2',
+      'c4evaloper1tavkv9fpqwmw2v9drsm7s3yk7xlll9q8n7e6yl',
+      'c4evaloper1e0ddzmhw2ze2glszkgjk6tfvcfzv68cmrg7euh',
+    ];
+    const balances2 = [
+      '100014000000',
+      '100015000000',
+      '100016000000',
+    ];
+
+    const validatorsAll = validators1.concat(validators2)
+    const balancesAll = balances1.concat(balances2)
+
+    const delegations1 = {
+      data: createDelegatorDelegationsResponseData(address, validators1, balances1, defaultDenom, 0, 'my_key')
+    };
+    const delegations2 = {
+      data: createDelegatorDelegationsResponseData(address, validators2, balances2)
+    };
+
+    mockedAxios.request.mockResolvedValueOnce(delegations1);
+    mockedAxios.request.mockResolvedValueOnce(delegations2);
+
+    const result = await api.fetchDelegations(address)
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data?.delegations.size).toBe(validatorsAll.length);
+    expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount(balancesAll));
+    validatorsAll.forEach(validatorAddress => {
+      const delegation = result.data?.delegations.get(validatorAddress);
+      expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress, validatorsAll, balancesAll));
+      expect(delegation?.validatorAddress).toBe(validatorAddress);
+    });
+  });
+
+  it('gets delegator delegations with error', async () => {
+    const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
+    const axiosErrorMessage = axiosErrorMessagePrefix + '400';
+
+    const response = {
+      data: createErrorResponseData(3, errorMessage),
+      status: 400,
+      statusText: '',
+    };
+    const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+
+    mockedAxios.request.mockRejectedValue(error);
+    const result = await api.fetchDelegations(address)
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultAxiosErrorName);
+    expect(result.error?.message).toBe(axiosErrorMessage);
+    expect(result.error?.data?.code).toBe(3);
+    expect(result.error?.data?.message).toBe(errorMessage);
+  
+  });
 });
+

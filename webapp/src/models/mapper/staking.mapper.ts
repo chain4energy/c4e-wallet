@@ -15,6 +15,19 @@ export function mapDelegations(delegations: BcDelegation[] | undefined): Delegat
   return new Delegations(map, total);
 }
 
+export function mapAndAddDelegations(delegationsToAdd: Delegations, bcDelegations: BcDelegation[] | undefined): Delegations  {
+  if (bcDelegations === undefined) {
+    throw new Error('BcDelegations list is undefined');
+  }
+  let total = 0;
+  bcDelegations.forEach(del => {
+    delegationsToAdd.delegations.set(del.delegation.validator_address, mapDelegation(del))
+    total += Number(del.balance.amount);
+  })
+  delegationsToAdd.totalDelegated += total
+  return delegationsToAdd;
+}
+
 export function mapDelegation(delegation: BcDelegation | undefined): StoreDelegation  {
   if (delegation === undefined) {
       throw new Error('Delegation is undefined');

@@ -1,20 +1,13 @@
 import { setActivePinia, createPinia } from 'pinia'
-import axios, { AxiosError, AxiosInstance, AxiosResponse, AxiosResponseHeaders } from 'axios';
-import { AccountApi } from "@/api/account.api";
-import { AccountType, ContinuousVestingData } from "@/models/store/account";
+import axios from 'axios';
 import apiFactory from "@/api/factory.api";
 import { useUserStore } from '@/store/user.store';
 import { useConfigurationStore } from '@/store/configuration.store';
-import { createBaseAccountResponse, createDelegationsResponse, createRewardsResponse, createSingleBalanceResponse, createUnbondingDelegationsResponse, defaultDenom } from '../utils/blockchain.data.util';
+import { createBaseAccountResponseData, createDelegatorDelegationsResponseData, createRewardsResponseData, createSingleBalanceResponseData, createDelegatorUnbondingDelegationsResponseData, defaultDenom } from '../utils/blockchain.data.util';
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 apiFactory.setAxiosInstance(mockedAxios)
-// const api = new AccountApi(() => mockedAxios)
-
-// beforeAll(() => {
-//   mockedAxios.create.mockReturnValue(mockedAxios);
-// });
 
 const denom = defaultDenom
 const address = 'c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg'
@@ -29,11 +22,11 @@ describe('get account', () => {
 
     const balanceAmount = '49031887606805'
     const userStore = useUserStore();
-    const account = { data: createBaseAccountResponse(address) };
-    const balance = { data: createSingleBalanceResponse(denom, balanceAmount) };
-    const rewards = { data: createRewardsResponse() };
-    const delegations = { data: createDelegationsResponse() };
-    const undelegations = { data: createUnbondingDelegationsResponse() };
+    const account = { data: createBaseAccountResponseData(address) };
+    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const rewards = { data: createRewardsResponseData() };
+    const delegations = { data: createDelegatorDelegationsResponseData(address) };
+    const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
     mockedAxios.request.mockResolvedValueOnce(account);
     mockedAxios.request.mockResolvedValueOnce(balance);
