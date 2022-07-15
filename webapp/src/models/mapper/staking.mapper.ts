@@ -19,10 +19,7 @@ export function mapAndAddDelegations(delegationsToAdd: Delegations, bcDelegation
   return delegationsToAdd;
 }
 
-function mapAndAddDelegationsToMap(map: Map<string, StoreDelegation>, bcDelegations: BcDelegation[] | undefined): number  {
-  if (bcDelegations === undefined) {
-    throw new Error('BcDelegations list is undefined');
-  }
+function mapAndAddDelegationsToMap(map: Map<string, StoreDelegation>, bcDelegations: BcDelegation[]): number  {
   let total = 0;
   bcDelegations.forEach(del => {
     map.set(del.delegation.validator_address, mapDelegation(del))
@@ -44,14 +41,26 @@ export function mapUnbondingDelegations(undelegations: BcUnbondigDelegation[] | 
   if (undelegations === undefined) {
     throw new Error('Unbonding Delegations list is undefined');
   }
-
   const map = new Map<string, StoreUnbondigDelegation>();
+  const total = mapAndAddUnbondingDelegationsToMap(map, undelegations);
+  return new UnbondingDelegations(map, total);
+}
+
+export function mapAndAddUnbondingDelegations(undelegationsToAdd: UnbondingDelegations, bcUndelegations: BcUnbondigDelegation[] | undefined): UnbondingDelegations  {
+  if (bcUndelegations === undefined) {
+    throw new Error('BcDelegations list is undefined');
+  }
+  undelegationsToAdd.totalUndelegating +=  mapAndAddUnbondingDelegationsToMap(undelegationsToAdd.undelegations, bcUndelegations);
+  return undelegationsToAdd;
+}
+
+function mapAndAddUnbondingDelegationsToMap(map: Map<string, StoreUnbondigDelegation>, bcDelegations: BcUnbondigDelegation[]): number  {
   let total = 0;
-  undelegations.forEach(del => {
+  bcDelegations.forEach(del => {
     map.set(del.validator_address, mapUnbondingDelegation(del))
     del.entries.forEach(en => total += Number(en.balance));
   })
-  return new UnbondingDelegations(map, total);
+  return total;
 }
 
 export function mapUnbondingDelegation(undelegation: BcUnbondigDelegation | undefined): StoreUnbondigDelegation  {

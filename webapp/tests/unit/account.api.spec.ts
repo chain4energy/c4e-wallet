@@ -2,7 +2,8 @@ import { setActivePinia, createPinia } from 'pinia'
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { AccountType, ContinuousVestingData } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
-import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createBaseAccountResponseData, createContinuousVestingAccountResponseData, createDelegatorDelegationsResponseData, createErrorResponseData, createSingleBalanceResponseData, defaultAxiosErrorName, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, defaultDelegatorDelegationsValidators, defaultDenom, defaultErrorName, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, vestingAccountTimeToSystem } from '../utils/blockchain.data.util';
+import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createBaseAccountResponseData, createContinuousVestingAccountResponseData, createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, createErrorResponseData, createRewardsResponseData, createSingleBalanceResponseData, defaultAxiosErrorName, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, defaultDelegatorDelegationsValidators, defaultDelegatorUnbondingDelegationsValidators, defaultDenom, defaultErrorName, defaultRewardsTotal, defaultRewardsValidators, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, findDelegatorUnbondingDelegationAmountByValidator, findDelegatorUnbondingDelegationTotalAmount, findRewardsByValidator, findTotalRewards, vestingAccountTimeToSystem } from '../utils/blockchain.data.util';
+import { useConfigurationStore } from '@/store/configuration.store';
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -201,7 +202,7 @@ describe('account api tests', () => {
   
   });
 
-  it('gets delegator delegations', async () => {
+  it('gets delegator delegations - delegations exist', async () => {
     const delegations = {
       data: createDelegatorDelegationsResponseData(address)
     };
@@ -296,6 +297,257 @@ describe('account api tests', () => {
 
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchDelegations(address)
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultAxiosErrorName);
+    expect(result.error?.message).toBe(axiosErrorMessage);
+    expect(result.error?.data?.code).toBe(3);
+    expect(result.error?.data?.message).toBe(errorMessage);
+  
+  });
+
+  it('gets delegator delegations paginated with error', async () => {
+    const validators1 = [
+      'c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a',
+      'c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5',
+      'c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8',
+    ];
+    const balances1 = [
+      '100011000000',
+      '98012949002',
+      '100013000000',
+    ];
+
+    const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
+    const axiosErrorMessage = axiosErrorMessagePrefix + '400';
+
+    const response = {
+      data: createErrorResponseData(3, errorMessage),
+      status: 400,
+      statusText: '',
+    };
+    const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+
+    const delegations1 = {
+      data: createDelegatorDelegationsResponseData(address, validators1, balances1, defaultDenom, 0, 'my_key')
+    };
+
+    mockedAxios.request.mockResolvedValueOnce(delegations1);
+    mockedAxios.request.mockRejectedValue(error);
+
+    const result = await api.fetchDelegations(address)
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultAxiosErrorName);
+    expect(result.error?.message).toBe(axiosErrorMessage);
+    expect(result.error?.data?.code).toBe(3);
+    expect(result.error?.data?.message).toBe(errorMessage);
+  });
+
+  it('gets delegator unbonding delegations - delegations exist', async () => {
+    const undelegations = {
+      data: createDelegatorUnbondingDelegationsResponseData(address)
+    };
+
+    mockedAxios.request.mockResolvedValue(undelegations);
+    const result = await api.fetchUnbondingDelegations(address)
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data?.undelegations.size).toBe(defaultDelegatorUnbondingDelegationsValidators.length);
+    expect(result.data?.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount());
+    defaultDelegatorUnbondingDelegationsValidators.forEach(validatorAddress => {
+      const undelegation = result.data?.undelegations.get(validatorAddress);
+      const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress);
+      expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
+      for (let i = 0; i < validatorExpecedEntries.length; i++) {
+        expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+
+      }
+      expect(undelegation?.validatorAddress).toBe(validatorAddress);
+    });
+  });
+
+  it('gets delegator unbonding delegations - no delegations', async () => {
+    const undelegations = {
+      data: createDelegatorUnbondingDelegationsResponseData(address, new Array(), new Array())
+    };
+
+    mockedAxios.request.mockResolvedValue(undelegations);
+    const result = await api.fetchUnbondingDelegations(address)
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data?.undelegations.size).toBe(0);
+    expect(result.data?.totalUndelegating).toBe(0);
+  });
+
+  it('gets delegator unbonding delegations paginated', async () => {
+    const validators1 = [
+      'c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a',
+      'c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5',
+      'c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8',
+    ];
+    const entries1 = [
+      ['100011000000', '12312434'],
+      ['98012949002', '356345'],
+      ['100013000000', '345534'],
+    ];
+
+    const validators2 = [
+      'c4evaloper19473sdmlkkvcdh6z3tqedtqsdqj4jjv782dku2',
+      'c4evaloper1tavkv9fpqwmw2v9drsm7s3yk7xlll9q8n7e6yl',
+      'c4evaloper1e0ddzmhw2ze2glszkgjk6tfvcfzv68cmrg7euh',
+    ];
+    const entries2 = [
+      ['100014000000', '657765'],
+      ['100015000000', '21234'],
+      ['100016000000', '75632'],
+    ];
+
+    const validatorsAll = validators1.concat(validators2)
+    const entiresAll = entries1.concat(entries2)
+
+    const undelegations1 = {
+      data: createDelegatorUnbondingDelegationsResponseData(address, validators1, entries1, 0, 'my_key')
+    };
+    const undelegations2 = {
+      data: createDelegatorUnbondingDelegationsResponseData(address, validators2, entries2)
+    };
+
+    mockedAxios.request.mockResolvedValueOnce(undelegations1);
+    mockedAxios.request.mockResolvedValueOnce(undelegations2);
+
+    const result = await api.fetchUnbondingDelegations(address)
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data?.undelegations.size).toBe(validatorsAll.length);
+    expect(result.data?.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount(entiresAll));
+    validatorsAll.forEach(validatorAddress => {
+      const undelegation = result.data?.undelegations.get(validatorAddress);
+      const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress, validatorsAll, entiresAll);
+      expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
+      for (let i = 0; i < validatorExpecedEntries.length; i++) {
+        expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+
+      }
+      expect(undelegation?.validatorAddress).toBe(validatorAddress);
+    });
+  });
+
+  it('gets delegator unbonding delegations with error', async () => {
+    const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
+    const axiosErrorMessage = axiosErrorMessagePrefix + '400';
+
+    const response = {
+      data: createErrorResponseData(3, errorMessage),
+      status: 400,
+      statusText: '',
+    };
+    const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+
+    mockedAxios.request.mockRejectedValue(error);
+    const result = await api.fetchUnbondingDelegations(address)
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultAxiosErrorName);
+    expect(result.error?.message).toBe(axiosErrorMessage);
+    expect(result.error?.data?.code).toBe(3);
+    expect(result.error?.data?.message).toBe(errorMessage);
+  
+  });
+
+  it('gets delegator unbonding delegations paginated with error', async () => {
+    const validators1 = [
+      'c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a',
+      'c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5',
+      'c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8',
+    ];
+    const entries1 = [
+      ['100011000000', '12312434'],
+      ['98012949002', '356345'],
+      ['100013000000', '345534'],
+    ];
+
+    const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
+    const axiosErrorMessage = axiosErrorMessagePrefix + '400';
+
+    const response = {
+      data: createErrorResponseData(3, errorMessage),
+      status: 400,
+      statusText: '',
+    };
+    const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+
+    const delegations1 = {
+      data: createDelegatorUnbondingDelegationsResponseData(address, validators1, entries1, 0, 'my_key')
+    };
+
+    mockedAxios.request.mockResolvedValueOnce(delegations1);
+    mockedAxios.request.mockRejectedValue(error);
+
+    const result = await api.fetchUnbondingDelegations(address)
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultAxiosErrorName);
+    expect(result.error?.message).toBe(axiosErrorMessage);
+    expect(result.error?.data?.code).toBe(3);
+    expect(result.error?.data?.message).toBe(errorMessage);
+  });
+
+  it('gets delegator rewards - rewards exist', async () => {
+    useConfigurationStore().config.stakingDenom = defaultDenom;
+    const rewards = {
+      data: createRewardsResponseData()
+    };
+
+    mockedAxios.request.mockResolvedValue(rewards);
+    const result = await api.fetchRewards(address)
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data?.rewards.size).toBe(defaultRewardsValidators.length);
+    expect(result.data?.totalRewards).toBe(Number(findTotalRewards(defaultDenom).amount));
+    defaultRewardsValidators.forEach(validatorAddress => {
+      const reward = result.data?.rewards.get(validatorAddress);
+      const expectedReward = findRewardsByValidator(validatorAddress);
+      expect(reward?.rewards.length).toBe(expectedReward.length);
+      for (let i = 0; i < expectedReward.length; i++) {
+        expect(reward?.rewards[i].amount).toBe(expectedReward[i].amount);
+        expect(reward?.rewards[i].denom).toBe(expectedReward[i].denom);
+      }
+      expect(reward?.validatorAddress).toBe(validatorAddress);
+    });
+  });
+
+  it('gets delegator rewards - no rewards', async () => {
+    const rewards = {
+      data: createRewardsResponseData(new Array(), new Array())
+    };
+
+    mockedAxios.request.mockResolvedValue(rewards);
+    const result = await api.fetchRewards(address)
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data?.rewards.size).toBe(0);
+    expect(result.data?.totalRewards).toBe(0);
+  });
+
+  it('gets delegator rewards with error', async () => {
+    const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
+    const axiosErrorMessage = axiosErrorMessagePrefix + '400';
+
+    const response = {
+      data: createErrorResponseData(3, errorMessage),
+      status: 400,
+      statusText: '',
+    };
+    const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+
+    mockedAxios.request.mockRejectedValue(error);
+    const result = await api.fetchRewards(address)
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);

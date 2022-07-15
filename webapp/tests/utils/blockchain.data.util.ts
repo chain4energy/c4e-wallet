@@ -67,6 +67,30 @@ export const defaultDelegatorUnbondingDelegationsEntriesAmounts = [
   ['10000000'],
 ];
 
+export function findTotalRewards(denom = defaultDenom,
+  rewardsCoins = defaultRewardsTotal) {
+  for (let i = 0; i < rewardsCoins.length; i++) {
+    if (rewardsCoins[i].denom === denom) {
+      return rewardsCoins[i];
+    }
+  }
+  throw new Error('rewardsCoins for denom: ' + denom + ' not found')
+}
+
+export function findRewardsByValidator(validatorAddress: string,
+  validators = defaultRewardsValidators,
+  rewardsCoins = defaultRewardsCoins) {
+  if (validators.length !== rewardsCoins.length) {
+    throw new Error('validators.length !== rewardsCoins.length')
+  } 
+  for (let i = 0; i < validators.length; i++) {
+    if (validators[i] === validatorAddress) {
+      return rewardsCoins[i];
+    }
+  }
+  throw new Error('rewardsCoins not found')
+}
+
 export function findDelegatorDelegationAmountByValidator(validatorAddress: string,
     validators = defaultDelegatorDelegationsValidators,
     balancesAmount = defaultDelegatorDelegationsBalances) {
@@ -86,6 +110,31 @@ export function findDelegatorDelegationTotalAmount(
   let amount = 0
   balancesAmount.forEach(ba => {
     amount += Number(ba);
+  })
+  return amount;
+}
+
+export function findDelegatorUnbondingDelegationAmountByValidator(validatorAddress: string,
+  validators = defaultDelegatorUnbondingDelegationsValidators,
+  entriesAmounts = defaultDelegatorUnbondingDelegationsEntriesAmounts): string[]{
+  if (validators.length !== entriesAmounts.length) {
+    throw new Error('validators.length !== entriesAmounts.length')
+  } 
+  for (let i = 0; i < validators.length; i++) {
+    if (validators[i] === validatorAddress) {
+      return entriesAmounts[i];
+    }
+  }
+  throw new Error('entries not found')
+
+}
+
+export function findDelegatorUnbondingDelegationTotalAmount(
+  entriesAmounts = defaultDelegatorUnbondingDelegationsEntriesAmounts) {
+  let amount = 0
+  entriesAmounts.forEach(ents => {
+    ents.forEach(ent => { amount += Number(ent);})
+
   })
   return amount;
 }
