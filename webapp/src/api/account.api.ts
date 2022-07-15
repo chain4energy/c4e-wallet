@@ -203,11 +203,13 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
   
+  // TODO create option enum
+  // TODO proposalId as Long
   public async vote(connection: ConnectionInfo, option: number, proposalId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
   
     const msg = {
-      typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
+      typeUrl: '/cosmos.gov.v1beta1.MsgVote',
       value: MsgVote.fromPartial({
         option: option,
         proposalId,
