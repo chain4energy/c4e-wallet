@@ -4,14 +4,63 @@ import { AccountType, ContinuousVestingData } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
 import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createBaseAccountResponseData, createContinuousVestingAccountResponseData, createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, createErrorResponseData, createRewardsResponseData, createSingleBalanceResponseData, defaultAxiosErrorName, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, defaultDelegatorDelegationsValidators, defaultDelegatorUnbondingDelegationsValidators, defaultDenom, defaultErrorName, defaultRewardsTotal, defaultRewardsValidators, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, findDelegatorUnbondingDelegationAmountByValidator, findDelegatorUnbondingDelegationTotalAmount, findRewardsByValidator, findTotalRewards, vestingAccountTimeToSystem } from '../utils/blockchain.data.util';
 import { useConfigurationStore } from '@/store/configuration.store';
+import { ChainInfo, Keplr, KeplrIntereactionOptions, KeplrMode, KeplrSignOptions, Key } from "@keplr-wallet/types";
+import { OfflineDirectSigner, DirectSignResponse } from '@cosmjs/proto-signing';
+import { OfflineAminoSigner } from '@cosmjs/amino';
+import { StdSignDoc, AminoSignResponse, BroadcastMode, StdSignature, OfflineSigner } from '@cosmjs/launchpad';
+import { SecretUtils } from 'secretjs/types/enigmautils';
+import { ConnectionInfo, ConnectionType } from '@/api/wallet.connecton.api';
+import { SigningStargateClient, isDeliverTxFailure, DeliverTxResponse, HttpEndpoint, SigningStargateClientOptions } from "@cosmjs/stargate";
+import { StdFee } from "@cosmjs/amino";
+import { EncodeObject } from "@cosmjs/proto-signing";
+import {
+  MsgBeginRedelegate,
+  MsgDelegate,
+  MsgUndelegate,
+} from "cosmjs-types/cosmos/staking/v1beta1/tx";
+import { string } from 'yup';
 
-jest.mock("axios");
+jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const api = apiFactory.accountApi()
 apiFactory.setAxiosInstance(mockedAxios)
 
 const address = 'c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55'
+const validatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue'
+
 const denom = defaultDenom
+const memo = ''
+
+const gas = {
+  vote: '10000',
+  delegate: '20000',
+  undelegate: '30000',
+  redelegate: '40000',
+  claimRewards: '50000',
+};
+
+const mockedKeplrImpl = {
+  getOfflineSigner: jest.fn(() => { }),
+} as unknown as Keplr;
+const mockedKeplr = mockedKeplrImpl as jest.Mocked<Keplr>;
+window.keplr = mockedKeplr
+
+const mockedOfflineSignerImpl = {
+} as unknown as OfflineAminoSigner & OfflineDirectSigner;
+const mockedOfflineSigner = mockedOfflineSignerImpl as jest.Mocked<OfflineAminoSigner & OfflineDirectSigner>;
+mockedKeplr.getOfflineSigner.mockReturnValue(mockedOfflineSigner)
+window.keplr = mockedKeplr
+
+const mockedSigningStargateClientImpl = {
+  signAndBroadcast: jest.fn(() => { }),
+} as unknown as SigningStargateClient;
+const mockedSigningStargateClient = mockedSigningStargateClientImpl as jest.Mocked<SigningStargateClient>;
+
+const mockedConnectWithSigner = jest.fn(async (endpoint: string | HttpEndpoint, signer: OfflineSigner, options?: SigningStargateClientOptions): Promise<SigningStargateClient> => { return undefined as unknown as SigningStargateClient })
+mockedConnectWithSigner.mockResolvedValue(mockedSigningStargateClient)
+SigningStargateClient.connectWithSigner = mockedConnectWithSigner as unknown as (endpoint: string | HttpEndpoint, signer: OfflineSigner, options?: SigningStargateClientOptions) => Promise<SigningStargateClient>
+
+const msgDelegateTypeUrl = '/cosmos.staking.v1beta1.MsgDelegate';
 
 describe('account api tests', () => {
   beforeEach(() => {
@@ -21,6 +70,73 @@ describe('account api tests', () => {
   afterEach(() => {
     mockedAxios.request.mockClear();
   })
+
+  it('delegates using keplr', async () => {
+    useConfigurationStore().config.stakingDenom = defaultDenom;
+    useConfigurationStore().config.operationGas = gas;
+
+    const amount = '12345'
+    const signingMessage = {
+      signerAddress: undefined as string | undefined,
+      messages: undefined as readonly EncodeObject[] | undefined,
+      fee: undefined as StdFee | "auto" | number | undefined,
+      memo: undefined as string | undefined
+    }
+
+    const txResponse = {
+      height: '123222',
+      code: 0,
+      transactionHash: 'dsafsdasfadfsfd',
+      rawLog: 'sdfdssdfs',
+      data: undefined,
+      gasUsed: 34,
+      gasWanted: 22
+    } as unknown as DeliverTxResponse
+
+    const signAndBroadcastMock = async (signerAddress: string, messages: readonly EncodeObject[], fee: StdFee | "auto" | number, memo?: string): Promise<DeliverTxResponse> => {
+      signingMessage.signerAddress = signerAddress;
+      signingMessage.messages = messages;
+      signingMessage.fee = fee;
+      signingMessage.memo = memo;
+      return txResponse
+    };
+    mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
+
+    const response = await api.delegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);
+    expect(signingMessage.fee).toStrictEqual({ amount: [{ amount: "0", "denom": defaultDenom }], gas: gas.delegate });
+    expect(signingMessage.signerAddress).toBe(address);
+    expect(signingMessage.memo).toBe(memo);
+    expect(signingMessage.messages?.length).toBe(1);
+    expect(signingMessage.messages).not.toBe(undefined);
+    if (signingMessage.messages === undefined) {
+      throw new Error('signingMessage.messages === undefined')
+    }
+    const message = signingMessage.messages[0] as unknown as {
+      typeUrl: string;
+      value: MsgDelegate;
+    };
+    expect(message.typeUrl).toBe(msgDelegateTypeUrl);
+    expect(message.value).toStrictEqual({ 
+      amount: { 
+        amount: amount,
+        denom: defaultDenom 
+      }, 
+      delegatorAddress: address,
+      validatorAddress: validatorAddress 
+    });
+    expect(response.isError()).toBe(false);
+    expect(response.error).toBeUndefined();
+    expect(response.data?.code).toBe(0);
+    expect(response.data?.code).toBe(txResponse.code);
+    expect(response.data?.gasUsed).toBe(txResponse.gasUsed);
+    expect(response.data?.gasWanted).toBe(txResponse.gasWanted);
+    expect(response.data?.height).toBe(txResponse.height);
+    expect(response.data?.transactionHash).toBe(txResponse.transactionHash);
+    expect(response.data?.rawLog).toBe(txResponse.rawLog);
+
+    // expect(response.isError()).toBe(false);
+
+  });
 
   it('gets BaseAccount', async () => {
     const account = {
@@ -199,7 +315,7 @@ describe('account api tests', () => {
     expect(result.error?.message).toBe(axiosErrorMessage);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
-  
+
   });
 
   it('gets delegator delegations - delegations exist', async () => {
@@ -303,7 +419,7 @@ describe('account api tests', () => {
     expect(result.error?.message).toBe(axiosErrorMessage);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
-  
+
   });
 
   it('gets delegator delegations paginated with error', async () => {
@@ -455,7 +571,7 @@ describe('account api tests', () => {
     expect(result.error?.message).toBe(axiosErrorMessage);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
-  
+
   });
 
   it('gets delegator unbonding delegations paginated with error', async () => {
@@ -554,7 +670,7 @@ describe('account api tests', () => {
     expect(result.error?.message).toBe(axiosErrorMessage);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
-  
+
   });
 });
 

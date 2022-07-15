@@ -70,12 +70,13 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot get client'));
       }
       const response = await client.signAndBroadcast(connection.account, messages, fee, memo);
+      this.logToConsole(LogLevel.INFO, 'Client Response', JSON.stringify(response));
       if (isDeliverTxFailure(response)) {
         return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot get client', response));
       }
       return new RequestResponse<TxData, TxBroadcastError>(undefined, new TxData(response));
     } catch (err) {
-      this.logToConsole(LogLevel.ERROR, 'Axios Response', JSON.stringify(err));
+      this.logToConsole(LogLevel.ERROR, 'Client Response', JSON.stringify(err));
       const error = err as Error;
       if (!skipErrorToast) {
         toast.error('Error requesting service:' + this.getServiceType());
