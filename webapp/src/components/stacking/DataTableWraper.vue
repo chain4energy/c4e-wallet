@@ -23,7 +23,7 @@
   >
     <template #header>
       <div style="display: flex; justify-content: space-between">
-        <h5 class="m-0">Validators</h5>
+        <h5 class="m-0">{{ $t("STACKING_VIEW.VALIDATORS") }}</h5>
         <span class="p-input-icon-left">
             <i class="pi pi-search" />
             <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
@@ -31,24 +31,24 @@
       </div>
     </template>
     <template #empty>
-      No validators found.
+      {{ $t("STACKING_VIEW.NO_VALIDATORS") }}
     </template>
     <template #loading>
-      Loading customers data. Please wait.
+      {{ $t("STACKING_VIEW.NO_VALIDATORS") }}
     </template>
     <Column
       field="rank"
-      header="Rank"
+      :header="$t(`STACKING_VIEW.TABLE_HEADERS.RANK`)"
       :sortable="true"
     ></Column>
     <Column
       field="description.moniker"
-      header="Name"
+      :header="$t(`STACKING_VIEW.TABLE_HEADERS.NAME`)"
       :sortable="true"
     ></Column>
     <Column
       field="status"
-      header="Status"
+      :header="$t(`STACKING_VIEW.TABLE_HEADERS.STATUS`)"
       :sortable="true"
     >
       <template #body="{data}">
@@ -57,7 +57,7 @@
     </Column>
     <Column
       sortField="tokens"
-      header="voting Power"
+      :header="$t(`STACKING_VIEW.TABLE_HEADERS.VOTING_POWER`)"
       :sortable="true"
     >
       <template #body="{data}">
@@ -67,7 +67,7 @@
     </Column>
     <Column
       sortField="delegatedAmount"
-      header="Your stake"
+      :header="$t(`STACKING_VIEW.TABLE_HEADERS.YOUR_STAKE`)"
       :sortable="true"
       v-if="isLoggedIn "
     >
@@ -78,7 +78,7 @@
     </Column>
     <Column field="operator_address">
       <template #body="{data}">
-        <button class="btn__main" @click="checkBTN(data)">Manage</button>
+        <button class="btn__main" @click="checkBTN(data)">{{ $t(`STACKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}</button>
       </template>
     </Column>
     <Column v-if="isLoggedIn">
@@ -91,11 +91,11 @@
     <template v-if="isLoggedIn" #expansion="{data}">
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
-          <p>Your stacked</p>
+          <p>{{ $t(`STACKING_VIEW.TABLE_EXPANDED.STAKED`) }}</p>
           <p>{{toFixedAm(data.delegatedAmount, 4)}}</p>
         </div>
         <div style="display: flex; flex-direction: column">
-          <p>Reward</p>
+          <p>{{ $t(`STACKING_VIEW.TABLE_EXPANDED.REWARDS`) }}</p>
           <p>{{toFixedAm(data.rewardsAmount, 4)}}</p>
         </div>
       </div>
@@ -110,7 +110,6 @@ import StackingPopup from '@/components/stacking/StackingPopup.vue';
 import { computed, PropType, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
 import { Validator, ValidatorStatus } from "@/models/store/validator";
-import { ValidatorsList } from "@/models/validators";
 import { useTokensStore } from "@/store/tokens.store";
 
 
@@ -171,12 +170,9 @@ function checkBTN(item: Validator){
 }
 
 async function trsansactionSuccess(arg: string) {
-  checkBTN();
+  popupOpened.value = !popupOpened.value;
   useUserStore().reconectAcc()
 
-
-  // useValidatorsStore().fetchValidators()
-  //
 }
 const showPopupVal = ref(false);
 const address = ref('');

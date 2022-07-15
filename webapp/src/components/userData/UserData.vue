@@ -12,20 +12,20 @@
       </svg>
     </div>
     <div class="userdata__amounts">
-      <p>Total</p>
+      <p>{{ $t('USER_DATA.TOTAL') }}</p>
       <p>{{total || 0}}</p>
     </div>
     <div class="userdata__amounts">
-      <p>Available</p>
+      <p>{{ $t('USER_DATA.AVAILABLE') }}</p>
       <p>{{useUserStore().getBalances || 0}}</p>
     </div>
     <div class="userdata__amounts">
-      <p>Staked</p>
+      <p>{{ $t('USER_DATA.STACKED') }}</p>
       <p>{{useUserStore().delegations.totalDelegated || 0}}</p>
     </div>
     <div class="userdata__amounts">
-      <p>Unstaking</p>
-      <p>{{useUserStore().getTotalUndelegating || 0}}</p>
+      <p>{{ $t('USER_DATA.UNSTACKING') }}</p>
+      <p>{{useUserStore().getTotalUndelegated || 0}}</p>
     </div>
     </div>
     <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
@@ -52,7 +52,7 @@
       </svg>
       <p>{{useUserStore().getRewards.toFixed(6) || '0'}}</p>
     </div>
-    <button @click="claimRewards">Claim rewards</button>
+    <button @click="claimRewards">{{ $t('USER_DATA.CLAIM_REWARDS') }}</button>
 
   </div>
 

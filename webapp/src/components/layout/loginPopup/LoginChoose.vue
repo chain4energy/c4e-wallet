@@ -13,7 +13,7 @@
               <path d="M9.99984 1.66663C12.0842 3.94859 13.2688 6.90999 13.3332 9.99996C13.2688 13.0899 12.0842 16.0513 9.99984 18.3333C7.91544 16.0513 6.73088 13.0899 6.6665 9.99996C6.73088 6.90999 7.91544 3.94859 9.99984 1.66663V1.66663Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <p>Explore with any address</p>
+          <p>{{ $t('LOGIN.LOGIN_ADDRESS') }}</p>
         </div>
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g filter="url(#filter0_i_1790_25838)">
@@ -42,7 +42,7 @@
             <img src="/keplrIcon.jpg">
           </div>
 
-          <p>Keplr browser extention</p>
+          <p>{{ $t('LOGIN.LOGIN_KEPLR') }}</p>
         </div>
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g filter="url(#filter0_i_1790_25838)">
@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 import LoginEmail from '@/components/layout/loginPopup/LoginEmail.vue';
-import LoginKeplr from '@/components/layout/loginPopup/LogoutKeplr.vue';
+import LoginKeplr from '@/components/layout/loginPopup/LogoutConfirm.vue';
 import { useUserStore } from "@/store/user.store";
 
 </script>

@@ -88,5 +88,23 @@
     "UNBOUNDED": "Unbounded",
     "UNBOUNDING": "Unbounding",
     "AVERAGE_BLOCK_TIME": "Average block time"
+  },
+  "STACKING_VIEW": {
+    "TABS": {
+      "ALL": "wszyscy",
+      "STACKED": "Ułożone w stos",
+      "ACTIVE": "Aktywny",
+      "INACTIVE": "Nieaktywny"
+    },
+    "TABLE_HEADERS": {
+      "RANK": "Rank",
+      "NAME": "Imię",
+      "STATUS": "Status",
+      "VOTING_POWER": "Voting Power",
+      "YOUR_STAKE": "Your stake"
+    },
+    "VALIDATORS": "Walidatory",
+    "NO_VALIDATORS": "nie znaleziono walidatorów",
+    "VALIDATORS_LOADING" : "Ładowanie danych walidatorów. Proszę czekać"
   }
 }

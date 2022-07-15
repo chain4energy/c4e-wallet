@@ -11,28 +11,28 @@ import { useUserStore } from "@/store/user.store";
 const stakingRoutes = {
   path: '/staking',
   name: 'staking',
-  component: StakingView,
-  children:[
-    {
-      path: '',
-      name: 'base',
-      component: NewBaseAccount,
-    },
-    {
-      path: '',
-      name: 'vesting',
-      component: VestingAcc,
-    }
-  ],
+  component: NewBaseAccount,
+  // children:[
+  //   {
+  //     path: '',
+  //     name: 'base',
+  //     component: NewBaseAccount,
+  //   },
+  //   // {
+  //   //   path: '',
+  //   //   name: 'vesting',
+  //   //   component: VestingAcc,
+  //   // }
+  // ],
 };
 
-function checkAccType(){
-  if(!useUserStore().isContinuousVestingAccount){
-    return {name: 'base'}
-  } else {
-    return {name: 'stakingVesting'}
-  }
-}
+// function checkAccType(){
+//   if(!useUserStore().isContinuousVestingAccount){
+//     return {name: 'base'}
+//   } else {
+//     return {name: 'stakingVesting'}
+//   }
+// }
 // function loger(to:any){
 //   if(useUserStore().getAccType==='/cosmos.vesting.v1beta1.ContinuousVestingAccount'){
 //     router.replace({name: 'base'})

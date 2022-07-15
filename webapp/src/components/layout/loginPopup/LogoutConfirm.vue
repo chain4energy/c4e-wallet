@@ -2,35 +2,66 @@
   <div class="loginPopup">
     <div class="loginPopup__background" @click="$emit('close')"></div>
     <div class="loginPopup__holder">
-  <div class="loginChoose__holder">
-    <h2>Wallet</h2>
-    <button @click="$emit('close')"> close </button>
-    <div class="loginChoose__body">
-      <div class="loginChoose__description">
-        <div style="display: flex; align-items: center; justify-content: space-evenly;">
-          <div class="loginChoose__descriptionIcon">
-            <img src="/keplrIcon.jpg">
+      <div class="loginChoose__holder">
+        <h2>Wallet</h2>
+        <button @click="$emit('close')"> close </button>
+        <div class="loginChoose__body">
+          <div class="loginChoose__description">
+            <div style="display: flex; align-items: center; justify-content: space-evenly;">
+              <div class="loginChoose__descriptionIcon">
+                <img :src="logo">
+              </div>
+              <div class="loginPopup__data" style="display: flex; flex-direction: column; justify-items: left">
+                <p>{{ useUserStore().getAccount.address.slice(0, 13)}}...{{useUserStore().getAccount.address.slice(-6)}}</p>
+                <div>
+                  <button @click="copyTxt" style="width: 30%">copy</button>
+                  <a :href="`https://explorer-testnet.chain4energy.org/accounts/${useUserStore().getAccount.address}`"
+                     target="_blank">{{ $t('LOGIN.VIEW_EXPLORER')}}</a>
+                </div>
+
+              </div>
+            </div>
+            <button class="loginPopup__disconect" @click="logout">{{ $t('COMMON.DISCONNECT') }}</button>
           </div>
-          <p>Keplr browser extention</p>
         </div>
-        <button class="loginPopup__disconect" @click="logout">Disconnect</button>
       </div>
     </div>
   </div>
-  </div>
-</div>
 </template>
 
 <script setup lang="ts">
 import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue';
 import { useUserStore } from "@/store/user.store";
+import { ConnectionType } from "@/api/wallet.connecton.api";
+import { computed, PropType } from "vue";
+import { Validator } from "@/models/store/validator";
+import { useToast } from "vue-toastification";
+
+const props = defineProps({
+  logoutType:{
+    type: String,
+    required: true,
+  }
+});
+
+const logo = computed(() => {
+  switch(props.logoutType){
+    case ConnectionType.Keplr: return '/keplrIcon.jpg'
+    case ConnectionType.Address: return '/globe.svg'
+    default : return 'Logout'
+  }
+})
 
 const emit = defineEmits(['close']);
 
 function logout(){
   useUserStore().logOut()
   emit('close')
+}
 
+function copyTxt(){
+  navigator.clipboard.writeText(useUserStore().getAccount.address);
+  useToast().success('address have been copied')
 }
 
 </script>
@@ -70,6 +101,15 @@ function logout(){
     padding: 46px 20px 30px 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
     border-radius: 8px;
+  }
+  &__data{
+
+    button{
+      border: none;
+      background: transparent;
+      color: #0A6BDD;
+      text-align: left;
+    }
   }
   &__disconect{
     margin-left: 10px;

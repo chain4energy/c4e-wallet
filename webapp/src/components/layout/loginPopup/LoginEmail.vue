@@ -2,7 +2,7 @@
   <div class="loginEmail">
     <div class="loginEmail__header">
       <h3>Login with Email</h3>
-      <button @click="$emit('back')">back</button>
+      <button @click="$emit('back')">{{ $t('COMMON.BACK') }}</button>
     </div>
     <form @submit.prevent class="loginEmail__body">
       <div class="loginEmail__description">
@@ -15,10 +15,10 @@
               <path d="M9.99984 1.66663C12.0842 3.94859 13.2688 6.90999 13.3332 9.99996C13.2688 13.0899 12.0842 16.0513 9.99984 18.3333C7.91544 16.0513 6.73088 13.0899 6.6665 9.99996C6.73088 6.90999 7.91544 3.94859 9.99984 1.66663V1.66663Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <p>Explore with any address</p>
+          <p>{{ $t('LOGIN.ADDRESS_HELP') }}</p>
         </div>
         <input v-model="email">
-        <button @click="submit">Disconnect</button>
+        <button @click="submit">{{ $t('COMMON.CONNECT')}}</button>
       </div>
     </form>
   </div>

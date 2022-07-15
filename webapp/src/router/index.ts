@@ -55,14 +55,6 @@ const routes: Array<RouteRecordRaw> = [
   //
   // },
   {
-    path: '/validators',
-    name: 'Validators',
-    component: ValidatorsView,
-    meta: {
-      requiresAuth: false
-    }
-  },
-  {
     path: '/about',
     name: 'about',
     // route level code-splitting

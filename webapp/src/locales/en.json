@@ -1,9 +1,14 @@
 {
-  "TTT": "noga",
+  "TTT": "Leg",
   "LOGIN" : {
     "username" : "login",
     "password" : "hasło",
-    "log_in" : "zaloguj"
+    "log_in" : "zaloguj",
+    "LOGIN": "Login",
+    "LOGIN_ADDRESS": "Login with address",
+    "LOGIN_KEPLR": "Login with Keplr wallet",
+    "ADDRESS_HELP": "Explore with any address",
+    "VIEW_EXPLORER": "View on explorer"
   },
   "TABLES": {
     "CONTRACTS": {
@@ -59,5 +64,62 @@
     "UNBOUNDED": "Unbounded",
     "UNBOUNDING": "Unbounding",
     "AVERAGE_BLOCK_TIME": "Average block time"
+  },
+  "STACKING_VIEW": {
+    "TABS": {
+      "ALL": "All",
+      "STACKED": "Staked",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "TABLE_HEADERS": {
+      "RANK": "Rank",
+      "NAME": "Name",
+      "STATUS": "Status",
+      "VOTING_POWER": "Voting Power",
+      "YOUR_STAKE": "Your stake"
+    },
+    "TABLE_EXPANDED": {
+      "STAKED": "Your stake",
+      "REWARDS": "Rewards"
+    },
+    "TABLE_BUTTONS": {
+      "MANAGE_BTN": "Manage"
+    },
+    "STACKING_POPUP": {
+      "HEADER": "My delegation",
+      "VALIDATOR_DESCRIPTION": "Validator for SmartContract chains",
+      "DELEGATE": "Delegate",
+      "UNDELEGATE": "Undelegate",
+      "REDELEGATE": "Redelegate"
+    },
+    "VALIDATORS": "Validators",
+    "NO_VALIDATORS": "no validators found",
+    "VALIDATORS_LOADING" : "Loading validators data. Please wait."
+  },
+  "USER_DATA": {
+    "TOTAL": "Total",
+    "AVAILABLE": "Available",
+    "STACKED": "Stacked",
+    "UNSTACKING": "Unstacking",
+    "CLAIM_REWARDS": "Claim rewards"
+  },
+  "COMMON": {
+    "CLOSE": "Close",
+    "OPEN": "Open",
+    "BACK": "Back",
+    "DISCONNECT": "Disconnect",
+    "CONNECT": "Connect",
+    "DESCRIPTION": "Description",
+    "THE": "The",
+    "RETURN": "Return",
+    "INPUT": {
+      "AMOUNT": "amount",
+      "ADDRESS": "address"
+    }
+  },
+  "ERRORS": {
+    "LOGIN": "You Have to be logged in",
+    "LOGIN_WALLET": "You Have to be logged in with wallet"
   }
 }
