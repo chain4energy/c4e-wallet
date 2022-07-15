@@ -1,9 +1,6 @@
 {
   "TTT": "Leg",
   "LOGIN" : {
-    "username" : "login",
-    "password" : "hasło",
-    "log_in" : "zaloguj",
     "LOGIN": "Login",
     "LOGIN_ADDRESS": "Login with address",
     "LOGIN_KEPLR": "Login with Keplr wallet",
