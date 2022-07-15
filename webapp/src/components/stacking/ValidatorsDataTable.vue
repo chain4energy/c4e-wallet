@@ -1,10 +1,10 @@
 <template>
   <StackingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
   <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" >
-    <template v-slot:empty> Empty</template>
+    <template v-slot:empty>{{ $t("STACKING_VIEW.NO_VALIDATORS") }}</template>
     <template #header>
       <div style="display: flex; justify-content: space-between">
-        <h5 class="m-0">Validators</h5>
+        <h5 class="m-0">{{ $t("STACKING_VIEW.VALIDATORS") }}</h5>
               <span class="p-input-icon-left">
                 <i class="pi pi-search" />
                 <InputText type="text" v-model="filters['global'].value" placeholder="Search" />
@@ -13,26 +13,20 @@
       </div>
     </template>
     <template v-slot:columns>
-      <Column field="rank" header="Rank" :sortable="true"></Column>
-      <Column field="description.moniker" header="Name" :sortable="true"></Column>
-      <Column field="status" header="Status" :sortable="true">
+      <Column field="rank" :header="$t(`STACKING_VIEW.TABLE_HEADERS.RANK`)" :sortable="true"></Column>
+      <Column field="description.moniker" :header="$t(`STACKING_VIEW.TABLE_HEADERS.NAME`)" :sortable="true"></Column>
+      <Column field="status" :header="$t(`STACKING_VIEW.TABLE_HEADERS.STATUS`)" :sortable="true">
         <template #body="{data}">
           <span>{{ toViewStatus(data.status) }}</span>
         </template>
       </Column>
-      <Column field="commission.rate" header="Commission" :sortable="true" v-if="isLoggedIn" sortField="commission.rate">
+      <Column field="votingPower" :header="$t(`STACKING_VIEW.TABLE_HEADERS.VOTING_POWER`)" :sortable="true" sortField="tokens">
         <template #body="{data}">
-          <span>{{ toFixedAm(data.commission.rate, 6)*100 }}%</span> <!-- TODO create function converting to pecentage -->
-          <!-- <span v-else>updating</span> -->
-        </template>
-      </Column>
-      <Column field="votingPower" header="voting Power" :sortable="true" sortField="tokens">
-        <template #body="{data}">
-          <span v-if="data.votingPower">{{ toFixedAm(data.votingPower, 4) }}%</span>  <!-- TODO create function converting to pecentage -->
+          <span v-if="data.votingPower">{{ toFixedAm(data.votingPower, 4) }}%</span>
           <span v-else>updating</span>
         </template>
       </Column>
-      <Column header="Your stake" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
+      <Column field="stacked.amount"  :header="$t(`STACKING_VIEW.TABLE_HEADERS.YOUR_STAKE`)" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
         <template #body="{data}">
           <span>{{ toFixedAm(data.delegatedAmount, 4) }}</span>
           <!-- <span v-else>updating</span> -->
@@ -40,7 +34,7 @@
       </Column>
       <Column field="operator_address">
         <template #body="{data}">
-          <Button class="btn__main" @click="checkBTN(data)">Manage</Button>
+          <Button class="btn__main" @click="checkBTN(data)">{{ $t(`STACKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}</Button>
         </template>
       </Column>
 
@@ -54,8 +48,8 @@
     <template v-slot:expanded-columns="{expandedData}">
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
-          <p>Your unstaking</p>
-          <p>{{toFixedAm(expandedData.data.undelegatingAmount, 4)}}</p>
+          <p>Your stacked</p>
+          <p>{{toFixedAm(expandedData.data.delegatedAmount, 4)}}</p>
         </div>
         <div style="display: flex; flex-direction: column">
           <p>Reward</p>

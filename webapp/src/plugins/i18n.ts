@@ -4,10 +4,10 @@ import pl from '../locales/pl.json';
 
 export default createI18n({
   // legacy: false,
-  locale: 'pl',
-  fallbackLocale: 'pl',
+  locale: 'en',
+  fallbackLocale: 'en',
   messages: {
+    en,
     pl,
-    en
   }
 });

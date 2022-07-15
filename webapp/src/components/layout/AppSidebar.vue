@@ -24,14 +24,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import Icon from "../features/IconComponent.vue";
-import {PermissionsService} from "../../services/permissions/permissions.service";
+import {PermissionsService} from "@/services/permissions/permissions.service";
 
 const permissionsService = new PermissionsService();
 const menu = computed(() =>{
   return permissionsService.createSideBar()
 })
-
-
 
 function showSidebar() {
   let sidebar = document.getElementsByClassName('sidebar')[0] as HTMLElement;

@@ -19,7 +19,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark background">
       <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
-      <LogoutKeplr v-if="logoutPopupStatus === 1" @close="logoutPopupStatus = 0"></LogoutKeplr>
+      <LogoutKeplr v-if="logoutPopupStatus === true" :logout-type="useUserStore().getLogedInfo" @close="logoutPopupStatus = 0"></LogoutKeplr>
       <div class="container-fluid">
         <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
@@ -27,27 +27,25 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav left">
-            <i class="pi pi-user me-3" style="font-size: 1.5rem;" />
-            <span>Hello <span style="font-weight:bold">Jan Kowalski</span> </span>
-            <i class="pi pi-sun ms-4" style="font-size: 1.5rem;" />
-            <span class="fw-bold mx-2">Monday</span>
-            <span>11.05.2022</span>
-          </div>
+<!--          <div class="navbar-nav left">-->
+<!--            <i class="pi pi-user me-3" style="font-size: 1.5rem;" />-->
+<!--            <span>Hello <span style="font-weight:bold">Jan Kowalski</span> </span>-->
+<!--            <i class="pi pi-sun ms-4" style="font-size: 1.5rem;" />-->
+<!--            <span class="fw-bold mx-2">Monday</span>-->
+<!--            <span>11.05.2022</span>-->
+<!--          </div>-->
           <div class="navbar-nav right">
             <!--          <div class="nav-link">-->
-            <span class="p-input-icon-left p-input-icon-right mx-5 " >
-            <i class="pi pi-times-circle" @click="globalFilter.clearFilter()"/>
-            <InputText type="text" v-model="globalFilter.filter" placeholder="Search" />
-            <i class="pi" :class="{'pi-search': !globalFilter.isLoading, 'pi-spin pi-spinner': globalFilter.isLoading}"/>
-          </span>
-            <!--          </div>-->
-
+<!--            <span class="p-input-icon-left p-input-icon-right mx-5 " >-->
+<!--              <i class="pi pi-times-circle" @click="globalFilter.clearFilter()"/>-->
+<!--              <InputText type="text" v-model="globalFilter.filter" placeholder="Search" />-->
+<!--              <i class="pi" :class="{'pi-search': !globalFilter.isLoading, 'pi-spin pi-spinner': globalFilter.isLoading}"/>-->
+<!--            </span>-->
             <LangSwitch class="nav-link mx-1"/>
-            <span class="">
-            <Button icon="pi pi-bell" class="nav-link p-button-rounded p-button-text p-button-lg mx-1" ></Button>
-            <div class="badge">2</div>
-          </span>
+<!--            <span class="">-->
+<!--            <Button icon="pi pi-bell" class="nav-link p-button-rounded p-button-text p-button-lg mx-1" ></Button>-->
+<!--            <div class="badge">2</div>-->
+<!--          </span>-->
             <div v-if="useUserStore().isLoggedIn">
               {{useUserStore().getAccount.address}}
             </div>
@@ -69,8 +67,6 @@
 
       </div>
       <div class="bottom-container">
-        <span class="breadcrumb">Home / Jan Kowalski</span>
-        <AutoLogOut class="right" style="top: 7vh;" />
       </div>
       <UserData v-if="useUserStore().isLoggedIn"/>
     </nav>
@@ -82,7 +78,7 @@ import LangSwitch from '@/components/lang/LangSwitch.vue';
 import AutoLogOut from "@/components/fetures/AutoLogOut.vue";
 import  UserData from "@/components/userData/UserData.vue";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
-import LogoutKeplr from "@/components/layout/loginPopup/LogoutKeplr.vue";
+import LogoutKeplr from "@/components/layout/loginPopup/LogoutConfirm.vue";
 
 import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
@@ -93,17 +89,18 @@ const router = useRouter();
 const globalFilter = useGlobalFilterStore();
 
 const loginPopupStatus = ref(false);
-const logoutPopupStatus = ref(0);
+const logoutPopupStatus = ref(false);
 
 function logout(){
-  switch (useUserStore().getLogedInfo){
-    case 1: logoutPopupStatus.value = 1;
-      break;
-    case 0: logoutPopupStatus.value = 2;
-      break
-    default: logoutPopupStatus.value = 0;
-      break
-  }
+  logoutPopupStatus.value = !logoutPopupStatus.value;
+  // switch (useUserStore().getLogedInfo){
+  //   case 1: logoutPopupStatus.value = 1;
+  //     break;
+  //   case 0: logoutPopupStatus.value = 2;
+  //     break
+  //   default: logoutPopupStatus.value = 0;
+  //     break
+  // }
 }
 // const keystoreChangeListener = () => {
 //       useUserStore().connectKeplr()
