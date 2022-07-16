@@ -8,6 +8,7 @@ import { RequestResponse } from '@/models/request-response';
 import { useConfigurationStore } from "./configuration.store";
 import { Delegation, Delegations, UnbondingDelegation, UnbondingDelegations } from "@/models/store/staking";
 import { Rewards, ValidatorRewards } from "@/models/store/distribution";
+import { VoteOption } from "@/api/account.api";
 
 const toast = useToast();
 
@@ -222,7 +223,7 @@ export const useUserStore = defineStore({
         }
       })
     },
-    async vote(option: number, proposalId: number){
+    async vote(option: VoteOption, proposalId: number){
       apiFactory.accountApi().vote(this.logged, option, proposalId).then(async (resp) => {
         if (resp.isError()) {
           toast.error('vote failed')

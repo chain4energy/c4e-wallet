@@ -25,6 +25,7 @@ import {
 import { RequestResponse } from '@/models/request-response';
 import { TxBroadcastError, TxData } from '@/api/tx.broadcast.base.api';
 import Long from 'long';
+import { VoteOption } from '@/api/account.api';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -681,7 +682,7 @@ describe('account api tests', () => {
 
   it('votes using keplr', async () => {
     const proposalId = 342;
-    const option = 123
+    const option = VoteOption.Abstain
     const action = () => {return api.vote(new ConnectionInfo(address, true, ConnectionType.Keplr), option, proposalId);}
     const signingMessage = await keplrTxSuccess(action)
     expectMsgVote(signingMessage, option, proposalId);
@@ -689,7 +690,7 @@ describe('account api tests', () => {
 
   it('votes using keplr with error', async () => {
     const proposalId = 213;
-    const option = 12
+    const option = VoteOption.Yes
     const action = () => {return api.vote(new ConnectionInfo(address, true, ConnectionType.Keplr), option, proposalId);}
     const signingMessage = await keplrTxError(action)
     expectMsgVote(signingMessage, option, proposalId);
@@ -922,10 +923,10 @@ function expectMsgVote(signingMessage: {
   messages: readonly EncodeObject[] | undefined,
   fee: StdFee | "auto" | number | undefined,
   memo: string | undefined
-}, option: number, proposalId: number) {
+}, option: VoteOption, proposalId: number) {
   expectMessage<MsgVote>(signingMessage, gas.vote, msgVoteTypeUrl, [
     { 
-      option: option,
+      option: option.valueOf(),
       proposalId: Long.fromNumber(proposalId),
       voter: address
     }

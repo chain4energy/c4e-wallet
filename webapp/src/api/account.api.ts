@@ -17,6 +17,8 @@ import {
   MsgUndelegate,
 } from "cosmjs-types/cosmos/staking/v1beta1/tx";
 import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
+import { VoteOption as CosmVoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
+
 import {
   MsgWithdrawDelegatorReward
 } from "cosmjs-types/cosmos/distribution/v1beta1/tx"
@@ -26,6 +28,13 @@ import { mapAndAddDelegations, mapAndAddUnbondingDelegations, mapDelegations, ma
 import { RewardsResponse } from "@/models/blockchain/distribution";
 import { Rewards } from "@/models/store/distribution";
 import { mapRewards } from "@/models/mapper/distribution.mapper";
+
+export enum VoteOption {
+  Yes = CosmVoteOption.VOTE_OPTION_YES,
+  Abstain = CosmVoteOption.VOTE_OPTION_ABSTAIN,
+  No = CosmVoteOption.VOTE_OPTION_NO,
+  NoWithVeto = CosmVoteOption.VOTE_OPTION_NO_WITH_VETO,
+}
 
 export class AccountApi extends TxBroadcastBaseApi {
 
@@ -67,84 +76,29 @@ export class AccountApi extends TxBroadcastBaseApi {
     }
   }
   public async fetchBalance(address: string, denom: string): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{
-    const result: RequestResponse<BalanceResponse, ErrorData<BlockchainApiErrorData>> =  await this.axiosBlockchainApiCall({
-      method: 'GET',
-      url: this.BALANCE_URL + address + '/by_denom?denom=' + denom
-    }, true, null, 'fetchBalance - ')
-    if (result.isError()) {
-      return new RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>(result.error);
-    }
-    const coin = mapBalance(result.data?.balance, denom);
-    return new RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>(undefined, coin);
+    const mapData = (bcData: BalanceResponse | undefined) => {return mapBalance(bcData?.balance, denom);}
+    return  await this.axiosGetBlockchainApiCall(this.BALANCE_URL + address + '/by_denom?denom=' + denom,
+      mapData, true, null, 'fetchBalance - ')
   }
+
   public async fetchDelegations(address: string): Promise<RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>>{
-    let delegations: Delegations | undefined = undefined;
-    let nextKey: string | null | undefined = undefined
-    do {
-      const result: RequestResponse<DelegationsResponse, ErrorData<BlockchainApiErrorData>> 
-          = await this.fetchBcDelegations(address, delegations !== undefined, nextKey);
-      if (result.isError()) {
-        return new RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>(result.error);
-      }
-      nextKey = result.data?.pagination.next_key
-      if (delegations === undefined) {
-        delegations = mapDelegations(result.data?.delegation_responses);
-      } else {
-        delegations = mapAndAddDelegations(delegations, result.data?.delegation_responses);
-      }
-    } while (delegations === undefined || (nextKey !== null && nextKey !== undefined));
-    return new RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>(undefined, delegations);
-  }
-  private async fetchBcDelegations(address: string, pagination: boolean, nextKey: string | null | undefined): Promise<RequestResponse<DelegationsResponse, ErrorData<BlockchainApiErrorData>>> {
-    let url = this.STACKED_AMOUNT_URL + address
-    if (pagination) {
-      url += '?pagination.key=' + nextKey
-    }
-    const result: RequestResponse<DelegationsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
-      method: 'GET',
-      url: url
-    }, true, null, 'fetchDelegations - ') 
-    return result;
+    const mapData = (bcData: DelegationsResponse | undefined) => {return mapDelegations(bcData?.delegation_responses)}
+    const mapAndAddData = (data: Delegations, bcData: DelegationsResponse | undefined) => {return mapAndAddDelegations(data, bcData?.delegation_responses)}
+
+    return  await this.axiosGetBlockchainApiCallPaginated(this.STACKED_AMOUNT_URL + address,
+            mapData, mapAndAddData, true, null, 'fetchDelegations - ')
   }
   public async fetchUnbondingDelegations(address: string): Promise<RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>>{
-    let undelegations: UnbondingDelegations | undefined = undefined;
-    let nextKey: string | null | undefined = undefined
-    do {
-      const result: RequestResponse<UnbondigDelegationsResponse, ErrorData<BlockchainApiErrorData>> 
-          = await this.fetchBcUnbondingDelegations(address, undelegations !== undefined, nextKey);
-      if (result.isError()) {
-        return new RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>(result.error);
-      }
-      nextKey = result.data?.pagination.next_key
-      if (undelegations === undefined) {
-        undelegations = mapUnbondingDelegations(result.data?.unbonding_responses);
-      } else {
-        undelegations = mapAndAddUnbondingDelegations(undelegations, result.data?.unbonding_responses);
-      }
-    } while (undelegations === undefined || (nextKey !== null && nextKey !== undefined));
-    return new RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>(undefined, undelegations);
+    const mapData = (bcData: UnbondigDelegationsResponse | undefined) => {return mapUnbondingDelegations(bcData?.unbonding_responses)}
+    const mapAndAddData = (data: UnbondingDelegations, bcData: UnbondigDelegationsResponse | undefined) => {return mapAndAddUnbondingDelegations(data, bcData?.unbonding_responses)}
+
+    return  await this.axiosGetBlockchainApiCallPaginated(this.UNSTACKED_AMOUNT_URL + address + '/unbonding_delegations',
+            mapData, mapAndAddData, true, null, 'fetchUnbondingDelegations - ')
   }
-  private async fetchBcUnbondingDelegations(address: string, pagination: boolean, nextKey: string | null | undefined): Promise<RequestResponse<UnbondigDelegationsResponse, ErrorData<BlockchainApiErrorData>>> {
-    let url = this.UNSTACKED_AMOUNT_URL + address + '/unbonding_delegations'
-    if (pagination) {
-      url += '?pagination.key=' + nextKey
-    }
-    const result: RequestResponse<UnbondigDelegationsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
-      method: 'GET',
-      url: url
-    }, true, null, 'fetchUnbondingDelegations - ') 
-    return result;
-  }
-  public async fetchRewards(id: string): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>>{
-    const result: RequestResponse<RewardsResponse, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
-      method: 'GET',
-      url: this.REWARDS_URL + id + '/rewards'
-    }, true, null, 'fetchRewards - ')
-    if (result.isError()) {
-      return new RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>(result.error);
-    }
-    const rewards = mapRewards(result.data);
-    return new RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>(undefined, rewards);
+  public async fetchRewards(address: string): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>>{
+    const mapData = (bcData: RewardsResponse | undefined) => {return mapRewards(bcData);}
+    return  await this.axiosGetBlockchainApiCall(this.REWARDS_URL + address + '/rewards',
+      mapData, true, null, 'fetchRewards - ')
   }
   public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
@@ -203,15 +157,16 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
   
-  // TODO create option enum
   // TODO proposalId as Long
-  public async vote(connection: ConnectionInfo, option: number, proposalId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  public async vote(connection: ConnectionInfo, option: VoteOption, proposalId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
+    this.logToConsole(LogLevel.DEBUG, 'vote', String(option), String(proposalId));
+
     const config = useConfigurationStore().config
   
     const msg = {
       typeUrl: '/cosmos.gov.v1beta1.MsgVote',
       value: MsgVote.fromPartial({
-        option: option,
+        option: option.valueOf(),
         proposalId,
         voter: connection.account,
       }),

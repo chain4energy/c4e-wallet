@@ -8,13 +8,13 @@
           </div>
           <div> #{{ proposalId }} {{ title }} </div>
           <div class="vote-options">
-            <input type="radio" id="yes" value="1" v-model="picked">
+            <input type="radio" id="yes" :value="VoteOption.Yes" v-model="picked">
             <label for="yes">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</label>
-            <input type="radio" id="no" value="3" v-model="picked">
+            <input type="radio" id="no" :value="VoteOption.No" v-model="picked">
             <label for="no">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</label>
-            <input type="radio" id="no with veto" value="4" v-model="picked">
+            <input type="radio" id="no with veto" :value="VoteOption.NoWithVeto" v-model="picked">
             <label for="no with veto">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</label>
-            <input type="radio" id="abstain" value="2" v-model="picked">
+            <input type="radio" id="abstain" :value="VoteOption.Abstain" v-model="picked">
             <label for="abstain">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</label>
           </div>
           <span v-if="useUserStore().isLoggedIn">
@@ -36,23 +36,32 @@
 
 import {ref} from "vue";
 import {useUserStore} from "@/store/user.store";
+import { VoteOption } from "@/api/account.api";
 
-const props = defineProps({
-  title: {
-    type: Object(String),
-    required: true
-  },
-  proposalId: {
-    type: Object(Number),
-    required: true
-  }
-});
+// const props = defineProps({
+//   title: {
+//     type: String,
+//     required: true
+//   },
+//   proposalId: {
+//     type: Number,
+//     required: true
+//   }
+// });
 
-const picked = ref();
+const props = defineProps<{
+  title: string
+  proposalId: number
+}>()
+
+const picked = ref<VoteOption>();
 
 const onVoteClick = () => {
-  picked.value = Number(picked.value)
-  useUserStore().vote(picked.value, Number(props.proposalId))
+  if (picked.value !== undefined){
+    useUserStore().vote(picked.value, props.proposalId)
+  } else {
+    // TODO
+  }
 };
 </script>
 
