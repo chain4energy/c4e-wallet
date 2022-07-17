@@ -81,7 +81,7 @@ describe('map account', () => {
     expect(() => {mapAccount(bcAccount)}).toThrowError(new Error(`Unsupported account type: '` + type + `'`))
   });
 
-  it('maps unexpected data', async () => {
+  it('maps account unexpected data', async () => {
     const bcAccount: BcAccount = {
           address: address,
     } as unknown as BcAccount;
@@ -89,7 +89,7 @@ describe('map account', () => {
     expect(() => {mapAccount(bcAccount)}).toThrowError(new Error(`Unsupported account type: 'undefined'`))
   });
 
-  it('maps undefined data', async () => {
+  it('maps account undefined data', async () => {
     expect(() => {mapAccount(undefined)}).toThrowError(new Error('Account is undefined'))
   });
 
@@ -111,4 +111,13 @@ describe('map account', () => {
     expect(coin.denom).toBe(secondDenom);
 
   });
+
+  it('maps balance unexpected data', async () => {
+    const bcBalance: Balance = {
+          address: address,
+    } as unknown as Balance;
+
+    expect(() => {mapBalance(bcBalance, secondDenom)}).toThrowError(new Error(`no amount or denom defined`))
+  });
+
 });

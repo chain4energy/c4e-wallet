@@ -381,7 +381,7 @@ export function createDelegatorDelegationsResponseData(address: string,
     })
   }
   return {
-    delegation_responses: delegations,
+    delegation_responses: createDelegatorDelegations(address, validators, balancesAmount, denom),
     pagination: {
       next_key: nextKey,
       total: total === undefined ? validators.length : total
@@ -389,39 +389,70 @@ export function createDelegatorDelegationsResponseData(address: string,
   }
 }
 
+export function createDelegatorDelegations(address: string,
+    validators = defaultDelegatorDelegationsValidators,
+    balancesAmount = defaultDelegatorDelegationsBalances,
+    denom = defaultDenom) {
+  if (validators.length !== balancesAmount.length) {
+    throw new Error('validators.length !== balancesAmount.length')
+  }
+  const delegations = new Array();
+  for (let i = 0; i < validators.length; i++) {
+    delegations.push({
+      delegation: { 
+        delegator_address: address,
+        validator_address: validators[i],
+        shares: balancesAmount[i] + '.000000000000000000'
+      },
+      balance: { 
+        denom: denom,
+        amount: balancesAmount[i] 
+      } 
+    })
+  }
+  return delegations;
+
+}
+
 export function createDelegatorUnbondingDelegationsResponseData(address: string,
     validators = defaultDelegatorUnbondingDelegationsValidators,
     entriesAmounts = defaultDelegatorUnbondingDelegationsEntriesAmounts,
     total: number | undefined = undefined,
     nextKey: string | null = null) {
-  if (validators.length !== entriesAmounts.length) {
-    throw new Error('validators.length !== entriesAmounts.length')
-  }
-  const undelegations = new Array();
-  for (let i = 0; i < validators.length; i++) {
-    const entries = new Array();
-    entriesAmounts[i].forEach(amount => {
-      entries.push({
-        creation_height: "764970",
-        completion_time: "2022-08-03T11:18:32.854838508Z",
-        initial_balance: amount,
-        balance: amount
-      })
-    })
-
-    undelegations.push({ 
-      delegator_address: address,
-      validator_address: validators[i],
-      entries: entries
-    })
-  }
   return {
-    unbonding_responses: undelegations,
+    unbonding_responses: createDelegatorUnbondingDelegations(address, validators, entriesAmounts),
     pagination: {
       next_key: nextKey,
       total: total === undefined ? validators.length : total
     }
   }
+}
+
+export function createDelegatorUnbondingDelegations(address: string,
+  validators = defaultDelegatorUnbondingDelegationsValidators,
+  entriesAmounts = defaultDelegatorUnbondingDelegationsEntriesAmounts) {
+if (validators.length !== entriesAmounts.length) {
+  throw new Error('validators.length !== entriesAmounts.length')
+}
+const undelegations = new Array();
+for (let i = 0; i < validators.length; i++) {
+  const entries = new Array();
+  entriesAmounts[i].forEach(amount => {
+    entries.push({
+      creation_height: "764970",
+      completion_time: "2022-08-03T11:18:32.854838508Z",
+      initial_balance: amount,
+      balance: amount
+    })
+  })
+
+  undelegations.push({ 
+    delegator_address: address,
+    validator_address: validators[i],
+    entries: entries
+  })
+}
+return  undelegations;
 }
 
 export function createErrorResponseData(code: number, message: string) {

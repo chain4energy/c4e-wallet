@@ -53,5 +53,8 @@ export function mapBalance(balance: Balance | undefined, denom: string): Coin  {
   if (balance === undefined) {
     return new Coin('0', denom);
   }
+  if (balance.amount === undefined || balance.denom === undefined) {
+    throw new Error(`no amount or denom defined`)
+  }
   return new Coin(balance.amount, balance.denom);
 }
