@@ -1,18 +1,13 @@
-import { Account as BcAccount, Balance } from "@/models/blockchain/account";
-import { Account as StoreAccount, AccountType, Coin, ContinuousVestingData } from "@/models/store/account";
-import { mapAccount, mapBalance } from "@/models/mapper/account.mapper";
-import { createBaseAccount, createBaseVestingAccount, createContinuousVestingAccount, createDelayedVestingAccount, createDelegatorDelegations, createDelegatorUnbondingDelegations, createModuleAccount, createPeriodicVestingAccount, createSingleBalance, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, defaultDelegatorDelegationsValidators, defaultDelegatorUnbondingDelegationsValidators, defaultDenom, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, findDelegatorUnbondingDelegationAmountByValidator, findDelegatorUnbondingDelegationTotalAmount, vestingAccountTimeToSystem } from '../utils/blockchain.data.util';
+import { createDelegatorDelegations, createDelegatorUnbondingDelegations, defaultDelegatorDelegationsValidators, defaultDelegatorUnbondingDelegationsValidators, defaultDenom, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, findDelegatorUnbondingDelegationAmountByValidator, findDelegatorUnbondingDelegationTotalAmount } from '../utils/blockchain.data.util';
 import { mapAndAddDelegations, mapAndAddUnbondingDelegations, mapDelegation, mapDelegations, mapUnbondingDelegation, mapUnbondingDelegations } from "@/models/mapper/staking.mapper";
 
 const address = 'c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg';
 const validatorAddress = defaultDelegatorDelegationsValidators[0];
-const denom = defaultDenom;
-const secondDenom = 'denom';
 
 describe('tests mapping of staking related data', () => {
 
   it('maps undefined delegation', async () => {
-    expect(() => {mapDelegation(undefined)}).toThrowError(new Error(`Delegation is undefined`))
+    expect(() => { mapDelegation(undefined) }).toThrowError(new Error(`Delegation is undefined`))
   });
 
   it('maps delegation', async () => {
@@ -22,11 +17,11 @@ describe('tests mapping of staking related data', () => {
 
     expect(storeDelegations.amount).toBe(amount);
     expect(storeDelegations.validatorAddress).toBe(validatorAddress);
-    
+
   });
 
   it('maps undefined delegations', async () => {
-    expect(() => {mapDelegations(undefined)}).toThrowError(new Error(`Delegations list is undefined`))
+    expect(() => { mapDelegations(undefined) }).toThrowError(new Error(`Delegations list is undefined`))
   });
 
   it('maps delegations', async () => {
@@ -46,7 +41,7 @@ describe('tests mapping of staking related data', () => {
     const bcDelegations = createDelegatorDelegations(address);
     const storeDelegations = mapDelegations(bcDelegations);
 
-    expect(() => {mapAndAddDelegations(storeDelegations, undefined)}).toThrowError(new Error(`BcDelegations list is undefined`))
+    expect(() => { mapAndAddDelegations(storeDelegations, undefined) }).toThrowError(new Error(`BcDelegations list is undefined`))
 
   });
 
@@ -62,7 +57,7 @@ describe('tests mapping of staking related data', () => {
       '98012949002',
       '100013000000',
     ];
-  
+
     const validators2 = [
       'c4evaloper19473sdmlkkvcdh6z3tqedtqsdqj4jjv782dku2',
       'c4evaloper1tavkv9fpqwmw2v9drsm7s3yk7xlll9q8n7e6yl',
@@ -73,7 +68,7 @@ describe('tests mapping of staking related data', () => {
       '100015000000',
       '100016000000',
     ];
-  
+
     const validatorsAll = validators1.concat(validators2)
     const balancesAll = balances1.concat(balances2)
 
@@ -98,7 +93,7 @@ describe('tests mapping of staking related data', () => {
 
 
   it('maps undefined unbonding delegation', async () => {
-    expect(() => {mapUnbondingDelegation(undefined)}).toThrowError(new Error(`Unbondig Delegation is undefined`))
+    expect(() => { mapUnbondingDelegation(undefined) }).toThrowError(new Error(`Unbondig Delegation is undefined`))
   });
 
   it('maps unbonding delegation', async () => {
@@ -113,11 +108,11 @@ describe('tests mapping of staking related data', () => {
       expect(storeUndelegations.entries[i].amount).toBe(entries[i]);
     }
     expect(storeUndelegations.validatorAddress).toBe(validatorAddress);
-    
+
   });
 
   it('maps undefined unbonding delegations', async () => {
-    expect(() => {mapUnbondingDelegations(undefined)}).toThrowError(new Error(`Unbonding Delegations list is undefined`))
+    expect(() => { mapUnbondingDelegations(undefined) }).toThrowError(new Error(`Unbonding Delegations list is undefined`))
   });
 
   it('maps unbonding delegations', async () => {
@@ -144,7 +139,7 @@ describe('tests mapping of staking related data', () => {
     const bcDelegations = createDelegatorDelegations(address);
     const storeDelegations = mapDelegations(bcDelegations);
 
-    expect(() => {mapAndAddDelegations(storeDelegations, undefined)}).toThrowError(new Error(`BcDelegations list is undefined`))
+    expect(() => { mapAndAddDelegations(storeDelegations, undefined) }).toThrowError(new Error(`BcDelegations list is undefined`))
 
   });
 

@@ -341,6 +341,13 @@ export function createSingleBalance(denom: string, amount: string) {
 }
 
 export function createRewardsResponseData(validators = defaultRewardsValidators, rewards = defaultRewardsCoins, total = defaultRewardsTotal) {
+  return {
+    rewards: createRewards(validators, rewards),
+    total: total
+  }
+}
+
+export function createRewards(validators = defaultRewardsValidators, rewards = defaultRewardsCoins) {
   if (validators.length !== rewards.length) {
     throw new Error('validators.length !== rewards.length')
   }
@@ -351,10 +358,7 @@ export function createRewardsResponseData(validators = defaultRewardsValidators,
       reward: rewards[i]
     })
   }
-  return {
-    rewards: rewardsArray,
-    total: total
-  }
+  return rewardsArray;
 }
 
 export function createDelegatorDelegationsResponseData(address: string,
