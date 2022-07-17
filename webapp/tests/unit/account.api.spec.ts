@@ -140,7 +140,7 @@ describe('account api tests', () => {
     expect(origVesting?.denom).toBe(defaultContinuousVestingAccountOriginalVesting[0].denom);
   });
 
-  it('gets unecpected data', async () => {
+  it('gets unexpected data', async () => {
     const account = [
       { id: 1, name: "John" },
       { id: 2, name: "Andrew" },

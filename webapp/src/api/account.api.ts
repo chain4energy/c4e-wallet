@@ -49,32 +49,30 @@ export class AccountApi extends TxBroadcastBaseApi {
   private UNSTACKED_AMOUNT_URL = 'https://lcd.chain4energy.org/cosmos/staking/v1beta1/delegators/'
   private REWARDS_URL = 'https://lcd.chain4energy.org//cosmos/distribution/v1beta1/delegators/';
 
-  public async fetchAccount(address: string): Promise<RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>> {
-    const result: RequestResponse<AccountResponse, ErrorData<BlockchainApiErrorData>> =  await this.axiosBlockchainApiCall({
-      method: 'GET',
-      url: this.ACCOUNT_URL + address
-    }, true, null, 'fetchAccount - ');
-    if (result.isSuccess()) {
-      this.logToConsole(LogLevel.DEBUG, 'get Account success');
 
-      try {
-        const storeAccount = mapAccount(result.data?.account);
-        return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(undefined, storeAccount);
-      } catch (err) {
-        const error = err as Error;
-        this.logToConsole(LogLevel.ERROR, 'mapAccount error: ', error.message);
-        return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(new ErrorData<BlockchainApiErrorData>(error.name, error.message));
-      }
-    } else {
-      const code = result.error?.data?.code
-      const message = result.error?.data?.message
-      const status = result.error?.status
-      if (status === 404 && code === 5 && message !== undefined && /rpc error: code = NotFound/i.test(message)) {
+  public async fetchAccount(address: string): Promise<RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>> {
+    let accountNotFound = false;
+    const displayAsError = (error: ErrorData<BlockchainApiErrorData>): boolean => {
+      accountNotFound = AccountApi.isAccountNotFound(error.status, error.data)
+      return !accountNotFound;
+    };
+    const handleError = (errorResponse: RequestResponse<AccountResponse, ErrorData<BlockchainApiErrorData>>): RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>> => {
+      if (accountNotFound) {
         return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(undefined, createNonexistentAccount(address));
       }
-      return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(result.error);
+      return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(errorResponse.error);
     }
+    const mapData = (bcData: AccountResponse | undefined) => {return mapAccount(bcData?.account);}
+    return  await this.axiosGetBlockchainApiCall(this.ACCOUNT_URL + address,
+      mapData, true, null, 'fetchAccount - ', displayAsError, handleError)
   }
+
+  private static isAccountNotFound(status?: number, data?: BlockchainApiErrorData): boolean {
+    const code = data?.code
+    const message = data?.message
+    return status === 404 && code === 5 && message !== undefined && /rpc error: code = NotFound/i.test(message)
+  }
+
   public async fetchBalance(address: string, denom: string): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: BalanceResponse | undefined) => {return mapBalance(bcData?.balance, denom);}
     return  await this.axiosGetBlockchainApiCall(this.BALANCE_URL + address + '/by_denom?denom=' + denom,
@@ -85,14 +83,14 @@ export class AccountApi extends TxBroadcastBaseApi {
     const mapData = (bcData: DelegationsResponse | undefined) => {return mapDelegations(bcData?.delegation_responses)}
     const mapAndAddData = (data: Delegations, bcData: DelegationsResponse | undefined) => {return mapAndAddDelegations(data, bcData?.delegation_responses)}
 
-    return  await this.axiosGetBlockchainApiCallPaginated(this.STACKED_AMOUNT_URL + address,
+    return  await this.axiosGetAllBlockchainApiCallPaginated(this.STACKED_AMOUNT_URL + address,
             mapData, mapAndAddData, true, null, 'fetchDelegations - ')
   }
   public async fetchUnbondingDelegations(address: string): Promise<RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: UnbondigDelegationsResponse | undefined) => {return mapUnbondingDelegations(bcData?.unbonding_responses)}
     const mapAndAddData = (data: UnbondingDelegations, bcData: UnbondigDelegationsResponse | undefined) => {return mapAndAddUnbondingDelegations(data, bcData?.unbonding_responses)}
 
-    return  await this.axiosGetBlockchainApiCallPaginated(this.UNSTACKED_AMOUNT_URL + address + '/unbonding_delegations',
+    return  await this.axiosGetAllBlockchainApiCallPaginated(this.UNSTACKED_AMOUNT_URL + address + '/unbonding_delegations',
             mapData, mapAndAddData, true, null, 'fetchUnbondingDelegations - ')
   }
   public async fetchRewards(address: string): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>>{

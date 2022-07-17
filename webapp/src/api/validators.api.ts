@@ -36,7 +36,7 @@ export class ValidatorsApi extends BaseApi {
     const mapData = (bcData: ValidatorsResponse | undefined) => {return mapValidators(bcData?.validators)}
     const mapAndAddData = (data: { validators: Validator[], numberOfActive: number}, bcData: ValidatorsResponse | undefined) => {return mapAndAddValidators(data.validators, bcData?.validators, data.numberOfActive)}
 
-    const result = await this.axiosGetBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+this.VALIDATORS_URL,
+    const result = await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+this.VALIDATORS_URL,
             mapData, mapAndAddData, true, null, 'fetchAllValidators - ');
     if (result.data !== undefined) {
       result.data.validators = sortAndRankValidators(result.data.validators);
