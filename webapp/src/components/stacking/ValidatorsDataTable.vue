@@ -1,6 +1,6 @@
 <template>
   <StackingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
-  <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" >
+  <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick">
     <template v-slot:empty>{{ $t("STACKING_VIEW.NO_VALIDATORS") }}</template>
     <template #header>
       <div style="display: flex; justify-content: space-between">
@@ -45,7 +45,7 @@
 
       <Column v-if="isLoggedIn">
         <template #body="{data}">
-          <Button @click="onRowExpand(data)" v-if="data.delegatedAmount!=='0'" headerStyle="width: 4rem" :label=" data.operatorAddress == expandedRow[0]?.operatorAddress ? 'Close' : 'Open'"></Button>
+          <Button @click="onRowExpand(data)" v-if="isValidatorRowExpandable(data)" headerStyle="width: 4rem" :label=" data.operatorAddress == expandedRow[0]?.operatorAddress ? 'Close' : 'Open'"></Button>
         </template>
       </Column>
 
@@ -123,6 +123,16 @@ function createEagerLoadingConfig(): EagerLoadingConfig<Validator>{
 
 function onRowExpand(data: Validator) {
   expandedRow.value = (expandedRow.value[0] === data) ? [] : [data]
+}
+
+function onRowClick(event: any) {
+  if (isValidatorRowExpandable(event.data)) {
+    onRowExpand(event.data);
+  }
+}
+
+function isValidatorRowExpandable(data: Validator):boolean {
+  return data.delegatedAmount!=='0';
 }
 
 const filters = ref({
