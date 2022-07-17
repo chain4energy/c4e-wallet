@@ -1,7 +1,8 @@
 
-import { createRewards, createRewardsResponseData, defaultDelegatorDelegationsValidators, defaultDenom, defaultRewardsCoins, defaultRewardsValidators, findRewardsByValidator, findTotalRewards } from '../utils/blockchain.data.util';
+import { defaultDenom } from "../utils/common.blockchain.data.util";
+import { defaultDelegatorDelegationsValidators } from '../utils/staking.blockchain.data.util';
+import { createRewards, createRewardsResponseData, defaultRewardsCoins, defaultRewardsValidators, findRewardsByValidator, findTotalRewards } from '../utils/distribution.blockchain.data.util';
 import { mapReward, mapRewards } from "@/models/mapper/distribution.mapper";
-import { Rewards } from "@/models/store/distribution";
 import { Reward, RewardsResponse } from "@/models/blockchain/distribution";
 import { setActivePinia, createPinia } from 'pinia'
 import { useConfigurationStore } from "@/store/configuration.store";

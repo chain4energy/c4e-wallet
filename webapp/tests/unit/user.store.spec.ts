@@ -3,7 +3,10 @@ import axios from 'axios';
 import apiFactory from "@/api/factory.api";
 import { useUserStore } from '@/store/user.store';
 import { useConfigurationStore } from '@/store/configuration.store';
-import { createBaseAccountResponseData, createDelegatorDelegationsResponseData, createRewardsResponseData, createSingleBalanceResponseData, createDelegatorUnbondingDelegationsResponseData, defaultDenom } from '../utils/blockchain.data.util';
+import { defaultDenom } from "../utils/common.blockchain.data.util";
+import { createBaseAccountResponseData, createSingleBalanceResponseData} from '../utils/account.blockchain.data.util';
+import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData } from '../utils/staking.blockchain.data.util';
+import { createRewardsResponseData } from '../utils/distribution.blockchain.data.util';
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
