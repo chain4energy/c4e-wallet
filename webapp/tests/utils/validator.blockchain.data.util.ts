@@ -43,10 +43,11 @@ export function findNumberOfActiveValidators(validatorsParameters = defaultValid
 
 export function createValidatorsResponseData(validators = defaultValidators,
   validatorsParameters = defaultValidatorsParameters,
+  positionOffset = 0,
   total: number | undefined = undefined,
   nextKey: string | null = null) {
   return {
-    validators: createValidators(validators, validatorsParameters),
+    validators: createValidators(validators, validatorsParameters, positionOffset),
     pagination: {
       next_key: nextKey,
       total: total === undefined ? validators.length : total
@@ -91,12 +92,13 @@ function getValidatorStatus(validatorStatus: string | undefined): ValidatorStatu
 }
 
 export function createValidators(validators = defaultValidators,
-  validatorsParameters = defaultValidatorsParameters) {
+  validatorsParameters = defaultValidatorsParameters, positionOffset = 0) {
     if (validators.length !== validatorsParameters.length) {
       throw new Error('validators.length !== validatorsParameters.length')
     }
     const validatorsArray = new Array();
     for (let i = 0; i < validators.length; i++) {
+      let position = i + positionOffset;
       validatorsArray.push({
         operator_address: validators[i],
         consensus_pubkey: {
@@ -108,11 +110,11 @@ export function createValidators(validators = defaultValidators,
         tokens: validatorsParameters[i].tokens,
         delegator_shares: validatorsParameters[i].tokens + ".000000000000000000",
         description: {
-          moniker: "Moniker " + i,
-          identity: "Identity " + i,
-          website: "Website " + i,
-          security_contact: "SecContact " + i,
-          details: "Setails " + i
+          moniker: "Moniker " + position,
+          identity: "Identity " + position,
+          website: "Website " + position,
+          security_contact: "SecContact " + position,
+          details: "Setails " + position
         },
         unbonding_height: "123",
         unbonding_time: "1970-01-01T00:00:00Z",
