@@ -4,7 +4,7 @@
       <Icon name="TrendingUp"></Icon>
     </div>
     <div class="right">
-      <div>Inflation</div>
+      <div>{{ $t('DASHBOARD_VIEW.INFLATION') }}</div>
       <div class="info">
         <span>11,27%</span>
       </div>

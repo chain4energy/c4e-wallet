@@ -4,7 +4,7 @@
       <Icon name="Coins"></Icon>
     </div>
     <div class="right">
-      <div>Staking APR</div>
+      <div>{{ $t('DASHBOARD_VIEW.STACKING_APR') }}</div>
       <div class="info">
         <span>17,84%</span>
       </div>

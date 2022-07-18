@@ -60,7 +60,10 @@
     "BOUNDED": "Zobowiązany",
     "UNBOUNDED": "Bezgraniczny",
     "UNBOUNDING": "Bez ograniczeń",
-    "AVERAGE_BLOCK_TIME": "Średni czas blokowania"
+    "AVERAGE_BLOCK_TIME": "Średni czas blokowania",
+    "CIRCULATING_SUPPLY": "Оборотне постачання",
+    "INFLATION": "Інфляція",
+    "STACKING_APR": "Річна ставка"
   },
   "STACKING_VIEW": {
     "TABS": {

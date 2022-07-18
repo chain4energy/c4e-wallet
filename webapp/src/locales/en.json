@@ -9,10 +9,10 @@
   },
   "TABLES": {
     "CONTRACTS": {
-      "NUMBER": "Numer",
-      "TYPE": "Typ",
-      "TITLE": "Nazwa",
-      "CREATION_DATE": "Data utworzenia",
+      "NUMBER": "Number",
+      "TYPE": "Type",
+      "TITLE": "Name",
+      "CREATION_DATE": "Creation date",
       "STATE": "Status"
     }
   },
@@ -60,7 +60,10 @@
     "BOUNDED": "Bounded",
     "UNBOUNDED": "Unbounded",
     "UNBOUNDING": "Unbounding",
-    "AVERAGE_BLOCK_TIME": "Average block time"
+    "AVERAGE_BLOCK_TIME": "Average block time",
+    "CIRCULATING_SUPPLY": "Circulating supply",
+    "INFLATION": "Inflation",
+    "STACKING_APR": "Staking APR"
   },
   "STACKING_VIEW": {
     "TABS": {

@@ -33,10 +33,11 @@
         <p>{{locked}}</p>
       </div>
       <div>
-        <p>{{useUserStore().getAccount.continuousVestingData?.getStartTimeDateString()}}</p>
+        <p>{{ new Date(Number(useUserStore().getAccount.continuousVestingData.startTime)).toLocaleString() }}</p>
       </div>
       <div>
-        <p>{{useUserStore().getAccount.continuousVestingData?.getEndTimeDateString()}}</p>
+        <p>{{ new Date(Number(useUserStore().getAccount.continuousVestingData.endTime)).toLocaleString() }}</p>
+<!--        <p>{{ useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() }}</p>-->
       </div>
     </div>
   </div>
@@ -61,17 +62,21 @@
 
 <script setup lang="ts">
 import { useUserStore } from "@/store/user.store";
+import { Account } from "@/models/store/account";
 import {useBlockStore} from "@/store/block.store";
 import { computed, ref } from "vue";
 
 function claimRewards(){
   useUserStore().claimRewards();
 }
-useBlockStore().fetchLatestBlock()
-setInterval(useBlockStore().fetchLatestBlock, 6000)
+useBlockStore().fetchLatestBlock();
+setInterval(useBlockStore().fetchLatestBlock, 6000);
 
 const total = computed(() => useUserStore().getTotalUndelegating + useUserStore().getTotalDelegated + useUserStore().getBalances);
-const locked = computed(()=> useUserStore().getVestingLockAmount.toFixed(0))
+const locked = computed(()=> useUserStore().getVestingLockAmount.toFixed(0));
+// const startTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
+// const endTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
+console.log(useUserStore().getAccount.continuousVestingData);
 </script>
 
 <style scoped lang="scss">

@@ -47,7 +47,6 @@ export class AccountApi extends TxBroadcastBaseApi {
     }, true, null, 'fetchAccount - ');
     if (result.isSuccess()) {
       this.logToConsole(LogLevel.DEBUG, 'get Account success');
-
       try {
         const storeAccount = mapAccount(result.data?.account);
         return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(undefined, storeAccount);
@@ -219,9 +218,9 @@ export class AccountApi extends TxBroadcastBaseApi {
   }
 
   public async claimRewards(connection: ConnectionInfo, validatorsAddresses: IterableIterator<string>): Promise<RequestResponse<TxData, TxBroadcastError>> {
-    const config = useConfigurationStore().config
+    const config = useConfigurationStore().config;
 
-    const messages = []
+    const messages = [];
     for (const validator of validatorsAddresses) {
       const msg = {
         typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
@@ -229,8 +228,8 @@ export class AccountApi extends TxBroadcastBaseApi {
           delegatorAddress: connection.account,
           validatorAddress: validator,
         })
-      }
-      messages.push(msg)
+      };
+      messages.push(msg);
     }
 
     if (messages.length === 0) {

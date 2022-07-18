@@ -1,13 +1,12 @@
 import { defineStore } from "pinia";
 import { Account, AccountType } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
-import { ConnectionInfo, ConnectionError } from "@/api/wallet.connecton.api";
-import { useValidatorsStore } from "@/store/validators.store";
+import { ConnectionError, ConnectionInfo, ConnectionType } from "@/api/wallet.connecton.api";
 import { useToast } from "vue-toastification";
-import { RequestResponse } from '@/models/request-response';
+import { RequestResponse } from "@/models/request-response";
 import { useConfigurationStore } from "./configuration.store";
-import { Delegation, Delegations, UnbondingDelegation, UnbondingDelegations } from "@/models/store/staking";
-import { Rewards, ValidatorRewards } from "@/models/store/distribution";
+import { Delegations, UnbondingDelegations } from "@/models/store/staking";
+import { Rewards } from "@/models/store/distribution";
 
 const toast = useToast();
 
@@ -32,10 +31,7 @@ export const useUserStore = defineStore({
     return {
       logged: ConnectionInfo.disconnected,
       account: Object(), // TODO probably type - Account | null
-      // type: '',
       balances: 0,
-      // stacked: 0,
-      // unstacked: 0,
       vestimgAccLocked: 0,
       rewards: new Rewards(),
       _isLoggedIn: false,
@@ -46,11 +42,11 @@ export const useUserStore = defineStore({
   },
   actions: {
     async reconectAcc(){
-      if(this.logged.connectionType === 1){
+      if(this.logged.connectionType === ConnectionType.Keplr){
         await this.connect(apiFactory.walletApi().connectKeplr())
-      } else if(this.logged.connectionType === 0){
+      } else if(this.logged.connectionType === ConnectionType.Address){
         await this.connect(apiFactory.walletApi().connectAddress(this.logged.account))
-      } else return
+      } else return;
     },
     async connectKeplr() {
       await this.connect(apiFactory.walletApi().connectKeplr())
@@ -61,9 +57,11 @@ export const useUserStore = defineStore({
     async connect(connectionResponse: Promise<RequestResponse<ConnectionInfo, ConnectionError>>) {
       await connectionResponse.then(async (response) => {
         if (response.isError() || response.data === undefined) {
+          console.log('errrrrrrrrrrrr')
           this._isLoggedIn = false;
         } else {
           this.logged = response.data
+          console.log(response)
           this._isLoggedIn = true;
           this.fetchAccountData()
         }
@@ -138,12 +136,11 @@ export const useUserStore = defineStore({
         return
       }
 
-      const x = validtime - startTime
-      const y = endTime - startTime
-      const diference = x/y;
-      const unlocked = origVesting * diference
-      console.log(origVesting * diference)
-      const locked = origVesting - unlocked
+      const x = validtime - startTime;
+      const y = endTime - startTime;
+      const difference = x/y;
+      const unlocked = origVesting * difference;
+      const locked = origVesting - unlocked;
       this.vestimgAccLocked = locked;
     },
     // async fetchUnstackedAmount(id: string){
@@ -286,10 +283,10 @@ export const useUserStore = defineStore({
       return this.vestimgAccLocked
     }
   },
-  persist: {
-    enabled: true,
-    strategies: [
-      { storage: sessionStorage, paths: ['logged', 'account', 'type', 'stackingList', 'rewards'] },
-    ]
-  }
+  // persist: {
+  //   enabled: true,
+  //   strategies: [
+  //     { storage: sessionStorage, paths: ['logged', 'account', 'type', 'stackingList', 'rewards'] },
+  //   ]
+  // }
 });

@@ -11,8 +11,8 @@ export class LocaleConfig {
 
 export function getSupportedLocales () : Array<LocaleConfig> {
   const annotatedLocales: LocaleConfig[] = [];
-  annotatedLocales.push(new LocaleConfig('pl', 'polski', 'pl'));
   annotatedLocales.push(new LocaleConfig('en', 'english', 'gb'));
-  annotatedLocales.push(new LocaleConfig('ua', 'українська', 'ua'));
+  annotatedLocales.push(new LocaleConfig('pl', 'polski', 'pl'));
+
   return annotatedLocales;
 }

@@ -4,7 +4,7 @@
       <Icon name="Circle"></Icon>
     </div>
     <div class="right">
-      <div>Circulating supply</div>
+      <div>{{ $t('DASHBOARD_VIEW.CIRCULATING_SUPPLY') }}</div>
       <div class="info">
         <span>1231231231 c4e</span>
       </div>
