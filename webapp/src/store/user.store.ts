@@ -15,11 +15,7 @@ const toast = useToast();
 interface UserState {
   logged: ConnectionInfo
   account: Account
-  // type: string
   balances: number
-  // stacked: number
-  // unstacked: number
-  // totalRewards: number
   vestimgAccLocked: number
   rewards: Rewards
   _isLoggedIn: boolean
@@ -33,10 +29,7 @@ export const useUserStore = defineStore({
     return {
       logged: ConnectionInfo.disconnected,
       account: Object(), // TODO probably type - Account | null
-      // type: '',
       balances: 0,
-      // stacked: 0,
-      // unstacked: 0,
       vestimgAccLocked: 0,
       rewards: new Rewards(),
       _isLoggedIn: false,
@@ -57,6 +50,7 @@ export const useUserStore = defineStore({
       await this.connect(apiFactory.walletApi().connectKeplr())
     },
     async connectAsAddress(address: string) {
+      // TODO address validations
       await this.connect(apiFactory.walletApi().connectAddress(address))
     },
     async connect(connectionResponse: Promise<RequestResponse<ConnectionInfo, ConnectionError>>) {
@@ -66,7 +60,7 @@ export const useUserStore = defineStore({
         } else {
           this.logged = response.data
           this._isLoggedIn = true;
-          this.fetchAccountData()
+          await this.fetchAccountData()
         }
       })
     },
@@ -89,6 +83,8 @@ export const useUserStore = defineStore({
           } else {
             // TODO clear store
           }
+        } else {
+          // TODO 
         }
       })
     },

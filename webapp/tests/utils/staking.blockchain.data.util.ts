@@ -37,7 +37,7 @@ for (let i = 0; i < validators.length; i++) {
     return balancesAmount[i];
   }
 }
-return null;
+return new Error('Amount : ' + validatorAddress + ' not found');
 }
 
 export function findDelegatorDelegationTotalAmount(

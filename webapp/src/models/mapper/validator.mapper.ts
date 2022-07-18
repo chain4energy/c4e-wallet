@@ -8,17 +8,6 @@ export function mapValidators(validators: BcValidator[] | undefined): { validato
   const result = Array<StoreValidator>();
   const active = mapAndAddValidatorsToArray(result, validators);
 
-
-  // validators.forEach(validator => {
-  //   const mapped = mapValidator(validator);
-  //   result.push(mapped);
-  //   if (mapped.status === ValidatorStatus.Bonded) {
-  //     active++;
-  //   }
-  // })
-  // result = result.sort((a, b) => Number(b.tokens) - Number(a.tokens))
-  // let i = 1
-  // result.forEach(val => val.rank = i++)
   return { validators: result, numberOfActive: active};
 }
 

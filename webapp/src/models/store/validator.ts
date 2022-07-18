@@ -69,15 +69,15 @@ export class ValidatorDescription {
 
 export class ValidatorCommission {
   rate: string;
-  max_rate: string;
-  max_change_rate: string;
+  maxRate: string;
+  maxChangeRate: string;
 
   constructor (rate: string,
       max_rate: string,
       max_change_rate: string) {
     this.rate = rate
-    this.max_rate = max_rate
-    this.max_change_rate = max_change_rate
+    this.maxRate = max_rate
+    this.maxChangeRate = max_change_rate
   }
 }
 
