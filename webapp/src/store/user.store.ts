@@ -308,7 +308,7 @@ function clearStateForNonexistentAccount(state: UserState) {
 
 function clearStateOnLogout(state: UserState) {
   state._isLoggedIn = false;
-  state.connectionInfo = ConnectionInfo.disconnected,
+  state.connectionInfo = ConnectionInfo.disconnected;
   state.account = Object();
   clearStateForNonexistentAccount(state);
 }

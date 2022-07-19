@@ -36,8 +36,8 @@ onBeforeMount(() => {
 onMounted(() => {
   createRouterBeforeEach(logger);
   setTimeout(() =>{
-      useUserStore().reconnectAcc();
-  },400);
+      useUserStore().reconectAcc();
+  },500);
 });
 
 </script>

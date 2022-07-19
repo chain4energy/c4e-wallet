@@ -169,7 +169,7 @@ function checkBTN(item: Validator){
 
 async function trsansactionSuccess() {
   popupOpened.value = !popupOpened.value;
-  useUserStore().reconnectAcc();
+  useUserStore().reconectAcc();
 
 }
 const address = ref('');
