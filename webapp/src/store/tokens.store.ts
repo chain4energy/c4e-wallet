@@ -3,7 +3,6 @@ import {StakingPool, Pool} from "@/models/StakingPool";
 import {Amount, TotalSupply} from "@/models/TotalSupply";
 import apiFactory from "@/api/factory.api";
 import {AirdropPool, CommunityPool, StrategicReversePool} from "@/models/Pools";
-import { useValidatorsStore } from "@/store/validators.store";
 
 interface TokensState {
   stakingPool: Pool

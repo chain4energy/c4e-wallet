@@ -16,17 +16,17 @@ export class Validator{
       tokens: string,
       description: ValidatorDescription,
       commission: ValidatorCommission) {
-    this.operatorAddress = operatorAddress
-    this.jailed = jailed
-    this.status = status
-    this.tokens = tokens
-    this.description = description
-    this.commission = commission
-    this.rank = 0
+    this.operatorAddress = operatorAddress;
+    this.jailed = jailed;
+    this.status = status;
+    this.tokens = tokens;
+    this.description = description;
+    this.commission = commission;
+    this.rank = 0;
   }
 
   public get votingPower(): number {
-    const total = useTokensStore().getStakingPool.bonded_tokens
+    const total = useTokensStore().getStakingPool.bonded_tokens;
     if(total){
       return (Number(this.tokens) / total) * 100;
     }
@@ -59,11 +59,11 @@ export class ValidatorDescription {
       website: string,
       securityContact: string,
       details: string) {
-    this.moniker = moniker
-    this.identity = identity
-    this.website = website
-    this.securityContact = securityContact
-    this.details = details
+    this.moniker = moniker;
+    this.identity = identity;
+    this.website = website;
+    this.securityContact = securityContact;
+    this.details = details;
   }
 }
 
@@ -75,9 +75,9 @@ export class ValidatorCommission {
   constructor (rate: string,
       max_rate: string,
       max_change_rate: string) {
-    this.rate = rate
-    this.maxRate = max_rate
-    this.maxChangeRate = max_change_rate
+    this.rate = rate;
+    this.maxRate = max_rate;
+    this.maxChangeRate = max_change_rate;
   }
 }
 
@@ -87,4 +87,3 @@ export enum ValidatorStatus {
   Unbonded,
   Unspecified
 }
-

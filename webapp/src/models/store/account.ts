@@ -1,6 +1,4 @@
-import {Amount} from "@/models/TotalSupply";
 import { useConfigurationStore } from "@/store/configuration.store";
-import { array } from "yup";
 
 export enum AccountType {
   BaseAccount,
@@ -37,7 +35,7 @@ export class ContinuousVestingData {
   }
 
   public getEndTimeDateString(): string {
-    return new Date(Number(this.endTime)).toLocaleString()
+    return new Date(Number(this.endTime)).toLocaleString();
   }
 
   public getOriginalVestingByDenom(denom: string): Coin {
@@ -58,12 +56,12 @@ export class ContinuousVestingData {
       return origVesting;
     }
 
-    const x = validtime - startTime
-    const y = endTime - startTime
+    const x = validtime - startTime;
+    const y = endTime - startTime;
     const diference = x/y;
-    const unlocked = origVesting * diference
-    console.log(origVesting * diference)
-    const locked = origVesting - unlocked
+    const unlocked = origVesting * diference;
+    console.log(origVesting * diference);
+    const locked = origVesting - unlocked;
     return locked;
   }
 }

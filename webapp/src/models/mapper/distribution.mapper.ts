@@ -18,10 +18,10 @@ export function mapRewards(rewardsResponse: RewardsResponse | undefined): Reward
 
   const map = new Map<string, ValidatorRewards>();
   rewardsResponse.rewards.forEach(rew => {
-    map.set(rew.validator_address, mapReward(rew))
-  })
-  const denom = useConfigurationStore().config.stakingDenom
-  const total = rewardsResponse.total.find(val => val.denom === denom)?.amount
+    map.set(rew.validator_address, mapReward(rew));
+  });
+  const denom = useConfigurationStore().config.stakingDenom;
+  const total = rewardsResponse.total.find(val => val.denom === denom)?.amount;
   return new Rewards(map, total === undefined ? 0 : Number(total));
 }
 

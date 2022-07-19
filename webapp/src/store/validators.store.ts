@@ -22,7 +22,7 @@ export const useValidatorsStore = defineStore({
         .then((resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.validators = resp.data.validators;
-            this.numberOfActiveValidators = resp.data.numberOfActive
+            this.numberOfActiveValidators = resp.data.numberOfActive;
           } else {
             // TODO
           }
@@ -34,7 +34,7 @@ export const useValidatorsStore = defineStore({
       apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
         if( response.error == null ) {
           if (response.data == undefined) {
-            this.numberOfActiveValidators = 0 // TODO maybe some error ???
+            this.numberOfActiveValidators = 0; // TODO maybe some error ???
           } else {
             this.numberOfActiveValidators = response.data.data.activeTotal.aggregate.count;
           }

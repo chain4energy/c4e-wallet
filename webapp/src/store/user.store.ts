@@ -40,18 +40,18 @@ export const useUserStore = defineStore({
   },
   actions: {
     async reconectAcc(){
-      if(this.connectionInfo.connectionType === 1){
-        await this.connect(apiFactory.walletApi().connectKeplr())
-      } else if(this.connectionInfo.connectionType === 0){
-        await this.connect(apiFactory.walletApi().connectAddress(this.connectionInfo.account))
-      } else return
+      if(this.connectionInfo.connectionType === ConnectionType.Keplr){
+        await this.connectKeplr();
+      } else if(this.connectionInfo.connectionType === ConnectionType.Address){
+        await this.connectAsAddress(this.connectionInfo.account);
+      }
     },
     async connectKeplr() {
-      await this.connect(apiFactory.walletApi().connectKeplr())
+      await this.connect(apiFactory.walletApi().connectKeplr());
     },
     async connectAsAddress(address: string) {
       // TODO address validations
-      await this.connect(apiFactory.walletApi().connectAddress(address))
+      await this.connect(apiFactory.walletApi().connectAddress(address));
     },
     async connect(connectionResponse: Promise<RequestResponse<ConnectionInfo, ConnectionError>>) {
       await connectionResponse.then(async (response) => {
@@ -68,12 +68,12 @@ export const useUserStore = defineStore({
             toast.error('Address: "' + address + '" Connection failed');
           }
         }
-      })
+      });
     },
     async fetchAccountData() {
       const connectionInfo = this.connectionInfo;
       if (!checkIfConnected(connectionInfo)) {
-        return false
+        return false;
       }
 
       await apiFactory.accountApi().fetchAccount(connectionInfo.account).then(async response => {
@@ -89,16 +89,16 @@ export const useUserStore = defineStore({
             ]);
             if (!allResults.every(r => r)) {
               clearStateOnLogout(this);
-              return
+              return;
             }
           } else {
-            clearStateForNonexistentAccount(this)
+            clearStateForNonexistentAccount(this);
           }
           this._isLoggedIn = true;
         } else {
           clearStateOnLogout(this);
         }
-      })
+      });
     },
     // async fetchBalance(): Promise<boolean> {
     //   if (!checkIfConnected(this.connectionInfo)) {
@@ -115,11 +115,11 @@ export const useUserStore = defineStore({
     async calculateVestingLocked(latestBlTime: string){ // TODO number to BigInt
       if (!checkIfConnected(this.connectionInfo)) {
         this.vestimgAccLocked = 0;
-        return
+        return;
       }
       if (!this._isLoggedIn || this.account.type !== AccountType.ContinuousVestingAccount ) {
         this.vestimgAccLocked = 0;
-        return
+        return;
       }
       if (this.account?.continuousVestingData !== undefined) {
         this.vestimgAccLocked = this.account.continuousVestingData.calculateVestingLocked(latestBlTime);
@@ -166,7 +166,7 @@ export const useUserStore = defineStore({
       const connectionInfo = this.connectionInfo;
       await apiFactory.accountApi().delegate(connectionInfo, validator, amount).then(async (resp) => {
         if (resp.isError()) {
-          toast.error('Delegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validator + ' failed')
+          toast.error('Delegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validator + ' failed');
           onTxDeliveryFailure(connectionInfo, this, resp);
         } else {
           fetchBalance(connectionInfo, this);
@@ -174,13 +174,13 @@ export const useUserStore = defineStore({
           fetchDelegations(connectionInfo, this);
           // fetchUnbondingDelegations(connectionInfo, this)
         }
-      })
+      });
     },
     async redelegate(validatorSrc: string, validatorDst: string, amount: string) {
       const connectionInfo = this.connectionInfo;
       await apiFactory.accountApi().redelegate(connectionInfo, validatorSrc, validatorDst, amount).then(async (resp) => {
         if (resp.isError()) {
-          toast.error('Redelegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validatorDst + ' failed')
+          toast.error('Redelegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validatorDst + ' failed');
           onTxDeliveryFailure(connectionInfo, this, resp);
         } else {
           fetchBalance(connectionInfo, this);
@@ -188,13 +188,13 @@ export const useUserStore = defineStore({
           fetchDelegations(connectionInfo, this);
           // fetchUnbondingDelegations(connectionInfo, this)
         }
-      })
+      });
     },
     async undelegate(validator: string, amount: string) {
       const connectionInfo = this.connectionInfo;
       await apiFactory.accountApi().undelegate(connectionInfo, validator, amount).then(async (resp) => {
         if (resp.isError()) {
-          toast.error('Undelegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' from ' + validator + ' failed')
+          toast.error('Undelegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' from ' + validator + ' failed');
           onTxDeliveryFailure(connectionInfo, this, resp);
         } else {
           fetchBalance(connectionInfo, this);
@@ -202,33 +202,33 @@ export const useUserStore = defineStore({
           fetchDelegations(connectionInfo, this);
           fetchUnbondingDelegations(connectionInfo, this);
         }
-      })
+      });
     },
     async claimRewards() {
       const connectionInfo = this.connectionInfo;
       const validators = this.rewards.getAllValidatorsAddresses();
       apiFactory.accountApi().claimRewards(connectionInfo, validators).then(async (resp) => {
         if (resp.isError()) {
-          toast.error('Claiming rewards failed')
+          toast.error('Claiming rewards failed');
           onTxDeliveryFailure(connectionInfo, this, resp);
         } else {
           fetchBalance(connectionInfo, this);
           fetchRewards(connectionInfo, this);
         }
-      })
+      });
     },
     async vote(option: VoteOption, proposalId: number){
       apiFactory.accountApi().vote(this.connectionInfo, option, proposalId).then(async (resp) => {
         if (resp.isError()) {
-          toast.error('Vote: ' + option + ' for proposal ' + proposalId + ' failed')
+          toast.error('Vote: ' + option + ' for proposal ' + proposalId + ' failed');
         } else {
           // TODO refresh data ??
         }
-      })
+      });
     },
     async logOut(){
       toast.success('Address: "' + this.connectionInfo.account + '" Disconnected');
-      clearStateOnLogout(this)
+      clearStateOnLogout(this);
       // this._isLoggedIn = false;
       // this.connectionInfo = ConnectionInfo.disconnected,
       // this.account = Object();
@@ -237,7 +237,7 @@ export const useUserStore = defineStore({
   },
   getters: {
     getConnectionType(): ConnectionType{
-      return this.connectionInfo.connectionType
+      return this.connectionInfo.connectionType;
     },
     isLoggedIn (): boolean {
        return this._isLoggedIn;
@@ -273,13 +273,13 @@ export const useUserStore = defineStore({
     //   return this.stackingList
     // },
     getDelegations(): Delegations {
-      return this.delegations
+      return this.delegations;
     },
     getTotalDelegated(): number{
       return this.delegations.totalDelegated;
     },
     getVestingLockAmount() : number{
-      return this.vestimgAccLocked
+      return this.vestimgAccLocked;
     }
   },
   persist: {
@@ -315,8 +315,8 @@ function clearStateOnLogout(state: UserState) {
 
 async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
   const address = connectionInfo.account;
-  const denom = useConfigurationStore().config.stakingDenom
-  const response = await apiFactory.accountApi().fetchBalance(address, denom)
+  const denom = useConfigurationStore().config.stakingDenom;
+  const response = await apiFactory.accountApi().fetchBalance(address, denom);
   if (response.isSuccess() && response.data !== undefined) {
     const balance = response.data;
     state.balance = parseInt(balance.amount); // TODO use bigint recalculate with decimal
@@ -328,9 +328,9 @@ async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState): P
 
 async function fetchDelegations(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
   const address = connectionInfo.account;
-  const response = await apiFactory.accountApi().fetchDelegations(address)
+  const response = await apiFactory.accountApi().fetchDelegations(address);
   if (response.isSuccess() && response.data !== undefined) {
-    state.delegations = response.data
+    state.delegations = response.data;
     return true;
   } else {
     return false;
@@ -339,9 +339,9 @@ async function fetchDelegations(connectionInfo: ConnectionInfo, state: UserState
 
 async function fetchUnbondingDelegations(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
   const address = connectionInfo.account;
-  const response = await apiFactory.accountApi().fetchUnbondingDelegations(address)
+  const response = await apiFactory.accountApi().fetchUnbondingDelegations(address);
   if (response.isSuccess() && response.data !== undefined) {
-    state.undelegations = response.data
+    state.undelegations = response.data;
     return true;
   } else {
     return false;
@@ -350,9 +350,9 @@ async function fetchUnbondingDelegations(connectionInfo: ConnectionInfo, state: 
 
 async function fetchRewards(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
   const address = connectionInfo.account;
-  const response = await apiFactory.accountApi().fetchRewards(address)
+  const response = await apiFactory.accountApi().fetchRewards(address);
   if (response.isSuccess() && response.data !== undefined) {
-    state.rewards = response.data
+    state.rewards = response.data;
     return true;
   } else {
     return false;

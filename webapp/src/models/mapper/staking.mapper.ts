@@ -22,9 +22,9 @@ export function mapAndAddDelegations(delegationsDst: Delegations, bcDelegations:
 function mapAndAddDelegationsToMap(map: Map<string, StoreDelegation>, bcDelegations: BcDelegation[]): number  {
   let total = 0;
   bcDelegations.forEach(del => {
-    map.set(del.delegation.validator_address, mapDelegation(del))
+    map.set(del.delegation.validator_address, mapDelegation(del));
     total += Number(del.balance.amount);
-  })
+  });
   return total;
 }
 
@@ -57,9 +57,9 @@ export function mapAndAddUnbondingDelegations(undelegationsDst: UnbondingDelegat
 function mapAndAddUnbondingDelegationsToMap(map: Map<string, StoreUnbondigDelegation>, bcDelegations: BcUnbondigDelegation[]): number  {
   let total = 0;
   bcDelegations.forEach(del => {
-    map.set(del.validator_address, mapUnbondingDelegation(del))
+    map.set(del.validator_address, mapUnbondingDelegation(del));
     del.entries.forEach(en => total += Number(en.balance));
-  })
+  });
   return total;
 }
 
@@ -67,10 +67,10 @@ export function mapUnbondingDelegation(undelegation: BcUnbondigDelegation | unde
   if (undelegation === undefined) {
       throw new Error('Unbondig Delegation is undefined');
   }
-  const entries = new Array<UnbondingDelegationEntry>()
+  const entries = new Array<UnbondingDelegationEntry>();
   undelegation.entries.forEach(e => {
-    entries.push(new UnbondingDelegationEntry(e.balance))
-  })
+    entries.push(new UnbondingDelegationEntry(e.balance));
+  });
 
   return new StoreUnbondigDelegation(undelegation.validator_address, entries);
 }

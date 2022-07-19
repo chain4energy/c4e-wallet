@@ -31,11 +31,11 @@ export const useBlockStore = defineStore( 'block', {
 
           this.latestBlockTime = latestBlock.block.header.time;
 
-          this.latestBlock = latestBlock
+          this.latestBlock = latestBlock;
 
           if(useUserStore().getAccount
             && useUserStore().isContinuousVestingAccount){
-            useUserStore().calculateVestingLocked(latestBlock.block.header.time)
+            useUserStore().calculateVestingLocked(latestBlock.block.header.time);
           }
 
 
@@ -66,7 +66,7 @@ export const useBlockStore = defineStore( 'block', {
       return this.averageBlockTime;
     },
     getLatestBlock(): any{
-      return this.latestBlock
+      return this.latestBlock;
     }
   }
 });

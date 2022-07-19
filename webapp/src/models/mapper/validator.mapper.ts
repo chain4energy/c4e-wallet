@@ -20,18 +20,18 @@ export function mapAndAddValidators(validatorsDst: StoreValidator[], bcValidator
 }
 
 function mapAndAddValidatorsToArray(array: StoreValidator[], bcValidators: BcValidator[]): number  {
-  let active = 0
+  let active = 0;
   bcValidators.forEach(validator => {
     const mapped = mapValidator(validator);
     array.push(mapped);
     if (mapped.status === ValidatorStatus.Bonded) {
       active++;
     }
-  })
+  });
   // array.sort((a, b) => Number(b.tokens) - Number(a.tokens))
   // let i = 1
   // array.forEach(val => val.rank = i++)
-  return active
+  return active;
 }
 
 export function sortAndRankValidators(array: StoreValidator[]): StoreValidator[]  {
@@ -46,7 +46,7 @@ export function mapValidator(validator: BcValidator | undefined): StoreValidator
       throw new Error('Validator is undefined');
   }
 
-  const status = mapValidatorStatus(validator.status)
+  const status = mapValidatorStatus(validator.status);
   const commission = new ValidatorCommission(validator.commission.commission_rates.rate,
     validator.commission.commission_rates.max_rate,
     validator.commission.commission_rates.max_change_rate);
