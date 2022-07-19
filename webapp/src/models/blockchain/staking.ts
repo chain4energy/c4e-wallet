@@ -1,8 +1,7 @@
-import { Pagination } from "./pagination"
+import { PaginatedResponse } from "./pagination"
 
-export interface DelegationsResponse{
+export interface DelegationsResponse extends PaginatedResponse {
   delegation_responses: Delegation[]
-  pagination: Pagination
 }
 
 export interface Delegation {
@@ -17,9 +16,8 @@ export interface Delegation {
   }
 }
 
-export interface UnbondigDelegationsResponse{
+export interface UnbondigDelegationsResponse extends PaginatedResponse {
   unbonding_responses: UnbondigDelegation[]
-  pagination: Pagination
 }
 
 export interface UnbondigDelegation {

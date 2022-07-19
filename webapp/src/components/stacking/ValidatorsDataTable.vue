@@ -1,6 +1,6 @@
 <template>
   <StackingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
-  <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" >
+  <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick">
     <template v-slot:empty>{{ $t("STACKING_VIEW.NO_VALIDATORS") }}</template>
     <template #header>
       <div style="display: flex; justify-content: space-between">
@@ -20,13 +20,18 @@
           <span>{{ toViewStatus(data.status) }}</span>
         </template>
       </Column>
+      <Column field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
+        <template #body="{data}">
+          <span>{{ toFixedAm(data.commission.rate, 6)*100 }}%</span> <!-- TODO create function converting to pecentage -->
+        </template>
+      </Column>
       <Column field="votingPower" :header="$t(`STACKING_VIEW.TABLE_HEADERS.VOTING_POWER`)" :sortable="true" sortField="tokens">
         <template #body="{data}">
-          <span v-if="data.votingPower">{{ toFixedAm(data.votingPower, 4) }}%</span>
+          <span v-if="data.votingPower">{{ toFixedAm(data.votingPower, 4) }}%</span> <!-- TODO create function converting to pecentage -->
           <span v-else>updating</span>
         </template>
       </Column>
-      <Column field="stacked.amount"  :header="$t(`STACKING_VIEW.TABLE_HEADERS.YOUR_STAKE`)" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
+      <Column :header="$t(`STACKING_VIEW.TABLE_HEADERS.YOUR_STAKE`)" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
         <template #body="{data}">
           <span>{{ toFixedAm(data.delegatedAmount, 4) }}</span>
           <!-- <span v-else>updating</span> -->
@@ -40,7 +45,7 @@
 
       <Column v-if="isLoggedIn">
         <template #body="{data}">
-          <Button @click="onRowExpand(data)" v-if="data.delegatedAmount!=='0'" headerStyle="width: 4rem" :label=" data.operatorAddress == expandedRow[0]?.operatorAddress ? 'Close' : 'Open'"></Button>
+          <Button @click="onRowExpand(data)" v-if="isValidatorRowExpandable(data)" headerStyle="width: 4rem" :label=" data.operatorAddress == expandedRow[0]?.operatorAddress ? 'Close' : 'Open'"></Button>
         </template>
       </Column>
 
@@ -48,8 +53,8 @@
     <template v-slot:expanded-columns="{expandedData}">
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
-          <p>Your stacked</p>
-          <p>{{toFixedAm(expandedData.data.delegatedAmount, 4)}}</p>
+          <p>Your unstaking</p>
+          <p>{{toFixedAm(expandedData.data.undelegatingAmount, 4)}}</p>
         </div>
         <div style="display: flex; flex-direction: column">
           <p>Reward</p>
@@ -72,7 +77,7 @@ import {FilterMatchMode, FilterOperator} from "primevue/api";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 
 const popupOpened = ref(false);
-const currentValidator = ref({});
+const currentValidator = ref({})
 
 const props = defineProps({
   validators: {
@@ -84,11 +89,11 @@ const userStore = useUserStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<Validator>());
 
-async function trsansactionSuccess() {
+async function trsansactionSuccess(arg: string) {
   //close popup
   popupOpened.value = !popupOpened.value;
 
-  useUserStore().reconnectAcc();
+  // useUserStore().reconectAcc()
 }
 
 function checkBTN(item: Validator){
@@ -117,7 +122,17 @@ function createEagerLoadingConfig(): EagerLoadingConfig<Validator>{
 }
 
 function onRowExpand(data: Validator) {
-  expandedRow.value = (expandedRow.value[0] === data) ? [] : [data];
+  expandedRow.value = (expandedRow.value[0] === data) ? [] : [data]
+}
+
+function onRowClick(event: any) {
+  if (isValidatorRowExpandable(event.data)) {
+    onRowExpand(event.data);
+  }
+}
+
+function isValidatorRowExpandable(data: Validator):boolean {
+  return data.delegatedAmount!=='0';
 }
 
 const filters = ref({

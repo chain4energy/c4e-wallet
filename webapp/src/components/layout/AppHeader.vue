@@ -19,7 +19,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark background">
       <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
-      <LogoutKeplr v-if="logoutPopupStatus === true" :logout-type="useUserStore().getLogedInfo" @close="logoutPopupStatus = 0"></LogoutKeplr>
+      <LogoutKeplr v-if="logoutPopupStatus === true" :logout-type="useUserStore().getConnectionType" @close="logoutPopupStatus = 0"></LogoutKeplr>
       <div class="container-fluid">
         <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
@@ -93,7 +93,7 @@ const logoutPopupStatus = ref(false);
 
 function logout(){
   logoutPopupStatus.value = !logoutPopupStatus.value;
-  // switch (useUserStore().getLogedInfo){
+  // switch (useUserStore().getConnectionType){
   //   case 1: logoutPopupStatus.value = 1;
   //     break;
   //   case 0: logoutPopupStatus.value = 2;

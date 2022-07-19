@@ -1,7 +1,8 @@
 import { Account as BcAccount, Balance } from "@/models/blockchain/account";
 import { Account as StoreAccount, AccountType, Coin, ContinuousVestingData } from "@/models/store/account";
 import { mapAccount, mapBalance } from "@/models/mapper/account.mapper";
-import { createBaseAccount, createBaseVestingAccount, createContinuousVestingAccount, createDelayedVestingAccount, createModuleAccount, createPeriodicVestingAccount, createSingleBalance, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, defaultDenom, vestingAccountTimeToSystem } from '../utils/blockchain.data.util';
+import { defaultDenom } from "../utils/common.blockchain.data.util";
+import { createBaseAccount, createBaseVestingAccount, createContinuousVestingAccount, createDelayedVestingAccount, createModuleAccount, createPeriodicVestingAccount, createSingleBalance, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, vestingAccountTimeToSystem } from '../utils/account.blockchain.data.util';
 
 const address = 'c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg'
 const denom = defaultDenom
@@ -81,7 +82,7 @@ describe('map account', () => {
     expect(() => {mapAccount(bcAccount)}).toThrowError(new Error(`Unsupported account type: '` + type + `'`))
   });
 
-  it('maps unexpected data', async () => {
+  it('maps account unexpected data', async () => {
     const bcAccount: BcAccount = {
           address: address,
     } as unknown as BcAccount;
@@ -89,7 +90,7 @@ describe('map account', () => {
     expect(() => {mapAccount(bcAccount)}).toThrowError(new Error(`Unsupported account type: 'undefined'`))
   });
 
-  it('maps undefined data', async () => {
+  it('maps account undefined data', async () => {
     expect(() => {mapAccount(undefined)}).toThrowError(new Error('Account is undefined'))
   });
 
@@ -111,4 +112,13 @@ describe('map account', () => {
     expect(coin.denom).toBe(secondDenom);
 
   });
+
+  it('maps balance unexpected data', async () => {
+    const bcBalance: Balance = {
+          address: address,
+    } as unknown as Balance;
+
+    expect(() => {mapBalance(bcBalance, secondDenom)}).toThrowError(new Error(`no amount or denom defined`))
+  });
+
 });

@@ -25,7 +25,7 @@
     </div>
     <div class="userdata__amounts">
       <p>{{ $t('USER_DATA.UNSTACKING') }}</p>
-      <p>{{useUserStore().getTotalUndelegated || 0}}</p>
+      <p>{{useUserStore().getTotalUndelegating || 0}}</p>
     </div>
     </div>
     <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
