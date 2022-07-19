@@ -34,7 +34,7 @@ const stakingRoutes = {
 //   }
 // }
 // function loger(to:any){
-//   if(useUserStore().getAccType==='/cosmos.vesting.v1beta1.ContinuousVestingAccount'){
+//   if(useUserStore().getAccountType==='/cosmos.vesting.v1beta1.ContinuousVestingAccount'){
 //     router.replace({name: 'base'})
 //     console.log(to)
 //   } else {

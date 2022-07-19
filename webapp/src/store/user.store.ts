@@ -248,7 +248,7 @@ export const useUserStore = defineStore({
     isContinuousVestingAccount(): boolean {
       return this.account.type === AccountType.ContinuousVestingAccount;
     },
-    getAccType(): AccountType {
+    getAccountType(): AccountType {
       return this.account.type;
     },
     getBalance(): number {
