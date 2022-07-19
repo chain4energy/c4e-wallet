@@ -93,7 +93,7 @@ async function trsansactionSuccess(arg: string) {
   //close popup
   popupOpened.value = !popupOpened.value;
 
-  // useUserStore().reconectAcc() 
+  // useUserStore().reconectAcc()
 }
 
 function checkBTN(item: Validator){

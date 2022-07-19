@@ -63,7 +63,7 @@
 
       <div v-else class="validationPopup__btns">
         <p> {{ $t('ERRORS.LOGIN_WALLET')}} </p>
-        <button @click="useUserStore().connectKeplr">{{ $t('COMMON.LOGIN' )}}</button>
+        <button @click="useUserStore().connectKeplr">{{ $t('LOGIN.LOGIN' )}}</button>
       </div>
     </div>
   </div>

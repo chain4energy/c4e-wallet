@@ -100,7 +100,7 @@ export class AccountApi extends TxBroadcastBaseApi {
   }
   public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
-  
+
     const msg = {
       typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
       value: MsgDelegate.fromPartial({
@@ -112,14 +112,14 @@ export class AccountApi extends TxBroadcastBaseApi {
         }
       }),
     };
-  
+
     const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
-  
+
   public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
-  
+
     const msg = {
       typeUrl: '/cosmos.staking.v1beta1.MsgUndelegate',
       value: MsgUndelegate.fromPartial({
@@ -131,14 +131,14 @@ export class AccountApi extends TxBroadcastBaseApi {
         }
       }),
     };
-  
+
     const fee = this.createFee(config.operationGas.undelegate, config.stakingDenom);
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
-  
+
   public async redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
-  
+
     const msg = {
       typeUrl: '/cosmos.staking.v1beta1.MsgBeginRedelegate',
       value: MsgBeginRedelegate.fromPartial({
@@ -154,13 +154,13 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.redelegate, config.stakingDenom);
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
-  
+
   // TODO proposalId as Long
   public async vote(connection: ConnectionInfo, option: VoteOption, proposalId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
     this.logToConsole(LogLevel.DEBUG, 'vote', String(option), String(proposalId));
 
     const config = useConfigurationStore().config
-  
+
     const msg = {
       typeUrl: '/cosmos.gov.v1beta1.MsgVote',
       value: MsgVote.fromPartial({
@@ -172,10 +172,10 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
     return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
   }
-  
+
   public async claimRewards(connection: ConnectionInfo, validatorsAddresses: IterableIterator<string>): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config
-  
+
     const messages = []
     for (const validator of validatorsAddresses) {
       const msg = {
@@ -191,7 +191,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     if (messages.length === 0) {
       return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('No rewards to claim'));
     }
-  
+
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
     return await this.signAndBroadcast(connection, messages, fee, '', true, null);
   }

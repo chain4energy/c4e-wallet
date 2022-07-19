@@ -15,8 +15,8 @@ export class Account {
   continuousVestingData?: ContinuousVestingData;
 
   constructor (type: AccountType, address: string) {
-    this.type = type
-    this.address = address
+    this.type = type;
+    this.address = address;
   }
 
 }
@@ -27,13 +27,13 @@ export class ContinuousVestingData {
   originalVesting: Coin[];
 
   constructor (startTime: string, endTime: string, originalVesting: Coin[]) {
-    this.startTime = startTime
-    this.endTime = endTime
-    this.originalVesting = originalVesting
+    this.startTime = startTime;
+    this.endTime = endTime;
+    this.originalVesting = originalVesting;
   }
 
   public getStartTimeDateString(): string {
-    return new Date(Number(this.startTime)).toLocaleString()
+    return new Date(Number(this.startTime)).toLocaleString();
   }
 
   public getEndTimeDateString(): string {
@@ -41,7 +41,7 @@ export class ContinuousVestingData {
   }
 
   public getOriginalVestingByDenom(denom: string): Coin {
-    const result = this.originalVesting.find(coin => coin.denom === denom)
+    const result = this.originalVesting.find(coin => coin.denom === denom);
     return result === undefined ? new Coin('0', denom) : result;
   }
 
@@ -73,8 +73,8 @@ export class Coin {
   denom: string;
 
   constructor (amount: string, denom: string) {
-    this.amount = amount
-    this.denom = denom
+    this.amount = amount;
+    this.denom = denom;
   }
 
 }
@@ -83,11 +83,11 @@ export class Balances {
   balances: Coin[];
 
   constructor (balances: Coin[]) {
-    this.balances = balances
+    this.balances = balances;
   }
 
   public getBalanceByDenom(denom: string): Coin {
-    const result = this.balances.find(coin => coin.denom === denom)
+    const result = this.balances.find(coin => coin.denom === denom);
     return result === undefined ? new Coin('0', denom) : result;
   }
 }

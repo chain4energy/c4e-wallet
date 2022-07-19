@@ -1,9 +1,11 @@
 {
-  "TTT": "oko",
-  "LOGIN": {
-    "username": "login",
-    "password": "hasło",
-    "log_in": "zaloguj"
+  "TTT": "Leg",
+  "LOGIN" : {
+    "LOGIN": "Login",
+    "LOGIN_ADDRESS": "Login with address",
+    "LOGIN_KEPLR": "Login with Keplr wallet",
+    "ADDRESS_HELP": "Explore with any address",
+    "VIEW_EXPLORER": "View on explorer"
   },
   "TABLES": {
     "CONTRACTS": {
@@ -15,36 +17,7 @@
     }
   },
   "SIDEBAR_MENU": {
-    "TITLE": "Menu_PL"
-  },
-  "HOME_VIEW": {
-    "TITLE": "Informacje",
-    "DETAILS": "Szczegóły klienta",
-    "RESET_PASSWORD_BUTTON": "Resetuj hasło",
-    "FORMS": {
-      "BANK_ACCOUNT_NUMBER": "Numer konta bankowego",
-      "STREET": "Ulica",
-      "POSTAL_CODE": "Kod pocztowy",
-      "CITY": "Miasto",
-      "PROVINCE": "Województwo",
-      "COUNTRY": "Kraj",
-      "PESEL": "PESEL",
-      "NIP": "NIP",
-      "REGON": "REGON"
-    }
-  },
-  "CUSTOMERS_VIEW": {
-    "TITLE": "Klienci",
-    "TABLE_HEADERS": {
-      "ID": "Id",
-      "FIRST_NAME": "Imię",
-      "LAST_NAME": "Nazwisko",
-      "EMAIL": "E-mail",
-      "PHONE": "Nr telefonu",
-      "PROVINCE": "Województwo",
-      "TYPE": "Type",
-      "INFORMATION": "Informacje"
-    }
+    "TITLE" : "Menu_EN"
   },
   "GOVERNANCE_VIEW": {
     "PROPOSAL_STATUS_PASSED": "Accepted",
@@ -75,36 +48,82 @@
     "LOGIN": "Login"
   },
   "DASHBOARD_VIEW": {
-    "VALIDATORS": "Validators",
-    "LATEST_BLOCK": "Latest block",
-    "TOTAL_SUPPLY": "Total supply",
-    "MAX_SUPPLY": "Max supply",
-    "POOLS": "Pools",
-    "COMMUNITY_POOL": "Community pool",
-    "STRATEGIC_REVERSE_POOL": "Strategic reverse pool",
-    "AIRDROP": "Airdrop",
-    "TOKENOMICS": "Tokenomics",
-    "BOUNDED": "Bounded",
-    "UNBOUNDED": "Unbounded",
-    "UNBOUNDING": "Unbounding",
-    "AVERAGE_BLOCK_TIME": "Average block time"
+    "VALIDATORS": "Walidatory",
+    "LATEST_BLOCK": "Ostatni blok",
+    "TOTAL_SUPPLY": "Całkowita podaż",
+    "MAX_SUPPLY": "Maksymalna podaż",
+    "POOLS": "Totalizator piłkarski",
+    "COMMUNITY_POOL": "Pula społeczności",
+    "STRATEGIC_REVERSE_POOL": "Strategiczna pula odwrócona",
+    "AIRDROP": "Zrzut",
+    "TOKENOMICS": "Tokenomika",
+    "BOUNDED": "Zobowiązany",
+    "UNBOUNDED": "Bezgraniczny",
+    "UNBOUNDING": "Bez ograniczeń",
+    "AVERAGE_BLOCK_TIME": "Średni czas blokowania",
+    "CIRCULATING_SUPPLY": "Оборотне постачання",
+    "INFLATION": "Інфляція",
+    "STACKING_APR": "Річна ставка"
   },
   "STACKING_VIEW": {
     "TABS": {
-      "ALL": "wszyscy",
-      "STACKED": "Ułożone w stos",
-      "ACTIVE": "Aktywny",
+      "ALL": "Wszystko",
+      "STACKED": "Stawiane",
+      "ACTIVE": "aktywny",
       "INACTIVE": "Nieaktywny"
     },
     "TABLE_HEADERS": {
-      "RANK": "Rank",
-      "NAME": "Imię",
+      "RANK": "Ranga",
+      "NAME": "Nazwa",
       "STATUS": "Status",
-      "VOTING_POWER": "Voting Power",
-      "YOUR_STAKE": "Your stake"
+      "VOTING_POWER": "Siła głosu",
+      "YOUR_STAKE": "Twoja stawka"
+    },
+    "VALIDATOR_STATUS": {
+      "ACTIVE": "Active PL",
+      "INACTIVE": "Inactive PL"
+    },
+    "TABLE_EXPANDED": {
+      "STAKED": "Twoja stawka",
+      "REWARDS": "Nagrody"
+    },
+    "TABLE_BUTTONS": {
+      "MANAGE_BTN": "Zarządzać"
+    },
+    "STACKING_POPUP": {
+      "HEADER": "Moja delegacja",
+      "VALIDATOR_DESCRIPTION": "Walidator dla sieci SmartContract",
+      "DELEGATE": "Delegat",
+      "UNDELEGATE": "Cofnij delegację",
+      "REDELEGATE": "redelegować"
     },
     "VALIDATORS": "Walidatory",
     "NO_VALIDATORS": "nie znaleziono walidatorów",
-    "VALIDATORS_LOADING" : "Ładowanie danych walidatorów. Proszę czekać"
+    "VALIDATORS_LOADING" : "Ładowanie danych walidatorów. Proszę czekać."
+  },
+  "USER_DATA": {
+    "TOTAL": "Całkowity",
+    "AVAILABLE": "Do dyspozycji",
+    "STACKED": "Ułożone w stos",
+    "UNSTACKING": "Rozpakowywanie",
+    "CLAIM_REWARDS": "Odbierz nagrody"
+  },
+  "COMMON": {
+    "CLOSE": "zamknąć",
+    "OPEN": "otwarty",
+    "BACK": "wstecz",
+    "DISCONNECT": "Rozłączyć się",
+    "CONNECT": "Łączyć",
+    "DESCRIPTION": "Opis",
+    "THE": "The",
+    "RETURN": "Zwrócić",
+    "INPUT": {
+      "AMOUNT": "ilość",
+      "ADDRESS": "adres"
+    }
+  },
+  "ERRORS": {
+    "LOGIN": "Musisz być zalogowany",
+    "LOGIN_WALLET": "Musisz być zalogowany za pomocą portfela"
   }
 }

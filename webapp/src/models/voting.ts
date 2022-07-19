@@ -1,5 +1,5 @@
-export declare class voting{
-  option : string;
-  proposalId: string;
-  voter : string;
-}
+// export declare class voting{
+//   option : string;
+//   proposalId: string;
+//   voter : string;
+// }

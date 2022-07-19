@@ -28,8 +28,9 @@ import {PermissionsService} from "@/services/permissions/permissions.service";
 
 const permissionsService = new PermissionsService();
 const menu = computed(() =>{
-  return permissionsService.createSideBar()
-})
+  return permissionsService.createSideBar();
+});
+
 
 function showSidebar() {
   let sidebar = document.getElementsByClassName('sidebar')[0] as HTMLElement;

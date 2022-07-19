@@ -75,7 +75,7 @@ export const useUserStore = defineStore({
       if (!checkIfConnected(connectionInfo)) {
         return false
       }
-      
+
       await apiFactory.accountApi().fetchAccount(connectionInfo.account).then(async response => {
         if (response.isSuccess() && response.data !== undefined) {
           const account = response.data;
@@ -114,17 +114,17 @@ export const useUserStore = defineStore({
     // },
     async calculateVestingLocked(latestBlTime: string){ // TODO number to BigInt
       if (!checkIfConnected(this.connectionInfo)) {
-        this.vestimgAccLocked = 0; 
+        this.vestimgAccLocked = 0;
         return
       }
       if (!this._isLoggedIn || this.account.type !== AccountType.ContinuousVestingAccount ) {
-        this.vestimgAccLocked = 0; 
+        this.vestimgAccLocked = 0;
         return
       }
       if (this.account?.continuousVestingData !== undefined) {
         this.vestimgAccLocked = this.account.continuousVestingData.calculateVestingLocked(latestBlTime);
       } else {
-        this.vestimgAccLocked = 0; 
+        this.vestimgAccLocked = 0;
         // TODO some error toast maybe
       }
       // const validtime = await Date.parse(latestBlTime);
@@ -149,7 +149,7 @@ export const useUserStore = defineStore({
       // const locked = origVesting - unlocked
       // this.vestimgAccLocked = locked;
     },
-    
+
     // async fetchUnbondingDelegations(){
     //   if (!checkIfConnected(this.connectionInfo)) {
     //     return false
@@ -308,7 +308,7 @@ function clearStateForNonexistentAccount(state: UserState) {
 
 function clearStateOnLogout(state: UserState) {
   state._isLoggedIn = false;
-  state.connectionInfo = ConnectionInfo.disconnected,
+  state.connectionInfo = ConnectionInfo.disconnected;
   state.account = Object();
   clearStateForNonexistentAccount(state);
 }
