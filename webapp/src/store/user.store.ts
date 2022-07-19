@@ -254,24 +254,18 @@ export const useUserStore = defineStore({
     getBalance(): number {
       return this.balance;
     },
-    getRewards(): number {
+    getTotalRewards(): number {
       return this.rewards.totalRewards;
     },
-    getRewardList():Rewards {
+    getRewards():Rewards {
       return this.rewards;
     },
-    // getStacked(): number {
-    //   return this.stacked;
-    // },
     getTotalUndelegating(): number{
       return this.undelegations.totalUndelegating;
     },
     getUndelegations(): UnbondingDelegations {
       return this.undelegations;
     },
-    // getStackedList(): stackingList{
-    //   return this.stackingList
-    // },
     getDelegations(): Delegations {
       return this.delegations;
     },

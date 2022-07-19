@@ -42,7 +42,7 @@ export class Validator{
   }
 
   public get rewardsAmount(): string {
-    return useUserStore().getRewardList.getAmountByValidator(this.operatorAddress);
+    return useUserStore().getRewards.getAmountByValidator(this.operatorAddress);
   }
 
 }

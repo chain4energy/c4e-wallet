@@ -59,7 +59,7 @@ describe('get account', () => {
     expect(userStore.getConnectionType).toBe(ConnectionType.Address)
     expectBaseAccount(userStore.getAccount, address);
     expect(userStore.getBalance).toBe(Number(balanceAmount))
-    expectRewards(userStore.getRewardList);
+    expectRewards(userStore.getRewards);
     expectDelegatorDelegations(userStore.getDelegations)
     expectDelegatorUnbondingDelegations(userStore.getUndelegations);
     expect(userStore.isLoggedIn).toBe(true)
