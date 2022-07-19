@@ -1,5 +1,3 @@
-import { AxiosResponse } from 'axios';
-
 export class RequestResponse<T, E> {
   error?: E;
   data?: T;
@@ -10,11 +8,11 @@ export class RequestResponse<T, E> {
   }
 
   public isSuccess(): boolean {
-    return this.error === undefined
+    return this.error === undefined;
   }
 
   public isError(): boolean {
-    return this.error !== undefined
+    return this.error !== undefined;
   }
 
 }

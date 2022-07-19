@@ -1,8 +1,8 @@
-export declare class transaction {
-  delegatorAddress: string;
-  amount : string;
-  validatorSrcAddress : string;
-  validatorDstAddress: string;
-  type : string;
-}
-
+// export declare class transaction {
+//   delegatorAddress: string;
+//   amount : string;
+//   validatorSrcAddress : string;
+//   validatorDstAddress: string;
+//   type : string;
+// }
+//

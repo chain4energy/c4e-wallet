@@ -72,7 +72,7 @@ import {FilterMatchMode, FilterOperator} from "primevue/api";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 
 const popupOpened = ref(false);
-const currentValidator = ref({})
+const currentValidator = ref({});
 
 const props = defineProps({
   validators: {
@@ -84,11 +84,11 @@ const userStore = useUserStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<Validator>());
 
-async function trsansactionSuccess(arg: string) {
+async function trsansactionSuccess() {
   //close popup
   popupOpened.value = !popupOpened.value;
 
-  useUserStore().reconectAcc()
+  useUserStore().reconnectAcc();
 }
 
 function checkBTN(item: Validator){
@@ -117,7 +117,7 @@ function createEagerLoadingConfig(): EagerLoadingConfig<Validator>{
 }
 
 function onRowExpand(data: Validator) {
-  expandedRow.value = (expandedRow.value[0] === data) ? [] : [data]
+  expandedRow.value = (expandedRow.value[0] === data) ? [] : [data];
 }
 
 const filters = ref({

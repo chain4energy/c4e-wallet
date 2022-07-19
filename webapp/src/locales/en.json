@@ -79,6 +79,10 @@
       "VOTING_POWER": "Voting Power",
       "YOUR_STAKE": "Your stake"
     },
+    "VALIDATOR_STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
     "TABLE_EXPANDED": {
       "STAKED": "Your stake",
       "REWARDS": "Rewards"

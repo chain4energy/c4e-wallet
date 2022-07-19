@@ -111,6 +111,7 @@ import { computed, PropType, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
 import { Validator, ValidatorStatus } from "@/models/store/validator";
 import { useTokensStore } from "@/store/tokens.store";
+import { useI18n } from "vue-i18n";
 
 
 const props = defineProps({
@@ -122,20 +123,17 @@ const props = defineProps({
     required: true,
   }
 });
-const validatorsStore = useValidatorsStore();
-const userStore = useUserStore()
+const userStore = useUserStore();
 const validators= computed(() => props.validators);
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const popupOpened = ref(false);
-const currentValidator = ref({})
-// const rewardsFetched = computed(() => validatorsStore.getRewardsFetchetStatus);
-// const stackingFetched = computed(() => validatorsStore.getStackingFetchResult);
+const currentValidator = ref({});
 
 function toFixedAm(amount: string, decimal: number) {
 return parseFloat(amount).toFixed(decimal);
 }
 
-useTokensStore().fetchStakingPool()
+useTokensStore().fetchStakingPool();
 const expandedRow = ref([{}]);
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -161,7 +159,7 @@ const filters = ref({
   },
 });
 function onRowExpande(data: Validator) {
-  expandedRow.value = (expandedRow.value[0] === data) ? [{}] : [data]
+  expandedRow.value = (expandedRow.value[0] === data) ? [{}] : [data];
 }
 function checkBTN(item: Validator){
   currentValidator.value = item;
@@ -169,25 +167,19 @@ function checkBTN(item: Validator){
   return popupOpened;
 }
 
-async function trsansactionSuccess(arg: string) {
+async function trsansactionSuccess() {
   popupOpened.value = !popupOpened.value;
-  useUserStore().reconectAcc()
+  useUserStore().reconnectAcc();
 
 }
-const showPopupVal = ref(false);
 const address = ref('');
-function showPopup(valaddress : string) {
-  showPopupVal.value = !showPopupVal.value;
-  address.value = valaddress;
-  useUserStore().fetchAccountData()
-}
-
+const { t } = useI18n()
 function toViewStatus (status: ValidatorStatus): string {
   switch (status) {
     case ValidatorStatus.Bonded:
-      return 'Active';
+      return t('STACKING_VIEW.VALIDATOR_STATUS.ACTIVE') ;
     default:
-      return 'Inactive';
+      return t('STACKING_VIEW.VALIDATOR_STATUS.INACTIVE');
   }
 }
 </script>

@@ -23,12 +23,13 @@ export class ConnectionInfo {
   readonly modifiable: boolean;
   readonly connectionType: ConnectionType;
 
-  constructor(account = '',
+  constructor(
+    account = '',
     modifiable = false,
     connectionType = ConnectionType.Disconnected) {
-    this.account = account
-    this.modifiable = modifiable
-    this.connectionType = connectionType
+    this.account = account;
+    this.modifiable = modifiable;
+    this.connectionType = connectionType;
   }
 
 }
@@ -66,7 +67,7 @@ export default class WalletConnectionApi extends LoggedService {
       address,
       false,
       ConnectionType.Address,
-    )
+    );
     return new RequestResponse<ConnectionInfo, any>(undefined, connection);
   }
 
@@ -83,15 +84,15 @@ export default class WalletConnectionApi extends LoggedService {
           account[0].address,
           true,
           ConnectionType.Keplr,
-        )
+        );
         return new RequestResponse<ConnectionInfo, any>(undefined, connection);
       } else {
         const message = 'Keplr not installed';
-        toast.error(message)
+        toast.error(message);
         return new RequestResponse<ConnectionInfo, ConnectionError>(new ConnectionError(message));
       }
     } catch (error) {
-      toast.error('Wallet Err: ' + error)
+      toast.error('Wallet Err: ' + error);
       return new RequestResponse<ConnectionInfo, ConnectionError>(new ConnectionError('' + error));
     } finally {
       useSplashStore().decrement();
@@ -99,7 +100,7 @@ export default class WalletConnectionApi extends LoggedService {
   }
 
   private createKeplrConfig(): ChainInfo {
-    const config = useConfigurationStore().config
+    const config = useConfigurationStore().config;
     const chainInfo = {
       chainId: config.chainId,
       chainName: config.chainId,
@@ -142,8 +143,8 @@ export default class WalletConnectionApi extends LoggedService {
         high: 0.03,
       },
       walletUrlForStaking: config.stakingPageURL
-    } as ChainInfo
-    return chainInfo
+    } as ChainInfo;
+    return chainInfo;
   }
 
 }

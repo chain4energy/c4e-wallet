@@ -17,7 +17,7 @@ import LoadingScreen from '@/components/LoadingScreen.vue';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import AppSidebar from '@/components/layout/AppSidebar.vue';
 
-import { computed, inject, onBeforeMount, onMounted, onUpdated, watch } from "vue";
+import { inject, onBeforeMount, onMounted } from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
 import {createRouterBeforeEach} from '@/router/before_each';
 
@@ -27,9 +27,6 @@ import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import {useConfigurationStore} from "@/store/configuration.store";
 import { useUserStore } from "@/store/user.store";
-import LogingPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
-import router from "@/router";
-import { useBlockStore } from "@/store/block.store";
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 onBeforeMount(() => {
@@ -39,8 +36,8 @@ onBeforeMount(() => {
 onMounted(() => {
   createRouterBeforeEach(logger);
   setTimeout(() =>{
-      useUserStore().reconectAcc()
-  },400)
+      useUserStore().reconnectAcc();
+  },400);
 });
 
 </script>
@@ -75,7 +72,7 @@ onMounted(() => {
 
 .footer {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
 }
 
 nav {
@@ -93,7 +90,7 @@ nav {
 @media only screen and (max-width: 600px) {
   .main-container {
     .content {
-      padding-left: 0px;
+      padding-left: 0;
     }
   }
 

@@ -79,6 +79,10 @@
       "VOTING_POWER": "Siła głosu",
       "YOUR_STAKE": "Twoja stawka"
     },
+    "VALIDATOR_STATUS": {
+      "ACTIVE": "Active PL",
+      "INACTIVE": "Inactive PL"
+    },
     "TABLE_EXPANDED": {
       "STAKED": "Twoja stawka",
       "REWARDS": "Nagrody"
