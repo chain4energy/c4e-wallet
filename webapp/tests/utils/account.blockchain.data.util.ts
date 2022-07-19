@@ -1,3 +1,4 @@
+import { Account, AccountType } from "@/models/store/account";
 import { defaultDenom } from "./common.blockchain.data.util";
 
 export const vestingAccountTimeToSystem = '000';
@@ -211,4 +212,11 @@ export function createSingleBalance(denom: string, amount: string) {
     denom: denom,
     amount: amount
   }
+}
+
+export function expectBaseAccount(account: Account | undefined, expectedAddress: string) {
+  expect(account).toBeInstanceOf(Account);
+  expect(account?.continuousVestingData).toBeUndefined();
+  expect(account?.type).toBe(AccountType.BaseAccount);
+  expect(account?.address).toBe(expectedAddress);
 }

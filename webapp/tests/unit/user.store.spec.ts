@@ -4,9 +4,11 @@ import apiFactory from "@/api/factory.api";
 import { useUserStore } from '@/store/user.store';
 import { useConfigurationStore } from '@/store/configuration.store';
 import { defaultDenom } from "../utils/common.blockchain.data.util";
-import { createBaseAccountResponseData, createSingleBalanceResponseData} from '../utils/account.blockchain.data.util';
-import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData } from '../utils/staking.blockchain.data.util';
-import { createRewardsResponseData } from '../utils/distribution.blockchain.data.util';
+import { createBaseAccountResponseData, createSingleBalanceResponseData, expectBaseAccount} from '../utils/account.blockchain.data.util';
+import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, expectDelegatorDelegations, expectDelegatorUnbondingDelegations } from '../utils/staking.blockchain.data.util';
+import { createRewardsResponseData, expectRewards } from '../utils/distribution.blockchain.data.util';
+import { ConnectionInfo, ConnectionType } from '@/api/wallet.connecton.api';
+import { expectAddressConnectionInfo } from '../utils/wallet.blockchain.data.util';
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -21,17 +23,16 @@ describe('get account', () => {
     useConfigurationStore().config.stakingDenom = denom
   });
 
-  // it('gets BaseAccount', async () => {
-  //   const account = { data: createBaseAccountResponseData(address) };
+  // it('gets balance', async () => {
 
-  //   mockedAxios.request.mockResolvedValue(account);
-  //   const result = await api.fetchAccount(address)
-  //   expect(result.isError()).toBe(false)
-  //   expect(result.isSuccess()).toBe(true)
-  //   expect(result.error).toBeUndefined()
-  //   expect(result.data?.address).toBe(address)
-  //   expect(result.data?.type).toBe(AccountType.BaseAccount)
-  //   expect(result.data?.continuousVestingData).toBeUndefined();
+  //   // const fetchBalance = (stt as any).__get__('fetchBalance');
+  //   const balanceAmount = '49031887606805'
+  //   const userStore = useUserStore();
+  //   const connectionInfo = new ConnectionInfo('fsafaf', true, ConnectionType.Keplr);
+  //   const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+  //   mockedAxios.request.mockResolvedValueOnce(balance);
+  //   await fetchBalance(connectionInfo, userStore);
+  //   expect(userStore.getBalance).toBe(Number(balanceAmount))
 
   // });
 
@@ -39,6 +40,7 @@ describe('get account', () => {
 
     const balanceAmount = '49031887606805'
     const userStore = useUserStore();
+    userStore.logOut();
     const account = { data: createBaseAccountResponseData(address) };
     const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
     const rewards = { data: createRewardsResponseData() };
@@ -53,14 +55,15 @@ describe('get account', () => {
 
     await userStore.connectAsAddress(address)
 
-
-    // const result = await api.fetchAccount('c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg')
-    // expect(result.isError()).toBe(false)
-    // expect(result.isSuccess()).toBe(true)
-    // expect(result.error).toBeUndefined()
-    // expect(result.data?.address).toBe('c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg')
-    // expect(result.data?.type).toBe(AccountType.BaseAccount)
-    // expect(result.data?.continuousVestingData).toBeUndefined();
+    expectAddressConnectionInfo(userStore.connectionInfo, address)
+    expect(userStore.getConnectionType).toBe(ConnectionType.Address)
+    expectBaseAccount(userStore.getAccount, address);
+    expect(userStore.getBalance).toBe(Number(balanceAmount))
+    expectRewards(userStore.getRewardList);
+    expectDelegatorDelegations(userStore.getDelegations)
+    expectDelegatorUnbondingDelegations(userStore.getUndelegations);
+    expect(userStore.isLoggedIn).toBe(true)
+    expect(userStore.getVestingLockAmount).toBe(0)
 
   });
 

@@ -3,9 +3,9 @@ import axios, { AxiosResponse } from 'axios';
 import { AccountType, ContinuousVestingData } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
 import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createErrorResponseData, defaultAxiosErrorName, defaultDenom, defaultErrorName } from '../utils/common.blockchain.data.util';
-import { createBaseAccountResponseData, createContinuousVestingAccountResponseData, createSingleBalanceResponseData, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, vestingAccountTimeToSystem } from '../utils/account.blockchain.data.util';
-import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, defaultDelegatorDelegationsValidators, defaultDelegatorUnbondingDelegationsValidators, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, findDelegatorUnbondingDelegationAmountByValidator, findDelegatorUnbondingDelegationTotalAmount } from '../utils/staking.blockchain.data.util';
-import { createRewardsResponseData, defaultRewardsValidators, findRewardsByValidator, findTotalRewards } from '../utils/distribution.blockchain.data.util';
+import { createBaseAccountResponseData, createContinuousVestingAccountResponseData, createSingleBalanceResponseData, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, expectBaseAccount, vestingAccountTimeToSystem } from '../utils/account.blockchain.data.util';
+import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, defaultDelegatorDelegationsValidators, defaultDelegatorUnbondingDelegationsValidators, expectDelegatorDelegations, expectDelegatorUnbondingDelegations, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, findDelegatorUnbondingDelegationAmountByValidator, findDelegatorUnbondingDelegationTotalAmount } from '../utils/staking.blockchain.data.util';
+import { createRewardsResponseData, defaultRewardsValidators, expectRewards, findRewardsByValidator, findTotalRewards } from '../utils/distribution.blockchain.data.util';
 
 import { useConfigurationStore } from '@/store/configuration.store';
 import { Keplr } from "@keplr-wallet/types";
@@ -116,9 +116,11 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.address).toBe(address)
-    expect(result.data?.type).toBe(AccountType.BaseAccount)
-    expect(result.data?.continuousVestingData).toBeUndefined();
+
+    expectBaseAccount(result.data, address);
+    // expect(result.data?.address).toBe(address)
+    // expect(result.data?.type).toBe(AccountType.BaseAccount)
+    // expect(result.data?.continuousVestingData).toBeUndefined();
 
   });
 
@@ -296,13 +298,14 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.delegations.size).toBe(defaultDelegatorDelegationsValidators.length);
-    expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount());
-    defaultDelegatorDelegationsValidators.forEach(validatorAddress => {
-      const delegation = result.data?.delegations.get(validatorAddress);
-      expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress));
-      expect(delegation?.validatorAddress).toBe(validatorAddress);
-    });
+    expectDelegatorDelegations(result.data)
+    // expect(result.data?.delegations.size).toBe(defaultDelegatorDelegationsValidators.length);
+    // expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount());
+    // defaultDelegatorDelegationsValidators.forEach(validatorAddress => {
+    //   const delegation = result.data?.delegations.get(validatorAddress);
+    //   expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress));
+    //   expect(delegation?.validatorAddress).toBe(validatorAddress);
+    // });
   });
 
   it('gets delegator delegations - no delegations', async () => {
@@ -359,13 +362,15 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.delegations.size).toBe(validatorsAll.length);
-    expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount(balancesAll));
-    validatorsAll.forEach(validatorAddress => {
-      const delegation = result.data?.delegations.get(validatorAddress);
-      expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress, validatorsAll, balancesAll));
-      expect(delegation?.validatorAddress).toBe(validatorAddress);
-    });
+
+    expectDelegatorDelegations(result.data, validatorsAll, balancesAll)
+    // expect(result.data?.delegations.size).toBe(validatorsAll.length);
+    // expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount(balancesAll));
+    // validatorsAll.forEach(validatorAddress => {
+    //   const delegation = result.data?.delegations.get(validatorAddress);
+    //   expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress, validatorsAll, balancesAll));
+    //   expect(delegation?.validatorAddress).toBe(validatorAddress);
+    // });
   });
 
   it('gets delegator delegations with error', async () => {
@@ -438,18 +443,20 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.undelegations.size).toBe(defaultDelegatorUnbondingDelegationsValidators.length);
-    expect(result.data?.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount());
-    defaultDelegatorUnbondingDelegationsValidators.forEach(validatorAddress => {
-      const undelegation = result.data?.undelegations.get(validatorAddress);
-      const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress);
-      expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
-      for (let i = 0; i < validatorExpecedEntries.length; i++) {
-        expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
 
-      }
-      expect(undelegation?.validatorAddress).toBe(validatorAddress);
-    });
+    expectDelegatorUnbondingDelegations(result.data);
+    // expect(result.data?.undelegations.size).toBe(defaultDelegatorUnbondingDelegationsValidators.length);
+    // expect(result.data?.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount());
+    // defaultDelegatorUnbondingDelegationsValidators.forEach(validatorAddress => {
+    //   const undelegation = result.data?.undelegations.get(validatorAddress);
+    //   const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress);
+    //   expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
+    //   for (let i = 0; i < validatorExpecedEntries.length; i++) {
+    //     expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+
+    //   }
+    //   expect(undelegation?.validatorAddress).toBe(validatorAddress);
+    // });
   });
 
   it('gets delegator unbonding delegations - no delegations', async () => {
@@ -506,18 +513,22 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.undelegations.size).toBe(validatorsAll.length);
-    expect(result.data?.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount(entiresAll));
-    validatorsAll.forEach(validatorAddress => {
-      const undelegation = result.data?.undelegations.get(validatorAddress);
-      const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress, validatorsAll, entiresAll);
-      expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
-      for (let i = 0; i < validatorExpecedEntries.length; i++) {
-        expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
 
-      }
-      expect(undelegation?.validatorAddress).toBe(validatorAddress);
-    });
+    expectDelegatorUnbondingDelegations(result.data, validatorsAll, entiresAll);
+
+
+    // expect(result.data?.undelegations.size).toBe(validatorsAll.length);
+    // expect(result.data?.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount(entiresAll));
+    // validatorsAll.forEach(validatorAddress => {
+    //   const undelegation = result.data?.undelegations.get(validatorAddress);
+    //   const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress, validatorsAll, entiresAll);
+    //   expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
+    //   for (let i = 0; i < validatorExpecedEntries.length; i++) {
+    //     expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+
+    //   }
+    //   expect(undelegation?.validatorAddress).toBe(validatorAddress);
+    // });
   });
 
   it('gets delegator unbonding delegations with error', async () => {
@@ -591,18 +602,19 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.rewards.size).toBe(defaultRewardsValidators.length);
-    expect(result.data?.totalRewards).toBe(Number(findTotalRewards(defaultDenom).amount));
-    defaultRewardsValidators.forEach(validatorAddress => {
-      const reward = result.data?.rewards.get(validatorAddress);
-      const expectedReward = findRewardsByValidator(validatorAddress);
-      expect(reward?.rewards.length).toBe(expectedReward.length);
-      for (let i = 0; i < expectedReward.length; i++) {
-        expect(reward?.rewards[i].amount).toBe(expectedReward[i].amount);
-        expect(reward?.rewards[i].denom).toBe(expectedReward[i].denom);
-      }
-      expect(reward?.validatorAddress).toBe(validatorAddress);
-    });
+    expectRewards(result.data);
+    // expect(result.data?.rewards.size).toBe(defaultRewardsValidators.length);
+    // expect(result.data?.totalRewards).toBe(Number(findTotalRewards(defaultDenom).amount));
+    // defaultRewardsValidators.forEach(validatorAddress => {
+    //   const reward = result.data?.rewards.get(validatorAddress);
+    //   const expectedReward = findRewardsByValidator(validatorAddress);
+    //   expect(reward?.rewards.length).toBe(expectedReward.length);
+    //   for (let i = 0; i < expectedReward.length; i++) {
+    //     expect(reward?.rewards[i].amount).toBe(expectedReward[i].amount);
+    //     expect(reward?.rewards[i].denom).toBe(expectedReward[i].denom);
+    //   }
+    //   expect(reward?.validatorAddress).toBe(validatorAddress);
+    // });
   });
 
   it('gets delegator rewards - no rewards', async () => {
@@ -850,7 +862,7 @@ async function keplrTxError(action: () => Promise<RequestResponse<TxData, TxBroa
   expect(response.data).toBeUndefined();
   expect(response.error).not.toBeUndefined();
   expect(response.error?.message).not.toBeUndefined();
-  expect(response.error?.message).toBe('Transaction Broadcast error');
+  expect(response.error?.message).toBe('Deliver tx failure');
 
   expect(response.error?.txData).not.toBeUndefined();
   expectTx(txErrorResponse, response.error?.txData)

@@ -15,7 +15,7 @@ const toast = useToast();
 interface UserState {
   connectionInfo: ConnectionInfo
   account: Account
-  balances: number
+  balance: number
   vestimgAccLocked: number
   rewards: Rewards
   _isLoggedIn: boolean
@@ -29,7 +29,7 @@ export const useUserStore = defineStore({
     return {
       connectionInfo: ConnectionInfo.disconnected,
       account: Object(), // TODO probably type - Account | null
-      balances: 0,
+      balance: 0,
       vestimgAccLocked: 0,
       rewards: new Rewards(),
       _isLoggedIn: false,
@@ -251,8 +251,8 @@ export const useUserStore = defineStore({
     getAccType(): AccountType {
       return this.account.type;
     },
-    getBalances(): number {
-      return this.balances;
+    getBalance(): number {
+      return this.balance;
     },
     getRewards(): number {
       return this.rewards.totalRewards;
@@ -299,7 +299,7 @@ function checkIfConnected(connectionInfo: ConnectionInfo): boolean {
 }
 
 function clearStateForNonexistentAccount(state: UserState) {
-  state.balances = 0;
+  state.balance = 0;
   state.vestimgAccLocked = 0;
   state.rewards = new Rewards();
   state.delegations = new Delegations();
@@ -319,7 +319,7 @@ async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState): P
   const response = await apiFactory.accountApi().fetchBalance(address, denom)
   if (response.isSuccess() && response.data !== undefined) {
     const balance = response.data;
-    state.balances = parseInt(balance.amount); // TODO use bigint recalculate with decimal
+    state.balance = parseInt(balance.amount); // TODO use bigint recalculate with decimal
     return true;
   } else {
     return false;

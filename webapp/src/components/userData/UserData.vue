@@ -17,7 +17,7 @@
     </div>
     <div class="userdata__amounts">
       <p>{{ $t('USER_DATA.AVAILABLE') }}</p>
-      <p>{{useUserStore().getBalances || 0}}</p>
+      <p>{{useUserStore().getBalance || 0}}</p>
     </div>
     <div class="userdata__amounts">
       <p>{{ $t('USER_DATA.STACKED') }}</p>
@@ -70,7 +70,7 @@ function claimRewards(){
 useBlockStore().fetchLatestBlock()
 setInterval(useBlockStore().fetchLatestBlock, 6000)
 
-const total = computed(() => useUserStore().getTotalUndelegating + useUserStore().getTotalDelegated + useUserStore().getBalances);
+const total = computed(() => useUserStore().getTotalUndelegating + useUserStore().getTotalDelegated + useUserStore().getBalance);
 const locked = computed(()=> useUserStore().getVestingLockAmount.toFixed(0))
 </script>
 

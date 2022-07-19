@@ -1,3 +1,4 @@
+import { Delegations, UnbondingDelegations } from "@/models/store/staking";
 import { defaultDenom } from "./common.blockchain.data.util";
 
 export const defaultDelegatorDelegationsValidators = [
@@ -170,4 +171,34 @@ undelegations.push({
 })
 }
 return  undelegations;
+}
+
+export function expectDelegatorDelegations(delegations: Delegations | undefined,
+    expectedValidators = defaultDelegatorDelegationsValidators,
+    expectedBalancesAmount = defaultDelegatorDelegationsBalances) {
+  expect(delegations?.delegations.size).toBe(expectedValidators.length);
+  expect(delegations?.totalDelegated).toBe(findDelegatorDelegationTotalAmount(expectedBalancesAmount));
+  expectedValidators.forEach(validatorAddress => {
+    const delegation = delegations?.delegations.get(validatorAddress);
+    expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress, expectedValidators, expectedBalancesAmount));
+    expect(delegation?.validatorAddress).toBe(validatorAddress);
+  });
+}
+
+
+export function expectDelegatorUnbondingDelegations(undelegations: UnbondingDelegations | undefined,
+    expectedValidators = defaultDelegatorUnbondingDelegationsValidators,
+    expectedEntriesAmounts = defaultDelegatorUnbondingDelegationsEntriesAmounts) {
+  expect(undelegations?.undelegations.size).toBe(expectedValidators.length);
+  expect(undelegations?.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount(expectedEntriesAmounts));
+  expectedValidators.forEach(validatorAddress => {
+    const undelegation = undelegations?.undelegations.get(validatorAddress);
+    const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress, expectedValidators, expectedEntriesAmounts);
+    expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
+    for (let i = 0; i < validatorExpecedEntries.length; i++) {
+      expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+
+    }
+    expect(undelegation?.validatorAddress).toBe(validatorAddress);
+  });
 }

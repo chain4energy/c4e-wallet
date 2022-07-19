@@ -2,7 +2,7 @@ import { Account as BcAccount, Balance } from "@/models/blockchain/account";
 import { Account as StoreAccount, AccountType, Coin, ContinuousVestingData } from "@/models/store/account";
 import { mapAccount, mapBalance } from "@/models/mapper/account.mapper";
 import { defaultDenom } from "../utils/common.blockchain.data.util";
-import { createBaseAccount, createBaseVestingAccount, createContinuousVestingAccount, createDelayedVestingAccount, createModuleAccount, createPeriodicVestingAccount, createSingleBalance, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, vestingAccountTimeToSystem } from '../utils/account.blockchain.data.util';
+import { createBaseAccount, createBaseVestingAccount, createContinuousVestingAccount, createDelayedVestingAccount, createModuleAccount, createPeriodicVestingAccount, createSingleBalance, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, expectBaseAccount, vestingAccountTimeToSystem } from '../utils/account.blockchain.data.util';
 
 const address = 'c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg'
 const denom = defaultDenom
@@ -13,10 +13,12 @@ describe('map account', () => {
   it('maps BaseAccount', async () => {
     const bcAccount: BcAccount = createBaseAccount(address) as BcAccount;
     const storeAccount = mapAccount(bcAccount);
-    expect(storeAccount).toBeInstanceOf(StoreAccount);
-    expect(storeAccount.continuousVestingData).toBeUndefined();
-    expect(storeAccount.type).toBe(AccountType.BaseAccount);
-    expect(storeAccount.address).toBe(address);
+    expectBaseAccount(storeAccount, address);
+
+    // expect(storeAccount).toBeInstanceOf(StoreAccount);
+    // expect(storeAccount.continuousVestingData).toBeUndefined();
+    // expect(storeAccount.type).toBe(AccountType.BaseAccount);
+    // expect(storeAccount.address).toBe(address);
 
   });
 

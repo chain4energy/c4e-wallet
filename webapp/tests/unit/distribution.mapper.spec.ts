@@ -1,7 +1,7 @@
 
 import { defaultDenom } from "../utils/common.blockchain.data.util";
 import { defaultDelegatorDelegationsValidators } from '../utils/staking.blockchain.data.util';
-import { createRewards, createRewardsResponseData, defaultRewardsCoins, defaultRewardsValidators, findRewardsByValidator, findTotalRewards } from '../utils/distribution.blockchain.data.util';
+import { createRewards, createRewardsResponseData, defaultRewardsCoins, defaultRewardsValidators, expectRewards, findRewardsByValidator, findTotalRewards } from '../utils/distribution.blockchain.data.util';
 import { mapReward, mapRewards } from "@/models/mapper/distribution.mapper";
 import { Reward, RewardsResponse } from "@/models/blockchain/distribution";
 import { setActivePinia, createPinia } from 'pinia'
@@ -49,18 +49,20 @@ describe('tests mapping of staking related data', () => {
     const bcRewardsData = createRewardsResponseData() as RewardsResponse;
     const storeReward = mapRewards(bcRewardsData);
 
-    expect(storeReward.rewards.size).toBe(defaultRewardsValidators.length);
-    expect(storeReward.totalRewards).toBe(Number(findTotalRewards(defaultDenom).amount));
-    defaultRewardsValidators.forEach(validatorAddress => {
-      const reward = storeReward.rewards.get(validatorAddress);
-      const expectedReward = findRewardsByValidator(validatorAddress);
-      expect(reward?.rewards.length).toBe(expectedReward.length);
-      for (let i = 0; i < expectedReward.length; i++) {
-        expect(reward?.rewards[i].amount).toBe(expectedReward[i].amount);
-        expect(reward?.rewards[i].denom).toBe(expectedReward[i].denom);
-      }
-      expect(reward?.validatorAddress).toBe(validatorAddress);
-    });
+    expectRewards(storeReward);
+
+    // expect(storeReward.rewards.size).toBe(defaultRewardsValidators.length);
+    // expect(storeReward.totalRewards).toBe(Number(findTotalRewards(defaultDenom).amount));
+    // defaultRewardsValidators.forEach(validatorAddress => {
+    //   const reward = storeReward.rewards.get(validatorAddress);
+    //   const expectedReward = findRewardsByValidator(validatorAddress);
+    //   expect(reward?.rewards.length).toBe(expectedReward.length);
+    //   for (let i = 0; i < expectedReward.length; i++) {
+    //     expect(reward?.rewards[i].amount).toBe(expectedReward[i].amount);
+    //     expect(reward?.rewards[i].denom).toBe(expectedReward[i].denom);
+    //   }
+    //   expect(reward?.validatorAddress).toBe(validatorAddress);
+    // });
 
   });
 
