@@ -57,7 +57,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       }],
       gas: gas,
     };
-    return fee
+    return fee;
   }
   
   protected async signAndBroadcast(connection: ConnectionInfo, 
@@ -70,16 +70,16 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           new TxBroadcastError('Cannot broadcast transaction with: ' + connection.connectionType + ' signer'),
           'Transaction Broadcast error',
           !skipErrorToast
-        )
+        );
         // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot broadcast transaction with: ' + connection.connectionType + ' signer'));
       }
-      const client = await this.createClient(connection.connectionType)
+      const client = await this.createClient(connection.connectionType);
       if (client == undefined) {
         return this.createTxErrorResponseWithToast(
           new TxBroadcastError('Cannot get signing client'),
           'Transaction Broadcast error',
           !skipErrorToast
-        )
+        );
         // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot get client'));
       }
       const response = await client.signAndBroadcast(connection.account, messages, fee, memo);
@@ -89,7 +89,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           new TxBroadcastError('Deliver tx failure', response),
           'Transaction Broadcast error',
           !skipErrorToast
-        )
+        );
         // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Transaction Broadcast error', response));
       }
       return new RequestResponse<TxData, TxBroadcastError>(undefined, new TxData(response));
@@ -100,7 +100,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         new TxBroadcastError(error.message),
         'Transaction Broadcast error',
         !skipErrorToast
-      )
+      );
       // if (!skipErrorToast) {
       //   toast.error('Error broadcasting transaction:' + error.message);
       // }
@@ -111,30 +111,30 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
   }
   
   private createClient(connectionType: ConnectionType) {
-    const signer = this.getOfflineSigner(connectionType)
+    const signer = this.getOfflineSigner(connectionType);
     if (signer == undefined) {
-      return undefined
+      return undefined;
     }
-    const rpc = useConfigurationStore().config.bcRpcURL
+    const rpc = useConfigurationStore().config.bcRpcURL;
     const client = SigningStargateClient.connectWithSigner(
       rpc,
       signer,
     );
-    return client
+    return client;
   }
   
   private getOfflineSigner(connectionType: ConnectionType) {
     switch(connectionType) {
       case ConnectionType.Keplr: {
         if(window.keplr) {
-          const chainId = useConfigurationStore().config.chainId
+          const chainId = useConfigurationStore().config.chainId;
           const offlineSigner = window.keplr.getOfflineSigner(chainId);
-          return offlineSigner
+          return offlineSigner;
         }
-        throw new Error('Keplr not installed')
+        throw new Error('Keplr not installed');
       }
       default: {
-        throw new Error('No signer for connnection type: ' + connectionType)
+        throw new Error('No signer for connnection type: ' + connectionType);
       }
     }
   }
@@ -144,8 +144,8 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       let errorDataString = errorData.message;
       if (errorData.txData !== undefined) {
         errorDataString += '\r\nTx: ' + errorData.txData.transactionHash;
-        errorDataString += '\r\n\tHeight: ' + errorData.txData.height
-        errorDataString += '\r\n\tCode: ' + errorData.txData.code
+        errorDataString += '\r\n\tHeight: ' + errorData.txData.height;
+        errorDataString += '\r\n\tCode: ' + errorData.txData.code;
       }
       toast.error(toastMessageBeginning + this.getServiceType() + '\r\n' + errorDataString);
     }
