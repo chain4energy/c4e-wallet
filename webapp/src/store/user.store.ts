@@ -114,32 +114,40 @@ export const useUserStore = defineStore({
     // },
     async calculateVestingLocked(latestBlTime: string){ // TODO number to BigInt
       if (!checkIfConnected(this.connectionInfo)) {
+        this.vestimgAccLocked = 0; 
         return
       }
       if (!this._isLoggedIn || this.account.type !== AccountType.ContinuousVestingAccount ) {
+        this.vestimgAccLocked = 0; 
         return
       }
-      const validtime = await Date.parse(latestBlTime);
-      const endTime = Number(this.account?.continuousVestingData?.endTime);
-      if (validtime >= endTime) {
-        this.vestimgAccLocked = 0;
-        return;
+      if (this.account?.continuousVestingData !== undefined) {
+        this.vestimgAccLocked = this.account.continuousVestingData.calculateVestingLocked(latestBlTime);
+      } else {
+        this.vestimgAccLocked = 0; 
+        // TODO some error toast maybe
       }
-      const startTime = Number(this.account?.continuousVestingData?.startTime);
-      const denom = useConfigurationStore().config.stakingDenom
-      const origVesting = Number(this.account?.continuousVestingData?.getOriginalVestingByDenom(denom).amount)
-      if (validtime <= startTime) {
-        this.vestimgAccLocked =  origVesting;
-        return
-      }
+      // const validtime = await Date.parse(latestBlTime);
+      // const endTime = Number(this.account?.continuousVestingData?.endTime);
+      // if (validtime >= endTime) {
+      //   this.vestimgAccLocked = 0;
+      //   return;
+      // }
+      // const startTime = Number(this.account?.continuousVestingData?.startTime);
+      // const denom = useConfigurationStore().config.stakingDenom
+      // const origVesting = Number(this.account?.continuousVestingData?.getOriginalVestingByDenom(denom).amount)
+      // if (validtime <= startTime) {
+      //   this.vestimgAccLocked =  origVesting;
+      //   return
+      // }
 
-      const x = validtime - startTime
-      const y = endTime - startTime
-      const diference = x/y;
-      const unlocked = origVesting * diference
-      console.log(origVesting * diference)
-      const locked = origVesting - unlocked
-      this.vestimgAccLocked = locked;
+      // const x = validtime - startTime
+      // const y = endTime - startTime
+      // const diference = x/y;
+      // const unlocked = origVesting * diference
+      // console.log(origVesting * diference)
+      // const locked = origVesting - unlocked
+      // this.vestimgAccLocked = locked;
     },
     
     // async fetchUnbondingDelegations(){

@@ -21,7 +21,21 @@ describe('get account', () => {
     useConfigurationStore().config.stakingDenom = denom
   });
 
-  it('connects to address', async () => {
+  // it('gets BaseAccount', async () => {
+  //   const account = { data: createBaseAccountResponseData(address) };
+
+  //   mockedAxios.request.mockResolvedValue(account);
+  //   const result = await api.fetchAccount(address)
+  //   expect(result.isError()).toBe(false)
+  //   expect(result.isSuccess()).toBe(true)
+  //   expect(result.error).toBeUndefined()
+  //   expect(result.data?.address).toBe(address)
+  //   expect(result.data?.type).toBe(AccountType.BaseAccount)
+  //   expect(result.data?.continuousVestingData).toBeUndefined();
+
+  // });
+
+  it('connects as address', async () => {
 
     const balanceAmount = '49031887606805'
     const userStore = useUserStore();

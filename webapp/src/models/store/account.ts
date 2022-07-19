@@ -1,4 +1,5 @@
 import {Amount} from "@/models/TotalSupply";
+import { useConfigurationStore } from "@/store/configuration.store";
 import { array } from "yup";
 
 export enum AccountType {
@@ -44,6 +45,27 @@ export class ContinuousVestingData {
     return result === undefined ? new Coin('0', denom) : result;
   }
 
+  public calculateVestingLocked(latestBlockTime: string): number{ // TODO number to BigInt
+    const validtime = Date.parse(latestBlockTime);
+    const endTime = Number(this.endTime);
+    if (validtime >= endTime) {
+      return 0;
+    }
+    const startTime = Number(this.startTime);
+    const denom = useConfigurationStore().config.stakingDenom;
+    const origVesting = Number(this.getOriginalVestingByDenom(denom).amount);
+    if (validtime <= startTime) {
+      return origVesting;
+    }
+
+    const x = validtime - startTime
+    const y = endTime - startTime
+    const diference = x/y;
+    const unlocked = origVesting * diference
+    console.log(origVesting * diference)
+    const locked = origVesting - unlocked
+    return locked;
+  }
 }
 
 export class Coin {
