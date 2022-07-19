@@ -42,6 +42,9 @@ export class TxBroadcastError {
     }
   }
 
+  public hasTxData(): boolean {
+    return this.txData !== undefined;
+  }
 }
 
 export default abstract class TxBroadcastBaseApi extends BaseApi {
@@ -63,25 +66,45 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     this.before(lockScreen, localSpinner);
     try {
       if (!connection.modifiable) {
-        return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot modify using: ' + connection.connectionType + ' signer'));
+        return this.createTxErrorResponseWithToast(
+          new TxBroadcastError('Cannot broadcast transaction with: ' + connection.connectionType + ' signer'),
+          'Transaction Broadcast error',
+          !skipErrorToast
+        )
+        // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot broadcast transaction with: ' + connection.connectionType + ' signer'));
       }
       const client = await this.createClient(connection.connectionType)
       if (client == undefined) {
-        return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot get client'));
+        return this.createTxErrorResponseWithToast(
+          new TxBroadcastError('Cannot get signing client'),
+          'Transaction Broadcast error',
+          !skipErrorToast
+        )
+        // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot get client'));
       }
       const response = await client.signAndBroadcast(connection.account, messages, fee, memo);
       this.logToConsole(LogLevel.INFO, 'Client Response', JSON.stringify(response));
       if (isDeliverTxFailure(response)) {
-        return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Transaction Broadcast error', response));
+        return this.createTxErrorResponseWithToast(
+          new TxBroadcastError('Deliver tx failure', response),
+          'Transaction Broadcast error',
+          !skipErrorToast
+        )
+        // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Transaction Broadcast error', response));
       }
       return new RequestResponse<TxData, TxBroadcastError>(undefined, new TxData(response));
     } catch (err) {
       this.logToConsole(LogLevel.ERROR, 'Client Response', JSON.stringify(err));
       const error = err as Error;
-      if (!skipErrorToast) {
-        toast.error('Error broadcasting transaction:' + error.message);
-      }
-      return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError(error.message));
+      return this.createTxErrorResponseWithToast(
+        new TxBroadcastError(error.message),
+        'Transaction Broadcast error',
+        !skipErrorToast
+      )
+      // if (!skipErrorToast) {
+      //   toast.error('Error broadcasting transaction:' + error.message);
+      // }
+      // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError(error.message));
     }finally {
       this.after(lockScreen, localSpinner);
     }
@@ -114,5 +137,18 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         throw new Error('No signer for connnection type: ' + connectionType)
       }
     }
+  }
+
+  private createTxErrorResponseWithToast(errorData: TxBroadcastError,toastMessageBeginning: string | undefined, showErrorToast: boolean): RequestResponse<TxData, TxBroadcastError> {
+    if (showErrorToast) {
+      let errorDataString = errorData.message;
+      if (errorData.txData !== undefined) {
+        errorDataString += '\r\nTx: ' + errorData.txData.transactionHash;
+        errorDataString += '\r\n\tHeight: ' + errorData.txData.height
+        errorDataString += '\r\n\tCode: ' + errorData.txData.code
+      }
+      toast.error(toastMessageBeginning + this.getServiceType() + '\r\n' + errorDataString);
+    }
+    return new RequestResponse<TxData, TxBroadcastError>(errorData);
   }
 }

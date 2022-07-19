@@ -67,7 +67,15 @@ export default abstract class BaseApi extends LoggedService {
     displayAsError?: ((error: ErrorData<BlockchainApiErrorData>) => boolean),
     skipErrorToast = false
     ): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>> {
-    return await this.axiosCall<T, BlockchainApiErrorData>(config, lockScreen, localSpinner, skipErrorToast, logPrefix, displayAsError, (data: BlockchainApiErrorData) => { return '\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')' })
+    return await this.axiosCall<T, BlockchainApiErrorData>(
+      config,
+      lockScreen,
+      localSpinner,
+      skipErrorToast,
+      logPrefix,
+      displayAsError,
+      (data: BlockchainApiErrorData) => { return '\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')' }
+    )
   }
 
   public async axiosGetBlockchainApiCall<T, BC>(url: string,
@@ -95,11 +103,13 @@ export default abstract class BaseApi extends LoggedService {
       return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(undefined, mapped);
     } catch (err) {
       const error = err as Error;
-      this.logToConsole(LogLevel.ERROR, logPrefix + 'mapping error: ', error.message);
-      if (!skipErrorToast) {
-        toast.error('mapping error: ' + this.getServiceType() + '\r\n' + error.message);
-      }
-      return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(new ErrorData<BlockchainApiErrorData>(error.name, error.message));
+      this.logToConsole(LogLevel.ERROR, logPrefix + 'mapping error: ' + this.getServiceType(), error.message);
+      return this.createErrorResponseWithToast(new ErrorData<BlockchainApiErrorData>(error.name, error.message), 'Mapping error: ', !skipErrorToast);
+
+      // if (!skipErrorToast) {
+      //   toast.error('mapping error: ' + this.getServiceType() + '\r\n' + error.message);
+      // }
+      // return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(new ErrorData<BlockchainApiErrorData>(error.name, error.message));
     }
   }
 
@@ -128,11 +138,13 @@ export default abstract class BaseApi extends LoggedService {
         }
       } catch (err) {
         const error = err as Error;
-        this.logToConsole(LogLevel.ERROR, logPrefix + 'mapping error: ', error.message);
-        if (!skipErrorToast) {
-          toast.error('mapping error: ' + this.getServiceType() + '\r\n' + error.message);
-        }
-        return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(new ErrorData<BlockchainApiErrorData>(error.name, error.message));
+        this.logToConsole(LogLevel.ERROR, logPrefix + 'mapping error: ' + this.getServiceType(), error.message);
+        return this.createErrorResponseWithToast(new ErrorData<BlockchainApiErrorData>(error.name, error.message), 'Mapping error: ', !skipErrorToast);
+
+        // if (!skipErrorToast) {
+        //   toast.error('mapping error: ' + this.getServiceType() + '\r\n' + error.message);
+        // }
+        // return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(new ErrorData<BlockchainApiErrorData>(error.name, error.message));
       }
     } while (data === undefined || (nextKey !== null && nextKey !== undefined));
     return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(undefined, data);
@@ -190,36 +202,38 @@ export default abstract class BaseApi extends LoggedService {
       this.logToConsole(logLevel, logPrefix + 'Axios Response', JSON.stringify(err));
       this.logToConsole(logLevel, logPrefix + 'Error data: ' + JSON.stringify(errorResp));
 
-      if (!skipErrorToast && isError) {
-        toast.error('Error requesting service:' + this.getServiceType() + '\r\n' + errorResp.getInfo());
-      }
-      return new RequestResponse<T, ErrorData<E>>(errorResp, undefined);
+      // if (!skipErrorToast && isError) {
+      //   toast.error('Error requesting service:' + this.getServiceType() + '\r\n' + errorResp.getInfo());
+      // }
+      // return new RequestResponse<T, ErrorData<E>>(errorResp);
+
+      return this.createErrorResponseWithToast(errorResp, 'Error sending HTTP request: ', !skipErrorToast && isError);
     } finally {
       this.after(lockScreen, localSpinner);
     }
   }
 
-  public getDataFromUrl<T, E>(url: string, lockScreen: boolean, localSpinner: LocalSpinner | null, onSuccess: (data: T) => void, onError: ((error?: ErrorData<E>) => void) | null, pagination?: PagingModel) {
-    this.axiosCall<T, E>({
-      method: 'GET',
-      url: url,
-      params: pagination?.toAxiosParams()
-    }, true, null, onError != null, '').then(value => {
-      if (value.isSuccess()) {
-        if (value.data !== undefined) {
-          onSuccess(value.data);
-        } else if (onError != null) {
-          onError(new ErrorData<E>('No data', 'No success data received'));
-        }
-      } else {
-        if (onError != null) {
-          onError(value.error);
-        }
-      }
-    }).finally(() => {
-      //
-    });
-  }
+  // public getDataFromUrl<T, E>(url: string, lockScreen: boolean, localSpinner: LocalSpinner | null, onSuccess: (data: T) => void, onError: ((error?: ErrorData<E>) => void) | null, pagination?: PagingModel) {
+  //   this.axiosCall<T, E>({
+  //     method: 'GET',
+  //     url: url,
+  //     params: pagination?.toAxiosParams()
+  //   }, true, null, onError != null, '').then(value => {
+  //     if (value.isSuccess()) {
+  //       if (value.data !== undefined) {
+  //         onSuccess(value.data);
+  //       } else if (onError != null) {
+  //         onError(new ErrorData<E>('No data', 'No success data received'));
+  //       }
+  //     } else {
+  //       if (onError != null) {
+  //         onError(value.error);
+  //       }
+  //     }
+  //   }).finally(() => {
+  //     //
+  //   });
+  // }
 
   before(lockScreen: boolean, localSpinner: LocalSpinner | null) {
     if (lockScreen) {
@@ -233,5 +247,12 @@ export default abstract class BaseApi extends LoggedService {
       useSplashStore().decrement();
     }
     localSpinner?.turnOffFunction();
+  }
+
+  private createErrorResponseWithToast<T, E>(errorData: ErrorData<E>, toastMessageBeginning: string | undefined, showErrorToast: boolean): RequestResponse<T, ErrorData<E>> {
+    if (showErrorToast) {
+      toast.error(toastMessageBeginning + this.getServiceType() + '\r\n' + errorData.getInfo());
+    }
+    return new RequestResponse<T, ErrorData<E>>(errorData);
   }
 }

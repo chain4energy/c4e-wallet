@@ -1,23 +1,13 @@
 import { setActivePinia, createPinia } from 'pinia'
 import axios, { AxiosResponse } from 'axios';
 import apiFactory from "@/api/factory.api";
-import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createErrorResponseData, defaultAxiosErrorName, defaultDenom, defaultErrorName } from '../utils/common.blockchain.data.util';
-import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, defaultDelegatorDelegationsValidators, defaultDelegatorUnbondingDelegationsValidators, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, findDelegatorUnbondingDelegationAmountByValidator, findDelegatorUnbondingDelegationTotalAmount } from '../utils/staking.blockchain.data.util';
-import { createRewardsResponseData, defaultRewardsValidators, findRewardsByValidator, findTotalRewards } from '../utils/distribution.blockchain.data.util';
+import { axiosErrorMessagePrefix, createAxiosError, createErrorResponseData, defaultAxiosErrorName } from '../utils/common.blockchain.data.util';
 import { createValidators, createValidatorsResponseData, defaultValidators, expectValidator, findNumberOfActiveValidators } from '../utils/validator.blockchain.data.util';
-
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const api = apiFactory.validatorsApi()
 apiFactory.setAxiosInstance(mockedAxios)
-
-const address = 'c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55'
-const validatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue'
-const secondValidatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue'
-
-const denom = defaultDenom
-
 
 describe('account api tests', () => {
   beforeEach(() => {

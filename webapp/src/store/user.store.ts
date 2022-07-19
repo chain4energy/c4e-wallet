@@ -1,19 +1,19 @@
 import { defineStore } from "pinia";
 import { Account, AccountType } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
-import { ConnectionInfo, ConnectionError } from "@/api/wallet.connecton.api";
-import { useValidatorsStore } from "@/store/validators.store";
+import { ConnectionInfo, ConnectionError, ConnectionType } from "@/api/wallet.connecton.api";
 import { useToast } from "vue-toastification";
 import { RequestResponse } from '@/models/request-response';
 import { useConfigurationStore } from "./configuration.store";
-import { Delegation, Delegations, UnbondingDelegation, UnbondingDelegations } from "@/models/store/staking";
-import { Rewards, ValidatorRewards } from "@/models/store/distribution";
+import { Delegations, UnbondingDelegations } from "@/models/store/staking";
+import { Rewards } from "@/models/store/distribution";
 import { VoteOption } from "@/api/account.api";
+import { TxBroadcastError, TxData } from "@/api/tx.broadcast.base.api";
 
 const toast = useToast();
 
 interface UserState {
-  logged: ConnectionInfo
+  connectionInfo: ConnectionInfo
   account: Account
   balances: number
   vestimgAccLocked: number
@@ -27,7 +27,7 @@ export const useUserStore = defineStore({
   id: 'userStore',
   state: (): UserState => {
     return {
-      logged: ConnectionInfo.disconnected,
+      connectionInfo: ConnectionInfo.disconnected,
       account: Object(), // TODO probably type - Account | null
       balances: 0,
       vestimgAccLocked: 0,
@@ -40,10 +40,10 @@ export const useUserStore = defineStore({
   },
   actions: {
     async reconectAcc(){
-      if(this.logged.connectionType === 1){
+      if(this.connectionInfo.connectionType === 1){
         await this.connect(apiFactory.walletApi().connectKeplr())
-      } else if(this.logged.connectionType === 0){
-        await this.connect(apiFactory.walletApi().connectAddress(this.logged.account))
+      } else if(this.connectionInfo.connectionType === 0){
+        await this.connect(apiFactory.walletApi().connectAddress(this.connectionInfo.account))
       } else return
     },
     async connectKeplr() {
@@ -56,71 +56,69 @@ export const useUserStore = defineStore({
     async connect(connectionResponse: Promise<RequestResponse<ConnectionInfo, ConnectionError>>) {
       await connectionResponse.then(async (response) => {
         if (response.isError() || response.data === undefined) {
-          this._isLoggedIn = false;
+          toast.error('Connection failed');
+          clearStateOnLogout(this);
         } else {
-          this.logged = response.data
-          this._isLoggedIn = true;
-          await this.fetchAccountData()
+          this.connectionInfo = response.data;
+          const address = this.connectionInfo.account;
+          await this.fetchAccountData();
+          if (this._isLoggedIn) {
+            toast.success('Address: "' + address + '" Connected');
+          } else {
+            toast.error('Address: "' + address + '" Connection failed');
+          }
         }
       })
     },
     async fetchAccountData() {
-      if (!this._isLoggedIn) {
-        return
+      const connectionInfo = this.connectionInfo;
+      if (!checkIfConnected(connectionInfo)) {
+        return false
       }
-      const address = this.logged.account;
-      await apiFactory.accountApi().fetchAccount(address).then(async response => {
+      
+      await apiFactory.accountApi().fetchAccount(connectionInfo.account).then(async response => {
         if (response.isSuccess() && response.data !== undefined) {
           const account = response.data;
           this.account = account;
           if (account.type !== AccountType.Nonexistent) {
-            await Promise.all([
-              this.fetchBalance(address),
-              this.fetchRewards(address),
-              this.fetchDelegations(address),
-              this.fetchUnbondingDelegations(address),
+            const allResults = await Promise.all([
+              fetchBalance(connectionInfo, this),
+              fetchRewards(connectionInfo, this),
+              fetchDelegations(connectionInfo, this),
+              fetchUnbondingDelegations(connectionInfo, this),
             ]);
+            if (!allResults.every(r => r)) {
+              clearStateOnLogout(this);
+              return
+            }
           } else {
-            // TODO clear store
+            clearStateForNonexistentAccount(this)
           }
+          this._isLoggedIn = true;
         } else {
-          // TODO 
+          clearStateOnLogout(this);
         }
       })
     },
-    async fetchBalance(address: string) {
-      const denom = useConfigurationStore().config.stakingDenom
-      await apiFactory.accountApi().fetchBalance(address, denom)
-        .then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            const balance = response.data;
-            this.balances = parseInt(balance.amount); // TODO use bigint recalculate with decimal
-          } else {
-            // TODO
-          }
-        });
-    },
-    async fetchDelegations(address: string) {
-      await apiFactory.accountApi().fetchDelegations(address)
-        .then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            this.delegations = response.data
-          } else {
-            // TODO
-          }
-          // this.stackingList = response.data;
-          // const totalStacked = [];
-          // for (const element of response.data.delegation_responses){
-          //   totalStacked.push( parseInt(element.balance.amount));
-          // }
-          // const sumWithInitial = totalStacked.reduce(
-          //   (previousValue, currentValue) => previousValue + currentValue,
-          //   0
-          // );
-          // this.stacked= sumWithInitial;
-        });
-    },
+    // async fetchBalance(): Promise<boolean> {
+    //   if (!checkIfConnected(this.connectionInfo)) {
+    //     return false
+    //   }
+    //   return await fetchBalance(this.connectionInfo, this)
+    // },
+    // async fetchDelegations() {
+    //   if (!checkIfConnected(this.connectionInfo)) {
+    //     return false
+    //   }
+    //   return await fetchDelegations(this.connectionInfo, this)
+    // },
     async calculateVestingLocked(latestBlTime: string){ // TODO number to BigInt
+      if (!checkIfConnected(this.connectionInfo)) {
+        return
+      }
+      if (!this._isLoggedIn || this.account.type !== AccountType.ContinuousVestingAccount ) {
+        return
+      }
       const validtime = await Date.parse(latestBlTime);
       const endTime = Number(this.account?.continuousVestingData?.endTime);
       if (validtime >= endTime) {
@@ -143,102 +141,95 @@ export const useUserStore = defineStore({
       const locked = origVesting - unlocked
       this.vestimgAccLocked = locked;
     },
-    // async fetchUnstackedAmount(id: string){
-    async fetchUnbondingDelegations(address: string){
-      await apiFactory.accountApi().fetchUnbondingDelegations(address)
-        .then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            this.undelegations = response.data
-          } else {
-            // TODO
-          }
-          // const totalUnstacked = []
-          // if(response.data.unbonding_responses.length > 0){
-          //   for (const element of response.data.unbonding_responses[0].entries){
-          //     totalUnstacked.push(parseInt(element.balance))
-          //   }
-          //   this.unstacked= totalUnstacked.reduce(
-          //     (previousValue, currentValue) => previousValue + currentValue, 0);
-          // } else {
-          //   this.unstacked = 0;
-          // }
-        });
-    },
-    async fetchRewards(id: string){
-      await apiFactory.accountApi().fetchRewards(id)
-        .then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            this.rewards = response.data
-          } else {
-            // TODO
-          }
-
-          // this.rewards = response.data
-          // if(response.data.rewards.length > 0){
-          //   const rew = response.data.total[0].amount;
-          //   this.totalRewards = parseFloat(rew);
-          // } else {
-          //   this.totalRewards = 0;
-          // }
-        })
-    },
+    
+    // async fetchUnbondingDelegations(){
+    //   if (!checkIfConnected(this.connectionInfo)) {
+    //     return false
+    //   }
+    //   return await fetchUnbondingDelegations(this.connectionInfo, this)
+    // },
+    // async fetchRewards(){
+    //   if (!checkIfConnected(this.connectionInfo)) {
+    //     return false
+    //   }
+    //   return await fetchRewards(this.connectionInfo, this)
+    // },
     async delegate(validator: string, amount: string) {
-      await apiFactory.accountApi().delegate(this.logged, validator, amount).then(async (resp) => {
+      const connectionInfo = this.connectionInfo;
+      await apiFactory.accountApi().delegate(connectionInfo, validator, amount).then(async (resp) => {
         if (resp.isError()) {
-          toast.error('delegate failed')
+          toast.error('Delegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validator + ' failed')
+          onTxDeliveryFailure(connectionInfo, this, resp);
         } else {
-          // TODO refresh data ??
+          fetchBalance(connectionInfo, this);
+          fetchRewards(connectionInfo, this);
+          fetchDelegations(connectionInfo, this);
+          // fetchUnbondingDelegations(connectionInfo, this)
         }
       })
     },
     async redelegate(validatorSrc: string, validatorDst: string, amount: string) {
-      await apiFactory.accountApi().redelegate(this.logged, validatorSrc, validatorDst, amount).then(async (resp) => {
+      const connectionInfo = this.connectionInfo;
+      await apiFactory.accountApi().redelegate(connectionInfo, validatorSrc, validatorDst, amount).then(async (resp) => {
         if (resp.isError()) {
-          toast.error('redelegate failed')
+          toast.error('Redelegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validatorDst + ' failed')
+          onTxDeliveryFailure(connectionInfo, this, resp);
         } else {
-          // TODO refresh data ??
+          fetchBalance(connectionInfo, this);
+          fetchRewards(connectionInfo, this);
+          fetchDelegations(connectionInfo, this);
+          // fetchUnbondingDelegations(connectionInfo, this)
         }
       })
     },
     async undelegate(validator: string, amount: string) {
-      await apiFactory.accountApi().undelegate(this.logged, validator, amount).then(async (resp) => {
+      const connectionInfo = this.connectionInfo;
+      await apiFactory.accountApi().undelegate(connectionInfo, validator, amount).then(async (resp) => {
         if (resp.isError()) {
-          toast.error('undelegate failed')
+          toast.error('Undelegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' from ' + validator + ' failed')
+          onTxDeliveryFailure(connectionInfo, this, resp);
         } else {
-          // TODO refresh data ??
+          fetchBalance(connectionInfo, this);
+          fetchRewards(connectionInfo, this);
+          fetchDelegations(connectionInfo, this);
+          fetchUnbondingDelegations(connectionInfo, this);
         }
       })
     },
     async claimRewards() {
+      const connectionInfo = this.connectionInfo;
       const validators = this.rewards.getAllValidatorsAddresses();
-      apiFactory.accountApi().claimRewards(this.logged, validators).then(async (resp) => {
+      apiFactory.accountApi().claimRewards(connectionInfo, validators).then(async (resp) => {
         if (resp.isError()) {
-          toast.error('claimRewards failed')
+          toast.error('Claiming rewards failed')
+          onTxDeliveryFailure(connectionInfo, this, resp);
         } else {
-          // TODO refresh data ??
+          fetchBalance(connectionInfo, this);
+          fetchRewards(connectionInfo, this);
         }
       })
     },
     async vote(option: VoteOption, proposalId: number){
-      apiFactory.accountApi().vote(this.logged, option, proposalId).then(async (resp) => {
+      apiFactory.accountApi().vote(this.connectionInfo, option, proposalId).then(async (resp) => {
         if (resp.isError()) {
-          toast.error('vote failed')
+          toast.error('Vote: ' + option + ' for proposal ' + proposalId + ' failed')
         } else {
           // TODO refresh data ??
         }
       })
     },
     async logOut(){
-      this._isLoggedIn = false;
-      this.logged = ConnectionInfo.disconnected,
-      this.account = Object();
-      // await useValidatorsStore().logoutValidatorModule()
-      localStorage.removeItem('account')
+      toast.success('Address: "' + this.connectionInfo.account + '" Disconnected');
+      clearStateOnLogout(this)
+      // this._isLoggedIn = false;
+      // this.connectionInfo = ConnectionInfo.disconnected,
+      // this.account = Object();
+      // localStorage.removeItem('account')
     },
   },
   getters: {
-    getLogedInfo(): any{
-      return this.logged.connectionType
+    getConnectionType(): ConnectionType{
+      return this.connectionInfo.connectionType
     },
     isLoggedIn (): boolean {
        return this._isLoggedIn;
@@ -290,3 +281,78 @@ export const useUserStore = defineStore({
     ]
   }
 });
+
+function checkIfConnected(connectionInfo: ConnectionInfo): boolean {
+  if (connectionInfo.connectionType === ConnectionType.Disconnected) {
+    toast.error('Not connected');
+    return false;
+  }
+  return true;
+}
+
+function clearStateForNonexistentAccount(state: UserState) {
+  state.balances = 0;
+  state.vestimgAccLocked = 0;
+  state.rewards = new Rewards();
+  state.delegations = new Delegations();
+  state.undelegations = new UnbondingDelegations();
+}
+
+function clearStateOnLogout(state: UserState) {
+  state._isLoggedIn = false;
+  state.connectionInfo = ConnectionInfo.disconnected,
+  state.account = Object();
+  clearStateForNonexistentAccount(state);
+}
+
+async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
+  const address = connectionInfo.account;
+  const denom = useConfigurationStore().config.stakingDenom
+  const response = await apiFactory.accountApi().fetchBalance(address, denom)
+  if (response.isSuccess() && response.data !== undefined) {
+    const balance = response.data;
+    state.balances = parseInt(balance.amount); // TODO use bigint recalculate with decimal
+    return true;
+  } else {
+    return false;
+  }
+}
+
+async function fetchDelegations(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
+  const address = connectionInfo.account;
+  const response = await apiFactory.accountApi().fetchDelegations(address)
+  if (response.isSuccess() && response.data !== undefined) {
+    state.delegations = response.data
+    return true;
+  } else {
+    return false;
+  }
+}
+
+async function fetchUnbondingDelegations(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
+  const address = connectionInfo.account;
+  const response = await apiFactory.accountApi().fetchUnbondingDelegations(address)
+  if (response.isSuccess() && response.data !== undefined) {
+    state.undelegations = response.data
+    return true;
+  } else {
+    return false;
+  }
+}
+
+async function fetchRewards(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
+  const address = connectionInfo.account;
+  const response = await apiFactory.accountApi().fetchRewards(address)
+  if (response.isSuccess() && response.data !== undefined) {
+    state.rewards = response.data
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function onTxDeliveryFailure(connectionInfo: ConnectionInfo, state: UserState, response: RequestResponse<TxData, TxBroadcastError>) {
+  if (response.error?.hasTxData()) {
+    fetchBalance(connectionInfo, state);
+  }
+}

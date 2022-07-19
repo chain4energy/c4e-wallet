@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import { computed, onUnmounted, PropType } from "vue";
 import {useUserStore} from "@/store/user.store";
-import { Validator } from "@/models/blockchain/validator";
+import { Validator } from "@/models/store/validator";
 import {ref, defineEmits} from "vue";
 import { useValidatorsStore } from "@/store/validators.store";
 import { object, number, setLocale } from 'yup';
@@ -90,7 +90,7 @@ const toast = useToast()
 
 const redelegateTo = ref()
 
-const canModify = computed(() => useUserStore().getLogedInfo);
+const canModify = computed(() => useUserStore().getConnectionType);
 const validators = computed(() => {
     return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress)
   // return props.validator.operator_address
@@ -100,7 +100,7 @@ const amount = ref('');
 const keplrResult = ref('');
 const emit = defineEmits(['close', 'success']);
 
-let max = useUserStore().getTotalUndelegated + useUserStore().getTotalDelegated + useUserStore().getBalances
+let max = useUserStore().getTotalUndelegating + useUserStore().getTotalDelegated + useUserStore().getBalances
 
 setLocale({
   number: {
