@@ -1,6 +1,7 @@
 import { useConfigurationStore } from "@/store/configuration.store";
 
 export enum AccountType {
+  Disconnected,
   BaseAccount,
   ContinuousVestingAccount,
   Unknown,
@@ -8,6 +9,9 @@ export enum AccountType {
 }
 
 export class Account {
+
+  static disconnected = new Account(AccountType.Disconnected, '');
+
   type: AccountType;
   address: string;
   continuousVestingData?: ContinuousVestingData;

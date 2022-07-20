@@ -34,20 +34,6 @@ export class ConnectionInfo {
 
 }
 
-// export enum WalletResponseCode {
-//   OK,
-//   NOK,
-// }
-
-// export interface WalletResponse {
-//   code: WalletResponseCode,
-//   error: string
-// }
-
-// export interface WalletConnectionResponse extends WalletResponse {
-//   connectionInfo: ConnectionInfo
-// }
-
 export class ConnectionError {
   message: string;
 

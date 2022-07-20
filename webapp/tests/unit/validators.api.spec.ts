@@ -1,13 +1,15 @@
 import { setActivePinia, createPinia } from 'pinia'
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apiFactory from "@/api/factory.api";
 import { axiosErrorMessagePrefix, createAxiosError, createErrorResponseData, defaultAxiosErrorName } from '../utils/common.blockchain.data.util';
 import { createValidators, createValidatorsResponseData, defaultValidators, expectValidator, findNumberOfActiveValidators } from '../utils/validator.blockchain.data.util';
+import { mockAxios } from '../utils/mock.util';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+jest.mock("axios");
+const mockedAxios = mockAxios();
+// const mockedAxios = axios as jest.Mocked<typeof axios>;
 const api = apiFactory.validatorsApi()
-apiFactory.setAxiosInstance(mockedAxios)
+// apiFactory.setAxiosInstance(mockedAxios)
 
 describe('account api tests', () => {
   beforeEach(() => {

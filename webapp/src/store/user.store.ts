@@ -12,13 +12,13 @@ import { TxBroadcastError, TxData } from "@/api/tx.broadcast.base.api";
 
 const toast = useToast();
 
-interface UserState {
+export interface UserState {
   connectionInfo: ConnectionInfo
   account: Account
   balance: number
   vestimgAccLocked: number
   rewards: Rewards
-  _isLoggedIn: boolean
+  // _isLoggedIn: boolean
   delegations: Delegations
   undelegations: UnbondingDelegations
 }
@@ -28,11 +28,11 @@ export const useUserStore = defineStore({
   state: (): UserState => {
     return {
       connectionInfo: ConnectionInfo.disconnected,
-      account: Object(), // TODO probably type - Account | null
+      account: Account.disconnected,
       balance: 0,
       vestimgAccLocked: 0,
       rewards: new Rewards(),
-      _isLoggedIn: false,
+      // _isLoggedIn: false,
       delegations: new Delegations(),
       undelegations: new UnbondingDelegations(),
 
@@ -62,7 +62,7 @@ export const useUserStore = defineStore({
           this.connectionInfo = response.data;
           const address = this.connectionInfo.account;
           await this.fetchAccountData();
-          if (this._isLoggedIn) {
+          if (this.isLoggedIn) {
             toast.success('Address: "' + address + '" Connected');
           } else {
             toast.error('Address: "' + address + '" Connection failed');
@@ -79,7 +79,6 @@ export const useUserStore = defineStore({
       await apiFactory.accountApi().fetchAccount(connectionInfo.account).then(async response => {
         if (response.isSuccess() && response.data !== undefined) {
           const account = response.data;
-          this.account = account;
           if (account.type !== AccountType.Nonexistent) {
             const allResults = await Promise.all([
               fetchBalance(connectionInfo, this),
@@ -94,7 +93,7 @@ export const useUserStore = defineStore({
           } else {
             clearStateForNonexistentAccount(this);
           }
-          this._isLoggedIn = true;
+          this.account = account;
         } else {
           clearStateOnLogout(this);
         }
@@ -117,11 +116,11 @@ export const useUserStore = defineStore({
         this.vestimgAccLocked = 0;
         return;
       }
-      if (!this._isLoggedIn || this.account.type !== AccountType.ContinuousVestingAccount ) {
+      if (this.account.type !== AccountType.ContinuousVestingAccount ) {
         this.vestimgAccLocked = 0;
         return;
       }
-      if (this.account?.continuousVestingData !== undefined) {
+      if (this.account.continuousVestingData !== undefined) {
         this.vestimgAccLocked = this.account.continuousVestingData.calculateVestingLocked(latestBlTime);
       } else {
         this.vestimgAccLocked = 0;
@@ -240,7 +239,7 @@ export const useUserStore = defineStore({
       return this.connectionInfo.connectionType;
     },
     isLoggedIn (): boolean {
-       return this._isLoggedIn;
+       return this.account.type !== AccountType.Disconnected;
     },
     getAccount(): Account {
       return this.account;
@@ -301,9 +300,8 @@ function clearStateForNonexistentAccount(state: UserState) {
 }
 
 function clearStateOnLogout(state: UserState) {
-  state._isLoggedIn = false;
   state.connectionInfo = ConnectionInfo.disconnected;
-  state.account = Object();
+  state.account = Account.disconnected;
   clearStateForNonexistentAccount(state);
 }
 

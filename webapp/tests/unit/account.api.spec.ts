@@ -1,19 +1,15 @@
 import { setActivePinia, createPinia } from 'pinia'
-import axios, { AxiosResponse } from 'axios';
-import { AccountType, ContinuousVestingData } from "@/models/store/account";
+import { AxiosResponse } from 'axios';
+import { AccountType } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
 import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createErrorResponseData, defaultAxiosErrorName, defaultDenom, defaultErrorName } from '../utils/common.blockchain.data.util';
-import { createBaseAccountResponseData, createContinuousVestingAccountResponseData, createSingleBalanceResponseData, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, expectBaseAccount, vestingAccountTimeToSystem } from '../utils/account.blockchain.data.util';
-import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, defaultDelegatorDelegationsValidators, defaultDelegatorUnbondingDelegationsValidators, expectDelegatorDelegations, expectDelegatorUnbondingDelegations, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, findDelegatorUnbondingDelegationAmountByValidator, findDelegatorUnbondingDelegationTotalAmount } from '../utils/staking.blockchain.data.util';
-import { createRewardsResponseData, defaultRewardsValidators, expectRewards, findRewardsByValidator, findTotalRewards } from '../utils/distribution.blockchain.data.util';
+import { createAddressNotExistsErrorResponse, createBaseAccountResponseData, createContinuousVestingAccountResponseData, createErrorResponse, createSingleBalanceResponseData, expectBaseAccount, expectContinuousVestingAccount } from '../utils/account.blockchain.data.util';
+import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, expectDelegatorDelegations, expectDelegatorUnbondingDelegations } from '../utils/staking.blockchain.data.util';
+import { createRewardsResponseData, defaultRewardsValidators, expectRewards } from '../utils/distribution.blockchain.data.util';
 
 import { useConfigurationStore } from '@/store/configuration.store';
-import { Keplr } from "@keplr-wallet/types";
-import { OfflineDirectSigner } from '@cosmjs/proto-signing';
-import { OfflineAminoSigner } from '@cosmjs/amino';
-import { OfflineSigner } from '@cosmjs/launchpad';
 import { ConnectionInfo, ConnectionType } from '@/api/wallet.connecton.api';
-import { SigningStargateClient, DeliverTxResponse, HttpEndpoint, SigningStargateClientOptions } from "@cosmjs/stargate";
+import { DeliverTxResponse } from "@cosmjs/stargate";
 import { StdFee } from "@cosmjs/amino";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import {
@@ -29,11 +25,13 @@ import { RequestResponse } from '@/models/request-response';
 import { TxBroadcastError, TxData } from '@/api/tx.broadcast.base.api';
 import Long from 'long';
 import { VoteOption } from '@/api/account.api';
+import { mockAxios, mockKeplr } from '../utils/mock.util';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+jest.mock("axios");
+const mockedAxios = mockAxios();
 const api = apiFactory.accountApi()
-apiFactory.setAxiosInstance(mockedAxios)
+
+const mockedSigningStargateClient = mockKeplr().mockedSigningStargateClient
 
 const address = 'c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55'
 const validatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue'
@@ -70,26 +68,7 @@ const txErrorResponse = {
   gasWanted: 44
 } as unknown as DeliverTxResponse
 
-const mockedKeplrImpl = {
-  getOfflineSigner: jest.fn(() => { }),
-} as unknown as Keplr;
-const mockedKeplr = mockedKeplrImpl as jest.Mocked<Keplr>;
-window.keplr = mockedKeplr
 
-const mockedOfflineSignerImpl = {
-} as unknown as OfflineAminoSigner & OfflineDirectSigner;
-const mockedOfflineSigner = mockedOfflineSignerImpl as jest.Mocked<OfflineAminoSigner & OfflineDirectSigner>;
-mockedKeplr.getOfflineSigner.mockReturnValue(mockedOfflineSigner)
-window.keplr = mockedKeplr
-
-const mockedSigningStargateClientImpl = {
-  signAndBroadcast: jest.fn(() => { }),
-} as unknown as SigningStargateClient;
-const mockedSigningStargateClient = mockedSigningStargateClientImpl as jest.Mocked<SigningStargateClient>;
-
-const mockedConnectWithSigner = jest.fn(async (endpoint: string | HttpEndpoint, signer: OfflineSigner, options?: SigningStargateClientOptions): Promise<SigningStargateClient> => { return undefined as unknown as SigningStargateClient })
-mockedConnectWithSigner.mockResolvedValue(mockedSigningStargateClient)
-SigningStargateClient.connectWithSigner = mockedConnectWithSigner as unknown as (endpoint: string | HttpEndpoint, signer: OfflineSigner, options?: SigningStargateClientOptions) => Promise<SigningStargateClient>
 
 const msgDelegateTypeUrl = '/cosmos.staking.v1beta1.MsgDelegate';
 const msgUndelegateTypeUrl = '/cosmos.staking.v1beta1.MsgUndelegate';
@@ -134,15 +113,16 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false);
     expect(result.isSuccess()).toBe(true);
     expect(result.error).toBeUndefined();
-    expect(result.data?.address).toBe(address);
-    expect(result.data?.type).toBe(AccountType.ContinuousVestingAccount);
-    expect(result.data?.continuousVestingData).toBeInstanceOf(ContinuousVestingData);
-    expect(result.data?.continuousVestingData?.endTime).toBe(defaultContinuousVestingAccountEndTime + vestingAccountTimeToSystem);
-    expect(result.data?.continuousVestingData?.startTime).toBe(defaultContinuousVestingAccountStartTime + vestingAccountTimeToSystem);
-    expect(result.data?.continuousVestingData?.originalVesting.length).toBe(defaultContinuousVestingAccountOriginalVesting.length);
-    const origVesting = result.data?.continuousVestingData?.originalVesting[0]
-    expect(origVesting?.amount).toBe(defaultContinuousVestingAccountOriginalVesting[0].amount);
-    expect(origVesting?.denom).toBe(defaultContinuousVestingAccountOriginalVesting[0].denom);
+    expectContinuousVestingAccount(result.data, address);
+  //   expect(result.data?.address).toBe(address);
+  //   expect(result.data?.type).toBe(AccountType.ContinuousVestingAccount);
+  //   expect(result.data?.continuousVestingData).toBeInstanceOf(ContinuousVestingData);
+  //   expect(result.data?.continuousVestingData?.endTime).toBe(defaultContinuousVestingAccountEndTime + vestingAccountTimeToSystem);
+  //   expect(result.data?.continuousVestingData?.startTime).toBe(defaultContinuousVestingAccountStartTime + vestingAccountTimeToSystem);
+  //   expect(result.data?.continuousVestingData?.originalVesting.length).toBe(defaultContinuousVestingAccountOriginalVesting.length);
+  //   const origVesting = result.data?.continuousVestingData?.originalVesting[0]
+  //   expect(origVesting?.amount).toBe(defaultContinuousVestingAccountOriginalVesting[0].amount);
+  //   expect(origVesting?.denom).toBe(defaultContinuousVestingAccountOriginalVesting[0].denom);
   });
 
   it('gets unexpected data', async () => {
@@ -175,12 +155,7 @@ describe('account api tests', () => {
   });
 
   it('gets not existent address', async () => {
-    const response = {
-      data: createErrorResponseData(5, accountNotFoundErrorMessage),
-      status: 404,
-      statusText: '',
-    };
-    const error = createAxiosError(axiosError404Message, response as AxiosResponse);
+    const error = createAddressNotExistsErrorResponse();
 
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchAccount(address);
@@ -193,13 +168,13 @@ describe('account api tests', () => {
   });
 
   it('gets address with 404 response and error code 0', async () => {
-    const response = {
-      data: createErrorResponseData(0, accountNotFoundErrorMessage),
-      status: 404,
-      statusText: '',
-      // headers: "AxiosResponseHeaders",
-    };
-    const error = createAxiosError(axiosError404Message, response as AxiosResponse);
+    // const response = {
+    //   data: createErrorResponseData(0, accountNotFoundErrorMessage),
+    //   status: 404,
+    //   statusText: '',
+    // };
+    // const error = createAxiosError(axiosError404Message, response as AxiosResponse);
+    const error = createErrorResponse(404, 0, accountNotFoundErrorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchAccount(address);
@@ -213,13 +188,15 @@ describe('account api tests', () => {
 
   it('gets address with 404 response and error messege <> NotFound', async () => {
     const errorMessage = 'some error message';
-    const response = {
-      data: createErrorResponseData(5, errorMessage),
-      status: 404,
-      statusText: '',
-      // headers: "AxiosResponseHeaders",
-    };
-    const error = createAxiosError(axiosError404Message, response as AxiosResponse);
+    // const response = {
+    //   data: createErrorResponseData(5, errorMessage),
+    //   status: 404,
+    //   statusText: '',
+    //   // headers: "AxiosResponseHeaders",
+    // };
+    // const error = createAxiosError(axiosError404Message, response as AxiosResponse);
+
+    const error = createErrorResponse(404, 5, errorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchAccount(address);
@@ -232,21 +209,22 @@ describe('account api tests', () => {
   });
 
   it('gets address with not 404 response and error messege <> NotFound', async () => {
-    const axiosErrorMessage = axiosErrorMessagePrefix + '401';
-    const response = {
-      data: createErrorResponseData(5, accountNotFoundErrorMessage),
-      status: 401,
-      statusText: '',
-      // headers: "AxiosResponseHeaders",
-    };
-    const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
-
+    // const axiosErrorMessage = axiosErrorMessagePrefix + '401';
+    // const response = {
+    //   data: createErrorResponseData(5, accountNotFoundErrorMessage),
+    //   status: 401,
+    //   statusText: '',
+    //   // headers: "AxiosResponseHeaders",
+    // };
+    // const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+    const status = 401;
+    const error = createErrorResponse(401, 5, accountNotFoundErrorMessage);
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchAccount(address);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
-    expect(result.error?.message).toBe(axiosErrorMessage);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(5);
     expect(result.error?.data?.message).toBe(accountNotFoundErrorMessage);
   });
