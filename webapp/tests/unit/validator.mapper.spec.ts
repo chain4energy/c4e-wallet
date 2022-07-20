@@ -1,5 +1,5 @@
 import { mapAndAddValidators, mapValidator, mapValidators, sortAndRankValidators } from "@/models/mapper/validator.mapper";
-import { createValidators, defaultValidators, defaultValidatorsParameters, expectValidator, findNumberOfActiveValidators } from "../utils/validator.blockchain.data.util";
+import { createValidators, defaultValidators, defaultValidatorsParameters, expectValidator, expectValidators, findNumberOfActiveValidators } from "../utils/validator.blockchain.data.util";
 
 const validatorAddress = defaultValidators[0];
 const validatorParams = defaultValidatorsParameters[0];
@@ -24,11 +24,8 @@ describe('tests mapping of validators related data', () => {
     const bcValidators = createValidators();
     const storeValidators = mapValidators(bcValidators);
 
-    expect(storeValidators.validators.length).toBe(defaultValidators.length);
-    expect(storeValidators.numberOfActive).toBe(findNumberOfActiveValidators());
-    for (let i = 0; i < bcValidators.length; i ++) {
-      expectValidator(storeValidators.validators[i], bcValidators[i], 0);
-    }
+    expectValidators(storeValidators, false);
+
   });
 
   it('maps and adds undefined validators', async () => {
@@ -69,34 +66,19 @@ describe('tests mapping of validators related data', () => {
     let bcValidators = createValidators(validators1, params1);
     let storeValidators = mapValidators(bcValidators);
 
-    bcValidators = createValidators(validators2, params2);
+    bcValidators = createValidators(validators2, params2, 3);
     storeValidators = mapAndAddValidators(storeValidators.validators, bcValidators, storeValidators.numberOfActive);
 
-    const bcAllValidators = createValidators(validatorsAll, paramsAll);
-
-    expect(storeValidators.validators.length).toBe(bcAllValidators.length);
-    expect(storeValidators.numberOfActive).toBe(findNumberOfActiveValidators(paramsAll));
-    for (let i = 0; i < bcValidators.length; i ++) {
-      expectValidator(storeValidators.validators[i], bcAllValidators[i], 0);
-    }
+    expectValidators(storeValidators, false, validatorsAll, paramsAll);
 
   });
 
   it('sort and rank validators', async () => {
     const bcValidators = createValidators();
     let storeValidators = mapValidators(bcValidators);
-    expect(storeValidators.validators.length).toBe(defaultValidators.length);
-    expect(storeValidators.numberOfActive).toBe(findNumberOfActiveValidators());
-    for (let i = 0; i < bcValidators.length; i ++) {
-      expectValidator(storeValidators.validators[i], bcValidators[i], 0);
-    }
-
-    const ranked = sortAndRankValidators(storeValidators.validators)
-    expect(ranked.length).toBe(defaultValidators.length);
-    for (let i = 0; i < bcValidators.length; i ++) {
-      expectValidator(ranked[i], bcValidators[5 - i], i + 1);
-    }
-
+    expectValidators(storeValidators, false);
+    storeValidators.validators = sortAndRankValidators(storeValidators.validators)
+    expectValidators(storeValidators);
   });
 
 });

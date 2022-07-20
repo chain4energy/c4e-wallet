@@ -14,9 +14,7 @@ import { AccountData } from '@cosmjs/proto-signing';
 import { useSplashStore } from '@/store/splash.store';
 import { Account, AccountType, Coin } from '@/models/store/account';
 import { defaultGas, defaultTxErrorResponse, defaultTxSuccessResponse } from '../utils/tx.broadcast.blockchain.data.util';
-import { DeliverTxResponse, StdFee } from '@cosmjs/stargate';
-import { EncodeObject } from "@cosmjs/proto-signing";
-import { useValidatorsStore } from '@/store/validators.store';
+import { DeliverTxResponse } from '@cosmjs/stargate';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();

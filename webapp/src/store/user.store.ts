@@ -9,12 +9,12 @@ import { Delegations, UnbondingDelegations } from "@/models/store/staking";
 import { Rewards } from "@/models/store/distribution";
 import { VoteOption } from "@/api/account.api";
 import { TxBroadcastError, TxData } from "@/api/tx.broadcast.base.api";
-import { LoggedService } from "@/services/logged.service";
+import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from '@/services/logger/log-level';
 
 const toast = useToast();
-
+const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
 
 export interface UserState {
   connectionInfo: ConnectionInfo
@@ -248,19 +248,6 @@ export const useUserStore = defineStore({
     ]
   }
 });
-
-class UserStoreLogger extends LoggedService {
-
-  getServiceType(): ServiceTypeEnum {
-    return ServiceTypeEnum.USER_STORE;
-  }
-
-  public logToConsole(logLevel: LogLevel, message: string, ...data: string[]) {
-    super.logToConsole(logLevel, message, ...data);
-  }
-}
-
-const logger = new UserStoreLogger();
 
 function checkIfConnected(connectionInfo: ConnectionInfo): boolean {
   if (connectionInfo.connectionType === ConnectionType.Disconnected) {
