@@ -26,6 +26,8 @@ import { TxBroadcastError, TxData } from '@/api/tx.broadcast.base.api';
 import Long from 'long';
 import { VoteOption } from '@/api/account.api';
 import { mockAxios, mockKeplr } from '../utils/mock.util';
+import { useSplashStore } from '@/store/splash.store';
+import { defaultGas, defaultMemo, defaultTxErrorResponse, defaultTxSuccessResponse, msgBeginRedelegateTypeUrl, msgDelegateTypeUrl, msgUndelegateTypeUrl, msgVoteTypeUrl, msgWithdrawDelegatorRewardTypeUrl } from '../utils/tx.broadcast.blockchain.data.util';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();
@@ -37,44 +39,15 @@ const address = 'c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55'
 const validatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue'
 const secondValidatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue'
 
-const denom = defaultDenom
-const memo = ''
+const denom = defaultDenom;
+const memo = defaultMemo
 
-const gas = {
-  vote: '10000',
-  delegate: '20000',
-  undelegate: '30000',
-  redelegate: '40000',
-  claimRewards: '50000',
-};
+const gas = defaultGas;
 
-const txSuccessResponse = {
-  height: '123222',
-  code: 0,
-  transactionHash: '8653E21B825AAFCDC75261EAEFF71207044AF40DE390BEB31C8B0C9AA7BAA3EA',
-  rawLog: 'Success log',
-  data: undefined,
-  gasUsed: 34,
-  gasWanted: 22
-} as unknown as DeliverTxResponse
+const txSuccessResponse = defaultTxSuccessResponse;
 
-const txErrorResponse = {
-  height: '67812',
-  code: 3,
-  transactionHash: 'D1A61D1288598A7A5718A4ABC6176D3E70E374A81D91623DE88BDF516A25FBE8',
-  rawLog: 'Error log',
-  data: undefined,
-  gasUsed: 11,
-  gasWanted: 44
-} as unknown as DeliverTxResponse
+const txErrorResponse = defaultTxErrorResponse;
 
-
-
-const msgDelegateTypeUrl = '/cosmos.staking.v1beta1.MsgDelegate';
-const msgUndelegateTypeUrl = '/cosmos.staking.v1beta1.MsgUndelegate';
-const msgBeginRedelegateTypeUrl = '/cosmos.staking.v1beta1.MsgBeginRedelegate'
-const msgVoteTypeUrl = '/cosmos.gov.v1beta1.MsgVote'
-const msgWithdrawDelegatorRewardTypeUrl = '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward'
 
 describe('account api tests', () => {
   beforeEach(() => {
@@ -82,6 +55,7 @@ describe('account api tests', () => {
   });
 
   afterEach(() => {
+    expect(useSplashStore().splashCounter).toBe(0);
     mockedAxios.request.mockClear();
   })
 

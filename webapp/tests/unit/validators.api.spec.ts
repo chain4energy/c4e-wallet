@@ -4,6 +4,7 @@ import apiFactory from "@/api/factory.api";
 import { axiosErrorMessagePrefix, createAxiosError, createErrorResponseData, defaultAxiosErrorName } from '../utils/common.blockchain.data.util';
 import { createValidators, createValidatorsResponseData, defaultValidators, expectValidator, findNumberOfActiveValidators } from '../utils/validator.blockchain.data.util';
 import { mockAxios } from '../utils/mock.util';
+import { useSplashStore } from '@/store/splash.store';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();
@@ -17,6 +18,7 @@ describe('account api tests', () => {
   });
 
   afterEach(() => {
+    expect(useSplashStore().splashCounter).toBe(0);
     mockedAxios.request.mockClear();
   })
 

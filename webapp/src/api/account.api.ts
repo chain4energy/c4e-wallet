@@ -189,6 +189,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     }
 
     if (messages.length === 0) {
+      this.logToConsole(LogLevel.INFO, 'claimRewards: No rewards to claim');
       return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('No rewards to claim'));
     }
 
