@@ -204,11 +204,11 @@ export function createPeriodicVestingAccount(address: string) {
 
 export function createSingleBalanceResponseData(denom: string, amount: string) {
   return {
-    balance: createSingleBalance(denom, amount)
+    balance: createSingleCoin(denom, amount)
   }
 }
 
-export function createSingleBalance(denom: string, amount: string) {
+export function createSingleCoin(denom: string, amount: string) {
   return {
     denom: denom,
     amount: amount

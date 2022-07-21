@@ -4,7 +4,7 @@ import { Coin as StoreCoin} from "../store/account";
 export function mapCoin(coin: BcCoin | undefined, denom: string | undefined): StoreCoin  {
   if (coin === undefined) {
     if (denom === undefined) {
-      throw new Error(`no coin defined`);
+      throw new Error(`no coin and denom defined`);
     }
     return new StoreCoin('0', denom);
   }
@@ -15,9 +15,9 @@ export function mapCoin(coin: BcCoin | undefined, denom: string | undefined): St
 }
 
 export function findByDenomAndMapCoin(coins: BcCoin[] | undefined, denom: string | undefined): StoreCoin  {
-  if (coins === undefined) {
+  if (coins === undefined || coins.length === 0) {
     if (denom === undefined) {
-      throw new Error(`no coins defined`);
+      throw new Error(`no coins and denom defined`);
     }
     return new StoreCoin('0', denom);
   }
