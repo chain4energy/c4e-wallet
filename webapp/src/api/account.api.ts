@@ -9,7 +9,7 @@ import { AccountResponse, BalanceResponse} from "@/models/blockchain/account";
 
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ConnectionInfo } from "@/api/wallet.connecton.api";
-import { mapAccount, createNonexistentAccount, mapBalance } from "@/models/mapper/account.mapper";
+import { mapAccount, createNonexistentAccount } from "@/models/mapper/account.mapper";
 
 import {
   MsgBeginRedelegate,
@@ -28,6 +28,7 @@ import { mapAndAddDelegations, mapAndAddUnbondingDelegations, mapDelegations, ma
 import { RewardsResponse } from "@/models/blockchain/distribution";
 import { Rewards } from "@/models/store/distribution";
 import { mapRewards } from "@/models/mapper/distribution.mapper";
+import { mapCoin } from "@/models/mapper/common.mapper";
 
 export enum VoteOption {
   Yes = CosmVoteOption.VOTE_OPTION_YES,
@@ -74,7 +75,7 @@ export class AccountApi extends TxBroadcastBaseApi {
   }
 
   public async fetchBalance(address: string, denom: string): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{
-    const mapData = (bcData: BalanceResponse | undefined) => {return mapBalance(bcData?.balance, denom);};
+    const mapData = (bcData: BalanceResponse | undefined) => {return mapCoin(bcData?.balance, denom);};
     return  await this.axiosGetBlockchainApiCall(this.BALANCE_URL + address + '/by_denom?denom=' + denom,
       mapData, true, null, 'fetchBalance - ');
   }

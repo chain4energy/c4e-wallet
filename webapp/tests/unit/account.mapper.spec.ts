@@ -1,8 +1,10 @@
-import { Account as BcAccount, Balance } from "@/models/blockchain/account";
+import { Account as BcAccount } from "@/models/blockchain/account";
 import { Account as StoreAccount, AccountType, Coin } from "@/models/store/account";
-import { mapAccount, mapBalance } from "@/models/mapper/account.mapper";
+import { mapAccount } from "@/models/mapper/account.mapper";
 import { defaultDenom } from "../utils/common.blockchain.data.util";
 import { createBaseAccount, createBaseVestingAccount, createContinuousVestingAccount, createDelayedVestingAccount, createModuleAccount, createPeriodicVestingAccount, createSingleBalance, expectBaseAccount, expectContinuousVestingAccount } from '../utils/account.blockchain.data.util';
+import { mapCoin } from "@/models/mapper/common.mapper";
+import { Coin as BcCoin } from "@/models/blockchain/common";
 
 const address = 'c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg'
 const denom = defaultDenom
@@ -99,9 +101,9 @@ describe('map account', () => {
 
   it('maps balance', async () => {
     const amount = '43';
-    const bcBalance: Balance = createSingleBalance(denom, amount)
+    const bcBalance: BcCoin = createSingleBalance(denom, amount)
 
-    const coin = mapBalance(bcBalance, secondDenom);
+    const coin = mapCoin(bcBalance, secondDenom);
     expect(coin).toBeInstanceOf(Coin);
     expect(coin.amount).toBe(amount);
     expect(coin.denom).toBe(denom);
@@ -109,7 +111,7 @@ describe('map account', () => {
   });
 
   it('maps undefined balance', async () => {
-    const coin = mapBalance(undefined, secondDenom);
+    const coin = mapCoin(undefined, secondDenom);
     expect(coin).toBeInstanceOf(Coin);
     expect(coin.amount).toBe('0');
     expect(coin.denom).toBe(secondDenom);
@@ -117,11 +119,11 @@ describe('map account', () => {
   });
 
   it('maps balance unexpected data', async () => {
-    const bcBalance: Balance = {
+    const bcBalance: BcCoin = {
           address: address,
-    } as unknown as Balance;
+    } as unknown as BcCoin;
 
-    expect(() => {mapBalance(bcBalance, secondDenom)}).toThrowError(new Error(`no amount or denom defined`))
+    expect(() => {mapCoin(bcBalance, secondDenom)}).toThrowError(new Error(`no amount or denom defined`))
   });
 
 });

@@ -1,6 +1,6 @@
 export class Delegation {
   validatorAddress: string;
-  amount: string;
+  amount: string; // TODO Amount as Coin ??
 
   constructor (validatorAddress: string, amount: string) {
     this.validatorAddress = validatorAddress;

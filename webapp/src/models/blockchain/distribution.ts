@@ -1,20 +1,12 @@
+import { Coin } from "./common"
+
 export interface RewardsResponse{
   rewards: Reward[]
-  total: [
-    {
-      denom: string,
-      amount: string
-    }
-  ]
+  total: Coin[]
 }
 
 export interface Reward {
   validator_address: string,
-  reward: [
-    {
-      denom: string,
-      amount: string
-    }
-  ]
+  reward: Coin[]
 }
 

@@ -1,3 +1,5 @@
+import { Coin } from "./common"
+
 export interface Account {
   "@type": string,
 
@@ -16,19 +18,9 @@ export interface BaseAccount {
 export interface ContinuousVestingAccount {
   base_vesting_account: {
     base_account: BaseAccount,
-    original_vesting?: [
-      {
-        denom: string,
-        amount: string
-      }
-    ],
+    original_vesting?: Coin[],
     delegated_free: [],
-    delegated_vesting: [
-      {
-        denom: string,
-        amount: string
-      }
-    ],
+    delegated_vesting: Coin[],
     end_time: string
   },
   start_time: string
@@ -39,10 +31,6 @@ export interface AccountResponse {
 }
 
 export interface BalanceResponse {
-  balance: Balance,
+  balance: Coin,
 }
 
-export interface Balance {
-  denom: string,
-  amount: string
-}

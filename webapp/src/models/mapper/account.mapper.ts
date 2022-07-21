@@ -1,4 +1,4 @@
-import { Account as BcAccount, Balance, BaseAccount, ContinuousVestingAccount} from "@/models/blockchain/account";
+import { Account as BcAccount, BaseAccount, ContinuousVestingAccount} from "@/models/blockchain/account";
 import { Account as StoreAccount, AccountType, ContinuousVestingData, Coin} from "@/models/store/account";
 
 export function createNonexistentAccount(address: string): StoreAccount  {
@@ -49,12 +49,12 @@ export function mapAccount(account: BcAccount | undefined): StoreAccount  {
   }
 }
 
-export function mapBalance(balance: Balance | undefined, denom: string): Coin  {
-  if (balance === undefined) {
-    return new Coin('0', denom);
-  }
-  if (balance.amount === undefined || balance.denom === undefined) {
-    throw new Error(`no amount or denom defined`);
-  }
-  return new Coin(balance.amount, balance.denom);
-}
+// export function mapBalance(balance: Balance | undefined, denom: string): Coin  {
+//   if (balance === undefined) {
+//     return new Coin('0', denom);
+//   }
+//   if (balance.amount === undefined || balance.denom === undefined) {
+//     throw new Error(`no amount or denom defined`);
+//   }
+//   return new Coin(balance.amount, balance.denom);
+// }
