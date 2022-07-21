@@ -46,7 +46,7 @@ export class ConnectionError {
 export default class WalletConnectionApi extends LoggedService {
 
   getServiceType(): ServiceTypeEnum {
-    return ServiceTypeEnum.WALLET_SERVICE;
+    return ServiceTypeEnum.WALLET_API;
   }
 
   public async connectAddress(address: string): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {

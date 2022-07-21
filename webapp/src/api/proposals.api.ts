@@ -10,7 +10,7 @@ import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
 export class ProposalsApi extends BaseApi {
 
   getServiceType(): ServiceTypeEnum {
-    return ServiceTypeEnum.PROPOSAL_SERVICE;
+    return ServiceTypeEnum.PROPOSAL_API;
   }
 
   private PROPOSALS_URL = process.env.VUE_APP_PROPOSALS_URL;

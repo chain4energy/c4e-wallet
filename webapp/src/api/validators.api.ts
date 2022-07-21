@@ -11,7 +11,7 @@ import { mapAndAddValidators, mapValidators, sortAndRankValidators } from "@/mod
 export class ValidatorsApi extends BaseApi {
 
   getServiceType(): ServiceTypeEnum {
-    return ServiceTypeEnum.ACTIVE_VALIDATORS_SERVICE;
+    return ServiceTypeEnum.VALIDATORS_API;
   }
 
   public async fetchActiveValidatorCount(): Promise<RequestResponse<ActiveValidatorCount, ErrorData<any>>> {

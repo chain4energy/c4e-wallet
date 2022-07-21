@@ -9,7 +9,7 @@ import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
 export class BlockApi extends BaseApi {
 
   getServiceType(): ServiceTypeEnum {
-    return ServiceTypeEnum.BLOCK_SERVICE;
+    return ServiceTypeEnum.BLOCK_API;
   }
 
   private LATEST_BLOCK_URL = process.env.VUE_APP_LATEST_BLOCK_URL;

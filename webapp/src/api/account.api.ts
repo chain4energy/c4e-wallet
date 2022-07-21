@@ -40,7 +40,7 @@ export enum VoteOption {
 export class AccountApi extends TxBroadcastBaseApi {
 
   getServiceType(): ServiceTypeEnum {
-    return ServiceTypeEnum.ACCOUNT_SERVICE;
+    return ServiceTypeEnum.ACCOUNT_API;
   }
 
   //TODO: MS: move to global configuration service

@@ -13,7 +13,7 @@ import { findByDenomAndMapCoin, mapCoin } from "@/models/mapper/common.mapper";
 export class TokensApi extends BaseApi {
 
   getServiceType(): ServiceTypeEnum {
-    return ServiceTypeEnum.TOKENS_SERVICE;
+    return ServiceTypeEnum.TOKENS_API;
   }
 
   private STAKING_POOL_URL = process.env.VUE_APP_STAKING_POOL_URL;
