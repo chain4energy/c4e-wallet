@@ -1,4 +1,4 @@
-export interface LatestBlock {
+export interface BlockResponse {
   blockId: BlockId,
   block: Block,
 }
@@ -7,9 +7,9 @@ export interface Block {
   header: Header,
 }
 export interface Header {
-  height: number
+  height: string
   time: string,
 }
-export class BlockId {
-  hash = String;
+export interface BlockId {
+  hash: string;
 }

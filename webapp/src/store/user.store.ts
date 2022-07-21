@@ -108,11 +108,7 @@ export const useUserStore = defineStore({
     },
 
     async calculateVestingLocked(latestBlTime: string){ // TODO number to BigInt
-      if (!checkIfConnected(this.connectionInfo)) {
-        this.vestimgAccLocked = 0;
-        return;
-      }
-      if (this.account.type !== AccountType.ContinuousVestingAccount ) {
+      if (!this.isContinuousVestingAccount ) {
         this.vestimgAccLocked = 0;
         return;
       }

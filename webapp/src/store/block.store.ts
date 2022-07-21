@@ -1,71 +1,63 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {LatestBlock} from "@/models/LatestBlock";
 import { useUserStore } from "@/store/user.store";
+import { Block } from "@/models/store/block";
+import { useToast } from "vue-toastification";
+import { StoreLogger } from "@/services/logged.service";
+import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
+import { LogLevel } from "@/services/logger/log-level";
+
+const toast = useToast();
+const logger = new StoreLogger(ServiceTypeEnum.BLOCK_STORE);
 
 interface BlockState {
   averageBlockTime: number
-  latestBlockHeight: number
-  latestBlockTime: string
-  latestBlock: LatestBlock
+  latestBlock: Block
 }
 
 export const useBlockStore = defineStore( 'block', {
   state: (): BlockState => {
     return {
       averageBlockTime: Object(String),
-      latestBlockHeight: Object(Number),
-      latestBlockTime: Object(String),
-      latestBlock: Object() as LatestBlock,
+      latestBlock: new Block('0', '0'),
     };
   },
   actions: {
-    fetchLatestBlock() {
-      apiFactory.blockApi().fetchLatestBlock().then(response => {
+    async fetchLatestBlock() {
+      await apiFactory.blockApi().fetchLatestBlock().then(response => {
 
-        if (response.error == null && response.data != undefined) {
-
-          const latestBlock: LatestBlock = response.data;
-
-          this.latestBlockHeight = latestBlock.block.header.height;
-
-          this.latestBlockTime = latestBlock.block.header.time;
-
-          this.latestBlock = latestBlock;
-
-          if(useUserStore().getAccount
-            && useUserStore().isContinuousVestingAccount){
-            useUserStore().calculateVestingLocked(latestBlock.block.header.time);
-          }
-
-
+        if (response.isSuccess() && response.data !== undefined) {
+          this.latestBlock = response.data;
+          useUserStore().calculateVestingLocked(this.latestBlock.time);
         } else {
-          //TODO: error handling
+          const message = 'Error fetching latest block data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
         }
 
       });
     },
-    fetchAverageBlockTime() {
-      apiFactory.blockApi().fetchAverageBlockTime().then(response => {
-
-        if (response.error == null && response.data != undefined) {
+    async fetchAverageBlockTime() {
+      await apiFactory.blockApi().fetchAverageBlockTime().then(response => {
+        if (response.isSuccess() && response.data !== undefined) {
           this.averageBlockTime = response.data.data.averageBlockTime[0].averageTime;
-
         } else {
-          //TODO: error handling
+          const message = 'Error fetching avarage block time data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
         }
 
       });
     }
   },
   getters: {
-    getLatestBlockHeight(): number {
-      return this.latestBlockHeight;
+    getLatestBlockHeight(): string {
+      return this.latestBlock.height;
     },
-      getAverageBlockTime(): number {
+    getAverageBlockTime(): number {
       return this.averageBlockTime;
     },
-    getLatestBlock(): any{
+    getLatestBlock(): Block{
       return this.latestBlock;
     }
   }

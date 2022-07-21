@@ -77,7 +77,7 @@ export const useTokensStore = defineStore({
       const denom = useConfigurationStore().config.stakingDenom;
       const address = useConfigurationStore().config.strategicPoolAddress;
       await apiFactory.accountApi().fetchBalance(address, denom).then(response => {
-        if (response.error == null && response.data != undefined) {
+        if (response.isSuccess() && response.data !== undefined) {
           this.strategicReversePool = response.data;
         } else {
           const message = 'Error fetching strategic reverse pool data';
@@ -90,7 +90,7 @@ export const useTokensStore = defineStore({
       const denom = useConfigurationStore().config.stakingDenom;
       const address = useConfigurationStore().config.airdropPoolAddress;
       await apiFactory.accountApi().fetchBalance(address, denom).then(response => {
-        if (response.error == null && response.data != undefined) {
+        if (response.isSuccess() && response.data !== undefined) {
           this.airdropPool = response.data;
         } else {
           const message = 'Error fetching airdrop pool data';
