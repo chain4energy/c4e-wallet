@@ -1,5 +1,5 @@
 export interface BlockResponse {
-  blockId: BlockId,
+  block_id: BlockId,
   block: Block,
 }
 

@@ -2,10 +2,14 @@ import { StakingPool } from "@/models/store/tokens"
 
 export function createStakingPoolResponseData(bonded: string, notBonded: string) {
   return {
-    pool:  {
-      bonded_tokens: bonded,
-      not_bonded_tokens: notBonded
-    }
+    pool:  createStakingPool(bonded, notBonded)
+  }
+}
+
+export function createStakingPool(bonded: string, notBonded: string) {
+  return {
+    bonded_tokens: bonded,
+    not_bonded_tokens: notBonded
   }
 }
 
