@@ -16,9 +16,10 @@ export class Account {
   address: string;
   continuousVestingData?: ContinuousVestingData;
 
-  constructor (type: AccountType, address: string) {
+  constructor (type: AccountType, address: string, continuousVestingData?: ContinuousVestingData) {
     this.type = type;
     this.address = address;
+    this.continuousVestingData = continuousVestingData;
   }
 
 }

@@ -12,7 +12,7 @@ import { Delegations, UnbondingDelegations } from '@/models/store/staking';
 import { mockAxios, mockKeplr } from '../utils/mock.util';
 import { AccountData } from '@cosmjs/proto-signing';
 import { useSplashStore } from '@/store/splash.store';
-import { Account, AccountType, Coin } from '@/models/store/account';
+import { Account, AccountType, Coin, ContinuousVestingData } from '@/models/store/account';
 import { defaultGas, defaultTxErrorResponse, defaultTxSuccessResponse } from '../utils/tx.broadcast.blockchain.data.util';
 import { DeliverTxResponse } from '@cosmjs/stargate';
 
@@ -431,6 +431,82 @@ describe('user store tests', () => {
     await userStore.claimRewards();
 
     expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr, initialRewards);
+
+  });
+
+  it('calculates locked vesting - ContinuousVestingAccount', async () => {
+    const userStore = useUserStore();
+    userStore.logOut();
+
+    const currentDate = new Date();
+    const startTime = currentDate.getTime();
+    const yearInMillis = 365*24*3600*1000;
+    const endTime = startTime + yearInMillis;
+    const amount = 1000000
+    const origVesting = new Coin(amount.toString(), defaultDenom);
+    const vestingData = new ContinuousVestingData(startTime.toString(), endTime.toString(), [origVesting]);
+
+    userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
+    userStore.account = new Account(AccountType.ContinuousVestingAccount, address, vestingData);
+    
+    userStore.calculateVestingLocked(new Date(startTime-1000000).toISOString());
+    expect(userStore.getVestingLockAmount).toBe(amount);
+
+    userStore.calculateVestingLocked(new Date(startTime).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(amount);
+
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/4).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(amount - amount/4);
+
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/2).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(amount/2);
+
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis-yearInMillis/4).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(amount/4);
+
+    userStore.calculateVestingLocked(new Date(endTime).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(0);
+
+    userStore.calculateVestingLocked(new Date(endTime+1000000).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(0);
+
+  });
+
+  it('calculates locked vesting - no ContinuousVestingAccount', async () => {
+    const userStore = useUserStore();
+    userStore.logOut();
+
+    const currentDate = new Date();
+    const startTime = currentDate.getTime();
+    const yearInMillis = 365*24*3600*1000;
+    const endTime = startTime + yearInMillis;
+    const amount = 1000000
+    const origVesting = new Coin(amount.toString(), defaultDenom);
+    const vestingData = new ContinuousVestingData(startTime.toString(), endTime.toString(), [origVesting]);
+
+    userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
+    userStore.account = new Account(AccountType.BaseAccount, address, vestingData);
+    
+    userStore.calculateVestingLocked(new Date(startTime-1000000).toISOString());
+    expect(userStore.getVestingLockAmount).toBe(0);
+
+    userStore.calculateVestingLocked(new Date(startTime).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(0);
+
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/4).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(0);
+
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/2).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(0);
+
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis-yearInMillis/4).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(0);
+
+    userStore.calculateVestingLocked(new Date(endTime).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(0);
+
+    userStore.calculateVestingLocked(new Date(endTime+1000000).toISOString())
+    expect(userStore.getVestingLockAmount).toBe(0);
 
   });
 
