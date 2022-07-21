@@ -13,7 +13,7 @@ const mockedAxios = mockAxios();
 const api = apiFactory.validatorsApi()
 // apiFactory.setAxiosInstance(mockedAxios)
 
-describe('account api tests', () => {
+describe('validators api tests', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   });

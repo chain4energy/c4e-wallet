@@ -3,7 +3,7 @@ import { mapStakingPool } from "@/models/mapper/tokens.mapper";
 import { StakingPool as StoreStakingPool } from "@/models/store/tokens";
 
 
-describe('map common', () => {
+describe('map tokens', () => {
 
   it('maps staking pool', async () => {
     const bcPool: BcStakingPool = {bonded_tokens: '12345', not_bonded_tokens: '98786'};

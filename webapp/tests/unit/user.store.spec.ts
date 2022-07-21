@@ -30,10 +30,10 @@ const accountData: AccountData  = {
 }
 mockedOfflineSigner.getAccounts.mockResolvedValue([accountData]);
 
-describe('get account', () => {
+describe('user store tests', () => {
   beforeEach(() => {
-    setActivePinia(createPinia())
-    useConfigurationStore().config.stakingDenom = denom
+    setActivePinia(createPinia());
+    useConfigurationStore().config.stakingDenom = denom;
     useConfigurationStore().config.operationGas = defaultGas;
   });
 

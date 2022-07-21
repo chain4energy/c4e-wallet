@@ -9,7 +9,7 @@ jest.mock("axios");
 const mockedAxios = mockAxios();
 const api = apiFactory.tokensApi()
 
-describe('account api tests', () => {
+describe('tokens api tests', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   });
@@ -119,11 +119,11 @@ describe('account api tests', () => {
   it('gets community pool - denom exists', async () => {
     const amount = '12345';
 
-    const supply = {
+    const communityPool = {
       data: createCommunityPoolResponseData(amount, defaultDenom)
     };
 
-    mockedAxios.request.mockResolvedValue(supply);
+    mockedAxios.request.mockResolvedValue(communityPool);
     const result = await api.fetchCommunityPoolByDenom(defaultDenom);
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
@@ -136,11 +136,11 @@ describe('account api tests', () => {
   it('gets community pool - denom does not exist', async () => {
     const amount = '12345';
 
-    const supply = {
+    const communityPool = {
       data: createCommunityPoolResponseData(amount, 'someDenom')
     };
 
-    mockedAxios.request.mockResolvedValue(supply);
+    mockedAxios.request.mockResolvedValue(communityPool);
     const result = await api.fetchCommunityPoolByDenom(defaultDenom);
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)

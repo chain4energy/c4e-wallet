@@ -9,7 +9,7 @@ import { createErrorResponse } from '../utils/common.blockchain.data.util';
 jest.mock("axios");
 const mockedAxios = mockAxios();
 
-describe('get account', () => {
+describe('validators store tests', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   });

@@ -204,8 +204,9 @@ describe('account api tests', () => {
   });
 
   it('gets balance', async () => {
+    const amount = '49031887606805';
     const balance = {
-      data: createSingleBalanceResponseData(denom, '49031887606805')
+      data: createSingleBalanceResponseData(denom, amount)
     };
 
     mockedAxios.request.mockResolvedValue(balance);
@@ -213,7 +214,7 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.amount).toBe('49031887606805')
+    expect(result.data?.amount).toBe(amount)
     expect(result.data?.denom).toBe(denom)
   });
 
