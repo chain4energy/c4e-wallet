@@ -1,9 +1,7 @@
 import { setActivePinia, createPinia } from 'pinia'
 import { mockAxios } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
-import { createErrorResponse, defaultDenom, expectCoin } from '../utils/common.blockchain.data.util';
-import { useTokensStore } from '@/store/tokens.store';
-import { createCommunityPoolResponseData, createStakingPoolResponseData, createSupplyResponseData, expectStakingPool } from '../utils/tokens.blockchain.data.util';
+import { createErrorResponse, defaultDenom } from '../utils/common.blockchain.data.util';
 import { useConfigurationStore } from '@/store/configuration.store';
 import { useBlockStore } from '@/store/block.store';
 import { createBlockResponseData, expectBlock } from '../utils/block.blockchain.data.util';

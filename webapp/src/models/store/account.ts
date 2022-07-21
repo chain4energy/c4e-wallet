@@ -64,7 +64,6 @@ export class ContinuousVestingData {
     const y = endTime - startTime;
     const diference = x/y;
     const unlocked = origVesting * diference;
-    console.log(origVesting * diference);
     const locked = origVesting - unlocked;
     return locked;
   }
