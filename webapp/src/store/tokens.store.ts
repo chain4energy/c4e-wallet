@@ -1,49 +1,58 @@
 import {defineStore} from "pinia";
-import {StakingPool, Pool} from "@/models/StakingPool";
-import {Amount, TotalSupply} from "@/models/TotalSupply";
 import apiFactory from "@/api/factory.api";
-import {AirdropPool, CommunityPool, StrategicReversePool} from "@/models/Pools";
+import { StakingPool } from "@/models/store/tokens";
+import { Coin } from "@/models/store/account";
+import { useConfigurationStore } from "./configuration.store";
+import { useToast } from "vue-toastification";
+import { StoreLogger } from "@/services/logged.service";
+import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
+import { LogLevel } from "@/services/logger/log-level";
+
+const toast = useToast();
+const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
 
 interface TokensState {
-  stakingPool: Pool
-  totalSupply: Amount
-  communityPool: Amount
-  strategicReversePool: Amount
-  airdropPool: Amount
+  stakingPool: StakingPool
+  totalSupply: Coin
+  communityPool: Coin
+  strategicReversePool: Coin
+  airdropPool: Coin
 }
 
 export const useTokensStore = defineStore({
   id: 'tokensStore',
   state: (): TokensState => {
+    const denom = useConfigurationStore().config.stakingDenom;
+    const emptyCoin = new Coin('0', denom);
     return {
-      stakingPool: Object(),
-      totalSupply: Object(),
-      communityPool: Object(),
-      strategicReversePool: Object(),
-      airdropPool: Object()
+      stakingPool: new StakingPool('0', '0'),
+      totalSupply: emptyCoin,
+      communityPool: emptyCoin,
+      strategicReversePool: emptyCoin,
+      airdropPool: emptyCoin
     };
   },
   actions: {
-    fetchStakingPool() {
-      apiFactory.tokensApi().fetchStakingPool().then(response => {
-        if (response.error == null && response.data != undefined) {
-          const stakingPool:StakingPool = response.data;
-          this.stakingPool = stakingPool.pool;
-          // if(useValidatorsStore().getValidators){
-          //   useValidatorsStore().setVotingPower(useValidatorsStore().getValidators)
-          // }
+    async fetchStakingPool() {
+      await apiFactory.tokensApi().fetchStakingPool().then(response => {
+        if (response.isSuccess() && response.data !== undefined) {
+          this.stakingPool = response.data;
         } else {
-          //TODO: error handling
+          const message = 'Error fetching staking pool data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
         }
       });
     },
-    fetchTotalSupply() {
-      apiFactory.tokensApi().fetchTotalSupply().then(response => {
-        if (response.error == null && response.data != undefined) {
-          const totalSupply: TotalSupply = response.data;
-          this.totalSupply = totalSupply.amount;
+    async fetchTotalSupply() {
+      const denom = useConfigurationStore().config.stakingDenom;
+      await apiFactory.tokensApi().fetchTotalSupply(denom).then(response => {
+        if (response.isSuccess() && response.data !== undefined) {
+          this.totalSupply = response.data;
         } else {
-          //TODO: error handling
+          const message = 'Error fetching total supply data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
         }
       });
     },
@@ -52,51 +61,60 @@ export const useTokensStore = defineStore({
       this.fetchStrategicReversePool();
       this.fetchAirdropPool();
     },
-    fetchCommunityPool() {
-      apiFactory.tokensApi().fetchCommunityPool().then(response => {
-        if (response.error == null && response.data != undefined) {
-          const communityPool: CommunityPool = response.data;
-          this.communityPool = communityPool.pool[0];
+    async fetchCommunityPool() {
+      const denom = useConfigurationStore().config.stakingDenom;
+      await apiFactory.tokensApi().fetchCommunityPoolByDenom(denom).then(response => {
+        if (response.isSuccess() && response.data !== undefined) {
+          this.communityPool = response.data;
         } else {
-          //TODO: error handling
+          const message = 'Error fetching community pool data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
         }
       });
     },
-    fetchStrategicReversePool() {
-      apiFactory.tokensApi().fetchStrategicReversePool().then(response => {
+    async fetchStrategicReversePool() {
+      const denom = useConfigurationStore().config.stakingDenom;
+      const address = useConfigurationStore().config.strategicPoolAddress;
+      await apiFactory.accountApi().fetchBalance(address, denom).then(response => {
         if (response.error == null && response.data != undefined) {
-          const strategicReversePool: StrategicReversePool = response.data;
-          this.strategicReversePool = strategicReversePool.balance;
+          this.strategicReversePool = response.data;
         } else {
-          //TODO: error handling
+          const message = 'Error fetching strategic reverse pool data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
         }
       });
     },
-    fetchAirdropPool() {
-      apiFactory.tokensApi().fetchAirdropPool().then(response => {
+    async fetchAirdropPool() {
+      const denom = useConfigurationStore().config.stakingDenom;
+      const address = useConfigurationStore().config.airdropPoolAddress;
+      await apiFactory.accountApi().fetchBalance(address, denom).then(response => {
         if (response.error == null && response.data != undefined) {
-          const airdropPool: AirdropPool = response.data;
-          this.airdropPool = airdropPool.balance;
+          this.airdropPool = response.data;
         } else {
-          //TODO: error handling
+          const message = 'Error fetching airdrop pool data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
         }
       });
+
     }
   },
   getters: {
-    getStakingPool(): Pool {
+    getStakingPool(): StakingPool {
       return this.stakingPool;
     },
-    getTotalSupply(): Amount {
+    getTotalSupply(): Coin {
       return this.totalSupply;
     },
-    getCommunityPool(): Amount {
+    getCommunityPool(): Coin {
       return this.communityPool;
     },
-    getStrategicReversePool(): Amount {
+    getStrategicReversePool(): Coin {
       return this.strategicReversePool;
     },
-    getAirdropPool(): Amount {
+    getAirdropPool(): Coin {
       return this.airdropPool;
     }
   }

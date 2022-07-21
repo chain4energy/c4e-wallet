@@ -1,4 +1,4 @@
-import { PaginatedResponse, Pagination } from "./pagination"
+import { PaginatedResponse } from "./pagination"
 
 export interface ValidatorsResponse extends PaginatedResponse {
   validators: Validator[]

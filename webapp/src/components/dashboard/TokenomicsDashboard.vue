@@ -55,33 +55,33 @@ onBeforeMount(() => {
 });
 
 const boundedPercentage = computed(() => {
-  let res:number = Number(tokensStore.getStakingPool.bonded_tokens) / Number(tokensStore.getTotalSupply.amount) * 100;
+  let res:number = Number(tokensStore.getStakingPool.bondedTokens) / Number(tokensStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 const unboundedPercentage = computed(() => {
   let res:number = (Number(tokensStore.getTotalSupply.amount)
-    - Number(tokensStore.getStakingPool.bonded_tokens)
-    - Number(tokensStore.getStakingPool.not_bonded_tokens)) / Number(tokensStore.getTotalSupply.amount) * 100;
+    - Number(tokensStore.getStakingPool.bondedTokens)
+    - Number(tokensStore.getStakingPool.notBondedTokens)) / Number(tokensStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 
 const unboundingPercentage = computed(() => {
-  let res:number = Number(tokensStore.getStakingPool.not_bonded_tokens) / Number(tokensStore.getTotalSupply.amount) * 100;
+  let res:number = Number(tokensStore.getStakingPool.notBondedTokens) / Number(tokensStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 
 const bounded = computed((): number => {
-  return Number(tokensStore.getStakingPool.bonded_tokens);
+  return Number(tokensStore.getStakingPool.bondedTokens);
 });
 
 const unBounded = computed(() :number => {
   return Number(tokensStore.getTotalSupply.amount)
-    - Number(tokensStore.getStakingPool.bonded_tokens)
-    - Number(tokensStore.getStakingPool.not_bonded_tokens);
+    - Number(tokensStore.getStakingPool.bondedTokens)
+    - Number(tokensStore.getStakingPool.notBondedTokens);
 });
 
 const unBounding = computed(() :number => {
-  return Number(tokensStore.getStakingPool.not_bonded_tokens);
+  return Number(tokensStore.getStakingPool.notBondedTokens);
 });
 
 const totalSupply = computed(() :number => {

@@ -26,9 +26,9 @@ export class Validator{
   }
 
   public get votingPower(): number {
-    const total = useTokensStore().getStakingPool.bonded_tokens;
-    if(total){
-      return (Number(this.tokens) / total) * 100;
+    const total = useTokensStore().getStakingPool.bondedTokens;
+    if(total || total !== '0'){
+      return (Number(this.tokens) / Number(total)) * 100;
     }
     return 0;
   }

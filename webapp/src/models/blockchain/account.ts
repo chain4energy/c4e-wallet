@@ -1,6 +1,3 @@
-import {Amount} from "@/models/TotalSupply";
-import { array } from "yup";
-
 export interface Account {
   "@type": string,
 
