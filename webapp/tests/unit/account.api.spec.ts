@@ -2,8 +2,8 @@ import { setActivePinia, createPinia } from 'pinia'
 import { AxiosResponse } from 'axios';
 import { AccountType } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
-import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createErrorResponseData, defaultAxiosErrorName, defaultDenom, defaultErrorName } from '../utils/common.blockchain.data.util';
-import { createAddressNotExistsErrorResponse, createBaseAccountResponseData, createContinuousVestingAccountResponseData, createErrorResponse, createSingleBalanceResponseData, expectBaseAccount, expectContinuousVestingAccount } from '../utils/account.blockchain.data.util';
+import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createErrorResponse, createErrorResponseData, defaultAxiosErrorName, defaultDenom, defaultErrorName } from '../utils/common.blockchain.data.util';
+import { createAddressNotExistsErrorResponse, createBaseAccountResponseData, createContinuousVestingAccountResponseData, createSingleBalanceResponseData, expectBaseAccount, expectContinuousVestingAccount } from '../utils/account.blockchain.data.util';
 import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, expectDelegatorDelegations, expectDelegatorUnbondingDelegations } from '../utils/staking.blockchain.data.util';
 import { createRewardsResponseData, defaultRewardsValidators, expectRewards } from '../utils/distribution.blockchain.data.util';
 
@@ -192,7 +192,7 @@ describe('account api tests', () => {
     // };
     // const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
     const status = 401;
-    const error = createErrorResponse(401, 5, accountNotFoundErrorMessage);
+    const error = createErrorResponse(status, 5, accountNotFoundErrorMessage);
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchAccount(address);
     expect(result.isError()).toBe(true);
@@ -219,22 +219,24 @@ describe('account api tests', () => {
 
   it('gets balance with error', async () => {
     const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
-    const axiosErrorMessage = axiosErrorMessagePrefix + '400';
+    // const axiosErrorMessage = axiosErrorMessagePrefix + '400';
 
-    const response = {
-      data: createErrorResponseData(3, errorMessage),
-      status: 400,
-      statusText: '',
-      // headers: "AxiosResponseHeaders",
-    };
-    const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+    // const response = {
+    //   data: createErrorResponseData(3, errorMessage),
+    //   status: 400,
+    //   statusText: '',
+    // };
+    // const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+
+    const status = 400;
+    const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchBalance(address, denom)
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
-    expect(result.error?.message).toBe(axiosErrorMessage);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
 

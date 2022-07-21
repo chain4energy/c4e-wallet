@@ -1,3 +1,4 @@
+import { Coin } from "@/models/store/account";
 import { AxiosError, AxiosResponse } from "axios";
 
 export const accountNotFoundErrorMessage = 'rpc error: code = NotFound desc = account c4e1xe3x4w0ma4dv805q0rhe0c7xk3mv24vatg7pm3 not found: key not found';
@@ -22,4 +23,21 @@ export function createAxiosError(message: string, response: AxiosResponse, name 
   error.message = message;
   error.response = response;
   return error;
+}
+
+export function createErrorResponse(status: number, blockchainErrorCode: number, blockchaineErrorMessage: string) {
+  const axiosErrorMessage = axiosErrorMessagePrefix + status;
+  const response = {
+    data: createErrorResponseData(blockchainErrorCode, blockchaineErrorMessage),
+    status: status,
+    statusText: '',
+  };
+  return createAxiosError(axiosErrorMessage, response as AxiosResponse);
+}
+
+export function expectCoin(coin: Coin | undefined, expectedAmount: string, expectedDenom: string) {
+  expect(coin).not.toBeUndefined();
+  expect(coin?.amount).toBe(expectedAmount);
+  expect(coin?.denom).toBe(expectedDenom);
+
 }

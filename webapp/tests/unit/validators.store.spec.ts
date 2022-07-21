@@ -4,7 +4,7 @@ import { useSplashStore } from '@/store/splash.store';
 import { useValidatorsStore } from '@/store/validators.store';
 import { Validator } from '@/models/store/validator';
 import { createValidatorsResponseData, expectEmptyValidators, expectValidators } from '../utils/validator.blockchain.data.util';
-import { createErrorResponse } from '../utils/account.blockchain.data.util';
+import { createErrorResponse } from '../utils/common.blockchain.data.util';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();

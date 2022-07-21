@@ -224,16 +224,6 @@ export function createAddressNotExistsErrorResponse() {
   return createAxiosError(axiosError404Message, response as AxiosResponse);
 }
 
-export function createErrorResponse(status: number, blockchainErrorCode: number, blockchaineErrorMessage: string) {
-  const axiosErrorMessage = axiosErrorMessagePrefix + status;
-  const response = {
-    data: createErrorResponseData(blockchainErrorCode, blockchaineErrorMessage),
-    status: status,
-    statusText: '',
-  };
-  return createAxiosError(axiosErrorMessage, response as AxiosResponse);
-}
-
 export function expectBaseAccount(account: Account | undefined, expectedAddress: string) {
   expect(account).toBeInstanceOf(Account);
   expect(account?.continuousVestingData).toBeUndefined();

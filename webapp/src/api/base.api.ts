@@ -98,6 +98,7 @@ export default abstract class BaseApi extends LoggedService {
       }
     }
     try {
+      this.logToConsole(LogLevel.DEBUG, logPrefix + 'data to map: ' + this.getServiceType(), JSON.stringify(result.data));
       const mapped = mapData(result.data);
       return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(undefined, mapped);
     } catch (err) {

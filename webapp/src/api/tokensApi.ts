@@ -21,7 +21,7 @@ export class TokensApi extends BaseApi {
   private COMMUNITY_POOL_URL =  process.env.VUE_APP_COMMUNITY_POOL_URL;
 
   public async fetchStakingPool(): Promise<RequestResponse<StakingPool, ErrorData<BlockchainApiErrorData>>>{
-    const mapData = (bcData: StakingPoolResponse | undefined) => {return mapStakingPool(bcData?.pool);};
+    const mapData = (bcData: StakingPoolResponse | undefined) => { return mapStakingPool(bcData?.pool); };
     return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.STAKING_POOL_URL,
       mapData, true, null, 'fetchStakingPool - ');
   }
