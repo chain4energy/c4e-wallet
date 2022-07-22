@@ -25,12 +25,12 @@ export class Validator{
     this.rank = 0;
   }
 
-  public get votingPower(): bigint {
+  public get votingPower(): number {
     const total = useTokensStore().getStakingPool.bondedTokens;
     if(total || total > 0n){
-      return (this.tokens * 100n) / total;
+      return Number((this.tokens * 1000000n) / total)/10000;
     }
-    return 0n;
+    return 0;
   }
 
   public get delegatedAmount(): bigint {

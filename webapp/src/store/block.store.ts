@@ -28,7 +28,7 @@ export const useBlockStore = defineStore( 'block', {
 
         if (response.isSuccess() && response.data !== undefined) {
           this.latestBlock = response.data;
-          useUserStore().calculateVestingLocked(this.latestBlock.time);
+          useUserStore().calculateVestingLocked(this.getLatestBlock.time);
         } else {
           const message = 'Error fetching latest block data';
           logger.logToConsole(LogLevel.ERROR, message);

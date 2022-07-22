@@ -33,11 +33,10 @@
         <p>{{locked}}</p>
       </div>
       <div>
-        <p>{{ new Date(Number(useUserStore().getAccount.continuousVestingData.startTime)).toLocaleString() }}</p>
+        <p>{{ useUserStore().getAccount.continuousVestingData?.startTime.toLocaleString() }}</p>
       </div>
       <div>
-        <p>{{ new Date(Number(useUserStore().getAccount.continuousVestingData.endTime)).toLocaleString() }}</p>
-<!--        <p>{{ useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() }}</p>-->
+        <p>{{ useUserStore().getAccount.continuousVestingData?.endTime.toLocaleString() }}</p>
       </div>
     </div>
   </div>
@@ -73,7 +72,7 @@ useBlockStore().fetchLatestBlock();
 setInterval(useBlockStore().fetchLatestBlock, 6000);
 
 const total = computed(() => useUserStore().getTotalUndelegating + useUserStore().getTotalDelegated + useUserStore().getBalance);
-const locked = computed(()=> useUserStore().getVestingLockAmount.toFixed(0));
+const locked = computed(()=> useUserStore().getVestingLockAmount);
 // const startTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
 // const endTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
 console.log(useUserStore().getAccount.continuousVestingData);

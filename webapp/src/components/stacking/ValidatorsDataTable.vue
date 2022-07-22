@@ -33,7 +33,7 @@
       </Column>
       <Column :header="$t(`STACKING_VIEW.TABLE_HEADERS.YOUR_STAKE`)" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
         <template #body="{data}">
-          <span>{{ toFixedAm(data.delegatedAmount, 4) }}</span>
+          <span>{{ data.delegatedAmount }}</span>
           <!-- <span v-else>updating</span> -->
         </template>
       </Column>
@@ -54,11 +54,11 @@
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
           <p>Your unstaking</p>
-          <p>{{toFixedAm(expandedData.data.undelegatingAmount, 4)}}</p>
+          <p>{{ expandedData.data.undelegatingAmount }}</p>
         </div>
         <div style="display: flex; flex-direction: column">
           <p>Reward</p>
-          <p>{{toFixedAm(expandedData.data.rewardsAmount, 4)}}</p>
+          <p>{{toFixedAm(Number(expandedData.data.rewardsAmount), 4)}}</p>
         </div>
       </div>
     </template>
@@ -102,8 +102,8 @@ function checkBTN(item: Validator){
   return popupOpened;
 }
 
-function toFixedAm(amount: string, decimal: number) {
-  return parseFloat(amount).toFixed(decimal);
+function toFixedAm(amount: number, decimal: number) {
+  return amount.toFixed(decimal);
 }
 
 function toViewStatus(status: ValidatorStatus): string {

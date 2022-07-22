@@ -117,7 +117,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
   private createClient(connectionType: ConnectionType): Promise<SigningStargateClient> {
     const signer = this.getOfflineSigner(connectionType);
     if (signer == undefined) {
-      throw new Error('Cannot get signer');;
+      throw new Error('Cannot get signer');
     }
     const rpc = useConfigurationStore().config.bcRpcURL;
     const client = SigningStargateClient.connectWithSigner(

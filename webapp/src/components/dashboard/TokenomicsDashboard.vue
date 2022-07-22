@@ -55,18 +55,26 @@ onBeforeMount(() => {
 });
 
 const boundedPercentage = computed(() => {
-  let res:number = Number(tokensStore.getStakingPool.bondedTokens) / Number(tokensStore.getTotalSupply.amount) * 100;
+  if (tokensStore.getTotalSupply.amount === 0n) {
+    return 0;
+  }
+  let res:number = Number(tokensStore.getStakingPool.bondedTokens * 10000n / tokensStore.getTotalSupply.amount)/100 ;
   return res.toFixed(2);
 });
 const unboundedPercentage = computed(() => {
-  let res:number = (Number(tokensStore.getTotalSupply.amount)
-    - Number(tokensStore.getStakingPool.bondedTokens)
-    - Number(tokensStore.getStakingPool.notBondedTokens)) / Number(tokensStore.getTotalSupply.amount) * 100;
+  if (tokensStore.getTotalSupply.amount === 0n) {
+    return 0;
+  }
+  let res:number = Number((tokensStore.getTotalSupply.amount - tokensStore.getStakingPool.bondedTokens - tokensStore.getStakingPool.notBondedTokens) * 10000n / 
+                  tokensStore.getTotalSupply.amount) / 100;
   return res.toFixed(2);
 });
 
 const unboundingPercentage = computed(() => {
-  let res:number = Number(tokensStore.getStakingPool.notBondedTokens) / Number(tokensStore.getTotalSupply.amount) * 100;
+  if (tokensStore.getTotalSupply.amount === 0n) {
+    return 0;
+  }
+  let res:number = Number(tokensStore.getStakingPool.notBondedTokens * 10000n / tokensStore.getTotalSupply.amount) * 100;
   return res.toFixed(2);
 });
 
@@ -74,13 +82,13 @@ const bounded = computed((): number => {
   return Number(tokensStore.getStakingPool.bondedTokens);
 });
 
-const unBounded = computed(() :number => {
-  return Number(tokensStore.getTotalSupply.amount)
-    - Number(tokensStore.getStakingPool.bondedTokens)
-    - Number(tokensStore.getStakingPool.notBondedTokens);
+const unBounded = computed((): number => {
+  return Number(tokensStore.getTotalSupply.amount
+    - tokensStore.getStakingPool.bondedTokens
+    - tokensStore.getStakingPool.notBondedTokens);
 });
 
-const unBounding = computed(() :number => {
+const unBounding = computed((): number => {
   return Number(tokensStore.getStakingPool.notBondedTokens);
 });
 

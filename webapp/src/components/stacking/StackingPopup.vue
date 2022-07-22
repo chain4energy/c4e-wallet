@@ -118,8 +118,9 @@ let amountSchema = object({
     number()
     .defined()
     .moreThan(0)
-    .lessThan(useUserStore().getTotalUndelegating + useUserStore().getTotalDelegated + useUserStore().getBalance)
+    .lessThan(Number(useUserStore().getTotalUndelegating + useUserStore().getTotalDelegated + useUserStore().getBalance)) // TODO some bigint validation
 });
+
 
 async function delegate() {
   try {
