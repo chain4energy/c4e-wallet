@@ -1,8 +1,8 @@
 export class Delegation {
   validatorAddress: string;
-  amount: string; // TODO Amount as Coin ??
+  amount: bigint; // TODO Amount as Coin ??
 
-  constructor (validatorAddress: string, amount: string) {
+  constructor (validatorAddress: string, amount: bigint) {
     this.validatorAddress = validatorAddress;
     this.amount = amount;
   }
@@ -10,16 +10,16 @@ export class Delegation {
 
 export class Delegations {
   delegations: Map<string, Delegation>;
-  totalDelegated: number;
+  totalDelegated: bigint;
 
-  constructor (delegations = new Map<string, Delegation>(), totalDelegated = 0) {
+  constructor (delegations = new Map<string, Delegation>(), totalDelegated = 0n) {
     this.delegations = delegations;
     this.totalDelegated = totalDelegated;
   }
 
-  public getAmountByValidator(validatorAddress: string): string {
+  public getAmountByValidator(validatorAddress: string): bigint {
     const amount = this.delegations.get(validatorAddress)?.amount;
-    return amount === undefined ? "0" : amount;
+    return amount === undefined ? 0n : amount;
   }
 
 }
@@ -35,25 +35,25 @@ export class UnbondingDelegation {
 }
 
 export class UnbondingDelegationEntry {
-  amount: string;
+  amount: bigint;
 
-  constructor (amount: string) {
+  constructor (amount: bigint) {
     this.amount = amount;
   }
 }
 
 export class UnbondingDelegations {
   undelegations: Map<string, UnbondingDelegation>;
-  totalUndelegating: number;
+  totalUndelegating: bigint;
 
-  constructor (undelegations = new Map<string, UnbondingDelegation>(), totalUndelegating = 0) {
+  constructor (undelegations = new Map<string, UnbondingDelegation>(), totalUndelegating = 0n) {
     this.undelegations = undelegations;
     this.totalUndelegating = totalUndelegating;
   }
 
-  public getAmountByValidator(validatorAddress: string): number {
-    let amount = 0;
-    this.undelegations.get(validatorAddress)?.entries.forEach(a => amount += Number(a.amount));
+  public getAmountByValidator(validatorAddress: string): bigint {
+    let amount = 0n;
+    this.undelegations.get(validatorAddress)?.entries.forEach(a => amount += a.amount);
     return amount;
   }
 

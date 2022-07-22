@@ -18,7 +18,7 @@ export class ValidatorRewards {
 
 export class Rewards {
   rewards: Map<string, ValidatorRewards>;
-  totalRewards: number;
+  totalRewards: number; // TODO BigDecimal
 
   constructor (rewards = new Map<string, ValidatorRewards>(), totalRewards = 0) {
     this.rewards = rewards;
@@ -34,7 +34,4 @@ export class Rewards {
     return this.rewards.keys();
   }
 
-  // public isEmpty(): boolean {
-  //   return this.rewards.size === 0
-  // }
 }

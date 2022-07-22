@@ -47,9 +47,9 @@ export function mapValidator(validator: BcValidator | undefined): StoreValidator
   }
 
   const status = mapValidatorStatus(validator.status);
-  const commission = new ValidatorCommission(validator.commission.commission_rates.rate,
-    validator.commission.commission_rates.max_rate,
-    validator.commission.commission_rates.max_change_rate);
+  const commission = new ValidatorCommission(Number(validator.commission.commission_rates.rate),
+    Number(validator.commission.commission_rates.max_rate),
+    Number(validator.commission.commission_rates.max_change_rate));
   const desciption = new ValidatorDescription(validator.description.moniker,
     validator.description.identity,
     validator.description.website,
@@ -59,7 +59,7 @@ export function mapValidator(validator: BcValidator | undefined): StoreValidator
   return new StoreValidator(validator.operator_address,
     validator.jailed,
     status,
-    validator.tokens,
+    BigInt(validator.tokens),
     desciption,
     commission);
 }

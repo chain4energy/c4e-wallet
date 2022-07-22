@@ -20,11 +20,11 @@ describe('block api tests', () => {
   })
 
   it('gets latest block - exists', async () => {
-    const height = '123412';
-    const time = "2022-07-21T13:47:25.833663575Z";
+    const height = 123412;
+    const time = new Date("2022-07-21T13:47:25.833663575Z");
 
     const latestBlock = {
-      data: createBlockResponseData(height, time)
+      data: createBlockResponseData(height.toString(), time.toISOString())
     };
 
     mockedAxios.request.mockResolvedValue(latestBlock);

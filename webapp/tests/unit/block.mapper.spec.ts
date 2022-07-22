@@ -6,9 +6,9 @@ import { createBlockResponseData, expectBlock } from "../utils/block.blockchain.
 describe('map block', () => {
 
   it('maps block', async () => {
-    const height = '123412';
-    const time = "2022-07-21T13:47:25.833663575Z";
-    const bcBlock: BlockResponse = createBlockResponseData(height, time);
+    const height = 123412;
+    const time = new Date("2022-07-21T13:47:25.833663575Z");
+    const bcBlock: BlockResponse = createBlockResponseData(height.toString(), time.toISOString());
 
     const block = mapBlock(bcBlock);
     expectBlock(block, height, time);

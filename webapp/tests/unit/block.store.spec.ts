@@ -29,11 +29,11 @@ describe('block store tests', () => {
 
   it('fetches staking pool - success', async () => {
     const blockStore = useBlockStore();
-    const height = '123412';
-    const time = "2022-07-21T13:47:25.833663575Z";
+    const height = 123412;
+    const time = new Date("2022-07-21T13:47:25.833663575Z");
 
     const latestBlock = {
-      data: createBlockResponseData(height, time)
+      data: createBlockResponseData(height.toString(), time.toISOString())
     };
 
     mockedAxios.request.mockResolvedValueOnce(latestBlock);
@@ -49,8 +49,8 @@ describe('block store tests', () => {
     mockedAxios.request.mockRejectedValueOnce(validatorsError);
     await blockStore.fetchLatestBlock();
 
-    expectBlock(blockStore.getLatestBlock, '0', '0');
-    expect(blockStore.getLatestBlockHeight).toBe('0');
+    expectBlock(blockStore.getLatestBlock, 0, new Date(0));
+    expect(blockStore.getLatestBlockHeight).toBe(0);
   });
 
   it('calculates locked vesting - ContinuousVestingAccount', async () => {
@@ -62,14 +62,14 @@ describe('block store tests', () => {
     const startTime = currentDate.getTime();
     const yearInMillis = 365*24*3600*1000;
     const endTime = startTime + yearInMillis;
-    const amount = 1000000
-    const origVesting = new Coin(amount.toString(), defaultDenom);
-    const vestingData = new ContinuousVestingData(startTime.toString(), endTime.toString(), [origVesting]);
+    const amount = 1000000n
+    const origVesting = new Coin(BigInt(amount), defaultDenom);
+    const vestingData = new ContinuousVestingData(new Date(startTime), new Date(endTime), [origVesting]);
 
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.ContinuousVestingAccount, address, vestingData);
 
-    expect(userStore.getVestingLockAmount).toBe(0);
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
     const blockStore = useBlockStore();
     let height = 1232445;
@@ -84,24 +84,25 @@ describe('block store tests', () => {
 
     mockedAxios.request.mockResolvedValueOnce({ data: createBlockResponseData((height++).toString(), new Date(startTime+yearInMillis/4).toISOString()) });
     await blockStore.fetchLatestBlock();
-    expect(userStore.getVestingLockAmount).toBe(amount - amount/4);
+    expect(userStore.getVestingLockAmount).toBe(amount - amount/4n);
 
     mockedAxios.request.mockResolvedValueOnce({ data: createBlockResponseData((height++).toString(), new Date(startTime+yearInMillis/2).toISOString()) });
     await blockStore.fetchLatestBlock();
-    expect(userStore.getVestingLockAmount).toBe(amount/2);
+    expect(userStore.getVestingLockAmount).toBe(amount/2n);
 
     mockedAxios.request.mockResolvedValueOnce({ data: createBlockResponseData((height++).toString(), new Date(startTime+yearInMillis-yearInMillis/4).toISOString()) });
     await blockStore.fetchLatestBlock();
-    expect(userStore.getVestingLockAmount).toBe(amount/4);
+    expect(userStore.getVestingLockAmount).toBe(amount/4n);
 
     mockedAxios.request.mockResolvedValueOnce({ data: createBlockResponseData((height++).toString(), new Date(endTime).toISOString()) });
     await blockStore.fetchLatestBlock();
-    expect(userStore.getVestingLockAmount).toBe(0);
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
     mockedAxios.request.mockResolvedValueOnce({ data: createBlockResponseData((height++).toString(), new Date(endTime+1000000).toISOString()) });
     await blockStore.fetchLatestBlock();
-    expect(userStore.getVestingLockAmount).toBe(0);
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
+    console.log('sdfdsfsdfsfd: ' + amount/4n)
   });
 
 });

@@ -39,7 +39,7 @@ export function createCommunityPoolResponseData(amount: string, denom: string) {
   }
 }
 
-export function expectStakingPool(stakingPool: StakingPool | undefined, expectedBonded: string, expectedNotBonded: string) {
+export function expectStakingPool(stakingPool: StakingPool | undefined, expectedBonded: bigint, expectedNotBonded: bigint) {
   expect(stakingPool).not.toBeUndefined();
   expect(stakingPool?.bondedTokens).toBe(expectedBonded);
   expect(stakingPool?.notBondedTokens).toBe(expectedNotBonded);

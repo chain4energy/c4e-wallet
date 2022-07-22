@@ -1,7 +1,7 @@
 import { setActivePinia, createPinia } from 'pinia'
 import { mockAxios } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
-import { createErrorResponse, defaultDenom, expectCoin } from '../utils/common.blockchain.data.util';
+import { createErrorResponse, defaultDenom, expectCoin, expectDecCoin } from '../utils/common.blockchain.data.util';
 import { useTokensStore } from '@/store/tokens.store';
 import { createCommunityPoolResponseData, createStakingPoolResponseData, createSupplyResponseData, expectStakingPool } from '../utils/tokens.blockchain.data.util';
 import { useConfigurationStore } from '@/store/configuration.store';
@@ -25,11 +25,11 @@ describe('tokens store tests', () => {
 
   it('fetches staking pool - success', async () => {
     const tokensStore = useTokensStore();
-    const bonded = '12345';
-    const notBonded = '988756';
+    const bonded = 12345n;
+    const notBonded = 988756n;
 
     const stakingPool = {
-      data: createStakingPoolResponseData(bonded, notBonded)
+      data: createStakingPoolResponseData(bonded.toString(), notBonded.toString())
     };
 
     mockedAxios.request.mockResolvedValueOnce(stakingPool);
@@ -43,14 +43,14 @@ describe('tokens store tests', () => {
     mockedAxios.request.mockRejectedValueOnce(validatorsError);
     await tokensStore.fetchStakingPool();
 
-    expectStakingPool(tokensStore.getStakingPool, '0', '0');
+    expectStakingPool(tokensStore.getStakingPool, 0n, 0n);
   });
 
   it('fetches total supply - success', async () => {
     const tokensStore = useTokensStore();
-    const amount = '12345';
+    const amount = 12345n;
     const supply = {
-      data: createSupplyResponseData(amount, defaultDenom)
+      data: createSupplyResponseData(amount.toString(), defaultDenom)
     };
 
     mockedAxios.request.mockResolvedValueOnce(supply);
@@ -65,7 +65,7 @@ describe('tokens store tests', () => {
     mockedAxios.request.mockRejectedValueOnce(validatorsError);
     await tokensStore.fetchTotalSupply();
 
-    expectCoin(tokensStore.getTotalSupply, '0', defaultDenom);
+    expectCoin(tokensStore.getTotalSupply, 0n, defaultDenom);
   });
 
   it('fetches community pool - success', async () => {
@@ -76,7 +76,7 @@ describe('tokens store tests', () => {
     };
     mockedAxios.request.mockResolvedValueOnce(communityPool);
     await tokensStore.fetchCommunityPool();
-    expectCoin(tokensStore.getCommunityPool, amount, defaultDenom);
+    expectDecCoin(tokensStore.getCommunityPool, amount, defaultDenom);
 
   });
 
@@ -86,15 +86,15 @@ describe('tokens store tests', () => {
     mockedAxios.request.mockRejectedValueOnce(validatorsError);
     await tokensStore.fetchCommunityPool();
 
-    expectCoin(tokensStore.getCommunityPool, '0', defaultDenom);
+    expectDecCoin(tokensStore.getCommunityPool, '0', defaultDenom);
   });
 
   it('fetches strategic reserve pool - success', async () => {
     const tokensStore = useTokensStore();
-    const amount = '12111457';
+    const amount = 12111457n;
 
     const balance = {
-      data: createSingleBalanceResponseData(defaultDenom, amount)
+      data: createSingleBalanceResponseData(defaultDenom, amount.toString())
     };
 
     mockedAxios.request.mockResolvedValueOnce(balance);
@@ -109,15 +109,15 @@ describe('tokens store tests', () => {
     mockedAxios.request.mockRejectedValueOnce(validatorsError);
     await tokensStore.fetchStrategicReversePool();
 
-    expectCoin(tokensStore.getStrategicReversePool, '0', defaultDenom);
+    expectCoin(tokensStore.getStrategicReversePool, 0n, defaultDenom);
   });
 
   it('fetches airdrop pool - success', async () => {
     const tokensStore = useTokensStore();
-    const amount = '1211145722';
+    const amount = 1211145722n;
 
     const balance = {
-      data: createSingleBalanceResponseData(defaultDenom, amount)
+      data: createSingleBalanceResponseData(defaultDenom, amount.toString())
     };
 
     mockedAxios.request.mockResolvedValueOnce(balance);
@@ -132,7 +132,7 @@ describe('tokens store tests', () => {
     mockedAxios.request.mockRejectedValueOnce(validatorsError);
     await tokensStore.fetchAirdropPool();
 
-    expectCoin(tokensStore.getAirdropPool, '0', defaultDenom);
+    expectCoin(tokensStore.getAirdropPool, 0n, defaultDenom);
   });
 
 });

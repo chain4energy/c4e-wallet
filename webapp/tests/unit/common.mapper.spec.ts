@@ -11,8 +11,8 @@ const secondDenom = 'denom'
 describe('map common', () => {
 
   it('maps coin', async () => {
-    const amount = '43';
-    const bcCoin: BcCoin = createSingleCoin(denom, amount)
+    const amount = 43n;
+    const bcCoin: BcCoin = createSingleCoin(denom, amount.toString())
 
     const coin = mapCoin(bcCoin, secondDenom);
     expect(coin).toBeInstanceOf(Coin);
@@ -24,7 +24,7 @@ describe('map common', () => {
   it('maps undefined coin', async () => {
     const bcCoin = mapCoin(undefined, secondDenom);
     expect(bcCoin).toBeInstanceOf(Coin);
-    expect(bcCoin.amount).toBe('0');
+    expect(bcCoin.amount).toBe(0n);
     expect(bcCoin.denom).toBe(secondDenom);
 
   });

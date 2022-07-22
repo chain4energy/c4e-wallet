@@ -13,7 +13,7 @@ import { mockAxios, mockKeplr } from '../utils/mock.util';
 import { AccountData } from '@cosmjs/proto-signing';
 import { useSplashStore } from '@/store/splash.store';
 import { Account, AccountType, ContinuousVestingData } from '@/models/store/account';
-import { Coin } from '@/models/store/common';
+import { Coin, DecCoin } from '@/models/store/common';
 
 import { defaultGas, defaultTxErrorResponse, defaultTxSuccessResponse } from '../utils/tx.broadcast.blockchain.data.util';
 import { DeliverTxResponse } from '@cosmjs/stargate';
@@ -159,7 +159,7 @@ describe('user store tests', () => {
   });
 
   it('delegates - success', async () => {
-    const balanceAmount = '49031887606805'
+    const balanceAmount = 49031887606805n;
     const userStore = useUserStore();
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
@@ -170,7 +170,7 @@ describe('user store tests', () => {
     };
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
-    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
@@ -185,21 +185,21 @@ describe('user store tests', () => {
     expectConnectionType(ConnectionType.Keplr);
     expect(userStore.getConnectionType).toBe(ConnectionType.Keplr);
     expectBaseAccount(userStore.getAccount, address);
-    expect(userStore.getBalance).toBe(Number(balanceAmount));
+    expect(userStore.getBalance).toBe(balanceAmount);
     expectRewards(userStore.getRewards);
     expectDelegatorDelegations(userStore.getDelegations);
     expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
     expect(userStore.isLoggedIn).toBe(true);
-    expect(userStore.getVestingLockAmount).toBe(0);
+    expect(userStore.getVestingLockAmount).toBe(0n);
     expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
     expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
-    expect(userStore.getTotalUndelegating).toBe(0);
+    expect(userStore.getTotalUndelegating).toBe(0n);
     expect(userStore.isContinuousVestingAccount).toBe(false);
 
   });
 
   it('delegates - tx deliver failure', async () => {
-    const balanceAmount = '49031887606805'
+    const balanceAmount = 49031887606805n;
     const userStore = useUserStore();
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
@@ -210,7 +210,7 @@ describe('user store tests', () => {
     };
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
-    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
@@ -227,7 +227,7 @@ describe('user store tests', () => {
   });
 
   it('redelegates - success', async () => {
-    const balanceAmount = '49031887606805'
+    const balanceAmount = 49031887606805n;
     const userStore = useUserStore();
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
@@ -238,7 +238,7 @@ describe('user store tests', () => {
     };
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
-    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
@@ -253,21 +253,21 @@ describe('user store tests', () => {
     expectConnectionType(ConnectionType.Keplr);
     expect(userStore.getConnectionType).toBe(ConnectionType.Keplr);
     expectBaseAccount(userStore.getAccount, address);
-    expect(userStore.getBalance).toBe(Number(balanceAmount));
+    expect(userStore.getBalance).toBe(balanceAmount);
     expectRewards(userStore.getRewards);
     expectDelegatorDelegations(userStore.getDelegations);
     expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
     expect(userStore.isLoggedIn).toBe(true);
-    expect(userStore.getVestingLockAmount).toBe(0);
+    expect(userStore.getVestingLockAmount).toBe(0n);
     expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
     expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
-    expect(userStore.getTotalUndelegating).toBe(0);
+    expect(userStore.getTotalUndelegating).toBe(0n);
     expect(userStore.isContinuousVestingAccount).toBe(false);
 
   });
 
   it('redelegates - tx deliver failure', async () => {
-    const balanceAmount = '49031887606805'
+    const balanceAmount = 49031887606805n;
     const userStore = useUserStore();
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
@@ -278,7 +278,7 @@ describe('user store tests', () => {
     };
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
-    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
@@ -295,7 +295,7 @@ describe('user store tests', () => {
   });
 
   it('undelegates - success', async () => {
-    const balanceAmount = '49031887606805'
+    const balanceAmount = 49031887606805n;
     const userStore = useUserStore();
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
@@ -306,7 +306,7 @@ describe('user store tests', () => {
     };
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
-    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
@@ -321,12 +321,12 @@ describe('user store tests', () => {
     expectConnectionType(ConnectionType.Keplr);
     expect(userStore.getConnectionType).toBe(ConnectionType.Keplr);
     expectBaseAccount(userStore.getAccount, address);
-    expect(userStore.getBalance).toBe(Number(balanceAmount));
+    expect(userStore.getBalance).toBe(balanceAmount);
     expectRewards(userStore.getRewards);
     expectDelegatorDelegations(userStore.getDelegations);
     expectDelegatorUnbondingDelegations(userStore.getUndelegations);
     expect(userStore.isLoggedIn).toBe(true);
-    expect(userStore.getVestingLockAmount).toBe(0);
+    expect(userStore.getVestingLockAmount).toBe(0n);
     expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
     expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
     expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);
@@ -335,7 +335,7 @@ describe('user store tests', () => {
   });
 
   it('undelegates - tx deliver failure', async () => {
-    const balanceAmount = '49031887606805'
+    const balanceAmount = 49031887606805n;
     const userStore = useUserStore();
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
@@ -346,7 +346,7 @@ describe('user store tests', () => {
     };
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
-    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
@@ -363,20 +363,20 @@ describe('user store tests', () => {
   });
 
   it('claims rewards - success', async () => {
-    const balanceAmount = '49031887606805'
+    const balanceAmount = 49031887606805n;
     const userStore = useUserStore();
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.BaseAccount, address);
     const initialRewards = new Map<string, ValidatorRewards>();
-    initialRewards.set('v1', new ValidatorRewards('v1', [new Coin('0', 'coin')]));
+    initialRewards.set('v1', new ValidatorRewards('v1', [new DecCoin('0', 'coin')]));
     userStore.rewards = new Rewards(initialRewards, 0);
     const signAndBroadcastMock = async (): Promise<DeliverTxResponse> => {
       return defaultTxSuccessResponse;
     };
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
-    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
@@ -391,27 +391,27 @@ describe('user store tests', () => {
     expectConnectionType(ConnectionType.Keplr);
     expect(userStore.getConnectionType).toBe(ConnectionType.Keplr);
     expectBaseAccount(userStore.getAccount, address);
-    expect(userStore.getBalance).toBe(Number(balanceAmount));
+    expect(userStore.getBalance).toBe(balanceAmount);
     expectRewards(userStore.getRewards);
     expect(userStore.getDelegations).toStrictEqual(new Delegations());
     expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
     expect(userStore.isLoggedIn).toBe(true);
-    expect(userStore.getVestingLockAmount).toBe(0);
+    expect(userStore.getVestingLockAmount).toBe(0n);
     expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
-    expect(userStore.getTotalDelegated).toBe(0);
-    expect(userStore.getTotalUndelegating).toBe(0);
+    expect(userStore.getTotalDelegated).toBe(0n);
+    expect(userStore.getTotalUndelegating).toBe(0n);
     expect(userStore.isContinuousVestingAccount).toBe(false);
 
   });
 
   it('claims rewards - tx deliver failure', async () => {
-    const balanceAmount = '49031887606805'
+    const balanceAmount = 49031887606805n;
     const userStore = useUserStore();
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.BaseAccount, address);
     const initialRewardsMap = new Map<string, ValidatorRewards>();
-    initialRewardsMap.set('v1', new ValidatorRewards('v1', [new Coin('0', 'coin')]));
+    initialRewardsMap.set('v1', new ValidatorRewards('v1', [new DecCoin('0', 'coin')]));
     const initialRewards = new Rewards(initialRewardsMap, 0);
     userStore.rewards = initialRewards;
 
@@ -420,7 +420,7 @@ describe('user store tests', () => {
     };
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
-    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
@@ -444,33 +444,33 @@ describe('user store tests', () => {
     const startTime = currentDate.getTime();
     const yearInMillis = 365*24*3600*1000;
     const endTime = startTime + yearInMillis;
-    const amount = 1000000
-    const origVesting = new Coin(amount.toString(), defaultDenom);
-    const vestingData = new ContinuousVestingData(startTime.toString(), endTime.toString(), [origVesting]);
+    const amount = 1000000n
+    const origVesting = new Coin(amount, defaultDenom);
+    const vestingData = new ContinuousVestingData(new Date(startTime), new Date(endTime), [origVesting]);
 
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.ContinuousVestingAccount, address, vestingData);
     
-    userStore.calculateVestingLocked(new Date(startTime-1000000).toISOString());
+    userStore.calculateVestingLocked(new Date(startTime-1000000));
     expect(userStore.getVestingLockAmount).toBe(amount);
 
-    userStore.calculateVestingLocked(new Date(startTime).toISOString())
+    userStore.calculateVestingLocked(new Date(startTime))
     expect(userStore.getVestingLockAmount).toBe(amount);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/4).toISOString())
-    expect(userStore.getVestingLockAmount).toBe(amount - amount/4);
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/4))
+    expect(userStore.getVestingLockAmount).toBe(amount - amount/4n);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/2).toISOString())
-    expect(userStore.getVestingLockAmount).toBe(amount/2);
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/2))
+    expect(userStore.getVestingLockAmount).toBe(amount/2n);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis-yearInMillis/4).toISOString())
-    expect(userStore.getVestingLockAmount).toBe(amount/4);
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis-yearInMillis/4))
+    expect(userStore.getVestingLockAmount).toBe(amount/4n);
 
-    userStore.calculateVestingLocked(new Date(endTime).toISOString())
-    expect(userStore.getVestingLockAmount).toBe(0);
+    userStore.calculateVestingLocked(new Date(endTime))
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(endTime+1000000).toISOString())
-    expect(userStore.getVestingLockAmount).toBe(0);
+    userStore.calculateVestingLocked(new Date(endTime+1000000))
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
   });
 
@@ -482,33 +482,33 @@ describe('user store tests', () => {
     const startTime = currentDate.getTime();
     const yearInMillis = 365*24*3600*1000;
     const endTime = startTime + yearInMillis;
-    const amount = 1000000
-    const origVesting = new Coin(amount.toString(), defaultDenom);
-    const vestingData = new ContinuousVestingData(startTime.toString(), endTime.toString(), [origVesting]);
+    const amount = 1000000n
+    const origVesting = new Coin(amount, defaultDenom);
+    const vestingData = new ContinuousVestingData(new Date(startTime), new Date(endTime), [origVesting]);
 
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.BaseAccount, address, vestingData);
     
-    userStore.calculateVestingLocked(new Date(startTime-1000000).toISOString());
-    expect(userStore.getVestingLockAmount).toBe(0);
+    userStore.calculateVestingLocked(new Date(startTime-1000000));
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(startTime).toISOString())
-    expect(userStore.getVestingLockAmount).toBe(0);
+    userStore.calculateVestingLocked(new Date(startTime))
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/4).toISOString())
-    expect(userStore.getVestingLockAmount).toBe(0);
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/4))
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/2).toISOString())
-    expect(userStore.getVestingLockAmount).toBe(0);
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/2))
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis-yearInMillis/4).toISOString())
-    expect(userStore.getVestingLockAmount).toBe(0);
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis-yearInMillis/4))
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(endTime).toISOString())
-    expect(userStore.getVestingLockAmount).toBe(0);
+    userStore.calculateVestingLocked(new Date(endTime))
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(endTime+1000000).toISOString())
-    expect(userStore.getVestingLockAmount).toBe(0);
+    userStore.calculateVestingLocked(new Date(endTime+1000000))
+    expect(userStore.getVestingLockAmount).toBe(0n);
 
   });
 
@@ -519,11 +519,11 @@ describe('user store tests', () => {
 
 async function testConnectBaseAccountExists(connect: () => Promise<void>, expectedConnectionType: ConnectionType) {
 
-  const balanceAmount = '49031887606805'
+  const balanceAmount = 49031887606805n;
   const userStore = useUserStore();
   userStore.logOut();
   const account = { data: createBaseAccountResponseData(address) };
-  const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+  const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
   const rewards = { data: createRewardsResponseData() };
   const delegations = { data: createDelegatorDelegationsResponseData(address) };
   const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
@@ -554,11 +554,11 @@ async function testConnectAccountDoesNotExist(connect: () => Promise<void>, expe
 
 async function testConnectConinuousVestingAccountExists(connect: () => Promise<void>, expectedConnectionType: ConnectionType) {
 
-  const balanceAmount = '49031887606805'
+  const balanceAmount = 49031887606805n;
   const userStore = useUserStore();
   userStore.logOut();
   const account = { data: createContinuousVestingAccountResponseData(address) };
-  const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+  const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
   const rewards = { data: createRewardsResponseData() };
   const delegations = { data: createDelegatorDelegationsResponseData(address) };
   const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
@@ -706,20 +706,20 @@ function expectConnectionType(connectionType: ConnectionType) {
   }
 }
 
-function expectTxDeliverFailureBaseAccount(expectedBalanceAmount: string, expectedConnectionType: ConnectionType, expectedRewards = new Rewards()) {
+function expectTxDeliverFailureBaseAccount(expectedBalanceAmount: bigint, expectedConnectionType: ConnectionType, expectedRewards = new Rewards()) {
   const userStore = useUserStore();
   expectConnectionType(expectedConnectionType);
   expect(userStore.getConnectionType).toBe(expectedConnectionType);
   expectBaseAccount(userStore.getAccount, address);
-  expect(userStore.getBalance).toBe(Number(expectedBalanceAmount));
+  expect(userStore.getBalance).toBe(expectedBalanceAmount);
   expect(userStore.getRewards).toStrictEqual(expectedRewards);
   expect(userStore.getDelegations).toStrictEqual(new Delegations());
   expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
   expect(userStore.isLoggedIn).toBe(true);
-  expect(userStore.getVestingLockAmount).toBe(0);
+  expect(userStore.getVestingLockAmount).toBe(0n);
   expect(userStore.getTotalRewards).toBe(0);
-  expect(userStore.getTotalDelegated).toBe(0);
-  expect(userStore.getTotalUndelegating).toBe(0);
+  expect(userStore.getTotalDelegated).toBe(0n);
+  expect(userStore.getTotalUndelegating).toBe(0n);
   expect(userStore.isContinuousVestingAccount).toBe(false);
 }
 
@@ -728,29 +728,29 @@ function expectDisconnected() {
   expectDisconnectedConnectionInfo(userStore.connectionInfo);
   expect(userStore.getConnectionType).toBe(ConnectionType.Disconnected);
   expectDisconnectedAccount(userStore.getAccount);
-  expect(userStore.getBalance).toBe(0);
+  expect(userStore.getBalance).toBe(0n);
   expect(userStore.getRewards).toStrictEqual(new Rewards());
   expect(userStore.getDelegations).toStrictEqual(new Delegations());
   expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
   expect(userStore.isLoggedIn).toBe(false);
-  expect(userStore.getVestingLockAmount).toBe(0);
+  expect(userStore.getVestingLockAmount).toBe(0n);
   expect(userStore.getTotalRewards).toBe(0);
-  expect(userStore.getTotalDelegated).toBe(0);
-  expect(userStore.getTotalUndelegating).toBe(0);
+  expect(userStore.getTotalDelegated).toBe(0n);
+  expect(userStore.getTotalUndelegating).toBe(0n);
   expect(userStore.isContinuousVestingAccount).toBe(false);
 }
 
-function expectConnectedBaseAccount(balanceAmount: string, connectionType: ConnectionType) {
+function expectConnectedBaseAccount(balanceAmount: bigint, connectionType: ConnectionType) {
   const userStore = useUserStore();
   expectConnectionType(connectionType);
   expect(userStore.getConnectionType).toBe(connectionType);
   expectBaseAccount(userStore.getAccount, address);
-  expect(userStore.getBalance).toBe(Number(balanceAmount));
+  expect(userStore.getBalance).toBe(balanceAmount);
   expectRewards(userStore.getRewards);
   expectDelegatorDelegations(userStore.getDelegations);
   expectDelegatorUnbondingDelegations(userStore.getUndelegations);
   expect(userStore.isLoggedIn).toBe(true);
-  expect(userStore.getVestingLockAmount).toBe(0);
+  expect(userStore.getVestingLockAmount).toBe(0n);
   expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
   expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
   expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);
@@ -763,30 +763,30 @@ function expectConnectedNonexistent(connectionType: ConnectionType) {
   expectConnectionType(connectionType);
   expect(userStore.getConnectionType).toBe(connectionType);
   expectNonExistentAccount(userStore.getAccount, address);
-  expect(userStore.getBalance).toBe(0);
+  expect(userStore.getBalance).toBe(0n);
   expect(userStore.getRewards).toStrictEqual(new Rewards());
   expect(userStore.getDelegations).toStrictEqual(new Delegations());
 
   expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
   expect(userStore.isLoggedIn).toBe(true);
-  expect(userStore.getVestingLockAmount).toBe(0);
+  expect(userStore.getVestingLockAmount).toBe(0n);
   expect(userStore.getTotalRewards).toBe(0);
-  expect(userStore.getTotalDelegated).toBe(0);
-  expect(userStore.getTotalUndelegating).toBe(0);
+  expect(userStore.getTotalDelegated).toBe(0n);
+  expect(userStore.getTotalUndelegating).toBe(0n);
   expect(userStore.isContinuousVestingAccount).toBe(false);
 }
 
-function expectConnectedContinuousVestingAccount(balanceAmount: string, connectionType: ConnectionType) {
+function expectConnectedContinuousVestingAccount(balanceAmount: bigint, connectionType: ConnectionType) {
   const userStore = useUserStore();
   expectConnectionType(connectionType);
   expect(userStore.getConnectionType).toBe(connectionType);
   expectContinuousVestingAccount(userStore.getAccount, address);
-  expect(userStore.getBalance).toBe(Number(balanceAmount));
+  expect(userStore.getBalance).toBe(balanceAmount);
   expectRewards(userStore.getRewards);
   expectDelegatorDelegations(userStore.getDelegations);
   expectDelegatorUnbondingDelegations(userStore.getUndelegations);
   expect(userStore.isLoggedIn).toBe(true);
-  expect(userStore.getVestingLockAmount).toBe(0);
+  expect(userStore.getVestingLockAmount).toBe(0n);
   expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
   expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
   expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);

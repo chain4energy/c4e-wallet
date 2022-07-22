@@ -2,6 +2,8 @@ import { Account as BcAccount, BaseAccount, ContinuousVestingAccount} from "@/mo
 import { Account as StoreAccount, AccountType, ContinuousVestingData } from "@/models/store/account";
 import { Coin} from "@/models/store/common";
 
+const secToMilis = 1000;
+
 export function createNonexistentAccount(address: string): StoreAccount  {
   return new StoreAccount(AccountType.Nonexistent, address);
 }
@@ -28,10 +30,12 @@ export function mapAccount(account: BcAccount | undefined): StoreAccount  {
       const result = new StoreAccount(AccountType.ContinuousVestingAccount, bcAccount.base_vesting_account.base_account.address);
       const origVesting = new Array<Coin>();
       bcAccount.base_vesting_account.original_vesting?.forEach((coin) => {
-        const c = new Coin(coin.amount, coin.denom);
+        const c = new Coin(BigInt(coin.amount), coin.denom);
         origVesting.push(c);
       });
-      const vestingData = new ContinuousVestingData(bcAccount.start_time + '000', bcAccount.base_vesting_account.end_time + '000', origVesting);
+      const startTime = new Date(Number(bcAccount.start_time)*secToMilis);
+      const endTime = new Date(Number(bcAccount.base_vesting_account.end_time)*secToMilis);
+      const vestingData = new ContinuousVestingData(startTime, endTime, origVesting);
       result.continuousVestingData = vestingData;
       return result;
 
@@ -50,12 +54,3 @@ export function mapAccount(account: BcAccount | undefined): StoreAccount  {
   }
 }
 
-// export function mapBalance(balance: Balance | undefined, denom: string): Coin  {
-//   if (balance === undefined) {
-//     return new Coin('0', denom);
-//   }
-//   if (balance.amount === undefined || balance.denom === undefined) {
-//     throw new Error(`no amount or denom defined`);
-//   }
-//   return new Coin(balance.amount, balance.denom);
-// }

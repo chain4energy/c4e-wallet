@@ -59,15 +59,15 @@ export function expectValidator(actualValidator: Validator, expectedBcValidator:
   expect(actualValidator.operatorAddress).toBe(expectedBcValidator.operator_address);
   expect(actualValidator.jailed).toBe(expectedBcValidator.jailed);
   expect(actualValidator.status).toBe(getValidatorStatus(expectedBcValidator.status));
-  expect(actualValidator.tokens).toBe(expectedBcValidator.tokens);
+  expect(actualValidator.tokens).toBe(BigInt(expectedBcValidator.tokens));
   expect(actualValidator.description.moniker).toBe(expectedBcValidator.description.moniker);
   expect(actualValidator.description.identity).toBe(expectedBcValidator.description.identity);
   expect(actualValidator.description.website).toBe(expectedBcValidator.description.website);
   expect(actualValidator.description.securityContact).toBe(expectedBcValidator.description.security_contact);
   expect(actualValidator.description.details).toBe(expectedBcValidator.description.details);
-  expect(actualValidator.commission.rate).toBe(expectedBcValidator.commission.commission_rates.rate);
-  expect(actualValidator.commission.maxRate).toBe(expectedBcValidator.commission.commission_rates.max_rate);
-  expect(actualValidator.commission.maxChangeRate).toBe(expectedBcValidator.commission.commission_rates.max_change_rate);
+  expect(actualValidator.commission.rate).toBe(Number(expectedBcValidator.commission.commission_rates.rate));
+  expect(actualValidator.commission.maxRate).toBe(Number(expectedBcValidator.commission.commission_rates.max_rate));
+  expect(actualValidator.commission.maxChangeRate).toBe(Number(expectedBcValidator.commission.commission_rates.max_change_rate));
   expect(actualValidator.rank).toBe(expectedRank);
 }
 

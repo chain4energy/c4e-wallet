@@ -23,11 +23,11 @@ export const useTokensStore = defineStore({
   id: 'tokensStore',
   state: (): TokensState => {
     const denom = useConfigurationStore().config.stakingDenom;
-    const emptyCoin = new Coin('0', denom);
+    const emptyCoin = new Coin(0n, denom);
     return {
-      stakingPool: new StakingPool('0', '0'),
+      stakingPool: new StakingPool(0n, 0n),
       totalSupply: emptyCoin,
-      communityPool: emptyCoin,
+      communityPool: new DecCoin('0', denom),
       strategicReversePool: emptyCoin,
       airdropPool: emptyCoin
     };
@@ -108,7 +108,7 @@ export const useTokensStore = defineStore({
     getTotalSupply(): Coin {
       return this.totalSupply;
     },
-    getCommunityPool(): Coin {
+    getCommunityPool(): DecCoin {
       return this.communityPool;
     },
     getStrategicReversePool(): Coin {

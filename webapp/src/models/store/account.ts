@@ -26,46 +26,46 @@ export class Account {
 }
 
 export class ContinuousVestingData {
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
   originalVesting: Coin[];
 
-  constructor (startTime: string, endTime: string, originalVesting: Coin[]) {
+  constructor (startTime: Date, endTime: Date, originalVesting: Coin[]) {
     this.startTime = startTime;
     this.endTime = endTime;
     this.originalVesting = originalVesting;
   }
 
   public getStartTimeDateString(): string {
-    return new Date(Number(this.startTime)).toLocaleString();
+    return this.startTime.toLocaleString();
   }
 
   public getEndTimeDateString(): string {
-    return new Date(Number(this.endTime)).toLocaleString();
+    return this.endTime.toLocaleString();
   }
 
   public getOriginalVestingByDenom(denom: string): Coin {
     const result = this.originalVesting.find(coin => coin.denom === denom);
-    return result === undefined ? new Coin('0', denom) : result;
+    return result === undefined ? new Coin(0n, denom) : result;
   }
 
-  public calculateVestingLocked(latestBlockTime: string): number{ // TODO number to BigInt
-    const validtime = Date.parse(latestBlockTime);
-    const endTime = Number(this.endTime);
+  public calculateVestingLocked(latestBlockTime: Date): bigint{ // TODO number to BigInt
+    const validtime = latestBlockTime.getTime();
+    const endTime = this.endTime.getTime();
     if (validtime >= endTime) {
-      return 0;
+      return 0n;
     }
-    const startTime = Number(this.startTime);
+    const startTime = this.startTime.getTime();
     const denom = useConfigurationStore().config.stakingDenom;
-    const origVesting = Number(this.getOriginalVestingByDenom(denom).amount);
+    const origVesting = this.getOriginalVestingByDenom(denom).amount;
     if (validtime <= startTime) {
       return origVesting;
     }
 
     const x = validtime - startTime;
     const y = endTime - startTime;
-    const diference = x/y;
-    const unlocked = origVesting * diference;
+    // const diference = x/y;
+    const unlocked = (BigInt(x) * origVesting) / BigInt(y);
     const locked = origVesting - unlocked;
     return locked;
   }
@@ -80,7 +80,7 @@ export class Balances {
 
   public getBalanceByDenom(denom: string): Coin {
     const result = this.balances.find(coin => coin.denom === denom);
-    return result === undefined ? new Coin('0', denom) : result;
+    return result === undefined ? new Coin(0n, denom) : result;
   }
 }
 

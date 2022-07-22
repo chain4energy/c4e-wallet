@@ -70,9 +70,9 @@ export function createBlockResponseData(height: string, time: string) {
   }
 }
 
-export function expectBlock(block: Block | undefined, expectedHeight: string, expectedTime: string) {
+export function expectBlock(block: Block | undefined, expectedHeight: number, expectedTime: Date) {
   expect(block).not.toBeUndefined();
   expect(block).toBeInstanceOf(Block);
   expect(block?.height).toBe(expectedHeight);
-  expect(block?.time).toBe(expectedTime);
+  expect(block?.time).toStrictEqual(expectedTime);
 }

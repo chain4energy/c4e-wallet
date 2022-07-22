@@ -64,6 +64,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
                                   messages: readonly EncodeObject[], fee: StdFee | "auto" | number, memo: string,
                                   lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast = false): Promise<RequestResponse<TxData, TxBroadcastError>> {
     this.before(lockScreen, localSpinner);
+    let client: SigningStargateClient | undefined;
     try {
       if (!connection.modifiable) {
         return this.createTxErrorResponseWithToast(
@@ -73,7 +74,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         );
         // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot broadcast transaction with: ' + connection.connectionType + ' signer'));
       }
-      const client = await this.createClient(connection.connectionType);
+      client = await this.createClient(connection.connectionType);
       if (client == undefined) {
         return this.createTxErrorResponseWithToast(
           new TxBroadcastError('Cannot get signing client'),
@@ -107,13 +108,16 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError(error.message));
     }finally {
       this.after(lockScreen, localSpinner);
+      if (client !== undefined) {
+        client.disconnect();
+      }
     }
   }
   
-  private createClient(connectionType: ConnectionType) {
+  private createClient(connectionType: ConnectionType): Promise<SigningStargateClient> {
     const signer = this.getOfflineSigner(connectionType);
     if (signer == undefined) {
-      return undefined;
+      throw new Error('Cannot get signer');;
     }
     const rpc = useConfigurationStore().config.bcRpcURL;
     const client = SigningStargateClient.connectWithSigner(

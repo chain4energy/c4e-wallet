@@ -38,14 +38,14 @@ for (let i = 0; i < validators.length; i++) {
     return balancesAmount[i];
   }
 }
-return new Error('Amount : ' + validatorAddress + ' not found');
+throw new Error('Amount : ' + validatorAddress + ' not found');
 }
 
 export function findDelegatorDelegationTotalAmount(
 balancesAmount = defaultDelegatorDelegationsBalances) {
-let amount = 0
+let amount = 0n
 balancesAmount.forEach(ba => {
-  amount += Number(ba);
+  amount += BigInt(ba);
 })
 return amount;
 }
@@ -67,9 +67,9 @@ throw new Error('entries not found')
 
 export function findDelegatorUnbondingDelegationTotalAmount(
 entriesAmounts = defaultDelegatorUnbondingDelegationsEntriesAmounts) {
-let amount = 0
+let amount = 0n;
 entriesAmounts.forEach(ents => {
-  ents.forEach(ent => { amount += Number(ent);})
+  ents.forEach(ent => { amount += BigInt(ent);})
 
 })
 return amount;
@@ -180,7 +180,7 @@ export function expectDelegatorDelegations(delegations: Delegations | undefined,
   expect(delegations?.totalDelegated).toBe(findDelegatorDelegationTotalAmount(expectedBalancesAmount));
   expectedValidators.forEach(validatorAddress => {
     const delegation = delegations?.delegations.get(validatorAddress);
-    expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress, expectedValidators, expectedBalancesAmount));
+    expect(delegation?.amount).toBe(BigInt(findDelegatorDelegationAmountByValidator(validatorAddress, expectedValidators, expectedBalancesAmount)));
     expect(delegation?.validatorAddress).toBe(validatorAddress);
   });
 }
@@ -196,7 +196,7 @@ export function expectDelegatorUnbondingDelegations(undelegations: UnbondingDele
     const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress, expectedValidators, expectedEntriesAmounts);
     expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
     for (let i = 0; i < validatorExpecedEntries.length; i++) {
-      expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+      expect(undelegation?.entries[i].amount).toBe(BigInt(validatorExpecedEntries[i]));
 
     }
     expect(undelegation?.validatorAddress).toBe(validatorAddress);

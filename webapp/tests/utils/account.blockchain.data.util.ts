@@ -250,10 +250,10 @@ export function expectContinuousVestingAccount(account: Account | undefined, exp
   expect(account?.address).toBe(expectedAddress);
   expect(account?.type).toBe(AccountType.ContinuousVestingAccount);
   expect(account?.continuousVestingData).toBeInstanceOf(ContinuousVestingData);
-  expect(account?.continuousVestingData?.endTime).toBe(defaultContinuousVestingAccountEndTime + vestingAccountTimeToSystem);
-  expect(account?.continuousVestingData?.startTime).toBe(defaultContinuousVestingAccountStartTime + vestingAccountTimeToSystem);
+  expect(account?.continuousVestingData?.endTime).toStrictEqual(new Date(Number(defaultContinuousVestingAccountEndTime + vestingAccountTimeToSystem)));
+  expect(account?.continuousVestingData?.startTime).toStrictEqual(new Date(Number(defaultContinuousVestingAccountStartTime + vestingAccountTimeToSystem)));
   expect(account?.continuousVestingData?.originalVesting.length).toBe(defaultContinuousVestingAccountOriginalVesting.length);
   const origVesting = account?.continuousVestingData?.originalVesting[0]
-  expect(origVesting?.amount).toBe(defaultContinuousVestingAccountOriginalVesting[0].amount);
+  expect(origVesting?.amount).toBe(BigInt(defaultContinuousVestingAccountOriginalVesting[0].amount));
   expect(origVesting?.denom).toBe(defaultContinuousVestingAccountOriginalVesting[0].denom);
 }

@@ -19,7 +19,7 @@ export const useBlockStore = defineStore( 'block', {
   state: (): BlockState => {
     return {
       averageBlockTime: Object(String),
-      latestBlock: new Block('0', '0'),
+      latestBlock: new Block(0, new Date(0)),
     };
   },
   actions: {
@@ -51,7 +51,7 @@ export const useBlockStore = defineStore( 'block', {
     }
   },
   getters: {
-    getLatestBlockHeight(): string {
+    getLatestBlockHeight(): number {
       return this.latestBlock.height;
     },
     getAverageBlockTime(): number {

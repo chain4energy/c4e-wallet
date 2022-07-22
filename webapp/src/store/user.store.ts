@@ -19,8 +19,8 @@ const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
 export interface UserState {
   connectionInfo: ConnectionInfo
   account: Account
-  balance: number
-  vestimgAccLocked: number
+  balance: bigint
+  vestimgAccLocked: bigint
   rewards: Rewards
   // _isLoggedIn: boolean
   delegations: Delegations
@@ -33,8 +33,8 @@ export const useUserStore = defineStore({
     return {
       connectionInfo: ConnectionInfo.disconnected,
       account: Account.disconnected,
-      balance: 0,
-      vestimgAccLocked: 0,
+      balance: 0n,
+      vestimgAccLocked: 0n,
       rewards: new Rewards(),
       // _isLoggedIn: false,
       delegations: new Delegations(),
@@ -107,16 +107,15 @@ export const useUserStore = defineStore({
       });
     },
 
-    async calculateVestingLocked(latestBlTime: string){ // TODO number to BigInt
+    async calculateVestingLocked(latestBlTime: Date) {
       if (!this.isContinuousVestingAccount ) {
-        this.vestimgAccLocked = 0;
+        this.vestimgAccLocked = 0n;
         return;
       }
       if (this.account.continuousVestingData !== undefined) {
         this.vestimgAccLocked = this.account.continuousVestingData.calculateVestingLocked(latestBlTime);
       } else {
-        this.vestimgAccLocked = 0;
-        // TODO some error toast maybe
+        this.vestimgAccLocked = 0n;
       }
     },
 
@@ -212,7 +211,7 @@ export const useUserStore = defineStore({
     getAccountType(): AccountType {
       return this.account.type;
     },
-    getBalance(): number {
+    getBalance(): bigint {
       return this.balance;
     },
     getTotalRewards(): number {
@@ -221,7 +220,7 @@ export const useUserStore = defineStore({
     getRewards():Rewards {
       return this.rewards;
     },
-    getTotalUndelegating(): number{
+    getTotalUndelegating(): bigint {
       return this.undelegations.totalUndelegating;
     },
     getUndelegations(): UnbondingDelegations {
@@ -230,10 +229,10 @@ export const useUserStore = defineStore({
     getDelegations(): Delegations {
       return this.delegations;
     },
-    getTotalDelegated(): number{
+    getTotalDelegated(): bigint {
       return this.delegations.totalDelegated;
     },
-    getVestingLockAmount() : number{
+    getVestingLockAmount() : bigint{
       return this.vestimgAccLocked;
     }
   },
@@ -254,8 +253,8 @@ function checkIfConnected(connectionInfo: ConnectionInfo): boolean {
 }
 
 function clearStateForNonexistentAccount(state: UserState) {
-  state.balance = 0;
-  state.vestimgAccLocked = 0;
+  state.balance = 0n;
+  state.vestimgAccLocked = 0n;
   state.rewards = new Rewards();
   state.delegations = new Delegations();
   state.undelegations = new UnbondingDelegations();
@@ -273,7 +272,7 @@ async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState): P
   const response = await apiFactory.accountApi().fetchBalance(address, denom);
   if (response.isSuccess() && response.data !== undefined) {
     const balance = response.data;
-    state.balance = parseInt(balance.amount); // TODO use bigint recalculate with decimal
+    state.balance = balance.amount; // TODO use bigint recalculate with decimal
     return true;
   } else {
     return false;

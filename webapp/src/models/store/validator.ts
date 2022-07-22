@@ -5,7 +5,7 @@ export class Validator{
   operatorAddress: string;
   jailed: boolean;
   status: ValidatorStatus;
-  tokens: string;
+  tokens: bigint;
   description: ValidatorDescription;
   commission: ValidatorCommission;
   rank: number;
@@ -13,7 +13,7 @@ export class Validator{
   constructor (operatorAddress: string,
       jailed: boolean,
       status: ValidatorStatus,
-      tokens: string,
+      tokens: bigint,
       description: ValidatorDescription,
       commission: ValidatorCommission) {
     this.operatorAddress = operatorAddress;
@@ -25,19 +25,19 @@ export class Validator{
     this.rank = 0;
   }
 
-  public get votingPower(): number {
+  public get votingPower(): bigint {
     const total = useTokensStore().getStakingPool.bondedTokens;
-    if(total || total !== '0'){
-      return (Number(this.tokens) / Number(total)) * 100;
+    if(total || total > 0n){
+      return (this.tokens * 100n) / total;
     }
-    return 0;
+    return 0n;
   }
 
-  public get delegatedAmount(): string {
+  public get delegatedAmount(): bigint {
     return useUserStore().getDelegations.getAmountByValidator(this.operatorAddress);
   }
 
-  public get undelegatingAmount(): number {
+  public get undelegatingAmount(): bigint {
     return useUserStore().getUndelegations.getAmountByValidator(this.operatorAddress);
   }
 
@@ -68,13 +68,13 @@ export class ValidatorDescription {
 }
 
 export class ValidatorCommission {
-  rate: string;
-  maxRate: string;
-  maxChangeRate: string;
+  rate: number;
+  maxRate: number;
+  maxChangeRate: number;
 
-  constructor (rate: string,
-      max_rate: string,
-      max_change_rate: string) {
+  constructor (rate: number,
+      max_rate: number,
+      max_change_rate: number) {
     this.rate = rate;
     this.maxRate = max_rate;
     this.maxChangeRate = max_change_rate;

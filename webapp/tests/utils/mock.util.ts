@@ -30,6 +30,7 @@ export function mockKeplr() {
   
   const mockedSigningStargateClientImpl = {
     signAndBroadcast: jest.fn(() => { }),
+    disconnect: jest.fn(() => { }),
   } as unknown as SigningStargateClient;
   const mockedSigningStargateClient = mockedSigningStargateClientImpl as jest.Mocked<SigningStargateClient>;
   

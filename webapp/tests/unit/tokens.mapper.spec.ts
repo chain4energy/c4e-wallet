@@ -11,8 +11,8 @@ describe('map tokens', () => {
 
     const pool = mapStakingPool(bcPool);
     expect(pool).toBeInstanceOf(StoreStakingPool);
-    expect(pool.bondedTokens).toBe(bcPool.bonded_tokens);
-    expect(pool.notBondedTokens).toBe(bcPool.not_bonded_tokens);
+    expect(pool.bondedTokens).toBe(BigInt(bcPool.bonded_tokens));
+    expect(pool.notBondedTokens).toBe(BigInt(bcPool.not_bonded_tokens));
 
   });
 

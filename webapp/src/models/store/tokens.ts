@@ -1,8 +1,8 @@
 export class StakingPool {
-  bondedTokens: string;
-  notBondedTokens: string;
+  bondedTokens: bigint;
+  notBondedTokens: bigint;
 
-  constructor (bondedTokens: string, notBondedTokens: string) {
+  constructor (bondedTokens: bigint, notBondedTokens: bigint) {
     this.bondedTokens = bondedTokens;
     this.notBondedTokens = notBondedTokens;
   }

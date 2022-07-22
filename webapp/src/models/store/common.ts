@@ -1,8 +1,8 @@
 export class Coin {
-  amount: string;
+  amount: bigint;
   denom: string;
 
-  constructor (amount: string, denom: string) {
+  constructor (amount: bigint, denom: string) {
     this.amount = amount;
     this.denom = denom;
   }

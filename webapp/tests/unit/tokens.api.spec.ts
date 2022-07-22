@@ -3,7 +3,7 @@ import apiFactory from "@/api/factory.api";
 import { mockAxios } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
 import { createCommunityPoolResponseData, createStakingPoolResponseData, createSupplyResponseData, expectStakingPool } from '../utils/tokens.blockchain.data.util';
-import { axiosErrorMessagePrefix, defaultAxiosErrorName, createErrorResponse, defaultErrorName, defaultDenom, expectCoin } from '../utils/common.blockchain.data.util';
+import { axiosErrorMessagePrefix, defaultAxiosErrorName, createErrorResponse, defaultErrorName, defaultDenom, expectCoin, expectDecCoin } from '../utils/common.blockchain.data.util';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();
@@ -20,11 +20,11 @@ describe('tokens api tests', () => {
   })
 
   it('gets staking pool - exists', async () => {
-    const bonded = '12345';
-    const notBonded = '988756';
+    const bonded = 12345n;
+    const notBonded = 988756n;
 
     const stakingPool = {
-      data: createStakingPoolResponseData(bonded, notBonded)
+      data: createStakingPoolResponseData(bonded.toString(), notBonded.toString())
     };
 
     mockedAxios.request.mockResolvedValue(stakingPool);
@@ -69,10 +69,10 @@ describe('tokens api tests', () => {
   });
 
   it('gets total supply - exists', async () => {
-    const amount = '12345';
+    const amount = 12345n;
 
     const supply = {
-      data: createSupplyResponseData(amount, defaultDenom)
+      data: createSupplyResponseData(amount.toString(), defaultDenom)
     };
 
     mockedAxios.request.mockResolvedValue(supply);
@@ -113,7 +113,7 @@ describe('tokens api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
 
-    expectCoin(result.data, '0', defaultDenom);
+    expectCoin(result.data, 0n, defaultDenom);
   });
 
   it('gets community pool - denom exists', async () => {
@@ -129,7 +129,7 @@ describe('tokens api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
 
-    expectCoin(result.data, amount, defaultDenom);
+    expectDecCoin(result.data, amount, defaultDenom);
 
   });
 
@@ -146,7 +146,7 @@ describe('tokens api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
 
-    expectCoin(result.data, '0', defaultDenom);
+    expectDecCoin(result.data, '0', defaultDenom);
 
   });
 
@@ -178,7 +178,7 @@ describe('tokens api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
 
-    expectCoin(result.data, '0', defaultDenom);
+    expectDecCoin(result.data, '0', defaultDenom);
   });
 });
 

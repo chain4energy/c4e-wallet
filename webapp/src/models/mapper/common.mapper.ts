@@ -2,7 +2,7 @@ import { Coin as BcCoin } from "../blockchain/common";
 import { Coin as StoreCoin, DecCoin} from "../store/common";
 
 export function mapCoin(coin: BcCoin | undefined, denom: string | undefined): StoreCoin  {
-  return mapToAnyCoin<StoreCoin>(coin, denom, (amount: string, denom: string) => {return new StoreCoin(amount, denom);})
+  return mapToAnyCoin<StoreCoin>(coin, denom, (amount: string, denom: string) => {return new StoreCoin(BigInt(amount), denom);})
 }
 
 export function mapDecCoin(coin: BcCoin | undefined, denom: string | undefined): DecCoin  {

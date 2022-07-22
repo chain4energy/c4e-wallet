@@ -19,11 +19,11 @@ export function mapAndAddDelegations(delegationsDst: Delegations, bcDelegations:
   return delegationsDst;
 }
 
-function mapAndAddDelegationsToMap(map: Map<string, StoreDelegation>, bcDelegations: BcDelegation[]): number  {
-  let total = 0;
+function mapAndAddDelegationsToMap(map: Map<string, StoreDelegation>, bcDelegations: BcDelegation[]): bigint  {
+  let total = 0n;
   bcDelegations.forEach(del => {
     map.set(del.delegation.validator_address, mapDelegation(del));
-    total += Number(del.balance.amount);
+    total += BigInt(del.balance.amount);
   });
   return total;
 }
@@ -34,7 +34,7 @@ export function mapDelegation(delegation: BcDelegation | undefined): StoreDelega
   }
 
   return new StoreDelegation(delegation.delegation.validator_address,
-    delegation.balance.amount);
+    BigInt(delegation.balance.amount));
 }
 
 export function mapUnbondingDelegations(undelegations: BcUnbondigDelegation[] | undefined): UnbondingDelegations  {
@@ -54,11 +54,11 @@ export function mapAndAddUnbondingDelegations(undelegationsDst: UnbondingDelegat
   return undelegationsDst;
 }
 
-function mapAndAddUnbondingDelegationsToMap(map: Map<string, StoreUnbondigDelegation>, bcDelegations: BcUnbondigDelegation[]): number  {
-  let total = 0;
+function mapAndAddUnbondingDelegationsToMap(map: Map<string, StoreUnbondigDelegation>, bcDelegations: BcUnbondigDelegation[]): bigint  {
+  let total = 0n;
   bcDelegations.forEach(del => {
     map.set(del.validator_address, mapUnbondingDelegation(del));
-    del.entries.forEach(en => total += Number(en.balance));
+    del.entries.forEach(en => total += BigInt(en.balance));
   });
   return total;
 }
@@ -69,7 +69,7 @@ export function mapUnbondingDelegation(undelegation: BcUnbondigDelegation | unde
   }
   const entries = new Array<UnbondingDelegationEntry>();
   undelegation.entries.forEach(e => {
-    entries.push(new UnbondingDelegationEntry(e.balance));
+    entries.push(new UnbondingDelegationEntry(BigInt(e.balance)));
   });
 
   return new StoreUnbondigDelegation(undelegation.validator_address, entries);

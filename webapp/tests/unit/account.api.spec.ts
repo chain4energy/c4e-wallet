@@ -204,9 +204,9 @@ describe('account api tests', () => {
   });
 
   it('gets balance', async () => {
-    const amount = '49031887606805';
+    const amount = 49031887606805n;
     const balance = {
-      data: createSingleBalanceResponseData(denom, amount)
+      data: createSingleBalanceResponseData(denom, amount.toString())
     };
 
     mockedAxios.request.mockResolvedValue(balance);
@@ -274,7 +274,7 @@ describe('account api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
     expect(result.data?.delegations.size).toBe(0);
-    expect(result.data?.totalDelegated).toBe(0);
+    expect(result.data?.totalDelegated).toBe(0n);
   });
 
   it('gets delegator delegations paginated', async () => {
@@ -425,7 +425,7 @@ describe('account api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
     expect(result.data?.undelegations.size).toBe(0);
-    expect(result.data?.totalUndelegating).toBe(0);
+    expect(result.data?.totalUndelegating).toBe(0n);
   });
 
   it('gets delegator unbonding delegations paginated', async () => {

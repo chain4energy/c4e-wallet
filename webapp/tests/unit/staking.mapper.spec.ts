@@ -11,8 +11,8 @@ describe('tests mapping of staking related data', () => {
   });
 
   it('maps delegation', async () => {
-    const amount = '123456';
-    const bcDelegation = createDelegatorDelegations(address, [validatorAddress], [amount])[0];
+    const amount = 123456n;
+    const bcDelegation = createDelegatorDelegations(address, [validatorAddress], [amount.toString()])[0];
     const storeDelegations = mapDelegation(bcDelegation);
 
     expect(storeDelegations.amount).toBe(amount);
@@ -109,7 +109,7 @@ describe('tests mapping of staking related data', () => {
     expect(storeUndelegations.entries.length).toBe(entries.length);
 
     for (let i = 0; i < entries.length; i++) {
-      expect(storeUndelegations.entries[i].amount).toBe(entries[i]);
+      expect(storeUndelegations.entries[i].amount).toBe(BigInt(entries[i]));
     }
     expect(storeUndelegations.validatorAddress).toBe(validatorAddress);
 

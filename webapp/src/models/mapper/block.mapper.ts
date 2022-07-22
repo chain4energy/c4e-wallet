@@ -8,6 +8,6 @@ export function mapBlock(blockResponse: BlockResponse | undefined): Block  {
   if (blockResponse.block?.header?.height === undefined || blockResponse.block?.header?.time === undefined) {
     throw new Error('mapBlock - no height or time defined');
   }
-  return new Block(blockResponse.block.header.height, blockResponse.block.header.time);
+  return new Block(Number(blockResponse.block.header.height), new Date(blockResponse.block.header.time));
 }
 
