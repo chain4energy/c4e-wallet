@@ -1,5 +1,6 @@
 import { Account as BcAccount, BaseAccount, ContinuousVestingAccount} from "@/models/blockchain/account";
-import { Account as StoreAccount, AccountType, ContinuousVestingData, Coin} from "@/models/store/account";
+import { Account as StoreAccount, AccountType, ContinuousVestingData } from "@/models/store/account";
+import { Coin} from "@/models/store/common";
 
 export function createNonexistentAccount(address: string): StoreAccount  {
   return new StoreAccount(AccountType.Nonexistent, address);

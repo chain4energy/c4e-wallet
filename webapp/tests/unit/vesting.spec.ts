@@ -1,5 +1,7 @@
 import { setActivePinia, createPinia } from 'pinia'
-import { Coin, ContinuousVestingData } from "@/models/store/account";
+import { ContinuousVestingData } from "@/models/store/account";
+import { Coin } from "@/models/store/common";
+
 import { defaultDenom } from "../utils/common.blockchain.data.util";
 import { useConfigurationStore } from '@/store/configuration.store';
 

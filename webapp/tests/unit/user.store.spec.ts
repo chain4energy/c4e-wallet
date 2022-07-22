@@ -12,7 +12,9 @@ import { Delegations, UnbondingDelegations } from '@/models/store/staking';
 import { mockAxios, mockKeplr } from '../utils/mock.util';
 import { AccountData } from '@cosmjs/proto-signing';
 import { useSplashStore } from '@/store/splash.store';
-import { Account, AccountType, Coin, ContinuousVestingData } from '@/models/store/account';
+import { Account, AccountType, ContinuousVestingData } from '@/models/store/account';
+import { Coin } from '@/models/store/common';
+
 import { defaultGas, defaultTxErrorResponse, defaultTxSuccessResponse } from '../utils/tx.broadcast.blockchain.data.util';
 import { DeliverTxResponse } from '@cosmjs/stargate';
 

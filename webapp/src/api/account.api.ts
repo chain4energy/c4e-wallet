@@ -4,7 +4,9 @@ import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
 import { LogLevel } from '@/services/logger/log-level';
 
 import { RequestResponse } from "@/models/request-response";
-import { Account as StoreAccount, Coin} from "@/models/store/account";
+import { Account as StoreAccount } from "@/models/store/account";
+import { Coin } from "@/models/store/common";
+
 import { AccountResponse, BalanceResponse} from "@/models/blockchain/account";
 
 import { useConfigurationStore } from "@/store/configuration.store";

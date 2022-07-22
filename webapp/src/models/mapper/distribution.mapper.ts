@@ -1,7 +1,7 @@
 import { Reward, RewardsResponse,} from "@/models/blockchain/distribution";
 import { ValidatorRewards, Rewards} from "@/models/store/distribution";
 import { useConfigurationStore } from "@/store/configuration.store";
-import { Coin } from "../store/account";
+import { Coin } from "../store/common";
 
 export function mapRewards(rewardsResponse: RewardsResponse | undefined): Rewards  {
   if (rewardsResponse === undefined) {

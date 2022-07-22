@@ -6,9 +6,9 @@ import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
 import { StakingPool } from "@/models/store/tokens";
 import { CommunityPoolResponse, StakingPoolResponse } from "@/models/blockchain/tokens";
 import { mapStakingPool } from "@/models/mapper/tokens.mapper";
-import { Coin } from "@/models/store/account";
+import { Coin, DecCoin } from "@/models/store/common";
 import { SupplyResponse } from "@/models/blockchain/tokens";
-import { findByDenomAndMapCoin, mapCoin } from "@/models/mapper/common.mapper";
+import { findByDenomAndMapDecCoin, mapCoin } from "@/models/mapper/common.mapper";
 
 export class TokensApi extends BaseApi {
 
@@ -32,8 +32,8 @@ export class TokensApi extends BaseApi {
       mapData, true, null, 'fetchTotalSupply - ');
   }
 
-  public async fetchCommunityPoolByDenom(denom: string): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>> {
-    const mapData = (bcData: CommunityPoolResponse | undefined) => {return findByDenomAndMapCoin(bcData?.pool, denom);};
+  public async fetchCommunityPoolByDenom(denom: string): Promise<RequestResponse<DecCoin, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: CommunityPoolResponse | undefined) => {return findByDenomAndMapDecCoin(bcData?.pool, denom);};
     return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.COMMUNITY_POOL_URL,
       mapData, true, null, 'fetchCommunityPoolByDenom - ');
   }

@@ -1,4 +1,5 @@
 import { useConfigurationStore } from "@/store/configuration.store";
+import { Coin } from "./common";
 
 export enum AccountType {
   Disconnected,
@@ -68,17 +69,6 @@ export class ContinuousVestingData {
     const locked = origVesting - unlocked;
     return locked;
   }
-}
-
-export class Coin {
-  amount: string;
-  denom: string;
-
-  constructor (amount: string, denom: string) {
-    this.amount = amount;
-    this.denom = denom;
-  }
-
 }
 
 export class Balances {

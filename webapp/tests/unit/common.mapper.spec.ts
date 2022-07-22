@@ -1,7 +1,7 @@
-import { Coin } from "@/models/store/account";
+import { Coin, DecCoin } from "@/models/store/common";
 import { defaultDenom } from "../utils/common.blockchain.data.util";
 import { createSingleCoin } from '../utils/account.blockchain.data.util';
-import { findByDenomAndMapCoin, mapCoin } from "@/models/mapper/common.mapper";
+import { findByDenomAndMapDecCoin, mapCoin } from "@/models/mapper/common.mapper";
 import { Coin as BcCoin } from "@/models/blockchain/common";
 
 const address = 'c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg'
@@ -43,15 +43,15 @@ describe('map common', () => {
   });
 
   it('finds and maps undefined coins', async () => {
-    const bcCoin = findByDenomAndMapCoin(undefined, secondDenom);
-    expect(bcCoin).toBeInstanceOf(Coin);
+    const bcCoin = findByDenomAndMapDecCoin(undefined, secondDenom);
+    expect(bcCoin).toBeInstanceOf(DecCoin);
     expect(bcCoin.amount).toBe('0');
     expect(bcCoin.denom).toBe(secondDenom);
 
   });
 
   it('finds and maps undefined coins and denom', async () => {
-    expect(() => {findByDenomAndMapCoin(undefined, undefined)}).toThrowError(new Error('no coins and denom defined'));
+    expect(() => {findByDenomAndMapDecCoin(undefined, undefined)}).toThrowError(new Error('no coins and denom defined'));
 
   });
 
@@ -64,8 +64,8 @@ describe('map common', () => {
       coins.push(createSingleCoin('denom' + 1, '' + 100 + i));
     }
     
-    const coin = findByDenomAndMapCoin(coins, denom);
-    expect(coin).toBeInstanceOf(Coin);
+    const coin = findByDenomAndMapDecCoin(coins, denom);
+    expect(coin).toBeInstanceOf(DecCoin);
     expect(coin.amount).toBe(amount);
     expect(coin.denom).toBe(denom);
 

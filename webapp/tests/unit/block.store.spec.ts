@@ -6,7 +6,9 @@ import { useConfigurationStore } from '@/store/configuration.store';
 import { useBlockStore } from '@/store/block.store';
 import { createBlockResponseData, expectBlock } from '../utils/block.blockchain.data.util';
 import { useUserStore } from '@/store/user.store';
-import { Account, AccountType, Coin, ContinuousVestingData } from '@/models/store/account';
+import { Account, AccountType, ContinuousVestingData } from '@/models/store/account';
+import { Coin } from '@/models/store/common';
+
 import { ConnectionInfo, ConnectionType } from '@/api/wallet.connecton.api';
 
 jest.mock("axios");

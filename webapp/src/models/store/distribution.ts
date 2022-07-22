@@ -1,18 +1,18 @@
 import { useConfigurationStore } from "@/store/configuration.store";
-import { Coin } from "./account";
+import { DecCoin } from "./common";
 
 export class ValidatorRewards {
   validatorAddress: string;
-  rewards: Coin[];
+  rewards: DecCoin[];
 
-  constructor (validatorAddress: string, rewards: Coin[]) {
+  constructor (validatorAddress: string, rewards: DecCoin[]) {
     this.validatorAddress = validatorAddress;
     this.rewards = rewards;
   }
 
-  public getByDenom(denom: string): Coin {
+  public getByDenom(denom: string): DecCoin {
     const result = this.rewards.find(coin => coin.denom === denom);
-    return result === undefined ? new Coin('0', denom) : result;
+    return result === undefined ? new DecCoin('0', denom) : result;
   }
 }
 

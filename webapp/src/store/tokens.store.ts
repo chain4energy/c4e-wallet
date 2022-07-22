@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import { StakingPool } from "@/models/store/tokens";
-import { Coin } from "@/models/store/account";
+import { Coin, DecCoin } from "@/models/store/common";
 import { useConfigurationStore } from "./configuration.store";
 import { useToast } from "vue-toastification";
 import { StoreLogger } from "@/services/logged.service";
@@ -14,7 +14,7 @@ const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
 interface TokensState {
   stakingPool: StakingPool
   totalSupply: Coin
-  communityPool: Coin
+  communityPool: DecCoin
   strategicReversePool: Coin
   airdropPool: Coin
 }
