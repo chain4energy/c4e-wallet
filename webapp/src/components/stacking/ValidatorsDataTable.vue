@@ -17,7 +17,7 @@
       <Column field="description.moniker" :header="$t(`STACKING_VIEW.TABLE_HEADERS.NAME`)" :sortable="true"></Column>
       <Column field="status" :header="$t(`STACKING_VIEW.TABLE_HEADERS.STATUS`)" :sortable="true">
         <template #body="{data}">
-          <span>{{ toViewStatus(data.status) }}</span>
+          <span>{{ data.viewStatus }}</span>
         </template>
       </Column>
       <Column field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
@@ -33,7 +33,7 @@
       </Column>
       <Column :header="$t(`STACKING_VIEW.TABLE_HEADERS.YOUR_STAKE`)" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
         <template #body="{data}">
-          <span>{{ data.delegatedAmount }}</span>
+          <span>{{ data.delegatedViewAmount }}</span>
           <!-- <span v-else>updating</span> -->
         </template>
       </Column>
@@ -54,11 +54,11 @@
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
           <p>Your unstaking</p>
-          <p>{{ expandedData.data.undelegatingAmount }}</p>
+          <p>{{ expandedData.data.undelegatingViewAmount }}</p>
         </div>
         <div style="display: flex; flex-direction: column">
           <p>Reward</p>
-          <p>{{toFixedAm(Number(expandedData.data.rewardsAmount), 4)}}</p>
+          <p>{{toFixedAm(Number(expandedData.data.rewardsViewAmount), 4)}}</p>
         </div>
       </div>
     </template>
@@ -106,14 +106,7 @@ function toFixedAm(amount: number, decimal: number) {
   return amount.toFixed(decimal);
 }
 
-function toViewStatus(status: ValidatorStatus): string {
-  switch (status) {
-    case ValidatorStatus.Bonded:
-      return 'Active';
-    default:
-      return 'Inactive';
-  }
-}
+
 
 function createEagerLoadingConfig(): EagerLoadingConfig<Validator>{
   const config = new EagerLoadingConfig<Validator>(props.validators as Validator[]);
@@ -132,7 +125,7 @@ function onRowClick(event: any) {
 }
 
 function isValidatorRowExpandable(data: Validator):boolean {
-  return data.delegatedAmount!=='0';
+  return data.delegatedAmount !== 0n;
 }
 
 const filters = ref({

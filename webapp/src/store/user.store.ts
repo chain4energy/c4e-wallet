@@ -196,7 +196,7 @@ export const useUserStore = defineStore({
     },
   },
   getters: {
-    getConnectionType(): ConnectionType{
+    getConnectionType(): ConnectionType {
       return this.connectionInfo.connectionType;
     },
     isLoggedIn (): boolean {
@@ -214,14 +214,24 @@ export const useUserStore = defineStore({
     getBalance(): bigint {
       return this.balance;
     },
+    getBalanceViewAmount(): string {
+      const config = useConfigurationStore().config;
+      return config.getViewAmount(this.balance, config.stakingDenom);
+    },
     getTotalRewards(): number {
       return this.rewards.totalRewards;
+    },
+    getTotalRewardsViewAmount(): string {
+      return this.rewards.getTotalRewardsViewAmount();
     },
     getRewards():Rewards {
       return this.rewards;
     },
     getTotalUndelegating(): bigint {
       return this.undelegations.totalUndelegating;
+    },
+    getTotalUndelegatingViewAmount(): string {
+      return this.undelegations.getTotalUndelegatingViewAmount();
     },
     getUndelegations(): UnbondingDelegations {
       return this.undelegations;
@@ -232,8 +242,22 @@ export const useUserStore = defineStore({
     getTotalDelegated(): bigint {
       return this.delegations.totalDelegated;
     },
+    getTotalDelegatedViewAmount(): string {
+      return this.delegations.getTotalDelegatedViewAmount();
+    },
     getVestingLockAmount() : bigint{
       return this.vestimgAccLocked;
+    },
+    getVestingLockViewAmount(): string {
+      const config = useConfigurationStore().config;
+      return config.getViewAmount(this.vestimgAccLocked, config.stakingDenom);
+    },
+    getTotal() : bigint{
+      return this.undelegations.totalUndelegating + this.delegations.totalDelegated + this.balance
+    },
+    getTotalViewAmount() : string {
+      const config = useConfigurationStore().config;
+      return config.getViewAmount(this.getTotal, config.stakingDenom);
     }
   },
   persist: {

@@ -38,6 +38,7 @@ import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
+import { useConfigurationStore } from "@/store/configuration.store";
 
 
 use([
@@ -78,22 +79,23 @@ const unboundingPercentage = computed(() => {
   return res.toFixed(2);
 });
 
-const bounded = computed((): number => {
-  return Number(tokensStore.getStakingPool.bondedTokens);
+const bounded = computed((): string => {
+  return tokensStore.getStakingPool.getBondedTokensViewAmount();
 });
 
-const unBounded = computed((): number => {
-  return Number(tokensStore.getTotalSupply.amount
+const unBounded = computed((): string => {
+  const unbonded = tokensStore.getTotalSupply.amount
     - tokensStore.getStakingPool.bondedTokens
-    - tokensStore.getStakingPool.notBondedTokens);
+    - tokensStore.getStakingPool.notBondedTokens
+  return useConfigurationStore().config.getViewAmount(unbonded);
 });
 
-const unBounding = computed((): number => {
-  return Number(tokensStore.getStakingPool.notBondedTokens);
+const unBounding = computed((): string => {
+  return tokensStore.getStakingPool.getNotBondedTokensViewAmount();
 });
 
-const totalSupply = computed(() :number => {
-  return Number(tokensStore.getTotalSupply.amount);
+const totalSupply = computed((): string => {
+  return tokensStore.getTotalSupply.getViewAmount();
 });
 
 const option = ref( {

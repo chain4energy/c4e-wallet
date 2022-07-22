@@ -3,11 +3,11 @@ import { DeliverTxResponse } from "@cosmjs/stargate";
 export const defaultMemo = ''
 
 export const defaultGas = {
-  vote: '10000',
-  delegate: '20000',
-  undelegate: '30000',
-  redelegate: '40000',
-  claimRewards: '50000',
+  vote: 10000,
+  delegate: 20000,
+  undelegate: 3000,
+  redelegate: 40000,
+  claimRewards: 50000,
 };
 
 export const defaultTxSuccessResponse = {

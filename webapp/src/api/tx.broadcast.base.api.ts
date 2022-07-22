@@ -49,13 +49,13 @@ export class TxBroadcastError {
 
 export default abstract class TxBroadcastBaseApi extends BaseApi {
 
-  protected createFee(gas: string, denom: string): StdFee {
+  protected createFee(gas: number, denom: string): StdFee {
     const fee: StdFee = {
       amount: [{
         denom: denom,
         amount: '0',
       }],
-      gas: gas,
+      gas: gas.toString(),
     };
     return fee;
   }

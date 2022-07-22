@@ -37,12 +37,36 @@ export class Validator{
     return useUserStore().getDelegations.getAmountByValidator(this.operatorAddress);
   }
 
+  public get delegatedViewAmount(): string {
+    return useUserStore().getDelegations.getViewAmountByValidator(this.operatorAddress);
+  }
+
   public get undelegatingAmount(): bigint {
     return useUserStore().getUndelegations.getAmountByValidator(this.operatorAddress);
   }
 
+  public get undelegatingViewAmount(): string {
+    return useUserStore().getUndelegations.getViewAmountByValidator(this.operatorAddress);
+  }
+
   public get rewardsAmount(): string {
     return useUserStore().getRewards.getAmountByValidator(this.operatorAddress);
+  }
+
+  public get rewardsViewAmount(): string {
+    return useUserStore().getRewards.getViewAmountByValidator(this.operatorAddress);
+  }
+
+  public get viewStatus(): string {
+    switch (this.status) {
+      case ValidatorStatus.Bonded:
+        return 'Active';  // TODO place it in locales config
+      default:
+        if (this.jailed) {
+          return 'Jailed'; // TODO place it in locales config
+        }
+        return 'Inactive'; // TODO place it in locales config
+    }
   }
 
 }

@@ -20,7 +20,7 @@ export class BlockApi extends BaseApi {
   public async fetchLatestBlock(): Promise<RequestResponse<Block, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: BlockResponse | undefined) => { return mapBlock(bcData); };
     return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.LATEST_BLOCK_URL,
-      mapData, true, null, 'fetchLatestBlock - ');
+      mapData, false, null, 'fetchLatestBlock - ');
   }
 
   // public async fetchLatestBlock(): Promise<RequestResponse<LatestBlock, ErrorData<BlockchainApiErrorData>>> {

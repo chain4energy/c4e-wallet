@@ -922,8 +922,8 @@ function expectMessage<M>(signingMessage: {
   messages: readonly EncodeObject[] | undefined,
   fee: StdFee | "auto" | number | undefined,
   memo: string | undefined
-}, expectedGas: string, expectedMsgTypeUrl: string, expectedMessages: M[]) {
-  expect(signingMessage.fee).toStrictEqual({ amount: [{ amount: "0", "denom": defaultDenom }], gas: expectedGas });
+}, expectedGas: number, expectedMsgTypeUrl: string, expectedMessages: M[]) {
+  expect(signingMessage.fee).toStrictEqual({ amount: [{ amount: "0", "denom": defaultDenom }], gas: expectedGas.toString() });
   expect(signingMessage.signerAddress).toBe(address);
   expect(signingMessage.memo).toBe(memo);
   expect(signingMessage.messages).not.toBe(undefined);

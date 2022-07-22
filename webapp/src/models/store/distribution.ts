@@ -30,8 +30,28 @@ export class Rewards {
     return amount === undefined ? "0" : amount;
   }
 
+  public getViewAmountByValidator(validatorAddress: string): string {
+    const amount = this.rewards.get(validatorAddress)?.getByDenom(useConfigurationStore().config.stakingDenom).getViewAmount();
+    return amount === undefined ? "0" : amount;
+  }
+
   public getAllValidatorsAddresses(): IterableIterator<string> {
     return this.rewards.keys();
+  }
+
+  public getTotalRewardsViewDenom(): string {
+    const config = useConfigurationStore().config;
+    return config.getViewDenom(config.stakingDenom);
+  }
+
+  public getTotalRewardsViewAmount(precision = 4): string {
+    const config = useConfigurationStore().config;
+    return config.getViewAmount(this.totalRewards, config.stakingDenom, precision);
+  }
+
+  public getTotalRewardsViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
+    const config = useConfigurationStore().config;
+    return config.getViewAmountAndDenom(this.totalRewards, config.stakingDenom, precision);
   }
 
 }

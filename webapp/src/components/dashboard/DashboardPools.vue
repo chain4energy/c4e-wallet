@@ -6,16 +6,18 @@
         <div >
           <div><div class="color-div" style="background-color:#fff1a9"></div> {{ $t("DASHBOARD_VIEW.COMMUNITY_POOL") }}</div>
           <div style="font-weight: bold">
-            {{ communityPool }} {{tokensStore.getCommunityPool.denom}}
+            {{ communityPool }} {{tokensStore.getCommunityPool.getViewDenom()}}
           </div>
         </div>
         <div >
           <div><div class="color-div" style="background-color:#72bf44"></div> {{ $t("DASHBOARD_VIEW.STRATEGIC_REVERSE_POOL") }}</div>
-          <div style="font-weight: bold">{{ strategicReversePool }} {{tokensStore.getStrategicReversePool.denom}}</div>
+          <div style="font-weight: bold">{{ strategicReversePool }} {{ tokensStore.getStrategicReversePool.getViewDenom() }}
+          </div>
         </div>
         <div >
           <div><div class="color-div" style="background-color:#26697f"></div> {{ $t("DASHBOARD_VIEW.AIRDROP") }}</div>
-          <div style="font-weight: bold">{{ airdropPool }} {{tokensStore.getAirdropPool.denom}}</div>
+          <div style="font-weight: bold">{{ airdropPool }} {{ tokensStore.getAirdropPool.getViewDenom() }}
+          </div>
         </div>
       </div>
     </div>
@@ -53,15 +55,15 @@ onBeforeMount(() => {
 });
 
 const communityPool = computed(() => {
-  return Number(tokensStore.getCommunityPool.amount);
+  return tokensStore.getCommunityPool.getViewAmount();
 });
 
 const strategicReversePool = computed(() => {
-  return Number(tokensStore.getStrategicReversePool.amount);
+  return tokensStore.getStrategicReversePool.getViewAmount();
 });
 
 const airdropPool = computed(() => {
-  return Number(tokensStore.getAirdropPool.amount);
+  return tokensStore.getAirdropPool.getViewAmount();
 });
 
 const option = ref({

@@ -1,5 +1,6 @@
 import { defineStore} from "pinia";
-import { Configuration} from "@/config/model/Configuration";
+import { Configuration as JsonConfiguration} from "@/config/model/json/Configuration";
+import { Configuration} from "@/config/model/store/Configuration";
 
 interface ConfigurationState {
   config: Configuration
@@ -14,7 +15,10 @@ export const useConfigurationStore = defineStore({
   },
   actions: {
     fetchConfig(configName: string) {
-      this.config = require("../config/json/"+configName);
+      // eslint-disable-next-line
+      const config = require("../config/json/"+configName);
+      this.config = new Configuration(config);
+
     }
   },
   getters: {
