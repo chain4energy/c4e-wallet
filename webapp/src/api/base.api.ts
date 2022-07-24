@@ -98,7 +98,7 @@ export default abstract class BaseApi extends LoggedService {
       }
     }
     try {
-      this.logToConsole(LogLevel.DEBUG, logPrefix + 'data to map: ' + this.getServiceType(), JSON.stringify(result.data));
+      this.logToConsole(LogLevel.DEBUG, logPrefix + 'data to map: ' + this.getServiceType(), this.stringify(result.data));
       const mapped = mapData(result.data);
       return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(undefined, mapped);
     } catch (err) {
@@ -180,15 +180,15 @@ export default abstract class BaseApi extends LoggedService {
     dataToInfo?: (data: E) => string): Promise<RequestResponse<T, ErrorData<E>>> {
     this.before(lockScreen, localSpinner);
     try {
-      this.logToConsole(LogLevel.DEBUG, logPrefix + 'Axios Request: ', JSON.stringify(config));
+      this.logToConsole(LogLevel.DEBUG, logPrefix + 'Axios Request: ', this.stringify(config));
       const data = await this.getAxiosInstance().request<T>(config);
-      this.logToConsole(LogLevel.DEBUG, logPrefix + 'Axios Response', JSON.stringify(data));
+      this.logToConsole(LogLevel.DEBUG, logPrefix + 'Axios Response', this.stringify(data));
       return new RequestResponse<T, ErrorData<E>>(undefined, data.data);
     } catch (err) {
 
       const error = err as Error | AxiosError<E, any>;
 
-      this.logToConsole(LogLevel.DEBUG, logPrefix + 'Axios Response', JSON.stringify(err));
+      this.logToConsole(LogLevel.DEBUG, logPrefix + 'Axios Response', this.stringify(err));
 
       let errorResp: ErrorData<E>;
 
@@ -199,8 +199,8 @@ export default abstract class BaseApi extends LoggedService {
       }
       const isError = displayAsError !== undefined ? displayAsError(errorResp): true;
       const logLevel = isError ? LogLevel.ERROR : LogLevel.DEBUG;
-      this.logToConsole(logLevel, logPrefix + 'Axios Response', JSON.stringify(err));
-      this.logToConsole(logLevel, logPrefix + 'Error data: ' + JSON.stringify(errorResp));
+      this.logToConsole(logLevel, logPrefix + 'Axios Response', this.stringify(err));
+      this.logToConsole(logLevel, logPrefix + 'Error data: ' + this.stringify(errorResp));
 
       // if (!skipErrorToast && isError) {
       //   toast.error('Error requesting service:' + this.getServiceType() + '\r\n' + errorResp.getInfo());
@@ -255,4 +255,13 @@ export default abstract class BaseApi extends LoggedService {
     }
     return new RequestResponse<T, ErrorData<E>>(errorData);
   }
+
+  protected stringify(value: any): string {
+    return JSON.stringify(value, (key, value) =>
+            typeof value === 'bigint'
+                ? value.toString()
+                : value
+        )
+  }
 }
+

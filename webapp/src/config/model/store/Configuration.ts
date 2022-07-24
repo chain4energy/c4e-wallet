@@ -108,7 +108,11 @@ export class Configuration implements JsonConfiguration {
         return origAmount.divide( viewDenomConf.conversionFactor).toFixed(precision);
       } 
     }
-    return Number(origAmount).toFixed(precision);
+    if (typeof origAmount === 'bigint') {
+      return this.bigIntToFixed(origAmount, precision);
+    } else {
+      return origAmount.toFixed(precision);
+    }
   }
 
   public getViewAmountAndDenom(origAmount: bigint | number | BigDecimal, origDenom: string, precision = 4): { amount: string, denom: string } {
@@ -125,7 +129,11 @@ export class Configuration implements JsonConfiguration {
       } 
       return {amount: amount, denom: denom};
     }
-    return { amount: Number(origAmount).toFixed(precision), denom: origDenom };
+    if (typeof origAmount === 'bigint') {
+      return  { amount: this.bigIntToFixed(origAmount, precision), denom: origDenom };
+    } else {
+      return { amount: origAmount.toFixed(precision), denom: origDenom };
+    }
   }
 
   private toViewAmount(origAmount: bigint, conversionFactor: number, precision: number): BigDecimal {
@@ -137,5 +145,13 @@ export class Configuration implements JsonConfiguration {
 
   private getViewDenomConfig(origDenom: string): ViewDenom | undefined {
     return this.viewDenoms.find(d => {return d.denom === origDenom});
+  }
+
+  private bigIntToFixed(num: bigint, precision: number): string {
+    if (precision <= 0) {
+      return num.toString();
+    } else {
+      return num + '.' + '0'.repeat(precision);
+    }
   }
 }

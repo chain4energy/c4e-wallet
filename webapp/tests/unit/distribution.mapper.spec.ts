@@ -51,20 +51,6 @@ describe('tests mapping of staking related data', () => {
     const storeReward = mapRewards(bcRewardsData);
 
     expectRewards(storeReward);
-
-    // expect(storeReward.rewards.size).toBe(defaultRewardsValidators.length);
-    // expect(storeReward.totalRewards).toBe(Number(findTotalRewards(defaultDenom).amount));
-    // defaultRewardsValidators.forEach(validatorAddress => {
-    //   const reward = storeReward.rewards.get(validatorAddress);
-    //   const expectedReward = findRewardsByValidator(validatorAddress);
-    //   expect(reward?.rewards.length).toBe(expectedReward.length);
-    //   for (let i = 0; i < expectedReward.length; i++) {
-    //     expect(reward?.rewards[i].amount).toBe(expectedReward[i].amount);
-    //     expect(reward?.rewards[i].denom).toBe(expectedReward[i].denom);
-    //   }
-    //   expect(reward?.validatorAddress).toBe(validatorAddress);
-    // });
-
   });
 
 });

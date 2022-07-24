@@ -22,12 +22,12 @@
       </Column>
       <Column field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
         <template #body="{data}">
-          <span>{{ toFixedAm(data.commission.rate, 6)*100 }}%</span> <!-- TODO create function converting to pecentage -->
+          <span>{{ data.commission.rateViewPercentage }}</span> <!-- TODO create function converting to pecentage -->
         </template>
       </Column>
       <Column field="votingPower" :header="$t(`STACKING_VIEW.TABLE_HEADERS.VOTING_POWER`)" :sortable="true" sortField="tokens">
         <template #body="{data}">
-          <span v-if="data.votingPower">{{ toFixedAm(data.votingPower, 4) }}%</span> <!-- TODO create function converting to pecentage -->
+          <span v-if="data.votingPower">{{ data.votingPowerViewPercentage }}</span> 
           <span v-else>updating</span>
         </template>
       </Column>
@@ -58,7 +58,7 @@
         </div>
         <div style="display: flex; flex-direction: column">
           <p>Reward</p>
-          <p>{{toFixedAm(Number(expandedData.data.rewardsViewAmount), 4)}}</p>
+          <p>{{ expandedData.data.rewardsViewAmount }}</p> <!-- TODONUMBER -->
         </div>
       </div>
     </template>
@@ -102,9 +102,9 @@ function checkBTN(item: Validator){
   return popupOpened;
 }
 
-function toFixedAm(amount: number, decimal: number) {
-  return amount.toFixed(decimal);
-}
+// function toFixedAm(amount: number, decimal: number) {
+//   return amount.toFixed(decimal);
+// }
 
 
 

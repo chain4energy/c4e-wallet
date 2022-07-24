@@ -261,12 +261,12 @@ export const useUserStore = defineStore({
       return config.getViewAmount(this.getTotal, config.stakingDenom);
     }
   },
-  persist: {
-    enabled: true,
-    strategies: [
-      { storage: sessionStorage, paths: ['logged', 'account', 'type', 'stackingList', 'rewards'] },
-    ]
-  }
+  // persist: { // TODO - pinia plugin uses stringify that does not support big ints - solve
+  //   enabled: true,
+  //   strategies: [
+  //     { storage: sessionStorage, paths: ['logged', 'account', 'type', 'stackingList', 'rewards'] },
+  //   ]
+  // }
 });
 
 function checkIfConnected(connectionInfo: ConnectionInfo): boolean {

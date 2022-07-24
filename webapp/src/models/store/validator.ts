@@ -1,6 +1,7 @@
 import { useTokensStore } from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
-import { BigDecimal } from "./big.decimal";
+import { BigDecimal, divideBigInts } from "./big.decimal";
+import { toPercentage } from "./common";
 
 export class Validator{
   operatorAddress: string;
@@ -26,12 +27,16 @@ export class Validator{
     this.rank = 0;
   }
 
-  public get votingPower(): number {
+  public get votingPower(): BigDecimal {
     const total = useTokensStore().getStakingPool.bondedTokens;
     if(total || total > 0n){
-      return Number((this.tokens * 1000000n) / total)/10000;
+      return divideBigInts(this.tokens, total); // TODONUMBER
     }
-    return 0;
+    return new BigDecimal(0);
+  }
+
+  public get votingPowerViewPercentage(): string {
+    return toPercentage(this.votingPower)
   }
 
   public get delegatedAmount(): bigint {
@@ -103,6 +108,10 @@ export class ValidatorCommission {
     this.rate = rate;
     this.maxRate = max_rate;
     this.maxChangeRate = max_change_rate;
+  }
+
+  public get rateViewPercentage(): string {
+    return toPercentage(this.rate, 2)
   }
 }
 

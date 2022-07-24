@@ -38,10 +38,18 @@ export class DecCoin {
   }
 
   public getViewAmount(precision = 4): string {
-    return useConfigurationStore().config.getViewAmount(Number(this.amount), this.denom, precision);
+    return useConfigurationStore().config.getViewAmount(this.amount, this.denom, precision);
   }
 
   public getViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
-    return useConfigurationStore().config.getViewAmountAndDenom(Number(this.amount), this.denom, precision);
+    return useConfigurationStore().config.getViewAmountAndDenom(this.amount, this.denom, precision);
+  }
+}
+
+export function toPercentage(num: BigDecimal | number, precision = 4): string {
+  if (typeof num === 'number') {
+    return (num * 100).toFixed(precision) + '%';
+  } else {
+    return num.multiply(100).toFixed(precision) + '%';
   }
 }

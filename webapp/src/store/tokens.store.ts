@@ -1,13 +1,13 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import { StakingPool } from "@/models/store/tokens";
-import { Coin, DecCoin } from "@/models/store/common";
+import { Coin, DecCoin, toPercentage } from "@/models/store/common";
 import { useConfigurationStore } from "./configuration.store";
 import { useToast } from "vue-toastification";
 import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
-import { BigDecimal } from "@/models/store/big.decimal";
+import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
@@ -107,6 +107,15 @@ export const useTokensStore = defineStore({
     getStakingPool(): StakingPool {
       return this.stakingPool;
     },
+    getTotalUnbonded(): bigint {
+      return this.getTotalSupply.amount
+      - this.getStakingPool.bondedTokens
+      - this.getStakingPool.notBondedTokens;
+    },
+    getTotalUnbondedViewAmount(): string {
+      const unbonded = this.getTotalUnbonded
+      return useConfigurationStore().config.getViewAmount(unbonded);
+    },
     getTotalSupply(): Coin {
       return this.totalSupply;
     },
@@ -118,6 +127,24 @@ export const useTokensStore = defineStore({
     },
     getAirdropPool(): Coin {
       return this.airdropPool;
-    }
+    },
+    getBoundedPercentage(): string {
+      if (this.totalSupply.amount === 0n) {
+        return toPercentage(0, 2);
+      }
+      return divideBigInts(this.stakingPool.bondedTokens, this.totalSupply.amount).multiply(100).toFixed(2);
+    },
+    getUnboundedPercentage(): string {
+      if (this.totalSupply.amount === 0n) {
+        return toPercentage(0, 2);
+      }
+      return divideBigInts(this.getTotalUnbonded, this.totalSupply.amount).multiply(100).toFixed(2);
+    },
+    getUnboundingPercentage(): string {
+      if (this.totalSupply.amount === 0n) {
+        return toPercentage(0, 2);
+      }
+      return divideBigInts(this.stakingPool.notBondedTokens, this.totalSupply.amount).multiply(100).toFixed(2);
+    },
   }
 });

@@ -559,18 +559,6 @@ describe('account api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
     expectRewards(result.data);
-    // expect(result.data?.rewards.size).toBe(defaultRewardsValidators.length);
-    // expect(result.data?.totalRewards).toBe(Number(findTotalRewards(defaultDenom).amount));
-    // defaultRewardsValidators.forEach(validatorAddress => {
-    //   const reward = result.data?.rewards.get(validatorAddress);
-    //   const expectedReward = findRewardsByValidator(validatorAddress);
-    //   expect(reward?.rewards.length).toBe(expectedReward.length);
-    //   for (let i = 0; i < expectedReward.length; i++) {
-    //     expect(reward?.rewards[i].amount).toBe(expectedReward[i].amount);
-    //     expect(reward?.rewards[i].denom).toBe(expectedReward[i].denom);
-    //   }
-    //   expect(reward?.validatorAddress).toBe(validatorAddress);
-    // });
   });
 
   it('gets delegator rewards - no rewards', async () => {

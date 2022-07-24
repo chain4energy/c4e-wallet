@@ -28,14 +28,11 @@ function mapAndAddValidatorsToArray(array: StoreValidator[], bcValidators: BcVal
       active++;
     }
   });
-  // array.sort((a, b) => Number(b.tokens) - Number(a.tokens))
-  // let i = 1
-  // array.forEach(val => val.rank = i++)
   return active;
 }
 
 export function sortAndRankValidators(array: StoreValidator[]): StoreValidator[]  {
-  array.sort((a, b) => Number(b.tokens) - Number(a.tokens));
+  array.sort((a, b) => b.tokens - a.tokens < 0n ? -1 : b.tokens - a.tokens === 0n ? 0 : 1);
   let i = 1;
   array.forEach(val => val.rank = i++);
   return array;

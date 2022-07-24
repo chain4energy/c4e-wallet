@@ -75,7 +75,7 @@ class BigDecimalImpl implements BigDecimal {
     } if (typeof value === 'bigint') {
       return value * SHIFT;
     } else {
-      let [ints, decis] = String(value).split('.').concat('');
+      const [ints, decis] = String(value).split('.').concat('');
       return BigInt(ints + decis.padEnd(DECIMALS, '0')
         .slice(0, DECIMALS))
         + BigInt(ROUNDED && decis[DECIMALS] >= '5');
@@ -113,8 +113,7 @@ function divideBigIntsWithRound(rounded: boolean, dividend: bigint, divisor: big
   )
 }
 function numberToFixed(value: bigint, fractionDigits: number): string {
-  console.log()
-  let s = (
+  const s = (
     fractionDigits > DECIMALS ?
       value.toString() + "0".repeat(fractionDigits - DECIMALS) :
       value.toString()
@@ -123,7 +122,7 @@ function numberToFixed(value: bigint, fractionDigits: number): string {
     return s;
   }
   const ints = s.slice(0, -fractionDigits);
-  console.log('ints: ' + ints)
   const decis = s.slice(-fractionDigits);
   return ints + "." + decis;
 }
+
