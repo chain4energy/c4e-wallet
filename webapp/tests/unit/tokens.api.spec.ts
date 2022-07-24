@@ -4,6 +4,7 @@ import { mockAxios } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
 import { createCommunityPoolResponseData, createStakingPoolResponseData, createSupplyResponseData, expectStakingPool } from '../utils/tokens.blockchain.data.util';
 import { axiosErrorMessagePrefix, defaultAxiosErrorName, createErrorResponse, defaultErrorName, defaultDenom, expectCoin, expectDecCoin } from '../utils/common.blockchain.data.util';
+import { BigDecimal } from '@/models/store/big.decimal';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();
@@ -129,7 +130,7 @@ describe('tokens api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
 
-    expectDecCoin(result.data, amount, defaultDenom);
+    expectDecCoin(result.data, new BigDecimal(amount), defaultDenom);
 
   });
 
@@ -146,7 +147,7 @@ describe('tokens api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
 
-    expectDecCoin(result.data, '0', defaultDenom);
+    expectDecCoin(result.data, new BigDecimal(0), defaultDenom);
 
   });
 
@@ -178,7 +179,7 @@ describe('tokens api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
 
-    expectDecCoin(result.data, '0', defaultDenom);
+    expectDecCoin(result.data, new BigDecimal(0), defaultDenom);
   });
 });
 

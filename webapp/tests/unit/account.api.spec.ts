@@ -28,6 +28,7 @@ import { VoteOption } from '@/api/account.api';
 import { mockAxios, mockKeplr } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
 import { defaultGas, defaultMemo, defaultTxErrorResponse, defaultTxSuccessResponse, msgBeginRedelegateTypeUrl, msgDelegateTypeUrl, msgUndelegateTypeUrl, msgVoteTypeUrl, msgWithdrawDelegatorRewardTypeUrl } from '../utils/tx.broadcast.blockchain.data.util';
+import { BigDecimal } from '@/models/store/big.decimal';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();
@@ -583,7 +584,7 @@ describe('account api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
     expect(result.data?.rewards.size).toBe(0);
-    expect(result.data?.totalRewards).toBe(0);
+    expect(result.data?.totalRewards).toStrictEqual(new BigDecimal(0));
   });
 
   it('gets delegator rewards with error', async () => {

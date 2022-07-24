@@ -1,3 +1,4 @@
+import { BigDecimal } from "@/models/store/big.decimal";
 import { Coin, DecCoin } from "@/models/store/common";
 import { AxiosError, AxiosResponse } from "axios";
 
@@ -43,10 +44,10 @@ export function expectCoin(coin: Coin | undefined, expectedAmount: bigint, expec
 
 }
 
-export function expectDecCoin(coin: DecCoin | undefined, expectedAmount: string, expectedDenom: string) {
+export function expectDecCoin(coin: DecCoin | undefined, expectedAmount: BigDecimal, expectedDenom: string) {
   expect(coin).not.toBeUndefined();
   expect(coin).toBeInstanceOf(DecCoin);
-  expect(coin?.amount).toBe(expectedAmount);
+  expect(coin?.amount).toStrictEqual(expectedAmount);
   expect(coin?.denom).toBe(expectedDenom);
 
 }

@@ -7,6 +7,7 @@ import { useToast } from "vue-toastification";
 import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
+import { BigDecimal } from "@/models/store/big.decimal";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
@@ -27,7 +28,8 @@ export const useTokensStore = defineStore({
     return {
       stakingPool: new StakingPool(0n, 0n),
       totalSupply: emptyCoin,
-      communityPool: new DecCoin('0', denom),
+      communityPool: new DecCoin(new BigDecimal(0), denom),
+      // communityPool: Object(),
       strategicReversePool: emptyCoin,
       airdropPool: emptyCoin
     };

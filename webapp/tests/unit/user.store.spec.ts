@@ -17,6 +17,7 @@ import { Coin, DecCoin } from '@/models/store/common';
 
 import { defaultGas, defaultTxErrorResponse, defaultTxSuccessResponse } from '../utils/tx.broadcast.blockchain.data.util';
 import { DeliverTxResponse } from '@cosmjs/stargate';
+import { BigDecimal } from '@/models/store/big.decimal';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();
@@ -191,7 +192,7 @@ describe('user store tests', () => {
     expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
     expect(userStore.isLoggedIn).toBe(true);
     expect(userStore.getVestingLockAmount).toBe(0n);
-    expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
+    expect(userStore.getTotalRewards).toStrictEqual(userStore.rewards.totalRewards);
     expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
     expect(userStore.getTotalUndelegating).toBe(0n);
     expect(userStore.isContinuousVestingAccount).toBe(false);
@@ -259,7 +260,7 @@ describe('user store tests', () => {
     expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
     expect(userStore.isLoggedIn).toBe(true);
     expect(userStore.getVestingLockAmount).toBe(0n);
-    expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
+    expect(userStore.getTotalRewards).toStrictEqual(userStore.rewards.totalRewards);
     expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
     expect(userStore.getTotalUndelegating).toBe(0n);
     expect(userStore.isContinuousVestingAccount).toBe(false);
@@ -327,7 +328,7 @@ describe('user store tests', () => {
     expectDelegatorUnbondingDelegations(userStore.getUndelegations);
     expect(userStore.isLoggedIn).toBe(true);
     expect(userStore.getVestingLockAmount).toBe(0n);
-    expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
+    expect(userStore.getTotalRewards).toStrictEqual(userStore.rewards.totalRewards);
     expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
     expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);
     expect(userStore.isContinuousVestingAccount).toBe(false);
@@ -369,8 +370,8 @@ describe('user store tests', () => {
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.BaseAccount, address);
     const initialRewards = new Map<string, ValidatorRewards>();
-    initialRewards.set('v1', new ValidatorRewards('v1', [new DecCoin('0', 'coin')]));
-    userStore.rewards = new Rewards(initialRewards, 0);
+    initialRewards.set('v1', new ValidatorRewards('v1', [new DecCoin(new BigDecimal(0), 'coin')]));
+    userStore.rewards = new Rewards(initialRewards, new BigDecimal(0));
     const signAndBroadcastMock = async (): Promise<DeliverTxResponse> => {
       return defaultTxSuccessResponse;
     };
@@ -397,7 +398,7 @@ describe('user store tests', () => {
     expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
     expect(userStore.isLoggedIn).toBe(true);
     expect(userStore.getVestingLockAmount).toBe(0n);
-    expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
+    expect(userStore.getTotalRewards).toStrictEqual(userStore.rewards.totalRewards);
     expect(userStore.getTotalDelegated).toBe(0n);
     expect(userStore.getTotalUndelegating).toBe(0n);
     expect(userStore.isContinuousVestingAccount).toBe(false);
@@ -411,8 +412,8 @@ describe('user store tests', () => {
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.BaseAccount, address);
     const initialRewardsMap = new Map<string, ValidatorRewards>();
-    initialRewardsMap.set('v1', new ValidatorRewards('v1', [new DecCoin('0', 'coin')]));
-    const initialRewards = new Rewards(initialRewardsMap, 0);
+    initialRewardsMap.set('v1', new ValidatorRewards('v1', [new DecCoin(new BigDecimal(0), 'coin')]));
+    const initialRewards = new Rewards(initialRewardsMap, new BigDecimal(0));
     userStore.rewards = initialRewards;
 
     const signAndBroadcastMock = async (): Promise<DeliverTxResponse> => {
@@ -717,7 +718,7 @@ function expectTxDeliverFailureBaseAccount(expectedBalanceAmount: bigint, expect
   expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
   expect(userStore.isLoggedIn).toBe(true);
   expect(userStore.getVestingLockAmount).toBe(0n);
-  expect(userStore.getTotalRewards).toBe(0);
+  expect(userStore.getTotalRewards).toStrictEqual(new BigDecimal(0));
   expect(userStore.getTotalDelegated).toBe(0n);
   expect(userStore.getTotalUndelegating).toBe(0n);
   expect(userStore.isContinuousVestingAccount).toBe(false);
@@ -734,7 +735,7 @@ function expectDisconnected() {
   expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
   expect(userStore.isLoggedIn).toBe(false);
   expect(userStore.getVestingLockAmount).toBe(0n);
-  expect(userStore.getTotalRewards).toBe(0);
+  expect(userStore.getTotalRewards).toStrictEqual(new BigDecimal(0));
   expect(userStore.getTotalDelegated).toBe(0n);
   expect(userStore.getTotalUndelegating).toBe(0n);
   expect(userStore.isContinuousVestingAccount).toBe(false);
@@ -751,7 +752,7 @@ function expectConnectedBaseAccount(balanceAmount: bigint, connectionType: Conne
   expectDelegatorUnbondingDelegations(userStore.getUndelegations);
   expect(userStore.isLoggedIn).toBe(true);
   expect(userStore.getVestingLockAmount).toBe(0n);
-  expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
+  expect(userStore.getTotalRewards).toStrictEqual(userStore.rewards.totalRewards);
   expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
   expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);
   expect(userStore.isContinuousVestingAccount).toBe(false);
@@ -770,7 +771,7 @@ function expectConnectedNonexistent(connectionType: ConnectionType) {
   expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
   expect(userStore.isLoggedIn).toBe(true);
   expect(userStore.getVestingLockAmount).toBe(0n);
-  expect(userStore.getTotalRewards).toBe(0);
+  expect(userStore.getTotalRewards).toStrictEqual(new BigDecimal(0));
   expect(userStore.getTotalDelegated).toBe(0n);
   expect(userStore.getTotalUndelegating).toBe(0n);
   expect(userStore.isContinuousVestingAccount).toBe(false);
@@ -787,7 +788,7 @@ function expectConnectedContinuousVestingAccount(balanceAmount: bigint, connecti
   expectDelegatorUnbondingDelegations(userStore.getUndelegations);
   expect(userStore.isLoggedIn).toBe(true);
   expect(userStore.getVestingLockAmount).toBe(0n);
-  expect(userStore.getTotalRewards).toBe(userStore.rewards.totalRewards);
+  expect(userStore.getTotalRewards).toStrictEqual(userStore.rewards.totalRewards);
   expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
   expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);
   expect(userStore.isContinuousVestingAccount).toBe(true);

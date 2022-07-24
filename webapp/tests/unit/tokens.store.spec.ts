@@ -6,6 +6,7 @@ import { useTokensStore } from '@/store/tokens.store';
 import { createCommunityPoolResponseData, createStakingPoolResponseData, createSupplyResponseData, expectStakingPool } from '../utils/tokens.blockchain.data.util';
 import { useConfigurationStore } from '@/store/configuration.store';
 import { createSingleBalanceResponseData } from '../utils/account.blockchain.data.util';
+import { BigDecimal } from '@/models/store/big.decimal';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();
@@ -76,7 +77,7 @@ describe('tokens store tests', () => {
     };
     mockedAxios.request.mockResolvedValueOnce(communityPool);
     await tokensStore.fetchCommunityPool();
-    expectDecCoin(tokensStore.getCommunityPool, amount, defaultDenom);
+    expectDecCoin(tokensStore.getCommunityPool, new BigDecimal(amount), defaultDenom);
 
   });
 
@@ -86,7 +87,7 @@ describe('tokens store tests', () => {
     mockedAxios.request.mockRejectedValueOnce(validatorsError);
     await tokensStore.fetchCommunityPool();
 
-    expectDecCoin(tokensStore.getCommunityPool, '0', defaultDenom);
+    expectDecCoin(tokensStore.getCommunityPool, new BigDecimal(0), defaultDenom);
   });
 
   it('fetches strategic reserve pool - success', async () => {

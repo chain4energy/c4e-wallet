@@ -1,10 +1,11 @@
 import { useConfigurationStore } from "@/store/configuration.store";
+import { BigDecimal } from '@/models/store/big.decimal';
 
 export class Coin {
   amount: bigint;
   denom: string;
 
-  constructor (amount: bigint, denom: string) {
+  constructor(amount: bigint, denom: string) {
     this.amount = amount;
     this.denom = denom;
   }
@@ -24,10 +25,10 @@ export class Coin {
 }
 
 export class DecCoin {
-  amount: string;
+  amount: BigDecimal;
   denom: string;
 
-  constructor (amount: string, denom: string) {
+  constructor(amount: BigDecimal, denom: string) {
     this.amount = amount;
     this.denom = denom;
   }

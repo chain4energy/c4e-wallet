@@ -1,3 +1,4 @@
+import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
 import { Gas as JsonGas, ViewDenom as JsonViewDenom, Configuration as JsonConfiguration } from "../json/Configuration";
 export class Gas implements JsonGas {
   vote: number;
@@ -96,38 +97,42 @@ export class Configuration implements JsonConfiguration {
     return origDenom;
   }
 
-  public getViewAmount(origAmount: bigint | number, origDenom = this.stakingDenom, precision = 4): string {
+  public getViewAmount(origAmount: bigint | number | BigDecimal, origDenom = this.stakingDenom, precision = 4): string {
     const viewDenomConf = this.getViewDenomConfig(origDenom);
     if (viewDenomConf) {
       if (typeof origAmount === 'bigint') {
         return this.toViewAmount(origAmount, viewDenomConf.conversionFactor, precision).toFixed(precision);
-      } else {
+      } else if (typeof origAmount === 'number') {
         return (origAmount / viewDenomConf.conversionFactor).toFixed(precision);
-      }
+      } else {
+        return origAmount.divide( viewDenomConf.conversionFactor).toFixed(precision);
+      } 
     }
     return Number(origAmount).toFixed(precision);
   }
 
-  public getViewAmountAndDenom(origAmount: bigint | number, origDenom: string, precision = 4): { amount: string, denom: string } {
+  public getViewAmountAndDenom(origAmount: bigint | number | BigDecimal, origDenom: string, precision = 4): { amount: string, denom: string } {
     const viewDenomConf = this.getViewDenomConfig(origDenom);
     if (viewDenomConf) {
       const denom = viewDenomConf.viewDenom;
-      let amount: number;
+      let amount: string;
       if (typeof origAmount === 'bigint') {
-        amount = this.toViewAmount(origAmount, viewDenomConf.conversionFactor, precision);
+        amount = this.toViewAmount(origAmount, viewDenomConf.conversionFactor, precision).toFixed(precision);
+      } else if (typeof origAmount === 'number') {
+        amount = (origAmount / viewDenomConf.conversionFactor).toFixed(precision);
       } else {
-        amount = (origAmount / viewDenomConf.conversionFactor);
-      }
-      return {amount: amount.toFixed(precision), denom: denom};
+        amount = origAmount.divide( viewDenomConf.conversionFactor).toFixed(precision);
+      } 
+      return {amount: amount, denom: denom};
     }
     return { amount: Number(origAmount).toFixed(precision), denom: origDenom };
   }
 
-  private toViewAmount(origAmount: bigint, conversionFactor: number, precision: number): number {
+  private toViewAmount(origAmount: bigint, conversionFactor: number, precision: number): BigDecimal {
     const helperValue = Math.pow(10, precision);
     const helperValueBigInt = BigInt(helperValue);
     const amount = origAmount * helperValueBigInt / BigInt(conversionFactor);
-    return Number(amount)/ helperValue;
+    return divideBigInts(amount, BigInt(helperValue));
   }
 
   private getViewDenomConfig(origDenom: string): ViewDenom | undefined {

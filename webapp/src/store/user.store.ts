@@ -12,6 +12,7 @@ import { TxBroadcastError, TxData } from "@/api/tx.broadcast.base.api";
 import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from '@/services/logger/log-level';
+import { BigDecimal } from "@/models/store/big.decimal";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -218,7 +219,7 @@ export const useUserStore = defineStore({
       const config = useConfigurationStore().config;
       return config.getViewAmount(this.balance, config.stakingDenom);
     },
-    getTotalRewards(): number {
+    getTotalRewards(): BigDecimal {
       return this.rewards.totalRewards;
     },
     getTotalRewardsViewAmount(): string {

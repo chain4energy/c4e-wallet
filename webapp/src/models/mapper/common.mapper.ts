@@ -1,4 +1,5 @@
 import { Coin as BcCoin } from "../blockchain/common";
+import { BigDecimal } from "../store/big.decimal";
 import { Coin as StoreCoin, DecCoin} from "../store/common";
 
 export function mapCoin(coin: BcCoin | undefined, denom: string | undefined): StoreCoin  {
@@ -6,7 +7,7 @@ export function mapCoin(coin: BcCoin | undefined, denom: string | undefined): St
 }
 
 export function mapDecCoin(coin: BcCoin | undefined, denom: string | undefined): DecCoin  {
-  return mapToAnyCoin<DecCoin>(coin, denom, (amount: string, denom: string) => {return new DecCoin(amount, denom);})
+  return mapToAnyCoin<DecCoin>(coin, denom, (amount: string, denom: string) => {return new DecCoin(new BigDecimal(amount), denom);})
 }
 
 function mapToAnyCoin<C>(coin: BcCoin | undefined, denom: string | undefined, toCoin: (amount: string, denom: string) => C): C  {
@@ -27,7 +28,7 @@ export function findByDenomAndMapDecCoin(coins: BcCoin[] | undefined, denom: str
     if (denom === undefined) {
       throw new Error(`no coins and denom defined`);
     }
-    return new DecCoin('0', denom);
+    return new DecCoin(new BigDecimal(0), denom);
   }
   const result = coins.find(coin => coin.denom === denom);
   return mapDecCoin(result, denom);

@@ -1,5 +1,6 @@
 import { useTokensStore } from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
+import { BigDecimal } from "./big.decimal";
 
 export class Validator{
   operatorAddress: string;
@@ -49,7 +50,7 @@ export class Validator{
     return useUserStore().getUndelegations.getViewAmountByValidator(this.operatorAddress);
   }
 
-  public get rewardsAmount(): string {
+  public get rewardsAmount(): BigDecimal {
     return useUserStore().getRewards.getAmountByValidator(this.operatorAddress);
   }
 

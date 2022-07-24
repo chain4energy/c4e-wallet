@@ -6,6 +6,7 @@ import { mapReward, mapRewards } from "@/models/mapper/distribution.mapper";
 import { Reward, RewardsResponse } from "@/models/blockchain/distribution";
 import { setActivePinia, createPinia } from 'pinia'
 import { useConfigurationStore } from "@/store/configuration.store";
+import { BigDecimal } from "@/models/store/big.decimal";
 
 const validatorAddress = defaultDelegatorDelegationsValidators[0];
 
@@ -22,7 +23,7 @@ describe('tests mapping of staking related data', () => {
 
     expect(storeReward.rewards.length).toBe(rewardCoins.length);
     for (let i = 0; i < rewardCoins.length; i++) {
-      expect(storeReward.rewards[i].amount).toBe(rewardCoins[i].amount);
+      expect(storeReward.rewards[i].amount).toStrictEqual(new BigDecimal(rewardCoins[i].amount));
       expect(storeReward.rewards[i].denom).toBe(rewardCoins[i].denom);
     }
     expect(storeReward.validatorAddress).toBe(validatorAddress);    

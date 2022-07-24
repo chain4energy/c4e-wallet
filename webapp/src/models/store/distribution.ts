@@ -1,4 +1,5 @@
 import { useConfigurationStore } from "@/store/configuration.store";
+import { BigDecimal } from "./big.decimal";
 import { DecCoin } from "./common";
 
 export class ValidatorRewards {
@@ -12,26 +13,26 @@ export class ValidatorRewards {
 
   public getByDenom(denom: string): DecCoin {
     const result = this.rewards.find(coin => coin.denom === denom);
-    return result === undefined ? new DecCoin('0', denom) : result;
+    return result === undefined ? new DecCoin(new BigDecimal(0), denom) : result;
   }
 }
 
 export class Rewards {
   rewards: Map<string, ValidatorRewards>;
-  totalRewards: number; // TODO BigDecimal
+  totalRewards: BigDecimal; // TODO BigDecimal
 
-  constructor (rewards = new Map<string, ValidatorRewards>(), totalRewards = 0) {
+  constructor (rewards = new Map<string, ValidatorRewards>(), totalRewards = new BigDecimal(0)) {
     this.rewards = rewards;
     this.totalRewards = totalRewards;
   }
 
-  public getAmountByValidator(validatorAddress: string): string {
+  public getAmountByValidator(validatorAddress: string): BigDecimal {
     const amount = this.rewards.get(validatorAddress)?.getByDenom(useConfigurationStore().config.stakingDenom).amount;
-    return amount === undefined ? "0" : amount;
+    return amount === undefined ? new BigDecimal(0) : amount;
   }
 
-  public getViewAmountByValidator(validatorAddress: string): string {
-    const amount = this.rewards.get(validatorAddress)?.getByDenom(useConfigurationStore().config.stakingDenom).getViewAmount();
+  public getViewAmountByValidator(validatorAddress: string, precision = 4): string {
+    const amount = this.rewards.get(validatorAddress)?.getByDenom(useConfigurationStore().config.stakingDenom).getViewAmount(precision);
     return amount === undefined ? "0" : amount;
   }
 
