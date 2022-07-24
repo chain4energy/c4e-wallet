@@ -16,17 +16,17 @@ export class Validator{
       tokens: string,
       description: ValidatorDescription,
       commission: ValidatorCommission) {
-    this.operatorAddress = operatorAddress
-    this.jailed = jailed
-    this.status = status
-    this.tokens = tokens
-    this.description = description
-    this.commission = commission
-    this.rank = 0
+    this.operatorAddress = operatorAddress;
+    this.jailed = jailed;
+    this.status = status;
+    this.tokens = tokens;
+    this.description = description;
+    this.commission = commission;
+    this.rank = 0;
   }
 
   public get votingPower(): number {
-    const total = useTokensStore().getStakingPool.bonded_tokens
+    const total = useTokensStore().getStakingPool.bonded_tokens;
     if(total){
       return (Number(this.tokens) / total) * 100;
     }

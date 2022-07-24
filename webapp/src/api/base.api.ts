@@ -60,10 +60,10 @@ export default abstract class BaseApi extends LoggedService {
   }
 
   protected async axiosBlockchainApiCall<T>(
-    config: AxiosRequestConfig, 
-    lockScreen: boolean, 
-    localSpinner: LocalSpinner | null, 
-    logPrefix = '', 
+    config: AxiosRequestConfig,
+    lockScreen: boolean,
+    localSpinner: LocalSpinner | null,
+    logPrefix = '',
     displayAsError?: ((error: ErrorData<BlockchainApiErrorData>) => boolean),
     skipErrorToast = false
     ): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>> {
@@ -172,10 +172,10 @@ export default abstract class BaseApi extends LoggedService {
   }
 
   private async axiosCall<T, E>(config: AxiosRequestConfig,
-    lockScreen: boolean, 
-    localSpinner: LocalSpinner | null, 
-    skipErrorToast: boolean, 
-    logPrefix: string, 
+    lockScreen: boolean,
+    localSpinner: LocalSpinner | null,
+    skipErrorToast: boolean,
+    logPrefix: string,
     displayAsError?: (error :ErrorData<E>) => boolean,
     dataToInfo?: (data: E) => string): Promise<RequestResponse<T, ErrorData<E>>> {
     this.before(lockScreen, localSpinner);

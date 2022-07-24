@@ -4,7 +4,7 @@
     <div @click="showSidebar" class="open-sidebar">
       <Icon name="SidebarOpen"/>
     </div>
-    <div class="sidebar display-none">
+    <nav class="sidebar display-none">
       <router-link :to="menuItem.href" v-for="(menuItem,index) of menu" :key="index">
         <span class="sidebar-element">
           <span :class="menuItem.href === this.$route.path ? 'icon active' : 'icon'">
@@ -16,7 +16,7 @@
       <span @click="hideSidebar" class="hide-sidebar">
         <Icon name="SidebarClose"/>
       </span>
-    </div>
+    </nav>
   </span>
 
 </template>

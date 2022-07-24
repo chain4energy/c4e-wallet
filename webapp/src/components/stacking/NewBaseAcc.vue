@@ -2,28 +2,15 @@
   <div>
     <TabView>
       <TabPanel :header="$t(`STACKING_VIEW.TABS.ALL`)">
-        <DataTableWraper :expanded="true" :validators="useValidatorsStore().getValidators" />
-      </TabPanel>
-      <TabPanel v-if="isLoggedIn" :header="$t(`STACKING_VIEW.TABS.STACKED`)">
-        <DataTableWraper :validators="useValidatorsStore().getValidatorsWithDelegations" :expanded="true"/>
-      </TabPanel>
-      <TabPanel :header="$t(`STACKING_VIEW.TABS.ACTIVE`)">
-        <DataTableWraper :validators="useValidatorsStore().getActiveValidators" :expanded="true"/>
-      </TabPanel>
-      <TabPanel :header="$t(`STACKING_VIEW.TABS.INACTIVE`)">
-        <DataTableWraper :validators="useValidatorsStore().getInactiveValidators" :expanded="true"/>
-      </TabPanel>
-
-      <TabPanel :header="'New ' + $t(`STACKING_VIEW.TABS.ALL`)">
         <ValidatorsDataTable :validators="useValidatorsStore().getValidators"/>
       </TabPanel>
-      <TabPanel v-if="isLoggedIn" :header="'New ' + $t(`STACKING_VIEW.TABS.STACKED`)">
+      <TabPanel v-if="isLoggedIn" :header="$t(`STACKING_VIEW.TABS.STACKED`)">
         <ValidatorsDataTable :validators="useValidatorsStore().getValidatorsWithDelegations"/>
       </TabPanel>
-      <TabPanel :header="'New ' + $t(`STACKING_VIEW.TABS.ACTIVE`)">
+      <TabPanel :header="$t(`STACKING_VIEW.TABS.ACTIVE`)">
         <ValidatorsDataTable :validators="useValidatorsStore().getActiveValidators"/>
       </TabPanel>
-      <TabPanel :header="'New ' + $t(`STACKING_VIEW.TABS.INACTIVE`)">
+      <TabPanel :header="$t(`STACKING_VIEW.TABS.INACTIVE`)">
         <ValidatorsDataTable :validators="useValidatorsStore().getInactiveValidators"/>
       </TabPanel>
     </TabView>

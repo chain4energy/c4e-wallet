@@ -40,9 +40,9 @@ export const useUserStore = defineStore({
   },
   actions: {
     async reconectAcc(){
-      if(this.connectionInfo.connectionType === 1){
+      if(this.connectionInfo.connectionType === ConnectionType.Keplr){
         await this.connect(apiFactory.walletApi().connectKeplr())
-      } else if(this.connectionInfo.connectionType === 0){
+      } else if(this.connectionInfo.connectionType === ConnectionType.Address){
         await this.connect(apiFactory.walletApi().connectAddress(this.connectionInfo.account))
       } else return
     },
@@ -285,7 +285,7 @@ export const useUserStore = defineStore({
   persist: {
     enabled: true,
     strategies: [
-      { storage: sessionStorage, paths: ['logged', 'account', 'type', 'stackingList', 'rewards'] },
+      { storage: sessionStorage, paths: ['connectionInfo','logged', 'account', 'type', 'stackingList', 'rewards'] },
     ]
   }
 });
