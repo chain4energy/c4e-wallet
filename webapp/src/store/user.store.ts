@@ -23,21 +23,21 @@ export interface UserState {
   balance: bigint
   vestimgAccLocked: bigint
   rewards: Rewards
-  // _isLoggedIn: boolean
   delegations: Delegations
   undelegations: UnbondingDelegations
 }
+
+const connectionInfoName = 'connectionInfo';
 
 export const useUserStore = defineStore({
   id: 'userStore',
   state: (): UserState => {
     return {
-      connectionInfo: ConnectionInfo.disconnected,
+      [connectionInfoName]: ConnectionInfo.disconnected,
       account: Account.disconnected,
       balance: 0n,
       vestimgAccLocked: 0n,
       rewards: new Rewards(),
-      // _isLoggedIn: false,
       delegations: new Delegations(),
       undelegations: new UnbondingDelegations(),
 
@@ -261,12 +261,12 @@ export const useUserStore = defineStore({
       return config.getViewAmount(this.getTotal, config.stakingDenom);
     }
   },
-  // persist: { // TODO - pinia plugin uses stringify that does not support big ints - solve
-  //   enabled: true,
-  //   strategies: [
-  //     { storage: sessionStorage, paths: ['logged', 'account', 'type', 'stackingList', 'rewards'] },
-  //   ]
-  // }
+  persist: {
+    enabled: true,
+    strategies: [
+      { storage: sessionStorage, paths: [connectionInfoName] },
+    ]
+  }
 });
 
 function checkIfConnected(connectionInfo: ConnectionInfo): boolean {
@@ -297,7 +297,7 @@ async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState): P
   const response = await apiFactory.accountApi().fetchBalance(address, denom);
   if (response.isSuccess() && response.data !== undefined) {
     const balance = response.data;
-    state.balance = balance.amount; // TODO use bigint recalculate with decimal
+    state.balance = balance.amount;
     return true;
   } else {
     return false;
