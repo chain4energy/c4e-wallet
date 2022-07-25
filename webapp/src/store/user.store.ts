@@ -52,13 +52,19 @@ export const useUserStore = defineStore({
       }
     },
     async connectKeplr() {
-      await this.connect(apiFactory.walletApi().connectKeplr());
+      await this.connect(
+        apiFactory.walletApi().connectKeplr(),
+        () => {enableKeplrAccountChangeListener();}
+        );
     },
     async connectAsAddress(address: string) {
       // TODO address validations
       await this.connect(apiFactory.walletApi().connectAddress(address));
     },
-    async connect(connectionResponse: Promise<RequestResponse<ConnectionInfo, ConnectionError>>) {
+    async connect(
+      connectionResponse: Promise<RequestResponse<ConnectionInfo, ConnectionError>>,
+      onSuccess?: () => void
+    ) {
       await connectionResponse.then(async (response) => {
         if (response.isError() || response.data === undefined) {
           logger.logToConsole(LogLevel.ERROR, 'Connection failed');
@@ -69,6 +75,9 @@ export const useUserStore = defineStore({
           const address = this.connectionInfo.account;
           await this.fetchAccountData();
           if (this.isLoggedIn) {
+            if (onSuccess !== undefined) {
+              onSuccess();
+            }
             logger.logToConsole(LogLevel.DEBUG, 'Address: "' + address + '" Connected');
             toast.success('Address: "' + address + '" Connected');
           } else {
@@ -192,8 +201,8 @@ export const useUserStore = defineStore({
       });
     },
     async logOut(){
-      toast.success('Address: "' + this.connectionInfo.account + '" Disconnected');
-      clearStateOnLogout(this);
+      disableKeplrAccountChangeListener();
+      disconnect(this);
     },
   },
   getters: {
@@ -297,6 +306,11 @@ function clearStateForNonexistentAccount(state: UserState) {
   state.undelegations = new UnbondingDelegations();
 }
 
+function disconnect(state: UserState) {
+  clearStateOnLogout(state);
+  toast.success('Address: "' + state.connectionInfo.account + '" Disconnected');
+}
+
 function clearStateOnLogout(state: UserState) {
   state.connectionInfo = ConnectionInfo.disconnected;
   state.account = Account.disconnected;
@@ -363,4 +377,18 @@ function onRefreshingError(allResults: boolean[]) {
     toast.error('Refereshing data error');
     return;
   }
+}
+
+const keplrKeyStoreChange = 'keplr_keystorechange';
+const keystoreChangeListener = () => {
+  disconnect(useUserStore());
+  useUserStore().connect(apiFactory.walletApi().connectKeplr());
+}
+
+function enableKeplrAccountChangeListener() {
+  window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
+}
+
+function disableKeplrAccountChangeListener() {
+  window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
 }
