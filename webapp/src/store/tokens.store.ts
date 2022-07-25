@@ -8,6 +8,7 @@ import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
 import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
+import { string } from "yup";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
@@ -112,9 +113,12 @@ export const useTokensStore = defineStore({
       - this.getStakingPool.bondedTokens
       - this.getStakingPool.notBondedTokens;
     },
-    getTotalUnbondedViewAmount(): string {
-      const unbonded = this.getTotalUnbonded
-      return useConfigurationStore().config.getViewAmount(unbonded);
+    getTotalUnbondedViewAmount(): (precision?: number) => string {
+      return (precision = 4) => {
+        const unbonded = this.getTotalUnbonded
+        const config = useConfigurationStore().config;
+        return config.getViewAmount(unbonded, config.stakingDenom, precision);
+      }
     },
     getTotalSupply(): Coin {
       return this.totalSupply;
@@ -128,23 +132,29 @@ export const useTokensStore = defineStore({
     getAirdropPool(): Coin {
       return this.airdropPool;
     },
-    getBoundedPercentage(): string {
-      if (this.totalSupply.amount === 0n) {
-        return toPercentage(0, 2);
+    getBoundedPercentage(): (precision?: number) => string {
+      return (precision = 2) => {
+        if (this.totalSupply.amount === 0n) {
+          return toPercentage(0, precision);
+        }
+        return divideBigInts(this.stakingPool.bondedTokens, this.totalSupply.amount).multiply(100).toFixed(precision);
       }
-      return divideBigInts(this.stakingPool.bondedTokens, this.totalSupply.amount).multiply(100).toFixed(2);
     },
-    getUnboundedPercentage(): string {
-      if (this.totalSupply.amount === 0n) {
-        return toPercentage(0, 2);
+    getUnboundedPercentage(): (precision?: number) => string {
+      return (precision = 2) => {
+        if (this.totalSupply.amount === 0n) {
+          return toPercentage(0, precision);
+        }
+        return divideBigInts(this.getTotalUnbonded, this.totalSupply.amount).multiply(100).toFixed(precision);
       }
-      return divideBigInts(this.getTotalUnbonded, this.totalSupply.amount).multiply(100).toFixed(2);
     },
-    getUnboundingPercentage(): string {
-      if (this.totalSupply.amount === 0n) {
-        return toPercentage(0, 2);
+    getUnboundingPercentage(): (precision?: number) => string {
+      return (precision = 2) => {
+        if (this.totalSupply.amount === 0n) {
+          return toPercentage(0, precision);
+        }
+        return divideBigInts(this.stakingPool.notBondedTokens, this.totalSupply.amount).multiply(100).toFixed(precision);
       }
-      return divideBigInts(this.stakingPool.notBondedTokens, this.totalSupply.amount).multiply(100).toFixed(2);
     },
   }
 });

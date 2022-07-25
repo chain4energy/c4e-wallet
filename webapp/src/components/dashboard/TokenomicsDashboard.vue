@@ -54,14 +54,14 @@ onBeforeMount(() => {
 });
 
 const boundedPercentage = computed(() => {
-  return tokensStore.getBoundedPercentage;
+  return tokensStore.getBoundedPercentage();
 });
 const unboundedPercentage = computed(() => {
-  return tokensStore.getUnboundedPercentage;
+  return tokensStore.getUnboundedPercentage();
 });
 
 const unboundingPercentage = computed(() => {
-  return tokensStore.getUnboundingPercentage
+  return tokensStore.getUnboundingPercentage()
 });
 
 const bounded = computed((): string => {
@@ -69,7 +69,7 @@ const bounded = computed((): string => {
 });
 
 const unBounded = computed((): string => {
-  return tokensStore.getTotalUnbondedViewAmount
+  return tokensStore.getTotalUnbondedViewAmount()
 });
 
 const unBounding = computed((): string => {

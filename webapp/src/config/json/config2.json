@@ -14,5 +14,12 @@
     "undelegate": 250000,
     "redelegate": 250000,
     "claimRewards": 250000
-  }
+  },
+  "viewDenoms": [
+    {
+      "denom": "uc4e",
+      "viewDenom": "C4E",
+      "conversionFactor": 1000000
+    }
+  ]
 }
