@@ -20,22 +20,22 @@ export class TokensApi extends BaseApi {
   private TOTAL_SUPPLY_URL = process.env.VUE_APP_TOTAL_SUPPLY_URL;
   private COMMUNITY_POOL_URL =  process.env.VUE_APP_COMMUNITY_POOL_URL;
 
-  public async fetchStakingPool(): Promise<RequestResponse<StakingPool, ErrorData<BlockchainApiErrorData>>>{
+  public async fetchStakingPool(lockscreen: boolean): Promise<RequestResponse<StakingPool, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: StakingPoolResponse | undefined) => { return mapStakingPool(bcData?.pool); };
     return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.STAKING_POOL_URL,
-      mapData, true, null, 'fetchStakingPool - ');
+      mapData, lockscreen, null, 'fetchStakingPool - ');
   }
 
-  public async fetchTotalSupply(denom: string): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>> {
+  public async fetchTotalSupply(denom: string, lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: SupplyResponse | undefined) => {return mapCoin(bcData?.amount, denom);};
     return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.TOTAL_SUPPLY_URL + '/' + denom,
-      mapData, true, null, 'fetchTotalSupply - ');
+      mapData, lockscreen, null, 'fetchTotalSupply - ');
   }
 
-  public async fetchCommunityPoolByDenom(denom: string): Promise<RequestResponse<DecCoin, ErrorData<BlockchainApiErrorData>>> {
+  public async fetchCommunityPoolByDenom(denom: string, lockscreen: boolean): Promise<RequestResponse<DecCoin, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: CommunityPoolResponse | undefined) => {return findByDenomAndMapDecCoin(bcData?.pool, denom);};
     return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.COMMUNITY_POOL_URL,
-      mapData, true, null, 'fetchCommunityPoolByDenom - ');
+      mapData, lockscreen, null, 'fetchCommunityPoolByDenom - ');
   }
 
 }

@@ -63,7 +63,7 @@
 
       <div v-else class="validationPopup__btns">
         <p> {{ $t('ERRORS.LOGIN_WALLET')}} </p>
-        <button @click="useUserStore().connectKeplr">{{ $t('LOGIN.LOGIN' )}}</button>
+        <button @click="useUserStore().connectKeplr">{{ $t('LOGIN.LOGIN' )}}</button> <!-- TODO is connectKeplr correct? -->
       </div>
     </div>
   </div>
@@ -100,7 +100,7 @@ const amount = ref('');
 const keplrResult = ref('');
 const emit = defineEmits(['close', 'success']);
 
-let max = useUserStore().getTotalUndelegating + useUserStore().getTotalDelegated + useUserStore().getBalance
+let max = useUserStore().getTotal
 
 setLocale({
   number: {

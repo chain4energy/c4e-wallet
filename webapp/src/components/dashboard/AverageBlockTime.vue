@@ -9,15 +9,15 @@
 
 <script setup lang="ts">
 
-import {onBeforeMount} from "vue";
+// import {onBeforeMount} from "vue";
 import {useBlockStore} from "@/store/block.store";
 
 const blockStore = useBlockStore();
 
-onBeforeMount(() => {
+// onBeforeMount(() => {
 
-  blockStore.fetchAverageBlockTime();
-});
+//   blockStore.fetchAverageBlockTime();
+// });
 
 </script>
 

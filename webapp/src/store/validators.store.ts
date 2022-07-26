@@ -24,8 +24,8 @@ export const useValidatorsStore = defineStore({
     };
   },
   actions: {
-    async fetchValidators(){
-      await apiFactory.validatorsApi().fetchAllValidators()
+    async fetchValidators(lockscreen = true){
+      await apiFactory.validatorsApi().fetchAllValidators(lockscreen)
         .then((resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.validators = resp.data.validators;
@@ -38,6 +38,11 @@ export const useValidatorsStore = defineStore({
       });
 
     },
+
+    clear() {
+      this.validators = Array<Validator>();
+      this.numberOfActiveValidators = 0;
+    }
 
     // fetchNumberOfActiveValidators(){ // TODO probably remove this func and fetchActiveValidatorCount from validatorsApi
     //   apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{

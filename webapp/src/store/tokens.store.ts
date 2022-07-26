@@ -30,14 +30,13 @@ export const useTokensStore = defineStore({
       stakingPool: new StakingPool(0n, 0n),
       totalSupply: emptyCoin,
       communityPool: new DecCoin(new BigDecimal(0), denom),
-      // communityPool: Object(),
       strategicReversePool: emptyCoin,
       airdropPool: emptyCoin
     };
   },
   actions: {
-    async fetchStakingPool() {
-      await apiFactory.tokensApi().fetchStakingPool().then(response => {
+    async fetchStakingPool(lockscreen = true) {
+      await apiFactory.tokensApi().fetchStakingPool(lockscreen).then(response => {
         if (response.isSuccess() && response.data !== undefined) {
           this.stakingPool = response.data;
         } else {
@@ -47,9 +46,9 @@ export const useTokensStore = defineStore({
         }
       });
     },
-    async fetchTotalSupply() {
+    async fetchTotalSupply(lockscreen = true) {
       const denom = useConfigurationStore().config.stakingDenom;
-      await apiFactory.tokensApi().fetchTotalSupply(denom).then(response => {
+      await apiFactory.tokensApi().fetchTotalSupply(denom, lockscreen).then(response => {
         if (response.isSuccess() && response.data !== undefined) {
           this.totalSupply = response.data;
         } else {
@@ -59,14 +58,16 @@ export const useTokensStore = defineStore({
         }
       });
     },
-    fetchPools() {
-      this.fetchCommunityPool();
-      this.fetchStrategicReversePool();
-      this.fetchAirdropPool();
+    async fetchPools(lockscreen = true) {
+      await Promise.all([
+        this.fetchCommunityPool(lockscreen),
+        this.fetchStrategicReversePool(lockscreen),
+        this.fetchAirdropPool(lockscreen),
+      ]);
     },
-    async fetchCommunityPool() {
+    async fetchCommunityPool(lockscreen = true) {
       const denom = useConfigurationStore().config.stakingDenom;
-      await apiFactory.tokensApi().fetchCommunityPoolByDenom(denom).then(response => {
+      await apiFactory.tokensApi().fetchCommunityPoolByDenom(denom, lockscreen).then(response => {
         if (response.isSuccess() && response.data !== undefined) {
           this.communityPool = response.data;
         } else {
@@ -76,10 +77,10 @@ export const useTokensStore = defineStore({
         }
       });
     },
-    async fetchStrategicReversePool() {
+    async fetchStrategicReversePool(lockscreen = true) {
       const denom = useConfigurationStore().config.stakingDenom;
       const address = useConfigurationStore().config.strategicPoolAddress;
-      await apiFactory.accountApi().fetchBalance(address, denom).then(response => {
+      await apiFactory.accountApi().fetchBalance(address, denom, lockscreen).then(response => {
         if (response.isSuccess() && response.data !== undefined) {
           this.strategicReversePool = response.data;
         } else {
@@ -89,10 +90,10 @@ export const useTokensStore = defineStore({
         }
       });
     },
-    async fetchAirdropPool() {
+    async fetchAirdropPool(lockscreen = true) {
       const denom = useConfigurationStore().config.stakingDenom;
       const address = useConfigurationStore().config.airdropPoolAddress;
-      await apiFactory.accountApi().fetchBalance(address, denom).then(response => {
+      await apiFactory.accountApi().fetchBalance(address, denom, lockscreen).then(response => {
         if (response.isSuccess() && response.data !== undefined) {
           this.airdropPool = response.data;
         } else {
@@ -101,7 +102,15 @@ export const useTokensStore = defineStore({
           toast.error(message);
         }
       });
-
+    },
+    clear() {
+      const denom = useConfigurationStore().config.stakingDenom;
+      const emptyCoin = new Coin(0n, denom);
+      this.stakingPool = new StakingPool(0n, 0n);
+      this.totalSupply = emptyCoin;
+      this.communityPool = new DecCoin(new BigDecimal(0), denom);
+      this.strategicReversePool = emptyCoin;
+      this.airdropPool = emptyCoin;
     }
   },
   getters: {

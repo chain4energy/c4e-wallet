@@ -54,8 +54,10 @@ export class Configuration implements JsonConfiguration {
   operationGas: Gas;
   viewDenoms: ViewDenom[];
 
+  public static readonly emptyConfiguration = new Configuration();
+
   constructor (
-    configuration: JsonConfiguration | undefined
+    configuration?: JsonConfiguration | undefined
   ) {
     if (configuration) {
       this.bcApiURL = configuration.bcApiURL;
@@ -68,7 +70,7 @@ export class Configuration implements JsonConfiguration {
       this.airdropPoolAddress = configuration.airdropPoolAddress;
       this.chainId = configuration.chainId;
       this.operationGas = new Gas(configuration.operationGas);
-      const viewDenoms = new Array<ViewDenom>();
+      const viewDenoms = Array<ViewDenom>();
       if (configuration.viewDenoms) {
         configuration.viewDenoms.forEach(d => {viewDenoms.push(new ViewDenom(d))})
       }
@@ -84,7 +86,7 @@ export class Configuration implements JsonConfiguration {
       this.airdropPoolAddress = '';
       this.chainId = '';
       this.operationGas = new Gas(undefined);
-      const viewDenoms = new Array<ViewDenom>();
+      const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
     }
   }

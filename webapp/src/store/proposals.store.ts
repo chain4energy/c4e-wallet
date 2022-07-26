@@ -20,15 +20,15 @@ export const useProposalsStore = defineStore({
       proposals: Array<Proposal>(),
       numberOfActiveProposals: 0,
       //proposals: new DataHolder<Proposal>(),
-      proposal: Object() as Proposal,
+      proposal: Object(),
       paginationKey: null,
       tallyParams: new TallyParams()
     };
   },
   actions: {
 
-    async fetchProposals(){
-      await apiFactory.proposalsApi().fetchProposals(this.paginationKey)
+    async fetchProposals(lockscreen = true){
+      await apiFactory.proposalsApi().fetchProposals(this.paginationKey, lockscreen)
         .then((resp) => {
           if (resp.response.isSuccess() && resp.response.data !== undefined){
             this.proposals = this.proposals.concat(resp.response.data.proposals);
@@ -84,6 +84,16 @@ export const useProposalsStore = defineStore({
           //TODO: error handling
         }
       });
+    },
+    clearProposals() {
+      this.proposals = Array<Proposal>();
+      this.numberOfActiveProposals = 0;
+      this.proposal = Object();
+      this.paginationKey = null;
+    },
+    clear() {
+      this.clearProposals();
+      this.tallyParams = new TallyParams();
     }
   },
   getters: {

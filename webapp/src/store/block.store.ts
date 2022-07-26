@@ -18,12 +18,12 @@ interface BlockState {
 export const useBlockStore = defineStore( 'block', {
   state: (): BlockState => {
     return {
-      averageBlockTime: Object(String),
+      averageBlockTime: Number.NaN,
       latestBlock: new Block(0, new Date(0)),
     };
   },
   actions: {
-    async fetchLatestBlock(lockscreen = false) {
+    async fetchLatestBlock(lockscreen = true) {
       await apiFactory.blockApi().fetchLatestBlock(lockscreen).then(response => {
 
         if (response.isSuccess() && response.data !== undefined) {
@@ -37,8 +37,8 @@ export const useBlockStore = defineStore( 'block', {
 
       });
     },
-    async fetchAverageBlockTime() {
-      await apiFactory.blockApi().fetchAverageBlockTime().then(response => {
+    async fetchAverageBlockTime(lockscreen = true) {
+      await apiFactory.blockApi().fetchAverageBlockTime(lockscreen).then(response => {
         if (response.isSuccess() && response.data !== undefined) {
           this.averageBlockTime = response.data.data.averageBlockTime[0].averageTime;
         } else {
@@ -48,6 +48,10 @@ export const useBlockStore = defineStore( 'block', {
         }
 
       });
+    },
+    clear() {
+      this.averageBlockTime = Number.NaN;
+      this.latestBlock = new Block(0, new Date(0));
     }
   },
   getters: {

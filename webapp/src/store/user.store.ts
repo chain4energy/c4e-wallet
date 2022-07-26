@@ -45,22 +45,30 @@ export const useUserStore = defineStore({
     };
   },
   actions: {
-    async reconectAcc(){
+    async reconnect(onSuccess?: () => void){
       if(this.connectionInfo.connectionType === ConnectionType.Keplr){
-        await this.connectKeplr();
+        await this.connectKeplr(onSuccess);
       } else if(this.connectionInfo.connectionType === ConnectionType.Address){
-        await this.connectAsAddress(this.connectionInfo.account);
+        await this.connectAsAddress(this.connectionInfo.account, onSuccess);
       }
     },
-    async connectKeplr() {
+    async connectKeplr(onSuccess?: () => void) {
       await this.connect(
         apiFactory.walletApi().connectKeplr(),
-        () => {enableKeplrAccountChangeListener();}
+        () => {
+          enableKeplrAccountChangeListener();
+          if (onSuccess) {
+            onSuccess();
+          }
+        }
         );
     },
-    async connectAsAddress(address: string) {
+    async connectAsAddress(address: string, onSuccess?: () => void) {
       // TODO address validations
-      await this.connect(apiFactory.walletApi().connectAddress(address));
+      await this.connect(
+        apiFactory.walletApi().connectAddress(address),
+        onSuccess
+      );
     },
     async connect(
       connectionResponse: Promise<RequestResponse<ConnectionInfo, ConnectionError>>,
@@ -88,21 +96,21 @@ export const useUserStore = defineStore({
         }
       });
     },
-    async fetchAccountData() {
+    async fetchAccountData(lockscreen = true) {
       const connectionInfo = this.connectionInfo;
       if (!checkIfConnected(connectionInfo)) {
         return false;
       }
 
-      await apiFactory.accountApi().fetchAccount(connectionInfo.account).then(async response => {
+      await apiFactory.accountApi().fetchAccount(connectionInfo.account, lockscreen).then(async response => {
         if (response.isSuccess() && response.data !== undefined) {
           const account = response.data;
           if (account.type !== AccountType.Nonexistent) {
             const allResults = await Promise.all([
-              fetchBalance(connectionInfo, this),
-              fetchRewards(connectionInfo, this),
-              fetchDelegations(connectionInfo, this),
-              fetchUnbondingDelegations(connectionInfo, this),
+              fetchBalance(connectionInfo, this, lockscreen),
+              fetchRewards(connectionInfo, this, lockscreen),
+              fetchDelegations(connectionInfo, this, lockscreen),
+              fetchUnbondingDelegations(connectionInfo, this, lockscreen),
             ]);
             if (!allResults.every(r => r)) {
               clearStateOnLogout(this);
@@ -137,9 +145,9 @@ export const useUserStore = defineStore({
           await onTxDeliveryFailure(connectionInfo, this, resp, 'Delegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validator + ' failed');
         } else {
           const allResults = await Promise.all([
-            fetchBalance(connectionInfo, this),
-            fetchRewards(connectionInfo, this),
-            fetchDelegations(connectionInfo, this),
+            fetchBalance(connectionInfo, this, true),
+            fetchRewards(connectionInfo, this, true),
+            fetchDelegations(connectionInfo, this, true),
           ]);
           onRefreshingError(allResults);
         }
@@ -152,9 +160,9 @@ export const useUserStore = defineStore({
           await onTxDeliveryFailure(connectionInfo, this, resp, 'Redelegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validatorDst + ' failed');
         } else {
           const allResults = await Promise.all([
-            fetchBalance(connectionInfo, this),
-            fetchRewards(connectionInfo, this),
-            fetchDelegations(connectionInfo, this),
+            fetchBalance(connectionInfo, this, true),
+            fetchRewards(connectionInfo, this, true),
+            fetchDelegations(connectionInfo, this, true),
           ]);
           onRefreshingError(allResults);
         }
@@ -167,10 +175,10 @@ export const useUserStore = defineStore({
           await onTxDeliveryFailure(connectionInfo, this, resp, 'Undelegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' from ' + validator + ' failed');
         } else {
           const allResults = await Promise.all([
-            fetchBalance(connectionInfo, this),
-            fetchRewards(connectionInfo, this),
-            fetchDelegations(connectionInfo, this),
-            fetchUnbondingDelegations(connectionInfo, this),
+            fetchBalance(connectionInfo, this, true),
+            fetchRewards(connectionInfo, this, true),
+            fetchDelegations(connectionInfo, this, true),
+            fetchUnbondingDelegations(connectionInfo, this, true),
           ]);
           onRefreshingError(allResults);
         }
@@ -184,8 +192,8 @@ export const useUserStore = defineStore({
           await onTxDeliveryFailure(connectionInfo, this, resp, 'Claiming rewards failed');
         } else {
           const allResults = await Promise.all([
-            fetchBalance(connectionInfo, this),
-            fetchRewards(connectionInfo, this),
+            fetchBalance(connectionInfo, this, true),
+            fetchRewards(connectionInfo, this, true),
           ]);
           onRefreshingError(allResults);
         }
@@ -201,10 +209,13 @@ export const useUserStore = defineStore({
         }
       });
     },
-    async logOut(){
+    logOut() {
       disableKeplrAccountChangeListener();
       disconnect(this);
     },
+    clearWithoutConnection() {
+      disableKeplrAccountChangeListener();
+    }
   },
   getters: {
     getConnectionType(): ConnectionType {
@@ -320,10 +331,10 @@ function clearStateOnLogout(state: UserState) {
   clearStateForNonexistentAccount(state);
 }
 
-async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
+async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState, lockscreen: boolean): Promise<boolean> {
   const address = connectionInfo.account;
   const denom = useConfigurationStore().config.stakingDenom;
-  const response = await apiFactory.accountApi().fetchBalance(address, denom);
+  const response = await apiFactory.accountApi().fetchBalance(address, denom, lockscreen);
   if (response.isSuccess() && response.data !== undefined) {
     const balance = response.data;
     state.balance = balance.amount;
@@ -333,9 +344,9 @@ async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState): P
   }
 }
 
-async function fetchDelegations(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
+async function fetchDelegations(connectionInfo: ConnectionInfo, state: UserState, lockscreen: boolean): Promise<boolean> {
   const address = connectionInfo.account;
-  const response = await apiFactory.accountApi().fetchDelegations(address);
+  const response = await apiFactory.accountApi().fetchDelegations(address, lockscreen);
   if (response.isSuccess() && response.data !== undefined) {
     state.delegations = response.data;
     return true;
@@ -344,9 +355,9 @@ async function fetchDelegations(connectionInfo: ConnectionInfo, state: UserState
   }
 }
 
-async function fetchUnbondingDelegations(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
+async function fetchUnbondingDelegations(connectionInfo: ConnectionInfo, state: UserState, lockscreen: boolean): Promise<boolean> {
   const address = connectionInfo.account;
-  const response = await apiFactory.accountApi().fetchUnbondingDelegations(address);
+  const response = await apiFactory.accountApi().fetchUnbondingDelegations(address, lockscreen);
   if (response.isSuccess() && response.data !== undefined) {
     state.undelegations = response.data;
     return true;
@@ -355,9 +366,9 @@ async function fetchUnbondingDelegations(connectionInfo: ConnectionInfo, state: 
   }
 }
 
-async function fetchRewards(connectionInfo: ConnectionInfo, state: UserState): Promise<boolean> {
+async function fetchRewards(connectionInfo: ConnectionInfo, state: UserState, lockscreen: boolean): Promise<boolean> {
   const address = connectionInfo.account;
-  const response = await apiFactory.accountApi().fetchRewards(address);
+  const response = await apiFactory.accountApi().fetchRewards(address, lockscreen);
   if (response.isSuccess() && response.data !== undefined) {
     state.rewards = response.data;
     return true;
@@ -370,7 +381,7 @@ async function onTxDeliveryFailure(connectionInfo: ConnectionInfo, state: UserSt
   logger.logToConsole(LogLevel.ERROR, message);
   toast.error(message);
   if (response.error?.hasTxData()) {
-    await fetchBalance(connectionInfo, state);
+    await fetchBalance(connectionInfo, state, false);
   }
 }
 

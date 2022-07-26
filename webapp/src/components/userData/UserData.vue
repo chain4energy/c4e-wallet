@@ -77,8 +77,8 @@ import { computed, ref } from "vue";
 function claimRewards(){
   useUserStore().claimRewards();
 }
-useBlockStore().fetchLatestBlock();
-setInterval(useBlockStore().fetchLatestBlock, 6000);
+// useBlockStore().fetchLatestBlock();
+// setInterval(useBlockStore().fetchLatestBlock, 6000);
 
 const total = computed(() => useUserStore().getTotalViewAmount());
 const locked = computed(()=> useUserStore().getVestingLockViewAmount());

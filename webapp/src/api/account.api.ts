@@ -53,7 +53,7 @@ export class AccountApi extends TxBroadcastBaseApi {
   private REWARDS_URL = 'https://lcd.chain4energy.org//cosmos/distribution/v1beta1/delegators/';
 
 
-  public async fetchAccount(address: string): Promise<RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>> {
+  public async fetchAccount(address: string, lockscreen: boolean): Promise<RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>> {
     let accountNotFound = false;
     const displayAsError = (error: ErrorData<BlockchainApiErrorData>): boolean => {
       accountNotFound = AccountApi.isAccountNotFound(error.status, error.data);
@@ -67,7 +67,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     };
     const mapData = (bcData: AccountResponse | undefined) => {return mapAccount(bcData?.account);};
     return  await this.axiosGetBlockchainApiCall(this.ACCOUNT_URL + address,
-      mapData, true, null, 'fetchAccount - ', displayAsError, handleError);
+      mapData, lockscreen, null, 'fetchAccount - ', displayAsError, handleError);
   }
 
   private static isAccountNotFound(status?: number, data?: BlockchainApiErrorData): boolean {
@@ -76,30 +76,30 @@ export class AccountApi extends TxBroadcastBaseApi {
     return status === 404 && code === 5 && message !== undefined && /rpc error: code = NotFound/i.test(message);
   }
 
-  public async fetchBalance(address: string, denom: string): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{
+  public async fetchBalance(address: string, denom: string, lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: BalanceResponse | undefined) => {return mapCoin(bcData?.balance, denom);};
     return  await this.axiosGetBlockchainApiCall(this.BALANCE_URL + address + '/by_denom?denom=' + denom,
-      mapData, true, null, 'fetchBalance - ');
+      mapData, lockscreen, null, 'fetchBalance - ');
   }
 
-  public async fetchDelegations(address: string): Promise<RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>>{
+  public async fetchDelegations(address: string, lockscreen: boolean): Promise<RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: DelegationsResponse | undefined) => {return mapDelegations(bcData?.delegation_responses);};
     const mapAndAddData = (data: Delegations, bcData: DelegationsResponse | undefined) => {return mapAndAddDelegations(data, bcData?.delegation_responses);};
 
     return  await this.axiosGetAllBlockchainApiCallPaginated(this.STAKED_AMOUNT_URL + address,
-            mapData, mapAndAddData, true, null, 'fetchDelegations - ');
+            mapData, mapAndAddData, lockscreen, null, 'fetchDelegations - ');
   }
-  public async fetchUnbondingDelegations(address: string): Promise<RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>>{
+  public async fetchUnbondingDelegations(address: string, lockscreen: boolean): Promise<RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: UnbondigDelegationsResponse | undefined) => {return mapUnbondingDelegations(bcData?.unbonding_responses);};
     const mapAndAddData = (data: UnbondingDelegations, bcData: UnbondigDelegationsResponse | undefined) => {return mapAndAddUnbondingDelegations(data, bcData?.unbonding_responses);};
 
     return  await this.axiosGetAllBlockchainApiCallPaginated(this.UNSTAKED_AMOUNT_URL + address + '/unbonding_delegations',
-            mapData, mapAndAddData, true, null, 'fetchUnbondingDelegations - ');
+            mapData, mapAndAddData, lockscreen, null, 'fetchUnbondingDelegations - ');
   }
-  public async fetchRewards(address: string): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>>{
+  public async fetchRewards(address: string, lockscreen: boolean): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: RewardsResponse | undefined) => {return mapRewards(bcData);};
     return  await this.axiosGetBlockchainApiCall(this.REWARDS_URL + address + '/rewards',
-      mapData, true, null, 'fetchRewards - ');
+      mapData, lockscreen, null, 'fetchRewards - ');
   }
   public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;

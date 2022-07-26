@@ -30,7 +30,7 @@ export class BlockApi extends BaseApi {
     // }, false, null);
   // }
 
-  public async fetchAverageBlockTime(): Promise<RequestResponse<AverageBlockTimeResponse, ErrorData<any>>> {
+  public async fetchAverageBlockTime(lockscreen: boolean): Promise<RequestResponse<AverageBlockTimeResponse, ErrorData<any>>> {
     return this.axiosHasuraCall( {
       method: 'POST',
       url: useConfigurationStore().config.hasuraURL,
@@ -41,7 +41,7 @@ export class BlockApi extends BaseApi {
           "  }\n" +
           "}",
       }
-    }, true, null);
+    }, lockscreen, null);
   }
 
 }

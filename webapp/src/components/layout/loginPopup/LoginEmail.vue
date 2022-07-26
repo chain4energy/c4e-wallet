@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue'
+import dataService from '@/services/data.service';
 import { useUserStore } from "@/store/user.store";
 
 const userStore = useUserStore()
@@ -35,7 +36,8 @@ import { ref } from "vue";
 const email = ref('')
 
 function submit(){
-  userStore.connectAsAddress(email.value)
+  dataService.onAddressLogIn(email.value);
+  // userStore.connectAsAddress(email.value)
 }
 
 </script>

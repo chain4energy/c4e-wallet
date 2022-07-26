@@ -57,7 +57,8 @@ describe('account api tests', () => {
 
   afterEach(() => {
     expect(useSplashStore().splashCounter).toBe(0);
-    mockedAxios.request.mockClear();
+    // mockedAxios.request.mockClear();
+    // mockedAxios.request.mockReset();
   })
 
   it('gets BaseAccount', async () => {
@@ -66,7 +67,7 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(account);
-    const result = await api.fetchAccount(address)
+    const result = await api.fetchAccount(address, false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -84,7 +85,7 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(account);
-    const result = await api.fetchAccount(address);
+    const result = await api.fetchAccount(address, false);
     expect(result.isError()).toBe(false);
     expect(result.isSuccess()).toBe(true);
     expect(result.error).toBeUndefined();
@@ -106,7 +107,7 @@ describe('account api tests', () => {
       { id: 2, name: "Andrew" },
     ];
     mockedAxios.request.mockResolvedValue(account);
-    const result = await api.fetchAccount(address);
+    const result = await api.fetchAccount(address, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultErrorName);
@@ -122,7 +123,7 @@ describe('account api tests', () => {
       }
     };
     mockedAxios.request.mockResolvedValue(account);
-    const result = await api.fetchAccount(address);
+    const result = await api.fetchAccount(address, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe('Error');
@@ -133,7 +134,7 @@ describe('account api tests', () => {
     const error = createAddressNotExistsErrorResponse();
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchAccount(address);
+    const result = await api.fetchAccount(address, false);
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -152,7 +153,7 @@ describe('account api tests', () => {
     const error = createErrorResponse(404, 0, accountNotFoundErrorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchAccount(address);
+    const result = await api.fetchAccount(address, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -174,7 +175,7 @@ describe('account api tests', () => {
     const error = createErrorResponse(404, 5, errorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchAccount(address);
+    const result = await api.fetchAccount(address, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -195,7 +196,7 @@ describe('account api tests', () => {
     const status = 401;
     const error = createErrorResponse(status, 5, accountNotFoundErrorMessage);
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchAccount(address);
+    const result = await api.fetchAccount(address, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -211,7 +212,7 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(balance);
-    const result = await api.fetchBalance(address, denom)
+    const result = await api.fetchBalance(address, denom, false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -234,7 +235,7 @@ describe('account api tests', () => {
     const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchBalance(address, denom)
+    const result = await api.fetchBalance(address, denom, false)
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -250,7 +251,7 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(delegations);
-    const result = await api.fetchDelegations(address)
+    const result = await api.fetchDelegations(address, false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -270,7 +271,7 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(delegations);
-    const result = await api.fetchDelegations(address)
+    const result = await api.fetchDelegations(address, false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -314,7 +315,7 @@ describe('account api tests', () => {
     mockedAxios.request.mockResolvedValueOnce(delegations1);
     mockedAxios.request.mockResolvedValueOnce(delegations2);
 
-    const result = await api.fetchDelegations(address)
+    const result = await api.fetchDelegations(address, false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -341,7 +342,7 @@ describe('account api tests', () => {
     const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchDelegations(address)
+    const result = await api.fetchDelegations(address, false)
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -380,7 +381,7 @@ describe('account api tests', () => {
     mockedAxios.request.mockResolvedValueOnce(delegations1);
     mockedAxios.request.mockRejectedValue(error);
 
-    const result = await api.fetchDelegations(address)
+    const result = await api.fetchDelegations(address, false)
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -395,7 +396,7 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(undelegations);
-    const result = await api.fetchUnbondingDelegations(address)
+    const result = await api.fetchUnbondingDelegations(address, false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -421,7 +422,7 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(undelegations);
-    const result = await api.fetchUnbondingDelegations(address)
+    const result = await api.fetchUnbondingDelegations(address, false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -465,7 +466,7 @@ describe('account api tests', () => {
     mockedAxios.request.mockResolvedValueOnce(undelegations1);
     mockedAxios.request.mockResolvedValueOnce(undelegations2);
 
-    const result = await api.fetchUnbondingDelegations(address)
+    const result = await api.fetchUnbondingDelegations(address, false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -499,7 +500,7 @@ describe('account api tests', () => {
     const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchUnbondingDelegations(address)
+    const result = await api.fetchUnbondingDelegations(address, false)
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -538,7 +539,7 @@ describe('account api tests', () => {
     mockedAxios.request.mockResolvedValueOnce(delegations1);
     mockedAxios.request.mockRejectedValue(error);
 
-    const result = await api.fetchUnbondingDelegations(address)
+    const result = await api.fetchUnbondingDelegations(address, false)
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -553,8 +554,8 @@ describe('account api tests', () => {
       data: createRewardsResponseData()
     };
 
-    mockedAxios.request.mockResolvedValue(rewards);
-    const result = await api.fetchRewards(address)
+    mockedAxios.request.mockResolvedValueOnce(rewards);
+    const result = await api.fetchRewards(address, true)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -562,12 +563,13 @@ describe('account api tests', () => {
   });
 
   it('gets delegator rewards - no rewards', async () => {
+    useConfigurationStore().config.stakingDenom = defaultDenom;
     const rewards = {
-      data: createRewardsResponseData(new Array(), new Array())
+      data: createRewardsResponseData(Array(), Array(), Array())
     };
 
-    mockedAxios.request.mockResolvedValue(rewards);
-    const result = await api.fetchRewards(address)
+    mockedAxios.request.mockResolvedValueOnce(rewards);
+    const result = await api.fetchRewards(address, true)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -587,7 +589,7 @@ describe('account api tests', () => {
     const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchRewards(address)
+    const result = await api.fetchRewards(address, false)
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);

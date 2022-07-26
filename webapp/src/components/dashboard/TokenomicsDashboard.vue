@@ -49,9 +49,9 @@ use([
 
 const tokensStore = useTokensStore();
 
-onBeforeMount(() => {
-  tokensStore.fetchStakingPool();
-});
+// onBeforeMount(() => {
+//   tokensStore.fetchStakingPool();
+// });
 
 const boundedPercentage = computed(() => {
   return tokensStore.getBoundedPercentage();

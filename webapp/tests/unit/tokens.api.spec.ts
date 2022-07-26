@@ -29,7 +29,7 @@ describe('tokens api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(stakingPool);
-    const result = await api.fetchStakingPool();
+    const result = await api.fetchStakingPool(false);
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -45,7 +45,7 @@ describe('tokens api tests', () => {
     const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValueOnce(error);
-    const result = await api.fetchStakingPool();
+    const result = await api.fetchStakingPool(false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -61,7 +61,7 @@ describe('tokens api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(stakingPool);
-    const result = await api.fetchStakingPool();
+    const result = await api.fetchStakingPool(false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultErrorName);
@@ -77,7 +77,7 @@ describe('tokens api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(supply);
-    const result = await api.fetchTotalSupply(defaultDenom);
+    const result = await api.fetchTotalSupply(defaultDenom, false);
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -93,7 +93,7 @@ describe('tokens api tests', () => {
     const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValueOnce(error);
-    const result = await api.fetchTotalSupply(defaultDenom);
+    const result = await api.fetchTotalSupply(defaultDenom, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -109,7 +109,7 @@ describe('tokens api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(supply);
-    const result = await api.fetchTotalSupply(defaultDenom);
+    const result = await api.fetchTotalSupply(defaultDenom, false);
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -125,7 +125,7 @@ describe('tokens api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(communityPool);
-    const result = await api.fetchCommunityPoolByDenom(defaultDenom);
+    const result = await api.fetchCommunityPoolByDenom(defaultDenom, false);
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -142,7 +142,7 @@ describe('tokens api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(communityPool);
-    const result = await api.fetchCommunityPoolByDenom(defaultDenom);
+    const result = await api.fetchCommunityPoolByDenom(defaultDenom, false);
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -158,7 +158,7 @@ describe('tokens api tests', () => {
     const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValueOnce(error);
-    const result = await api.fetchCommunityPoolByDenom(defaultDenom);
+    const result = await api.fetchCommunityPoolByDenom(defaultDenom, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -174,7 +174,7 @@ describe('tokens api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(communityPool);
-    const result = await api.fetchCommunityPoolByDenom(defaultDenom);
+    const result = await api.fetchCommunityPoolByDenom(defaultDenom, false);
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()

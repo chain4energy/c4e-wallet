@@ -15,6 +15,7 @@ import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue'
 import { onUnmounted, ref, shallowRef } from "vue";
 import { useUserStore } from "@/store/user.store";
 import { useToast } from "vue-toastification";
+import dataService from '@/services/data.service';
 
 
 document.body.style.overflow = "hidden";
@@ -27,13 +28,14 @@ const emit = defineEmits(['close', 'typeChange']);
 const loginType = shallowRef(LoginChoose)
 
 function keplrConnect(){
-  useUserStore().connectKeplr().then(() => {
-    if (useUserStore().isLoggedIn){
-      emit('close')
-    } else {
-      return
-    }
-  });
+  dataService.onKeplrLogIn(() => {emit('close')});
+  // useUserStore().connectKeplr().then(() => {
+  //   if (useUserStore().isLoggedIn){
+  //     emit('close')
+  //   } else {
+  //     return
+  //   }
+  // });
 }
 
 </script>

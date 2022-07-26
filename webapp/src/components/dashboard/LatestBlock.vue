@@ -20,10 +20,10 @@ import {useBlockStore} from "@/store/block.store";
 
 
 const blockStore = useBlockStore();
-onMounted(() => {
+// onMounted(() => {
 
-  blockStore.fetchLatestBlock();
-});
+//   blockStore.fetchLatestBlock();
+// });
 
 </script>
 

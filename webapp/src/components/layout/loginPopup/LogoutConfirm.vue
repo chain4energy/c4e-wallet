@@ -36,6 +36,7 @@ import { ConnectionType } from "@/api/wallet.connecton.api";
 import { computed, PropType } from "vue";
 import { Validator } from "@/models/store/validator";
 import { useToast } from "vue-toastification";
+import dataService from '@/services/data.service';
 
 const props = defineProps({
   logoutType:{
@@ -55,7 +56,8 @@ const logo = computed(() => {
 const emit = defineEmits(['close']);
 
 function logout(){
-  useUserStore().logOut()
+  dataService.onLogOut();
+  // useUserStore().logOut()
   emit('close')
 }
 

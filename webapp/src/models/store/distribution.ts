@@ -19,7 +19,7 @@ export class ValidatorRewards {
 
 export class Rewards {
   rewards: Map<string, ValidatorRewards>;
-  totalRewards: BigDecimal; // TODO BigDecimal
+  totalRewards: BigDecimal; 
 
   constructor (rewards = new Map<string, ValidatorRewards>(), totalRewards = new BigDecimal(0)) {
     this.rewards = rewards;

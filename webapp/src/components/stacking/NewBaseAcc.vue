@@ -24,7 +24,6 @@ import {computed, ComputedRef, onBeforeMount, onUnmounted, reactive, ref, Unwrap
 import {useUserStore} from "@/store/user.store";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import DataTableWraper from "@/components/stacking/DataTableWraper.vue";
 import ValidatorsDataTable from "@/components/stacking/ValidatorsDataTable.vue";
 
 const validatorsStore = useValidatorsStore();
@@ -32,9 +31,9 @@ const userStore = useUserStore();
 
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 
-onBeforeMount(() => {
-  validatorsStore.fetchValidators();
-})
+// onBeforeMount(() => {
+//   validatorsStore.fetchValidators();
+// })
 
 </script>
 

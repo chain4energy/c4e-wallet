@@ -29,12 +29,12 @@ export class ProposalsApi extends BaseApi {
     //  return mapAccount(bcData?.account);
    // }
   //}
-  public async fetchProposals(paginationKey: string | null): Promise<{ response: RequestResponse<{ proposals: Proposal[], numberOfActive: number}, ErrorData<BlockchainApiErrorData>>, nextKey: string | null }> {
+  public async fetchProposals(paginationKey: string | null, lockscreen: boolean): Promise<{ response: RequestResponse<{ proposals: Proposal[], numberOfActive: number}, ErrorData<BlockchainApiErrorData>>, nextKey: string | null }> {
     const mapData = (bcData: ProposalsResponse | undefined) => {return mapProposals(bcData?.proposals);};
     // const mapAndAddData = (data: { proposals: Proposal[], numberOfActive: number}, bcData: ProposalsResponse | undefined) => {return mapAndAddProposals(data.proposals, bcData?.proposals, data.numberOfActive);};
     const pagination = new BlockchainPagination(paginationKey ? paginationKey : undefined, 10, true); // TODO '10, true; - to config params
     const result = await this.axiosGetBlockchainApiPaginatedCall(useConfigurationStore().config.bcApiURL+this.PROPOSALS_URL,
-    pagination, mapData, true, null, 'fetchAllProposals - ');
+    pagination, mapData, lockscreen, null, 'fetchAllProposals - ');
     return result;
   }
   public async fetchProposalById(id: number): Promise<RequestResponse<{ proposal: Proposal}, ErrorData<BlockchainApiErrorData>>> {

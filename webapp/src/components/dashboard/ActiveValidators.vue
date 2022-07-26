@@ -14,13 +14,13 @@
 
 <script setup lang="ts">
 
-import {onMounted} from "vue";
+// import {onMounted} from "vue";
 import {useValidatorsStore} from "@/store/validators.store";
 
-onMounted(() => {
-  // useValidatorsStore().fetchNumberOfActiveValidators();
-  useValidatorsStore().fetchValidators();
-});
+// onMounted(() => {
+//   // useValidatorsStore().fetchNumberOfActiveValidators();
+//   useValidatorsStore().fetchValidators();
+// });
 </script>
 
 <style scoped lang="scss">

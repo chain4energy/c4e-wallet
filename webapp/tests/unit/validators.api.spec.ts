@@ -29,7 +29,7 @@ describe('validators api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(validators);
-    const result = await api.fetchAllValidators()
+    const result = await api.fetchAllValidators(false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -44,7 +44,7 @@ describe('validators api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(validators);
-    const result = await api.fetchAllValidators()
+    const result = await api.fetchAllValidators(false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -88,7 +88,7 @@ describe('validators api tests', () => {
     mockedAxios.request.mockResolvedValueOnce(validators1);
     mockedAxios.request.mockResolvedValueOnce(validators2);
 
-    const result = await api.fetchAllValidators()
+    const result = await api.fetchAllValidators(false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -104,7 +104,7 @@ describe('validators api tests', () => {
     const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchAllValidators()
+    const result = await api.fetchAllValidators(false)
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -146,7 +146,7 @@ describe('validators api tests', () => {
     mockedAxios.request.mockResolvedValueOnce(validators1);
     mockedAxios.request.mockRejectedValue(error);
 
-    const result = await api.fetchAllValidators()
+    const result = await api.fetchAllValidators(false)
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);

@@ -17,20 +17,25 @@ import ProposalDetails from "@/components/governance/ProposalDetails.vue";
 import ProposalDescription from "@/components/governance/ProposalDescription.vue";
 import {useProposalsStore} from "@/store/proposals.store";
 import {Proposal} from "@/models/store/proposal";
+import dataService from "@/services/data.service";
 
 const route = useRoute();
 
 const proposalsStore = useProposalsStore();
-onBeforeMount(async () => {
-  await proposalsStore.fetchProposalById(Number(route.params.id.toString())).then( () => {
+onBeforeMount(() => {
+  dataService.onProposalSelected(Number(route.params.id.toString()), () => {
     proposal.value = proposalsStore.getProposal;
     everythingIsReady.value = true;
   });
+  // await proposalsStore.fetchProposalById(Number(route.params.id.toString())).then( () => {
+  //   proposal.value = proposalsStore.getProposal;
+  //   everythingIsReady.value = true;
+  // });
 
 });
-onBeforeMount(() => {
-  useProposalsStore().fetchTallyParams();
-});
+// onBeforeMount(() => {
+//   useProposalsStore().fetchTallyParams();
+// });
 
 
 const proposal = ref<Proposal>();

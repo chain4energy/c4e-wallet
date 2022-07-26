@@ -50,9 +50,9 @@ use([
 ]);
 
 const tokensStore = useTokensStore();
-onBeforeMount(() => {
-  tokensStore.fetchPools();
-});
+// onBeforeMount(() => {
+//   tokensStore.fetchPools();
+// });
 
 const communityPool = computed(() => {
   return tokensStore.getCommunityPool.getViewAmount();

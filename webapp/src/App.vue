@@ -27,18 +27,22 @@ import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import {useConfigurationStore} from "@/store/configuration.store";
 import { useUserStore } from "@/store/user.store";
+import dataService from './services/data.service';
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 onBeforeMount(() => {
   useConfigurationStore().fetchConfig("config1.json");
+  dataService.onAppStart();
 });
 
 onMounted(() => {
   createRouterBeforeEach(logger);
+
 });
 
 window.onload = async () =>{
-  useUserStore().reconectAcc();
+  dataService.onWindowLoad();
+  // useUserStore().reconnect();
 };
 
 </script>

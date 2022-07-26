@@ -22,6 +22,8 @@ export function mapRewards(rewardsResponse: RewardsResponse | undefined): Reward
     map.set(rew.validator_address, mapReward(rew));
   });
   const denom = useConfigurationStore().config.stakingDenom;
+  console.log('dsaasdsasa: ' + JSON.stringify(rewardsResponse.total))
+  console.log('dsaasdsasa: ' + denom)
   const total = rewardsResponse.total.find(val => val.denom === denom)?.amount;
   // TODO to big decimal
   return new Rewards(map, total === undefined ? new BigDecimal(0) : new BigDecimal(total));
