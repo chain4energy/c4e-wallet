@@ -9,18 +9,10 @@ export interface ProposalResponse{
 export interface Proposal {
   proposal_id: string,
   content: {
-    "@type": string,
+    type: string,
     title: string,
     description: string,
-    changes: [
-      {
-        subspace: string,
-        key: string,
-        value: {
-          mindeposit:string,
-        }
-      }
-    ]
+    changes: Array<ProposalChanges>
   },
   status: string,
   final_tally_result: {
@@ -31,12 +23,20 @@ export interface Proposal {
   },
   submit_time: string,
   deposit_end_time: string,
-  total_deposit: [
-    {
-      denom: string,
-      amount: string,
-    }
-  ],
+  total_deposit:Array<ProposalsAmount>
   voting_start_time: string,
   voting_end_time: string,
+}
+
+export interface ProposalChanges{
+  value: ProposalsValue;
+  key: string;
+  subspace: string;
+}
+export interface ProposalsValue{
+  mindeposit: string;
+}
+export interface ProposalsAmount{
+  denom: string,
+  amount: string,
 }

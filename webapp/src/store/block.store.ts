@@ -64,5 +64,5 @@ export const useBlockStore = defineStore( 'block', {
     getLatestBlock(): Block{
       return this.latestBlock;
     }
-  }
+  },
 });
