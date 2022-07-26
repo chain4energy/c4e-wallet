@@ -28,7 +28,7 @@ describe('block api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(latestBlock);
-    const result = await api.fetchLatestBlock();
+    const result = await api.fetchLatestBlock(false);
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
@@ -44,7 +44,7 @@ describe('block api tests', () => {
     const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValueOnce(error);
-    const result = await api.fetchLatestBlock();
+    const result = await api.fetchLatestBlock(false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -60,7 +60,7 @@ describe('block api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(latestBlock);
-    const result = await api.fetchLatestBlock();
+    const result = await api.fetchLatestBlock(false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultErrorName);

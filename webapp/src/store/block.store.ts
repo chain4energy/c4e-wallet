@@ -23,8 +23,8 @@ export const useBlockStore = defineStore( 'block', {
     };
   },
   actions: {
-    async fetchLatestBlock() {
-      await apiFactory.blockApi().fetchLatestBlock().then(response => {
+    async fetchLatestBlock(lockscreen = false) {
+      await apiFactory.blockApi().fetchLatestBlock(lockscreen).then(response => {
 
         if (response.isSuccess() && response.data !== undefined) {
           this.latestBlock = response.data;

@@ -17,10 +17,10 @@ export class BlockApi extends BaseApi {
   private LATEST_BLOCK_URL = process.env.VUE_APP_LATEST_BLOCK_URL;
 
 
-  public async fetchLatestBlock(): Promise<RequestResponse<Block, ErrorData<BlockchainApiErrorData>>> {
+  public async fetchLatestBlock(lockscreen: boolean): Promise<RequestResponse<Block, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: BlockResponse | undefined) => { return mapBlock(bcData); };
     return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.LATEST_BLOCK_URL,
-      mapData, false, null, 'fetchLatestBlock - ');
+      mapData, lockscreen, null, 'fetchLatestBlock - ');
   }
 
   // public async fetchLatestBlock(): Promise<RequestResponse<LatestBlock, ErrorData<BlockchainApiErrorData>>> {
