@@ -1,14 +1,14 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {DataHolder} from "@/models/data-holder";
-import {Proposal} from "@/models/Proposal";
+import {Proposal} from "@/models/store/proposal";
 import {TallyParams} from "@/models/GovernanceParameters";
 
 interface ProposalsState {
-  proposals: DataHolder<Proposal>
-  proposal: Proposal
-  paginationKey: string
-  tallyParams: TallyParams
+  proposals: Proposal[]
+  numberOfActiveProposals: number
+  proposal: Proposal | undefined
+  tallyParams: any
 }
 
 export const useProposalsStore = defineStore({
@@ -16,45 +16,69 @@ export const useProposalsStore = defineStore({
   state: (): ProposalsState => {
 
     return {
-      proposals: new DataHolder<Proposal>(),
-      proposal: Object(Proposal),
-      paginationKey: '',
+      proposals: Array<Proposal>(),
+      numberOfActiveProposals: 0,
+      //proposals: new DataHolder<Proposal>(),
+      proposal: Object() as Proposal,
+      //paginationKey: '',
       tallyParams: new TallyParams()
     };
   },
   actions: {
-    fetchProposals() {
-      apiFactory.proposalsApi().fetchProposals(this.paginationKey).then(response => {
 
-        if (response.error == null && response.data != undefined) {
-          const dataHolder = new DataHolder<Proposal>();
-
-          dataHolder.elements = this.proposals.elements.concat(response.data.proposals);
-          dataHolder.amount += Number(response.data.pagination.total);
-          this.paginationKey = response.data.pagination.next_key;
-          this.proposals = dataHolder;
-
-        } else {
-          //TODO: error handling
-        }
-
-      });
+    async fetchProposals(){
+      await apiFactory.proposalsApi().fetchProposals()
+        .then((resp) => {
+          if (resp.isSuccess() && resp.data !== undefined){
+            this.proposals = resp.data.proposals;
+            this.numberOfActiveProposals = resp.data.numberOfActive;
+          } else {
+            const message = 'Error fetching proposals data';
+          }
+        });
     },
-    async fetchProposalById(proposalId: string) {
-      await apiFactory.proposalsApi().fetchProposalById(proposalId).then(response => {
-        if (response.error == null && response.data != undefined) {
-          this.proposal = response.data.proposal;
-        } else {
-          //TODO: error handling
-        }
-
-      });
+    async fetchProposalById(id: number){
+      await apiFactory.proposalsApi().fetchProposalById(id).then((resp) => {
+          if (resp.isSuccess() && resp.data !== undefined){
+            this.proposal = resp.data.proposal;
+          } else {
+            const message = 'Error fetching proposal data';
+          }
+      })
     },
+
+    //fetchProposals() {
+      //apiFactory.proposalsApi().fetchProposals(this.paginationKey).then(response => {
+
+       // if (response.error == null && response.data != undefined) {
+         // const dataHolder = new DataHolder<Proposal>();
+
+        //  dataHolder.elements = this.proposals.elements.concat(response.data.proposals);
+       //   dataHolder.amount += Number(response.data.pagination.total);
+       //   this.paginationKey = response.data.pagination.next_key;
+       //   this.proposals = dataHolder;
+
+       // } else {
+          //TODO: error handling
+       // }
+
+      //});
+   // },
+   // async fetchProposalById(proposalId: string) {
+   //   await apiFactory.proposalsApi().fetchProposalById(proposalId).then(response => {
+   //     if (response.error == null && response.data != undefined) {
+   //       this.proposal = response.data.proposal;
+    //    } else {
+   //       //TODO: error handling
+   //     }
+//
+   //   });
+   // },
     async fetchTallyParams() {
       await apiFactory.proposalsApi().fetchTallyParams().then(response => {
-        if (response.error == null && response.data != undefined) {
-          this.tallyParams = response.data.tally_params;
-        } else {
+       if (response.error == null && response.data != undefined) {
+        this.tallyParams = response.data.tally_params;
+       } else {
           //TODO: error handling
         }
       });
@@ -62,13 +86,13 @@ export const useProposalsStore = defineStore({
   },
   getters: {
 
-    getProposals(): DataHolder<Proposal> {
+    getProposals(): Proposal[] {
       return this.proposals;
     },
-    getPaginationKey(): string {
-      return this.paginationKey;
-    },
-    getProposal(): Proposal {
+  //  getPaginationKey(): string {
+  //    return this.paginationKey;
+  //  },
+    getProposal(): Proposal | undefined {
       return this.proposal;
     },
     getTallyParams(): TallyParams {

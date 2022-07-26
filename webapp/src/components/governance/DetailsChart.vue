@@ -34,7 +34,7 @@
       <Button
         :label="$t('GOVERNANCE_VIEW.VOTE')"
         class="p-button-raised p-button-rounded"
-        data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="proposal.status!==ProposalStatusEnum.PROPOSAL_STATUS_VOTING_PERIOD" />
+        data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="proposal.status !== ProposalStatus.VOTING_PERIOD" />
 
       <VoteModal id="voteModal" :proposalId="proposal.proposal_id" :title="proposal.content.title"></VoteModal>
     </div>
@@ -51,8 +51,8 @@ import {CanvasRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import VoteModal from "@/components/governance/VoteModal.vue";
 import Icon from "../features/IconComponent.vue";
-import {Proposal} from "@/models/Proposal";
-import {ProposalStatusEnum} from "@/models/proposalStatus-enum";
+import {Proposal} from "@/models/store/proposal";
+import {ProposalStatus} from "@/models/store/proposal";
 
 
 use([
@@ -65,15 +65,15 @@ use([
 
 const props = defineProps({
   proposal: {
-    type: Object(Proposal),
+    type: Proposal,
     required: true
   }
 });
 
 const icons  = new Map<string, string>([
-  [ProposalStatusEnum.PROPOSAL_STATUS_PASSED, "CheckSquare"],
-  [ProposalStatusEnum.PROPOSAL_STATUS_REJECTED, "XCircle"],
-  [ProposalStatusEnum.PROPOSAL_STATUS_DEPOSIT_PERIOD, ""]
+  [ProposalStatus.PASSED, 'CheckSquare'],
+  [ProposalStatus.REJECTED, 'XCircle'],
+  [ProposalStatus.VOTING_PERIOD, '']
 ]);
 
 const sumOfVotes = computed(() => {

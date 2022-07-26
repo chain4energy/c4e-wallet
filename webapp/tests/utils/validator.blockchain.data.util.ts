@@ -21,7 +21,7 @@ export function findValidatorParametersByValidator(validatorAddress: string,
   validators = defaultValidators,
   validatorsParameters = defaultValidatorsParameters) {
   if (validators.length !== validatorsParameters.length) {
-    throw new Error('validators.length !== validatorsParameters.length')
+    throw new Error('validators.length !== validatorsParameters.length');
   }
   for (let i = 0; i < validators.length; i++) {
     if (validators[i] === validatorAddress) {
@@ -37,7 +37,7 @@ export function findNumberOfActiveValidators(validatorsParameters = defaultValid
     if (params.status === 'BOND_STATUS_BONDED') {
       active++;
     }
-  })
+  });
   return active;
 }
 
@@ -124,7 +124,7 @@ export function createValidators(validators = defaultValidators,
   }
   const validatorsArray = new Array();
   for (let i = 0; i < validators.length; i++) {
-    let position = i + positionOffset;
+    const position = i + positionOffset;
     validatorsArray.push({
       operator_address: validators[i],
       consensus_pubkey: {

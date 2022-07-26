@@ -1,6 +1,6 @@
 <template>
 
-  <div v-for="proposal in getProposals.elements" :key="proposal" >
+  <div v-for="proposal in useProposalsStore().getProposals" :key="proposal" >
     <proposal-governance :proposal="proposal"></proposal-governance>
   </div>
 </template>
@@ -21,13 +21,13 @@ import {storeToRefs} from "pinia";
 const proposalsStore = useProposalsStore();
 const { getProposals } = storeToRefs(useProposalsStore());
 
-onActivated(() => {
-  window.addEventListener('scroll', load);
-});
+//onActivated(() => {
+//  window.addEventListener('scroll', load);
+//});
 
-onDeactivated(() => {
-  window.removeEventListener('scroll', load);
-});
+//onDeactivated(() => {
+//  window.removeEventListener('scroll', load);
+//});
 
 onBeforeMount(()=> {
   proposalsStore.fetchProposals();
@@ -37,14 +37,14 @@ onUnmounted(() => {
   proposalsStore.$reset();
 });
 
-const load = () => {
-  let bottomOfWindow = Math.abs(Math.ceil(document.documentElement.scrollTop) + window.innerHeight - document.documentElement.offsetHeight) < 2;
-
-  if (bottomOfWindow && useProposalsStore().getPaginationKey) {
-
-    proposalsStore.fetchProposals();
-  }
-};
+//const load = () => {
+ // let bottomOfWindow = Math.abs(Math.ceil(document.documentElement.scrollTop) + window.innerHeight - document.documentElement.offsetHeight) < 2;
+//
+ // if (bottomOfWindow && useProposalsStore().getPaginationKey) {
+//
+//    proposalsStore.fetchProposals();
+ // }
+//};
 
 </script>
 

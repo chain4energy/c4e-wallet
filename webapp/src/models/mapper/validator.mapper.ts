@@ -47,7 +47,8 @@ export function mapValidator(validator: BcValidator | undefined): StoreValidator
   const commission = new ValidatorCommission(Number(validator.commission.commission_rates.rate),
     Number(validator.commission.commission_rates.max_rate),
     Number(validator.commission.commission_rates.max_change_rate));
-  const desciption = new ValidatorDescription(validator.description.moniker,
+  const desciption = new ValidatorDescription(
+    validator.description.moniker,
     validator.description.identity,
     validator.description.website,
     validator.description.security_contact,

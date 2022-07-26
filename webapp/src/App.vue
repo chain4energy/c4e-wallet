@@ -17,7 +17,7 @@ import LoadingScreen from '@/components/LoadingScreen.vue';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import AppSidebar from '@/components/layout/AppSidebar.vue';
 
-import { inject, onBeforeMount, onMounted } from "vue";
+import { inject, onBeforeMount, onMounted, watch } from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
 import {createRouterBeforeEach} from '@/router/before_each';
 
@@ -35,10 +35,11 @@ onBeforeMount(() => {
 
 onMounted(() => {
   createRouterBeforeEach(logger);
-  setTimeout(() =>{
-      useUserStore().reconectAcc();
-  },500);
 });
+
+window.onload = async () =>{
+  useUserStore().reconectAcc();
+};
 
 </script>
 

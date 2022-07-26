@@ -39,7 +39,7 @@
       <button @click="$emit('keplr')" class="loginChoose__description">
         <div style="display: flex; align-items: center; justify-content: space-evenly;">
           <div class="loginChoose__descriptionIcon">
-            <img src="/keplrIcon.jpg">
+            <img src="/keplrIcon.jpg" alt="KeplrIco">
           </div>
 
           <p>{{ $t('LOGIN.LOGIN_KEPLR') }}</p>
