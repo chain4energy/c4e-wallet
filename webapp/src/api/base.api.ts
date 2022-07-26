@@ -9,6 +9,19 @@ import { PaginatedResponse } from '@/models/blockchain/pagination';
 
 const toast = useToast();
 
+export class BlockchainPagination {
+  key: string;
+  limit?: number;
+  reverse?: boolean;
+
+  constructor(key: string, limit?: number, reverse?: boolean) {
+    this.key = key;
+    this.limit = limit;
+    this.reverse = reverse;
+  }
+
+}
+
 export class ErrorData<D> {
   readonly name: string;
   readonly message: string;
@@ -104,11 +117,6 @@ export default abstract class BaseApi extends LoggedService {
       const error = err as Error;
       this.logToConsole(LogLevel.ERROR, logPrefix + 'mapping error: ' + this.getServiceType(), error.message);
       return this.createErrorResponseWithToast(new ErrorData<BlockchainApiErrorData>(error.name, error.message), 'Mapping error: ', !skipErrorToast);
-
-      // if (!skipErrorToast) {
-      //   toast.error('mapping error: ' + this.getServiceType() + '\r\n' + error.message);
-      // }
-      // return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(new ErrorData<BlockchainApiErrorData>(error.name, error.message));
     }
   }
 
@@ -123,8 +131,9 @@ export default abstract class BaseApi extends LoggedService {
     let data: T | undefined = undefined;
     let nextKey: string | null | undefined = undefined;
     do {
+      const pagination = nextKey ? new BlockchainPagination(nextKey) : null;
       const result: RequestResponse<BC, ErrorData<BlockchainApiErrorData>>
-        = await this.axiosGetBlockchainApiCallPaginated<BC>(url, data !== undefined, nextKey, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);
+        = await this.axiosGetBlockchainApiCallPaginated<BC>(url, pagination, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);
       if (result.isError()) {
         return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(result.error);
       }
@@ -139,29 +148,29 @@ export default abstract class BaseApi extends LoggedService {
         const error = err as Error;
         this.logToConsole(LogLevel.ERROR, logPrefix + 'mapping error: ' + this.getServiceType(), error.message);
         return this.createErrorResponseWithToast(new ErrorData<BlockchainApiErrorData>(error.name, error.message), 'Mapping error: ', !skipErrorToast);
-
-        // if (!skipErrorToast) {
-        //   toast.error('mapping error: ' + this.getServiceType() + '\r\n' + error.message);
-        // }
-        // return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(new ErrorData<BlockchainApiErrorData>(error.name, error.message));
       }
     } while (data === undefined || (nextKey !== null && nextKey !== undefined));
     return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(undefined, data);
   }
-  private async axiosGetBlockchainApiCallPaginated<P extends PaginatedResponse>(url: string,
-    pagination: boolean,
-    nextKey: string | null | undefined,
+  public async axiosGetBlockchainApiCallPaginated<P extends PaginatedResponse>(
+    url: string,
+    pagination: BlockchainPagination | null,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
     logPrefix = '',
     displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean,
-    skipErrorToast = false): Promise<RequestResponse<P, ErrorData<BlockchainApiErrorData>>> {
+    skipErrorToast = false): Promise<RequestResponse<P, ErrorData<BlockchainApiErrorData>>> 
+  {
+    const paginationData:any = {};
     if (pagination) {
-      url += '?pagination.key=' + nextKey;
+      paginationData['pagination.key'] = pagination.key;
+      if (pagination.limit) {paginationData['pagination.limit'] = pagination.limit;}
+      if (pagination.reverse) {paginationData['pagination.reverse'] = pagination.reverse;}
     }
     const result: RequestResponse<P, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
       method: 'GET',
-      url: url
+      url: url,
+      params: paginationData
     }, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);
     return result;
   }
@@ -201,38 +210,11 @@ export default abstract class BaseApi extends LoggedService {
       this.logToConsole(logLevel, logPrefix + 'Axios Response', this.stringify(err));
       this.logToConsole(logLevel, logPrefix + 'Error data: ' + this.stringify(errorResp));
 
-      // if (!skipErrorToast && isError) {
-      //   toast.error('Error requesting service:' + this.getServiceType() + '\r\n' + errorResp.getInfo());
-      // }
-      // return new RequestResponse<T, ErrorData<E>>(errorResp);
-
       return this.createErrorResponseWithToast(errorResp, 'Error sending HTTP request: ', !skipErrorToast && isError);
     } finally {
       this.after(lockScreen, localSpinner);
     }
   }
-
-  // public getDataFromUrl<T, E>(url: string, lockScreen: boolean, localSpinner: LocalSpinner | null, onSuccess: (data: T) => void, onError: ((error?: ErrorData<E>) => void) | null, pagination?: PagingModel) {
-  //   this.axiosCall<T, E>({
-  //     method: 'GET',
-  //     url: url,
-  //     params: pagination?.toAxiosParams()
-  //   }, true, null, onError != null, '').then(value => {
-  //     if (value.isSuccess()) {
-  //       if (value.data !== undefined) {
-  //         onSuccess(value.data);
-  //       } else if (onError != null) {
-  //         onError(new ErrorData<E>('No data', 'No success data received'));
-  //       }
-  //     } else {
-  //       if (onError != null) {
-  //         onError(value.error);
-  //       }
-  //     }
-  //   }).finally(() => {
-  //     //
-  //   });
-  // }
 
   before(lockScreen: boolean, localSpinner: LocalSpinner | null) {
     if (lockScreen) {
