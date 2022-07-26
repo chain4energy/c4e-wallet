@@ -39,7 +39,7 @@
       </Column>
       <Column field="operator_address">
         <template #body="{data}">
-          <Button class="btn__main" @click="checkBTN(data)">{{ $t(`STACKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}</Button>
+          <Button @click="checkBTN(data)">{{ $t(`STACKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}</Button>
         </template>
       </Column>
 

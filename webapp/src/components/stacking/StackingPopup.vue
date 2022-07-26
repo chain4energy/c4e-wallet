@@ -15,7 +15,7 @@
           </svg>
           <h2>{{ validator.description.moniker }}</h2>
         </div>
-        <button @click="$emit('close')">{{ $t('COMMON.CLOSE') }}</button>
+        <Button @click="$emit('close')">{{ $t('COMMON.CLOSE') }}</Button>
       </div>
       <div class="validationPopup__body">
         <h3>{{ $t('STACKING_VIEW.STACKING_POPUP.HEADER') }}</h3>
@@ -51,19 +51,19 @@
       </div>
       <div class="validationPopup__btnHolder" v-if="useUserStore().isLoggedIn && canModify" >
         <div class="validationPopup__btns" v-if="!actionRedelegate">
-          <button @click="undelegate()">{{ $t('STACKING_VIEW.STACKING_POPUP.UNDELEGATE') }}</button>
-          <button @click="delegate()">{{ $t('STACKING_VIEW.STACKING_POPUP.DELEGATE') }}</button>
-          <button @click="redelegateState(true)">{{ $t('STACKING_VIEW.STACKING_POPUP.REDELEGATE') }}</button>
+          <Button @click="undelegate()">{{ $t('STACKING_VIEW.STACKING_POPUP.UNDELEGATE') }}</Button>
+          <Button @click="delegate()">{{ $t('STACKING_VIEW.STACKING_POPUP.DELEGATE') }}</Button>
+          <Button @click="redelegateState(true)">{{ $t('STACKING_VIEW.STACKING_POPUP.REDELEGATE') }}</Button>
         </div>
         <div class="validationPopup__btns" v-if="actionRedelegate">
-          <button @click="redelegateState(false)">{{ $t('COMMON.RETURN') }}</button>
-          <button @click="redelegate">{{ $t('STACKING_VIEW.STACKING_POPUP.REDELEGATE') }}</button>
+          <Button @click="redelegateState(false)">{{ $t('COMMON.RETURN') }}</Button>
+          <Button @click="redelegate">{{ $t('STACKING_VIEW.STACKING_POPUP.REDELEGATE') }}</Button>
         </div>
       </div>
 
       <div v-else class="validationPopup__btns">
         <p> {{ $t('ERRORS.LOGIN_WALLET')}} </p>
-        <button @click="useUserStore().connectKeplr">{{ $t('LOGIN.LOGIN' )}}</button>
+        <Button @click="useUserStore().connectKeplr">{{ $t('LOGIN.LOGIN' )}}</Button>
       </div>
     </div>
   </div>

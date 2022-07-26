@@ -1,0 +1,19 @@
+@import './variables.scss';
+
+.p-tabview .p-tabview-nav {
+  padding-bottom: 1px;
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  border-color: #fff !important;
+  border-width: 1px 1px 3px 1px;
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
+  box-shadow: none !important;
+}
+
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  border-color: #fff #fff $secondary-color #fff !important;
+  border-width: 1px 1px 3px 1px;
+}

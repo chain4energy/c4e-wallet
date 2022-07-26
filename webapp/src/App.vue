@@ -43,56 +43,5 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-.page-container {
-  position: relative;
-  min-height: 100vh;
-}
-
-.main-container {
-  display: flex;
-  padding-bottom: 60px;
-
-  .content {
-    width: 100%;
-    padding-left: 100px;
-    //padding-right: 100px;
-    margin: auto;
-
-  }
-
-}
-
-.footer {
-  position: absolute;
-  bottom: 0;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-@media only screen and (max-width: 600px) {
-  .main-container {
-    .content {
-      padding-left: 0;
-    }
-  }
-
-}
+@import './styles/app.scss';
 </style>

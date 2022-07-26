@@ -4,7 +4,7 @@
     <div class="loginPopup__holder">
       <div class="loginChoose__holder">
         <h2>Wallet</h2>
-        <button @click="$emit('close')"> close </button>
+        <Button @click="$emit('close')"> close </Button>
         <div class="loginChoose__body">
           <div class="loginChoose__description">
             <div style="display: flex; align-items: center; justify-content: space-evenly;">
@@ -14,14 +14,14 @@
               <div class="loginPopup__data" style="display: flex; flex-direction: column; justify-items: left">
                 <p>{{ useUserStore().getAccount.address.slice(0, 13)}}...{{useUserStore().getAccount.address.slice(-6)}}</p>
                 <div>
-                  <button @click="copyTxt" style="width: 30%">copy</button>
+                  <Button @click="copyTxt" style="width: 30%">copy</Button>
                   <a :href="`https://explorer-testnet.chain4energy.org/accounts/${useUserStore().getAccount.address}`"
                      target="_blank">{{ $t('LOGIN.VIEW_EXPLORER')}}</a>
                 </div>
 
               </div>
             </div>
-            <button class="loginPopup__disconect" @click="logout">{{ $t('COMMON.DISCONNECT') }}</button>
+            <Button class="loginPopup__disconect" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
           </div>
         </div>
       </div>

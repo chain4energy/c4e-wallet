@@ -22,10 +22,10 @@
       <LogoutKeplr v-if="logoutPopupStatus === true" :logout-type="useUserStore().getConnectionType" @close="logoutPopupStatus = 0"></LogoutKeplr>
       <div class="container-fluid">
         <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+        <Button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
-        </button>
+        </Button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 <!--          <div class="navbar-nav left">-->
 <!--            <i class="pi pi-user me-3" style="font-size: 1.5rem;" />-->

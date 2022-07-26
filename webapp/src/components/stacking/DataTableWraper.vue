@@ -78,14 +78,14 @@
     </Column>
     <Column field="operator_address">
       <template #body="{data}">
-        <button class="btn__main" @click="checkBTN(data)">{{ $t(`STACKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}</button>
+        <Button @click="checkBTN(data)">{{ $t(`STACKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}</Button>
       </template>
     </Column>
     <Column v-if="isLoggedIn">
       <template  #body="{data}">
-        <button
+        <Button
           @click="onRowExpande(data)"
-          v-if="data.delegatedAmount!=='0'"   headerStyle="width: 4rem">open</button>
+          v-if="data.delegatedAmount!=='0'"   headerStyle="width: 4rem">open</Button>
       </template>
     </Column>
     <template v-if="isLoggedIn" #expansion="{data}">
@@ -185,28 +185,5 @@ function toViewStatus (status: ValidatorStatus): string {
 </script>
 
 <style scoped lang="scss">
-.btn__main{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 12px 24px 13px;
-  box-sizing: border-box;
 
-  background: #FFFFFF;
-  /* Primary/Secondary-Blue */
-
-  border: 1px solid #27697F;
-  border-radius: 24px;
-
-
-  &:hover {
-    background-color: #27697F;
-    color: white;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-}
 </style>
