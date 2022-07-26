@@ -8,6 +8,7 @@ interface ProposalsState {
   proposals: Proposal[]
   numberOfActiveProposals: number
   proposal: Proposal | undefined
+  paginationKey: string | null
   tallyParams: any
 }
 
@@ -20,18 +21,19 @@ export const useProposalsStore = defineStore({
       numberOfActiveProposals: 0,
       //proposals: new DataHolder<Proposal>(),
       proposal: Object() as Proposal,
-      //paginationKey: '',
+      paginationKey: null,
       tallyParams: new TallyParams()
     };
   },
   actions: {
 
     async fetchProposals(){
-      await apiFactory.proposalsApi().fetchProposals()
+      await apiFactory.proposalsApi().fetchProposals(this.paginationKey)
         .then((resp) => {
-          if (resp.isSuccess() && resp.data !== undefined){
-            this.proposals = resp.data.proposals;
-            this.numberOfActiveProposals = resp.data.numberOfActive;
+          if (resp.response.isSuccess() && resp.response.data !== undefined){
+            this.proposals = this.proposals.concat(resp.response.data.proposals);
+            this.numberOfActiveProposals = resp.response.data.numberOfActive;
+            this.paginationKey = resp.nextKey;
           } else {
             const message = 'Error fetching proposals data';
           }
@@ -89,9 +91,9 @@ export const useProposalsStore = defineStore({
     getProposals(): Proposal[] {
       return this.proposals;
     },
-  //  getPaginationKey(): string {
-  //    return this.paginationKey;
-  //  },
+   getPaginationKey(): string | null {
+     return this.paginationKey;
+   },
     getProposal(): Proposal | undefined {
       return this.proposal;
     },
