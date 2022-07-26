@@ -16,3 +16,21 @@ export abstract class LoggedService {
     }
   }
 }
+
+export class StoreLogger extends LoggedService {
+
+  private service: ServiceTypeEnum;
+
+  constructor (service: ServiceTypeEnum) {
+    super();
+    this.service = service;
+  }
+
+  getServiceType(): ServiceTypeEnum {
+    return this.service;
+  }
+
+  public logToConsole(logLevel: LogLevel, message: string, ...data: string[]) {
+    super.logToConsole(logLevel, message, ...data);
+  }
+}

@@ -2,6 +2,13 @@ import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import { useUserStore } from "@/store/user.store";
 import { Validator, ValidatorStatus } from "@/models/store/validator";
+import { useToast } from "vue-toastification";
+import { StoreLogger } from "@/services/logged.service";
+import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
+import { LogLevel } from "@/services/logger/log-level";
+
+const toast = useToast();
+const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
 
 interface ValidatorsState {
   validators: Validator[]
@@ -22,27 +29,29 @@ export const useValidatorsStore = defineStore({
         .then((resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.validators = resp.data.validators;
-            this.numberOfActiveValidators = resp.data.numberOfActive
+            this.numberOfActiveValidators = resp.data.numberOfActive;
           } else {
-            // TODO
+            const message = 'Error fetching validators data';
+            logger.logToConsole(LogLevel.ERROR, message);
+            toast.error(message);
           }
       });
 
     },
 
-    fetchNumberOfActiveValidators(){ // TODO probably remove this func and fetchActiveValidatorCount from validatorsApi
-      apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
-        if( response.error == null ) {
-          if (response.data == undefined) {
-            this.numberOfActiveValidators = 0 // TODO maybe some error ???
-          } else {
-            this.numberOfActiveValidators = response.data.data.activeTotal.aggregate.count;
-          }
-        } else {
-          //TODO: error handling
-        }
-      });
-    },
+    // fetchNumberOfActiveValidators(){ // TODO probably remove this func and fetchActiveValidatorCount from validatorsApi
+    //   apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
+    //     if( response.error == null ) {
+    //       if (response.data == undefined) {
+    //         this.numberOfActiveValidators = 0; // TODO maybe some error ???
+    //       } else {
+    //         this.numberOfActiveValidators = response.data.data.activeTotal.aggregate.count;
+    //       }
+    //     } else {
+    //       //TODO: error handling
+    //     }
+    //   });
+    // },
   },
   getters: {
     getValidators(): Validator[]{

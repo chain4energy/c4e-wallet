@@ -39,7 +39,6 @@ import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 
-
 use([
   CanvasRenderer,
   PieChart,
@@ -55,37 +54,30 @@ onBeforeMount(() => {
 });
 
 const boundedPercentage = computed(() => {
-  let res:number = Number(tokensStore.getStakingPool.bonded_tokens) / Number(tokensStore.getTotalSupply.amount) * 100;
-  return res.toFixed(2);
+  return tokensStore.getBoundedPercentage();
 });
 const unboundedPercentage = computed(() => {
-  let res:number = (Number(tokensStore.getTotalSupply.amount)
-    - Number(tokensStore.getStakingPool.bonded_tokens)
-    - Number(tokensStore.getStakingPool.not_bonded_tokens)) / Number(tokensStore.getTotalSupply.amount) * 100;
-  return res.toFixed(2);
+  return tokensStore.getUnboundedPercentage();
 });
 
 const unboundingPercentage = computed(() => {
-  let res:number = Number(tokensStore.getStakingPool.not_bonded_tokens) / Number(tokensStore.getTotalSupply.amount) * 100;
-  return res.toFixed(2);
+  return tokensStore.getUnboundingPercentage()
 });
 
-const bounded = computed((): number => {
-  return Number(tokensStore.getStakingPool.bonded_tokens);
+const bounded = computed((): string => {
+  return tokensStore.getStakingPool.getBondedTokensViewAmount();
 });
 
-const unBounded = computed(() :number => {
-  return Number(tokensStore.getTotalSupply.amount)
-    - Number(tokensStore.getStakingPool.bonded_tokens)
-    - Number(tokensStore.getStakingPool.not_bonded_tokens);
+const unBounded = computed((): string => {
+  return tokensStore.getTotalUnbondedViewAmount()
 });
 
-const unBounding = computed(() :number => {
-  return Number(tokensStore.getStakingPool.not_bonded_tokens);
+const unBounding = computed((): string => {
+  return tokensStore.getStakingPool.getNotBondedTokensViewAmount();
 });
 
-const totalSupply = computed(() :number => {
-  return Number(tokensStore.getTotalSupply.amount);
+const totalSupply = computed((): string => {
+  return tokensStore.getTotalSupply.getViewAmount();
 });
 
 const option = ref( {

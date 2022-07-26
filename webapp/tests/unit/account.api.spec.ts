@@ -1,19 +1,15 @@
 import { setActivePinia, createPinia } from 'pinia'
-import axios, { AxiosResponse } from 'axios';
-import { AccountType, ContinuousVestingData } from "@/models/store/account";
+import { AxiosResponse } from 'axios';
+import { AccountType } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
-import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createErrorResponseData, defaultAxiosErrorName, defaultDenom, defaultErrorName } from '../utils/common.blockchain.data.util';
-import { createBaseAccountResponseData, createContinuousVestingAccountResponseData, createSingleBalanceResponseData, defaultContinuousVestingAccountEndTime, defaultContinuousVestingAccountOriginalVesting, defaultContinuousVestingAccountStartTime, vestingAccountTimeToSystem } from '../utils/account.blockchain.data.util';
-import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, defaultDelegatorDelegationsValidators, defaultDelegatorUnbondingDelegationsValidators, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, findDelegatorUnbondingDelegationAmountByValidator, findDelegatorUnbondingDelegationTotalAmount } from '../utils/staking.blockchain.data.util';
-import { createRewardsResponseData, defaultRewardsValidators, findRewardsByValidator, findTotalRewards } from '../utils/distribution.blockchain.data.util';
+import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createErrorResponse, createErrorResponseData, defaultAxiosErrorName, defaultDenom, defaultErrorName } from '../utils/common.blockchain.data.util';
+import { createAddressNotExistsErrorResponse, createBaseAccountResponseData, createContinuousVestingAccountResponseData, createSingleBalanceResponseData, expectBaseAccount, expectContinuousVestingAccount } from '../utils/account.blockchain.data.util';
+import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, expectDelegatorDelegations, expectDelegatorUnbondingDelegations } from '../utils/staking.blockchain.data.util';
+import { createRewardsResponseData, defaultRewardsValidators, expectRewards } from '../utils/distribution.blockchain.data.util';
 
 import { useConfigurationStore } from '@/store/configuration.store';
-import { Keplr } from "@keplr-wallet/types";
-import { OfflineDirectSigner } from '@cosmjs/proto-signing';
-import { OfflineAminoSigner } from '@cosmjs/amino';
-import { OfflineSigner } from '@cosmjs/launchpad';
 import { ConnectionInfo, ConnectionType } from '@/api/wallet.connecton.api';
-import { SigningStargateClient, DeliverTxResponse, HttpEndpoint, SigningStargateClientOptions } from "@cosmjs/stargate";
+import { DeliverTxResponse } from "@cosmjs/stargate";
 import { StdFee } from "@cosmjs/amino";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import {
@@ -29,73 +25,30 @@ import { RequestResponse } from '@/models/request-response';
 import { TxBroadcastError, TxData } from '@/api/tx.broadcast.base.api';
 import Long from 'long';
 import { VoteOption } from '@/api/account.api';
+import { mockAxios, mockKeplr } from '../utils/mock.util';
+import { useSplashStore } from '@/store/splash.store';
+import { defaultGas, defaultMemo, defaultTxErrorResponse, defaultTxSuccessResponse, msgBeginRedelegateTypeUrl, msgDelegateTypeUrl, msgUndelegateTypeUrl, msgVoteTypeUrl, msgWithdrawDelegatorRewardTypeUrl } from '../utils/tx.broadcast.blockchain.data.util';
+import { BigDecimal } from '@/models/store/big.decimal';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+jest.mock("axios");
+const mockedAxios = mockAxios();
 const api = apiFactory.accountApi()
-apiFactory.setAxiosInstance(mockedAxios)
+
+const mockedSigningStargateClient = mockKeplr().mockedSigningStargateClient
 
 const address = 'c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55'
 const validatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue'
 const secondValidatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue'
 
-const denom = defaultDenom
-const memo = ''
+const denom = defaultDenom;
+const memo = defaultMemo
 
-const gas = {
-  vote: '10000',
-  delegate: '20000',
-  undelegate: '30000',
-  redelegate: '40000',
-  claimRewards: '50000',
-};
+const gas = defaultGas;
 
-const txSuccessResponse = {
-  height: '123222',
-  code: 0,
-  transactionHash: '8653E21B825AAFCDC75261EAEFF71207044AF40DE390BEB31C8B0C9AA7BAA3EA',
-  rawLog: 'Success log',
-  data: undefined,
-  gasUsed: 34,
-  gasWanted: 22
-} as unknown as DeliverTxResponse
+const txSuccessResponse = defaultTxSuccessResponse;
 
-const txErrorResponse = {
-  height: '67812',
-  code: 3,
-  transactionHash: 'D1A61D1288598A7A5718A4ABC6176D3E70E374A81D91623DE88BDF516A25FBE8',
-  rawLog: 'Error log',
-  data: undefined,
-  gasUsed: 11,
-  gasWanted: 44
-} as unknown as DeliverTxResponse
+const txErrorResponse = defaultTxErrorResponse;
 
-const mockedKeplrImpl = {
-  getOfflineSigner: jest.fn(() => { }),
-} as unknown as Keplr;
-const mockedKeplr = mockedKeplrImpl as jest.Mocked<Keplr>;
-window.keplr = mockedKeplr
-
-const mockedOfflineSignerImpl = {
-} as unknown as OfflineAminoSigner & OfflineDirectSigner;
-const mockedOfflineSigner = mockedOfflineSignerImpl as jest.Mocked<OfflineAminoSigner & OfflineDirectSigner>;
-mockedKeplr.getOfflineSigner.mockReturnValue(mockedOfflineSigner)
-window.keplr = mockedKeplr
-
-const mockedSigningStargateClientImpl = {
-  signAndBroadcast: jest.fn(() => { }),
-} as unknown as SigningStargateClient;
-const mockedSigningStargateClient = mockedSigningStargateClientImpl as jest.Mocked<SigningStargateClient>;
-
-const mockedConnectWithSigner = jest.fn(async (endpoint: string | HttpEndpoint, signer: OfflineSigner, options?: SigningStargateClientOptions): Promise<SigningStargateClient> => { return undefined as unknown as SigningStargateClient })
-mockedConnectWithSigner.mockResolvedValue(mockedSigningStargateClient)
-SigningStargateClient.connectWithSigner = mockedConnectWithSigner as unknown as (endpoint: string | HttpEndpoint, signer: OfflineSigner, options?: SigningStargateClientOptions) => Promise<SigningStargateClient>
-
-const msgDelegateTypeUrl = '/cosmos.staking.v1beta1.MsgDelegate';
-const msgUndelegateTypeUrl = '/cosmos.staking.v1beta1.MsgUndelegate';
-const msgBeginRedelegateTypeUrl = '/cosmos.staking.v1beta1.MsgBeginRedelegate'
-const msgVoteTypeUrl = '/cosmos.gov.v1beta1.MsgVote'
-const msgWithdrawDelegatorRewardTypeUrl = '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward'
 
 describe('account api tests', () => {
   beforeEach(() => {
@@ -103,6 +56,7 @@ describe('account api tests', () => {
   });
 
   afterEach(() => {
+    expect(useSplashStore().splashCounter).toBe(0);
     mockedAxios.request.mockClear();
   })
 
@@ -116,9 +70,11 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.address).toBe(address)
-    expect(result.data?.type).toBe(AccountType.BaseAccount)
-    expect(result.data?.continuousVestingData).toBeUndefined();
+
+    expectBaseAccount(result.data, address);
+    // expect(result.data?.address).toBe(address)
+    // expect(result.data?.type).toBe(AccountType.BaseAccount)
+    // expect(result.data?.continuousVestingData).toBeUndefined();
 
   });
 
@@ -132,15 +88,16 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false);
     expect(result.isSuccess()).toBe(true);
     expect(result.error).toBeUndefined();
-    expect(result.data?.address).toBe(address);
-    expect(result.data?.type).toBe(AccountType.ContinuousVestingAccount);
-    expect(result.data?.continuousVestingData).toBeInstanceOf(ContinuousVestingData);
-    expect(result.data?.continuousVestingData?.endTime).toBe(defaultContinuousVestingAccountEndTime + vestingAccountTimeToSystem);
-    expect(result.data?.continuousVestingData?.startTime).toBe(defaultContinuousVestingAccountStartTime + vestingAccountTimeToSystem);
-    expect(result.data?.continuousVestingData?.originalVesting.length).toBe(defaultContinuousVestingAccountOriginalVesting.length);
-    const origVesting = result.data?.continuousVestingData?.originalVesting[0]
-    expect(origVesting?.amount).toBe(defaultContinuousVestingAccountOriginalVesting[0].amount);
-    expect(origVesting?.denom).toBe(defaultContinuousVestingAccountOriginalVesting[0].denom);
+    expectContinuousVestingAccount(result.data, address);
+  //   expect(result.data?.address).toBe(address);
+  //   expect(result.data?.type).toBe(AccountType.ContinuousVestingAccount);
+  //   expect(result.data?.continuousVestingData).toBeInstanceOf(ContinuousVestingData);
+  //   expect(result.data?.continuousVestingData?.endTime).toBe(defaultContinuousVestingAccountEndTime + vestingAccountTimeToSystem);
+  //   expect(result.data?.continuousVestingData?.startTime).toBe(defaultContinuousVestingAccountStartTime + vestingAccountTimeToSystem);
+  //   expect(result.data?.continuousVestingData?.originalVesting.length).toBe(defaultContinuousVestingAccountOriginalVesting.length);
+  //   const origVesting = result.data?.continuousVestingData?.originalVesting[0]
+  //   expect(origVesting?.amount).toBe(defaultContinuousVestingAccountOriginalVesting[0].amount);
+  //   expect(origVesting?.denom).toBe(defaultContinuousVestingAccountOriginalVesting[0].denom);
   });
 
   it('gets unexpected data', async () => {
@@ -173,12 +130,7 @@ describe('account api tests', () => {
   });
 
   it('gets not existent address', async () => {
-    const response = {
-      data: createErrorResponseData(5, accountNotFoundErrorMessage),
-      status: 404,
-      statusText: '',
-    };
-    const error = createAxiosError(axiosError404Message, response as AxiosResponse);
+    const error = createAddressNotExistsErrorResponse();
 
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchAccount(address);
@@ -191,13 +143,13 @@ describe('account api tests', () => {
   });
 
   it('gets address with 404 response and error code 0', async () => {
-    const response = {
-      data: createErrorResponseData(0, accountNotFoundErrorMessage),
-      status: 404,
-      statusText: '',
-      // headers: "AxiosResponseHeaders",
-    };
-    const error = createAxiosError(axiosError404Message, response as AxiosResponse);
+    // const response = {
+    //   data: createErrorResponseData(0, accountNotFoundErrorMessage),
+    //   status: 404,
+    //   statusText: '',
+    // };
+    // const error = createAxiosError(axiosError404Message, response as AxiosResponse);
+    const error = createErrorResponse(404, 0, accountNotFoundErrorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchAccount(address);
@@ -211,13 +163,15 @@ describe('account api tests', () => {
 
   it('gets address with 404 response and error messege <> NotFound', async () => {
     const errorMessage = 'some error message';
-    const response = {
-      data: createErrorResponseData(5, errorMessage),
-      status: 404,
-      statusText: '',
-      // headers: "AxiosResponseHeaders",
-    };
-    const error = createAxiosError(axiosError404Message, response as AxiosResponse);
+    // const response = {
+    //   data: createErrorResponseData(5, errorMessage),
+    //   status: 404,
+    //   statusText: '',
+    //   // headers: "AxiosResponseHeaders",
+    // };
+    // const error = createAxiosError(axiosError404Message, response as AxiosResponse);
+
+    const error = createErrorResponse(404, 5, errorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchAccount(address);
@@ -230,28 +184,30 @@ describe('account api tests', () => {
   });
 
   it('gets address with not 404 response and error messege <> NotFound', async () => {
-    const axiosErrorMessage = axiosErrorMessagePrefix + '401';
-    const response = {
-      data: createErrorResponseData(5, accountNotFoundErrorMessage),
-      status: 401,
-      statusText: '',
-      // headers: "AxiosResponseHeaders",
-    };
-    const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
-
+    // const axiosErrorMessage = axiosErrorMessagePrefix + '401';
+    // const response = {
+    //   data: createErrorResponseData(5, accountNotFoundErrorMessage),
+    //   status: 401,
+    //   statusText: '',
+    //   // headers: "AxiosResponseHeaders",
+    // };
+    // const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+    const status = 401;
+    const error = createErrorResponse(status, 5, accountNotFoundErrorMessage);
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchAccount(address);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
-    expect(result.error?.message).toBe(axiosErrorMessage);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(5);
     expect(result.error?.data?.message).toBe(accountNotFoundErrorMessage);
   });
 
   it('gets balance', async () => {
+    const amount = 49031887606805n;
     const balance = {
-      data: createSingleBalanceResponseData(denom, '49031887606805')
+      data: createSingleBalanceResponseData(denom, amount.toString())
     };
 
     mockedAxios.request.mockResolvedValue(balance);
@@ -259,28 +215,30 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.amount).toBe('49031887606805')
+    expect(result.data?.amount).toBe(amount)
     expect(result.data?.denom).toBe(denom)
   });
 
   it('gets balance with error', async () => {
     const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
-    const axiosErrorMessage = axiosErrorMessagePrefix + '400';
+    // const axiosErrorMessage = axiosErrorMessagePrefix + '400';
 
-    const response = {
-      data: createErrorResponseData(3, errorMessage),
-      status: 400,
-      statusText: '',
-      // headers: "AxiosResponseHeaders",
-    };
-    const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+    // const response = {
+    //   data: createErrorResponseData(3, errorMessage),
+    //   status: 400,
+    //   statusText: '',
+    // };
+    // const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+
+    const status = 400;
+    const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchBalance(address, denom)
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
-    expect(result.error?.message).toBe(axiosErrorMessage);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
 
@@ -296,13 +254,14 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.delegations.size).toBe(defaultDelegatorDelegationsValidators.length);
-    expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount());
-    defaultDelegatorDelegationsValidators.forEach(validatorAddress => {
-      const delegation = result.data?.delegations.get(validatorAddress);
-      expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress));
-      expect(delegation?.validatorAddress).toBe(validatorAddress);
-    });
+    expectDelegatorDelegations(result.data)
+    // expect(result.data?.delegations.size).toBe(defaultDelegatorDelegationsValidators.length);
+    // expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount());
+    // defaultDelegatorDelegationsValidators.forEach(validatorAddress => {
+    //   const delegation = result.data?.delegations.get(validatorAddress);
+    //   expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress));
+    //   expect(delegation?.validatorAddress).toBe(validatorAddress);
+    // });
   });
 
   it('gets delegator delegations - no delegations', async () => {
@@ -316,7 +275,7 @@ describe('account api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
     expect(result.data?.delegations.size).toBe(0);
-    expect(result.data?.totalDelegated).toBe(0);
+    expect(result.data?.totalDelegated).toBe(0n);
   });
 
   it('gets delegator delegations paginated', async () => {
@@ -359,13 +318,15 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.delegations.size).toBe(validatorsAll.length);
-    expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount(balancesAll));
-    validatorsAll.forEach(validatorAddress => {
-      const delegation = result.data?.delegations.get(validatorAddress);
-      expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress, validatorsAll, balancesAll));
-      expect(delegation?.validatorAddress).toBe(validatorAddress);
-    });
+
+    expectDelegatorDelegations(result.data, validatorsAll, balancesAll)
+    // expect(result.data?.delegations.size).toBe(validatorsAll.length);
+    // expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount(balancesAll));
+    // validatorsAll.forEach(validatorAddress => {
+    //   const delegation = result.data?.delegations.get(validatorAddress);
+    //   expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress, validatorsAll, balancesAll));
+    //   expect(delegation?.validatorAddress).toBe(validatorAddress);
+    // });
   });
 
   it('gets delegator delegations with error', async () => {
@@ -438,18 +399,20 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.undelegations.size).toBe(defaultDelegatorUnbondingDelegationsValidators.length);
-    expect(result.data?.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount());
-    defaultDelegatorUnbondingDelegationsValidators.forEach(validatorAddress => {
-      const undelegation = result.data?.undelegations.get(validatorAddress);
-      const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress);
-      expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
-      for (let i = 0; i < validatorExpecedEntries.length; i++) {
-        expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
 
-      }
-      expect(undelegation?.validatorAddress).toBe(validatorAddress);
-    });
+    expectDelegatorUnbondingDelegations(result.data);
+    // expect(result.data?.undelegations.size).toBe(defaultDelegatorUnbondingDelegationsValidators.length);
+    // expect(result.data?.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount());
+    // defaultDelegatorUnbondingDelegationsValidators.forEach(validatorAddress => {
+    //   const undelegation = result.data?.undelegations.get(validatorAddress);
+    //   const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress);
+    //   expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
+    //   for (let i = 0; i < validatorExpecedEntries.length; i++) {
+    //     expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+
+    //   }
+    //   expect(undelegation?.validatorAddress).toBe(validatorAddress);
+    // });
   });
 
   it('gets delegator unbonding delegations - no delegations', async () => {
@@ -463,7 +426,7 @@ describe('account api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
     expect(result.data?.undelegations.size).toBe(0);
-    expect(result.data?.totalUndelegating).toBe(0);
+    expect(result.data?.totalUndelegating).toBe(0n);
   });
 
   it('gets delegator unbonding delegations paginated', async () => {
@@ -506,18 +469,22 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.undelegations.size).toBe(validatorsAll.length);
-    expect(result.data?.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount(entiresAll));
-    validatorsAll.forEach(validatorAddress => {
-      const undelegation = result.data?.undelegations.get(validatorAddress);
-      const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress, validatorsAll, entiresAll);
-      expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
-      for (let i = 0; i < validatorExpecedEntries.length; i++) {
-        expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
 
-      }
-      expect(undelegation?.validatorAddress).toBe(validatorAddress);
-    });
+    expectDelegatorUnbondingDelegations(result.data, validatorsAll, entiresAll);
+
+
+    // expect(result.data?.undelegations.size).toBe(validatorsAll.length);
+    // expect(result.data?.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount(entiresAll));
+    // validatorsAll.forEach(validatorAddress => {
+    //   const undelegation = result.data?.undelegations.get(validatorAddress);
+    //   const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress, validatorsAll, entiresAll);
+    //   expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
+    //   for (let i = 0; i < validatorExpecedEntries.length; i++) {
+    //     expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+
+    //   }
+    //   expect(undelegation?.validatorAddress).toBe(validatorAddress);
+    // });
   });
 
   it('gets delegator unbonding delegations with error', async () => {
@@ -591,18 +558,7 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data?.rewards.size).toBe(defaultRewardsValidators.length);
-    expect(result.data?.totalRewards).toBe(Number(findTotalRewards(defaultDenom).amount));
-    defaultRewardsValidators.forEach(validatorAddress => {
-      const reward = result.data?.rewards.get(validatorAddress);
-      const expectedReward = findRewardsByValidator(validatorAddress);
-      expect(reward?.rewards.length).toBe(expectedReward.length);
-      for (let i = 0; i < expectedReward.length; i++) {
-        expect(reward?.rewards[i].amount).toBe(expectedReward[i].amount);
-        expect(reward?.rewards[i].denom).toBe(expectedReward[i].denom);
-      }
-      expect(reward?.validatorAddress).toBe(validatorAddress);
-    });
+    expectRewards(result.data);
   });
 
   it('gets delegator rewards - no rewards', async () => {
@@ -616,7 +572,7 @@ describe('account api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
     expect(result.data?.rewards.size).toBe(0);
-    expect(result.data?.totalRewards).toBe(0);
+    expect(result.data?.totalRewards).toStrictEqual(new BigDecimal(0));
   });
 
   it('gets delegator rewards with error', async () => {
@@ -850,7 +806,7 @@ async function keplrTxError(action: () => Promise<RequestResponse<TxData, TxBroa
   expect(response.data).toBeUndefined();
   expect(response.error).not.toBeUndefined();
   expect(response.error?.message).not.toBeUndefined();
-  expect(response.error?.message).toBe('Transaction Broadcast error');
+  expect(response.error?.message).toBe('Deliver tx failure');
 
   expect(response.error?.txData).not.toBeUndefined();
   expectTx(txErrorResponse, response.error?.txData)
@@ -955,8 +911,8 @@ function expectMessage<M>(signingMessage: {
   messages: readonly EncodeObject[] | undefined,
   fee: StdFee | "auto" | number | undefined,
   memo: string | undefined
-}, expectedGas: string, expectedMsgTypeUrl: string, expectedMessages: M[]) {
-  expect(signingMessage.fee).toStrictEqual({ amount: [{ amount: "0", "denom": defaultDenom }], gas: expectedGas });
+}, expectedGas: number, expectedMsgTypeUrl: string, expectedMessages: M[]) {
+  expect(signingMessage.fee).toStrictEqual({ amount: [{ amount: "0", "denom": defaultDenom }], gas: expectedGas.toString() });
   expect(signingMessage.signerAddress).toBe(address);
   expect(signingMessage.memo).toBe(memo);
   expect(signingMessage.messages).not.toBe(undefined);

@@ -1,3 +1,5 @@
+import { BigDecimal } from "@/models/store/big.decimal";
+import { Rewards } from "@/models/store/distribution";
 import { defaultDenom } from "./common.blockchain.data.util";
 
 export const defaultRewardsValidators = [
@@ -70,4 +72,19 @@ export function createRewards(validators = defaultRewardsValidators, rewards = d
     })
   }
   return rewardsArray;
+}
+
+export function expectRewards(rewards: Rewards | undefined, expectedValidators = defaultRewardsValidators, expectedRewards = defaultRewardsCoins, expectedDenom = defaultDenom, expectedTotal = defaultRewardsTotal) {
+  expect(rewards?.rewards.size).toBe(expectedValidators.length);
+  expect(rewards?.totalRewards).toStrictEqual(new BigDecimal(findTotalRewards(expectedDenom, expectedTotal).amount));
+  expectedValidators.forEach(validatorAddress => {
+    const reward = rewards?.rewards.get(validatorAddress);
+    const expectedReward = findRewardsByValidator(validatorAddress, expectedValidators, expectedRewards);
+    expect(reward?.rewards.length).toBe(expectedReward.length);
+    for (let i = 0; i < expectedReward.length; i++) {
+      expect(reward?.rewards[i].amount).toStrictEqual(new BigDecimal(expectedReward[i].amount));
+      expect(reward?.rewards[i].denom).toBe(expectedReward[i].denom);
+    }
+    expect(reward?.validatorAddress).toBe(validatorAddress);
+  });
 }

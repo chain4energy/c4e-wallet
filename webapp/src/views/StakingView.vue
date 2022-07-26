@@ -20,7 +20,7 @@ onMounted(()=> {
   }
 })
 watch(
-  () => useUserStore().getAccType,
+  () => useUserStore().getAccountType,
   (accType) => {
     if(accType !== AccountType.ContinuousVestingAccount){ // TODO check if isContinuousVestingAccount can be used ??
       router.push({name: 'base'})

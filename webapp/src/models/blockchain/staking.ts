@@ -1,3 +1,4 @@
+import { Coin } from "./common"
 import { PaginatedResponse } from "./pagination"
 
 export interface DelegationsResponse extends PaginatedResponse {
@@ -10,10 +11,7 @@ export interface Delegation {
     validator_address: string,
     shares: string
   },
-  balance: {
-    denom: string,
-    amount: string
-  }
+  balance: Coin
 }
 
 export interface UnbondigDelegationsResponse extends PaginatedResponse {
@@ -32,4 +30,3 @@ export interface UnbondigDelegation {
     }
   ]
 }
-

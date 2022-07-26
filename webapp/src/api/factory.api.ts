@@ -49,7 +49,7 @@ class ApiFactory {
     return this._walletApi;
   }
   public setAxiosInstance(axios: AxiosInstance) {
-    this._axios = axios
+    this._axios = axios;
   }
 }
 

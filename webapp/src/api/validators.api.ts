@@ -11,7 +11,7 @@ import { mapAndAddValidators, mapValidators, sortAndRankValidators } from "@/mod
 export class ValidatorsApi extends BaseApi {
 
   getServiceType(): ServiceTypeEnum {
-    return ServiceTypeEnum.ACTIVE_VALIDATORS_SERVICE;
+    return ServiceTypeEnum.VALIDATORS_API;
   }
 
   public async fetchActiveValidatorCount(): Promise<RequestResponse<ActiveValidatorCount, ErrorData<any>>> {
@@ -33,8 +33,8 @@ export class ValidatorsApi extends BaseApi {
   private VALIDATORS_URL = process.env.VUE_APP_VALIDATORS_URL;
 
   public async fetchAllValidators(): Promise<RequestResponse<{ validators: Validator[], numberOfActive: number}, ErrorData<BlockchainApiErrorData>>> {
-    const mapData = (bcData: ValidatorsResponse | undefined) => {return mapValidators(bcData?.validators)}
-    const mapAndAddData = (data: { validators: Validator[], numberOfActive: number}, bcData: ValidatorsResponse | undefined) => {return mapAndAddValidators(data.validators, bcData?.validators, data.numberOfActive)}
+    const mapData = (bcData: ValidatorsResponse | undefined) => {return mapValidators(bcData?.validators);};
+    const mapAndAddData = (data: { validators: Validator[], numberOfActive: number}, bcData: ValidatorsResponse | undefined) => {return mapAndAddValidators(data.validators, bcData?.validators, data.numberOfActive);};
 
     const result = await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+this.VALIDATORS_URL,
             mapData, mapAndAddData, true, null, 'fetchAllValidators - ');

@@ -1,6 +1,6 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import { RequestResponse } from "@/models/request-response";
-import BaseApi from "@/api/base.api";
+import BaseApi, { BlockchainPagination } from "@/api/base.api";
 import {Proposal } from "@/models/store/proposal";
 import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
 import { useToast } from "vue-toastification";
@@ -17,7 +17,7 @@ const toast = useToast;
 export class ProposalsApi extends BaseApi {
 
   getServiceType(): ServiceTypeEnum {
-    return ServiceTypeEnum.PROPOSAL_SERVICE;
+    return ServiceTypeEnum.PROPOSAL_API;
   }
 
   private PROPOSALS_URL = process.env.VUE_APP_PROPOSALS_URL;
@@ -29,12 +29,12 @@ export class ProposalsApi extends BaseApi {
     //  return mapAccount(bcData?.account);
    // }
   //}
-  public async fetchProposals(): Promise<RequestResponse<{ proposals: Proposal[], numberOfActive: number}, ErrorData<BlockchainApiErrorData>>> {
+  public async fetchProposals(paginationKey: string | null): Promise<{ response: RequestResponse<{ proposals: Proposal[], numberOfActive: number}, ErrorData<BlockchainApiErrorData>>, nextKey: string | null }> {
     const mapData = (bcData: ProposalsResponse | undefined) => {return mapProposals(bcData?.proposals);};
-    const mapAndAddData = (data: { proposals: Proposal[], numberOfActive: number}, bcData: ProposalsResponse | undefined) => {return mapAndAddProposals(data.proposals, bcData?.proposals, data.numberOfActive);};
-
-    const result = await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+this.PROPOSALS_URL,
-      mapData, mapAndAddData, true, null, 'fetchAllProposals - ');
+    // const mapAndAddData = (data: { proposals: Proposal[], numberOfActive: number}, bcData: ProposalsResponse | undefined) => {return mapAndAddProposals(data.proposals, bcData?.proposals, data.numberOfActive);};
+    const pagination = new BlockchainPagination(paginationKey ? paginationKey : undefined, 10, true); // TODO '10, true; - to config params
+    const result = await this.axiosGetBlockchainApiPaginatedCall(useConfigurationStore().config.bcApiURL+this.PROPOSALS_URL,
+    pagination, mapData, true, null, 'fetchAllProposals - ');
     return result;
   }
   public async fetchProposalById(id: number): Promise<RequestResponse<{ proposal: Proposal}, ErrorData<BlockchainApiErrorData>>> {

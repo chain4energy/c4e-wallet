@@ -1,11 +1,13 @@
 import { useTokensStore } from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
+import { BigDecimal, divideBigInts } from "./big.decimal";
+import { toPercentage } from "./common";
 
 export class Validator{
   operatorAddress: string;
   jailed: boolean;
   status: ValidatorStatus;
-  tokens: string;
+  tokens: bigint;
   description: ValidatorDescription;
   commission: ValidatorCommission;
   rank: number;
@@ -13,7 +15,7 @@ export class Validator{
   constructor (operatorAddress: string,
       jailed: boolean,
       status: ValidatorStatus,
-      tokens: string,
+      tokens: bigint,
       description: ValidatorDescription,
       commission: ValidatorCommission) {
     this.operatorAddress = operatorAddress;
@@ -25,24 +27,52 @@ export class Validator{
     this.rank = 0;
   }
 
-  public get votingPower(): number {
-    const total = useTokensStore().getStakingPool.bonded_tokens;
-    if(total){
-      return (Number(this.tokens) / total) * 100;
+  public get votingPower(): BigDecimal {
+    const total = useTokensStore().getStakingPool.bondedTokens;
+    if(total || total > 0n){
+      return divideBigInts(this.tokens, total); // TODONUMBER
     }
-    return 0;
+    return new BigDecimal(0);
   }
 
-  public get delegatedAmount(): string {
+  public get votingPowerViewPercentage(): string {
+    return toPercentage(this.votingPower)
+  }
+
+  public get delegatedAmount(): bigint {
     return useUserStore().getDelegations.getAmountByValidator(this.operatorAddress);
   }
 
-  public get undelegatingAmount(): number {
+  public get delegatedViewAmount(): string {
+    return useUserStore().getDelegations.getViewAmountByValidator(this.operatorAddress);
+  }
+
+  public get undelegatingAmount(): bigint {
     return useUserStore().getUndelegations.getAmountByValidator(this.operatorAddress);
   }
 
-  public get rewardsAmount(): string {
-    return useUserStore().getRewardList.getAmountByValidator(this.operatorAddress);
+  public get undelegatingViewAmount(): string {
+    return useUserStore().getUndelegations.getViewAmountByValidator(this.operatorAddress);
+  }
+
+  public get rewardsAmount(): BigDecimal {
+    return useUserStore().getRewards.getAmountByValidator(this.operatorAddress);
+  }
+
+  public get rewardsViewAmount(): string {
+    return useUserStore().getRewards.getViewAmountByValidator(this.operatorAddress);
+  }
+
+  public get viewStatus(): string {
+    switch (this.status) {
+      case ValidatorStatus.Bonded:
+        return 'Active';  // TODO place it in locales config
+      default:
+        if (this.jailed) {
+          return 'Jailed'; // TODO place it in locales config
+        }
+        return 'Inactive'; // TODO place it in locales config
+    }
   }
 
 }
@@ -59,25 +89,29 @@ export class ValidatorDescription {
       website: string,
       securityContact: string,
       details: string) {
-    this.moniker = moniker
-    this.identity = identity
-    this.website = website
-    this.securityContact = securityContact
-    this.details = details
+    this.moniker = moniker;
+    this.identity = identity;
+    this.website = website;
+    this.securityContact = securityContact;
+    this.details = details;
   }
 }
 
 export class ValidatorCommission {
-  rate: string;
-  maxRate: string;
-  maxChangeRate: string;
+  rate: number;
+  maxRate: number;
+  maxChangeRate: number;
 
-  constructor (rate: string,
-      max_rate: string,
-      max_change_rate: string) {
-    this.rate = rate
-    this.maxRate = max_rate
-    this.maxChangeRate = max_change_rate
+  constructor (rate: number,
+      max_rate: number,
+      max_change_rate: number) {
+    this.rate = rate;
+    this.maxRate = max_rate;
+    this.maxChangeRate = max_change_rate;
+  }
+
+  public get rateViewPercentage(): string {
+    return toPercentage(this.rate, 2)
   }
 }
 
@@ -87,4 +121,3 @@ export enum ValidatorStatus {
   Unbonded,
   Unspecified
 }
-

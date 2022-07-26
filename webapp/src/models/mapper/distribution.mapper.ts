@@ -1,7 +1,8 @@
 import { Reward, RewardsResponse,} from "@/models/blockchain/distribution";
 import { ValidatorRewards, Rewards} from "@/models/store/distribution";
 import { useConfigurationStore } from "@/store/configuration.store";
-import { Coin } from "../store/account";
+import { BigDecimal } from "../store/big.decimal";
+import { DecCoin } from "../store/common";
 
 export function mapRewards(rewardsResponse: RewardsResponse | undefined): Rewards  {
   if (rewardsResponse === undefined) {
@@ -18,19 +19,20 @@ export function mapRewards(rewardsResponse: RewardsResponse | undefined): Reward
 
   const map = new Map<string, ValidatorRewards>();
   rewardsResponse.rewards.forEach(rew => {
-    map.set(rew.validator_address, mapReward(rew))
-  })
-  const denom = useConfigurationStore().config.stakingDenom
-  const total = rewardsResponse.total.find(val => val.denom === denom)?.amount
-  return new Rewards(map, total === undefined ? 0 : Number(total));
+    map.set(rew.validator_address, mapReward(rew));
+  });
+  const denom = useConfigurationStore().config.stakingDenom;
+  const total = rewardsResponse.total.find(val => val.denom === denom)?.amount;
+  // TODO to big decimal
+  return new Rewards(map, total === undefined ? new BigDecimal(0) : new BigDecimal(total));
 }
 
 export function mapReward(reward: Reward | undefined): ValidatorRewards  {
   if (reward === undefined) {
       throw new Error('Reward is undefined');
   }
-  const coins = Array<Coin>();
-  reward.reward.forEach(coin => coins.push(new Coin(coin.amount, coin.denom)));
+  const coins = Array<DecCoin>();
+  reward.reward.forEach(coin => coins.push(new DecCoin(new BigDecimal(coin.amount), coin.denom)));
   return new ValidatorRewards(reward.validator_address, coins);
 }
 

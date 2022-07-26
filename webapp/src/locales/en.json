@@ -56,7 +56,7 @@
     "COMMUNITY_POOL": "Community pool",
     "STRATEGIC_REVERSE_POOL": "Strategic reverse pool",
     "AIRDROP": "Airdrop",
-    "TOKENOMICS": "Tokenomics",
+    "TOKENOMICS": "C4E Tokenomics",
     "BOUNDED": "Bounded",
     "UNBOUNDED": "Unbounded",
     "UNBOUNDING": "Unbounding",
@@ -106,7 +106,9 @@
     "AVAILABLE": "Available",
     "STACKED": "Stacked",
     "UNSTACKING": "Unstacking",
-    "CLAIM_REWARDS": "Claim rewards"
+    "CLAIM_REWARDS": "Claim rewards",
+    "LOCKED": "Locked",
+    "VESTING_END": "Vesting end"
   },
   "COMMON": {
     "CLOSE": "Close",

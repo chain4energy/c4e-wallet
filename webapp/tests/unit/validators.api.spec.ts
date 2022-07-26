@@ -1,24 +1,29 @@
 import { setActivePinia, createPinia } from 'pinia'
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import apiFactory from "@/api/factory.api";
 import { axiosErrorMessagePrefix, createAxiosError, createErrorResponseData, defaultAxiosErrorName } from '../utils/common.blockchain.data.util';
-import { createValidators, createValidatorsResponseData, defaultValidators, expectValidator, findNumberOfActiveValidators } from '../utils/validator.blockchain.data.util';
+import { createValidators, createValidatorsResponseData, defaultValidators, expectValidator, expectValidators, findNumberOfActiveValidators } from '../utils/validator.blockchain.data.util';
+import { mockAxios } from '../utils/mock.util';
+import { useSplashStore } from '@/store/splash.store';
+import { createErrorResponse } from '../utils/common.blockchain.data.util';
 
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+jest.mock("axios");
+const mockedAxios = mockAxios();
+// const mockedAxios = axios as jest.Mocked<typeof axios>;
 const api = apiFactory.validatorsApi()
-apiFactory.setAxiosInstance(mockedAxios)
+// apiFactory.setAxiosInstance(mockedAxios)
 
-describe('account api tests', () => {
+describe('validators api tests', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   });
 
   afterEach(() => {
+    expect(useSplashStore().splashCounter).toBe(0);
     mockedAxios.request.mockClear();
   })
 
-  it('gets validators - delegations exist', async () => {
+  it('gets validators - validators exist', async () => {
     const validators = {
       data: createValidatorsResponseData()
     };
@@ -29,17 +34,11 @@ describe('account api tests', () => {
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
 
-    expect(result.data).not.toBeUndefined();
-    expect(result.data?.validators.length).toBe(defaultValidators.length);
-    expect(result.data?.numberOfActive).toBe(findNumberOfActiveValidators());
-    if (result.data !== undefined) {
-      for (let i = 0; i < defaultValidators.length; i ++) {
-        expectValidator(result.data?.validators[i], validators.data.validators[5 - i], i + 1);
-      }
-    }
+    expectValidators(result.data);
+
   });
 
-  it('gets delegator validators - no validators', async () => {
+  it('gets validators - no validators', async () => {
     const validators = {
       data: createValidatorsResponseData(new Array(), new Array())
     };
@@ -93,36 +92,23 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data).not.toBeUndefined();
-    expect(result.data?.validators.length).toBe(validatorsAddressesAll.length);
-    expect(result.data?.numberOfActive).toBe(findNumberOfActiveValidators(paramsAll));
 
-    const bcAllValidators = createValidators(validatorsAddressesAll, paramsAll);
+    expectValidators(result.data, true, validatorsAddressesAll, paramsAll);
 
-    if (result.data !== undefined) {
-      for (let i = 0; i < validatorsAddressesAll.length; i ++) {
-        expectValidator(result.data?.validators[i], bcAllValidators[5 - i], i + 1);
-      }
-    }
   });
 
   it('gets validators with error', async () => {
     const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
-    const axiosErrorMessage = axiosErrorMessagePrefix + '400';
 
-    const response = {
-      data: createErrorResponseData(3, errorMessage),
-      status: 400,
-      statusText: '',
-    };
-    const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+    const status = 400;
+    const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchAllValidators()
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
-    expect(result.error?.message).toBe(axiosErrorMessage);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
 
@@ -141,14 +127,17 @@ describe('account api tests', () => {
     ];
 
     const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
-    const axiosErrorMessage = axiosErrorMessagePrefix + '400';
+    // const axiosErrorMessage = axiosErrorMessagePrefix + '400';
 
-    const response = {
-      data: createErrorResponseData(3, errorMessage),
-      status: 400,
-      statusText: '',
-    };
-    const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+    // const response = {
+    //   data: createErrorResponseData(3, errorMessage),
+    //   status: 400,
+    //   statusText: '',
+    // };
+    // const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
+
+    const status = 400;
+    const error = createErrorResponse(status, 3, errorMessage);
 
     const validators1 = {
       data: createValidatorsResponseData(validatorsAddresses1, params1, 0, 6, 'my_key')
@@ -161,7 +150,7 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
-    expect(result.error?.message).toBe(axiosErrorMessage);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
   });

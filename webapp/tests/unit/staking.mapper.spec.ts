@@ -1,4 +1,4 @@
-import { createDelegatorDelegations, createDelegatorUnbondingDelegations, defaultDelegatorDelegationsValidators, defaultDelegatorUnbondingDelegationsValidators, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, findDelegatorUnbondingDelegationAmountByValidator, findDelegatorUnbondingDelegationTotalAmount } from '../utils/staking.blockchain.data.util';
+import { createDelegatorDelegations, createDelegatorUnbondingDelegations, defaultDelegatorDelegationsValidators, defaultDelegatorUnbondingDelegationsValidators, expectDelegatorDelegations, expectDelegatorUnbondingDelegations, findDelegatorDelegationAmountByValidator, findDelegatorDelegationTotalAmount, findDelegatorUnbondingDelegationAmountByValidator, findDelegatorUnbondingDelegationTotalAmount } from '../utils/staking.blockchain.data.util';
 import { mapAndAddDelegations, mapAndAddUnbondingDelegations, mapDelegation, mapDelegations, mapUnbondingDelegation, mapUnbondingDelegations } from "@/models/mapper/staking.mapper";
 
 const address = 'c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg';
@@ -11,8 +11,8 @@ describe('tests mapping of staking related data', () => {
   });
 
   it('maps delegation', async () => {
-    const amount = '123456';
-    const bcDelegation = createDelegatorDelegations(address, [validatorAddress], [amount])[0];
+    const amount = 123456n;
+    const bcDelegation = createDelegatorDelegations(address, [validatorAddress], [amount.toString()])[0];
     const storeDelegations = mapDelegation(bcDelegation);
 
     expect(storeDelegations.amount).toBe(amount);
@@ -28,13 +28,15 @@ describe('tests mapping of staking related data', () => {
     const bcDelegations = createDelegatorDelegations(address);
     const storeDelegations = mapDelegations(bcDelegations);
 
-    expect(storeDelegations.delegations.size).toBe(defaultDelegatorDelegationsValidators.length);
-    expect(storeDelegations.totalDelegated).toBe(findDelegatorDelegationTotalAmount());
-    defaultDelegatorDelegationsValidators.forEach(validatorAddress => {
-      const delegation = storeDelegations.delegations.get(validatorAddress);
-      expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress));
-      expect(delegation?.validatorAddress).toBe(validatorAddress);
-    });
+    expectDelegatorDelegations(storeDelegations)
+
+    // expect(storeDelegations.delegations.size).toBe(defaultDelegatorDelegationsValidators.length);
+    // expect(storeDelegations.totalDelegated).toBe(findDelegatorDelegationTotalAmount());
+    // defaultDelegatorDelegationsValidators.forEach(validatorAddress => {
+    //   const delegation = storeDelegations.delegations.get(validatorAddress);
+    //   expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress));
+    //   expect(delegation?.validatorAddress).toBe(validatorAddress);
+    // });
   });
 
   it('maps and adds undefined delegations', async () => {
@@ -78,13 +80,15 @@ describe('tests mapping of staking related data', () => {
     bcDelegations = createDelegatorDelegations(address, validators2, balances2);
     storeDelegations = mapAndAddDelegations(storeDelegations, bcDelegations);
 
-    expect(storeDelegations.delegations.size).toBe(validatorsAll.length);
-    expect(storeDelegations.totalDelegated).toBe(findDelegatorDelegationTotalAmount(balancesAll));
-    validatorsAll.forEach(validatorAddress => {
-      const delegation = storeDelegations.delegations.get(validatorAddress);
-      expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress, validatorsAll, balancesAll));
-      expect(delegation?.validatorAddress).toBe(validatorAddress);
-    });
+    expectDelegatorDelegations(storeDelegations, validatorsAll, balancesAll)
+
+    // expect(storeDelegations.delegations.size).toBe(validatorsAll.length);
+    // expect(storeDelegations.totalDelegated).toBe(findDelegatorDelegationTotalAmount(balancesAll));
+    // validatorsAll.forEach(validatorAddress => {
+    //   const delegation = storeDelegations.delegations.get(validatorAddress);
+    //   expect(delegation?.amount).toBe(findDelegatorDelegationAmountByValidator(validatorAddress, validatorsAll, balancesAll));
+    //   expect(delegation?.validatorAddress).toBe(validatorAddress);
+    // });
 
   });
 
@@ -105,7 +109,7 @@ describe('tests mapping of staking related data', () => {
     expect(storeUndelegations.entries.length).toBe(entries.length);
 
     for (let i = 0; i < entries.length; i++) {
-      expect(storeUndelegations.entries[i].amount).toBe(entries[i]);
+      expect(storeUndelegations.entries[i].amount).toBe(BigInt(entries[i]));
     }
     expect(storeUndelegations.validatorAddress).toBe(validatorAddress);
 
@@ -119,18 +123,20 @@ describe('tests mapping of staking related data', () => {
     const bcUndelegations = createDelegatorUnbondingDelegations(address);
     const storeUndelegations = mapUnbondingDelegations(bcUndelegations);
 
-    expect(storeUndelegations.undelegations.size).toBe(defaultDelegatorUnbondingDelegationsValidators.length);
-    expect(storeUndelegations.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount());
-    defaultDelegatorUnbondingDelegationsValidators.forEach(validatorAddress => {
-      const undelegation = storeUndelegations.undelegations.get(validatorAddress);
-      const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress);
-      expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
-      for (let i = 0; i < validatorExpecedEntries.length; i++) {
-        expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+    expectDelegatorUnbondingDelegations(storeUndelegations);
 
-      }
-      expect(undelegation?.validatorAddress).toBe(validatorAddress);
-    });
+    // expect(storeUndelegations.undelegations.size).toBe(defaultDelegatorUnbondingDelegationsValidators.length);
+    // expect(storeUndelegations.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount());
+    // defaultDelegatorUnbondingDelegationsValidators.forEach(validatorAddress => {
+    //   const undelegation = storeUndelegations.undelegations.get(validatorAddress);
+    //   const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress);
+    //   expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
+    //   for (let i = 0; i < validatorExpecedEntries.length; i++) {
+    //     expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+
+    //   }
+    //   expect(undelegation?.validatorAddress).toBe(validatorAddress);
+    // });
 
 
   });
@@ -176,18 +182,20 @@ describe('tests mapping of staking related data', () => {
     bcUndelegations = createDelegatorUnbondingDelegations(address, validators2, entries2);
     storeUndelegations = mapAndAddUnbondingDelegations(storeUndelegations, bcUndelegations);
 
-    expect(storeUndelegations.undelegations.size).toBe(validatorsAll.length);
-    expect(storeUndelegations.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount(entiresAll));
-    defaultDelegatorUnbondingDelegationsValidators.forEach(validatorAddress => {
-      const undelegation = storeUndelegations.undelegations.get(validatorAddress);
-      const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress, validatorsAll, entiresAll);
-      expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
-      for (let i = 0; i < validatorExpecedEntries.length; i++) {
-        expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+    expectDelegatorUnbondingDelegations(storeUndelegations, validatorsAll, entiresAll);
 
-      }
-      expect(undelegation?.validatorAddress).toBe(validatorAddress);
-    });
+    // expect(storeUndelegations.undelegations.size).toBe(validatorsAll.length);
+    // expect(storeUndelegations.totalUndelegating).toBe(findDelegatorUnbondingDelegationTotalAmount(entiresAll));
+    // defaultDelegatorUnbondingDelegationsValidators.forEach(validatorAddress => {
+    //   const undelegation = storeUndelegations.undelegations.get(validatorAddress);
+    //   const validatorExpecedEntries = findDelegatorUnbondingDelegationAmountByValidator(validatorAddress, validatorsAll, entiresAll);
+    //   expect(undelegation?.entries.length).toBe(validatorExpecedEntries.length);
+    //   for (let i = 0; i < validatorExpecedEntries.length; i++) {
+    //     expect(undelegation?.entries[i].amount).toBe(validatorExpecedEntries[i]);
+
+    //   }
+    //   expect(undelegation?.validatorAddress).toBe(validatorAddress);
+    // });
 
 
   });

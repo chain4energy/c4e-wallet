@@ -17,29 +17,37 @@
     </div>
     <div class="userdata__amounts">
       <p>{{ $t('USER_DATA.AVAILABLE') }}</p>
-      <p>{{useUserStore().getBalances || 0}}</p>
+      <p>{{useUserStore().getBalanceViewAmount() || 0}}</p>
     </div>
     <div class="userdata__amounts">
       <p>{{ $t('USER_DATA.STACKED') }}</p>
-      <p>{{useUserStore().delegations.totalDelegated || 0}}</p>
+      <p>{{useUserStore().getTotalDelegatedViewAmount() || 0}}</p>
     </div>
     <div class="userdata__amounts">
       <p>{{ $t('USER_DATA.UNSTACKING') }}</p>
-      <p>{{useUserStore().getTotalUndelegating || 0}}</p>
+      <p>{{useUserStore().getTotalUndelegatingViewAmount() || 0}}</p>
     </div>
-    </div>
-    <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
+    <div class="userdata__accountData-vesting-first" v-if="useUserStore().isContinuousVestingAccount">
       <div>
+        <p>{{ $t('USER_DATA.LOCKED') }}</p>
         <p>{{locked}}</p>
       </div>
+    </div>
+    <!-- <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
       <div>
-        <p>{{ new Date(Number(useUserStore().getAccount.continuousVestingData.startTime)).toLocaleString() }}</p>
+        <p>Lock start</p>
+        <p>{{ useUserStore().getAccount.continuousVestingData?.startTime.toLocaleString() }}</p>
       </div>
+    </div> -->
+    <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
       <div>
-        <p>{{ new Date(Number(useUserStore().getAccount.continuousVestingData.endTime)).toLocaleString() }}</p>
-<!--        <p>{{ useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() }}</p>-->
+        <p>{{ $t('USER_DATA.VESTING_END') }}</p>
+        <p>{{ useUserStore().getAccount.continuousVestingData?.endTime.toLocaleString() }}</p>
       </div>
     </div>
+    <div class="userdata__amounts_last" v-if="!useUserStore().isContinuousVestingAccount"></div>
+  </div>
+
   </div>
 
   <div class="userdata__rewards">
@@ -51,7 +59,7 @@
         <path d="M12 7H7.5C6.83696 7 6.20107 6.73661 5.73223 6.26777C5.26339 5.79893 5 5.16304 5 4.5C5 3.83696 5.26339 3.20107 5.73223 2.73223C6.20107 2.26339 6.83696 2 7.5 2C11 2 12 7 12 7Z" stroke="#72BF44" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M12 7H16.5C17.163 7 17.7989 6.73661 18.2678 6.26777C18.7366 5.79893 19 5.16304 19 4.5C19 3.83696 18.7366 3.20107 18.2678 2.73223C17.7989 2.26339 17.163 2 16.5 2C13 2 12 7 12 7Z" stroke="#72BF44" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <p>{{useUserStore().getRewards.toFixed(6) || '0'}}</p>
+      <p>{{useUserStore().getTotalRewardsViewAmount() || '0'}}</p>
     </div>
     <button @click="claimRewards">{{ $t('USER_DATA.CLAIM_REWARDS') }}</button>
 
@@ -72,8 +80,8 @@ function claimRewards(){
 useBlockStore().fetchLatestBlock();
 setInterval(useBlockStore().fetchLatestBlock, 6000);
 
-const total = computed(() => useUserStore().getTotalUndelegating + useUserStore().getTotalDelegated + useUserStore().getBalances);
-const locked = computed(()=> useUserStore().getVestingLockAmount.toFixed(0));
+const total = computed(() => useUserStore().getTotalViewAmount());
+const locked = computed(()=> useUserStore().getVestingLockViewAmount());
 // const startTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
 // const endTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
 console.log(useUserStore().getAccount.continuousVestingData);
@@ -102,24 +110,39 @@ console.log(useUserStore().getAccount.continuousVestingData);
     //padding: 20px 25px;
     justify-content: space-between;
     &-base{
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
-      max-width: 50%;
+      // max-width: 50%;
       margin-left: 20px;
+      justify-content: space-between;
     }
-    &-vesting{
+    &-vesting-first{
       padding-left: 3%;
       background: #E6FFF1;
       display: flex;
       align-items: center;
-      width: 40%;
       min-height: 100%;
+      width: 100%;
+      // text-align: left;
       clip-path: polygon(100% 0%, 100% 100%, 0 100%, 5% 50%, 0 0);
+    }
+    &-vesting{
+      background: #E6FFF1;
+      display: flex;
+      align-items: center;
+      min-height: 100%;
+      width: 100%;
+      // text-align: left;
     }
   }
   &__amounts{
-    text-align: left;
-    margin-left: 64px;
+    text-align: center;
+    width: 100%;
+  }
+  &__amounts_last{
+    padding-right: 30px;
   }
   &__rewards{
     display: flex;

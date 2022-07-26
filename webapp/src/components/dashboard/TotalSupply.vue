@@ -6,7 +6,7 @@
     <div class="right">
       <div>{{ $t("DASHBOARD_VIEW.TOTAL_SUPPLY") }}</div>
       <div class="info">
-        {{ tokensStore.totalSupply.amount}}  {{ tokensStore.totalSupply.denom }}
+        {{ tokensStore.totalSupply.getViewAmount()}} {{ tokensStore.totalSupply.getViewDenom() }}
       </div>
     </div>
   </div>

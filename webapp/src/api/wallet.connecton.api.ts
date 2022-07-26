@@ -5,6 +5,7 @@ import { ChainInfo } from "@keplr-wallet/types";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { RequestResponse } from '@/models/request-response';
+import { LogLevel } from '@/services/logger/log-level';
 
 
 const toast = useToast();
@@ -34,20 +35,6 @@ export class ConnectionInfo {
 
 }
 
-// export enum WalletResponseCode {
-//   OK,
-//   NOK,
-// }
-
-// export interface WalletResponse {
-//   code: WalletResponseCode,
-//   error: string
-// }
-
-// export interface WalletConnectionResponse extends WalletResponse {
-//   connectionInfo: ConnectionInfo
-// }
-
 export class ConnectionError {
   message: string;
 
@@ -59,7 +46,7 @@ export class ConnectionError {
 export default class WalletConnectionApi extends LoggedService {
 
   getServiceType(): ServiceTypeEnum {
-    return ServiceTypeEnum.WALLET_SERVICE;
+    return ServiceTypeEnum.WALLET_API;
   }
 
   public async connectAddress(address: string): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
@@ -87,11 +74,13 @@ export default class WalletConnectionApi extends LoggedService {
         );
         return new RequestResponse<ConnectionInfo, any>(undefined, connection);
       } else {
+        this.logToConsole(LogLevel.ERROR, 'connectKeplr: Keplr not installed');
         const message = 'Keplr not installed';
         toast.error(message);
         return new RequestResponse<ConnectionInfo, ConnectionError>(new ConnectionError(message));
       }
     } catch (error) {
+      this.logToConsole(LogLevel.ERROR, 'connectKeplr: Error', JSON.stringify(error));
       toast.error('Wallet Err: ' + error);
       return new RequestResponse<ConnectionInfo, ConnectionError>(new ConnectionError('' + error));
     } finally {

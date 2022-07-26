@@ -20,22 +20,19 @@ export function mapAndAddValidators(validatorsDst: StoreValidator[], bcValidator
 }
 
 function mapAndAddValidatorsToArray(array: StoreValidator[], bcValidators: BcValidator[]): number  {
-  let active = 0
+  let active = 0;
   bcValidators.forEach(validator => {
     const mapped = mapValidator(validator);
     array.push(mapped);
     if (mapped.status === ValidatorStatus.Bonded) {
       active++;
     }
-  })
-  // array.sort((a, b) => Number(b.tokens) - Number(a.tokens))
-  // let i = 1
-  // array.forEach(val => val.rank = i++)
-  return active
+  });
+  return active;
 }
 
 export function sortAndRankValidators(array: StoreValidator[]): StoreValidator[]  {
-  array.sort((a, b) => Number(b.tokens) - Number(a.tokens));
+  array.sort((a, b) => b.tokens - a.tokens < 0n ? -1 : b.tokens - a.tokens === 0n ? 0 : 1);
   let i = 1;
   array.forEach(val => val.rank = i++);
   return array;
@@ -46,10 +43,10 @@ export function mapValidator(validator: BcValidator | undefined): StoreValidator
       throw new Error('Validator is undefined');
   }
 
-  const status = mapValidatorStatus(validator.status)
-  const commission = new ValidatorCommission(validator.commission.commission_rates.rate,
-    validator.commission.commission_rates.max_rate,
-    validator.commission.commission_rates.max_change_rate);
+  const status = mapValidatorStatus(validator.status);
+  const commission = new ValidatorCommission(Number(validator.commission.commission_rates.rate),
+    Number(validator.commission.commission_rates.max_rate),
+    Number(validator.commission.commission_rates.max_change_rate));
   const desciption = new ValidatorDescription(
     validator.description.moniker,
     validator.description.identity,
@@ -60,7 +57,7 @@ export function mapValidator(validator: BcValidator | undefined): StoreValidator
   return new StoreValidator(validator.operator_address,
     validator.jailed,
     status,
-    validator.tokens,
+    BigInt(validator.tokens),
     desciption,
     commission);
 }

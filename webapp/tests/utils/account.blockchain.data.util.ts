@@ -1,4 +1,6 @@
-import { defaultDenom } from "./common.blockchain.data.util";
+import { Account, AccountType, ContinuousVestingData } from "@/models/store/account";
+import { AxiosResponse } from "axios";
+import { accountNotFoundErrorMessage, axiosError404Message, axiosErrorMessagePrefix, createAxiosError, createErrorResponseData, defaultDenom } from "./common.blockchain.data.util";
 
 export const vestingAccountTimeToSystem = '000';
 export const defaultBaseAccountType = '/cosmos.auth.v1beta1.BaseAccount';
@@ -202,13 +204,56 @@ export function createPeriodicVestingAccount(address: string) {
 
 export function createSingleBalanceResponseData(denom: string, amount: string) {
   return {
-    balance: createSingleBalance(denom, amount)
+    balance: createSingleCoin(denom, amount)
   }
 }
 
-export function createSingleBalance(denom: string, amount: string) {
+export function createSingleCoin(denom: string, amount: string) {
   return {
     denom: denom,
     amount: amount
   }
+}
+
+export function createAddressNotExistsErrorResponse() {
+  const response = {
+    data: createErrorResponseData(5, accountNotFoundErrorMessage),
+    status: 404,
+    statusText: '',
+  };
+  return createAxiosError(axiosError404Message, response as AxiosResponse);
+}
+
+export function expectBaseAccount(account: Account | undefined, expectedAddress: string) {
+  expect(account).toBeInstanceOf(Account);
+  expect(account?.continuousVestingData).toBeUndefined();
+  expect(account?.type).toBe(AccountType.BaseAccount);
+  expect(account?.address).toBe(expectedAddress);
+}
+
+export function expectNonExistentAccount(account: Account | undefined, expectedAddress: string) {
+  expect(account).toBeInstanceOf(Account);
+  expect(account?.continuousVestingData).toBeUndefined();
+  expect(account?.type).toBe(AccountType.Nonexistent);
+  expect(account?.address).toBe(expectedAddress);
+}
+
+export function expectDisconnectedAccount(account: Account | undefined) {
+  expect(account).toBeInstanceOf(Account);
+  expect(account?.continuousVestingData).toBeUndefined();
+  expect(account?.type).toBe(AccountType.Disconnected);
+  expect(account?.address).toBe('');
+}
+
+export function expectContinuousVestingAccount(account: Account | undefined, expectedAddress: string) {
+  expect(account).toBeInstanceOf(Account);
+  expect(account?.address).toBe(expectedAddress);
+  expect(account?.type).toBe(AccountType.ContinuousVestingAccount);
+  expect(account?.continuousVestingData).toBeInstanceOf(ContinuousVestingData);
+  expect(account?.continuousVestingData?.endTime).toStrictEqual(new Date(Number(defaultContinuousVestingAccountEndTime + vestingAccountTimeToSystem)));
+  expect(account?.continuousVestingData?.startTime).toStrictEqual(new Date(Number(defaultContinuousVestingAccountStartTime + vestingAccountTimeToSystem)));
+  expect(account?.continuousVestingData?.originalVesting.length).toBe(defaultContinuousVestingAccountOriginalVesting.length);
+  const origVesting = account?.continuousVestingData?.originalVesting[0]
+  expect(origVesting?.amount).toBe(BigInt(defaultContinuousVestingAccountOriginalVesting[0].amount));
+  expect(origVesting?.denom).toBe(defaultContinuousVestingAccountOriginalVesting[0].denom);
 }
