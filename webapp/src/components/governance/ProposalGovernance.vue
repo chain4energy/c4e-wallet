@@ -2,7 +2,9 @@
   <div class="proposal-container" v-on:click="showDetailsClick">
     <div class="top">
       <span class="id fw-bold"><h2>#{{ proposal.proposal_id }}</h2> </span>
-      <div class="voting-status">    <Icon :name=icons.get(proposal.status)></Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}</div>
+      <div class="voting-status">
+        <Icon :name=icons.get(proposal.status)>
+        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}</div>
     </div>
     <div class="middle">
       <div>
@@ -24,7 +26,7 @@
         </div>
       </div>
     </div>
-    <div class="bottom" v-if="proposal.status !== ProposalStatusEnum.PROPOSAL_STATUS_DEPOSIT_PERIOD">
+    <div class="bottom" v-if="proposal.status !== ProposalStatus.DEPOSIT_PERIOD">
       <div style="width:100%; height:20px" class="chartdiv">
         <v-chart :option="option" autoresize />
       </div>
@@ -63,8 +65,7 @@ import { use } from "echarts/core";
 import {CanvasRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent, GridComponent} from "echarts/components";
 import {useRouter} from "vue-router";
-import {Proposal} from "@/models/Proposal";
-import {ProposalStatusEnum} from "@/models/proposalStatus-enum";
+import {Proposal, ProposalStatus} from "@/models/store/proposal";
 
 use([
   CanvasRenderer,
@@ -84,9 +85,9 @@ const props = defineProps({
 const router = useRouter();
 
 const icons  = new Map<string, string>([
-  [ProposalStatusEnum.PROPOSAL_STATUS_PASSED, "CheckSquare"],
-  [ProposalStatusEnum.PROPOSAL_STATUS_REJECTED, "XCircle"],
-  [ProposalStatusEnum.PROPOSAL_STATUS_DEPOSIT_PERIOD, ""]
+  [ProposalStatus.PASSED, "CheckSquare"],
+  [ProposalStatus.REJECTED, "XCircle"],
+  [ProposalStatus.DEPOSIT_PERIOD, ""]
 ]);
 
 const yesPercentage = computed(() => {
