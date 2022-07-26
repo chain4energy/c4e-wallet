@@ -13,7 +13,7 @@ export class Proposal {
   final_tally_result: ProposalsTallyRes;
   submit_time: string;
   deposit_end_time: string;
-  total_deposit: ProposalDeposit;
+  total_deposit: Array<ProposalDeposit>;
   voting_start_time: string;
   voting_end_time :string;
   constructor (
@@ -23,7 +23,7 @@ export class Proposal {
     final_tally_result: ProposalsTallyRes,
     submit_time: string,
     deposit_end_time: string,
-    total_deposit: ProposalDeposit,
+    total_deposit: Array<ProposalDeposit>,
     voting_start_time: string,
     voting_end_time: string,
   ) {
@@ -40,11 +40,13 @@ export class Proposal {
 
 }
 export class ProposalContent {
+  type: string;
   title: string;
   description: string;
-  changes: ProposalsChanges
+  changes: Array<ProposalsChanges>
 
-  constructor(title: string, description: string, changes: ProposalsChanges) {
+  constructor(type: string, title: string, description: string, changes: Array<ProposalsChanges>) {
+    this.type = type;
     this.title = title;
     this.description = description;
     this.changes= changes;

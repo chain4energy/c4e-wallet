@@ -6,7 +6,7 @@ import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
 import { useToast } from "vue-toastification";
 import { AccountResponse } from "@/models/blockchain/account";
 import { mapAccount } from "@/models/mapper/account.mapper";
-import { ProposalsResponse, ProposalResponse } from "@/models/blockchain/propossals";
+import { ProposalsResponse, ProposalResponse } from "@/models/blockchain/proposals";
 import { mapAndAddProposals, mapProposalByID, mapProposals } from "@/models/mapper/proposals.mapper";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { GovernanceParameters } from "@/models/GovernanceParameters";

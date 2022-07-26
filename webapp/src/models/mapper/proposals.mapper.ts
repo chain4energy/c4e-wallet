@@ -1,4 +1,4 @@
-import { Proposal as BcProposal } from "@/models/blockchain/propossals";
+import { Proposal as BcProposal } from "@/models/blockchain/proposals";
 import {
   Proposal as StoreProposal,
   ProposalContent,
@@ -11,7 +11,7 @@ import {
 
 export function mapProposals(proposals: BcProposal[] | undefined): { proposals: StoreProposal[], numberOfActive: number }  {
   if (proposals === undefined) {
-    throw new Error('Validators list is undefined');
+    throw new Error('Proposals list is undefined');
   }
   const result = Array<StoreProposal>();
   const active = mapAndAddProposalsToArray(result, proposals);
@@ -20,7 +20,7 @@ export function mapProposals(proposals: BcProposal[] | undefined): { proposals: 
 }
 export function mapProposalByID(proposal: BcProposal | undefined): { proposal: StoreProposal}  {
   if (proposal === undefined) {
-    throw new Error('Validators list is undefined');
+    throw new Error('Proposal is undefined');
   }
   const result = mapProposal(proposal)
 
@@ -29,7 +29,7 @@ export function mapProposalByID(proposal: BcProposal | undefined): { proposal: S
 
 export function mapAndAddProposals(proposalsDst: StoreProposal[], bcProposals: BcProposal[] | undefined, numberOfActive: number): { proposals: StoreProposal[], numberOfActive: number}  {
   if (bcProposals === undefined) {
-    throw new Error('BcValidator list is undefined');
+    throw new Error('BcProposal list is undefined');
   }
   const active = numberOfActive + mapAndAddProposalsToArray(proposalsDst, bcProposals);
   return { proposals: proposalsDst, numberOfActive: active};
@@ -51,24 +51,30 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
   }
 
   const status = mapProposalStatus(proposal.status);
-  const changes = new ProposalsChanges(
-    proposal.content.changes[0].subspace,
-    proposal.content.changes[0].key,
-    proposal.content.changes[0].value
-  )
-  const content = new ProposalContent(proposal.content.title, proposal.content.description, changes);
+  const changes = proposal.content.changes.map((el)=> {
+    return new ProposalsChanges(
+      el.subspace, el.key, el.value
+    );
+  })
+
+  const content = new ProposalContent(proposal.content.type, proposal.content.title, proposal.content.description, changes);
   const final_tally_result = new ProposalsTallyRes(
     proposal.final_tally_result.yes,
     proposal.final_tally_result.abstain, proposal.final_tally_result.no,
     proposal.final_tally_result.no_with_veto);
-  const total_deposit = new ProposalDeposit(proposal.total_deposit[0].denom, proposal.total_deposit[0].amount)
+  const totalDeposit = proposal.total_deposit.map((el)=> {
+    return new ProposalDeposit(
+      el.denom, el.amount
+    );
+  });
+
   return new StoreProposal(
     proposal.proposal_id,
     content, status,
     final_tally_result,
     proposal.submit_time,
     proposal.deposit_end_time,
-    total_deposit,
+    totalDeposit,
     proposal.voting_start_time,
     proposal.voting_end_time)
 }
