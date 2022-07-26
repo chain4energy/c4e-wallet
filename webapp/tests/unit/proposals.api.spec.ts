@@ -30,7 +30,7 @@ describe('test proposals API', () => {
     };
 
     mockedAxios.request.mockResolvedValue(proposals);
-    const result = await api.fetchProposals('1')
+    const result = await api.fetchProposals('1', false)
     expect(result.response.isError()).toBe(false)
     expect(result.response.isSuccess()).toBe(true)
     expect(result.response.error).toBeUndefined()
@@ -43,7 +43,7 @@ describe('test proposals API', () => {
     };
 
     mockedAxios.request.mockResolvedValue(proposals);
-    const result = await  api.fetchProposals('1')
+    const result = await  api.fetchProposals('1', false)
     expect(result.response.isError()).toBe(false)
     expect(result.response.isSuccess()).toBe(true)
     expect(result.response.error).toBeUndefined()
