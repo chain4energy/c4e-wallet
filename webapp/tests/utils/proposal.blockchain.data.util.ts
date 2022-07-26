@@ -1,4 +1,5 @@
 import { Proposal, ProposalStatus } from "@/models/store/proposal";
+import { Validator } from "@/models/store/validator";
 export const defaultProposals = [
   '1',
   '3',
@@ -164,4 +165,8 @@ export function createProposals(
   }
   return proposalsArray;
 }
-
+export function expectEmptyProposals(proposalsData: { proposals: Proposal[], numberOfActive: number } | undefined) {
+  expect(proposalsData).not.toBeUndefined();
+  expect(proposalsData?.proposals.length).toBe(0);
+  expect(proposalsData?.numberOfActive).toBe(0);
+}

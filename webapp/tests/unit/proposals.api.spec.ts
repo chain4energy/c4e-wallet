@@ -8,12 +8,12 @@ import {
   expectProposal,
   expectProposals
 } from "../utils/proposal.blockchain.data.util";
+import { mockAxios } from "../utils/mock.util";
+
+const mockedAxios = mockAxios();
+// const mockedAxios = axios as jest.Mocked<typeof axios>;
+const api = apiFactory.proposalsApi()
 jest.mock("axios");
-export function addAxios() {
-  const mockedAxios = axios as jest.Mocked<typeof axios>;
-  apiFactory.setAxiosInstance(mockedAxios);
-  return mockedAxios;
-}
 
 describe('test proposals API', () => {
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe('test proposals API', () => {
   });
   afterEach(() => {
     expect(useSplashStore().splashCounter).toBe(0);
-    addAxios().request.mockClear();
+    mockedAxios.request.mockClear();
   });
 
   it('fetch request provided', async ()=> {
@@ -29,26 +29,25 @@ describe('test proposals API', () => {
       data: createProposalsResponseData()
     };
 
-    addAxios().request.mockResolvedValue(proposals);
-    const result = await apiFactory.proposalsApi().fetchProposals()
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
+    mockedAxios.request.mockResolvedValue(proposals);
+    const result = await api.fetchProposals('1')
+    expect(result.response.isError()).toBe(false)
+    expect(result.response.isSuccess()).toBe(true)
+    expect(result.response.error).toBeUndefined()
 
-    expectProposals(result.data);
+    expectProposals(result.response.data);
   });
   it('gets proposals - no proposals', async () => {
     const proposals = {
       data: createProposalsResponseData(new Array(), new Array())
     };
 
-    addAxios().request.mockResolvedValue(proposals);
-    const result = await apiFactory.proposalsApi().fetchProposals()
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
-    expect(result.data?.proposals.length).toBe(0);
-    expect(result.data?.numberOfActive).toBe(0);
+    mockedAxios.request.mockResolvedValue(proposals);
+    const result = await  api.fetchProposals('1')
+    expect(result.response.isError()).toBe(false)
+    expect(result.response.isSuccess()).toBe(true)
+    expect(result.response.error).toBeUndefined()
+    expect(result.response.data?.proposals.length).toBe(0);
+    expect(result.response.data?.numberOfActive).toBe(0);
   });
 });
-

@@ -61,10 +61,4 @@ export const useBlockStore = defineStore( 'block', {
       return this.latestBlock;
     }
   },
-  persist: {
-    enabled: true,
-    strategies: [
-      { storage: sessionStorage, paths: ['latestBlockTime'] },
-    ]
-  }
 });
