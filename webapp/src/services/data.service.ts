@@ -5,6 +5,8 @@ import { useTokensStore } from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
 import { useValidatorsStore } from "@/store/validators.store";
 
+const keplrKeyStoreChange = 'keplr_keystorechange';
+
 class DataService {
 
   private minBetweenRefreshmentsPeriod = 1000;
@@ -47,9 +49,9 @@ class DataService {
       this.lastBlockTimeout = now;
       this.lastDashboardTimeout = now;
       this.lastValidatorsTimeout = now;
-      this.blockIntervalId = window.setInterval(this.refreshBlocksData, this.blockTimeout);
-      this.dashboardIntervalId = window.setInterval(this.refreshDashboard, this.dashboardTimeout);
-      this.validatorsIntervalId = window.setInterval(this.refreshValidators, this.validatorsTimeout);
+      // this.blockIntervalId = window.setInterval(this.refreshBlocksData, this.blockTimeout);
+      // this.dashboardIntervalId = window.setInterval(this.refreshDashboard, this.dashboardTimeout);
+      // this.validatorsIntervalId = window.setInterval(this.refreshValidators, this.validatorsTimeout);
 
     });
   }
@@ -59,7 +61,10 @@ class DataService {
   }
 
   public onKeplrLogIn(onSuccess?: () => void) {
-    useUserStore().connectKeplr(() => {this.onLoginSuccess(onSuccess)});
+    useUserStore().connectKeplr(() => {
+      this.enableKeplrAccountChangeListener();
+      this.onLoginSuccess(onSuccess);
+    });
   }
 
   public onAddressLogIn(address: string, onSuccess?: () => void) {
@@ -68,6 +73,7 @@ class DataService {
 
   public onLogOut() {
     window.clearInterval(this.accountIntervalId);
+    this.disableKeplrAccountChangeListener();
     useUserStore().logOut();
   }
 
@@ -110,10 +116,15 @@ class DataService {
     }
   }
 
+  public onKeplrKeyStoreChange() {
+    useUserStore().logOut();
+    useUserStore().connectKeplr();
+  }
+
   private onLoginSuccess(onSuccess?: () => void) {
-    const now = new Date().getTime();
-    this.lastAccountTimeout = now;
-    this.accountIntervalId = window.setInterval(this.refreshAccountData, this.accountTimeout);
+    // const now = new Date().getTime();
+    // this.lastAccountTimeout = now;
+    // this.accountIntervalId = window.setInterval(this.refreshAccountData, this.accountTimeout);
     if (onSuccess) {
       onSuccess();
     }
@@ -162,6 +173,19 @@ class DataService {
     }
   }
 
+  private enableKeplrAccountChangeListener() {
+    window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
+  }
+  
+  private disableKeplrAccountChangeListener() {
+    window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
+  }
+
 }
 
 export default DataService.getInstance();
+
+const keystoreChangeListener = () => {
+  DataService.getInstance().onKeplrKeyStoreChange();
+}
+

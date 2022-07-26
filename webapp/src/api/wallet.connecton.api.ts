@@ -18,7 +18,7 @@ export enum ConnectionType {
 
 export class ConnectionInfo {
 
-  static disconnected = new ConnectionInfo();
+  // static readonly disconnected = new ConnectionInfo();
 
   readonly account: string;
   readonly modifiable: boolean;

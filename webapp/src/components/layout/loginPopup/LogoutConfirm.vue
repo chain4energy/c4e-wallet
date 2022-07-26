@@ -40,7 +40,7 @@ import dataService from '@/services/data.service';
 
 const props = defineProps({
   logoutType:{
-    type: String,
+    type: Number,
     required: true,
   }
 });

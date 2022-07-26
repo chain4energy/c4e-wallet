@@ -34,7 +34,7 @@ export const useUserStore = defineStore({
   id: 'userStore',
   state: (): UserState => {
     return {
-      [connectionInfoName]: ConnectionInfo.disconnected,
+      connectionInfo: new ConnectionInfo(),
       account: Account.disconnected,
       balance: 0n,
       vestimgAccLocked: 0n,
@@ -46,6 +46,7 @@ export const useUserStore = defineStore({
   },
   actions: {
     async reconnect(onSuccess?: () => void){
+      logger.logToConsole(LogLevel.DEBUG, 'reconnect: ', JSON.stringify(this.connectionInfo));
       if(this.connectionInfo.connectionType === ConnectionType.Keplr){
         await this.connectKeplr(onSuccess);
       } else if(this.connectionInfo.connectionType === ConnectionType.Address){
@@ -55,12 +56,7 @@ export const useUserStore = defineStore({
     async connectKeplr(onSuccess?: () => void) {
       await this.connect(
         apiFactory.walletApi().connectKeplr(),
-        () => {
-          enableKeplrAccountChangeListener();
-          if (onSuccess) {
-            onSuccess();
-          }
-        }
+        onSuccess
         );
     },
     async connectAsAddress(address: string, onSuccess?: () => void) {
@@ -209,12 +205,14 @@ export const useUserStore = defineStore({
         }
       });
     },
-    logOut() {
-      disableKeplrAccountChangeListener();
-      disconnect(this);
-    },
-    clearWithoutConnection() {
-      disableKeplrAccountChangeListener();
+    async logOut() {
+      logger.logToConsole(LogLevel.DEBUG, 'logOut before: ', JSON.stringify(this.connectionInfo));
+      logger.logToConsole(LogLevel.DEBUG, 'logOut before: ', JSON.stringify(this.account));
+      const address = this.connectionInfo.account;
+      clearStateOnLogout(this);
+      toast.success('Address: "' + address + '" Disconnected');
+      logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.connectionInfo));
+      logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.account));
     }
   },
   getters: {
@@ -320,13 +318,13 @@ function clearStateForNonexistentAccount(state: UserState) {
   state.undelegations = new UnbondingDelegations();
 }
 
-function disconnect(state: UserState) {
-  clearStateOnLogout(state);
-  toast.success('Address: "' + state.connectionInfo.account + '" Disconnected');
-}
+// function disconnect(state: UserState) {
+
+
+// }
 
 function clearStateOnLogout(state: UserState) {
-  state.connectionInfo = ConnectionInfo.disconnected;
+  state.connectionInfo = new ConnectionInfo();
   state.account = Account.disconnected;
   clearStateForNonexistentAccount(state);
 }
@@ -393,16 +391,16 @@ function onRefreshingError(allResults: boolean[]) {
   }
 }
 
-const keplrKeyStoreChange = 'keplr_keystorechange';
-const keystoreChangeListener = () => {
-  disconnect(useUserStore());
-  useUserStore().connect(apiFactory.walletApi().connectKeplr());
-}
+// const keplrKeyStoreChange = 'keplr_keystorechange';
+// const keystoreChangeListener = () => {
+//   disconnect(useUserStore());
+//   useUserStore().connect(apiFactory.walletApi().connectKeplr());
+// }
 
-function enableKeplrAccountChangeListener() {
-  window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
-}
+// function enableKeplrAccountChangeListener() {
+//   window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
+// }
 
-function disableKeplrAccountChangeListener() {
-  window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
-}
+// function disableKeplrAccountChangeListener() {
+//   window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
+// }
