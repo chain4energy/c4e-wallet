@@ -27,18 +27,27 @@
       <p>{{ $t('USER_DATA.UNSTACKING') }}</p>
       <p>{{useUserStore().getTotalUndelegatingViewAmount() || 0}}</p>
     </div>
-    </div>
-    <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
+    <div class="userdata__accountData-vesting-first" v-if="useUserStore().isContinuousVestingAccount">
       <div>
+        <p>{{ $t('USER_DATA.LOCKED') }}</p>
         <p>{{locked}}</p>
       </div>
+    </div>
+    <!-- <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
       <div>
+        <p>Lock start</p>
         <p>{{ useUserStore().getAccount.continuousVestingData?.startTime.toLocaleString() }}</p>
       </div>
+    </div> -->
+    <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
       <div>
+        <p>{{ $t('USER_DATA.VESTING_END') }}</p>
         <p>{{ useUserStore().getAccount.continuousVestingData?.endTime.toLocaleString() }}</p>
       </div>
     </div>
+    <div class="userdata__amounts_last" v-if="!useUserStore().isContinuousVestingAccount"></div>
+  </div>
+
   </div>
 
   <div class="userdata__rewards">
@@ -101,24 +110,39 @@ console.log(useUserStore().getAccount.continuousVestingData);
     //padding: 20px 25px;
     justify-content: space-between;
     &-base{
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
-      max-width: 50%;
+      // max-width: 50%;
       margin-left: 20px;
+      justify-content: space-between;
     }
-    &-vesting{
+    &-vesting-first{
       padding-left: 3%;
       background: #E6FFF1;
       display: flex;
       align-items: center;
-      width: 40%;
       min-height: 100%;
+      width: 100%;
+      // text-align: left;
       clip-path: polygon(100% 0%, 100% 100%, 0 100%, 5% 50%, 0 0);
+    }
+    &-vesting{
+      background: #E6FFF1;
+      display: flex;
+      align-items: center;
+      min-height: 100%;
+      width: 100%;
+      // text-align: left;
     }
   }
   &__amounts{
-    text-align: left;
-    margin-left: 64px;
+    text-align: center;
+    width: 100%;
+  }
+  &__amounts_last{
+    padding-right: 30px;
   }
   &__rewards{
     display: flex;

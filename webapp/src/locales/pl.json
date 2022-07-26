@@ -106,7 +106,9 @@
     "AVAILABLE": "Do dyspozycji",
     "STACKED": "Ułożone w stos",
     "UNSTACKING": "Rozpakowywanie",
-    "CLAIM_REWARDS": "Odbierz nagrody"
+    "CLAIM_REWARDS": "Odbierz nagrody",
+    "LOCKED": "Zablokowane",
+    "VESTING_END": "Koniec Vestingu"
   },
   "COMMON": {
     "CLOSE": "zamknąć",

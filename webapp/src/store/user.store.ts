@@ -13,6 +13,7 @@ import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from '@/services/logger/log-level';
 import { BigDecimal } from "@/models/store/big.decimal";
+import { useBlockStore } from "./block.store";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -216,7 +217,9 @@ export const useUserStore = defineStore({
       return this.account;
     },
     isContinuousVestingAccount(): boolean {
-      return this.account.type === AccountType.ContinuousVestingAccount;
+      return this.account.type === AccountType.ContinuousVestingAccount
+        && this.account.continuousVestingData !== undefined
+        && useBlockStore().getLatestBlock.time.getTime() <= this.account.continuousVestingData?.endTime.getTime();
     },
     getAccountType(): AccountType {
       return this.account.type;

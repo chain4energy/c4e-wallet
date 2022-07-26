@@ -106,7 +106,9 @@
     "AVAILABLE": "Available",
     "STACKED": "Stacked",
     "UNSTACKING": "Unstacking",
-    "CLAIM_REWARDS": "Claim rewards"
+    "CLAIM_REWARDS": "Claim rewards",
+    "LOCKED": "Locked",
+    "VESTING_END": "Vesting end"
   },
   "COMMON": {
     "CLOSE": "Close",

@@ -37,7 +37,6 @@ export class ErrorData<D> {
         result += '\r\nData:\r\n' + this.dataToInfo(this.data);
       }
     }
-    result += ')';
     return result;
   }
 

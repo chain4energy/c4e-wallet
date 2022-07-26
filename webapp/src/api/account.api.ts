@@ -48,8 +48,8 @@ export class AccountApi extends TxBroadcastBaseApi {
   //TODO: MS: move to global configuration service
   private ACCOUNT_URL = "https://lcd.chain4energy.org/cosmos/auth/v1beta1/accounts/";
   private BALANCE_URL = 'https://lcd.chain4energy.org/cosmos/bank/v1beta1/balances/';
-  private STACKED_AMOUNT_URL = 'https://lcd.chain4energy.org/cosmos/staking/v1beta1/delegations/'
-  private UNSTACKED_AMOUNT_URL = 'https://lcd.chain4energy.org/cosmos/staking/v1beta1/delegators/'
+  private STAKED_AMOUNT_URL = 'https://lcd.chain4energy.org/cosmos/staking/v1beta1/delegations/'
+  private UNSTAKED_AMOUNT_URL = 'https://lcd.chain4energy.org/cosmos/staking/v1beta1/delegators/'
   private REWARDS_URL = 'https://lcd.chain4energy.org//cosmos/distribution/v1beta1/delegators/';
 
 
@@ -86,14 +86,14 @@ export class AccountApi extends TxBroadcastBaseApi {
     const mapData = (bcData: DelegationsResponse | undefined) => {return mapDelegations(bcData?.delegation_responses);};
     const mapAndAddData = (data: Delegations, bcData: DelegationsResponse | undefined) => {return mapAndAddDelegations(data, bcData?.delegation_responses);};
 
-    return  await this.axiosGetAllBlockchainApiCallPaginated(this.STACKED_AMOUNT_URL + address,
+    return  await this.axiosGetAllBlockchainApiCallPaginated(this.STAKED_AMOUNT_URL + address,
             mapData, mapAndAddData, true, null, 'fetchDelegations - ');
   }
   public async fetchUnbondingDelegations(address: string): Promise<RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: UnbondigDelegationsResponse | undefined) => {return mapUnbondingDelegations(bcData?.unbonding_responses);};
     const mapAndAddData = (data: UnbondingDelegations, bcData: UnbondigDelegationsResponse | undefined) => {return mapAndAddUnbondingDelegations(data, bcData?.unbonding_responses);};
 
-    return  await this.axiosGetAllBlockchainApiCallPaginated(this.UNSTACKED_AMOUNT_URL + address + '/unbonding_delegations',
+    return  await this.axiosGetAllBlockchainApiCallPaginated(this.UNSTAKED_AMOUNT_URL + address + '/unbonding_delegations',
             mapData, mapAndAddData, true, null, 'fetchUnbondingDelegations - ');
   }
   public async fetchRewards(address: string): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>>{
