@@ -7,35 +7,35 @@ export enum ProposalStatus {
   VOTING_PERIOD = 'PROPOSAL_STATUS_VOTING_PERIOD'
 }
 export class Proposal {
-  proposal_id: string;
+  proposalId: number;
   content: ProposalContent;
   status: ProposalStatus;
-  final_tally_result: ProposalsTallyRes;
-  submit_time: string;
-  deposit_end_time: string;
-  total_deposit: Array<ProposalDeposit>;
-  voting_start_time: string;
-  voting_end_time :string;
+  finalTallyResult: ProposalsTallyRes;
+  submitTime: Date;
+  depositEndTime: Date;
+  totalDeposit: Array<ProposalDeposit>;
+  votingStartTime: Date;
+  votingEndTime :Date;
   constructor (
-    proposal_id: string,
+    proposalId: number,
     content: ProposalContent,
     status: ProposalStatus,
-    final_tally_result: ProposalsTallyRes,
-    submit_time: string,
-    deposit_end_time: string,
-    total_deposit: Array<ProposalDeposit>,
-    voting_start_time: string,
-    voting_end_time: string,
+    finalTallyResult: ProposalsTallyRes,
+    submitTime: Date,
+    depositEndTime: Date,
+    totalDeposit: Array<ProposalDeposit>,
+    votingStartTime: Date,
+    votingEndTime: Date,
   ) {
-    this.proposal_id = proposal_id;
+    this.proposalId = proposalId;
     this.content = content;
     this.status = status;
-    this.final_tally_result = final_tally_result;
-    this.submit_time = submit_time;
-    this.deposit_end_time = deposit_end_time;
-    this.total_deposit = total_deposit;
-    this.voting_start_time = voting_start_time;
-    this.voting_end_time = voting_end_time;
+    this.finalTallyResult = finalTallyResult;
+    this.submitTime = submitTime;
+    this.depositEndTime = depositEndTime;
+    this.totalDeposit = totalDeposit;
+    this.votingStartTime = votingStartTime;
+    this.votingEndTime = votingEndTime;
   }
 
 }
@@ -70,28 +70,28 @@ export class ProposalsValue{
 }
 
 export class ProposalsTallyRes{
-  yes: string;
-  abstain: string;
-  no: string;
-  no_with_veto: string;
+  yes: number;
+  abstain: number;
+  no: number;
+  noWithVeto: number;
   constructor(
-    yes: string,
-    abstain: string,
-    no: string,
-    no_with_veto: string) {
+    yes: number,
+    abstain: number,
+    no: number,
+    noWithVeto: number) {
     this.yes = yes;
     this.abstain = abstain;
     this.no = no;
-    this.no_with_veto= no_with_veto;
+    this.noWithVeto= noWithVeto;
   }
 }
 
 export class ProposalDeposit{
   denom: string;
-  amount: string;
+  amount: bigint;
   constructor(
     denom: string,
-    amount: string,
+    amount: bigint,
   ) {
     this.denom = denom;
     this.amount = amount;

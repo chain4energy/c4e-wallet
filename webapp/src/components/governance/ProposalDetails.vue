@@ -1,6 +1,6 @@
 <template>
   <div class="details-container">
-    <div class="id"><h3>#{{ proposal.proposal_id }}</h3> </div>
+    <div class="id"><h3>#{{ proposal.proposalId }}</h3> </div>
     <h4 style="padding-left:20px">{{ proposal.content.title }}</h4>
     <div class="info">
       <div class="left">
@@ -15,12 +15,12 @@
         <div>{{ $t("GOVERNANCE_VIEW.VETO_THRESHOLD") }}:</div>
       </div>
       <div class="right">
-        <div>{{ proposal.total_deposit.amount }} {{ proposal.total_deposit.denom }}</div>
-        <div>{{formattedDate(proposal.voting_start_time) }}</div>
-        <div>{{formattedDate(proposal.voting_end_time) }}</div>
+        <div>{{ proposal.totalDeposit[0].amount }} {{ proposal.totalDeposit[0].denom }}</div>
+        <div>{{formattedDate(proposal.votingStartTime) }}</div>
+        <div>{{formattedDate(proposal.votingEndTime) }}</div>
         <div>{{ proposal.content['@type'] }}</div>
-        <div>{{ formattedDate(proposal.submit_time) }}</div>
-        <div>{{formattedDate(proposal.deposit_end_time) }}</div>
+        <div>{{ formattedDate(proposal.submitTime) }}</div>
+        <div>{{formattedDate(proposal.depositEndTime) }}</div>
         <div>{{ Number(proposalsStore.getTallyParams.quorum).toFixed(2) }}%</div>
         <div>{{ Number(proposalsStore.getTallyParams.threshold).toFixed(2) }}%</div>
         <div>{{ Number(proposalsStore.getTallyParams.veto_threshold).toFixed(2) }}%</div>

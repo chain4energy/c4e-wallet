@@ -4,11 +4,3 @@ declare global{
   interface Window extends KeplrWindow {}
 }
 
-// export declare interface KeplrResponce{
-//   err: object | string | unknown,
-//   address: string,
-// }
-// export declare interface amount{
-//   denom: string,
-//   amount: string,
-// }

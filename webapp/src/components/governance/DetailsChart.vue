@@ -36,7 +36,7 @@
         class="p-button-raised p-button-rounded"
         data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="proposal.status !== ProposalStatus.VOTING_PERIOD" />
 
-      <VoteModal id="voteModal" :proposalId="proposal.proposal_id" :title="proposal.content.title"></VoteModal>
+      <VoteModal id="voteModal" :proposalId="proposal.proposalId" :title="proposal.content.title"></VoteModal>
     </div>
   </div>
 </template>
@@ -77,29 +77,29 @@ const icons  = new Map<string, string>([
 ]);
 
 const sumOfVotes = computed(() => {
-  const val = Number(props.proposal.final_tally_result.yes) + Number(props.proposal.final_tally_result.no)
-    + Number(props.proposal.final_tally_result.no_with_veto) + Number(props.proposal.final_tally_result.abstain)
+  const val = props.proposal.finalTallyResult.yes + props.proposal.finalTallyResult.no
+    + props.proposal.finalTallyResult.noWithVeto + props.proposal.finalTallyResult.abstain
   return val > 0 ? val : -1;
 });
 
 const yesPercentage = computed(() => {
-  let res:number = Number(props.proposal.final_tally_result.yes) / sumOfVotes.value * 100;
+  let res:number = props.proposal.finalTallyResult.yes / sumOfVotes.value * 100;
   return res.toFixed(2);
 });
 
 const noPercentage = computed(() => {
-  let res:number = Number(props.proposal.final_tally_result.no) / sumOfVotes.value * 100;
+  let res:number = props.proposal.finalTallyResult.no / sumOfVotes.value * 100;
   return res.toFixed(2);
 });
 
 const abstainPercentage = computed(() => {
-  let res:number = Number(props.proposal.final_tally_result.abstain) / sumOfVotes.value * 100;
+  let res:number = props.proposal.finalTallyResult.abstain / sumOfVotes.value * 100;
   return res.toFixed(2);
 });
 
 
 const noWithVetoPercentage = computed(() => {
-  let res:number = Number(props.proposal.final_tally_result.no_with_veto) / sumOfVotes.value * 100;
+  let res:number = props.proposal.finalTallyResult.noWithVeto / sumOfVotes.value * 100;
   return res.toFixed(2);
 });
 

@@ -25,7 +25,7 @@ describe('validators store tests', () => {
     validatorsStore.validators = Array<Validator>(),
     validatorsStore.numberOfActiveValidators= 0;
 
-    const validators = { data: createValidatorsResponseData() };  
+    const validators = { data: createValidatorsResponseData() };
     mockedAxios.request.mockResolvedValueOnce(validators);
     await validatorsStore.fetchValidators();
     expectValidators({validators: validatorsStore.validators, numberOfActive: validatorsStore.numberOfActiveValidators });
@@ -33,7 +33,7 @@ describe('validators store tests', () => {
 
   it('fetches validators - error', async () => {
     const validatorsStore = useValidatorsStore();
-    validatorsStore.validators = Array<Validator>(),
+    validatorsStore.validators = Array<Validator>();
     validatorsStore.numberOfActiveValidators= 0;
 
     const validatorsError = createErrorResponse(404, 5, 'some error');

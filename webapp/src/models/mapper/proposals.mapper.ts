@@ -58,25 +58,29 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
   })
 
   const content = new ProposalContent(proposal.content.type, proposal.content.title, proposal.content.description, changes);
-  const final_tally_result = new ProposalsTallyRes(
-    proposal.final_tally_result.yes,
-    proposal.final_tally_result.abstain, proposal.final_tally_result.no,
-    proposal.final_tally_result.no_with_veto);
+  const finalTallyResult = new ProposalsTallyRes(
+    Number(proposal.final_tally_result.yes),
+    Number(proposal.final_tally_result.abstain),
+    Number(proposal.final_tally_result.no),
+    Number(proposal.final_tally_result.no_with_veto));
   const totalDeposit = proposal.total_deposit.map((el)=> {
+    const amount = BigInt(el.amount);
     return new ProposalDeposit(
-      el.denom, el.amount
+      el.denom,
+      amount
     );
   });
 
   return new StoreProposal(
-    proposal.proposal_id,
+    Number(proposal.proposal_id),
     content, status,
-    final_tally_result,
-    proposal.submit_time,
-    proposal.deposit_end_time,
+    finalTallyResult,
+    new Date(proposal.submit_time),
+    new Date(proposal.deposit_end_time),
     totalDeposit,
-    proposal.voting_start_time,
-    proposal.voting_end_time)
+    new Date(proposal.voting_start_time),
+    new Date(proposal.voting_end_time)
+  )
 }
 function mapProposalStatus(proposalStatus: string | undefined): ProposalStatus  {
   switch (proposalStatus) {
