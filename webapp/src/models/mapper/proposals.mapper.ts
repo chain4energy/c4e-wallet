@@ -6,7 +6,6 @@ import {
   ProposalsChanges,
   ProposalsValue,
   ProposalsTallyRes,
-  ProposalDeposit,
   ProposalStatus,
 } from "@/models/store/proposal";
 import { Coin } from "@/models/store/common";
