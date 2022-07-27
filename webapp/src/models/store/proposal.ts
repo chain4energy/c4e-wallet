@@ -1,3 +1,5 @@
+import {Coin} from "@/models/store/common";
+
 export enum ProposalStatus {
   PASSED= 'PROPOSAL_STATUS_PASSED' ,
   REJECTED ='PROPOSAL_STATUS_REJECTED' ,
@@ -13,7 +15,7 @@ export class Proposal {
   finalTallyResult: ProposalsTallyRes;
   submitTime: Date;
   depositEndTime: Date;
-  totalDeposit: Array<ProposalDeposit>;
+  totalDeposit: Array<Coin>;
   votingStartTime: Date;
   votingEndTime :Date;
   constructor (
@@ -23,7 +25,7 @@ export class Proposal {
     finalTallyResult: ProposalsTallyRes,
     submitTime: Date,
     depositEndTime: Date,
-    totalDeposit: Array<ProposalDeposit>,
+    totalDeposit: Array<Coin>,
     votingStartTime: Date,
     votingEndTime: Date,
   ) {
@@ -83,17 +85,5 @@ export class ProposalsTallyRes{
     this.abstain = abstain;
     this.no = no;
     this.noWithVeto= noWithVeto;
-  }
-}
-
-export class ProposalDeposit{
-  denom: string;
-  amount: bigint;
-  constructor(
-    denom: string,
-    amount: bigint,
-  ) {
-    this.denom = denom;
-    this.amount = amount;
   }
 }
