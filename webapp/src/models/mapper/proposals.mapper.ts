@@ -64,9 +64,10 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
     Number(proposal.final_tally_result.no),
     Number(proposal.final_tally_result.no_with_veto));
   const totalDeposit = proposal.total_deposit.map((el)=> {
+    const amount = BigInt(el.amount);
     return new ProposalDeposit(
       el.denom,
-      BigInt(el.amount)
+      amount
     );
   });
 

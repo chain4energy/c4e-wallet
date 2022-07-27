@@ -15,7 +15,7 @@
         <div>{{ $t("GOVERNANCE_VIEW.VETO_THRESHOLD") }}:</div>
       </div>
       <div class="right">
-        <div>{{ proposal.totalDeposit.amount }} {{ proposal.totalDeposit.denom }}</div>
+        <div>{{ proposal.totalDeposit[0].amount }} {{ proposal.totalDeposit[0].denom }}</div>
         <div>{{formattedDate(proposal.votingStartTime) }}</div>
         <div>{{formattedDate(proposal.votingEndTime) }}</div>
         <div>{{ proposal.content['@type'] }}</div>

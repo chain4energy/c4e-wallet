@@ -1,5 +1,6 @@
 import { Proposal, ProposalStatus } from "@/models/store/proposal";
 import { Validator } from "@/models/store/validator";
+import { BigDecimal } from "../../src/models/store/big.decimal";
 export const defaultProposals = [
   '1',
   '3',
@@ -17,6 +18,7 @@ export const defaultProposalsParameters = [
   { status: "PROPOSAL_STATUS_VOTING_PERIOD" },
 ];
 
+export const fakeDate = "2022-07-06T09:06:09.665518467Z";
 export function createProposalsResponseData(
   proposals= defaultProposals,
   proposalsParameters = defaultProposalsParameters,
@@ -33,18 +35,19 @@ export function createProposalsResponseData(
 }
 export function expectProposal(actualProposal: Proposal, expectedBcProposal: any) {
   expect(actualProposal).not.toBeUndefined();
-  expect(actualProposal.proposalId).toBe(expectedBcProposal.proposalId);
+  expect(actualProposal.proposalId).toBe(Number(expectedBcProposal.proposal_id));
   expect(actualProposal.content).toEqual(expectedBcProposal.content);
-  expect(actualProposal.content.type).toBe(expectedBcProposal.content.type);
-  expect(actualProposal.content.title).toBe(actualProposal.content.title);
-  expect(actualProposal.content.changes).toBe(actualProposal.content.changes)
   expect(actualProposal.status).toBe(expectedBcProposal.status);
-  expect(actualProposal.finalTallyResult).toBe(actualProposal.finalTallyResult);
-  expect(actualProposal.submitTime).toBe(actualProposal.submitTime);
-  expect(actualProposal.depositEndTime).toBe(actualProposal.depositEndTime);
-  expect(actualProposal.totalDeposit).toBe(actualProposal.totalDeposit);
-  expect(actualProposal.votingEndTime).toBe(actualProposal.votingEndTime);
-  expect(actualProposal.votingStartTime).toBe(actualProposal.votingStartTime)
+  expect(actualProposal.finalTallyResult.yes).toBe(Number(expectedBcProposal.final_tally_result.yes));
+  expect(actualProposal.finalTallyResult.no).toBe(Number(expectedBcProposal.final_tally_result.no));
+  expect(actualProposal.finalTallyResult.abstain).toBe(Number(expectedBcProposal.final_tally_result.abstain));
+  expect(actualProposal.finalTallyResult.noWithVeto).toBe(Number(expectedBcProposal.final_tally_result.no_with_veto));
+  expect(actualProposal.submitTime).toStrictEqual(new Date(expectedBcProposal.submit_time));
+  expect(actualProposal.depositEndTime).toStrictEqual(new Date(expectedBcProposal.deposit_end_time));
+  expect(actualProposal.totalDeposit.length).toBe(expectedBcProposal.total_deposit.length);
+  expect(actualProposal.totalDeposit[0].amount).toBe(BigInt(expectedBcProposal.total_deposit[0].amount));
+  expect(actualProposal.votingEndTime).toStrictEqual(new Date(expectedBcProposal.voting_end_time));
+  expect(actualProposal.votingStartTime).toStrictEqual(new Date(expectedBcProposal.voting_start_time));
 }
 
 export function expectProposals(
@@ -84,29 +87,29 @@ export function createProposal(){
     },
     status: "PROPOSAL_STATUS_PASSED",
     final_tally_result: {
-      yes: 'some data',
-      abstain: 'some data',
-      no: 'some data',
-      no_with_veto: 'some data',
+      yes: '123',
+      abstain: '12334',
+      no: '43850834075',
+      no_with_veto: '19283012073',
     },
-    submit_time: 'some data',
-    deposit_end_time: 'some data',
+    submit_time: fakeDate ,
+    deposit_end_time: fakeDate ,
     total_deposit: [
       {
         denom: 'some data',
-        amount: 'some data',
+        amount: '2340802384234234',
       },
       {
         denom: 'some data',
-        amount: 'some data',
+        amount: '23408234293840203',
       },
       {
         denom: 'some data',
-        amount: 'some data',
+        amount: '23408023842342342',
       },
     ],
-    voting_start_time: 'some data',
-    voting_end_time:'some data',
+    voting_start_time: fakeDate ,
+    voting_end_time:fakeDate ,
   };
   return proposal;
 }
@@ -146,21 +149,29 @@ export function createProposals(
       },
       status: proposalsParameters[i].status,
       final_tally_result: {
-        yes: 'some data',
-        abstain: 'some data',
-        no: 'some data',
-        no_with_veto: 'some data',
+        yes: '123',
+        abstain: '12334',
+        no: '43850834075',
+        no_with_veto: '19283012073',
       },
-      submit_time: 'some data',
-      deposit_end_time: 'some data',
+      submit_time:fakeDate ,
+      deposit_end_time: fakeDate ,
       total_deposit: [
         {
           denom: 'some data',
-          amount: 'some data',
-        }
+          amount: '2340802384234234',
+        },
+        {
+          denom: 'some data',
+          amount: '23408234293840203',
+        },
+        {
+          denom: 'some data',
+          amount: '2340802384234234',
+        },
       ],
-      voting_start_time: 'some data',
-      voting_end_time:'some data',
+      voting_start_time: fakeDate ,
+      voting_end_time: fakeDate ,
     })
   }
   return proposalsArray;
