@@ -10,15 +10,22 @@ export const useConfigurationStore = defineStore({
   id: 'configurationStore',
   state: (): ConfigurationState => {
     return {
-      config: Configuration.emptyConfiguration
+      config: new Configuration()
     };
   },
   actions: {
     fetchConfig(configName: string) {
+      const oldConfig = this.config.isEmpty
       // eslint-disable-next-line
       const config = require("../config/json/"+configName);
+      console.log('this.config: ' + oldConfig)
+      console.log('emptyConfiguration: ' + Configuration.emptyConfiguration.isEmpty)
+
+      
       this.config = new Configuration(config);
-      dataService.onConfigurationChange();
+      if (!oldConfig) {
+        dataService.onConfigurationChange();
+      }
     }
   },
   getters: {

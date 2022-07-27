@@ -34,7 +34,7 @@ export const useUserStore = defineStore({
   id: 'userStore',
   state: (): UserState => {
     return {
-      connectionInfo: new ConnectionInfo(),
+      [connectionInfoName]: new ConnectionInfo(),
       account: Account.disconnected,
       balance: 0n,
       vestimgAccLocked: 0n,
@@ -77,6 +77,8 @@ export const useUserStore = defineStore({
           clearStateOnLogout(this);
         } else {
           this.connectionInfo = response.data;
+          logger.logToConsole(LogLevel.DEBUG, 'Connected: ', JSON.stringify(this.connectionInfo));
+
           const address = this.connectionInfo.account;
           await this.fetchAccountData();
           if (this.isLoggedIn) {
@@ -207,12 +209,10 @@ export const useUserStore = defineStore({
     },
     async logOut() {
       logger.logToConsole(LogLevel.DEBUG, 'logOut before: ', JSON.stringify(this.connectionInfo));
-      logger.logToConsole(LogLevel.DEBUG, 'logOut before: ', JSON.stringify(this.account));
       const address = this.connectionInfo.account;
       clearStateOnLogout(this);
       toast.success('Address: "' + address + '" Disconnected');
       logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.connectionInfo));
-      logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.account));
     }
   },
   getters: {
@@ -324,7 +324,9 @@ function clearStateForNonexistentAccount(state: UserState) {
 // }
 
 function clearStateOnLogout(state: UserState) {
+
   state.connectionInfo = new ConnectionInfo();
+  logger.logToConsole(LogLevel.DEBUG, 'clearStateOnLogout: ', JSON.stringify(state.connectionInfo));
   state.account = Account.disconnected;
   clearStateForNonexistentAccount(state);
 }

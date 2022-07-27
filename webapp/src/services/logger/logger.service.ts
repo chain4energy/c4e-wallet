@@ -21,16 +21,16 @@ export class LoggerService {
     switch (logInfo.level) {
       case LogLevel.ERROR:
         if (logInfo.data !== undefined && logInfo.data.length > 0) {
-          console.error(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
+          console.error(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
         } else {
-          console.error(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message);
+          console.error(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message);
         }
         break;
       case LogLevel.WARNING:
         if (logInfo.data !== undefined && logInfo.data.length > 0) {
-          console.warn(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
+          console.warn(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
         } else {
-          console.warn(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message);
+          console.warn(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message);
         }
         break;
     }
@@ -39,25 +39,25 @@ export class LoggerService {
       switch (logInfo.level) {
         case LogLevel.INFO:
           if (logInfo.data !== undefined && logInfo.data.length > 0) {
-            console.info(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
+            console.info(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
           } else {
-            console.info(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message);
+            console.info(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message);
           }
           // console.info(logInfo.toString());
           break;
         case LogLevel.DEBUG:
           if (logInfo.data !== undefined && logInfo.data.length > 0) {
-            console.log(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
+            console.log(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
           } else {
-            console.log(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message);
+            console.log(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message);
           }
           // console.log(logInfo.toString());
           break;
         case LogLevel.TRACE:
           if (logInfo.data !== undefined && logInfo.data.length > 0) {
-            console.trace(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
+            console.trace(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
           } else {
-            console.trace(now + ' ' + logInfo.objectType + ' -> ' + logInfo.message);
+            console.trace(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message);
           }
           break;
       }

@@ -53,7 +53,7 @@ export class Configuration implements JsonConfiguration {
   chainId: string;
   operationGas: Gas;
   viewDenoms: ViewDenom[];
-
+  isEmpty: boolean;
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -75,6 +75,7 @@ export class Configuration implements JsonConfiguration {
         configuration.viewDenoms.forEach(d => {viewDenoms.push(new ViewDenom(d))})
       }
       this.viewDenoms = viewDenoms;
+      this.isEmpty = false;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -88,6 +89,7 @@ export class Configuration implements JsonConfiguration {
       this.operationGas = new Gas(undefined);
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
+      this.isEmpty = true;
     }
   }
 
