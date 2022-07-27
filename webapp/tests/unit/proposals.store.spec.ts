@@ -33,7 +33,7 @@ describe('proposals store tests', () => {
 
   it('fetches proposals - error', async () => {
     const proposalsStore = useProposalsStore();
-    proposalsStore.proposals = Array<Proposal>(),
+    proposalsStore.proposals = Array<Proposal>();
       proposalsStore.numberOfActiveProposals = 0;
 
     const proposalsError = createErrorResponse(404, 5, 'some error');

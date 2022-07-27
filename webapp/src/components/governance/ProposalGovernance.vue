@@ -1,7 +1,7 @@
 <template>
   <div class="proposal-container" v-on:click="showDetailsClick">
     <div class="top">
-      <span class="id fw-bold"><h2>#{{ proposal.proposal_id }}</h2> </span>
+      <span class="id fw-bold"><h2>#{{ proposal.proposalId }}</h2> </span>
       <div class="voting-status">
         <Icon :name=icons.get(proposal.status)>
         </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}</div>
@@ -14,13 +14,13 @@
       <div class="voting-date">
         <div class="start-date">
           <div>
-            {{ formattedDate(proposal.voting_start_time ) }}
+            {{ formattedDate(proposal.votingStartTime ) }}
           </div>
           <div class="green-background">{{ $t("GOVERNANCE_VIEW.VOTING_START") }}</div>
         </div>
         <div class="end-date">
           <div>
-            {{ formattedDate(proposal.voting_end_time ) }}
+            {{ formattedDate(proposal.votingEndTime ) }}
           </div>
           <div class="blue-background">{{ $t("GOVERNANCE_VIEW.VOTING_END") }}</div>
         </div>
@@ -91,29 +91,29 @@ const icons  = new Map<string, string>([
 ]);
 
 const yesPercentage = computed(() => {
-  let res:number = Number(props.proposal.final_tally_result.yes) / sumOfVotes.value * 100;
+  let res:number = props.proposal.finalTallyResult.yes / sumOfVotes.value * 100;
   return res.toFixed(2);
 });
 
 const noPercentage = computed(() => {
-  let res:number = Number(props.proposal.final_tally_result.no) / sumOfVotes.value * 100;
+  let res:number = props.proposal.finalTallyResult.no / sumOfVotes.value * 100;
   return res.toFixed(2);
 });
 
 const abstainPercentage = computed(() => {
-  let res:number = Number(props.proposal.final_tally_result.abstain) / sumOfVotes.value * 100;
+  let res:number = props.proposal.finalTallyResult.abstain / sumOfVotes.value * 100;
   return res.toFixed(2);
 });
 
 
 const noWithVetoPercentage = computed(() => {
-  let res:number = Number(props.proposal.final_tally_result.no_with_veto) / sumOfVotes.value * 100;
+  let res:number = props.proposal.finalTallyResult.noWithVeto / sumOfVotes.value * 100;
   return res.toFixed(2);
 });
 
 const sumOfVotes = computed(() => {
-  const val = Number(props.proposal.final_tally_result.yes) + Number(props.proposal.final_tally_result.no)
-    + Number(props.proposal.final_tally_result.no_with_veto) + Number(props.proposal.final_tally_result.abstain)
+  const val =props.proposal.finalTallyResult.yes + props.proposal.finalTallyResult.no
+    + props.proposal.finalTallyResult.noWithVeto + props.proposal.finalTallyResult.abstain
   return val > 0 ? val : -1;
 });
 const formattedDate = (value: Date) => {
@@ -121,7 +121,7 @@ const formattedDate = (value: Date) => {
 };
 
 const showDetailsClick = () => {
-  router.push({name: 'governanceDetails', params: {id: props.proposal.proposal_id}});
+  router.push({name: 'governanceDetails', params: {id: props.proposal.proposalId}});
 };
 
 const option = ref({

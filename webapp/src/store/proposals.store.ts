@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {DataHolder} from "@/models/data-holder";
 import {Proposal} from "@/models/store/proposal";
-import {TallyParams} from "@/models/GovernanceParameters";
+import {TallyParams} from "@/models/GovernanceParameters";// TODO : remove this from models add to Tally
 
 interface ProposalsState {
   proposals: Proposal[]

@@ -33,18 +33,18 @@ export function createProposalsResponseData(
 }
 export function expectProposal(actualProposal: Proposal, expectedBcProposal: any) {
   expect(actualProposal).not.toBeUndefined();
-  expect(actualProposal.proposal_id).toBe(expectedBcProposal.proposal_id);
+  expect(actualProposal.proposalId).toBe(expectedBcProposal.proposalId);
   expect(actualProposal.content).toEqual(expectedBcProposal.content);
   expect(actualProposal.content.type).toBe(expectedBcProposal.content.type);
   expect(actualProposal.content.title).toBe(actualProposal.content.title);
   expect(actualProposal.content.changes).toBe(actualProposal.content.changes)
   expect(actualProposal.status).toBe(expectedBcProposal.status);
-  expect(actualProposal.final_tally_result).toBe(actualProposal.final_tally_result);
-  expect(actualProposal.submit_time).toBe(actualProposal.submit_time);
-  expect(actualProposal.deposit_end_time).toBe(actualProposal.deposit_end_time);
-  expect(actualProposal.total_deposit).toBe(actualProposal.total_deposit);
-  expect(actualProposal.voting_end_time).toBe(actualProposal.voting_start_time);
-  expect(actualProposal.voting_start_time).toBe(actualProposal.voting_start_time)
+  expect(actualProposal.finalTallyResult).toBe(actualProposal.finalTallyResult);
+  expect(actualProposal.submitTime).toBe(actualProposal.submitTime);
+  expect(actualProposal.depositEndTime).toBe(actualProposal.depositEndTime);
+  expect(actualProposal.totalDeposit).toBe(actualProposal.totalDeposit);
+  expect(actualProposal.votingEndTime).toBe(actualProposal.votingEndTime);
+  expect(actualProposal.votingStartTime).toBe(actualProposal.votingStartTime)
 }
 
 export function expectProposals(

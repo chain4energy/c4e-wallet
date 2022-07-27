@@ -30,7 +30,7 @@ describe('tests mapping of proposals related data',  () => {
   it('maps undefined proposals', async ()=>{
     expect(()=> {mapProposals(undefined)}).toThrowError(new Error('Proposals list is undefined'));
   });
-  it('maps validators', async () => {
+  it('maps proposals', async () => {
     const bcProposals = createProposals();
     const storeProposals = mapProposals(bcProposals);
 

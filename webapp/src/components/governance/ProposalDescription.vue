@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 
-import {Proposal} from "@/models/Proposal";
+import {Proposal} from "@/models/store/proposal";
 
 const props = defineProps({
   proposal: {
