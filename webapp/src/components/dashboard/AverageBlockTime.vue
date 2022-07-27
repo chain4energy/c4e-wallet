@@ -2,7 +2,7 @@
   <div class="container">
     <div>{{ $t("DASHBOARD_VIEW.AVERAGE_BLOCK_TIME") }}</div>
     <div class="info">
-      {{ blockStore.getAverageBlockTime }}
+      {{ blockStore.getAverageBlockTimeView() }}s
     </div>
   </div>
 </template>

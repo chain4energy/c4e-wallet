@@ -40,7 +40,7 @@ export const useBlockStore = defineStore( 'block', {
     async fetchAverageBlockTime(lockscreen = true) {
       await apiFactory.blockApi().fetchAverageBlockTime(lockscreen).then(response => {
         if (response.isSuccess() && response.data !== undefined) {
-          this.averageBlockTime = response.data.data.averageBlockTime[0].averageTime;
+          this.averageBlockTime = response.data;
         } else {
           const message = 'Error fetching avarage block time data';
           logger.logToConsole(LogLevel.ERROR, message);
@@ -60,6 +60,11 @@ export const useBlockStore = defineStore( 'block', {
     },
     getAverageBlockTime(): number {
       return this.averageBlockTime;
+    },
+    getAverageBlockTimeView(): (precision?: number) => string {
+      return (precision = 2) => {
+        return this.averageBlockTime.toFixed(precision);
+      }
     },
     getLatestBlock(): Block{
       return this.latestBlock;

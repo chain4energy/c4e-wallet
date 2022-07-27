@@ -17,6 +17,7 @@
     <CirculatingSupply />
     <DashboardInflation />
     <StakingApr />
+    <AverageBlockTime />
   </div>
 
 </template>

@@ -8,8 +8,8 @@ import { createBlockResponseData, expectBlock } from '../utils/block.blockchain.
 import { useUserStore } from '@/store/user.store';
 import { Account, AccountType, ContinuousVestingData } from '@/models/store/account';
 import { Coin } from '@/models/store/common';
-
 import { ConnectionInfo, ConnectionType } from '@/api/wallet.connecton.api';
+import { createAveragetBlockTimeResponseData } from '../utils/average.block.time.hasura.data.util';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();
@@ -27,7 +27,7 @@ describe('block store tests', () => {
     mockedAxios.request.mockReset();
   });
 
-  it('fetches staking pool - success', async () => {
+  it('fetches latest block - success', async () => {
     const blockStore = useBlockStore();
     const height = 123412;
     const time = new Date("2022-07-21T13:47:25.833663575Z");
@@ -43,7 +43,7 @@ describe('block store tests', () => {
 
   });
 
-  it('fetches staking pool - error', async () => {
+  it('fetches latest block - error', async () => {
     const blockStore = useBlockStore();
     const validatorsError = createErrorResponse(404, 5, 'some error');
     mockedAxios.request.mockRejectedValueOnce(validatorsError);
@@ -51,6 +51,28 @@ describe('block store tests', () => {
 
     expectBlock(blockStore.getLatestBlock, 0, new Date(0));
     expect(blockStore.getLatestBlockHeight).toBe(0);
+  });
+
+  it('fetches average block time - success', async () => {
+    const blockStore = useBlockStore();
+    const avgTime = 4.34332423243;
+    const avgResp = {
+      data: createAveragetBlockTimeResponseData(avgTime),
+    };
+
+    mockedAxios.request.mockResolvedValue(avgResp);
+    await blockStore.fetchAverageBlockTime();
+    expect(blockStore.getAverageBlockTime).toBe(avgTime);
+
+  });
+
+  it('fetches average block time - error', async () => {
+    const blockStore = useBlockStore();
+    const validatorsError = createErrorResponse(404, 5, 'some error');
+    mockedAxios.request.mockRejectedValueOnce(validatorsError);
+    await blockStore.fetchAverageBlockTime();
+
+    expect(blockStore.getAverageBlockTime).toBe(Number.NaN);
   });
 
   it('calculates locked vesting - ContinuousVestingAccount', async () => {

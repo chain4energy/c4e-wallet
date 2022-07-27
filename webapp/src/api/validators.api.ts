@@ -14,21 +14,21 @@ export class ValidatorsApi extends BaseApi {
     return ServiceTypeEnum.VALIDATORS_API;
   }
 
-  public async fetchActiveValidatorCount(): Promise<RequestResponse<ActiveValidatorCount, ErrorData<any>>> {
-    return this.axiosHasuraCall({
-      method: 'POST',
-      url: useConfigurationStore().config.hasuraURL,
-      data: {
-        query: "query ActiveValidatorCount {\n" +
-          "  activeTotal: validator_status_aggregate(where: {status: {_eq: 3}}) {\n" +
-          "    aggregate {\n" +
-          "      count\n" +
-          "    }\n" +
-          "  }\n" +
-          "}",
-      }
-    }, true, null);
-  }
+  // public async fetchActiveValidatorCount(): Promise<RequestResponse<ActiveValidatorCount, ErrorData<any>>> {
+  //   return this.axiosHasuraCall({
+  //     method: 'POST',
+  //     url: useConfigurationStore().config.hasuraURL,
+  //     data: {
+  //       query: "query ActiveValidatorCount {\n" +
+  //         "  activeTotal: validator_status_aggregate(where: {status: {_eq: 3}}) {\n" +
+  //         "    aggregate {\n" +
+  //         "      count\n" +
+  //         "    }\n" +
+  //         "  }\n" +
+  //         "}",
+  //     }
+  //   }, true, null);
+  // }
 
   private VALIDATORS_URL = process.env.VUE_APP_VALIDATORS_URL;
 

@@ -1,12 +1,13 @@
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { RequestResponse } from "@/models/request-response";
-import BaseApi from "@/api/base.api";
-import { AverageBlockTimeResponse } from "@/models/AverageBlockTime";
+import BaseApi, { HasuraErrorData } from "@/api/base.api";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
 import { BlockResponse } from "@/models/blockchain/block";
 import { mapBlock } from "@/models/mapper/block.mapper";
 import { Block } from "@/models/store/block";
+import { mapAverageBlockTime } from "@/models/mapper/average.block.time.mapper";
+import { AverageBlockTimeResponse } from "@/models/hasura/average.block.time";
 
 export class BlockApi extends BaseApi {
 
@@ -23,25 +24,13 @@ export class BlockApi extends BaseApi {
       mapData, lockscreen, null, 'fetchLatestBlock - ');
   }
 
-  // public async fetchLatestBlock(): Promise<RequestResponse<LatestBlock, ErrorData<BlockchainApiErrorData>>> {
-    // return this.axiosBlockchainApiCall({
-    //   method: 'GET',
-    //   url: useConfigurationStore().config.bcApiURL+this.LATEST_BLOCK_URL
-    // }, false, null);
-  // }
-
-  public async fetchAverageBlockTime(lockscreen: boolean): Promise<RequestResponse<AverageBlockTimeResponse, ErrorData<any>>> {
-    return this.axiosHasuraCall( {
-      method: 'POST',
-      url: useConfigurationStore().config.hasuraURL,
-      data: {
-        query: "query AverageBlockTime {\n" +
+  public async fetchAverageBlockTime(lockscreen: boolean): Promise<RequestResponse<number, ErrorData<HasuraErrorData>>> {
+    const mapData = (hasureData: AverageBlockTimeResponse | undefined) => { return mapAverageBlockTime(hasureData); };
+    return this.axiosHasuraCall("query AverageBlockTime {\n" +
           "  averageBlockTime: average_block_time_per_hour(limit: 1, order_by: {height: desc}) {\n" +
           "    averageTime: average_time\n" +
           "  }\n" +
-          "}",
-      }
-    }, lockscreen, null);
+          "}", mapData, lockscreen, null, 'fetchAverageBlockTime - ');
   }
 
 }
