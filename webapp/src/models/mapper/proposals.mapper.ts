@@ -58,7 +58,7 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
     );
   })
 
-  const content = new ProposalContent(proposal.content.type, proposal.content.title, proposal.content.description, changes);
+  const content = new ProposalContent(proposal.content["@type"], proposal.content.title, proposal.content.description, changes);
   const finalTallyResult = new ProposalsTallyRes(
     Number(proposal.final_tally_result.yes),
     Number(proposal.final_tally_result.abstain),

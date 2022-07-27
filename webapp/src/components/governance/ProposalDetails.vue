@@ -18,7 +18,7 @@
         <div>{{ proposal.totalDeposit[0].amount }} {{ proposal.totalDeposit[0].denom }}</div>
         <div>{{formattedDate(proposal.votingStartTime) }}</div>
         <div>{{formattedDate(proposal.votingEndTime) }}</div>
-        <div>{{ proposal.content['@type'] }}</div>
+        <div>{{ proposal.content.type }}</div>
         <div>{{ formattedDate(proposal.submitTime) }}</div>
         <div>{{formattedDate(proposal.depositEndTime) }}</div>
         <div>{{ Number(proposalsStore.getTallyParams.quorum).toFixed(2) }}%</div>
