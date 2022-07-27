@@ -1,4 +1,5 @@
 import { PaginatedResponse } from "@/models/blockchain/pagination";
+import { Coin } from "./common";
 
 export interface ProposalsResponse extends PaginatedResponse {
   proposals: Proposal[]
@@ -23,7 +24,7 @@ export interface Proposal {
   },
   submit_time: string,
   deposit_end_time: string,
-  total_deposit:Array<ProposalsAmount>
+  total_deposit:Array<Coin>
   voting_start_time: string,
   voting_end_time: string,
 }
@@ -36,7 +37,4 @@ export interface ProposalChanges{
 export interface ProposalsValue{
   mindeposit: string;
 }
-export interface ProposalsAmount{
-  denom: string,
-  amount: string,
-}
+
