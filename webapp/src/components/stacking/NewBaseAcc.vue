@@ -1,16 +1,16 @@
 <template>
   <div>
     <TabView>
-      <TabPanel :header="$t(`STACKING_VIEW.TABS.ALL`)">
+      <TabPanel :header="$t(`STAKING_VIEW.TABS.ALL`)">
         <ValidatorsDataTable :validators="useValidatorsStore().getValidators"/>
       </TabPanel>
-      <TabPanel v-if="isLoggedIn" :header="$t(`STACKING_VIEW.TABS.STACKED`)">
+      <TabPanel v-if="isLoggedIn" :header="$t(`STAKING_VIEW.TABS.STAKED`)">
         <ValidatorsDataTable :validators="useValidatorsStore().getValidatorsWithDelegations"/>
       </TabPanel>
-      <TabPanel :header="$t(`STACKING_VIEW.TABS.ACTIVE`)">
+      <TabPanel :header="$t(`STAKING_VIEW.TABS.ACTIVE`)">
         <ValidatorsDataTable :validators="useValidatorsStore().getActiveValidators"/>
       </TabPanel>
-      <TabPanel :header="$t(`STACKING_VIEW.TABS.INACTIVE`)">
+      <TabPanel :header="$t(`STAKING_VIEW.TABS.INACTIVE`)">
         <ValidatorsDataTable :validators="useValidatorsStore().getInactiveValidators"/>
       </TabPanel>
     </TabView>

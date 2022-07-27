@@ -18,7 +18,7 @@
         <Button @click="$emit('close')">{{ $t('COMMON.CLOSE') }}</Button>
       </div>
       <div class="validationPopup__body">
-        <h3>{{ $t('STACKING_VIEW.STACKING_POPUP.HEADER') }}</h3>
+        <h3>{{ $t('STAKING_VIEW.STAKING_POPUP.HEADER') }}</h3>
         <div class="validationPopup__description">
           <div class="validationPopup__descriptionIcon">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,7 +30,7 @@
           </div>
           <div class="validationPopup__description-info">
             <p>{{ $t('COMMON.DESCRIPTION') }}</p>
-            <p>{{ $t('COMMON.THE') }} {{validator.description.moniker}} {{ $t('STACKING_VIEW.STACKING_POPUP.VALIDATOR_DESCRIPTION') }}</p>
+            <p>{{ $t('COMMON.THE') }} {{validator.description.moniker}} {{ $t('STAKING_VIEW.STAKING_POPUP.VALIDATOR_DESCRIPTION') }}</p>
             <a :href="validator.description.website">{{validator.description.website}}</a>
           </div>
         </div>
@@ -51,13 +51,13 @@
       </div>
       <div class="validationPopup__btnHolder" v-if="useUserStore().isLoggedIn && canModify" >
         <div class="validationPopup__btns" v-if="!actionRedelegate">
-          <Button @click="undelegate()">{{ $t('STACKING_VIEW.STACKING_POPUP.UNDELEGATE') }}</Button>
-          <Button @click="delegate()">{{ $t('STACKING_VIEW.STACKING_POPUP.DELEGATE') }}</Button>
-          <Button @click="redelegateState(true)">{{ $t('STACKING_VIEW.STACKING_POPUP.REDELEGATE') }}</Button>
+          <Button @click="undelegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</Button>
+          <Button @click="delegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}</Button>
+          <Button @click="redelegateState(true)">{{ $t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</Button>
         </div>
         <div class="validationPopup__btns" v-if="actionRedelegate">
           <Button @click="redelegateState(false)">{{ $t('COMMON.RETURN') }}</Button>
-          <Button @click="redelegate">{{ $t('STACKING_VIEW.STACKING_POPUP.REDELEGATE') }}</Button>
+          <Button @click="redelegate">{{ $t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</Button>
         </div>
       </div>
 

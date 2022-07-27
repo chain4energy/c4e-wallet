@@ -63,12 +63,12 @@
     "AVERAGE_BLOCK_TIME": "Average block time",
     "CIRCULATING_SUPPLY": "Circulating supply",
     "INFLATION": "Inflation",
-    "STACKING_APR": "Staking APR"
+    "STAKING_APR": "Staking APR"
   },
-  "STACKING_VIEW": {
+  "STAKING_VIEW": {
     "TABS": {
       "ALL": "All",
-      "STACKED": "Staked",
+      "STAKED": "Staked",
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
     },
@@ -90,7 +90,7 @@
     "TABLE_BUTTONS": {
       "MANAGE_BTN": "Manage"
     },
-    "STACKING_POPUP": {
+    "STAKING_POPUP": {
       "HEADER": "My delegation",
       "VALIDATOR_DESCRIPTION": "Validator for SmartContract chains",
       "DELEGATE": "Delegate",
@@ -104,8 +104,8 @@
   "USER_DATA": {
     "TOTAL": "Total",
     "AVAILABLE": "Available",
-    "STACKED": "Stacked",
-    "UNSTACKING": "Unstacking",
+    "STAKED": "Staked",
+    "UNSTAKING": "Unstaking",
     "CLAIM_REWARDS": "Claim rewards",
     "LOCKED": "Locked",
     "VESTING_END": "Vesting end"
