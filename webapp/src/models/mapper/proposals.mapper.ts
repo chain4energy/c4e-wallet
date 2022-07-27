@@ -1,4 +1,5 @@
 import { Proposal as BcProposal } from "@/models/blockchain/proposals";
+import { mapCoin } from "@/models/mapper/common.mapper"
 import {
   Proposal as StoreProposal,
   ProposalContent,
@@ -8,6 +9,7 @@ import {
   ProposalDeposit,
   ProposalStatus,
 } from "@/models/store/proposal";
+import { Coin } from "@/models/store/common";
 
 export function mapProposals(proposals: BcProposal[] | undefined): { proposals: StoreProposal[], numberOfActive: number }  {
   if (proposals === undefined) {
@@ -64,11 +66,7 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
     Number(proposal.final_tally_result.no),
     Number(proposal.final_tally_result.no_with_veto));
   const totalDeposit = proposal.total_deposit.map((el)=> {
-    const amount = BigInt(el.amount);
-    return new ProposalDeposit(
-      el.denom,
-      amount
-    );
+    return mapCoin(el, el.denom)
   });
 
   return new StoreProposal(
