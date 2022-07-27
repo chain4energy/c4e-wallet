@@ -87,15 +87,3 @@ export class ProposalsTallyRes{
     this.noWithVeto= noWithVeto;
   }
 }
-
-export class ProposalDeposit{
-  denom: string;
-  amount: bigint;
-  constructor(
-    denom: string,
-    amount: bigint,
-  ) {
-    this.denom = denom;
-    this.amount = amount;
-  }
-}
