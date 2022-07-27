@@ -61,7 +61,7 @@
       </svg>
       <p>{{useUserStore().getTotalRewardsViewAmount() || '0'}}</p>
     </div>
-    <button @click="claimRewards">{{ $t('USER_DATA.CLAIM_REWARDS') }}</button>
+    <Button @click="claimRewards">{{ $t('USER_DATA.CLAIM_REWARDS') }}</Button>
 
   </div>
 

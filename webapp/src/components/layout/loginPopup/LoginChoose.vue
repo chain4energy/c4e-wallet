@@ -3,7 +3,7 @@
     <h2>Welcome</h2>
     <p>The world’s first blockchain network based on green energy production</p>
     <div class="loginChoose__body">
-      <button @click="$emit('typeChange', LoginEmail)" class="loginChoose__description">
+      <Button @click="$emit('typeChange', LoginEmail)" class="loginChoose__description">
         <div style="display: flex; align-items: center; justify-content: space-evenly;">
           <div class="loginChoose__descriptionIcon">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -35,8 +35,8 @@
             </filter>
           </defs>
         </svg>
-      </button>
-      <button @click="$emit('keplr')" class="loginChoose__description">
+      </Button>
+      <Button @click="$emit('keplr')" class="loginChoose__description">
         <div style="display: flex; align-items: center; justify-content: space-evenly;">
           <div class="loginChoose__descriptionIcon">
             <img src="/keplrIcon.jpg" alt="KeplrIco">

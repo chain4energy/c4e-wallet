@@ -5,7 +5,7 @@
     position: fixed;
     flex-direction: column;
     background-color: $main-color;
-    padding: 10px 0;
+    padding: 25px 0;
     padding-left: 5px;
     width: 80px;
     min-height: 70vh;
@@ -16,7 +16,7 @@
     z-index: 999;
     overflow: hidden;
     transition: all 0.3s ease-in-out;
-    border-radius: 0 25px 25px 0;
+    border-radius: 0 50px 50px 0;
 
     &:hover {
         width: 300px;
@@ -28,7 +28,10 @@
 
     .sidebar-element {
         display: flex;
+        flex-wrap: nowrap;
         padding: 10px 0 10px 15px;
+        overflow: hidden;
+        width: 300px;
 
         &:hover {
             background-color: $main-darker-color;
@@ -44,12 +47,13 @@
         }
     
         .title {
-            width: 0px;
+            width: 220px;
             height: 40px;
             color: $header-text-color;
+            text-indent: 30px;
             display: grid;
+            justify-content: start;
             place-items: center;
-            text-indent: 20px;
         }
         
     }
@@ -59,12 +63,12 @@
 
 .active {
     border-radius: 50%;
-    -webkit-box-shadow: 0px 4px 12px 0px $secondary-color;
-    -moz-box-shadow: 0px 4px 12px 0px $secondary-color;
-    box-shadow: 0px 4px 12px 0px $secondary-color;
+    -webkit-box-shadow: 0px 4px 6px 0px $secondary-color;
+    -moz-box-shadow: 0px 4px 6px 0px $secondary-color;
+    box-shadow: 0px 4px 6px 0px $secondary-color;
     
 }
-@media only screen and (min-width: 601px) {
+@media only screen and (min-width: 701px) {
     .hide-sidebar {
         display: none;
     }
@@ -73,7 +77,7 @@
         display: none;
     }
 }
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 700px) {
     .display-none {
         display: none !important;
     }

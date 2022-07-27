@@ -38,28 +38,5 @@ const isLoggedIn = computed(() => userStore.isLoggedIn);
 </script>
 
 <style scoped lang="scss">
-.btn__main {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 12px 24px 13px;
-  box-sizing: border-box;
 
-  background: #FFFFFF;
-  /* Primary/Secondary-Blue */
-
-  border: 1px solid #27697F;
-  border-radius: 24px;
-
-
-  &:hover {
-    background-color: #27697F;
-    color: white;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-}
 </style>

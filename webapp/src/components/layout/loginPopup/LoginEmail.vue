@@ -2,7 +2,7 @@
   <div class="loginEmail">
     <div class="loginEmail__header">
       <h3>Login with Email</h3>
-      <button @click="$emit('back')">{{ $t('COMMON.BACK') }}</button>
+      <Button @click="$emit('back')">{{ $t('COMMON.BACK') }}</Button>
     </div>
     <form @submit.prevent class="loginEmail__body">
       <div class="loginEmail__description">
@@ -18,7 +18,7 @@
           <p>{{ $t('LOGIN.ADDRESS_HELP') }}</p>
         </div>
         <input v-model="email">
-        <button @click="submit">{{ $t('COMMON.CONNECT')}}</button>
+        <Button @click="submit">{{ $t('COMMON.CONNECT')}}</Button>
       </div>
     </form>
   </div>

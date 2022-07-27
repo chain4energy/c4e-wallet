@@ -234,48 +234,34 @@ function reload() {
   display: flex;
   flex-wrap: wrap;
 
-  div {
+  div{
     width: 100%;
     display: grid;
-
-    span {
-      width: 100%;
+    span{
+      width:100%;
       place-items: center;
-
-      .detail-headers {
-        display: inline-flex;
-      }
-
-      .detail-header {
-        padding-bottom: 10px;
-      }
-
-      div {
-        place-items: center;
+      div{
+        place-items: start;
       }
     }
   }
-
-  .detail-row {
+  .detail-row{
     padding: 10px 0;
     display: inline-flex;
 
-    .detail-header {
+    .detail-header{
       color: var(--secondary-color);
     }
-
-    .detail-item {
+    .detail-item{
       color: white;
     }
   }
-
   span {
     flex-grow: 1;
     width: 45%;
     padding: 5px;
     margin-left: 5px;
     margin-right: 5px;
-    border-bottom: 1px solid var(--main-lighter-color);
     box-sizing: border-box;
 
     div {

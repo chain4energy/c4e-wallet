@@ -41,14 +41,16 @@ const closeDropdown = () => {
 
 <!--TODO: style!!!-->
 <style scoped lang="scss">
-//@import '../../styles/partials/_variables.scss';
+@import '../../styles/variables.scss';
+
+.flag {
+  border: 1px solid black !important;
+}
 .icon {
   margin-right: 5px;
 }
 
 .switch {
-  //background: var($--primary-blue);
-  //color: var($--brand-green) !important;
   padding: 5px 10px;
   margin: 0 10px;
   border-radius: 5px;
@@ -56,40 +58,38 @@ const closeDropdown = () => {
   display: inline-block;
   cursor: pointer;
 
-  &:hover {
-    //background: var($--main-dark-blue);
-  }
-
   .options-container {
     display: block;
     position: absolute;
     right: 0;
-    background-color: #f1f1f1;
+    background-color: $header-text-color;
     min-width: 160px;
+    border-radius: 10px 0 10px 10px;
+    overflow: hidden;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     span {
-      //color: var($--main-dark-blue);
-      //padding: 12px 16px;
-      padding-bottom: 0.6em;
-      padding-left: 12px;
+      color: $main-color;
+      padding: 12px 16px;
       text-decoration: none;
       display: block;
 
       &:hover {
-        //color: var($--brand-green);
+        color: $secondary-color;
         //background: var($--main-dark-blue);
-        background-color: gray;
+        background-color: $main-color;
       }
     }
     .option {
       display: flex;
       align-items: center;
 
+      &:hover span {
+        color: $secondary-color;
+      }
       .text {
         padding-top: 18px;
       }
-
     }
   }
 
