@@ -63,12 +63,12 @@
     "AVERAGE_BLOCK_TIME": "Średni czas blokowania",
     "CIRCULATING_SUPPLY": "Оборотне постачання",
     "INFLATION": "Інфляція",
-    "STACKING_APR": "Річна ставка"
+    "STAKING_APR": "Річна ставка"
   },
-  "STACKING_VIEW": {
+  "STAKING_VIEW": {
     "TABS": {
       "ALL": "Wszystko",
-      "STACKED": "Stawiane",
+      "STAKED": "Stawiane",
       "ACTIVE": "aktywny",
       "INACTIVE": "Nieaktywny"
     },
@@ -90,7 +90,7 @@
     "TABLE_BUTTONS": {
       "MANAGE_BTN": "Zarządzać"
     },
-    "STACKING_POPUP": {
+    "STAKING_POPUP": {
       "HEADER": "Moja delegacja",
       "VALIDATOR_DESCRIPTION": "Walidator dla sieci SmartContract",
       "DELEGATE": "Delegat",
@@ -104,8 +104,8 @@
   "USER_DATA": {
     "TOTAL": "Całkowity",
     "AVAILABLE": "Do dyspozycji",
-    "STACKED": "Ułożone w stos",
-    "UNSTACKING": "Rozpakowywanie",
+    "STAKED": "Ułożone w stos",
+    "UNSTAKING": "Rozpakowywanie",
     "CLAIM_REWARDS": "Odbierz nagrody",
     "LOCKED": "Zablokowane",
     "VESTING_END": "Koniec Vestingu"

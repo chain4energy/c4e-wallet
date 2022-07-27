@@ -20,11 +20,11 @@
       <p>{{useUserStore().getBalanceViewAmount() || 0}}</p>
     </div>
     <div class="userdata__amounts">
-      <p>{{ $t('USER_DATA.STACKED') }}</p>
+      <p>{{ $t('USER_DATA.STAKED') }}</p>
       <p>{{useUserStore().getTotalDelegatedViewAmount() || 0}}</p>
     </div>
     <div class="userdata__amounts">
-      <p>{{ $t('USER_DATA.UNSTACKING') }}</p>
+      <p>{{ $t('USER_DATA.UNSTAKING') }}</p>
       <p>{{useUserStore().getTotalUndelegatingViewAmount() || 0}}</p>
     </div>
     <div class="userdata__accountData-vesting-first" v-if="useUserStore().isContinuousVestingAccount">
