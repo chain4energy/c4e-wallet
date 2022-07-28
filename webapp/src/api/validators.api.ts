@@ -1,6 +1,5 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {RequestResponse} from "@/models/request-response";
-import {ActiveValidatorCount} from "@/models/ActiveValidatorCount";
 import BaseApi from "@/api/base.api";
 import {useConfigurationStore} from "@/store/configuration.store";
 import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";

@@ -1,15 +1,13 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {DataHolder} from "@/models/data-holder";
-import {Proposal} from "@/models/store/proposal";
-import {TallyParams} from "@/models/GovernanceParameters";// TODO : remove this from models add to Tally
+import {Proposal, TallyParams} from "@/models/store/proposal";
 
 interface ProposalsState {
   proposals: Proposal[]
   numberOfActiveProposals: number
   proposal: Proposal | undefined
   paginationKey: string | null
-  tallyParams: any
+  tallyParams: TallyParams
 }
 
 export const useProposalsStore = defineStore({
@@ -20,9 +18,9 @@ export const useProposalsStore = defineStore({
       proposals: Array<Proposal>(),
       numberOfActiveProposals: 0,
       //proposals: new DataHolder<Proposal>(),
-      proposal: Object(),
+      proposal: undefined,
       paginationKey: null,
-      tallyParams: new TallyParams()
+      tallyParams: new TallyParams(Number.NaN, Number.NaN, Number.NaN)
     };
   },
   actions: {
@@ -39,8 +37,8 @@ export const useProposalsStore = defineStore({
           }
         });
     },
-    async fetchProposalById(id: number){
-      await apiFactory.proposalsApi().fetchProposalById(id).then((resp) => {
+    async fetchProposalById(id: number, lockscreen = true){
+      await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then((resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.proposal = resp.data.proposal;
           } else {
@@ -76,10 +74,10 @@ export const useProposalsStore = defineStore({
 //
    //   });
    // },
-    async fetchTallyParams() {
-      await apiFactory.proposalsApi().fetchTallyParams().then(response => {
+    async fetchTallyParams(lockscreen = true) {
+      await apiFactory.proposalsApi().fetchTallyParams(lockscreen).then(response => {
        if (response.error == null && response.data != undefined) {
-        this.tallyParams = response.data.tally_params;
+        this.tallyParams = response.data;
        } else {
           //TODO: error handling
         }
@@ -93,7 +91,7 @@ export const useProposalsStore = defineStore({
     },
     clear() {
       this.clearProposals();
-      this.tallyParams = new TallyParams();
+      this.tallyParams = new TallyParams(Number.NaN, Number.NaN, Number.NaN);
     }
   },
   getters: {

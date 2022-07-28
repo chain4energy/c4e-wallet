@@ -1,4 +1,4 @@
-import { Proposal as BcProposal } from "@/models/blockchain/proposals";
+import { GovernanceParameters, Proposal as BcProposal } from "@/models/blockchain/proposals";
 import { mapCoin } from "@/models/mapper/common.mapper"
 import {
   Proposal as StoreProposal,
@@ -7,6 +7,7 @@ import {
   ProposalsValue,
   ProposalsTallyRes,
   ProposalStatus,
+  TallyParams,
 } from "@/models/store/proposal";
 import { Coin } from "@/models/store/common";
 
@@ -102,4 +103,22 @@ function mapProposalStatus(proposalStatus: string | undefined): ProposalStatus  
     default:
       throw new Error(`Unsupported proposal status type: '${ProposalStatus}'`);
   }
+}
+
+export function mapTallyParams(governanceParams: GovernanceParameters | undefined): TallyParams  {
+  if (governanceParams === undefined) {
+    throw new Error('mapTallyParams - governanceParams is undefined');
+  }
+  if (governanceParams.tally_params === undefined) {
+    throw new Error('mapTallyParams - tally params is undefined');
+  }
+  if (governanceParams.tally_params.quorum === undefined
+    || governanceParams.tally_params.threshold === undefined
+    || governanceParams.tally_params.veto_threshold === undefined) {
+    throw new Error('mapTallyParams - quorum or threshold or vetothreshold is undefined');
+  }
+  return new TallyParams(
+    Number(governanceParams.tally_params.quorum),
+    Number(governanceParams.tally_params.threshold),
+    Number(governanceParams.tally_params.veto_threshold));
 }

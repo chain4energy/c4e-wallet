@@ -4,7 +4,7 @@ import { useSplashStore } from '@/store/splash.store';
 import { useProposalsStore } from "@/store/proposals.store";
 import { createErrorResponse } from '../utils/common.blockchain.data.util';
 import { Proposal } from "@/models/store/proposal";
-import { expectEmptyProposals, expectProposals, createProposalsResponseData } from "../utils/proposal.blockchain.data.util";
+import { expectEmptyProposals, expectProposals, createProposalsResponseData, createTallyParamsResponseData, expectTallyParams } from "../utils/proposal.blockchain.data.util";
 
 jest.mock("axios");
 const mockedAxios = mockAxios();
@@ -41,6 +41,28 @@ describe('proposals store tests', () => {
     await proposalsStore.fetchProposals();
 
     expectEmptyProposals({proposals: proposalsStore.proposals, numberOfActive: proposalsStore.numberOfActiveProposals });
+  });
+
+  it('fetches tally params - success', async () => {
+    const quorum = 0.23432;
+    const threshold = 0.987;
+    const vetoThreshold = 0.3678
+    const tally = {
+      data: createTallyParamsResponseData(quorum.toString(), threshold.toString(), vetoThreshold.toString())
+    };
+    mockedAxios.request.mockResolvedValueOnce(tally);
+    await useProposalsStore().fetchTallyParams();
+    expectTallyParams(useProposalsStore().getTallyParams, quorum, threshold, vetoThreshold);
+  });
+
+  it('fetches tally params - error', async () => {
+    const proposalsStore = useProposalsStore();
+
+    const tallyError = createErrorResponse(404, 5, 'some error');
+    mockedAxios.request.mockRejectedValueOnce(tallyError);
+    await proposalsStore.fetchTallyParams();
+
+    expectTallyParams(useProposalsStore().getTallyParams, Number.NaN, Number.NaN, Number.NaN);
   });
 
 });

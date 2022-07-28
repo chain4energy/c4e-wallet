@@ -20,10 +20,10 @@
         <div>{{formattedDate(proposal.votingEndTime) }}</div>
         <div>{{ proposal.content['@type'] }}</div>
         <div>{{ formattedDate(proposal.submitTime) }}</div>
-        <div>{{formattedDate(proposal.depositEndTime) }}</div>
+        <div>{{ formattedDate(proposal.depositEndTime) }}</div>
         <div>{{ Number(proposalsStore.getTallyParams.quorum).toFixed(2) }}%</div>
         <div>{{ Number(proposalsStore.getTallyParams.threshold).toFixed(2) }}%</div>
-        <div>{{ Number(proposalsStore.getTallyParams.veto_threshold).toFixed(2) }}%</div>
+        <div>{{ Number(proposalsStore.getTallyParams.vetoThreshold).toFixed(2) }}%</div>
       </div>
     </div>
   </div>

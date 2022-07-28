@@ -87,3 +87,19 @@ export class ProposalsTallyRes{
     this.noWithVeto= noWithVeto;
   }
 }
+
+export class TallyParams {
+  quorum: number;
+  threshold: number;
+  vetoThreshold: number;
+
+  constructor(
+    quorum: number,
+    threshold: number,
+    vetoThreshold: number
+  ) {
+    this.quorum = quorum;
+    this.threshold = threshold;
+    this.vetoThreshold = vetoThreshold;
+  }
+}

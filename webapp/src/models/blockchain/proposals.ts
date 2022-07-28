@@ -38,3 +38,21 @@ export interface ProposalsValue{
   mindeposit: string;
 }
 
+export interface GovernanceParameters {
+  voting_params: VotingParams;
+  deposit_params: DepositParams;
+  tally_params: TallyParams;
+}
+
+export interface VotingParams {
+  voting_period: string;
+}
+export interface DepositParams {
+  min_deposit: Coin[],
+  max_deposit_period: string
+}
+export interface TallyParams {
+  quorum: string;
+  threshold: string;
+  veto_threshold: string;
+}

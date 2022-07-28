@@ -1,4 +1,4 @@
-import { Proposal, ProposalStatus } from "@/models/store/proposal";
+import { Proposal, ProposalStatus, TallyParams } from "@/models/store/proposal";
 import { Validator } from "@/models/store/validator";
 import { BigDecimal } from "../../src/models/store/big.decimal";
 export const defaultProposals = [
@@ -180,4 +180,36 @@ export function expectEmptyProposals(proposalsData: { proposals: Proposal[], num
   expect(proposalsData).not.toBeUndefined();
   expect(proposalsData?.proposals.length).toBe(0);
   expect(proposalsData?.numberOfActive).toBe(0);
+}
+
+export function createTallyParamsResponseData(
+  quorum: string,
+  threshold: string,
+  vetoThreshold: string
+) {
+  return{
+    voting_params: {
+      voting_period: "0s"
+    },
+    deposit_params: {
+      min_deposit: [],
+      max_deposit_period: "0s"
+    },
+    tally_params: {
+      quorum: quorum,
+      threshold: threshold,
+      veto_threshold: vetoThreshold
+    }
+  }
+}
+
+export function expectTallyParams(
+  tallyParams: TallyParams,
+  expectedQuorum: number,
+  expectedThreshold: number,
+  expectedVetoThreshold: number
+) {
+  expect(tallyParams.quorum).toBe(expectedQuorum);
+  expect(tallyParams.threshold).toBe(expectedThreshold);
+  expect(tallyParams.vetoThreshold).toBe(expectedVetoThreshold);
 }
