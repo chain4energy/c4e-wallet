@@ -130,9 +130,10 @@ class DataService extends LoggedService{
       useProposalsStore().fetchProposalById(proposeId).then((resp) => {
         if(resp !== undefined){
           onSuccess()
-        } else {
-          router.push({name: 'proposalsList'})
-        }
+        } 
+        // else {
+        //   router.push({name: 'proposalsList'})
+        // }
       });
     }
   }

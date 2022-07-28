@@ -106,7 +106,9 @@ describe('test proposals API', () => {
     expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
-    
+  
+  });
+  
   it('fetch request of one proposal', async ()=> {
     const proposal = {
       data: createProposalResponseData()
