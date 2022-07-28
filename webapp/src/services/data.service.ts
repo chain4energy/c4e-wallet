@@ -44,8 +44,13 @@ class DataService extends LoggedService{
 
   public onAppStart() {
     this.logToConsole(LogLevel.DEBUG, 'onAppStart');
+    useConfigurationStore().fetchConfig();
+    this.onInit()
+  }
+
+  private onInit() {
+    this.logToConsole(LogLevel.DEBUG, 'onInit');
     const lockScreen = true;
-    useConfigurationStore().fetchConfig("config1.json");
     Promise.all([
       useBlockStore().fetchLatestBlock(lockScreen),
       useBlockStore().fetchAverageBlockTime(lockScreen),
@@ -103,7 +108,7 @@ class DataService extends LoggedService{
       window.clearInterval(this.blockIntervalId);
       window.clearInterval(this.dashboardIntervalId);
       window.clearInterval(this.validatorsIntervalId);
-      this.onAppStart();
+      this.onInit();
     } finally {
       useSplashStore().decrement();
     }

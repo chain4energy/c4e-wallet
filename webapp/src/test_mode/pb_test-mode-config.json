@@ -1,0 +1,748 @@
+{
+
+  "hasura": {
+    "status": 200,
+    "data": {"data":{"averageBlockTime":[{"averageTime":123.3758510313432835}]}}
+  },
+
+  "api/cosmos/bank/v1beta1/supply/uc4e": {
+    "status": 200,
+    "data": {
+      "amount": {
+        "denom": "uc4e",
+        "amount": "999999999990000"
+      }
+    }
+  },
+
+
+  "api/cosmos/bank/v1beta1/balances/c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422/by_denom?denom=uc4e": {
+    "status": 200,
+    "data": {
+      "balance": {
+        "denom": "uc4e",
+        "amount": "50000000000000"
+      }
+    }
+  },
+
+
+  "api/cosmos/bank/v1beta1/balances/c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts/by_denom?denom=uc4e": {
+    "status": 200,
+    "data": {
+      "balance": {
+        "denom": "uc4e",
+        "amount": "15000000000000"
+      }
+    }
+  },
+
+
+  "api/cosmos/staking/v1beta1/pool": {
+    "status": 200,
+    "data": {
+      "pool": {
+        "not_bonded_tokens": "99117820147",
+        "bonded_tokens": "2038880971077"
+      }
+    }
+  },
+
+
+  "api/cosmos/distribution/v1beta1/community_pool": {
+    "status": 200,
+    "data": {
+      "pool": [
+        {
+          "denom": "uc4e",
+          "amount": "80000018111131.918187503176854972"
+        }
+      ]
+    }
+  },
+
+
+  "api/cosmos/gov/v1beta1/params/tallying": {
+    "status": 200,
+    "data": {
+      "voting_params": {
+        "voting_period": "0s"
+      },
+      "deposit_params": {
+        "min_deposit": [
+        ],
+        "max_deposit_period": "0s"
+      },
+      "tally_params": {
+        "quorum": "0.334000000000000000",
+        "threshold": "0.500000000000000000",
+        "veto_threshold": "0.334000000000000000"
+      }
+    }
+  },
+
+
+  "api/cosmos/auth/v1beta1/accounts/c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg": {
+    "status": 200,
+    "data": {
+      "account": {
+        "@type": "/cosmos.auth.v1beta1.BaseAccount",
+        "address": "c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg",
+        "pub_key": {
+          "@type": "/cosmos.crypto.secp256k1.PubKey",
+          "key": "Al619Y81/xqLCl6oREVwtBPpcwv0RuR9C4KbdNQnOwbB"
+        },
+        "account_number": "25",
+        "sequence": "63"
+      }
+    }
+  },
+
+
+  "api/cosmos/bank/v1beta1/balances/c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg/by_denom?denom=uc4e": {
+    "status": 200,
+    "data": {
+      "balance": {
+        "denom": "uc4e",
+        "amount": "49021373389104"
+      }
+    }
+  },
+
+
+  "api/cosmos/distribution/v1beta1/delegators/c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg/rewards": {
+    "status": 200,
+    "data": {
+      "rewards": [
+        {
+          "validator_address": "c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a",
+          "reward": [
+            {
+              "denom": "uc4e",
+              "amount": "12446.809774622735653664"
+            }
+          ]
+        },
+        {
+          "validator_address": "c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5",
+          "reward": [
+            {
+              "denom": "uc4e",
+              "amount": "9950.028132023545000000"
+            }
+          ]
+        },
+        {
+          "validator_address": "c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8",
+          "reward": [
+            {
+              "denom": "uc4e",
+              "amount": "9902.379261896710016643"
+            }
+          ]
+        },
+        {
+          "validator_address": "c4evaloper19473sdmlkkvcdh6z3tqedtqsdqj4jjv782dku2",
+          "reward": [
+            {
+              "denom": "uc4e",
+              "amount": "11479.776320338642000000"
+            }
+          ]
+        },
+        {
+          "validator_address": "c4evaloper1tavkv9fpqwmw2v9drsm7s3yk7xlll9q8n7e6yl",
+          "reward": [
+            {
+              "denom": "uc4e",
+              "amount": "9949.734416845535000000"
+            }
+          ]
+        },
+        {
+          "validator_address": "c4evaloper1e0ddzmhw2ze2glszkgjk6tfvcfzv68cmrg7euh",
+          "reward": [
+            {
+              "denom": "uc4e",
+              "amount": "9985.601629266729000000"
+            }
+          ]
+        },
+        {
+          "validator_address": "c4evaloper1arwuhz0tg28ld0sry5s083qs6djjqt5vl8dtjl",
+          "reward": [
+            {
+              "denom": "uc4e",
+              "amount": "10253.707586374692000000"
+            }
+          ]
+        }
+      ],
+      "total": [
+        {
+          "denom": "uc4e",
+          "amount": "73968.037121368588670307"
+        }
+      ]
+    }
+  },
+
+
+  "api/cosmos/staking/v1beta1/delegations/c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg": {
+    "status": 200,
+    "data": {
+      "delegation_responses": [
+        {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a","shares":"100011000112.000000000000000000"},"balance":{"denom":"uc4e","amount":"100011000112"}},
+        {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5","shares":"100013000000.000000000000000000"},"balance":{"denom":"uc4e","amount":"100013000000"}},
+        {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8","shares":"99900969616.241761052719386080"},"balance":{"denom":"uc4e","amount":"97912949014"}},
+        {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper19473sdmlkkvcdh6z3tqedtqsdqj4jjv782dku2","shares":"100013000000.000000000000000000"},"balance":{"denom":"uc4e","amount":"100013000000"}},
+        {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1tavkv9fpqwmw2v9drsm7s3yk7xlll9q8n7e6yl","shares":"100013000000.000000000000000000"},"balance":{"denom":"uc4e","amount":"100013000000"}},
+        {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1e0ddzmhw2ze2glszkgjk6tfvcfzv68cmrg7euh","shares":"100011000000.000000000000000000"},"balance":{"denom":"uc4e","amount":"100011000000"}},
+        {"delegation":{"delegator_address":"c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg","validator_address":"c4evaloper1arwuhz0tg28ld0sry5s083qs6djjqt5vl8dtjl","shares":"100012000000.000000000000000000"},"balance":{"denom":"uc4e","amount":"100012000000"}}
+      ],
+      "pagination": {
+        "next_key": null,
+        "total": "7"
+      }
+    }
+  },
+
+
+  "api/cosmos/staking/v1beta1/delegators/c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg/unbonding_delegations": {
+    "status": 200,
+    "data": {
+      "unbonding_responses": [
+        {
+          "delegator_address": "c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg",
+          "validator_address": "c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8",
+          "entries": [
+            {
+              "creation_height": "764970",
+              "completion_time": "2022-08-03T11:18:32.854838508Z",
+              "initial_balance": "99999999",
+              "balance": "99999999"
+            }
+          ]
+        }
+      ],
+      "pagination": {
+        "next_key": null,
+        "total": "1"
+      }
+    }
+  },
+
+
+  "api/cosmos/auth/v1beta1/accounts/c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55": {
+    "status": 200,
+    "data": {
+      "account": {
+        "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+        "base_vesting_account": {
+          "base_account": {
+            "address": "c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55",
+            "pub_key": {
+              "@type": "/cosmos.crypto.secp256k1.PubKey",
+              "key": "A5VVR1MxDFtqUQCUCQTuaXvdFQXNIemeOjPUkZgmdgIW"
+            },
+            "account_number": "52",
+            "sequence": "2"
+          },
+          "original_vesting": [
+            {
+              "denom": "uc4e",
+              "amount": "100000000000"
+            }
+          ],
+          "delegated_free": [
+            {
+              "denom": "uc4e",
+              "amount": "15"
+            }
+          ],
+          "delegated_vesting": [
+            {
+              "denom": "uc4e",
+              "amount": "12"
+            }
+          ],
+          "end_time": "1657372098"
+        },
+        "start_time": "1657112898"
+      }
+    }
+  },
+
+
+  "api/cosmos/bank/v1beta1/balances/c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55/by_denom?denom=uc4e": {
+    "status": 200,
+    "data": {
+      "balance": {
+        "denom": "uc4e",
+        "amount": "99999964223"
+      }
+    }
+  },
+
+
+  "api/cosmos/distribution/v1beta1/delegators/c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55/rewards": {
+    "status": 200,
+    "data": {
+      "rewards": [
+        {
+          "validator_address": "c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a",
+          "reward": [
+            {
+              "denom": "uc4e",
+              "amount": "0.000006445264745232"
+            }
+          ]
+        },
+        {
+          "validator_address": "c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8",
+          "reward": [
+            {
+              "denom": "uc4e",
+              "amount": "0.000002792198612579"
+            }
+          ]
+        }
+      ],
+      "total": [
+        {
+          "denom": "uc4e",
+          "amount": "0.000009237463357811"
+        }
+      ]
+    }
+  },
+
+
+  "api/cosmos/staking/v1beta1/delegations/c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55": {
+    "status": 200,
+    "data": {
+      "delegation_responses": [
+        {"delegation":{"delegator_address":"c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55","validator_address":"c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a","shares":"12.000000000000000000"},"balance":{"denom":"uc4e","amount":"12"}},
+        {"delegation":{"delegator_address":"c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55","validator_address":"c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8","shares":"15.304559400264639783"},"balance":{"denom":"uc4e","amount":"14"}}
+      ],
+      "pagination": {
+        "next_key": null,
+        "total": "2"
+      }
+    }
+  },
+
+
+  "api/cosmos/staking/v1beta1/delegators/c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55/unbonding_delegations": {
+    "status": 200,
+    "data": {
+      "unbonding_responses": [
+      ],
+      "pagination": {
+        "next_key": null,
+        "total": "0"
+      }
+    }
+  },
+
+
+  "api/cosmos/base/tendermint/v1beta1/blocks/latest": {
+    "status": 200,
+    "data": {
+      "block_id": {
+        "hash": "i2cMvhBUqoNQIOPxqIigtljJFJUNWwQkvAkddCstsQg=",
+        "part_set_header": {
+          "total": 1,
+          "hash": "sKOdkE/tttQREeimz+6sse8rI3W//RmaNmBFi4jI9m0="
+        }
+      },
+      "block": {
+        "header": {
+          "version": {
+            "block": "11",
+            "app": "0"
+          },
+          "chain_id": "c4e-testnet-0.1.0",
+          "height": "1005304",
+          "time": "2022-07-28T10:04:22.436141766Z",
+          "last_block_id": {
+            "hash": "/pnq9AWxLg45sIlBKhEZHrMuees3N+J3GMyRZ3827Og=",
+            "part_set_header": {
+              "total": 1,
+              "hash": "49lv+Mi82vroVXzg0sc0WMXRquoYfgPM8fbsb13W6TA="
+            }
+          },
+          "last_commit_hash": "c3lUgHWn8AnLeL7OgV56LKmaTBfpeFL15HQtaB+Yllk=",
+          "data_hash": "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+          "validators_hash": "74toG6Y05RmMHlu5Rt/ZBqtpvd6AfW5OgSIFexSd+jY=",
+          "next_validators_hash": "74toG6Y05RmMHlu5Rt/ZBqtpvd6AfW5OgSIFexSd+jY=",
+          "consensus_hash": "BICRvH3cKD93v7+R1zxE2ljD34qcvIZ0Bdi389qtoi8=",
+          "app_hash": "cFtaFJkYHGUlTuUH4eFd/3TMGaanlj8yec1VGGbJtaM=",
+          "last_results_hash": "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+          "evidence_hash": "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=",
+          "proposer_address": "uLO+17e5cOh/t1CqU/kF5UTZpiE="
+        },
+        "data": {
+          "txs": [
+          ]
+        },
+        "evidence": {
+          "evidence": [
+          ]
+        },
+        "last_commit": {
+          "height": "1005303",
+          "round": 0,
+          "block_id": {
+            "hash": "/pnq9AWxLg45sIlBKhEZHrMuees3N+J3GMyRZ3827Og=",
+            "part_set_header": {
+              "total": 1,
+              "hash": "49lv+Mi82vroVXzg0sc0WMXRquoYfgPM8fbsb13W6TA="
+            }
+          },
+          "signatures": [
+            {
+              "block_id_flag": "BLOCK_ID_FLAG_COMMIT",
+              "validator_address": "WExB0WS8WY9mTMg6ckNPVdnGdMo=",
+              "timestamp": "2022-07-28T10:04:22.436141766Z",
+              "signature": "fMszaWcFl4nNlTOeAc+IpiUaA+ze7aECbmDEy27nppTSTWcsIZR1SpxsE47qvc/jG+5mPEpicGWErJnosLfXDQ=="
+            }
+          ]
+        }
+      }
+    }
+  },
+
+  "api/cosmos/staking/v1beta1/validators": {
+    "status": 200,
+    "data": {
+      "validators": [
+        {
+          "operator_address": "c4evaloper1qxtsa3z6ulplpkwrevdxasysf2rf9jpkwlpp4s",
+          "consensus_pubkey": {
+            "@type": "/cosmos.crypto.ed25519.PubKey",
+            "key": "VbNH8K41ERCaUDutzGq4L8TtxfU8NnnNo7gS1NG6Bfg="
+          },
+          "jailed": false,
+          "status": "BOND_STATUS_BONDED",
+          "tokens": "1000000",
+          "delegator_shares": "1000000.000000000000000000",
+          "description": {
+            "moniker": "Frens (🤝,🤝)",
+            "identity": "C47845226662AF47",
+            "website": "https://frens.army",
+            "security_contact": "",
+            "details": "Your friendly validator for cosmos chains"
+          },
+          "unbonding_height": "0",
+          "unbonding_time": "1970-01-01T00:00:00Z",
+          "commission": {
+            "commission_rates": {
+              "rate": "0.100000000000000000",
+              "max_rate": "0.500000000000000000",
+              "max_change_rate": "0.100000000000000000"
+            },
+            "update_time": "2022-07-24T17:32:07.647460975Z"
+          },
+          "min_self_delegation": "1"
+        },
+        {
+          "operator_address": "c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a",
+          "consensus_pubkey": {
+            "@type": "/cosmos.crypto.ed25519.PubKey",
+            "key": "d8LmF46U2/1Dq6PLvAAOHt747NqBrQoSjUPkxxDzw98="
+          },
+          "jailed": false,
+          "status": "BOND_STATUS_BONDED",
+          "tokens": "113122978656",
+          "delegator_shares": "113122978656.000000000000000000",
+          "description": {
+            "moniker": "C4E DAO 4",
+            "identity": "E556E72599552C47",
+            "website": "https://chain4.energy/",
+            "security_contact": "",
+            "details": ""
+          },
+          "unbonding_height": "0",
+          "unbonding_time": "1970-01-01T00:00:00Z",
+          "commission": {
+            "commission_rates": {
+              "rate": "0.100000000000000000",
+              "max_rate": "0.200000000000000000",
+              "max_change_rate": "0.010000000000000000"
+            },
+            "update_time": "2022-05-27T08:10:48.208686026Z"
+          },
+          "min_self_delegation": "1"
+        },
+        {
+          "operator_address": "c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5",
+          "consensus_pubkey": {
+            "@type": "/cosmos.crypto.ed25519.PubKey",
+            "key": "Bk7/D8x0lV/VOwGl1LApMP21E6qG4D+Syl7vhbNU/E8="
+          },
+          "jailed": false,
+          "status": "BOND_STATUS_BONDED",
+          "tokens": "100040512675",
+          "delegator_shares": "100040512675.000000000000000000",
+          "description": {
+            "moniker": "KENO ENERGIA",
+            "identity": "94CA245D8BA70481",
+            "website": "https://keno-energia.com",
+            "security_contact": "",
+            "details": ""
+          },
+          "unbonding_height": "0",
+          "unbonding_time": "1970-01-01T00:00:00Z",
+          "commission": {
+            "commission_rates": {
+              "rate": "0.100000000000000000",
+              "max_rate": "0.200000000000000000",
+              "max_change_rate": "0.010000000000000000"
+            },
+            "update_time": "2022-06-02T14:14:34.489886609Z"
+          },
+          "min_self_delegation": "1"
+        },
+        {
+          "operator_address": "c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8",
+          "consensus_pubkey": {
+            "@type": "/cosmos.crypto.ed25519.PubKey",
+            "key": "5cOgg0aTLIo991+jArEWHRedGOBtXcM6e0Kqy5KGRkk="
+          },
+          "jailed": false,
+          "status": "BOND_STATUS_BONDED",
+          "tokens": "835030474615",
+          "delegator_shares": "851984899985.096127690386203535",
+          "description": {
+            "moniker": "C4E DAO 1",
+            "identity": "E6472AB5E1C3374C",
+            "website": "https://chain4.energy/",
+            "security_contact": "",
+            "details": ""
+          },
+          "unbonding_height": "381896",
+          "unbonding_time": "2022-07-10T12:36:37.395664657Z",
+          "commission": {
+            "commission_rates": {
+              "rate": "0.100000000000000000",
+              "max_rate": "0.200000000000000000",
+              "max_change_rate": "0.010000000000000000"
+            },
+            "update_time": "2022-05-27T06:00:30.615502420Z"
+          },
+          "min_self_delegation": "1"
+        },
+        {
+          "operator_address": "c4evaloper19473sdmlkkvcdh6z3tqedtqsdqj4jjv782dku2",
+          "consensus_pubkey": {
+            "@type": "/cosmos.crypto.ed25519.PubKey",
+            "key": "ASgBNy7VidFkGmbyB1Rf01gXcehz3uWpPloTKY6467U="
+          },
+          "jailed": false,
+          "status": "BOND_STATUS_BONDED",
+          "tokens": "100115004819",
+          "delegator_shares": "100115004819.000000000000000000",
+          "description": {
+            "moniker": "C4E DAO 3",
+            "identity": "4201D125FCFDB166",
+            "website": "https://chain4.energy/",
+            "security_contact": "",
+            "details": ""
+          },
+          "unbonding_height": "0",
+          "unbonding_time": "1970-01-01T00:00:00Z",
+          "commission": {
+            "commission_rates": {
+              "rate": "0.100000000000000000",
+              "max_rate": "0.200000000000000000",
+              "max_change_rate": "0.010000000000000000"
+            },
+            "update_time": "2022-05-27T08:06:35.798080548Z"
+          },
+          "min_self_delegation": "1"
+        },
+        {
+          "operator_address": "c4evaloper1tavkv9fpqwmw2v9drsm7s3yk7xlll9q8n7e6yl",
+          "consensus_pubkey": {
+            "@type": "/cosmos.crypto.ed25519.PubKey",
+            "key": "7BlaXXyGgDVVjKxkRvK3mw+7KCoMOZNU5Fkeh2oO6rw="
+          },
+          "jailed": false,
+          "status": "BOND_STATUS_BONDED",
+          "tokens": "100372000301",
+          "delegator_shares": "100372000301.000000000000000000",
+          "description": {
+            "moniker": "OVOO",
+            "identity": "153E7E9D1BB5A881",
+            "website": "https://ovoo.pl",
+            "security_contact": "",
+            "details": ""
+          },
+          "unbonding_height": "0",
+          "unbonding_time": "1970-01-01T00:00:00Z",
+          "commission": {
+            "commission_rates": {
+              "rate": "0.100000000000000000",
+              "max_rate": "0.200000000000000000",
+              "max_change_rate": "0.010000000000000000"
+            },
+            "update_time": "2022-06-02T14:18:57.633527556Z"
+          },
+          "min_self_delegation": "1"
+        },
+        {
+          "operator_address": "c4evaloper1jghcfqgq7kkwfpk4luazlzx83df96e2azcflth",
+          "consensus_pubkey": {
+            "@type": "/cosmos.crypto.ed25519.PubKey",
+            "key": "G+eHXqjMClJ3h9tjvocpJszZLk8iticz1DaYu/Zq0so="
+          },
+          "jailed": true,
+          "status": "BOND_STATUS_UNBONDING",
+          "tokens": "99017820136",
+          "delegator_shares": "100018000136.000000000000000000",
+          "description": {
+            "moniker": "INDEPENDENT DIGITAL",
+            "identity": "00455F7E162081F1",
+            "website": "https://independentdigital.com",
+            "security_contact": "",
+            "details": ""
+          },
+          "unbonding_height": "991031",
+          "unbonding_time": "2022-08-17T12:45:20.905441884Z",
+          "commission": {
+            "commission_rates": {
+              "rate": "0.100000000000000000",
+              "max_rate": "0.200000000000000000",
+              "max_change_rate": "0.010000000000000000"
+            },
+            "update_time": "2022-06-01T21:11:44.183090335Z"
+          },
+          "min_self_delegation": "1"
+        },
+        {
+          "operator_address": "c4evaloper1cgxwycdrfvvsdln8jxqs0ftapclf0007w4263z",
+          "consensus_pubkey": {
+            "@type": "/cosmos.crypto.ed25519.PubKey",
+            "key": "87+cIT4iwaoALVK2hhY4XubMibkg9MKlYCIBrAaY8M8="
+          },
+          "jailed": false,
+          "status": "BOND_STATUS_BONDED",
+          "tokens": "500001000000",
+          "delegator_shares": "500001000000.000000000000000000",
+          "description": {
+            "moniker": "TokenVenturesTest",
+            "identity": "17A98B84E267FD58",
+            "website": "",
+            "security_contact": "",
+            "details": ""
+          },
+          "unbonding_height": "0",
+          "unbonding_time": "1970-01-01T00:00:00Z",
+          "commission": {
+            "commission_rates": {
+              "rate": "0.100000000000000000",
+              "max_rate": "0.200000000000000000",
+              "max_change_rate": "0.010000000000000000"
+            },
+            "update_time": "2022-07-14T11:06:03.459202707Z"
+          },
+          "min_self_delegation": "1"
+        },
+        {
+          "operator_address": "c4evaloper1e0ddzmhw2ze2glszkgjk6tfvcfzv68cmrg7euh",
+          "consensus_pubkey": {
+            "@type": "/cosmos.crypto.ed25519.PubKey",
+            "key": "KkL6UYbTROjSv9WPNnGnFPXX93tmIZW+mKfPjNIsAgw="
+          },
+          "jailed": false,
+          "status": "BOND_STATUS_BONDED",
+          "tokens": "100173000011",
+          "delegator_shares": "100173000011.000000000000000000",
+          "description": {
+            "moniker": "C4E DAO 2",
+            "identity": "9DB14A6266E2296B",
+            "website": "https://chain4.energy/",
+            "security_contact": "",
+            "details": ""
+          },
+          "unbonding_height": "0",
+          "unbonding_time": "1970-01-01T00:00:00Z",
+          "commission": {
+            "commission_rates": {
+              "rate": "0.100000000000000000",
+              "max_rate": "0.200000000000000000",
+              "max_change_rate": "0.010000000000000000"
+            },
+            "update_time": "2022-05-27T07:55:01.272882317Z"
+          },
+          "min_self_delegation": "1"
+        },
+        {
+          "operator_address": "c4evaloper1arwuhz0tg28ld0sry5s083qs6djjqt5vl8dtjl",
+          "consensus_pubkey": {
+            "@type": "/cosmos.crypto.ed25519.PubKey",
+            "key": "2NdD941fkWMjdKjC2yWIS4wwm4dVHbf5J7P8qUtWdWU="
+          },
+          "jailed": false,
+          "status": "BOND_STATUS_BONDED",
+          "tokens": "100024000000",
+          "delegator_shares": "100024000000.000000000000000000",
+          "description": {
+            "moniker": "GRENTON",
+            "identity": "7C477006A29FFFFD",
+            "website": "https://www.grenton.pl",
+            "security_contact": "",
+            "details": ""
+          },
+          "unbonding_height": "0",
+          "unbonding_time": "1970-01-01T00:00:00Z",
+          "commission": {
+            "commission_rates": {
+              "rate": "0.100000000000000000",
+              "max_rate": "0.200000000000000000",
+              "max_change_rate": "0.010000000000000000"
+            },
+            "update_time": "2022-06-02T09:57:10.742193340Z"
+          },
+          "min_self_delegation": "1"
+        },
+        {
+          "operator_address": "c4evaloper1ac02w3kgzsd266lncmqlsx4xlnrhjfc74szlq4",
+          "consensus_pubkey": {
+            "@type": "/cosmos.crypto.ed25519.PubKey",
+            "key": "IkmyDt8Savm5BAifBrhBBV2tldbUD4FQGQnfJNbyad4="
+          },
+          "jailed": false,
+          "status": "BOND_STATUS_BONDED",
+          "tokens": "90001000000",
+          "delegator_shares": "90001000000.000000000000000000",
+          "description": {
+            "moniker": "commercio.network",
+            "identity": "ADBDB0178E4441BE",
+            "website": "https://commercio.network",
+            "security_contact": "",
+            "details": "The Documents Blockchain"
+          },
+          "unbonding_height": "0",
+          "unbonding_time": "1970-01-01T00:00:00Z",
+          "commission": {
+            "commission_rates": {
+              "rate": "0.100000000000000000",
+              "max_rate": "0.200000000000000000",
+              "max_change_rate": "0.010000000000000000"
+            },
+            "update_time": "2022-07-22T14:21:40.010879039Z"
+          },
+          "min_self_delegation": "1"
+        }
+      ],
+      "pagination": {
+        "next_key": null,
+        "total": "11"
+      }
+    }
+  }
+
+}
+

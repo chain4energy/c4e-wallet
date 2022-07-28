@@ -24,4 +24,7 @@ export interface Configuration {
   chainId: string,
   operationGas: Gas,
   viewDenoms: ViewDenom[],
+  testMode?: boolean,
+  testFileName?: string,
+
 }

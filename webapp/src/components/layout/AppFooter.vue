@@ -18,7 +18,6 @@ import {onBeforeMount} from "vue";
 import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
 
 onBeforeMount(() => {
-  // useConfigurationStore().fetchConfig("config1.json");
   console.log(useConfigurationStore().config.airdropPoolAddress);
 });
 

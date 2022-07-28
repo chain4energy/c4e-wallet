@@ -1,19 +1,17 @@
 <template>
   <div class="container">
     <select @change="onChange($event)">
-      <option v-for="[key, value] in configMap" :key="key" :value="value">{{ key }}</option>
+      <option v-for="[key] in configMap" :key="key" :value="key" :selected= "key === useConfigurationStore().getConfigName">{{ key }}</option>
     </select>
   </div>
 </template>
 
 <script setup lang="ts">
 
+import { getConfigurationProfiles } from "@/config/configuration.profiles";
 import {useConfigurationStore} from "@/store/configuration.store";
 
-const configMap = new Map<string, string>([
-  ["config1", "config1.json"],
-  ["config2", "config2.json"]
-]);
+const configMap = getConfigurationProfiles();
 
 const onChange = (event: any) => {
   useConfigurationStore().fetchConfig(event.target.value);

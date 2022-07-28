@@ -211,7 +211,9 @@ export const useUserStore = defineStore({
       logger.logToConsole(LogLevel.DEBUG, 'logOut before: ', JSON.stringify(this.connectionInfo));
       const address = this.connectionInfo.account;
       clearStateOnLogout(this);
-      toast.success('Address: "' + address + '" Disconnected');
+      if (this.connectionInfo.connectionType !== ConnectionType.Disconnected) {
+        toast.success('Address: "' + address + '" Disconnected');
+      }
       logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.connectionInfo));
     }
   },

@@ -31,7 +31,6 @@ import dataService from './services/data.service';
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 onBeforeMount(() => {
-  // useConfigurationStore().fetchConfig("config1.json");
   dataService.onAppStart();
 });
 

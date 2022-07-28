@@ -54,6 +54,8 @@ export class Configuration implements JsonConfiguration {
   operationGas: Gas;
   viewDenoms: ViewDenom[];
   isEmpty: boolean;
+  testMode: boolean;
+  testFileName?: string;
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -76,6 +78,8 @@ export class Configuration implements JsonConfiguration {
       }
       this.viewDenoms = viewDenoms;
       this.isEmpty = false;
+      this.testMode = configuration.testMode ? configuration.testMode : false;
+      this.testFileName = configuration.testFileName;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -90,6 +94,7 @@ export class Configuration implements JsonConfiguration {
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
       this.isEmpty = true;
+      this.testMode = false;
     }
   }
 
