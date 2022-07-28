@@ -10,7 +10,7 @@ export interface ProposalResponse{
 export interface Proposal {
   proposal_id: string,
   content: {
-    type: string,
+    "@type": string,
     title: string,
     description: string,
     // changes: Array<ProposalChanges>

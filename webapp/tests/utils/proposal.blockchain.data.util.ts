@@ -33,12 +33,18 @@ export function createProposalsResponseData(
     }
   };
 }
+export function createProposalResponseData(){
+    return{
+      proposal: createProposal(),
+    };
+}
 export function expectProposal(actualProposal: Proposal, expectedBcProposal: any) {
   expect(actualProposal).not.toBeUndefined();
   expect(actualProposal.proposalId).toBe(Number(expectedBcProposal.proposal_id));
-  expect(actualProposal.content.type).toBe(expectedBcProposal.content.type);
-  expect(actualProposal.content.description).toBe(expectedBcProposal.content.description);
+  expect(actualProposal.content.type).toBe(expectedBcProposal.content["@type"]);
   expect(actualProposal.content.title).toBe(expectedBcProposal.content.title);
+  expect(actualProposal.content.description).toBe(expectedBcProposal.content.description);
+  // expect(actualProposal.content.changes).toEqual(expectedBcProposal.content.changes);
   expect(actualProposal.status).toBe(expectedBcProposal.status);
   expect(actualProposal.finalTallyResult.yes).toBe(Number(expectedBcProposal.final_tally_result.yes));
   expect(actualProposal.finalTallyResult.no).toBe(Number(expectedBcProposal.final_tally_result.no));
@@ -74,7 +80,7 @@ export function createProposal(){
   const proposal = {
     proposal_id: "2",
     content: {
-      type: 'some data',
+      "@type": 'some data',
       title: 'some data',
       description: 'some data',
       changes:[
@@ -128,7 +134,7 @@ export function createProposals(
     proposalsArray.push({
       proposal_id: proposals[i],
       content: {
-        type: 'some data',
+        "@type": 'some data',
         title: 'some data',
         description: 'some data',
         changes:[

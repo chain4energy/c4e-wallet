@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-      <template v-if="everythingIsReady">
+      <template v-if="proposal!=={} && everythingIsReady">
         <DetailsChart :proposal="proposal"></DetailsChart>
         <ProposalDetails :proposal="proposal"></ProposalDetails>
         <ProposalDescription :proposal="proposal"></ProposalDescription>
@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, ref} from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
 import DetailsChart from "@/components/governance/DetailsChart.vue";
 import ProposalDetails from "@/components/governance/ProposalDetails.vue";
@@ -24,7 +24,6 @@ const route = useRoute();
 const proposalsStore = useProposalsStore();
 onBeforeMount(() => {
   dataService.onProposalSelected(Number(route.params.id.toString()), () => {
-    proposal.value = proposalsStore.getProposal;
     everythingIsReady.value = true;
   });
   // await proposalsStore.fetchProposalById(Number(route.params.id.toString())).then( () => {
@@ -37,8 +36,9 @@ onBeforeMount(() => {
 //   useProposalsStore().fetchTallyParams();
 // });
 
-
-const proposal = ref<Proposal>();
+const proposal = computed(()=> {
+  return proposalsStore.getProposal
+})
 const everythingIsReady = ref(false);
 
 </script>

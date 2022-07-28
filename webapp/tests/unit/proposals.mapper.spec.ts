@@ -17,11 +17,6 @@ describe('tests mapping of proposals related data',  () => {
   it('maps undefined proposal', async ()=> {
     expect(() => {mapProposalByID(undefined)}).toThrow(new Error('Proposal is undefined'));
   });
-//  it('maps proposal', async () => {
-//    const bcProposals = createProposals([proposalId], [proposalParams], 0);
-//    const storeProposal = mapProposal(bcProposals);
-//    expectProposal(storeProposal, bcProposals[0]);
-//  });
 
   it('map Proposal', async ()=> {
     const bcProposal = createProposal();

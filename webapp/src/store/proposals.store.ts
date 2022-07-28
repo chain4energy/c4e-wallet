@@ -1,6 +1,9 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {Proposal, TallyParams} from "@/models/store/proposal";
+import { useToast} from "vue-toastification";
+
+const toast = useToast()
 
 interface ProposalsState {
   proposals: Proposal[]
@@ -34,6 +37,7 @@ export const useProposalsStore = defineStore({
             this.paginationKey = resp.nextKey;
           } else {
             const message = 'Error fetching proposals data';
+            toast.error(message);
           }
         });
     },
@@ -43,8 +47,12 @@ export const useProposalsStore = defineStore({
             this.proposal = resp.data.proposal;
           } else {
             const message = 'Error fetching proposal data';
+            toast.error(message);
           }
-      })
+      });
+    },
+    async setProposalFromLocal(proposal: Proposal){
+      this.proposal = proposal;
     },
 
     //fetchProposals() {
