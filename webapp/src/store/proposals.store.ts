@@ -2,7 +2,10 @@ import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {DataHolder} from "@/models/data-holder";
 import {Proposal} from "@/models/store/proposal";
+import { useToast} from "vue-toastification";
 import {TallyParams} from "@/models/GovernanceParameters";// TODO : remove this from models add to Tally
+
+const toast = useToast()
 
 interface ProposalsState {
   proposals: Proposal[]
@@ -36,6 +39,7 @@ export const useProposalsStore = defineStore({
             this.paginationKey = resp.nextKey;
           } else {
             const message = 'Error fetching proposals data';
+            toast.error(message);
           }
         });
     },
@@ -45,8 +49,12 @@ export const useProposalsStore = defineStore({
             this.proposal = resp.data.proposal;
           } else {
             const message = 'Error fetching proposal data';
+            toast.error(message);
           }
-      })
+      });
+    },
+    async setProposalFromLocal(proposal: Proposal){
+      this.proposal = proposal;
     },
 
     //fetchProposals() {

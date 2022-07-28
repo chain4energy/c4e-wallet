@@ -8,6 +8,7 @@ import { useValidatorsStore } from "@/store/validators.store";
 import { LoggedService, StoreLogger } from "./logged.service";
 import { LogLevel } from "./logger/log-level";
 import { ServiceTypeEnum } from "./logger/service-type.enum";
+import router from "@/router";
 
 const keplrKeyStoreChange = 'keplr_keystorechange';
 
@@ -115,7 +116,20 @@ class DataService extends LoggedService{
 
   public onProposalSelected(proposeId: number, onSuccess: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
-    useProposalsStore().fetchProposalById(proposeId).then(onSuccess);
+    const selectedProposal = useProposalsStore().getProposals.find(el =>{
+      return el.proposalId == proposeId;
+    });
+    if(selectedProposal !== undefined){
+      useProposalsStore().setProposalFromLocal(selectedProposal).then(onSuccess);
+    } else {
+      useProposalsStore().fetchProposalById(proposeId).then((resp) => {
+        if(resp !== undefined){
+          onSuccess()
+        } else {
+          router.push({name: 'proposalsList'})
+        }
+      });
+    }
   }
 
   public onGovernanceUnselected() {
@@ -225,7 +239,7 @@ class DataService extends LoggedService{
   private enableKeplrAccountChangeListener() {
     window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
   }
-  
+
   private disableKeplrAccountChangeListener() {
     window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
   }

@@ -4,6 +4,7 @@ import apiFactory from "@/api/factory.api";
 import axios from "axios";
 import {
   createProposals,
+  createProposalResponseData,
   createProposalsResponseData,
   expectProposal,
   expectProposals
@@ -49,5 +50,18 @@ describe('test proposals API', () => {
     expect(result.response.error).toBeUndefined()
     expect(result.response.data?.proposals.length).toBe(0);
     expect(result.response.data?.numberOfActive).toBe(0);
+  });
+  it('fetch request of one proposal', async ()=> {
+    const proposal = {
+      data: createProposalResponseData()
+    };
+
+    mockedAxios.request.mockResolvedValue(proposal);
+    const result = await api.fetchProposalById(Number(proposal.data.proposal.proposal_id))
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined();
+    expect(result.data).not.toBeUndefined();
+    expect(result.data?.proposal.proposalId).toEqual(Number(proposal.data.proposal.proposal_id))
   });
 });

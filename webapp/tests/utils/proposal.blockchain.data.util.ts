@@ -33,6 +33,11 @@ export function createProposalsResponseData(
     }
   };
 }
+export function createProposalResponseData(){
+    return{
+      proposal: createProposal(),
+    };
+}
 export function expectProposal(actualProposal: Proposal, expectedBcProposal: any) {
   expect(actualProposal).not.toBeUndefined();
   expect(actualProposal.proposalId).toBe(Number(expectedBcProposal.proposal_id));
