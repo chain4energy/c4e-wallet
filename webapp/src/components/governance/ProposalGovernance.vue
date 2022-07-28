@@ -127,7 +127,7 @@ const showDetailsClick = () => {
 const option = ref({
   tooltip: {
     trigger: 'item',
-    formatter: '{a} <br/>{b}: {c} ({d}%)'
+    // formatter: '{a} <br/>{b}: {c} ({d}%)'
   },
   xAxis: {
     type: 'value',
@@ -135,7 +135,8 @@ const option = ref({
   },
   yAxis: {
     type: 'category',
-    show:false
+    show:false,
+    data: ['']
   },
   itemStyle: {
     barBorderRadius: [50,50,50,50]
