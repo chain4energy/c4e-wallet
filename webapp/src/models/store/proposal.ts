@@ -45,13 +45,13 @@ export class ProposalContent {
   type: string;
   title: string;
   description: string;
-  changes: Array<ProposalsChanges>
+  // changes: Array<ProposalsChanges>
 
-  constructor(type: string, title: string, description: string, changes: Array<ProposalsChanges>) {
+  constructor(type: string, title: string, description: string/*, changes: Array<ProposalsChanges>*/) {
     this.type = type;
     this.title = title;
     this.description = description;
-    this.changes= changes;
+    // this.changes= changes;
   }
 }
 export class ProposalsChanges{

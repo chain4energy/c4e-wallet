@@ -13,7 +13,7 @@ export interface Proposal {
     type: string,
     title: string,
     description: string,
-    changes: Array<ProposalChanges>
+    // changes: Array<ProposalChanges>
   },
   status: string,
   final_tally_result: {

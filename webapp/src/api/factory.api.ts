@@ -5,6 +5,7 @@ import {ProposalsApi} from "@/api/proposals.api";
 import {AccountApi} from "@/api/account.api";
 import WalletConnectionApi from "./wallet.connecton.api";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
+import { Namespace } from "@vue/compiler-core";
 
 let testfileName = '';
 
@@ -76,15 +77,48 @@ async function testModeAxios<T = any, R = AxiosResponse<T, any>, D = any>(config
   // eslint-disable-next-line
   const actions = require("../test_mode/" + testfileName);
   if (!config) {
-    throw new Error('No config.url');
+    throw new Error('No config');
   }
   if (!config.url) {
     throw new Error('No config.url');
   }
-  // const modifiedUrl = config.url.replaceAll("/", "_");
-  const action = actions[config.url];
+
+  let url = config.url;
+
+  if (config.params) {
+    const key = config.params['pagination.key'];
+    const limit = config.params['pagination.limit'];
+    const reverse = config.params['pagination.reverse'];
+
+    const params = []
+    if (key) {
+      params.push(['pagination.key', key]);
+    }
+    if (limit) {
+      params.push(['pagination.limit', limit]);
+    }
+    if (reverse) {
+      params.push(['pagination.reverse', reverse]);
+    }
+
+
+    if (params.length > 0) {
+      url += '?';
+      console.log('ZZZZZZZZZZZZZZZZ: ');
+
+      for(let i = 0; i < params.length; i++) {
+        console.log('XXXXXXXXX: ' + params[i] );
+        url += params[i][0] + '=' + params[i][1] ;
+        if (i < params.length - 1) {
+          url += '&';
+        }
+      }
+    }
+  }
+
+  const action = actions[url];
   if (!action) {
-    throw new Error('Action not found for URL: ' + config.url);
+    throw new Error('Action not found for URL: ' + url);
   }
   if (!action.status) {
     throw new Error('No action.status');
@@ -104,3 +138,17 @@ async function testModeAxios<T = any, R = AxiosResponse<T, any>, D = any>(config
   
 }
 
+const skipPropertiesList = new Set([
+  'constructor',
+  '__defineGetter__',
+  '__defineSetter__',
+  'hasOwnProperty',
+  '__lookupGetter__',
+  '__lookupSetter__',
+  'isPrototypeOf',
+  'propertyIsEnumerable',
+  'toString',
+  'valueOf',
+  '__proto__',
+  'toLocaleString',
+]);

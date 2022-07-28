@@ -266,7 +266,7 @@
               "amount": "12"
             }
           ],
-          "end_time": "1657372098"
+          "end_time": "1740178800"
         },
         "start_time": "1657112898"
       }
@@ -742,7 +742,842 @@
         "total": "11"
       }
     }
+  },
+
+
+  "api/cosmos/gov/v1beta1/proposals?pagination.limit=10&pagination.reverse=true": {
+    "status": 200,
+    "data": {
+      "proposals": [
+        {
+          "proposal_id": "25",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit changei #2",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_PASSED",
+          "final_tally_result": {
+            "yes": "56424920427790",
+            "abstain": "16424920427790",
+            "no": "16424920427790",
+            "no_with_veto": "16424920427790"
+          },
+          "submit_time": "2022-07-06T09:06:09.665518467Z",
+          "deposit_end_time": "2022-07-08T09:06:09.665518467Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "50000000000"
+            }
+          ],
+          "voting_start_time": "2022-07-06T09:06:09.665518467Z",
+          "voting_end_time": "2022-07-06T12:06:09.665518467Z"
+        },
+        {
+          "proposal_id": "24",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit change",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "750000000000",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-04T12:28:00.771706645Z",
+          "deposit_end_time": "2022-07-06T12:28:00.771706645Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "5000100000"
+            }
+          ],
+          "voting_start_time": "2022-07-05T13:45:28.874773711Z",
+          "voting_end_time": "2022-07-05T16:45:28.874773711Z"
+        },
+        {
+          "proposal_id": "23",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "test1",
+            "description": "TEST1",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_DEPOSIT_PERIOD",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "0",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-01T12:53:53.977618858Z",
+          "deposit_end_time": "2022-07-03T12:53:53.977618858Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "100000000"
+            }
+          ],
+          "voting_start_time": "0001-01-01T00:00:00Z",
+          "voting_end_time": "0001-01-01T00:00:00Z"
+        },
+        {
+          "proposal_id": "22",
+          "content": {
+            "@type": "/ibc.core.client.v1.ClientUpdateProposal",
+            "title": "Recover channel - upgrading to new client",
+            "description": "Update of the client",
+            "subject_client_id": "perun-1",
+            "substitute_client_id": "perun-2"
+          },
+          "status": "PROPOSAL_STATUS_FAILED",
+          "final_tally_result": {
+            "yes": "7512312120000",
+            "abstain": "432312120000",
+            "no": "372312120000",
+            "no_with_veto": "212312120000"
+          },
+          "submit_time": "2022-05-11T23:24:41.887196742Z",
+          "deposit_end_time": "2022-05-25T23:24:41.887196742Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "5000100000"
+            }
+          ],
+          "voting_start_time": "2022-05-11T23:53:42.571330402Z",
+          "voting_end_time": "2022-05-16T23:53:42.571330402Z"
+        },
+        {
+          "proposal_id": "21",
+          "content": {
+            "@type": "/cosmos.distribution.v1beta1.CommunityPoolSpendProposal",
+            "title": "Sends some community pool tokens",
+            "description": "Sends some community pool tokens",
+            "recipient": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+            "amount": [
+              {
+                "denom": "uc4e",
+                "amount": "5000100000"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_VOTING_PERIOD",
+          "final_tally_result": {
+            "yes": "122120000",
+            "abstain": "122120000",
+            "no": "122120000",
+            "no_with_veto": "122120000"
+          },
+          "submit_time": "2022-06-15T12:00.00.555988082Z",
+          "deposit_end_time": "2028-01-13T11:55:32.149034782Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "5000100000"
+            }
+          ],
+          "voting_start_time": "0001-01-01T00:00:00Z",
+          "voting_end_time": "0001-01-01T00:00:00Z"
+        },
+        {
+          "proposal_id": "20",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit change",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "750000000000",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-04T12:28:00.771706645Z",
+          "deposit_end_time": "2022-07-06T12:28:00.771706645Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "5000100000"
+            }
+          ],
+          "voting_start_time": "2022-07-05T13:45:28.874773711Z",
+          "voting_end_time": "2022-07-05T16:45:28.874773711Z"
+        },
+        {
+          "proposal_id": "19",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "test1",
+            "description": "TEST1",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "7590842",
+            "abstain": "0",
+            "no": "0",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-01T12:53:53.977618858Z",
+          "deposit_end_time": "2022-07-03T12:53:53.977618858Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "55000000000"
+            }
+          ],
+          "voting_start_time": "2022-07-01T12:53:53.977618858Z",
+          "voting_end_time": "2022-07-01T15:53:53.977618858Z"
+        },
+        {
+          "proposal_id": "18",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Increase the minimum deposit amount for governance proposals",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 51k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"51000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "20000000",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-06-29T07:33:48.737901811Z",
+          "deposit_end_time": "2022-07-01T07:33:48.737901811Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "50006100000"
+            }
+          ],
+          "voting_start_time": "2022-06-30T14:06:42.511283211Z",
+          "voting_end_time": "2022-06-30T17:06:42.511283211Z"
+        },
+        {
+          "proposal_id": "17",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit change",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "750000000000",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-04T12:28:00.771706645Z",
+          "deposit_end_time": "2022-07-06T12:28:00.771706645Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "5000100000"
+            }
+          ],
+          "voting_start_time": "2022-07-05T13:45:28.874773711Z",
+          "voting_end_time": "2022-07-05T16:45:28.874773711Z"
+        },
+        {
+          "proposal_id": "16",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "test1",
+            "description": "TEST1",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "7590842",
+            "abstain": "0",
+            "no": "0",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-01T12:53:53.977618858Z",
+          "deposit_end_time": "2022-07-03T12:53:53.977618858Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "55000000000"
+            }
+          ],
+          "voting_start_time": "2022-07-01T12:53:53.977618858Z",
+          "voting_end_time": "2022-07-01T15:53:53.977618858Z"
+        }
+      ],
+      "pagination": {
+        "next_key": "page2",
+        "total": "0"
+      }
+    }
+  },
+
+
+  "api/cosmos/gov/v1beta1/proposals?pagination.key=page2&pagination.limit=10&pagination.reverse=true": {
+    "status": 200,
+    "data": {
+      "proposals": [
+        {
+          "proposal_id": "15",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit changei #2",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "0",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-06T09:06:09.665518467Z",
+          "deposit_end_time": "2022-07-08T09:06:09.665518467Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "50000000000"
+            }
+          ],
+          "voting_start_time": "2022-07-06T09:06:09.665518467Z",
+          "voting_end_time": "2022-07-06T12:06:09.665518467Z"
+        },
+        {
+          "proposal_id": "14",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit change",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "750000000000",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-04T12:28:00.771706645Z",
+          "deposit_end_time": "2022-07-06T12:28:00.771706645Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "5000100000"
+            }
+          ],
+          "voting_start_time": "2022-07-05T13:45:28.874773711Z",
+          "voting_end_time": "2022-07-05T16:45:28.874773711Z"
+        },
+        {
+          "proposal_id": "13",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "test1",
+            "description": "TEST1",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "7590842",
+            "abstain": "0",
+            "no": "0",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-01T12:53:53.977618858Z",
+          "deposit_end_time": "2022-07-03T12:53:53.977618858Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "55000000000"
+            }
+          ],
+          "voting_start_time": "2022-07-01T12:53:53.977618858Z",
+          "voting_end_time": "2022-07-01T15:53:53.977618858Z"
+        },
+        {
+          "proposal_id": "12",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Increase the minimum deposit amount for governance proposals",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 51k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"51000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "20000000",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-06-29T07:33:48.737901811Z",
+          "deposit_end_time": "2022-07-01T07:33:48.737901811Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "50006100000"
+            }
+          ],
+          "voting_start_time": "2022-06-30T14:06:42.511283211Z",
+          "voting_end_time": "2022-06-30T17:06:42.511283211Z"
+        },
+        {
+          "proposal_id": "11",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit changei #2",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "0",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-06T09:06:09.665518467Z",
+          "deposit_end_time": "2022-07-08T09:06:09.665518467Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "50000000000"
+            }
+          ],
+          "voting_start_time": "2022-07-06T09:06:09.665518467Z",
+          "voting_end_time": "2022-07-06T12:06:09.665518467Z"
+        },
+        {
+          "proposal_id": "10",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit change",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "750000000000",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-04T12:28:00.771706645Z",
+          "deposit_end_time": "2022-07-06T12:28:00.771706645Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "5000100000"
+            }
+          ],
+          "voting_start_time": "2022-07-05T13:45:28.874773711Z",
+          "voting_end_time": "2022-07-05T16:45:28.874773711Z"
+        },
+        {
+          "proposal_id": "9",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "test1",
+            "description": "TEST1",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "7590842",
+            "abstain": "0",
+            "no": "0",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-01T12:53:53.977618858Z",
+          "deposit_end_time": "2022-07-03T12:53:53.977618858Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "55000000000"
+            }
+          ],
+          "voting_start_time": "2022-07-01T12:53:53.977618858Z",
+          "voting_end_time": "2022-07-01T15:53:53.977618858Z"
+        },
+        {
+          "proposal_id": "8",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Increase the minimum deposit amount for governance proposals",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 51k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"51000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "20000000",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-06-29T07:33:48.737901811Z",
+          "deposit_end_time": "2022-07-01T07:33:48.737901811Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "50006100000"
+            }
+          ],
+          "voting_start_time": "2022-06-30T14:06:42.511283211Z",
+          "voting_end_time": "2022-06-30T17:06:42.511283211Z"
+        },
+        {
+          "proposal_id": "7",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit change",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "750000000000",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-04T12:28:00.771706645Z",
+          "deposit_end_time": "2022-07-06T12:28:00.771706645Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "5000100000"
+            }
+          ],
+          "voting_start_time": "2022-07-05T13:45:28.874773711Z",
+          "voting_end_time": "2022-07-05T16:45:28.874773711Z"
+        },
+        {
+          "proposal_id": "6",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "test1",
+            "description": "TEST1",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "7590842",
+            "abstain": "0",
+            "no": "0",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-01T12:53:53.977618858Z",
+          "deposit_end_time": "2022-07-03T12:53:53.977618858Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "55000000000"
+            }
+          ],
+          "voting_start_time": "2022-07-01T12:53:53.977618858Z",
+          "voting_end_time": "2022-07-01T15:53:53.977618858Z"
+        }
+      ],
+      "pagination": {
+        "next_key": "page1",
+        "total": "0"
+      }
+    }
+  },
+
+
+  "api/cosmos/gov/v1beta1/proposals?pagination.key=page1&pagination.limit=10&pagination.reverse=true": {
+    "status": 200,
+    "data": {
+      "proposals": [
+        {
+          "proposal_id": "5",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit changei #2",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "0",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-06T09:06:09.665518467Z",
+          "deposit_end_time": "2022-07-08T09:06:09.665518467Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "50000000000"
+            }
+          ],
+          "voting_start_time": "2022-07-06T09:06:09.665518467Z",
+          "voting_end_time": "2022-07-06T12:06:09.665518467Z"
+        },
+        {
+          "proposal_id": "4",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit change",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "750000000000",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-04T12:28:00.771706645Z",
+          "deposit_end_time": "2022-07-06T12:28:00.771706645Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "5000100000"
+            }
+          ],
+          "voting_start_time": "2022-07-05T13:45:28.874773711Z",
+          "voting_end_time": "2022-07-05T16:45:28.874773711Z"
+        },
+        {
+          "proposal_id": "3",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "test1",
+            "description": "TEST1",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "7590842",
+            "abstain": "0",
+            "no": "0",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-01T12:53:53.977618858Z",
+          "deposit_end_time": "2022-07-03T12:53:53.977618858Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "55000000000"
+            }
+          ],
+          "voting_start_time": "2022-07-01T12:53:53.977618858Z",
+          "voting_end_time": "2022-07-01T15:53:53.977618858Z"
+        },
+        {
+          "proposal_id": "2",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Increase the minimum deposit amount for governance proposals",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 51k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"51000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "20000000",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-06-29T07:33:48.737901811Z",
+          "deposit_end_time": "2022-07-01T07:33:48.737901811Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "50006100000"
+            }
+          ],
+          "voting_start_time": "2022-06-30T14:06:42.511283211Z",
+          "voting_end_time": "2022-06-30T17:06:42.511283211Z"
+        },
+        {
+          "proposal_id": "1",
+          "content": {
+            "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+            "title": "Test multisig deposit changei #2",
+            "description": "If successful, this parameter-change governance proposal that will change the minimum deposit to 55k C4E",
+            "changes": [
+              {
+                "subspace": "gov",
+                "key": "depositparams",
+                "value": "{\"mindeposit\":\"55000000000uc4e\"}"
+              }
+            ]
+          },
+          "status": "PROPOSAL_STATUS_REJECTED",
+          "final_tally_result": {
+            "yes": "0",
+            "abstain": "0",
+            "no": "0",
+            "no_with_veto": "0"
+          },
+          "submit_time": "2022-07-06T09:06:09.665518467Z",
+          "deposit_end_time": "2022-07-08T09:06:09.665518467Z",
+          "total_deposit": [
+            {
+              "denom": "uc4e",
+              "amount": "50000000000"
+            }
+          ],
+          "voting_start_time": "2022-07-06T09:06:09.665518467Z",
+          "voting_end_time": "2022-07-06T12:06:09.665518467Z"
+        }
+      ],
+      "pagination": {
+        "next_key": null,
+        "total": "0"
+      }
+    }
   }
+
 
 }
 
