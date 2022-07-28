@@ -43,14 +43,6 @@ export class SidebarConfig{
     return retVal;
   }
 
-  private createValidators(): SidebarElement{
-    const retVal = new SidebarElement();
-    retVal.href = '/validators';
-    retVal.title = 'Validators';
-    retVal.icon = new SidebarIcon('FileCheck');
-    return retVal;
-  }
-
 }
 
 export class SidebarElement {
