@@ -57,19 +57,33 @@ export const useProposalsStore = defineStore({
           }
         });
     },
-    async fetchProposalById(id: number, lockscreen = true){
+    async fetchProposalById(
+      id: number,
+      onSuccess: (() => void) | undefined = undefined,
+      onError: (() => void) | undefined = undefined,
+      lockscreen = true
+    ){
       const index = this.proposalById.get(id);
       const proposal = index !== undefined ? this.proposals[index] : undefined;
       if(proposal !== undefined) {
         this.proposal = proposal;
+        if (onSuccess) {
+          onSuccess();
+        }
       } else {
         await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then((resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.proposal = resp.data.proposal;
+            if (onSuccess) {
+              onSuccess();
+            }
           } else {
             const message = 'Error fetching proposal data';
             logger.logToConsole(LogLevel.ERROR, message);
             toast.error(message);
+            if (onError) {
+              onError();
+            }
           }
         });
       }

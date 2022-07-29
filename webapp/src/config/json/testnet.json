@@ -26,5 +26,11 @@
     "low": 0.01,
     "average": 0.025,
     "high": 0.03
-  }
+  },
+  "minPeriodBetweenDataRefresh": 1000,
+  "blockDataRefreshTimeout": 3000,
+  "dashboardDataRefreshTimeout": 3000,
+  "validatorsDataRefreshTimeout": 10000,
+  "accountDataRefreshTimeout": 10000,
+  "proposalsPageLimit": 10
 }

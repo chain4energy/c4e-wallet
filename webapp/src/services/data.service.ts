@@ -5,10 +5,9 @@ import { useSplashStore } from "@/store/splash.store";
 import { useTokensStore } from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
 import { useValidatorsStore } from "@/store/validators.store";
-import { LoggedService, StoreLogger } from "./logged.service";
+import { LoggedService } from "./logged.service";
 import { LogLevel } from "./logger/log-level";
 import { ServiceTypeEnum } from "./logger/service-type.enum";
-import router from "@/router";
 
 const keplrKeyStoreChange = 'keplr_keystorechange';
 
@@ -46,6 +45,12 @@ class DataService extends LoggedService{
   public onAppStart() {
     this.logToConsole(LogLevel.DEBUG, 'onAppStart');
     useConfigurationStore().fetchConfig();
+    const config = useConfigurationStore().config;
+    this.minBetweenRefreshmentsPeriod = config.minPeriodBetweenDataRefresh;
+    this.blockTimeout = config.blockDataRefreshTimeout;
+    this.dashboardTimeout = config.dashboardDataRefreshTimeout;
+    this.validatorsTimeout = config.validatorsDataRefreshTimeout;
+    this.accountTimeout = config.accountDataRefreshTimeout;
     this.onInit()
   }
 
@@ -120,9 +125,9 @@ class DataService extends LoggedService{
   //   useProposalsStore().clear();
   // }
 
-  public onProposalSelected(proposeId: number, onSuccess: () => void) {
+  public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
-    useProposalsStore().fetchProposalById(proposeId).then(onSuccess)
+    useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
   }
 
   public onGovernanceUnselected() {
