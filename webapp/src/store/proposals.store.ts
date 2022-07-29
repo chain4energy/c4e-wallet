@@ -51,7 +51,6 @@ export const useProposalsStore = defineStore({
     },
     async fetchProposalById(id: number, lockscreen = true){
       const index = this.proposalById.get(id);
-      console.log(index)
       if(index !== undefined){
        this.proposal= this.proposals[index];
       } else {
