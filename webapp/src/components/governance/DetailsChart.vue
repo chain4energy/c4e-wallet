@@ -77,30 +77,25 @@ const icons  = new Map<string, string>([
 ]);
 
 const sumOfVotes = computed(() => {
-  const val = props.proposal.finalTallyResult.yes + props.proposal.finalTallyResult.no
-    + props.proposal.finalTallyResult.noWithVeto + props.proposal.finalTallyResult.abstain
-  return val > 0 ? val : -1;
+  const val = props.proposal.finalTallyResult.total
+  return val > 0 ? val : -1n;
 });
 
 const yesPercentage = computed(() => {
-  let res:number = props.proposal.finalTallyResult.yes / sumOfVotes.value * 100;
-  return res.toFixed(2);
+  return props.proposal.finalTallyResult.getYesPercentageView();
 });
 
 const noPercentage = computed(() => {
-  let res:number = props.proposal.finalTallyResult.no / sumOfVotes.value * 100;
-  return res.toFixed(2);
+  return props.proposal.finalTallyResult.getNoPercentageView();
 });
 
 const abstainPercentage = computed(() => {
-  let res:number = props.proposal.finalTallyResult.abstain / sumOfVotes.value * 100;
-  return res.toFixed(2);
+  return props.proposal.finalTallyResult.getAbstainPercentageView();
 });
 
 
 const noWithVetoPercentage = computed(() => {
-  let res:number = props.proposal.finalTallyResult.noWithVeto / sumOfVotes.value * 100;
-  return res.toFixed(2);
+  return props.proposal.finalTallyResult.getNoWithVetoPercentageView();
 });
 
 const option = ref({

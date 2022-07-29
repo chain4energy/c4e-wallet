@@ -47,12 +47,10 @@ class BigDecimalImpl implements BigDecimal {
 
   public isBiggerThan(value: string | number | bigint | BigDecimal): boolean {
     const toCompare = this.toCompare(value);
-    console.log('isBiggerThan: ' + value + ' > ' + toCompare.value);
     return this.value > toCompare.value;
   }
   public isBiggerThanOrEqualTo(value: string | number | bigint | BigDecimal): boolean {
     const toCompare = this.toCompare(value);
-    console.log('isBiggerThanOrEqualTo: ' + value + ' >= ' + toCompare.value);
     return this.value >= toCompare.value;
   }
 
