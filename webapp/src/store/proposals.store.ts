@@ -51,7 +51,8 @@ export const useProposalsStore = defineStore({
     },
     async fetchProposalById(id: number, lockscreen = true){
       const index = this.proposalById.get(id);
-      if(index){
+      console.log(index)
+      if(index !== undefined){
        this.proposal= this.proposals[index];
       } else {
         await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then((resp) => {

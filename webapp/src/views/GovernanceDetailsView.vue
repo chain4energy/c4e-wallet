@@ -1,9 +1,9 @@
 <template>
     <div class="container">
-      <template v-if=" useProposalsStore().getProposal">
-        <DetailsChart :proposal="useProposalsStore().getProposal"></DetailsChart>
-        <ProposalDetails :proposal="useProposalsStore().getProposal"></ProposalDetails>
-        <ProposalDescription :proposal="useProposalsStore().getProposal"></ProposalDescription>
+      <template v-if="everythingIsReady">
+        <DetailsChart :proposal="proposal"></DetailsChart>
+        <ProposalDetails :proposal="proposal"></ProposalDetails>
+        <ProposalDescription :proposal="proposal"></ProposalDescription>
       </template>
     </div>
 

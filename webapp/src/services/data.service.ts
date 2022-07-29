@@ -121,7 +121,7 @@ class DataService extends LoggedService{
 
   public onProposalSelected(proposeId: number, onSuccess: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
-    useProposalsStore().fetchProposalById(proposeId)
+    useProposalsStore().fetchProposalById(proposeId).then(onSuccess)
   }
 
   public onGovernanceUnselected() {
