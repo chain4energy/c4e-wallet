@@ -10,6 +10,7 @@ import {
   TallyParams,
 } from "@/models/store/proposal";
 import { Coin } from "@/models/store/common";
+import { useConfigurationStore } from "@/store/configuration.store";
 
 export function mapProposals(proposals: BcProposal[] | undefined): { proposals: StoreProposal[], numberOfActive: number }  {
   if (proposals === undefined) {
@@ -121,4 +122,18 @@ export function mapTallyParams(governanceParams: GovernanceParameters | undefine
     Number(governanceParams.tally_params.quorum),
     Number(governanceParams.tally_params.threshold),
     Number(governanceParams.tally_params.veto_threshold));
+}
+
+export function mapDepositParams(governanceParams: GovernanceParameters | undefined): Coin  {
+  if (governanceParams === undefined) {
+    throw new Error('mapDepositParams - governanceParams is undefined');
+  }
+  if (governanceParams.deposit_params === undefined) {
+    throw new Error('mapDepositParams - deposit params is undefined');
+  }
+  if (governanceParams.deposit_params.min_deposit === undefined) {
+    throw new Error('mapDepositParams - min_deposit is undefined');
+  }
+  const coin = governanceParams.deposit_params.min_deposit.find(c => c.denom === useConfigurationStore().config.stakingDenom);
+  return mapCoin(coin, useConfigurationStore().config.stakingDenom);
 }

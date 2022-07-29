@@ -211,6 +211,29 @@ export function createTallyParamsResponseData(
   }
 }
 
+export function createDepositParamsResponseData(
+  amount: string,
+  denom: string
+) {
+  return{
+    voting_params: {
+      voting_period: "0s"
+    },
+    deposit_params: {
+      min_deposit: [{
+        amount: amount,
+        denom: denom
+      }],
+      max_deposit_period: "0s"
+    },
+    tally_params: {
+      quorum: "0.000000000000000000",
+      threshold: "0.000000000000000000",
+      veto_threshold: "0.000000000000000000"
+    }
+  }
+}
+
 export function expectTallyParams(
   tallyParams: TallyParams,
   expectedQuorum: number,
@@ -221,3 +244,4 @@ export function expectTallyParams(
   expect(tallyParams.threshold).toBe(expectedThreshold);
   expect(tallyParams.vetoThreshold).toBe(expectedVetoThreshold);
 }
+

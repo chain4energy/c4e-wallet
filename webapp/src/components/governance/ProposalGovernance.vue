@@ -14,15 +14,15 @@
       <div class="voting-date">
         <div class="start-date">
           <div>
-            {{ formattedDate(proposal.votingStartTime ) }}
+            {{ formattedDate( proposal.isDepositPeriod() ? proposal.submitTime : proposal.votingStartTime ) }}
           </div>
-          <div class="green-background">{{ $t("GOVERNANCE_VIEW.VOTING_START") }}</div>
+          <div class="green-background">{{ proposal.isDepositPeriod() ? $t("GOVERNANCE_VIEW.SUBMIT_TIME") : $t("GOVERNANCE_VIEW.VOTING_START") }}</div>
         </div>
         <div class="end-date">
           <div>
-            {{ formattedDate(proposal.votingEndTime ) }}
+            {{ formattedDate(proposal.isDepositPeriod() ? proposal.depositEndTime : proposal.votingEndTime ) }}
           </div>
-          <div class="blue-background">{{ $t("GOVERNANCE_VIEW.VOTING_END") }}</div>
+          <div class="blue-background">{{ proposal.isDepositPeriod() ? $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") : $t("GOVERNANCE_VIEW.VOTING_END") }}</div>
         </div>
       </div>
     </div>

@@ -9,10 +9,12 @@ import {
   createTallyParamsResponseData,
   expectProposal,
   expectProposals,
-  expectTallyParams
+  expectTallyParams,
+  createDepositParamsResponseData
 } from "../utils/proposal.blockchain.data.util";
 import { mockAxios } from "../utils/mock.util";
-import { axiosErrorMessagePrefix, createErrorResponse, defaultAxiosErrorName, defaultErrorName } from "../utils/common.blockchain.data.util";
+import { axiosErrorMessagePrefix, createErrorResponse, defaultAxiosErrorName, defaultDenom, defaultErrorName, expectCoin } from "../utils/common.blockchain.data.util";
+import { useConfigurationStore } from "@/store/configuration.store";
 
 const mockedAxios = mockAxios();
 // const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -22,6 +24,8 @@ jest.mock("axios");
 describe('test proposals API', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+    useConfigurationStore().config.stakingDenom = defaultDenom;
+
   });
   afterEach(() => {
     expect(useSplashStore().splashCounter).toBe(0);
@@ -92,7 +96,7 @@ describe('test proposals API', () => {
     
   });
 
-  it('fetch tally params - wrong data', async ()=> {
+  it('fetch tally params - error', async ()=> {
     const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
 
     const status = 400;
@@ -108,6 +112,60 @@ describe('test proposals API', () => {
     expect(result.error?.data?.message).toBe(errorMessage);
   
   });
+
+
+  it('fetch deposit params', async ()=> {
+    const amount = 1234n;
+
+    const tally = {
+      data: createDepositParamsResponseData(amount.toString(), defaultDenom)
+    };
+
+    mockedAxios.request.mockResolvedValue(tally);
+    const result = await api.fetchDepositParams(false)
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data).not.toBeUndefined()
+    if (result.data) {
+      expectCoin(result.data, amount, defaultDenom);
+    }
+  });
+
+  it('fetch deposit params - wrong data', async ()=> {
+    const tally = {
+      data: {}
+    };
+
+    mockedAxios.request.mockResolvedValue(tally);
+    const result = await api.fetchDepositParams(false)
+    expect(result.isError()).toBe(true)
+    expect(result.isSuccess()).toBe(false)
+    expect(result.data).toBeUndefined()
+    expect(result.error).not.toBeUndefined()
+    expect(result.error?.name).toBe(defaultErrorName);
+    expect(result.error?.message).toBe('mapDepositParams - deposit params is undefined');
+    expect(result.error?.data).toBeUndefined();
+    
+  });
+
+  it('fetch deposit params - error', async ()=> {
+    const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
+
+    const status = 400;
+    const error = createErrorResponse(status, 3, errorMessage);
+
+    mockedAxios.request.mockRejectedValueOnce(error);
+    const result = await api.fetchDepositParams(false)
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultAxiosErrorName);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
+    expect(result.error?.data?.code).toBe(3);
+    expect(result.error?.data?.message).toBe(errorMessage);
+  
+  });
+  
   
   it('fetch request of one proposal', async ()=> {
     const proposal = {

@@ -2,15 +2,22 @@ import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {Proposal, TallyParams} from "@/models/store/proposal";
 import { useToast} from "vue-toastification";
+import { Coin } from "@/models/store/common";
+import { useConfigurationStore } from "./configuration.store";
+import { StoreLogger } from "@/services/logged.service";
+import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
+import { LogLevel } from "@/services/logger/log-level";
 
 const toast = useToast()
+const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
 
 interface ProposalsState {
   proposals: Proposal[]
   numberOfActiveProposals: number
   proposal: Proposal | undefined
   paginationKey: string | null
-  tallyParams: TallyParams
+  tallyParams: TallyParams,
+  minDeposit: Coin
 }
 
 export const useProposalsStore = defineStore({
@@ -23,7 +30,8 @@ export const useProposalsStore = defineStore({
       //proposals: new DataHolder<Proposal>(),
       proposal: undefined,
       paginationKey: null,
-      tallyParams: new TallyParams(Number.NaN, Number.NaN, Number.NaN)
+      tallyParams: new TallyParams(Number.NaN, Number.NaN, Number.NaN),
+      minDeposit: new Coin(0n, useConfigurationStore().config.stakingDenom)
     };
   },
   actions: {
@@ -87,7 +95,20 @@ export const useProposalsStore = defineStore({
        if (response.error == null && response.data != undefined) {
         this.tallyParams = response.data;
        } else {
-          //TODO: error handling
+        const message = 'Error fetching tally params data';
+        logger.logToConsole(LogLevel.ERROR, message);
+        toast.error(message);
+        }
+      });
+    },
+    async fetchDepositParams(lockscreen = true) {
+      await apiFactory.proposalsApi().fetchDepositParams(lockscreen).then(response => {
+       if (response.error == null && response.data != undefined) {
+        this.minDeposit = response.data;
+       } else {
+        const message = 'Error fetching deposit params data';
+        logger.logToConsole(LogLevel.ERROR, message);
+        toast.error(message);
         }
       });
     },
@@ -115,6 +136,9 @@ export const useProposalsStore = defineStore({
     },
     getTallyParams(): TallyParams {
       return this.tallyParams;
+    },
+    getMinDeposit(): Coin {
+      return this.minDeposit;
     }
   }
 });
