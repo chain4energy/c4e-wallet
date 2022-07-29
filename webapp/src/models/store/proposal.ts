@@ -42,6 +42,9 @@ export class Proposal {
     this.votingEndTime = votingEndTime;
   }
 
+  public isDepositPeriod() {
+    return this.status === ProposalStatus.DEPOSIT_PERIOD;
+  }
 }
 export class ProposalContent {
   type: string;
@@ -114,28 +117,28 @@ export class ProposalsTallyRes{
   }
 
   public getYesPercentageView(precision = 2): string {
-    if (this.total < 0n) {
+    if (this.total <= 0n) {
       return toPercentage(0, precision);
     }
     return toPercentage(divideBigInts(this.yes, this.total), precision);
   }
 
   public getAbstainPercentageView(precision = 2): string {
-    if (this.total < 0n) {
+    if (this.total <= 0n) {
       return toPercentage(0, precision);
     }
     return toPercentage(divideBigInts(this.abstain, this.total), precision);
   }
 
   public getNoPercentageView(precision = 2): string {
-    if (this.total < 0n) {
+    if (this.total <= 0n) {
       return toPercentage(0, precision);
     }
     return toPercentage(divideBigInts(this.no, this.total), precision);
   }
 
   public getNoWithVetoPercentageView(precision = 2): string {
-    if (this.total < 0n) {
+    if (this.total <= 0n) {
       return toPercentage(0, precision);
     }
     return toPercentage(divideBigInts(this.noWithVeto, this.total), precision);

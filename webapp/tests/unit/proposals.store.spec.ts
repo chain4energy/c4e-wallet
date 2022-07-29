@@ -2,9 +2,10 @@ import { setActivePinia, createPinia } from 'pinia'
 import { mockAxios } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
 import { useProposalsStore } from "@/store/proposals.store";
-import { createErrorResponse } from '../utils/common.blockchain.data.util';
+import { createErrorResponse, defaultDenom, expectCoin } from '../utils/common.blockchain.data.util';
 import { Proposal } from "@/models/store/proposal";
-import { expectEmptyProposals, expectProposals, createProposalsResponseData, createTallyParamsResponseData, expectTallyParams } from "../utils/proposal.blockchain.data.util";
+import { expectEmptyProposals, expectProposals, createProposalsResponseData, createTallyParamsResponseData, expectTallyParams, createDepositParamsResponseData } from "../utils/proposal.blockchain.data.util";
+import { useConfigurationStore } from '@/store/configuration.store';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();
@@ -12,6 +13,7 @@ const mockedAxios = mockAxios();
 describe('proposals store tests', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+    useConfigurationStore().config.stakingDenom = defaultDenom;
   });
 
   afterEach(() => {
@@ -64,5 +66,32 @@ describe('proposals store tests', () => {
 
     expectTallyParams(useProposalsStore().getTallyParams, Number.NaN, Number.NaN, Number.NaN);
   });
+
+
+
+
+
+
+  it('fetches deposit params - success', async () => {
+    const amount = 1234n;
+
+    const tally = {
+      data: createDepositParamsResponseData(amount.toString(), defaultDenom)
+    };
+    mockedAxios.request.mockResolvedValueOnce(tally);
+    await useProposalsStore().fetchDepositParams();
+    expectCoin(useProposalsStore().getMinDeposit, amount, defaultDenom);
+  });
+
+  it('fetches deposit params - error', async () => {
+    const proposalsStore = useProposalsStore();
+
+    const tallyError = createErrorResponse(404, 5, 'some error');
+    mockedAxios.request.mockRejectedValueOnce(tallyError);
+    await proposalsStore.fetchDepositParams();
+
+    expectCoin(useProposalsStore().getMinDeposit, 0n, defaultDenom);
+  });
+  
 
 });

@@ -7,8 +7,9 @@ import { useToast } from "vue-toastification";
 import { AccountResponse } from "@/models/blockchain/account";
 import { mapAccount } from "@/models/mapper/account.mapper";
 import { ProposalsResponse, ProposalResponse, GovernanceParameters } from "@/models/blockchain/proposals";
-import { mapAndAddProposals, mapProposalByID, mapProposals, mapTallyParams } from "@/models/mapper/proposals.mapper";
+import { mapAndAddProposals, mapDepositParams, mapProposalByID, mapProposals, mapTallyParams } from "@/models/mapper/proposals.mapper";
 import { useConfigurationStore } from "@/store/configuration.store";
+import { Coin } from "@/models/store/common";
 
 const toast = useToast;
 
@@ -21,6 +22,7 @@ export class ProposalsApi extends BaseApi {
 
   private PROPOSALS_URL = process.env.VUE_APP_PROPOSALS_URL;
   private TALLYING_URL = process.env.VUE_APP_TALLYING_URL
+  private DEPOSIT_URL = process.env.VUE_APP_DEPOSIT_URL
 
   //public async fetchProposals():Promise<RequestResponse<StoreProposals, ErrorData<BlockchainApiErrorData>>> {
     //let proposalsNotFound = false;
@@ -67,6 +69,14 @@ export class ProposalsApi extends BaseApi {
 
     const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.TALLYING_URL,
       mapData, lockscreen, null, 'fetchTallyParams - ');
+    return result;
+  }
+
+  public async fetchDepositParams(lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (govParams: GovernanceParameters | undefined) => {return mapDepositParams(govParams);};
+
+    const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.DEPOSIT_URL,
+      mapData, lockscreen, null, 'fetchDepositParams - ');
     return result;
   }
 }

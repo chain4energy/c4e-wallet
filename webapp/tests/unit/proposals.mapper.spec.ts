@@ -1,6 +1,10 @@
 import { GovernanceParameters } from "@/models/blockchain/proposals";
-import { mapProposal, mapProposalByID, mapProposals, mapTallyParams } from "@/models/mapper/proposals.mapper";
+import { mapDepositParams, mapProposal, mapProposalByID, mapProposals, mapTallyParams } from "@/models/mapper/proposals.mapper";
+import { useConfigurationStore } from "@/store/configuration.store";
+import { createPinia, setActivePinia } from "pinia";
+import { expectCoin } from "../utils/common.blockchain.data.util";
 import {
+  createDepositParamsResponseData,
   createProposal,
   createProposals,
   createTallyParamsResponseData,
@@ -13,6 +17,10 @@ const proposalId = defaultProposals[0];
 const proposalParams = defaultProposalsParameters[0];
 
 describe('tests mapping of proposals related data',  () => {
+
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  });
 
   it('maps undefined proposal', async ()=> {
     expect(() => {mapProposalByID(undefined)}).toThrow(new Error('Proposal is undefined'));
@@ -66,6 +74,30 @@ describe('tests mapping of proposals related data',  () => {
 
   it('map tally params - undefined veto threshold', async ()=> {
     expect(()=> {mapTallyParams({tally_params : {quorum: '2321', threshold: '1132'}} as GovernanceParameters)}).toThrowError(new Error('mapTallyParams - quorum or threshold or vetothreshold is undefined'));
+
+  })
+
+  it('map deposit params', async ()=> {
+    const amount = 1234n;
+    const denom = 'my_denom';
+    useConfigurationStore().config.stakingDenom = denom;
+    const deposit = createDepositParamsResponseData(amount.toString(), denom);
+    const depositCoin = mapDepositParams(deposit);
+    expectCoin(depositCoin, amount, denom);
+  })
+
+  it('map deposit params - undefined gov params', async ()=> {
+    expect(()=> {mapDepositParams(undefined)}).toThrowError(new Error('mapDepositParams - governanceParams is undefined'));
+
+  })
+
+  it('map deposit params - undefined deposit params', async ()=> {
+    expect(()=> {mapDepositParams({} as GovernanceParameters)}).toThrowError(new Error('mapDepositParams - deposit params is undefined'));
+
+  })
+
+  it('map deposit params - undefined min_deposit', async ()=> {
+    expect(()=> {mapDepositParams({deposit_params : {}} as GovernanceParameters)}).toThrowError(new Error('mapDepositParams - min_deposit is undefined'));
 
   })
 
