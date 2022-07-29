@@ -78,12 +78,10 @@ import { useValidatorsStore } from "@/store/validators.store";
 import { object, number, setLocale } from 'yup';
 import { useToast } from "vue-toastification";
 
-const props = defineProps({
-  validator: {
-    type: Object as PropType<Validator>,
-    required: true
-  },
-});
+const props = defineProps<{
+  validator: Validator
+}>();
+
 document.body.style.overflow = "hidden";
 onUnmounted(() => document.body.style.overflow = "auto");
 const toast = useToast()

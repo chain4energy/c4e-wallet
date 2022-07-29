@@ -14,12 +14,9 @@
 
 import {Proposal} from "@/models/store/proposal";
 
-const props = defineProps({
-  proposal: {
-    type: Object(Proposal),
-    required: true
-  }
-});
+const props = defineProps<{
+  proposal: Proposal
+}>();
 
 </script>
 

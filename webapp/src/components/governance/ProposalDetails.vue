@@ -15,15 +15,15 @@
         <div>{{ $t("GOVERNANCE_VIEW.VETO_THRESHOLD") }}:</div>
       </div>
       <div class="right">
-        <div>{{ proposal.totalDeposit[0].amount }} {{ proposal.totalDeposit[0].denom }}</div>
+        <div>{{ proposal.getTotalDepositByDenom().getViewAmount() }} {{ proposal.getTotalDepositByDenom().getViewDenom()  }}</div>
         <div>{{formattedDate(proposal.votingStartTime) }}</div>
         <div>{{formattedDate(proposal.votingEndTime) }}</div>
         <div>{{ proposal.content.type }}</div>
         <div>{{ formattedDate(proposal.submitTime) }}</div>
         <div>{{ formattedDate(proposal.depositEndTime) }}</div>
-        <div>{{ Number(proposalsStore.getTallyParams.quorum).toFixed(2) }}%</div>
-        <div>{{ Number(proposalsStore.getTallyParams.threshold).toFixed(2) }}%</div>
-        <div>{{ Number(proposalsStore.getTallyParams.vetoThreshold).toFixed(2) }}%</div>
+        <div>{{ proposalsStore.getTallyParams.getQuorumPercentageView() }}%</div>
+        <div>{{ proposalsStore.getTallyParams.getThresholdPercentageView() }}%</div>
+        <div>{{ proposalsStore.getTallyParams.getVetoThresholdPercentageView() }}%</div>
       </div>
     </div>
   </div>
@@ -33,13 +33,11 @@
 
 import moment from "moment";
 import {useProposalsStore} from "@/store/proposals.store";
+import { Proposal } from "@/models/store/proposal";
 
-const props = defineProps({
-  proposal: {
-    type: Object,
-    required: true
-  }
-});
+const props = defineProps<{
+  proposal: Proposal
+}>();
 
 const proposalsStore = useProposalsStore();
 const formattedDate = (value: Date) => {

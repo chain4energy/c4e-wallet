@@ -140,7 +140,11 @@ const showDetailsClick = () => {
 const option = ref({
   tooltip: {
     trigger: 'item',
-    // formatter: '{a} <br/>{b}: {c} ({d}%)'
+    formatter: function (params: any) {
+      return `
+        <b>${params.seriesName}</b></br>
+        <b>${params.value} (${params.data.name}%)</b>`
+    }
   },
   xAxis: {
     type: 'value',
@@ -164,7 +168,7 @@ const option = ref({
       emphasis: {
         focus: 'series'
       },
-      data: [yes.value]
+      data: [{name: yesPercentage.value, value: yes.value}]
     },
     {
       name: 'Abstain',
@@ -174,7 +178,7 @@ const option = ref({
       emphasis: {
         focus: 'series'
       },
-      data: [abstain.value]
+      data: [{name: abstainPercentage.value, value: abstain.value}]
     },
     {
       name: 'No',
@@ -185,7 +189,7 @@ const option = ref({
         focus: 'series'
       },
       color: '#e02626',
-      data: [no.value]
+      data: [{name: noPercentage.value, value: no.value}]
     },
     {
       name: 'No with veto',
@@ -195,7 +199,7 @@ const option = ref({
         focus: 'series'
       },
       color: '#fff1a9',
-      data: [noWithVeto.value]
+      data: [{name: noWithVetoPercentage.value, value: noWithVeto.value}]
     },
     {
       name: '',
@@ -205,7 +209,7 @@ const option = ref({
         focus: 'series'
       },
       color: '#797777',
-      data: [sumOfVotes.value === -1n ? 1 : 0]
+      data: [{name: '0', value: sumOfVotes.value === -1n ? 1 : 0}]
     }
   ],
 

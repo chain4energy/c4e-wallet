@@ -1,5 +1,5 @@
 import { useConfigurationStore } from "@/store/configuration.store";
-import { Coin } from "./common";
+import { Coin, findByDenom } from "./common";
 
 export enum AccountType {
   Disconnected,
@@ -45,8 +45,7 @@ export class ContinuousVestingData {
   }
 
   public getOriginalVestingByDenom(denom: string): Coin {
-    const result = this.originalVesting.find(coin => coin.denom === denom);
-    return result === undefined ? new Coin(0n, denom) : result;
+    return findByDenom(this.originalVesting, denom);
   }
 
   public calculateVestingLocked(latestBlockTime: Date): bigint{ // TODO number to BigInt
@@ -79,8 +78,7 @@ export class Balances {
   }
 
   public getBalanceByDenom(denom: string): Coin {
-    const result = this.balances.find(coin => coin.denom === denom);
-    return result === undefined ? new Coin(0n, denom) : result;
+    return findByDenom(this.balances, denom);
   }
 }
 
