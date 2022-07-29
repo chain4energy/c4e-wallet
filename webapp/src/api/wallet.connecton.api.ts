@@ -109,20 +109,20 @@ export default class WalletConnectionApi extends LoggedService {
       stakeCurrency: {
         coinDenom: "C4E",
         coinMinimalDenom: config.stakingDenom,
-        coinDecimals: 1e-6
+        coinDecimals: 6
       },
       feeCurrencies: [
         {
           coinDenom: "C4E",
           coinMinimalDenom: config.stakingDenom,
-          coinDecimals: 1e-6
+          coinDecimals: 6
         }
       ],
       currencies: [
         {
           coinDenom: "C4E",
           coinMinimalDenom: config.stakingDenom,
-          coinDecimals: 1e-6
+          coinDecimals: 6
         }
       ],
       coinType: 118,
