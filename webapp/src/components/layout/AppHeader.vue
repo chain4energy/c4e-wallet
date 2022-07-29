@@ -1,21 +1,5 @@
 <template>
-  <!--  <div class="navbar navbar-expand-lg background bg-primary">-->
-  <!--    <div class="container-fluid">-->
-  <!--      <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')"/>-->
-  <!--      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"-->
-  <!--              aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">-->
-  <!--        <span class="navbar-toggler-icon"></span>-->
-  <!--      </button>-->
-  <!--      &lt;!&ndash;      <AutoLogOut/>&ndash;&gt;-->
-  <!--      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">-->
-  <!--        <div class="navbar-nav">-->
-  <!--          <span>AppHeader</span>-->
-  <!--          <LangSwitch/>-->
-  <!--          <Button></Button>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--  </div>-->
+
 
     <nav class="navbar navbar-expand-lg navbar-dark background">
       <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
@@ -27,38 +11,24 @@
           <span class="navbar-toggler-icon"></span>
         </Button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-<!--          <div class="navbar-nav left">-->
-<!--            <i class="pi pi-user me-3" style="font-size: 1.5rem;" />-->
-<!--            <span>Hello <span style="font-weight:bold">Jan Kowalski</span> </span>-->
-<!--            <i class="pi pi-sun ms-4" style="font-size: 1.5rem;" />-->
-<!--            <span class="fw-bold mx-2">Monday</span>-->
-<!--            <span>11.05.2022</span>-->
-<!--          </div>-->
+
           <div class="navbar-nav right">
-            <!--          <div class="nav-link">-->
-<!--            <span class="p-input-icon-left p-input-icon-right mx-5 " >-->
-<!--              <i class="pi pi-times-circle" @click="globalFilter.clearFilter()"/>-->
-<!--              <InputText type="text" v-model="globalFilter.filter" placeholder="Search" />-->
-<!--              <i class="pi" :class="{'pi-search': !globalFilter.isLoading, 'pi-spin pi-spinner': globalFilter.isLoading}"/>-->
-<!--            </span>-->
-            <LangSwitch class="nav-link mx-1"/>
-<!--            <span class="">-->
-<!--            <Button icon="pi pi-bell" class="nav-link p-button-rounded p-button-text p-button-lg mx-1" ></Button>-->
-<!--            <div class="badge">2</div>-->
-<!--          </span>-->
-            <div v-if="useUserStore().isLoggedIn">
+
+            <div class="acc-address" v-if="useUserStore().isLoggedIn">
               {{useUserStore().getAccount.address}}
             </div>
-            <div v-else>
-              Login
-            </div>
+            
+            <LangSwitch class="nav-link mx-1"/>
+            
             <Button
               v-if="!useUserStore().isLoggedIn"
               icon=" pi pi-power-off"
+              style="margin-top: -8px;"
               class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="loginPopupStatus =! loginPopupStatus"></Button>
             <Button
               v-if="useUserStore().isLoggedIn"
               icon=" pi pi-power-off"
+              style="margin-top: -8px;"
               class="nav-link p-button-rounded p-button-text p-button-lg mx-1"
               @click="logout"
             ></Button>
@@ -67,6 +37,8 @@
 
       </div>
       <div class="bottom-container">
+        <h2>{{$t("SECTION_TITLES." + currentRouteName?.toUpperCase())}}</h2>
+          <!-- <breadcrumbs-component /> -->
       </div>
       <UserData v-if="useUserStore().isLoggedIn"/>
     </nav>
@@ -75,6 +47,7 @@
 
 <script setup lang="ts">
 import LangSwitch from '@/components/lang/LangSwitch.vue';
+import BreadcrumbsComponent from '../features/BreadcrumbsComponent.vue';
 import AutoLogOut from "@/components/fetures/AutoLogOut.vue";
 import  UserData from "@/components/userData/UserData.vue";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
@@ -90,6 +63,11 @@ const globalFilter = useGlobalFilterStore();
 
 const loginPopupStatus = ref(false);
 const logoutPopupStatus = ref(false);
+
+const currentRouteName = computed(() => {
+  console.log(router.currentRoute.value);
+  return router.currentRoute.value.name;
+});
 
 function logout(){
   logoutPopupStatus.value = !logoutPopupStatus.value;
@@ -122,6 +100,30 @@ function logout(){
 </script>
 
 <style scoped lang="scss">
+@import '../../styles/variables.scss';
+
+.acc-address {
+  max-width: 150px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+  padding: 0.5rem;
+  background-color: $main-lighter-color;
+  border-radius: 1rem;
+
+  &:hover {
+    max-width: 600px;
+    overflow: visible;
+  }
+
+}
+.userdata {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
 .background {
   background-image: url('@/assets/header/background.svg');
   //background-position: right 20px bottom -250px;
@@ -132,6 +134,7 @@ function logout(){
   color: white;
   top: 0px;
   z-index: 20;
+  padding-bottom: 20px;
 
 .badge {
   position: relative;
@@ -145,6 +148,8 @@ function logout(){
   position: absolute;
   right: 20px;
   top:10px;
+  display: flex;
+  align-items: center;
 }
 .left {
   margin-left: 40px;
@@ -152,6 +157,8 @@ function logout(){
 .bottom-container {
   padding: 3vh 10vw;
   display:flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 }
 

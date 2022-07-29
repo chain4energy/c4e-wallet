@@ -47,6 +47,7 @@ import "bootstrap";
 import IconComponent from "@/components/features/IconComponent.vue";
 import ECharts from 'vue-echarts';
 import {useConfigurationStore} from "@/store/configuration.store";
+import Tooltip from 'primevue/tooltip';
 
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
@@ -80,6 +81,7 @@ app.use(router)
   .component('Icon', IconComponent)
   .component('v-chart', ECharts)
   .directive('debounce', vue3Debounce({lock: true}))
+  .directive('tooltip', Tooltip)
   // .component('font-awesome-icon', FontAwesomeIcon)
   .mount('#app');
 

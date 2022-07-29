@@ -12,6 +12,7 @@ import { useUserStore } from "@/store/user.store";
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
+    name: "dashboard",
     component: DashboardView,
     meta: {
       requiresAuth: false

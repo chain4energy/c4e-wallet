@@ -127,5 +127,11 @@
   "ERRORS": {
     "LOGIN": "Musisz być zalogowany",
     "LOGIN_WALLET": "Musisz być zalogowany za pomocą portfela"
+  },
+  "SECTION_TITLES": {
+    "STAKING": "Staking",
+    "DASHBOARD": "Dashboard",
+    "PROPOSALSLIST": "Proposals list",
+    "GOVERNANCE": "Governance"
   }
 }

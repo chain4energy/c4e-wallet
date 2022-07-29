@@ -1,4 +1,5 @@
 <template>
+<span>
   <StackingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
   <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick">
     <template v-slot:empty>{{ $t("STACKING_VIEW.NO_VALIDATORS") }}</template>
@@ -39,13 +40,16 @@
       </Column>
       <Column field="operator_address">
         <template #body="{data}">
-          <Button @click="checkBTN(data)">{{ $t(`STACKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}</Button>
+          <Button class="outlined" @click="checkBTN(data)">{{ $t(`STACKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}</Button>
         </template>
       </Column>
 
       <Column v-if="isLoggedIn">
         <template #body="{data}">
-          <Button @click="onRowExpand(data)" v-if="isValidatorRowExpandable(data)" headerStyle="width: 4rem" :label=" data.operatorAddress == expandedRow[0]?.operatorAddress ? 'Close' : 'Open'"></Button>
+          <span style="cursor: pointer" @click="onRowExpand(data)" v-if="isValidatorRowExpandable(data)">
+            <Icon @click="onRowExpand(data)" v-if="data.operatorAddress != expandedRow[0]?.operatorAddress" name="ChevronRight" />
+            <Icon @click="onRowExpand(data)" v-if="data.operatorAddress == expandedRow[0]?.operatorAddress" name="ChevronDown" />
+          </span>
         </template>
       </Column>
 
@@ -64,6 +68,7 @@
     </template>
 <!--    <template v-slot:paginatorstart></template>-->
   </DataTableWrapper>
+</span>
 </template>
 
 <script setup lang="ts">
