@@ -82,6 +82,30 @@
   },
 
 
+  "api/cosmos/gov/v1beta1/params/deposit": {
+    "status": 200,
+    "data": {
+      "voting_params": {
+        "voting_period": "0s"
+      },
+      "deposit_params": {
+        "min_deposit": [
+          {
+            "denom": "uc4e",
+            "amount": "5000000000"
+          }
+        ],
+        "max_deposit_period": "172800s"
+      },
+      "tally_params": {
+        "quorum": "0.000000000000000000",
+        "threshold": "0.000000000000000000",
+        "veto_threshold": "0.000000000000000000"
+      }
+    }
+  },
+
+
   "api/cosmos/auth/v1beta1/accounts/c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg": {
     "status": 200,
     "data": {

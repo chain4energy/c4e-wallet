@@ -29,7 +29,6 @@ export const useProposalsStore = defineStore({
       proposals: Array<Proposal>(),
       numberOfActiveProposals: 0,
       proposalById: new Map<number, number>(),
-      //proposals: new DataHolder<Proposal>(),
       proposal: undefined,
       paginationKey: null,
       tallyParams: new TallyParams(Number.NaN, Number.NaN, Number.NaN),
@@ -53,20 +52,23 @@ export const useProposalsStore = defineStore({
             this.paginationKey = resp.nextKey;
           } else {
             const message = 'Error fetching proposals data';
+            logger.logToConsole(LogLevel.ERROR, message);
             toast.error(message);
           }
         });
     },
     async fetchProposalById(id: number, lockscreen = true){
       const index = this.proposalById.get(id);
-      if(index !== undefined){
-       this.proposal= this.proposals[index];
+      const proposal = index !== undefined ? this.proposals[index] : undefined;
+      if(proposal !== undefined) {
+        this.proposal = proposal;
       } else {
         await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then((resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.proposal = resp.data.proposal;
           } else {
             const message = 'Error fetching proposal data';
+            logger.logToConsole(LogLevel.ERROR, message);
             toast.error(message);
           }
         });
@@ -76,33 +78,6 @@ export const useProposalsStore = defineStore({
       this.proposal = proposal;
     },
 
-    //fetchProposals() {
-      //apiFactory.proposalsApi().fetchProposals(this.paginationKey).then(response => {
-
-       // if (response.error == null && response.data != undefined) {
-         // const dataHolder = new DataHolder<Proposal>();
-
-        //  dataHolder.elements = this.proposals.elements.concat(response.data.proposals);
-       //   dataHolder.amount += Number(response.data.pagination.total);
-       //   this.paginationKey = response.data.pagination.next_key;
-       //   this.proposals = dataHolder;
-
-       // } else {
-          //TODO: error handling
-       // }
-
-      //});
-   // },
-   // async fetchProposalById(proposalId: string) {
-   //   await apiFactory.proposalsApi().fetchProposalById(proposalId).then(response => {
-   //     if (response.error == null && response.data != undefined) {
-   //       this.proposal = response.data.proposal;
-    //    } else {
-   //       //TODO: error handling
-   //     }
-//
-   //   });
-   // },
     async fetchTallyParams(lockscreen = true) {
       await apiFactory.proposalsApi().fetchTallyParams(lockscreen).then(response => {
        if (response.error == null && response.data != undefined) {
