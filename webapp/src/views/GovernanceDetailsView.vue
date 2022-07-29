@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-      <template v-if="proposal!=={} && everythingIsReady">
+      <template v-if="everythingIsReady">
         <DetailsChart :proposal="proposal"></DetailsChart>
         <ProposalDetails :proposal="proposal"></ProposalDetails>
         <ProposalDescription :proposal="proposal"></ProposalDescription>
