@@ -129,5 +129,11 @@
   "ERRORS": {
     "LOGIN": "You Have to be logged in",
     "LOGIN_WALLET": "You Have to be logged in with wallet"
+  },
+  "SECTION_TITLES": {
+    "STAKING": "Staking",
+    "DASHBOARD": "Dashboard",
+    "PROPOSALSLIST": "Proposals list",
+    "GOVERNANCE": "Governance"
   }
 }
