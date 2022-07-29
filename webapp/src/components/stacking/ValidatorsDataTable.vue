@@ -22,12 +22,12 @@
       </Column>
       <Column field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
         <template #body="{data}">
-          <span>{{ data.commission.rateViewPercentage }}</span> <!-- TODO create function converting to pecentage -->
+          <span>{{ data.commission.rateViewPercentage }}%</span> <!-- TODO create function converting to pecentage -->
         </template>
       </Column>
       <Column field="votingPower" :header="$t(`STAKING_VIEW.TABLE_HEADERS.VOTING_POWER`)" :sortable="true" sortField="tokens">
         <template #body="{data}">
-          <span v-if="data.votingPower">{{ data.votingPowerViewPercentage }}</span> 
+          <span v-if="data.votingPower">{{ data.votingPowerViewPercentage }}%</span> 
           <span v-else>updating</span>
         </template>
       </Column>

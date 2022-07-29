@@ -46,10 +46,10 @@ export function expectProposal(actualProposal: Proposal, expectedBcProposal: any
   expect(actualProposal.content.description).toBe(expectedBcProposal.content.description);
   // expect(actualProposal.content.changes).toEqual(expectedBcProposal.content.changes);
   expect(actualProposal.status).toBe(expectedBcProposal.status);
-  expect(actualProposal.finalTallyResult.yes).toBe(Number(expectedBcProposal.final_tally_result.yes));
-  expect(actualProposal.finalTallyResult.no).toBe(Number(expectedBcProposal.final_tally_result.no));
-  expect(actualProposal.finalTallyResult.abstain).toBe(Number(expectedBcProposal.final_tally_result.abstain));
-  expect(actualProposal.finalTallyResult.noWithVeto).toBe(Number(expectedBcProposal.final_tally_result.no_with_veto));
+  expect(actualProposal.finalTallyResult.yes).toBe(BigInt(expectedBcProposal.final_tally_result.yes));
+  expect(actualProposal.finalTallyResult.no).toBe(BigInt(expectedBcProposal.final_tally_result.no));
+  expect(actualProposal.finalTallyResult.abstain).toBe(BigInt(expectedBcProposal.final_tally_result.abstain));
+  expect(actualProposal.finalTallyResult.noWithVeto).toBe(BigInt(expectedBcProposal.final_tally_result.no_with_veto));
   expect(actualProposal.submitTime).toStrictEqual(new Date(expectedBcProposal.submit_time));
   expect(actualProposal.depositEndTime).toStrictEqual(new Date(expectedBcProposal.deposit_end_time));
   expect(actualProposal.totalDeposit.length).toBe(expectedBcProposal.total_deposit.length);

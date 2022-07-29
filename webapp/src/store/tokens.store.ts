@@ -125,8 +125,7 @@ export const useTokensStore = defineStore({
     getTotalUnbondedViewAmount(): (precision?: number) => string {
       return (precision = 4) => {
         const unbonded = this.getTotalUnbonded
-        const config = useConfigurationStore().config;
-        return config.getViewAmount(unbonded, config.stakingDenom, precision);
+        return useConfigurationStore().config.getViewAmount(unbonded, precision);
       }
     },
     getTotalSupply(): Coin {
@@ -146,7 +145,7 @@ export const useTokensStore = defineStore({
         if (this.totalSupply.amount === 0n) {
           return toPercentage(0, precision);
         }
-        return divideBigInts(this.stakingPool.bondedTokens, this.totalSupply.amount).multiply(100).toFixed(precision);
+        return toPercentage(divideBigInts(this.stakingPool.bondedTokens, this.totalSupply.amount), precision);
       }
     },
     getUnboundedPercentage(): (precision?: number) => string {
@@ -154,7 +153,7 @@ export const useTokensStore = defineStore({
         if (this.totalSupply.amount === 0n) {
           return toPercentage(0, precision);
         }
-        return divideBigInts(this.getTotalUnbonded, this.totalSupply.amount).multiply(100).toFixed(precision);
+        return toPercentage(divideBigInts(this.getTotalUnbonded, this.totalSupply.amount), precision);
       }
     },
     getUnboundingPercentage(): (precision?: number) => string {
@@ -162,7 +161,7 @@ export const useTokensStore = defineStore({
         if (this.totalSupply.amount === 0n) {
           return toPercentage(0, precision);
         }
-        return divideBigInts(this.stakingPool.notBondedTokens, this.totalSupply.amount).multiply(100).toFixed(precision);
+        return toPercentage(divideBigInts(this.stakingPool.notBondedTokens, this.totalSupply.amount), precision);
       }
     },
   }

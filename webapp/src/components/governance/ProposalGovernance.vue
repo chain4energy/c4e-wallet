@@ -34,18 +34,22 @@
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
           <div>{{ yesPercentage }}%</div>
+          <div>({{props.proposal.finalTallyResult.getYesView(2, true)}})</div>
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
           <div>{{ abstainPercentage }}%</div>
+          <div>({{props.proposal.finalTallyResult.getAbstainView(2, true)}})</div>
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
           <div>{{ noPercentage }}%</div>
+          <div>({{props.proposal.finalTallyResult.getNoView(2, true)}})</div>
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
           <div>{{ noWithVetoPercentage }}%</div>
+          <div>({{props.proposal.finalTallyResult.getNoWithVetoView(2, true)}})</div>
         </div>
       </div>
 
@@ -76,12 +80,11 @@ use([
   GridComponent
 ]);
 
-const props = defineProps({
-  proposal: {
-    type: Object(Proposal),
-    required: true
-  }
-});
+const props = defineProps<{
+  proposal: Proposal
+}>();
+
+
 const router = useRouter();
 
 const icons  = new Map<string, string>([
@@ -91,30 +94,40 @@ const icons  = new Map<string, string>([
 ]);
 
 const yesPercentage = computed(() => {
-  let res:number = props.proposal.finalTallyResult.yes / sumOfVotes.value * 100;
-  return res.toFixed(2);
+  return props.proposal.finalTallyResult.getYesPercentageView();
 });
 
 const noPercentage = computed(() => {
-  let res:number = props.proposal.finalTallyResult.no / sumOfVotes.value * 100;
-  return res.toFixed(2);
+  return props.proposal.finalTallyResult.getNoPercentageView();
 });
 
 const abstainPercentage = computed(() => {
-  let res:number = props.proposal.finalTallyResult.abstain / sumOfVotes.value * 100;
-  return res.toFixed(2);
+  return props.proposal.finalTallyResult.getAbstainPercentageView();
 });
 
-
 const noWithVetoPercentage = computed(() => {
-  let res:number = props.proposal.finalTallyResult.noWithVeto / sumOfVotes.value * 100;
-  return res.toFixed(2);
+  return props.proposal.finalTallyResult.getNoWithVetoPercentageView();
+});
+
+const yes = computed(() => {
+  return props.proposal.finalTallyResult.getYesView();
+});
+
+const no = computed(() => {
+  return props.proposal.finalTallyResult.getNoView();
+});
+
+const abstain = computed(() => {
+  return props.proposal.finalTallyResult.getAbstainView();
+});
+
+const noWithVeto = computed(() => {
+  return props.proposal.finalTallyResult.getNoWithVetoView();
 });
 
 const sumOfVotes = computed(() => {
-  const val =props.proposal.finalTallyResult.yes + props.proposal.finalTallyResult.no
-    + props.proposal.finalTallyResult.noWithVeto + props.proposal.finalTallyResult.abstain
-  return val > 0 ? val : -1;
+  const val = props.proposal.finalTallyResult.total
+  return val > 0n ? val : -1n;
 });
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');
@@ -151,7 +164,7 @@ const option = ref({
       emphasis: {
         focus: 'series'
       },
-      data: [yesPercentage.value]
+      data: [yes.value]
     },
     {
       name: 'Abstain',
@@ -161,7 +174,7 @@ const option = ref({
       emphasis: {
         focus: 'series'
       },
-      data: [abstainPercentage.value]
+      data: [abstain.value]
     },
     {
       name: 'No',
@@ -172,7 +185,7 @@ const option = ref({
         focus: 'series'
       },
       color: '#e02626',
-      data: [noPercentage.value]
+      data: [no.value]
     },
     {
       name: 'No with veto',
@@ -182,7 +195,7 @@ const option = ref({
         focus: 'series'
       },
       color: '#fff1a9',
-      data: [noWithVetoPercentage.value]
+      data: [noWithVeto.value]
     },
     {
       name: '',
@@ -192,7 +205,7 @@ const option = ref({
         focus: 'series'
       },
       color: '#797777',
-      data: [sumOfVotes.value === -1 ? 1 : 0]
+      data: [sumOfVotes.value === -1n ? 1 : 0]
     }
   ],
 

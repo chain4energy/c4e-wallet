@@ -1,4 +1,6 @@
-import {Coin} from "@/models/store/common";
+import {Coin, toPercentage} from "@/models/store/common";
+import { useConfigurationStore } from "@/store/configuration.store";
+import { BigDecimal, divideBigInts } from "./big.decimal";
 
 export enum ProposalStatus {
   PASSED= 'PROPOSAL_STATUS_PASSED' ,
@@ -72,19 +74,71 @@ export class ProposalsValue{
 }
 
 export class ProposalsTallyRes{
-  yes: number;
-  abstain: number;
-  no: number;
-  noWithVeto: number;
+  yes: bigint;
+  abstain: bigint;
+  no: bigint;
+  noWithVeto: bigint;
   constructor(
-    yes: number,
-    abstain: number,
-    no: number,
-    noWithVeto: number) {
+    yes: bigint,
+    abstain: bigint,
+    no: bigint,
+    noWithVeto: bigint) {
     this.yes = yes;
     this.abstain = abstain;
     this.no = no;
-    this.noWithVeto= noWithVeto;
+    this.noWithVeto = noWithVeto;
+  }
+
+  public get total(): bigint {
+    return this.yes + this.abstain + this.no + this.noWithVeto;
+  }
+
+  public getTotalView(precision = 4, reduceBigNumber = false): string {
+    return useConfigurationStore().config.getViewAmount(this.total, precision, reduceBigNumber);
+  }
+
+  public getYesView(precision = 4, reduceBigNumber = false): string {
+    return useConfigurationStore().config.getViewAmount(this.yes, precision, reduceBigNumber);
+  }
+
+  public getAbstainView(precision = 4, reduceBigNumber = false): string {
+    return useConfigurationStore().config.getViewAmount(this.abstain, precision, reduceBigNumber);
+  }
+
+  public getNoView(precision = 4, reduceBigNumber = false): string {
+    return useConfigurationStore().config.getViewAmount(this.no, precision, reduceBigNumber);
+  }
+
+  public getNoWithVetoView(precision = 4, reduceBigNumber = false): string {
+    return useConfigurationStore().config.getViewAmount(this.noWithVeto, precision, reduceBigNumber);
+  }
+
+  public getYesPercentageView(precision = 2): string {
+    if (this.total < 0n) {
+      return toPercentage(0, precision);
+    }
+    return toPercentage(divideBigInts(this.yes, this.total), precision);
+  }
+
+  public getAbstainPercentageView(precision = 2): string {
+    if (this.total < 0n) {
+      return toPercentage(0, precision);
+    }
+    return toPercentage(divideBigInts(this.abstain, this.total), precision);
+  }
+
+  public getNoPercentageView(precision = 2): string {
+    if (this.total < 0n) {
+      return toPercentage(0, precision);
+    }
+    return toPercentage(divideBigInts(this.no, this.total), precision);
+  }
+
+  public getNoWithVetoPercentageView(precision = 2): string {
+    if (this.total < 0n) {
+      return toPercentage(0, precision);
+    }
+    return toPercentage(divideBigInts(this.noWithVeto, this.total), precision);
   }
 }
 

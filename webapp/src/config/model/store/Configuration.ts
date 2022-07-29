@@ -98,7 +98,7 @@ export class Configuration implements JsonConfiguration {
     }
   }
 
-  public getViewDenom(origDenom: string): string {
+  public getViewDenom(origDenom = this.stakingDenom): string {
     const viewDenomConf = this.getViewDenomConfig(origDenom);
     if (viewDenomConf) {
       return viewDenomConf.viewDenom;
@@ -106,25 +106,56 @@ export class Configuration implements JsonConfiguration {
     return origDenom;
   }
 
-  public getViewAmount(origAmount: bigint | number | BigDecimal, origDenom = this.stakingDenom, precision = 4): string {
+  public getViewAmount(origAmount: bigint | number | BigDecimal, precision = 4, reduceBigNumber = false, origDenom = this.stakingDenom): string {
     const viewDenomConf = this.getViewDenomConfig(origDenom);
+    let result: number | BigDecimal;
     if (viewDenomConf) {
       if (typeof origAmount === 'bigint') {
-        return this.toViewAmount(origAmount, viewDenomConf.conversionFactor, precision).toFixed(precision);
+        result = this.toViewAmount(origAmount, viewDenomConf.conversionFactor, precision);
       } else if (typeof origAmount === 'number') {
-        return (origAmount / viewDenomConf.conversionFactor).toFixed(precision);
+        result = (origAmount / viewDenomConf.conversionFactor);
       } else {
-        return origAmount.divide( viewDenomConf.conversionFactor).toFixed(precision);
+        result = origAmount.divide( viewDenomConf.conversionFactor);
       } 
-    }
-    if (typeof origAmount === 'bigint') {
-      return this.bigIntToFixed(origAmount, precision);
     } else {
-      return origAmount.toFixed(precision);
+      if (typeof origAmount === 'bigint') {
+        result = new BigDecimal(origAmount);
+      } else {
+        result = origAmount;
+      }
     }
+    if (reduceBigNumber) {
+      return this.bigNumbersView(result, precision);
+    }
+    return result.toFixed(precision);
   }
 
-  public getViewAmountAndDenom(origAmount: bigint | number | BigDecimal, origDenom: string, precision = 4): { amount: string, denom: string } {
+  private bigNumbersView(number: bigint | number | BigDecimal, precision: number): string {
+    let val: BigDecimal;
+    if (number instanceof BigDecimal) {
+      val = number;
+    } else {
+      val = new BigDecimal(number);
+    }
+  
+    let suffix = ''
+    if (val.isBiggerThanOrEqualTo(1e12)) {
+      val = val.divide(1e12);
+      suffix = 'T';
+    } else if (val.isBiggerThanOrEqualTo(1e9)) {
+      val = val.divide(1e9);
+      suffix = 'B';
+    } else if (val.isBiggerThanOrEqualTo(1e6)) {
+      val = val.divide(1e6);
+      suffix = 'M';
+    } else if (val.isBiggerThanOrEqualTo(1e3)) {
+      val = val.divide(1e3);
+      suffix = 'k';
+    } 
+    return val.toFixed(precision) + (suffix !== '' ? ` ${suffix}` : '');
+  }
+
+  public getViewAmountAndDenom(origAmount: bigint | number | BigDecimal, precision = 4, origDenom = this.stakingDenom): { amount: string, denom: string } {
     const viewDenomConf = this.getViewDenomConfig(origDenom);
     if (viewDenomConf) {
       const denom = viewDenomConf.viewDenom;

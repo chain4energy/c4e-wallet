@@ -14,12 +14,12 @@ export class Coin {
     return useConfigurationStore().config.getViewDenom(this.denom);
   }
 
-  public getViewAmount(precision = 4): string {
-    return useConfigurationStore().config.getViewAmount(this.amount, this.denom, precision);
+  public getViewAmount(precision = 4, reduceBigNumber = false): string {
+    return useConfigurationStore().config.getViewAmount(this.amount, precision, reduceBigNumber, this.denom);
   }
 
   public getViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
-    return useConfigurationStore().config.getViewAmountAndDenom(this.amount, this.denom, precision);
+    return useConfigurationStore().config.getViewAmountAndDenom(this.amount, precision, this.denom);
   }
 
 }
@@ -37,19 +37,19 @@ export class DecCoin {
     return useConfigurationStore().config.getViewDenom(this.denom);
   }
 
-  public getViewAmount(precision = 4): string {
-    return useConfigurationStore().config.getViewAmount(this.amount, this.denom, precision);
+  public getViewAmount(precision = 4, reduceBigNumber = false): string {
+    return useConfigurationStore().config.getViewAmount(this.amount, precision, reduceBigNumber, this.denom);
   }
 
   public getViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
-    return useConfigurationStore().config.getViewAmountAndDenom(this.amount, this.denom, precision);
+    return useConfigurationStore().config.getViewAmountAndDenom(this.amount, precision, this.denom);
   }
 }
 
 export function toPercentage(num: BigDecimal | number, precision = 4): string {
   if (typeof num === 'number') {
-    return (num * 100).toFixed(precision) + '%';
+    return (num * 100).toFixed(precision);
   } else {
-    return num.multiply(100).toFixed(precision) + '%';
+    return num.multiply(100).toFixed(precision);
   }
 }

@@ -16,6 +16,10 @@ export interface BigDecimal {
 
   divide(value: bigint | number | BigDecimal | string): BigDecimal;
 
+  isBiggerThan(value: bigint | number | BigDecimal | string): boolean;
+
+  isBiggerThanOrEqualTo(value: bigint | number | BigDecimal | string): boolean;
+
   toString(): string;
 
   toFixed(fractionDigits?: number, rounded?: boolean): string;
@@ -29,6 +33,27 @@ class BigDecimalImpl implements BigDecimal {
   constructor(value: bigint | number | BigDecimal | string) {
     this.value = BigDecimalImpl.toInternalValue(value);
 
+  }
+
+  private toCompare(value: string | number | bigint | BigDecimal): BigDecimalImpl {
+    let toCompare: BigDecimalImpl;
+    if (value instanceof BigDecimalImpl) {
+      toCompare = value;
+    } else {
+      toCompare = new BigDecimalImpl(value);
+    }
+    return toCompare;
+  }
+
+  public isBiggerThan(value: string | number | bigint | BigDecimal): boolean {
+    const toCompare = this.toCompare(value);
+    console.log('isBiggerThan: ' + value + ' > ' + toCompare.value);
+    return this.value > toCompare.value;
+  }
+  public isBiggerThanOrEqualTo(value: string | number | bigint | BigDecimal): boolean {
+    const toCompare = this.toCompare(value);
+    console.log('isBiggerThanOrEqualTo: ' + value + ' >= ' + toCompare.value);
+    return this.value >= toCompare.value;
   }
 
   public add(value: bigint | number | BigDecimal | string) {

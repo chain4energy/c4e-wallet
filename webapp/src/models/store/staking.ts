@@ -15,13 +15,11 @@ export class Delegation {
   }
 
   public getViewAmount(precision = 4): string {
-    const config = useConfigurationStore().config;
-    return config.getViewAmount(this.amount, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmount(this.amount, precision);
   }
 
   public getViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
-    const config = useConfigurationStore().config;
-    return config.getViewAmountAndDenom(this.amount, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmountAndDenom(this.amount, precision);
   }
 }
 
@@ -51,12 +49,12 @@ export class Delegations {
 
   public getTotalDelegatedViewAmount(precision = 4): string {
     const config = useConfigurationStore().config;
-    return config.getViewAmount(this.totalDelegated, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmount(this.totalDelegated, precision);
   }
 
   public getTotalDelegatedViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
     const config = useConfigurationStore().config;
-    return config.getViewAmountAndDenom(this.totalDelegated, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmountAndDenom(this.totalDelegated, precision);
   }
 
 }
@@ -84,13 +82,11 @@ export class UnbondingDelegationEntry {
   }
 
   public getViewAmount(precision = 4): string {
-    const config = useConfigurationStore().config;
-    return config.getViewAmount(this.amount, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmount(this.amount, precision);
   }
 
   public getViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
-    const config = useConfigurationStore().config;
-    return config.getViewAmountAndDenom(this.amount, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmountAndDenom(this.amount, precision);
   }
 }
 
@@ -112,8 +108,7 @@ export class UnbondingDelegations {
   public getViewAmountByValidator(validatorAddress: string, precision = 4): string {
     let amount = 0n;
     this.undelegations.get(validatorAddress)?.entries.forEach(a => amount += a.amount);
-    const config = useConfigurationStore().config;
-    return config.getViewAmount(amount, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmount(amount, precision);
   }
 
   public getTotalUndelegatingViewDenom(): string {
@@ -122,13 +117,11 @@ export class UnbondingDelegations {
   }
 
   public getTotalUndelegatingViewAmount(precision = 4): string {
-    const config = useConfigurationStore().config;
-    return config.getViewAmount(this.totalUndelegating, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmount(this.totalUndelegating, precision);
   }
 
   public getTotalUndelegatingViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
-    const config = useConfigurationStore().config;
-    return config.getViewAmountAndDenom(this.totalUndelegating, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmountAndDenom(this.totalUndelegating, precision);
   }
 
 }

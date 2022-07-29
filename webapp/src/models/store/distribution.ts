@@ -46,13 +46,11 @@ export class Rewards {
   }
 
   public getTotalRewardsViewAmount(precision = 4): string {
-    const config = useConfigurationStore().config;
-    return config.getViewAmount(this.totalRewards, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmount(this.totalRewards, precision);
   }
 
   public getTotalRewardsViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
-    const config = useConfigurationStore().config;
-    return config.getViewAmountAndDenom(this.totalRewards, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmountAndDenom(this.totalRewards, precision);
   }
 
 }

@@ -240,8 +240,7 @@ export const useUserStore = defineStore({
     },
     getBalanceViewAmount(): (precision?: number) => string {
       return (precision = 4) => {
-        const config = useConfigurationStore().config;
-        return config.getViewAmount(this.balance, config.stakingDenom, precision);
+        return useConfigurationStore().config.getViewAmount(this.balance, precision);
       }
     },
     getTotalRewards(): BigDecimal {
@@ -282,8 +281,7 @@ export const useUserStore = defineStore({
     },
     getVestingLockViewAmount(): (precision?: number) => string {
       return (precision = 4) => {
-      const config = useConfigurationStore().config;
-        return config.getViewAmount(this.vestimgAccLocked, config.stakingDenom, precision);
+        return useConfigurationStore().config.getViewAmount(this.vestimgAccLocked, precision);
       }
     },
     getTotal() : bigint {
@@ -291,8 +289,7 @@ export const useUserStore = defineStore({
     },
     getTotalViewAmount(): (precision?: number) => string {
       return (precision = 4) => {
-        const config = useConfigurationStore().config;
-        return config.getViewAmount(this.getTotal, config.stakingDenom, precision);
+        return useConfigurationStore().config.getViewAmount(this.getTotal, precision);
       }
     }
   },

@@ -15,22 +15,18 @@ export class StakingPool {
   }
 
   public getBondedTokensViewAmount(precision = 4): string {
-    const config = useConfigurationStore().config;
-    return config.getViewAmount(this.bondedTokens, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmount(this.bondedTokens, precision);
   }
 
   public getNotBondedTokensViewAmount(precision = 4): string {
-    const config = useConfigurationStore().config;
-    return config.getViewAmount(this.notBondedTokens, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmount(this.notBondedTokens, precision);
   }
 
   public getBondedTokensViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
-    const config = useConfigurationStore().config;
-    return config.getViewAmountAndDenom(this.bondedTokens, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmountAndDenom(this.bondedTokens, precision);
   }
 
   public getNotBondedTokensViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
-    const config = useConfigurationStore().config;
-    return config.getViewAmountAndDenom(this.notBondedTokens, config.stakingDenom, precision);
+    return useConfigurationStore().config.getViewAmountAndDenom(this.notBondedTokens, precision);
   }
 }

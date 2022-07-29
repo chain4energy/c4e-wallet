@@ -61,10 +61,10 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
 
   const content = new ProposalContent(proposal.content["@type"], proposal.content.title, proposal.content.description/*, changes*/);
   const finalTallyResult = new ProposalsTallyRes(
-    Number(proposal.final_tally_result.yes),
-    Number(proposal.final_tally_result.abstain),
-    Number(proposal.final_tally_result.no),
-    Number(proposal.final_tally_result.no_with_veto));
+    BigInt(proposal.final_tally_result.yes),
+    BigInt(proposal.final_tally_result.abstain),
+    BigInt(proposal.final_tally_result.no),
+    BigInt(proposal.final_tally_result.no_with_veto));
   const totalDeposit = proposal.total_deposit.map((el)=> {
     return mapCoin(el, el.denom)
   });
