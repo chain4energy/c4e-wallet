@@ -3,7 +3,12 @@
   <div class="loginPopup__background" @click="$emit('close')"></div>
   <div class="loginPopup__holder">
     <transition v-bind="loginType" name="slide-fade" mode="out-in">
-      <component @keplr="keplrConnect" @back="loginType = LoginChoose" @typeChange="(comp) => loginType = comp" v-bind:is="loginType"></component>
+      <component @keplr="keplrConnect"
+                 @back="loginType = LoginChoose"
+                 @typeChange="(comp) => loginType = comp"
+                 @close="$emit('close')"
+                 v-bind:is="loginType">
+      </component>
     </transition>
   </div>
 </div>
