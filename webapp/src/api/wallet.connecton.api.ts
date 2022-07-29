@@ -107,29 +107,29 @@ export default class WalletConnectionApi extends LoggedService {
         bech32PrefixConsPub: config.addressPrefix + "valconspub"
       },
       stakeCurrency: {
-        coinDenom: "C4E",
+        coinDenom: config.getViewDenom(),
         coinMinimalDenom: config.stakingDenom,
-        coinDecimals: 6
+        coinDecimals: config.getViewDenomDecimals()
       },
       feeCurrencies: [
         {
-          coinDenom: "C4E",
+          coinDenom: config.getViewDenom(),
           coinMinimalDenom: config.stakingDenom,
-          coinDecimals: 6
+          coinDecimals: config.getViewDenomDecimals()
         }
       ],
       currencies: [
         {
-          coinDenom: "C4E",
+          coinDenom: config.getViewDenom(),
           coinMinimalDenom: config.stakingDenom,
-          coinDecimals: 6
+          coinDecimals: config.getViewDenomDecimals()
         }
       ],
       coinType: 118,
       gasPriceStep: {
-        low: 0.01,
-        average: 0.025,
-        high: 0.03,
+        low: config.keplrGasPriceSteps.low,
+        average: config.keplrGasPriceSteps.average,
+        high: config.keplrGasPriceSteps.high,
       },
       walletUrlForStaking: config.stakingPageURL
     } as ChainInfo;

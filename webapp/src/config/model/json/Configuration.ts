@@ -6,10 +6,16 @@ export interface Gas {
   claimRewards: number,
 }
 
+export interface KeplrGasPriceSteps {
+  low: number,
+  average: number,
+  high: number,
+}
+
 export interface ViewDenom {
   denom: string,
   viewDenom: string,
-  conversionFactor: number,
+  coinDecimals: number,
 }
 
 export interface Configuration {
@@ -24,6 +30,7 @@ export interface Configuration {
   chainId: string,
   operationGas: Gas,
   viewDenoms: ViewDenom[],
+  keplrGasPriceSteps: KeplrGasPriceSteps;
   testMode?: boolean,
   testFileName?: string,
 

@@ -1,5 +1,5 @@
 import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
-import { Gas as JsonGas, ViewDenom as JsonViewDenom, Configuration as JsonConfiguration } from "../json/Configuration";
+import { Gas as JsonGas, ViewDenom as JsonViewDenom, Configuration as JsonConfiguration, KeplrGasPriceSteps as JsonKeplrGasPriceSteps } from "../json/Configuration";
 export class Gas implements JsonGas {
   vote: number;
   delegate: number;
@@ -30,6 +30,7 @@ export class Gas implements JsonGas {
 export class ViewDenom implements JsonViewDenom {
   denom: string;
   viewDenom: string;
+  coinDecimals: number;
   conversionFactor: number;
 
   constructor (
@@ -37,7 +38,28 @@ export class ViewDenom implements JsonViewDenom {
   ) {
     this.denom = viewDenom.denom;
     this.viewDenom = viewDenom.viewDenom;
-    this.conversionFactor = viewDenom.conversionFactor;
+    this.coinDecimals = viewDenom.coinDecimals;
+    this.conversionFactor = Math.pow(10, this.coinDecimals);
+  }
+}
+
+export class KeplrGasPriceSteps implements JsonKeplrGasPriceSteps{
+  low: number;
+  average: number;
+  high: number;
+
+  constructor (
+    gasPriceSteps: JsonKeplrGasPriceSteps | undefined
+  ) {
+    if (gasPriceSteps) {
+      this.low = gasPriceSteps.low;
+      this.average = gasPriceSteps.average;
+      this.high = gasPriceSteps.high;
+    } else {
+      this.low = 0;
+      this.average = 0;
+      this.high = 0;
+    }
   }
 }
 
@@ -55,6 +77,7 @@ export class Configuration implements JsonConfiguration {
   viewDenoms: ViewDenom[];
   isEmpty: boolean;
   testMode: boolean;
+  keplrGasPriceSteps: KeplrGasPriceSteps;
   testFileName?: string;
   public static readonly emptyConfiguration = new Configuration();
 
@@ -77,6 +100,7 @@ export class Configuration implements JsonConfiguration {
         configuration.viewDenoms.forEach(d => {viewDenoms.push(new ViewDenom(d))})
       }
       this.viewDenoms = viewDenoms;
+      this.keplrGasPriceSteps = new KeplrGasPriceSteps(configuration.keplrGasPriceSteps);
       this.isEmpty = false;
       this.testMode = configuration.testMode ? configuration.testMode : false;
       this.testFileName = configuration.testFileName;
@@ -93,9 +117,18 @@ export class Configuration implements JsonConfiguration {
       this.operationGas = new Gas(undefined);
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
+      this.keplrGasPriceSteps = new KeplrGasPriceSteps(undefined);
       this.isEmpty = true;
       this.testMode = false;
     }
+  }
+
+  public getViewDenomDecimals(origDenom = this.stakingDenom): number {
+    const viewDenomConf = this.getViewDenomConfig(origDenom);
+    if (viewDenomConf) {
+      return viewDenomConf.coinDecimals;
+    }
+    return 1;
   }
 
   public getViewDenom(origDenom = this.stakingDenom): string {
