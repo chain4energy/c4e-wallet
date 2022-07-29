@@ -121,21 +121,7 @@ class DataService extends LoggedService{
 
   public onProposalSelected(proposeId: number, onSuccess: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
-    const selectedProposal = useProposalsStore().getProposals.find(el =>{
-      return el.proposalId == proposeId;
-    });
-    if(selectedProposal !== undefined){
-      useProposalsStore().setProposalFromLocal(selectedProposal).then(onSuccess);
-    } else {
-      useProposalsStore().fetchProposalById(proposeId).then((resp) => {
-        if(resp !== undefined){
-          onSuccess()
-        } 
-        // else {
-        //   router.push({name: 'proposalsList'})
-        // }
-      });
-    }
+    useProposalsStore().fetchProposalById(proposeId).then(onSuccess)
   }
 
   public onGovernanceUnselected() {

@@ -7,6 +7,7 @@ const toast = useToast()
 
 interface ProposalsState {
   proposals: Proposal[]
+  proposalById: Map<number, number>
   numberOfActiveProposals: number
   proposal: Proposal | undefined
   paginationKey: string | null
@@ -20,6 +21,7 @@ export const useProposalsStore = defineStore({
     return {
       proposals: Array<Proposal>(),
       numberOfActiveProposals: 0,
+      proposalById: new Map<number, number>(),
       //proposals: new DataHolder<Proposal>(),
       proposal: undefined,
       paginationKey: null,
@@ -33,6 +35,12 @@ export const useProposalsStore = defineStore({
         .then((resp) => {
           if (resp.response.isSuccess() && resp.response.data !== undefined){
             this.proposals = this.proposals.concat(resp.response.data.proposals);
+            const mappedIndexes = new Map<number, number>();
+
+            this.proposals.forEach((el,index) => {
+              mappedIndexes.set(el.proposalId,index);
+            });
+            this.proposalById = mappedIndexes;
             this.numberOfActiveProposals = resp.response.data.numberOfActive;
             this.paginationKey = resp.nextKey;
           } else {
@@ -42,14 +50,19 @@ export const useProposalsStore = defineStore({
         });
     },
     async fetchProposalById(id: number, lockscreen = true){
-      await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then((resp) => {
+      const index = this.proposalById.get(id);
+      if(index !== undefined){
+       this.proposal= this.proposals[index];
+      } else {
+        await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then((resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.proposal = resp.data.proposal;
           } else {
             const message = 'Error fetching proposal data';
             toast.error(message);
           }
-      });
+        });
+      }
     },
     async setProposalFromLocal(proposal: Proposal){
       this.proposal = proposal;
