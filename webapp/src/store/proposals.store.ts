@@ -126,6 +126,7 @@ export const useProposalsStore = defineStore({
     clear() {
       this.clearProposals();
       this.tallyParams = new TallyParams(Number.NaN, Number.NaN, Number.NaN);
+      this.minDeposit = new Coin(0n, useConfigurationStore().config.stakingDenom);
     }
   },
   getters: {

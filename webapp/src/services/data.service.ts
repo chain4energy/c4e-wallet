@@ -29,6 +29,8 @@ class DataService extends LoggedService {
   private validatorsIntervalId = 0;
   private accountIntervalId = 0;
 
+  private onProposalDetailsError?: () => void;
+
   private static instance: DataService;
 
   public static getInstance(): DataService {
@@ -108,6 +110,9 @@ class DataService extends LoggedService {
     useSplashStore().increment();
     try {
       const refreshProposals = useProposalsStore().hasProposals;
+      if (this.onProposalDetailsError) {
+        this.onProposalDetailsError();
+      }
       this.onLogOut();
 
       useBlockStore().clear();
@@ -132,12 +137,15 @@ class DataService extends LoggedService {
 
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
+    this.onProposalDetailsError = onError;
     useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
   }
 
   public onProposalUnselected() {
     this.logToConsole(LogLevel.DEBUG, 'onProposalUnselected');
     useProposalsStore().clearProposal();
+    this.onProposalDetailsError = undefined;
+
   }
 
   public onGovernanceUnselected() {

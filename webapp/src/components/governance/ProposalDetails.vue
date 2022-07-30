@@ -1,5 +1,5 @@
 <template>
-  <div class="details-container">
+  <div v-if="proposal" class="details-container">
     <div class="id"><h3>#{{ proposal.proposalId }}</h3> </div>
     <h4 style="padding-left:20px">{{ proposal.content.title }}</h4>
     <div class="info">
@@ -36,7 +36,7 @@ import {useProposalsStore} from "@/store/proposals.store";
 import { Proposal } from "@/models/store/proposal";
 
 const props = defineProps<{
-  proposal: Proposal
+  proposal?: Proposal
 }>();
 
 const proposalsStore = useProposalsStore();

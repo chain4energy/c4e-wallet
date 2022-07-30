@@ -1,5 +1,5 @@
 <template>
-  <div class="description">
+  <div v-if="proposal" class="description">
     <h2>{{ $t("GOVERNANCE_VIEW.DESCRIPTION") }}</h2>
     <div>{{ $t("GOVERNANCE_VIEW.AUTHOR") }}: </div>
     <div>Jan Kowalski</div>
@@ -15,7 +15,7 @@
 import {Proposal} from "@/models/store/proposal";
 
 const props = defineProps<{
-  proposal: Proposal
+  proposal?: Proposal
 }>();
 
 </script>
