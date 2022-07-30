@@ -157,6 +157,14 @@ export class Configuration implements JsonConfiguration {
     return origDenom;
   }
 
+  public getViewDenomConversionFactor(origDenom = this.stakingDenom): number {
+    const viewDenomConf = this.getViewDenomConfig(origDenom);
+    if (viewDenomConf) {
+      return viewDenomConf.conversionFactor;
+    }
+    return 1;
+  }
+
   public getViewAmount(origAmount: bigint | number | BigDecimal, precision = 4, reduceBigNumber = false, origDenom = this.stakingDenom): string {
     const viewDenomConf = this.getViewDenomConfig(origDenom);
     let result: number | BigDecimal;

@@ -32,6 +32,7 @@ import { Rewards } from "@/models/store/distribution";
 import { mapRewards } from "@/models/mapper/distribution.mapper";
 import { mapCoin } from "@/models/mapper/common.mapper";
 import { EncodeObject } from "@cosmjs/proto-signing";
+import { BigDecimal } from "@/models/store/big.decimal";
 
 export enum VoteOption {
   Yes = CosmVoteOption.VOTE_OPTION_YES,
@@ -103,7 +104,7 @@ export class AccountApi extends TxBroadcastBaseApi {
   }
   public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
-
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
     const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
       const typeUrl = '/cosmos.staking.v1beta1.MsgDelegate';
       const val = {
@@ -111,7 +112,7 @@ export class AccountApi extends TxBroadcastBaseApi {
         validatorAddress: validator,
         amount: {
           denom: config.stakingDenom,
-          amount: amount,
+          amount: bcAmount,
         }
       };
       if (isLedger) {
@@ -129,6 +130,7 @@ export class AccountApi extends TxBroadcastBaseApi {
   public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
     this.logToConsole(LogLevel.DEBUG, 'undelegate')
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
 
     const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
       const typeUrl = '/cosmos.staking.v1beta1.MsgUndelegate';
@@ -137,7 +139,7 @@ export class AccountApi extends TxBroadcastBaseApi {
         validatorAddress: validator,
         amount: {
           denom: config.stakingDenom,
-          amount: amount,
+          amount: bcAmount,
         }
       };
       if (isLedger) {
@@ -153,6 +155,7 @@ export class AccountApi extends TxBroadcastBaseApi {
 
   public async redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
 
     const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
       const typeUrl = '/cosmos.staking.v1beta1.MsgBeginRedelegate';
@@ -162,7 +165,7 @@ export class AccountApi extends TxBroadcastBaseApi {
         validatorDstAddress: validatorDst,
         amount: {
           denom: config.stakingDenom,
-          amount: amount,
+          amount: bcAmount,
         }
       };
       if (isLedger) {
