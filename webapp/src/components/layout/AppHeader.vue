@@ -82,7 +82,7 @@ import LogoutKeplr from "@/components/layout/loginPopup/LogoutConfirm.vue";
 
 import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
-import { computed, onMounted, ref, onUnmounted, onUpdated } from "vue";
+import { ref } from "vue";
 import { useUserStore } from "@/store/user.store";
 
 const router = useRouter();

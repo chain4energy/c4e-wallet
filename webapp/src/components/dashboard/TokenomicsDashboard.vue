@@ -115,7 +115,6 @@ const option = ref( {
       data: [
         {value: bounded ,
           itemStyle: {
-            normal: {
               label: {
                 show: false
               },
@@ -123,10 +122,9 @@ const option = ref( {
                 show: false
               },
               color: '#27697F'
-            }
+            
           }},
         {value: unBounded,   itemStyle: {
-            normal: {
               label: {
                 show: false
               },
@@ -134,10 +132,9 @@ const option = ref( {
                 show: false
               },
               color: '#fff1a9'
-            }
+            
           }},
         {value: unBounding,   itemStyle: {
-            normal: {
               label: {
                 show: false
               },
@@ -145,7 +142,7 @@ const option = ref( {
                 show: false
               },
               color: '#72bf44'
-            }
+            
           }},
         {
           value: totalSupply,

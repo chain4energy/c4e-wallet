@@ -123,7 +123,6 @@ const option = ref({
       value: communityPool,
       name: 'Community pool',
       itemStyle: {
-        normal: {
           label: {
             show: false
           },
@@ -131,14 +130,12 @@ const option = ref({
             show: false
           },
           color: '#fff1a9'
-        }
       }
     },
       {
         value: strategicReversePool,
         name: 'Strategic reverse pool',
         itemStyle: {
-          normal: {
             label: {
               show: false
             },
@@ -146,14 +143,12 @@ const option = ref({
               show: false
             },
             color: '#72bf44'
-          }
         }
       },
       {
         value: airdropPool,
         name: 'Airdrop',
         itemStyle: {
-          normal: {
             label: {
               show: false
             },
@@ -161,7 +156,7 @@ const option = ref({
               show: false
             },
             color: '#26697f'
-          }
+          
         }
       }
     ]
