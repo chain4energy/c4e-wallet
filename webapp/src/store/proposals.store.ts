@@ -117,8 +117,11 @@ export const useProposalsStore = defineStore({
     clearProposals() {
       this.proposals = Array<Proposal>();
       this.numberOfActiveProposals = 0;
-      this.proposal = Object();
+      this.proposal = undefined;
       this.paginationKey = null;
+    },
+    clearProposal() {
+      this.proposal = undefined;
     },
     clear() {
       this.clearProposals();
@@ -126,13 +129,18 @@ export const useProposalsStore = defineStore({
     }
   },
   getters: {
-
+    hasProposals(): boolean {
+      return this.proposals.length > 0;
+    },
+    hasProposal(): boolean {
+      return this.proposal !== undefined;
+    },
     getProposals(): Proposal[] {
       return this.proposals;
     },
-   getPaginationKey(): string | null {
-     return this.paginationKey;
-   },
+    getPaginationKey(): string | null {
+      return this.paginationKey;
+    },
     getProposal(): Proposal | undefined {
       return this.proposal;
     },

@@ -90,7 +90,10 @@ const router = useRouter();
 const icons  = new Map<string, string>([
   [ProposalStatus.PASSED, "CheckSquare"],
   [ProposalStatus.REJECTED, "XCircle"],
-  [ProposalStatus.DEPOSIT_PERIOD, ""]
+  [ProposalStatus.DEPOSIT_PERIOD, ""],
+  [ProposalStatus.FAILED, ""],
+  [ProposalStatus.VOTING_PERIOD, ""],
+  [ProposalStatus.UNSPECIFIED, ""]
 ]);
 
 const yesPercentage = computed(() => {

@@ -63,7 +63,7 @@
 
       <div v-else class="validationPopup__btns">
         <p> {{ $t('ERRORS.LOGIN_WALLET')}} </p>
-        <Button @click="useUserStore().connectKeplr">{{ $t('LOGIN.LOGIN' )}}</Button> <!-- TODO is connectKeplr correct? -->
+        <Button @click="dataService.onKeplrLogIn()">{{ $t('LOGIN.LOGIN' )}}</Button> <!-- TODO is connectKeplr correct? -->
       </div>
     </div>
   </div>
@@ -77,6 +77,7 @@ import {ref, defineEmits} from "vue";
 import { useValidatorsStore } from "@/store/validators.store";
 import { object, number, setLocale } from 'yup';
 import { useToast } from "vue-toastification";
+import dataService from '@/services/data.service';
 
 const props = defineProps<{
   validator: Validator

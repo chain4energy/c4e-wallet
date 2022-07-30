@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import DetailsChart from "@/components/governance/DetailsChart.vue";
 import ProposalDetails from "@/components/governance/ProposalDetails.vue";
@@ -33,6 +33,9 @@ onBeforeMount(() => {
   );
 });
 
+onUnmounted(() => {
+  dataService.onProposalUnselected();
+});
 
 const proposal = computed(()=> {
   return useProposalsStore().getProposal

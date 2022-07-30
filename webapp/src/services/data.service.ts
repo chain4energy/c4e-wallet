@@ -107,7 +107,9 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onConfigurationChange');
     useSplashStore().increment();
     try {
+      const refreshProposals = useProposalsStore().hasProposals;
       this.onLogOut();
+
       useBlockStore().clear();
       useProposalsStore().clear();
       useTokensStore().clear();
@@ -116,6 +118,9 @@ class DataService extends LoggedService {
       window.clearInterval(this.dashboardIntervalId);
       window.clearInterval(this.validatorsIntervalId);
       this.onInit();
+      if (refreshProposals) {
+        useProposalsStore().fetchProposals(true);
+      }
     } finally {
       useSplashStore().decrement();
     }
@@ -128,6 +133,11 @@ class DataService extends LoggedService {
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
     useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
+  }
+
+  public onProposalUnselected() {
+    this.logToConsole(LogLevel.DEBUG, 'onProposalUnselected');
+    useProposalsStore().clearProposal();
   }
 
   public onGovernanceUnselected() {

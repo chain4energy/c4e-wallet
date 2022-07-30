@@ -462,7 +462,7 @@
           "unbonding_time": "1970-01-01T00:00:00Z",
           "commission": {
             "commission_rates": {
-              "rate": "0.100000000000000000",
+              "rate": "0.120000000000000000",
               "max_rate": "0.500000000000000000",
               "max_change_rate": "0.100000000000000000"
             },
@@ -491,7 +491,7 @@
           "unbonding_time": "1970-01-01T00:00:00Z",
           "commission": {
             "commission_rates": {
-              "rate": "0.100000000000000000",
+              "rate": "0.090000000000000000",
               "max_rate": "0.200000000000000000",
               "max_change_rate": "0.010000000000000000"
             },
@@ -506,7 +506,7 @@
             "key": "Bk7/D8x0lV/VOwGl1LApMP21E6qG4D+Syl7vhbNU/E8="
           },
           "jailed": false,
-          "status": "BOND_STATUS_BONDED",
+          "status": "BOND_STATUS_UNBONDED",
           "tokens": "100040512675",
           "delegator_shares": "100040512675.000000000000000000",
           "description": {
@@ -520,7 +520,7 @@
           "unbonding_time": "1970-01-01T00:00:00Z",
           "commission": {
             "commission_rates": {
-              "rate": "0.100000000000000000",
+              "rate": "0.130000000000000000",
               "max_rate": "0.200000000000000000",
               "max_change_rate": "0.010000000000000000"
             },
@@ -549,7 +549,7 @@
           "unbonding_time": "2022-07-10T12:36:37.395664657Z",
           "commission": {
             "commission_rates": {
-              "rate": "0.100000000000000000",
+              "rate": "0.080000000000000000",
               "max_rate": "0.200000000000000000",
               "max_change_rate": "0.010000000000000000"
             },
@@ -564,7 +564,7 @@
             "key": "ASgBNy7VidFkGmbyB1Rf01gXcehz3uWpPloTKY6467U="
           },
           "jailed": false,
-          "status": "BOND_STATUS_BONDED",
+          "status": "BOND_STATUS_UNBONDING",
           "tokens": "100115004819",
           "delegator_shares": "100115004819.000000000000000000",
           "description": {
@@ -578,7 +578,7 @@
           "unbonding_time": "1970-01-01T00:00:00Z",
           "commission": {
             "commission_rates": {
-              "rate": "0.100000000000000000",
+              "rate": "0.230000000000000000",
               "max_rate": "0.200000000000000000",
               "max_change_rate": "0.010000000000000000"
             },
@@ -636,7 +636,7 @@
           "unbonding_time": "2022-08-17T12:45:20.905441884Z",
           "commission": {
             "commission_rates": {
-              "rate": "0.100000000000000000",
+              "rate": "0.870000000000000000",
               "max_rate": "0.200000000000000000",
               "max_change_rate": "0.010000000000000000"
             },
@@ -665,7 +665,7 @@
           "unbonding_time": "1970-01-01T00:00:00Z",
           "commission": {
             "commission_rates": {
-              "rate": "0.100000000000000000",
+              "rate": "0.340000000000000000",
               "max_rate": "0.200000000000000000",
               "max_change_rate": "0.010000000000000000"
             },
@@ -694,7 +694,7 @@
           "unbonding_time": "1970-01-01T00:00:00Z",
           "commission": {
             "commission_rates": {
-              "rate": "0.100000000000000000",
+              "rate": "0.020000000000000000",
               "max_rate": "0.200000000000000000",
               "max_change_rate": "0.010000000000000000"
             },
