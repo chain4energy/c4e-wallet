@@ -40,6 +40,7 @@ import { CanvasRenderer } from "echarts/renderers";
 import {computed, onBeforeMount, ref} from "vue";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import {useTokensStore} from "@/store/tokens.store";
+import { createDashboardPoolsChartData } from "@/charts/dashboard";
 
 use([
   CanvasRenderer,
@@ -66,102 +67,10 @@ const airdropPool = computed(() => {
   return tokensStore.getAirdropPool.getViewAmount();
 });
 
-const option = ref({
-  tooltip: {
-    trigger: 'item',
-    formatter: '{a} <br/>{b}: {c} ({d}%)'
-  },
+const option = computed(() => {
+  return createDashboardPoolsChartData(communityPool.value, strategicReversePool.value, airdropPool.value);
+})
 
-  series: [{
-    width: '90%',
-    height: '90%',
-    center: ['55%', '50%'],
-    name: 'Pools',
-    type: 'pie',
-    radius: ['50%', '100%'],
-
-// -------~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    markPoint: {
-      tooltip: { show: false },
-      label: {
-        show: true,
-        formatter: '{b}',
-        color: 'black',
-        fontSize: 20,
-      },
-      data: [{
-        name: 'Total 10%',
-        value: '-',
-        symbol: 'circle',
-        itemStyle: { color: 'transparent' },
-        x: '50%',
-        y: '50%',
-      }],
-    },
-
-// -------~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    avoidLabelOverlap: true,
-    label: {
-      show: false,
-      color: '#000',
-      fontSize: '80',
-      position: 'center'
-    },
-    emphasis: {
-      label: {
-        show: false,
-        fontSize: '30',
-        fontWeight: 'bold'
-      }
-    },
-    labelLine: {
-      show: false
-    },
-    data: [{
-      value: communityPool,
-      name: 'Community pool',
-      itemStyle: {
-          label: {
-            show: false
-          },
-          labelLine: {
-            show: false
-          },
-          color: '#fff1a9'
-      }
-    },
-      {
-        value: strategicReversePool,
-        name: 'Strategic reverse pool',
-        itemStyle: {
-            label: {
-              show: false
-            },
-            labelLine: {
-              show: false
-            },
-            color: '#72bf44'
-        }
-      },
-      {
-        value: airdropPool,
-        name: 'Airdrop',
-        itemStyle: {
-            label: {
-              show: false
-            },
-            labelLine: {
-              show: false
-            },
-            color: '#26697f'
-          
-        }
-      }
-    ]
-  }]
-} );
 </script>
 
 <style scoped lang="scss">

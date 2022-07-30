@@ -38,6 +38,7 @@ import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
+import { createTokenomicsChartData } from "@/charts/dashboard";
 
 use([
   CanvasRenderer,
@@ -80,79 +81,10 @@ const totalSupply = computed((): string => {
   return tokensStore.getTotalSupply.getViewAmount();
 });
 
-const option = ref( {
+const option = computed(() => {
+  return createTokenomicsChartData(bounded.value, unBounded.value, unBounding.value, totalSupply.value)
+})
 
-  legend: {
-    orient: 'vertical',
-    left: 10,
-  },
-  series: [
-    {
-      width: '100%',
-      height: '100%',
-      startAngle: 180,
-      endAngle: 360,
-      type: 'pie',
-      radius: ['50%', '90%'],
-      center: ['50%', '43%'],
-      avoidLabelOverlap: true,
-      label: {
-        show: false,
-        color: '#000',
-        fontSize: '80',
-        position: 'center'
-      },
-      emphasis: {
-        label: {
-          show: false,
-          fontSize: '30',
-          fontWeight: 'bold'
-        }
-      },
-      labelLine: {
-        show: false
-      },
-      data: [
-        {value: bounded ,
-          itemStyle: {
-              label: {
-                show: false
-              },
-              labelLine: {
-                show: false
-              },
-              color: '#27697F'
-            
-          }},
-        {value: unBounded,   itemStyle: {
-              label: {
-                show: false
-              },
-              labelLine: {
-                show: false
-              },
-              color: '#fff1a9'
-            
-          }},
-        {value: unBounding,   itemStyle: {
-              label: {
-                show: false
-              },
-              labelLine: {
-                show: false
-              },
-              color: '#72bf44'
-            
-          }},
-        {
-          value: totalSupply,
-          name: null,
-          itemStyle:{opacity:0},
-          tooltip:{show:false }
-        }
-      ]
-    }
-  ],} );
 </script>
 
 <style scoped lang="scss">

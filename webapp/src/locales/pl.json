@@ -26,10 +26,10 @@
     "PROPOSAL_STATUS_DEPOSIT_PERIOD": "Deposit",
     "PROPOSAL_STATUS_FAILED": "Failed",
     "VOTING_OPTIONS": {
-      "YES": "Yes",
-      "NO": "No",
-      "ABSTAIN": "Abstain",
-      "NO_WITH_VETO": "No with veto"
+      "YES": "Tak",
+      "NO": "Nie",
+      "ABSTAIN": "Wstrzymanie",
+      "NO_WITH_VETO": "Nie z Veto"
     },
     "TOTAL": "Total",
     "DESCRIPTION": "Description",

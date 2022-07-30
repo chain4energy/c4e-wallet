@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import moment from 'moment';
+import moment, { now } from 'moment';
 import {computed, ref} from "vue";
 import {BarChart} from "echarts/charts";
 import VChart from "vue-echarts";
@@ -70,6 +70,7 @@ import {CanvasRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent, GridComponent} from "echarts/components";
 import {useRouter} from "vue-router";
 import {Proposal, ProposalStatus} from "@/models/store/proposal";
+import { createProposalListChartData } from '@/charts/governance';
 
 use([
   CanvasRenderer,
@@ -140,83 +141,28 @@ const showDetailsClick = () => {
   router.push({name: 'governanceDetails', params: {id: props.proposal.proposalId}});
 };
 
-const option = ref({
-  tooltip: {
-    trigger: 'item',
-    formatter: function (params: any) {
-      return `
-        <b>${params.seriesName}</b></br>
-        <b>${params.value} (${params.data.name}%)</b>`
-    }
-  },
-  xAxis: {
-    type: 'value',
-    show:false
-  },
-  yAxis: {
-    type: 'category',
-    show:false,
-    data: ['']
-  },
-  itemStyle: {
-    barBorderRadius: [50,50,50,50]
-  },
-  series: [
+const option = computed(() => {
+  return createProposalListChartData(
     {
-      name: 'Yes',
-      type: 'bar',
+      amount: yes.value,
+      percentage: yesPercentage.value
+    },
+    {
+      amount: abstain.value,
+      percentage: abstain.value
+    },
+    {
+      amount: no.value,
+      percentage: noPercentage.value
+    },
+    {
+      amount: noWithVeto.value,
+      percentage: noWithVetoPercentage.value
+    },
+    sumOfVotes.value
+  );
+})
 
-      color:'#72bf44',
-      stack: 'total',
-      emphasis: {
-        focus: 'series'
-      },
-      data: [{name: yesPercentage.value, value: yes.value}]
-    },
-    {
-      name: 'Abstain',
-      type: 'bar',
-      stack: 'total',
-      color: '#27697f',
-      emphasis: {
-        focus: 'series'
-      },
-      data: [{name: abstainPercentage.value, value: abstain.value}]
-    },
-    {
-      name: 'No',
-      type: 'bar',
-      stack: 'total',
-
-      emphasis: {
-        focus: 'series'
-      },
-      color: '#e02626',
-      data: [{name: noPercentage.value, value: no.value}]
-    },
-    {
-      name: 'No with veto',
-      type: 'bar',
-      stack: 'total',
-      emphasis: {
-        focus: 'series'
-      },
-      color: '#fff1a9',
-      data: [{name: noWithVetoPercentage.value, value: noWithVeto.value}]
-    },
-    {
-      name: '',
-      type: 'bar',
-      stack: 'total',
-      emphasis: {
-        focus: 'series'
-      },
-      color: '#797777',
-      data: [{name: '0', value: sumOfVotes.value === -1n ? 1 : 0}]
-    }
-  ],
-
-} );
 
 </script>
 
