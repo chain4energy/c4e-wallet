@@ -72,7 +72,7 @@ import DataTableWrapper from "@/components/commons/DataTableWrapper.vue";
 import {computed, ref} from "vue";
 import {Validator, ValidatorStatus} from "@/models/store/validator";
 import {useUserStore} from "@/store/user.store";
-import StackingPopup from "@/components/stacking/StackingPopup.vue";
+import StackingPopup from "@/components/staking/StackingPopup.vue";
 import {FilterMatchMode, FilterOperator} from "primevue/api";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 
