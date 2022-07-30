@@ -31,6 +31,7 @@ import { RewardsResponse } from "@/models/blockchain/distribution";
 import { Rewards } from "@/models/store/distribution";
 import { mapRewards } from "@/models/mapper/distribution.mapper";
 import { mapCoin } from "@/models/mapper/common.mapper";
+import { EncodeObject } from "@cosmjs/proto-signing";
 
 export enum VoteOption {
   Yes = CosmVoteOption.VOTE_OPTION_YES,
@@ -103,47 +104,59 @@ export class AccountApi extends TxBroadcastBaseApi {
   public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
 
-    const msg = {
-      typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
-      value: MsgDelegate.fromPartial({
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.staking.v1beta1.MsgDelegate';
+      const val = {
         delegatorAddress: connection.account,
         validatorAddress: validator,
         amount: {
           denom: config.stakingDenom,
           amount: amount,
         }
-      }),
-    };
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }]
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgDelegate.fromPartial(val) }]
+      }
+    }
+    
 
     const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
-    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 
   public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
+    this.logToConsole(LogLevel.DEBUG, 'undelegate')
 
-    const msg = {
-      typeUrl: '/cosmos.staking.v1beta1.MsgUndelegate',
-      value: MsgUndelegate.fromPartial({
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.staking.v1beta1.MsgUndelegate';
+      const val = {
         delegatorAddress: connection.account,
         validatorAddress: validator,
         amount: {
           denom: config.stakingDenom,
           amount: amount,
         }
-      }),
-    };
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }]
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgUndelegate.fromPartial(val) }]
+      }
+    }
 
     const fee = this.createFee(config.operationGas.undelegate, config.stakingDenom);
-    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 
   public async redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
 
-    const msg = {
-      typeUrl: '/cosmos.staking.v1beta1.MsgBeginRedelegate',
-      value: MsgBeginRedelegate.fromPartial({
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.staking.v1beta1.MsgBeginRedelegate';
+      const val = {
         delegatorAddress: connection.account,
         validatorSrcAddress: validatorSrc,
         validatorDstAddress: validatorDst,
@@ -151,10 +164,16 @@ export class AccountApi extends TxBroadcastBaseApi {
           denom: config.stakingDenom,
           amount: amount,
         }
-      }),
-    };
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }]
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgBeginRedelegate.fromPartial(val) }]
+      }
+    }
+
     const fee = this.createFee(config.operationGas.redelegate, config.stakingDenom);
-    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 
   // TODO proposalId as Long
@@ -163,39 +182,49 @@ export class AccountApi extends TxBroadcastBaseApi {
 
     const config = useConfigurationStore().config;
 
-    const msg = {
-      typeUrl: '/cosmos.gov.v1beta1.MsgVote',
-      value: MsgVote.fromPartial({
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.gov.v1beta1.MsgVote';
+      const val = {
         option: option.valueOf(),
         proposalId,
         voter: connection.account,
-      }),
-    };
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }]
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgVote.fromPartial(val) }]
+      }
+    }
+
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
-    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 
   public async claimRewards(connection: ConnectionInfo, validatorsAddresses: IterableIterator<string>): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
-
-    const messages = [];
-    for (const validator of validatorsAddresses) {
-      const msg = {
-        typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
-        value: MsgWithdrawDelegatorReward.fromPartial({
+    const messages: EncodeObject[] = [];
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] | TxBroadcastError => {
+      const typeUrl = '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward';
+      
+      for (const validator of validatorsAddresses) {
+        const val = {
           delegatorAddress: connection.account,
           validatorAddress: validator,
-        })
-      };
-      messages.push(msg);
+        }
+        const msg: EncodeObject = isLedger ? { typeUrl: typeUrl, value: val } : { typeUrl: typeUrl, value: MsgWithdrawDelegatorReward.fromPartial(val) };
+        messages.push(msg);
+
+      }
+      if (messages.length === 0) {
+        this.logToConsole(LogLevel.INFO, 'claimRewards: No rewards to claim');
+        return new TxBroadcastError('No rewards to claim');
+      }
+      return messages;
     }
 
-    if (messages.length === 0) {
-      this.logToConsole(LogLevel.INFO, 'claimRewards: No rewards to claim');
-      return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('No rewards to claim'));
-    }
+
 
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
-    return await this.signAndBroadcast(connection, messages, fee, '', true, null);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 }

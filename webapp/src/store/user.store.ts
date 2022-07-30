@@ -187,7 +187,7 @@ export const useUserStore = defineStore({
       const validators = this.rewards.getAllValidatorsAddresses();
       await apiFactory.accountApi().claimRewards(connectionInfo, validators).then(async (resp) => {
         if (resp.isError()) {
-          await onTxDeliveryFailure(connectionInfo, this, resp, 'Claiming rewards failed');
+          await onTxDeliveryFailure(connectionInfo, this, resp, 'Claiming rewards failed: ' + resp.error?.message);
         } else {
           const allResults = await Promise.all([
             fetchBalance(connectionInfo, this, true),

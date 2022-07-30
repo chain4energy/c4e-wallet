@@ -60,11 +60,18 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     return fee;
   }
   
-  protected async signAndBroadcast(connection: ConnectionInfo, 
-                                  messages: readonly EncodeObject[], fee: StdFee | "auto" | number, memo: string,
-                                  lockScreen: boolean, localSpinner: LocalSpinner | null, skipErrorToast = false): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  protected async signAndBroadcast(
+    connection: ConnectionInfo, 
+    getMessages: (isLedger: boolean) => readonly EncodeObject[] | TxBroadcastError,
+    fee: StdFee | "auto" | number,
+    memo: string,
+    lockScreen: boolean, localSpinner: LocalSpinner | null,
+    skipErrorToast = false
+  ): Promise<RequestResponse<TxData, TxBroadcastError>> 
+  {
+    this.logToConsole(LogLevel.DEBUG, 'signAndBroadcast')
     this.before(lockScreen, localSpinner);
-    let client: SigningStargateClient | undefined;
+    let clientToDisconnect: SigningStargateClient | undefined;
     try {
       if (!connection.modifiable) {
         return this.createTxErrorResponseWithToast(
@@ -72,16 +79,20 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           'Transaction Broadcast error',
           !skipErrorToast
         );
-        // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot broadcast transaction with: ' + connection.connectionType + ' signer'));
       }
-      client = await this.createClient(connection.connectionType);
-      if (client == undefined) {
+      const { client, isLedger } = await this.createClient(connection.connectionType);
+      clientToDisconnect = client;
+      if (client === undefined) {
         return this.createTxErrorResponseWithToast(
           new TxBroadcastError('Cannot get signing client'),
           'Transaction Broadcast error',
           !skipErrorToast
         );
-        // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Cannot get client'));
+      }
+       
+      const messages = getMessages(isLedger);
+      if (messages instanceof TxBroadcastError) {
+        return new RequestResponse<TxData, TxBroadcastError>(messages);
       }
       const response = await client.signAndBroadcast(connection.account, messages, fee, memo);
       this.logToConsole(LogLevel.INFO, 'Client Response', this.stringify(response));
@@ -91,7 +102,6 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           'Transaction Broadcast error',
           !skipErrorToast
         );
-        // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('Transaction Broadcast error', response));
       }
       return new RequestResponse<TxData, TxBroadcastError>(undefined, new TxData(response));
     } catch (err) {
@@ -102,38 +112,35 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         'Transaction Broadcast error',
         !skipErrorToast
       );
-      // if (!skipErrorToast) {
-      //   toast.error('Error broadcasting transaction:' + error.message);
-      // }
-      // return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError(error.message));
-    }finally {
+    } finally {
       this.after(lockScreen, localSpinner);
-      if (client !== undefined) {
-        client.disconnect();
+      if (clientToDisconnect !== undefined) {
+        clientToDisconnect.disconnect();
       }
     }
   }
   
-  private createClient(connectionType: ConnectionType): Promise<SigningStargateClient> {
-    const signer = this.getOfflineSigner(connectionType);
+  private async createClient(connectionType: ConnectionType): Promise<{ client: SigningStargateClient, isLedger: boolean }> {
+    const { signer, isLedger } = await this.getOfflineSigner(connectionType);
     if (signer == undefined) {
       throw new Error('Cannot get signer');
     }
     const rpc = useConfigurationStore().config.bcRpcURL;
-    const client = SigningStargateClient.connectWithSigner(
+    const client = await SigningStargateClient.connectWithSigner(
       rpc,
       signer,
     );
-    return client;
+    return { client: client, isLedger: isLedger };
   }
   
-  private getOfflineSigner(connectionType: ConnectionType) {
+  private async getOfflineSigner(connectionType: ConnectionType) {
     switch(connectionType) {
       case ConnectionType.Keplr: {
         if(window.keplr) {
           const chainId = useConfigurationStore().config.chainId;
-          const offlineSigner = window.keplr.getOfflineSigner(chainId);
-          return offlineSigner;
+          const isLedger = (await window.keplr?.getKey(chainId)).isNanoLedger;
+          const offlineSigner = isLedger ? window.keplr.getOfflineSignerOnlyAmino(chainId) : window.keplr.getOfflineSigner(chainId);
+          return {signer: offlineSigner, isLedger: isLedger};
         }
         throw new Error('Keplr not installed');
       }

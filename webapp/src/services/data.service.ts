@@ -11,7 +11,7 @@ import { ServiceTypeEnum } from "./logger/service-type.enum";
 
 const keplrKeyStoreChange = 'keplr_keystorechange';
 
-class DataService extends LoggedService{
+class DataService extends LoggedService {
 
   private minBetweenRefreshmentsPeriod = 1000;
   private blockTimeout = 3000;
