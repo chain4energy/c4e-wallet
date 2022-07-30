@@ -79,14 +79,15 @@
       "NAME": "Nazwa",
       "STATUS": "Status",
       "VOTING_POWER": "Siła głosu",
-      "YOUR_STAKE": "Twoja stawka"
+      "STAKE": "Twoja stawka"
     },
     "VALIDATOR_STATUS": {
       "ACTIVE": "Active PL",
-      "INACTIVE": "Inactive PL"
+      "INACTIVE": "Inactive PL",
+      "JAILED": "Jailed PL"
     },
     "TABLE_EXPANDED": {
-      "STAKED": "Twoja stawka",
+      "UNSTAKING": "Your unstaking",
       "REWARDS": "Nagrody"
     },
     "TABLE_BUTTONS": {

@@ -2,6 +2,7 @@ import { useTokensStore } from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
 import { BigDecimal, divideBigInts } from "./big.decimal";
 import { toPercentage } from "./common";
+import i18n from '@/plugins/i18n';
 
 export class Validator{
   operatorAddress: string;
@@ -66,12 +67,12 @@ export class Validator{
   public get viewStatus(): string {
     switch (this.status) {
       case ValidatorStatus.Bonded:
-        return 'Active';  // TODO place it in locales config
+        return i18n.global.t('STAKING_VIEW.VALIDATOR_STATUS.ACTIVE');
       default:
         if (this.jailed) {
-          return 'Jailed'; // TODO place it in locales config
+          return i18n.global.t('STAKING_VIEW.VALIDATOR_STATUS.JAILED');
         }
-        return 'Inactive'; // TODO place it in locales config
+        return i18n.global.t('STAKING_VIEW.VALIDATOR_STATUS.INACTIVE');
     }
   }
 

@@ -31,7 +31,7 @@
           <span v-else>updating</span>
         </template>
       </Column>
-      <Column :header="$t(`STAKING_VIEW.TABLE_HEADERS.YOUR_STAKE`)" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
+      <Column :header="$t(`STAKING_VIEW.TABLE_HEADERS.STAKE`)" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
         <template #body="{data}">
           <span>{{ data.delegatedViewAmount }}</span>
           <!-- <span v-else>updating</span> -->
@@ -53,11 +53,11 @@
     <template v-slot:expanded-columns="{expandedData}">
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
-          <p>Your unstaking</p>
+          <p>{{ $t(`STAKING_VIEW.TABLE_EXPANDED.UNSTAKING`) }}</p>
           <p>{{ expandedData.data.undelegatingViewAmount }}</p>
         </div>
         <div style="display: flex; flex-direction: column">
-          <p>Reward</p>
+          <p>{{ $t(`STAKING_VIEW.TABLE_EXPANDED.REWARDS`) }}</p>
           <p>{{ expandedData.data.rewardsViewAmount }}</p> <!-- TODONUMBER -->
         </div>
       </div>
@@ -79,12 +79,16 @@ import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 const popupOpened = ref(false);
 const currentValidator = ref({})
 
-const props = defineProps({
-  validators: {
-    type: Array,
-    required: true
-  }
-});
+const props = defineProps<{
+  validators: Array<Validator>
+}>();
+
+// const props = defineProps({
+//   validators: {
+//     type: Array<Validator>,
+//     required: true
+//   }
+// });
 const userStore = useUserStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<Validator>());

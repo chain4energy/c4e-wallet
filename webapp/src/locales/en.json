@@ -79,14 +79,15 @@
       "NAME": "Name",
       "STATUS": "Status",
       "VOTING_POWER": "Voting Power",
-      "YOUR_STAKE": "Your stake"
+      "STAKE": "Your stake"
     },
     "VALIDATOR_STATUS": {
       "ACTIVE": "Active",
-      "INACTIVE": "Inactive"
+      "INACTIVE": "Inactive",
+      "JAILED": "Jailed"
     },
     "TABLE_EXPANDED": {
-      "STAKED": "Your stake",
+      "UNSTAKING": "Your unstaking",
       "REWARDS": "Rewards"
     },
     "TABLE_BUTTONS": {
