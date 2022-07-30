@@ -1,5 +1,5 @@
 <template>
-  <StackingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
+  <StakingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
   <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick">
     <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>
     <template #header>
@@ -72,7 +72,7 @@ import DataTableWrapper from "@/components/commons/DataTableWrapper.vue";
 import {computed, ref} from "vue";
 import {Validator, ValidatorStatus} from "@/models/store/validator";
 import {useUserStore} from "@/store/user.store";
-import StackingPopup from "@/components/staking/StackingPopup.vue";
+import StakingPopup from "@/components/staking/StakingPopup.vue";
 import {FilterMatchMode, FilterOperator} from "primevue/api";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 
