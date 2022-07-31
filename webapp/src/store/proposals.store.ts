@@ -61,16 +61,10 @@ export const useProposalsStore = defineStore({
       id: number,
       onSuccess: (() => void) | undefined = undefined,
       onError: (() => void) | undefined = undefined,
-      lockscreen = true
+      lockscreen = true,
+      forceRemoteFetch = false
     ){
-      const index = this.proposalById.get(id);
-      const proposal = index !== undefined ? this.proposals[index] : undefined;
-      if(proposal !== undefined) {
-        this.proposal = proposal;
-        if (onSuccess) {
-          onSuccess();
-        }
-      } else {
+      const remoteFetch = async () => {
         await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then((resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.proposal = resp.data.proposal;
@@ -86,6 +80,19 @@ export const useProposalsStore = defineStore({
             }
           }
         });
+      }
+      if (forceRemoteFetch) {
+        return await remoteFetch();
+      }
+      const index = this.proposalById.get(id);
+      const proposal = index !== undefined ? this.proposals[index] : undefined;
+      if(proposal !== undefined) {
+        this.proposal = proposal;
+        if (onSuccess) {
+          onSuccess();
+        }
+      } else {
+        await remoteFetch();
       }
     },
     async setProposalFromLocal(proposal: Proposal){

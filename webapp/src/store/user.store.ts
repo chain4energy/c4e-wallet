@@ -16,6 +16,7 @@ import { BigDecimal } from "@/models/store/big.decimal";
 import { useBlockStore } from "./block.store";
 import i18n from "@/plugins/i18n";
 import { formatString } from "@/utils/string-formatter";
+import { useProposalsStore } from "./proposals.store";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -205,7 +206,14 @@ export const useUserStore = defineStore({
         if (resp.isError()) {
           await onTxDeliveryFailure(connectionInfo, this, resp, 'Vote: ' + option + ' for proposal ' + proposalId + ' failed');
         } else {
-          // TODO refresh data ??
+            await useProposalsStore().fetchProposalById(
+              proposalId,
+              undefined,
+              () => {
+                onRefreshingError([true]);
+              },
+              true,
+              true);
         }
       });
     },
@@ -394,17 +402,3 @@ function onRefreshingError(allResults: boolean[]) {
     return;
   }
 }
-
-// const keplrKeyStoreChange = 'keplr_keystorechange';
-// const keystoreChangeListener = () => {
-//   disconnect(useUserStore());
-//   useUserStore().connect(apiFactory.walletApi().connectKeplr());
-// }
-
-// function enableKeplrAccountChangeListener() {
-//   window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
-// }
-
-// function disableKeplrAccountChangeListener() {
-//   window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
-// }
