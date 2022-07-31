@@ -48,7 +48,7 @@ export class ContinuousVestingData {
     return findByDenom(this.originalVesting, denom);
   }
 
-  public calculateVestingLocked(latestBlockTime: Date): bigint{ // TODO number to BigInt
+  public calculateVestingLocked(latestBlockTime: Date): bigint{
     const validtime = latestBlockTime.getTime();
     const endTime = this.endTime.getTime();
     if (validtime >= endTime) {
@@ -63,7 +63,6 @@ export class ContinuousVestingData {
 
     const x = validtime - startTime;
     const y = endTime - startTime;
-    // const diference = x/y;
     const unlocked = (BigInt(x) * origVesting) / BigInt(y);
     const locked = origVesting - unlocked;
     return locked;

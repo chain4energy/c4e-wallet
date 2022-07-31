@@ -22,7 +22,7 @@
       </Column>
       <Column field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
         <template #body="{data}">
-          <span>{{ data.commission.rateViewPercentage }}%</span> <!-- TODO create function converting to pecentage -->
+          <span>{{ data.commission.rateViewPercentage }}%</span>
         </template>
       </Column>
       <Column field="votingPower" :header="$t(`STAKING_VIEW.TABLE_HEADERS.VOTING_POWER`)" :sortable="true" sortField="tokens">

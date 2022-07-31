@@ -25,7 +25,6 @@ export function mapRewards(rewardsResponse: RewardsResponse | undefined): Reward
   console.log('dsaasdsasa: ' + JSON.stringify(rewardsResponse.total))
   console.log('dsaasdsasa: ' + denom)
   const total = rewardsResponse.total.find(val => val.denom === denom)?.amount;
-  // TODO to big decimal
   return new Rewards(map, total === undefined ? new BigDecimal(0) : new BigDecimal(total));
 }
 

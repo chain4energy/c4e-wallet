@@ -31,7 +31,7 @@ export class Validator{
   public get votingPower(): BigDecimal {
     const total = useTokensStore().getStakingPool.bondedTokens;
     if(total || total > 0n){
-      return divideBigInts(this.tokens, total); // TODONUMBER
+      return divideBigInts(this.tokens, total);
     }
     return new BigDecimal(0);
   }
