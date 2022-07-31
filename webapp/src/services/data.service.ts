@@ -131,10 +131,6 @@ class DataService extends LoggedService {
     }
   }
 
-  // public onDashboardSelected() {
-  //   useProposalsStore().clear();
-  // }
-
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
     this.onProposalDetailsError = onError;
@@ -201,8 +197,6 @@ class DataService extends LoggedService {
 
   public refreshAccountData() {
     this.logToConsole(LogLevel.DEBUG, 'refreshAccountData');
-    // const now = new Date().getTime();
-    // const skipRefreshing = (this.lastAccountTimeout + this.minBetweenRefreshmentsPeriod) < now;
     if (!this.skipRefreshing(this.lastAccountTimeout)) {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
@@ -212,9 +206,6 @@ class DataService extends LoggedService {
 
   public refreshBlocksData() {
     this.logToConsole(LogLevel.DEBUG, 'refreshBlocksData');
-
-    // const now = new Date().getTime();
-    // const skipRefreshing = (this.lastBlockTimeout + this.minBetweenRefreshmentsPeriod) < now;
     if (!this.skipRefreshing(this.lastBlockTimeout)) {
       useBlockStore().fetchLatestBlock(false).then(() => {
         this.lastBlockTimeout = new Date().getTime();
@@ -224,9 +215,6 @@ class DataService extends LoggedService {
 
   public refreshDashboard() {
     this.logToConsole(LogLevel.DEBUG, 'refreshDashboard');
-
-    // const now = new Date().getTime();
-    // const skipRefreshing = (this.lastDashboardTimeout + this.minBetweenRefreshmentsPeriod) < now;
     if (!this.skipRefreshing(this.lastDashboardTimeout)) {
       const lockScreen = false;
       Promise.all([
@@ -242,9 +230,6 @@ class DataService extends LoggedService {
 
   public refreshValidators() {
     this.logToConsole(LogLevel.DEBUG, 'refreshValidators');
-
-    // const now = new Date().getTime();
-    // const skipRefreshing = (this.lastValidatorsTimeout + this.minBetweenRefreshmentsPeriod) < now;
     if (!this.skipRefreshing(this.lastValidatorsTimeout)) {
       useBlockStore().fetchLatestBlock(false).then(() => {
         this.lastValidatorsTimeout = new Date().getTime();

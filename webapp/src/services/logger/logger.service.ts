@@ -7,58 +7,43 @@ export class LoggerService {
   logs: LogInfo[] = [];
   disableConsoleLogsVisible = false;
 
-  // TODO: poprawić logowanie tak żeby nie było tablicy w przypadku gdy jest jednoelementowa
-
   logToConsole (logLevel: LogLevel, objectType: ServiceTypeEnum, message: string, ...data: string[]) {
     const logInfo = new LogInfo(logLevel, objectType, message, ...data);
 
     if (this.logs.length >= this.numberOfLogsToRemember) {
-      this.logs.splice(0, 1); // remove 1 item at 0-index position
+      this.logs.shift();
     }
 
     this.logs.push(logInfo);
     const now = this.dateToString(new Date());
+
+    const log = (leggerFunc: (...data: any[]) => void): void => {
+      const logData: any[] = [now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message];
+      if (logInfo.data !== undefined && logInfo.data.length > 0) {
+        logData.push(logInfo.data.length === 1 ? logInfo.data[0] : logInfo.data);
+      }
+      leggerFunc(...logData);
+    }
+
     switch (logInfo.level) {
       case LogLevel.ERROR:
-        if (logInfo.data !== undefined && logInfo.data.length > 0) {
-          console.error(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
-        } else {
-          console.error(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message);
-        }
+        log(console.error);
         break;
       case LogLevel.WARNING:
-        if (logInfo.data !== undefined && logInfo.data.length > 0) {
-          console.warn(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
-        } else {
-          console.warn(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message);
-        }
+        log(console.warn);
         break;
     }
 
     if (!this.disableConsoleLogsVisible) {
       switch (logInfo.level) {
         case LogLevel.INFO:
-          if (logInfo.data !== undefined && logInfo.data.length > 0) {
-            console.info(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
-          } else {
-            console.info(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message);
-          }
-          // console.info(logInfo.toString());
+          log(console.info);
           break;
         case LogLevel.DEBUG:
-          if (logInfo.data !== undefined && logInfo.data.length > 0) {
-            console.log(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
-          } else {
-            console.log(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message);
-          }
-          // console.log(logInfo.toString());
+          log(console.debug);
           break;
         case LogLevel.TRACE:
-          if (logInfo.data !== undefined && logInfo.data.length > 0) {
-            console.trace(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message, logInfo.data);
-          } else {
-            console.trace(now + ' ' + logInfo.level + ': ' + logInfo.objectType + ' -> ' + logInfo.message);
-          }
+          log(console.trace);
           break;
       }
     }
