@@ -7,6 +7,8 @@ import { ProposalsResponse, ProposalResponse, GovernanceParameters } from "@/mod
 import { mapDepositParams, mapProposalByID, mapProposals, mapTallyParams } from "@/models/mapper/proposals.mapper";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { Coin } from "@/models/store/common";
+import queries from "./queries";
+import { formatString } from "@/utils/string-formatter";
 
 export class ProposalsApi extends BaseApi {
 
@@ -14,9 +16,11 @@ export class ProposalsApi extends BaseApi {
     return ServiceTypeEnum.PROPOSAL_API;
   }
 
-  private PROPOSALS_URL = process.env.VUE_APP_PROPOSALS_URL;
-  private TALLYING_URL = process.env.VUE_APP_TALLYING_URL
-  private DEPOSIT_URL = process.env.VUE_APP_DEPOSIT_URL
+  private PROPOSALS_URL = queries.blockchain.PROPOSALS_URL;
+  private PROPOSALS_BY_ID_URL = queries.blockchain.PROPOSALS_BY_ID_URL;
+
+  private TALLYING_URL = queries.blockchain.TALLYING_URL
+  private DEPOSIT_URL = queries.blockchain.DEPOSIT_URL
 
   public async fetchProposals(paginationKey: string | null, lockscreen: boolean): Promise<{ response: RequestResponse<{ proposals: Proposal[], numberOfActive: number}, ErrorData<BlockchainApiErrorData>>, nextKey: string | null }> {
     const mapData = (bcData: ProposalsResponse | undefined) => {return mapProposals(bcData?.proposals);};
@@ -28,7 +32,7 @@ export class ProposalsApi extends BaseApi {
   public async fetchProposalById(id: number, lockscreen: boolean): Promise<RequestResponse<{ proposal: Proposal}, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: ProposalResponse | undefined) => {return mapProposalByID(bcData?.proposal);};
 
-    const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.PROPOSALS_URL + `/${id}`,
+    const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+formatString(this.PROPOSALS_BY_ID_URL, {id: id}),
       mapData, lockscreen, null, 'fetchAllProposals - ');
     return result;
   }

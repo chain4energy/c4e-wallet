@@ -12,6 +12,8 @@ import { AccountResponse, BalanceResponse} from "@/models/blockchain/account";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ConnectionInfo } from "@/api/wallet.connecton.api";
 import { mapAccount, createNonexistentAccount } from "@/models/mapper/account.mapper";
+import { formatString } from "@/utils/string-formatter";
+import queries from "./queries";
 
 import {
   MsgBeginRedelegate,
@@ -47,11 +49,11 @@ export class AccountApi extends TxBroadcastBaseApi {
     return ServiceTypeEnum.ACCOUNT_API;
   }
 
-  private ACCOUNT_URL = process.env.VUE_APP_ACCOUNT_URL;
-  private BALANCE_URL = process.env.VUE_APP_BALANCE_URL;
-  private STAKED_AMOUNT_URL = process.env.VUE_APP_STAKED_AMOUNT_URL;
-  private UNSTAKED_AMOUNT_URL = process.env.VUE_APP_UNSTAKED_AMOUNT_URL;
-  private REWARDS_URL = process.env.VUE_APP_REWARDS_URL;
+  private ACCOUNT_URL = queries.blockchain.ACCOUNT_URL;
+  private BALANCE_URL = queries.blockchain.BALANCE_URL;
+  private STAKED_AMOUNT_URL = queries.blockchain.STAKED_AMOUNT_URL;
+  private UNSTAKED_AMOUNT_URL = queries.blockchain.UNSTAKED_AMOUNT_URL;
+  private REWARDS_URL = queries.blockchain.REWARDS_URL;
 
 
   public async fetchAccount(address: string, lockscreen: boolean): Promise<RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>> {
@@ -67,7 +69,7 @@ export class AccountApi extends TxBroadcastBaseApi {
       return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(errorResponse.error);
     };
     const mapData = (bcData: AccountResponse | undefined) => {return mapAccount(bcData?.account);};
-    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.ACCOUNT_URL + address,
+    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+formatString(this.ACCOUNT_URL, {address: address}),
       mapData, lockscreen, null, 'fetchAccount - ', displayAsError, handleError);
   }
 
@@ -79,7 +81,7 @@ export class AccountApi extends TxBroadcastBaseApi {
 
   public async fetchBalance(address: string, denom: string, lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: BalanceResponse | undefined) => {return mapCoin(bcData?.balance, denom);};
-    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.BALANCE_URL + address + '/by_denom?denom=' + denom,
+    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+formatString(this.BALANCE_URL, {address: address, denom: denom}),
       mapData, lockscreen, null, 'fetchBalance - ');
   }
 
@@ -87,19 +89,19 @@ export class AccountApi extends TxBroadcastBaseApi {
     const mapData = (bcData: DelegationsResponse | undefined) => {return mapDelegations(bcData?.delegation_responses);};
     const mapAndAddData = (data: Delegations, bcData: DelegationsResponse | undefined) => {return mapAndAddDelegations(data, bcData?.delegation_responses);};
 
-    return  await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+this.STAKED_AMOUNT_URL + address,
+    return  await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+formatString(this.STAKED_AMOUNT_URL, {address: address}),
             mapData, mapAndAddData, lockscreen, null, 'fetchDelegations - ');
   }
   public async fetchUnbondingDelegations(address: string, lockscreen: boolean): Promise<RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: UnbondigDelegationsResponse | undefined) => {return mapUnbondingDelegations(bcData?.unbonding_responses);};
     const mapAndAddData = (data: UnbondingDelegations, bcData: UnbondigDelegationsResponse | undefined) => {return mapAndAddUnbondingDelegations(data, bcData?.unbonding_responses);};
 
-    return  await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+this.UNSTAKED_AMOUNT_URL + address + '/unbonding_delegations',
+    return  await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+formatString(this.UNSTAKED_AMOUNT_URL, {address: address}),
             mapData, mapAndAddData, lockscreen, null, 'fetchUnbondingDelegations - ');
   }
   public async fetchRewards(address: string, lockscreen: boolean): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: RewardsResponse | undefined) => {return mapRewards(bcData);};
-    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.REWARDS_URL + address + '/rewards',
+    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+formatString(this.REWARDS_URL, {address: address}),
       mapData, lockscreen, null, 'fetchRewards - ');
   }
   public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {

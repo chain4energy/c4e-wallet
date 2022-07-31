@@ -8,6 +8,7 @@ import { mapBlock } from "@/models/mapper/block.mapper";
 import { Block } from "@/models/store/block";
 import { mapAverageBlockTime } from "@/models/mapper/average.block.time.mapper";
 import { AverageBlockTimeResponse } from "@/models/hasura/average.block.time";
+import queries from "./queries";
 
 export class BlockApi extends BaseApi {
 
@@ -15,7 +16,7 @@ export class BlockApi extends BaseApi {
     return ServiceTypeEnum.BLOCK_API;
   }
 
-  private LATEST_BLOCK_URL = process.env.VUE_APP_LATEST_BLOCK_URL;
+  private LATEST_BLOCK_URL = queries.blockchain.LATEST_BLOCK_URL;
 
 
   public async fetchLatestBlock(lockscreen: boolean): Promise<RequestResponse<Block, ErrorData<BlockchainApiErrorData>>> {
@@ -26,11 +27,7 @@ export class BlockApi extends BaseApi {
 
   public async fetchAverageBlockTime(lockscreen: boolean): Promise<RequestResponse<number, ErrorData<HasuraErrorData>>> {
     const mapData = (hasureData: AverageBlockTimeResponse | undefined) => { return mapAverageBlockTime(hasureData); };
-    return this.axiosHasuraCall("query AverageBlockTime {\n" +
-          "  averageBlockTime: average_block_time_per_hour(limit: 1, order_by: {height: desc}) {\n" +
-          "    averageTime: average_time\n" +
-          "  }\n" +
-          "}", mapData, lockscreen, null, 'fetchAverageBlockTime - ');
+    return this.axiosHasuraCall(queries.hasura.AVERAGE_BLOCK_TIME_QUERY, mapData, lockscreen, null, 'fetchAverageBlockTime - ');
   }
 
 }

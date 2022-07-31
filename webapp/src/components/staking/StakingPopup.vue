@@ -73,7 +73,7 @@
 import { computed, onUnmounted, PropType } from "vue";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from "@/models/store/validator";
-import {ref, defineEmits} from "vue";
+import {ref} from "vue";
 import { useValidatorsStore } from "@/store/validators.store";
 import { object, number, setLocale } from 'yup';
 import { useToast } from "vue-toastification";
