@@ -130,5 +130,11 @@
   "ERRORS": {
     "LOGIN": "You Have to be logged in",
     "LOGIN_WALLET": "You Have to be logged in with wallet"
+  },
+  "TOAST": {
+    "SUCCESS": {
+      "ADDRESS_CONNECTED": "Address: '{address}' Connected",
+      "ADDRESS_DISCONNECTED": "Address: '{address}' Disconnected"
+    }
   }
 }

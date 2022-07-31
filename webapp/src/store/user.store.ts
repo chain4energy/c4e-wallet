@@ -14,6 +14,8 @@ import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from '@/services/logger/log-level';
 import { BigDecimal } from "@/models/store/big.decimal";
 import { useBlockStore } from "./block.store";
+import i18n from "@/plugins/i18n";
+import { formatString } from "@/utils/string-formatter";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -86,7 +88,7 @@ export const useUserStore = defineStore({
               onSuccess();
             }
             logger.logToConsole(LogLevel.DEBUG, 'Address: "' + address + '" Connected');
-            toast.success('Address: "' + address + '" Connected');
+            toast.success(i18n.global.t('TOAST.SUCCESS.ADDRESS_CONNECTED', {address: address}));
           } else {
             logger.logToConsole(LogLevel.ERROR, 'Address: "' + address + '" Connection failed');
             toast.error('Address: "' + address + '" Connection failed');
@@ -210,9 +212,10 @@ export const useUserStore = defineStore({
     async logOut() {
       logger.logToConsole(LogLevel.DEBUG, 'logOut before: ', JSON.stringify(this.connectionInfo));
       const address = this.connectionInfo.account;
+      const prevConType = this.connectionInfo.connectionType
       clearStateOnLogout(this);
-      if (this.connectionInfo.connectionType !== ConnectionType.Disconnected) {
-        toast.success('Address: "' + address + '" Disconnected');
+      if (prevConType !== ConnectionType.Disconnected) {
+        toast.success(i18n.global.t('TOAST.SUCCESS.ADDRESS_DISCONNECTED', {address: address}));
       }
       logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.connectionInfo));
     }
