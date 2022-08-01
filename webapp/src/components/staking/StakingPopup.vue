@@ -93,9 +93,9 @@ const canModify = computed(() => useUserStore().getConnectionType);
 const validators = computed(() => {
     return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress);
   });
-const { value: { delegatedViewAmount: delegatedViewAmount } } = computed(() => {
-  return useValidatorsStore().getValidators.find(({ operatorAddress }) => operatorAddress === props.validator.operatorAddress);
-});
+const refreshedValidator = computed(() =>{
+  return useValidatorsStore().getValidators.find(element => element.operatorAddress === props.validator.operatorAddress);
+})
 const actionRedelegate = ref(false)
 const amount = ref('');
 const keplrResult = ref();
@@ -122,16 +122,16 @@ function createAmountSchema(){
     numUnDelegation:
       number()
         .moreThan(0, "should be more than 0")
-        .lessThan(Number(delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
+        .lessThan(Number(refreshedValidator.value.delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
     numRedelegate:
       number()
         .moreThan(0, "should be more than 0")
-        .lessThan(Number(delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
+        .lessThan(Number(refreshedValidator.value.delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
   });
 }
 
 onUpdated(()=>{
-  createAmountSchema()
+  createAmountSchema();
 });
 
 
