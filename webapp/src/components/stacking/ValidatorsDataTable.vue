@@ -27,7 +27,7 @@
       </Column>
       <Column field="votingPower" :header="$t(`STAKING_VIEW.TABLE_HEADERS.VOTING_POWER`)" :sortable="true" sortField="tokens">
         <template #body="{data}">
-          <span v-if="data.votingPower">{{ data.votingPowerViewPercentage }}%</span> 
+          <span v-if="data.votingPower">{{ data.votingPowerViewPercentage }}%</span>
           <span v-else>updating</span>
         </template>
       </Column>
