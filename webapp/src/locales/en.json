@@ -29,7 +29,7 @@
       "YES": "Yes",
       "NO": "No",
       "ABSTAIN": "Abstain",
-      "NO_WITH_VETO": "No with veto"
+      "NO_WITH_VETO": "No with Veto"
     },
     "TOTAL": "Total",
     "DESCRIPTION": "Description",
@@ -79,14 +79,15 @@
       "NAME": "Name",
       "STATUS": "Status",
       "VOTING_POWER": "Voting Power",
-      "YOUR_STAKE": "Your stake"
+      "STAKE": "Your stake"
     },
     "VALIDATOR_STATUS": {
       "ACTIVE": "Active",
-      "INACTIVE": "Inactive"
+      "INACTIVE": "Inactive",
+      "JAILED": "Jailed"
     },
     "TABLE_EXPANDED": {
-      "STAKED": "Your stake",
+      "UNSTAKING": "Your unstaking",
       "REWARDS": "Rewards"
     },
     "TABLE_BUTTONS": {
@@ -129,5 +130,11 @@
   "ERRORS": {
     "LOGIN": "You Have to be logged in",
     "LOGIN_WALLET": "You Have to be logged in with wallet"
+  },
+  "TOAST": {
+    "SUCCESS": {
+      "ADDRESS_CONNECTED": "Address: '{address}' Connected",
+      "ADDRESS_DISCONNECTED": "Address: '{address}' Disconnected"
+    }
   }
 }

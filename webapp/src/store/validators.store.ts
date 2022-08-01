@@ -44,19 +44,6 @@ export const useValidatorsStore = defineStore({
       this.numberOfActiveValidators = 0;
     }
 
-    // fetchNumberOfActiveValidators(){ // TODO probably remove this func and fetchActiveValidatorCount from validatorsApi
-    //   apiFactory.validatorsApi().fetchActiveValidatorCount().then((response)=>{
-    //     if( response.error == null ) {
-    //       if (response.data == undefined) {
-    //         this.numberOfActiveValidators = 0; // TODO maybe some error ???
-    //       } else {
-    //         this.numberOfActiveValidators = response.data.data.activeTotal.aggregate.count;
-    //       }
-    //     } else {
-    //       //TODO: error handling
-    //     }
-    //   });
-    // },
   },
   getters: {
     getValidators(): Validator[]{

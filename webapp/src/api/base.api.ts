@@ -235,7 +235,7 @@ export default abstract class BaseApi extends LoggedService {
     }
   }
 
-  protected async axiosBlockchainApiCall<T>( // TODO make private
+  private async axiosBlockchainApiCall<T>(
     config: AxiosRequestConfig,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,

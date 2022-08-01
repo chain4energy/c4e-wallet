@@ -1,9 +1,9 @@
 <template>
-  <div class="chart-container">
+  <div v-if="proposal" class="chart-container">
     <div class="top">
 
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
-      <span>6.02M c4e</span>
+      <span>{{ proposal.finalTallyResult.getTotalView(2, true) }} {{ useConfigurationStore().config.getViewDenom() }}</span>
     </div>
     <div class="chartdiv">
       <v-chart :option="option" autoresize />
@@ -15,19 +15,23 @@
     <div class="voting-result">
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
-        <div>{{ yesPercentage }}%</div>
+        <div>{{ proposal?.finalTallyResult.getYesPercentageView() }}%</div>
+        <div>({{proposal.finalTallyResult.getYesView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
-        <div>{{ abstainPercentage }}%</div>
+        <div>{{ proposal?.finalTallyResult.getAbstainPercentageView() }}%</div>
+        <div>({{proposal.finalTallyResult.getAbstainView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
-        <div>{{ noPercentage }}%</div>
+        <div>{{ proposal?.finalTallyResult.getNoPercentageView() }}%</div>
+        <div>({{proposal.finalTallyResult.getNoView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
-        <div>{{ noWithVetoPercentage }}%</div>
+        <div>{{ proposal?.finalTallyResult.getNoWithVetoPercentageView() }}%</div>
+        <div>({{proposal.finalTallyResult.getNoWithVetoView(2, true)}})</div>
       </div>
     </div>
     <div class="bottom">
@@ -53,6 +57,8 @@ import VoteModal from "@/components/governance/VoteModal.vue";
 import Icon from "../features/IconComponent.vue";
 import {Proposal} from "@/models/store/proposal";
 import {ProposalStatus} from "@/models/store/proposal";
+import { useConfigurationStore } from "@/store/configuration.store";
+import { createProposalDetailsChartData } from "@/charts/governance";
 
 
 use([
@@ -63,12 +69,9 @@ use([
   LegendComponent
 ]);
 
-const props = defineProps({
-  proposal: {
-    type: Proposal,
-    required: true
-  }
-});
+const props = defineProps<{
+  proposal?: Proposal
+}>();
 
 const icons  = new Map<string, string>([
   [ProposalStatus.PASSED, 'CheckSquare'],
@@ -77,122 +80,34 @@ const icons  = new Map<string, string>([
 ]);
 
 const sumOfVotes = computed(() => {
-  const val = props.proposal.finalTallyResult.total
-  return val > 0 ? val : -1n;
-});
-
-const yesPercentage = computed(() => {
-  return props.proposal.finalTallyResult.getYesPercentageView();
-});
-
-const noPercentage = computed(() => {
-  return props.proposal.finalTallyResult.getNoPercentageView();
-});
-
-const abstainPercentage = computed(() => {
-  return props.proposal.finalTallyResult.getAbstainPercentageView();
+  const val = props.proposal?.finalTallyResult.total
+  return (val && val > 0) ? val : -1n;
 });
 
 
-const noWithVetoPercentage = computed(() => {
-  return props.proposal.finalTallyResult.getNoWithVetoPercentageView();
+const yes = computed(() => {
+  return props.proposal?.finalTallyResult.getYesView();
 });
 
-const option = ref({
+const no = computed(() => {
+  return props.proposal?.finalTallyResult.getNoView();
+});
 
-  tooltip: {
-    trigger: 'item',
-    formatter: '{a} <br/>{b}: {c} ({d}%)'
-  },
+const abstain = computed(() => {
+  return props.proposal?.finalTallyResult.getAbstainView();
+});
 
-  series: [{
-    width: '90%',
-    height: '90%',
-    center: ['55%', '50%'],
-    name: 'Pools',
-    type: 'pie',
-    radius: ['100%', '78%'],
+const noWithVeto = computed(() => {
+  return props.proposal?.finalTallyResult.getNoWithVetoView();
+});
 
-    avoidLabelOverlap: true,
-    label: {
-      show: false,
-      color: '#000',
-      fontSize: '80',
-      position: 'center'
-    },
+const option = computed(() => {
+  if (!yes.value || !abstain.value || !no.value || !noWithVeto.value) {
+    return '';
+  }
+  return createProposalDetailsChartData(yes.value, abstain.value, no.value, noWithVeto.value, sumOfVotes.value)
+});
 
-    data: [{
-
-      value: yesPercentage.value,
-      name: 'Yes',
-      itemStyle: {
-        label: {
-          show: false
-        },
-        labelLine: {
-          show: false
-        },
-        color: '#72bf44',
-      }
-    },
-      {
-        value: abstainPercentage.value,
-        name: 'Abstain',
-        itemStyle: {
-          label: {
-            show: false
-          },
-          labelLine: {
-            show: false
-          },
-          color: '#27697f'
-        }
-      },
-      {
-        value: noPercentage.value,
-        name: 'No',
-        itemStyle: {
-          label: {
-            show: false
-          },
-          labelLine: {
-            show: false
-          },
-          color: '#e02626'
-        }
-      },
-      {
-        value: noWithVetoPercentage.value,
-        name: 'No with veto',
-        itemStyle: {
-          label: {
-            show: false
-          },
-          labelLine: {
-            show: false
-          },
-          color: '#fff1a9'
-        }
-      },
-      {
-        value: sumOfVotes.value === -1 ? 1 : 0,
-        name: '',
-        itemStyle: {
-          label: {
-            show: false
-          },
-          labelLine: {
-            show: false
-          },
-          color: '#797777'
-        }
-      }
-    ],
-
-
-  }],
-
-} );
 </script>
 
 <style scoped lang="scss">

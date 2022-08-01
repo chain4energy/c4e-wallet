@@ -14,6 +14,9 @@ import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from '@/services/logger/log-level';
 import { BigDecimal } from "@/models/store/big.decimal";
 import { useBlockStore } from "./block.store";
+import i18n from "@/plugins/i18n";
+import { formatString } from "@/utils/string-formatter";
+import { useProposalsStore } from "./proposals.store";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -86,7 +89,7 @@ export const useUserStore = defineStore({
               onSuccess();
             }
             logger.logToConsole(LogLevel.DEBUG, 'Address: "' + address + '" Connected');
-            toast.success('Address: "' + address + '" Connected');
+            toast.success(i18n.global.t('TOAST.SUCCESS.ADDRESS_CONNECTED', {address: address}));
           } else {
             logger.logToConsole(LogLevel.ERROR, 'Address: "' + address + '" Connection failed');
             toast.error('Address: "' + address + '" Connection failed');
@@ -187,7 +190,7 @@ export const useUserStore = defineStore({
       const validators = this.rewards.getAllValidatorsAddresses();
       await apiFactory.accountApi().claimRewards(connectionInfo, validators).then(async (resp) => {
         if (resp.isError()) {
-          await onTxDeliveryFailure(connectionInfo, this, resp, 'Claiming rewards failed');
+          await onTxDeliveryFailure(connectionInfo, this, resp, 'Claiming rewards failed: ' + resp.error?.message);
         } else {
           const allResults = await Promise.all([
             fetchBalance(connectionInfo, this, true),
@@ -203,16 +206,24 @@ export const useUserStore = defineStore({
         if (resp.isError()) {
           await onTxDeliveryFailure(connectionInfo, this, resp, 'Vote: ' + option + ' for proposal ' + proposalId + ' failed');
         } else {
-          // TODO refresh data ??
+            await useProposalsStore().fetchProposalById(
+              proposalId,
+              undefined,
+              () => {
+                onRefreshingError([true]);
+              },
+              true,
+              true);
         }
       });
     },
     async logOut() {
       logger.logToConsole(LogLevel.DEBUG, 'logOut before: ', JSON.stringify(this.connectionInfo));
       const address = this.connectionInfo.account;
+      const prevConType = this.connectionInfo.connectionType
       clearStateOnLogout(this);
-      if (this.connectionInfo.connectionType !== ConnectionType.Disconnected) {
-        toast.success('Address: "' + address + '" Disconnected');
+      if (prevConType !== ConnectionType.Disconnected) {
+        toast.success(i18n.global.t('TOAST.SUCCESS.ADDRESS_DISCONNECTED', {address: address}));
       }
       logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.connectionInfo));
     }
@@ -391,17 +402,3 @@ function onRefreshingError(allResults: boolean[]) {
     return;
   }
 }
-
-// const keplrKeyStoreChange = 'keplr_keystorechange';
-// const keystoreChangeListener = () => {
-//   disconnect(useUserStore());
-//   useUserStore().connect(apiFactory.walletApi().connectKeplr());
-// }
-
-// function enableKeplrAccountChangeListener() {
-//   window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
-// }
-
-// function disableKeplrAccountChangeListener() {
-//   window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
-// }

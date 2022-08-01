@@ -5,14 +5,13 @@ import { useSplashStore } from "@/store/splash.store";
 import { useTokensStore } from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
 import { useValidatorsStore } from "@/store/validators.store";
-import { LoggedService, StoreLogger } from "./logged.service";
+import { LoggedService } from "./logged.service";
 import { LogLevel } from "./logger/log-level";
 import { ServiceTypeEnum } from "./logger/service-type.enum";
-import router from "@/router";
 
 const keplrKeyStoreChange = 'keplr_keystorechange';
 
-class DataService extends LoggedService{
+class DataService extends LoggedService {
 
   private minBetweenRefreshmentsPeriod = 1000;
   private blockTimeout = 3000;
@@ -30,6 +29,8 @@ class DataService extends LoggedService{
   private validatorsIntervalId = 0;
   private accountIntervalId = 0;
 
+  private onProposalDetailsError?: () => void;
+
   private static instance: DataService;
 
   public static getInstance(): DataService {
@@ -46,6 +47,12 @@ class DataService extends LoggedService{
   public onAppStart() {
     this.logToConsole(LogLevel.DEBUG, 'onAppStart');
     useConfigurationStore().fetchConfig();
+    const config = useConfigurationStore().config;
+    this.minBetweenRefreshmentsPeriod = config.minPeriodBetweenDataRefresh;
+    this.blockTimeout = config.blockDataRefreshTimeout;
+    this.dashboardTimeout = config.dashboardDataRefreshTimeout;
+    this.validatorsTimeout = config.validatorsDataRefreshTimeout;
+    this.accountTimeout = config.accountDataRefreshTimeout;
     this.onInit()
   }
 
@@ -102,7 +109,12 @@ class DataService extends LoggedService{
     this.logToConsole(LogLevel.DEBUG, 'onConfigurationChange');
     useSplashStore().increment();
     try {
+      const refreshProposals = useProposalsStore().hasProposals;
+      if (this.onProposalDetailsError) {
+        this.onProposalDetailsError();
+      }
       this.onLogOut();
+
       useBlockStore().clear();
       useProposalsStore().clear();
       useTokensStore().clear();
@@ -111,18 +123,25 @@ class DataService extends LoggedService{
       window.clearInterval(this.dashboardIntervalId);
       window.clearInterval(this.validatorsIntervalId);
       this.onInit();
+      if (refreshProposals) {
+        useProposalsStore().fetchProposals(true);
+      }
     } finally {
       useSplashStore().decrement();
     }
   }
 
-  // public onDashboardSelected() {
-  //   useProposalsStore().clear();
-  // }
-
-  public onProposalSelected(proposeId: number, onSuccess: () => void) {
+  public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
-    useProposalsStore().fetchProposalById(proposeId).then(onSuccess)
+    this.onProposalDetailsError = onError;
+    useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
+  }
+
+  public onProposalUnselected() {
+    this.logToConsole(LogLevel.DEBUG, 'onProposalUnselected');
+    useProposalsStore().clearProposal();
+    this.onProposalDetailsError = undefined;
+
   }
 
   public onGovernanceUnselected() {
@@ -178,8 +197,6 @@ class DataService extends LoggedService{
 
   public refreshAccountData() {
     this.logToConsole(LogLevel.DEBUG, 'refreshAccountData');
-    // const now = new Date().getTime();
-    // const skipRefreshing = (this.lastAccountTimeout + this.minBetweenRefreshmentsPeriod) < now;
     if (!this.skipRefreshing(this.lastAccountTimeout)) {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
@@ -189,9 +206,6 @@ class DataService extends LoggedService{
 
   public refreshBlocksData() {
     this.logToConsole(LogLevel.DEBUG, 'refreshBlocksData');
-
-    // const now = new Date().getTime();
-    // const skipRefreshing = (this.lastBlockTimeout + this.minBetweenRefreshmentsPeriod) < now;
     if (!this.skipRefreshing(this.lastBlockTimeout)) {
       useBlockStore().fetchLatestBlock(false).then(() => {
         this.lastBlockTimeout = new Date().getTime();
@@ -201,9 +215,6 @@ class DataService extends LoggedService{
 
   public refreshDashboard() {
     this.logToConsole(LogLevel.DEBUG, 'refreshDashboard');
-
-    // const now = new Date().getTime();
-    // const skipRefreshing = (this.lastDashboardTimeout + this.minBetweenRefreshmentsPeriod) < now;
     if (!this.skipRefreshing(this.lastDashboardTimeout)) {
       const lockScreen = false;
       Promise.all([
@@ -219,9 +230,6 @@ class DataService extends LoggedService{
 
   public refreshValidators() {
     this.logToConsole(LogLevel.DEBUG, 'refreshValidators');
-
-    // const now = new Date().getTime();
-    // const skipRefreshing = (this.lastValidatorsTimeout + this.minBetweenRefreshmentsPeriod) < now;
     if (!this.skipRefreshing(this.lastValidatorsTimeout)) {
       useBlockStore().fetchLatestBlock(false).then(() => {
         this.lastValidatorsTimeout = new Date().getTime();

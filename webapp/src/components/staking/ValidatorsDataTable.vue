@@ -1,5 +1,5 @@
 <template>
-  <StackingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
+  <StakingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
   <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick">
     <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>
     <template #header>
@@ -22,7 +22,7 @@
       </Column>
       <Column field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
         <template #body="{data}">
-          <span>{{ data.commission.rateViewPercentage }}%</span> <!-- TODO create function converting to pecentage -->
+          <span>{{ data.commission.rateViewPercentage }}%</span>
         </template>
       </Column>
       <Column field="votingPower" :header="$t(`STAKING_VIEW.TABLE_HEADERS.VOTING_POWER`)" :sortable="true" sortField="tokens">
@@ -31,7 +31,7 @@
           <span v-else>updating</span>
         </template>
       </Column>
-      <Column :header="$t(`STAKING_VIEW.TABLE_HEADERS.YOUR_STAKE`)" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
+      <Column :header="$t(`STAKING_VIEW.TABLE_HEADERS.STAKE`)" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
         <template #body="{data}">
           <span>{{ data.delegatedViewAmount }}</span>
           <!-- <span v-else>updating</span> -->
@@ -53,11 +53,11 @@
     <template v-slot:expanded-columns="{expandedData}">
       <div style="display: flex; flex-direction: row;">
         <div style="display: flex; flex-direction: column; margin-right: 20px">
-          <p>Your unstaking</p>
+          <p>{{ $t(`STAKING_VIEW.TABLE_EXPANDED.UNSTAKING`) }}</p>
           <p>{{ expandedData.data.undelegatingViewAmount }}</p>
         </div>
         <div style="display: flex; flex-direction: column">
-          <p>Reward</p>
+          <p>{{ $t(`STAKING_VIEW.TABLE_EXPANDED.REWARDS`) }}</p>
           <p>{{ expandedData.data.rewardsViewAmount }}</p> <!-- TODONUMBER -->
         </div>
       </div>
@@ -72,19 +72,23 @@ import DataTableWrapper from "@/components/commons/DataTableWrapper.vue";
 import {computed, ref} from "vue";
 import {Validator, ValidatorStatus} from "@/models/store/validator";
 import {useUserStore} from "@/store/user.store";
-import StackingPopup from "@/components/stacking/StackingPopup.vue";
+import StakingPopup from "@/components/staking/StakingPopup.vue";
 import {FilterMatchMode, FilterOperator} from "primevue/api";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 
 const popupOpened = ref(false);
 const currentValidator = ref({})
 
-const props = defineProps({
-  validators: {
-    type: Array,
-    required: true
-  }
-});
+const props = defineProps<{
+  validators: Array<Validator>
+}>();
+
+// const props = defineProps({
+//   validators: {
+//     type: Array<Validator>,
+//     required: true
+//   }
+// });
 const userStore = useUserStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<Validator>());
