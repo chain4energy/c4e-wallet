@@ -164,7 +164,6 @@ function createTokenomicsSingleChartData(formatter: any, data: { value: string, 
       }
     ],
   };
-  console.log('JSSSSOOON: ' + JSON.stringify(result))
   return result;
 }
 
