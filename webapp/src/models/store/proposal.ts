@@ -14,7 +14,7 @@ export class Proposal {
   proposalId: number;
   content: ProposalContent;
   status: ProposalStatus;
-  finalTallyResult: ProposalsTallyRes;
+  finalTallyResult: ProposalTallyResult;
   submitTime: Date;
   depositEndTime: Date;
   totalDeposit: Array<Coin>;
@@ -24,7 +24,7 @@ export class Proposal {
     proposalId: number,
     content: ProposalContent,
     status: ProposalStatus,
-    finalTallyResult: ProposalsTallyRes,
+    finalTallyResult: ProposalTallyResult,
     submitTime: Date,
     depositEndTime: Date,
     totalDeposit: Array<Coin>,
@@ -46,6 +46,10 @@ export class Proposal {
     return this.status === ProposalStatus.DEPOSIT_PERIOD;
   }
   
+  public isVotingPeriod() {
+    return this.status === ProposalStatus.VOTING_PERIOD;
+  }
+
   public getTotalDepositByDenom(denom = useConfigurationStore().config.stakingDenom): Coin {
     return findByDenom(this.totalDeposit, denom);
   }
@@ -80,7 +84,7 @@ export class ProposalsValue{
   }
 }
 
-export class ProposalsTallyRes{
+export class ProposalTallyResult{
   yes: bigint;
   abstain: bigint;
   no: bigint;

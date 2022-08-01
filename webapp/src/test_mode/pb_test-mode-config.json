@@ -1600,8 +1600,49 @@
         "total": "0"
       }
     }
+  },
+
+  "votes": {
+    "votes": [
+      {
+        "proposal_id": "8",
+        "voter": "c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg",
+        "option": "VOTE_OPTION_NO",
+        "options": [
+          {
+            "option": "VOTE_OPTION_NO",
+            "weight": "1.000000000000000000"
+          }
+        ]
+      }
+    ],
+    "pagination": {
+      "next_key": null,
+      "total": "1"
+    }
+  },
+
+  "vote": {
+    "vote": {
+      "proposal_id": "8",
+      "voter": "c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg",
+      "option": "VOTE_OPTION_NO",
+      "options": [
+        {
+          "option": "VOTE_OPTION_NO",
+          "weight": "1.000000000000000000"
+        }
+      ]
+    }
+  },
+
+  "tally": {
+    "tally": {
+      "yes": "0",
+      "abstain": "0",
+      "no": "697985949138",
+      "no_with_veto": "0"
+    }
   }
-
-
 }
 

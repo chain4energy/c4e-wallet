@@ -4,7 +4,7 @@ import { useSplashStore } from '@/store/splash.store';
 import { useProposalsStore } from "@/store/proposals.store";
 import { createErrorResponse, defaultDenom, expectCoin } from '../utils/common.blockchain.data.util';
 import { Proposal } from "@/models/store/proposal";
-import { expectEmptyProposals, expectProposals, createProposalsResponseData, createTallyParamsResponseData, expectTallyParams, createDepositParamsResponseData } from "../utils/proposal.blockchain.data.util";
+import { expectEmptyProposals, expectProposals, createProposalsResponseData, createTallyParamsResponseData, expectTallyParams, createDepositParamsResponseData, createProposalTallyResponse, expectTallyResult } from "../utils/proposal.blockchain.data.util";
 import { useConfigurationStore } from '@/store/configuration.store';
 
 jest.mock("axios");
@@ -89,6 +89,67 @@ describe('proposals store tests', () => {
     const tallyError = createErrorResponse(404, 5, 'some error');
     mockedAxios.request.mockRejectedValueOnce(tallyError);
     await proposalsStore.fetchDepositParams();
+
+    expectCoin(useProposalsStore().getMinDeposit, 0n, defaultDenom);
+  });
+
+
+  it('fetches tally result - success to map', async () => {
+
+    let tallyStore = useProposalsStore().proposalsTally.get(1);
+    expect(tallyStore).toBe(undefined);
+    expect(useProposalsStore().proposalTally).toBe(undefined);
+
+    const yes = 123n;
+    const abstain = 12334n;
+    const no = 43850834075n;
+    const noWithVeto = 19283012073n;
+
+    const tally = {
+      data: createProposalTallyResponse(yes.toString(), abstain.toString(), no.toString(), noWithVeto.toString())
+    };
+    mockedAxios.request.mockResolvedValueOnce(tally);
+    await useProposalsStore().fetchVotingProposalTallyResult(1, false);
+
+    expect(useProposalsStore().proposalsTally).not.toBe(undefined);
+    tallyStore = useProposalsStore().proposalsTally.get(1);
+    expect(tallyStore).not.toBe(undefined);
+    expectTallyResult(tallyStore, yes, abstain, no, noWithVeto);
+    expect(useProposalsStore().proposalTally).toBe(undefined);
+
+    
+  });
+
+  it('fetches tally result - success to single', async () => {
+    let tallyStore = useProposalsStore().proposalsTally.get(1);
+    expect(tallyStore).toBe(undefined);
+    expect(useProposalsStore().proposalTally).toBe(undefined);
+
+    const yes = 123n;
+    const abstain = 12334n;
+    const no = 43850834075n;
+    const noWithVeto = 19283012073n;
+
+    const tally = {
+      data: createProposalTallyResponse(yes.toString(), abstain.toString(), no.toString(), noWithVeto.toString())
+    };
+    mockedAxios.request.mockResolvedValueOnce(tally);
+    await useProposalsStore().fetchVotingProposalTallyResult(1, true);
+
+    expect(useProposalsStore().proposalsTally).not.toBe(undefined);
+    tallyStore = useProposalsStore().proposalsTally.get(1);
+    expect(tallyStore).toBe(undefined);
+    expect(useProposalsStore().proposalTally).not.toBe(undefined);
+    expectTallyResult(useProposalsStore().proposalTally, yes, abstain, no, noWithVeto);
+
+  });
+
+  it('fetches tally result - error', async () => {
+    const proposalsStore = useProposalsStore();
+
+    const tallyError = createErrorResponse(404, 5, 'some error');
+    mockedAxios.request.mockRejectedValueOnce(tallyError);
+    await proposalsStore.fetchVotingProposalTallyResult(1, false);
 
     expectCoin(useProposalsStore().getMinDeposit, 0n, defaultDenom);
   });

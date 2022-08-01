@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {Proposal, TallyParams} from "@/models/store/proposal";
+import {Proposal, ProposalTallyResult, TallyParams} from "@/models/store/proposal";
 import { useToast} from "vue-toastification";
 import { Coin } from "@/models/store/common";
 import { useConfigurationStore } from "./configuration.store";
@@ -14,8 +14,10 @@ const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
 interface ProposalsState {
   proposals: Proposal[]
   proposalById: Map<number, number>
+  proposalsTally: Map<number, ProposalTallyResult>
   numberOfActiveProposals: number
   proposal: Proposal | undefined
+  proposalTally: ProposalTallyResult | undefined
   paginationKey: string | null
   tallyParams: TallyParams,
   minDeposit: Coin
@@ -29,7 +31,9 @@ export const useProposalsStore = defineStore({
       proposals: Array<Proposal>(),
       numberOfActiveProposals: 0,
       proposalById: new Map<number, number>(),
+      proposalsTally: new Map<number, ProposalTallyResult>(),
       proposal: undefined,
+      proposalTally: undefined,
       paginationKey: null,
       tallyParams: new TallyParams(Number.NaN, Number.NaN, Number.NaN),
       minDeposit: new Coin(0n, useConfigurationStore().config.stakingDenom)
@@ -46,6 +50,9 @@ export const useProposalsStore = defineStore({
 
             this.proposals.forEach((el,index) => {
               mappedIndexes.set(el.proposalId,index);
+              if (el.isVotingPeriod()) {
+                this.fetchVotingProposalTallyResult(el.proposalId, false, lockscreen);
+              }
             });
             this.proposalById = mappedIndexes;
             this.numberOfActiveProposals = resp.response.data.numberOfActive;
@@ -68,6 +75,9 @@ export const useProposalsStore = defineStore({
         await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then((resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.proposal = resp.data.proposal;
+            if (resp.data.proposal.isVotingPeriod()) {
+              this.fetchVotingProposalTallyResult(id, true, lockscreen);
+            }
             if (onSuccess) {
               onSuccess();
             }
@@ -84,8 +94,7 @@ export const useProposalsStore = defineStore({
       if (forceRemoteFetch) {
         return await remoteFetch();
       }
-      const index = this.proposalById.get(id);
-      const proposal = index !== undefined ? this.proposals[index] : undefined;
+      const proposal = this.getProposalById(id);
       if(proposal !== undefined) {
         this.proposal = proposal;
         if (onSuccess) {
@@ -95,8 +104,21 @@ export const useProposalsStore = defineStore({
         await remoteFetch();
       }
     },
-    async setProposalFromLocal(proposal: Proposal){
-      this.proposal = proposal;
+
+    async fetchVotingProposalTallyResult(id: number, storeSingle: boolean, lockscreen = true) {
+      await apiFactory.proposalsApi().fetchVotingProposalTallyResult(id, lockscreen).then((resp) => {
+        if (resp.isSuccess() && resp.data !== undefined){
+          if (storeSingle) {
+            this.proposalTally = resp.data;
+          } else {
+            this.proposalsTally.set(id, resp.data);
+          }
+        } else {
+          const message = 'Error fetching proposal tally data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
+        }
+      });
     },
 
     async fetchTallyParams(lockscreen = true) {
@@ -123,12 +145,15 @@ export const useProposalsStore = defineStore({
     },
     clearProposals() {
       this.proposals = Array<Proposal>();
+      this.proposalById= new Map<number, number>(),
+      this.proposalsTally = new Map<number, ProposalTallyResult>(),
       this.numberOfActiveProposals = 0;
       this.proposal = undefined;
       this.paginationKey = null;
     },
     clearProposal() {
       this.proposal = undefined;
+      this.proposalTally = undefined;
     },
     clear() {
       this.clearProposals();
@@ -157,6 +182,27 @@ export const useProposalsStore = defineStore({
     },
     getMinDeposit(): Coin {
       return this.minDeposit;
+    },
+    getProposalById(): (proposalId: number) => Proposal | undefined {
+      return (proposalId: number) => {
+        const index = this.proposalById.get(proposalId);
+        return index !== undefined ? this.proposals[index] : undefined;
+      }
+    },
+    getProposalTally(): (proposal?: Proposal) => ProposalTallyResult {
+      return (proposal?: Proposal) => {
+        if (!proposal) {
+          return new ProposalTallyResult(0n, 0n, 0n, 0n);
+        }
+        const tally = this.proposalsTally.get(proposal.proposalId);
+        if (tally) {
+          return tally;
+        }
+        return proposal.finalTallyResult;
+      }
+      
     }
   }
 });
+
+

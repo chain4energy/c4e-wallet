@@ -14,13 +14,18 @@ export default {
     STAKED_AMOUNT_URL: '/cosmos/staking/v1beta1/delegations/{address}',
     UNSTAKED_AMOUNT_URL: '/cosmos/staking/v1beta1/delegators/{address}/unbonding_delegations',
     REWARDS_URL: '/cosmos/distribution/v1beta1/delegators/{address}/rewards',
+    PROPOSAL_TALLY_URL: '/cosmos/gov/v1beta1/proposals/{id}/tally',
   },
   hasura: {
     AVERAGE_BLOCK_TIME_QUERY: 'query AverageBlockTime {' +
-      "averageBlockTime: average_block_time_per_hour(limit: 1, order_by: {height: desc}) {" + 
+      'averageBlockTime: average_block_time_per_hour(limit: 1, order_by: {height: desc}) {' + 
         'averageTime: average_time' + 
       '}' +
-    "}",
-
+    '}',
+    PROPOSAL_USER_VOTE_URL: 'query MyQuery {' +
+      'proposal_vote(where: {proposal_id: {_eq: {proposal_id}}, voter_address: {_eq: "{voter}"}}) {' +
+        'option' +
+      '}' +
+    '}' 
   }
 };

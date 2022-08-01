@@ -1,11 +1,11 @@
-import { GovernanceParameters, Proposal as BcProposal } from "@/models/blockchain/proposals";
+import { GovernanceParameters, Proposal as BcProposal, Tally } from "@/models/blockchain/proposals";
 import { mapCoin } from "@/models/mapper/common.mapper"
 import {
   Proposal as StoreProposal,
   ProposalContent,
   ProposalsChanges,
   ProposalsValue,
-  ProposalsTallyRes,
+  ProposalTallyResult,
   ProposalStatus,
   TallyParams,
 } from "@/models/store/proposal";
@@ -48,6 +48,22 @@ function mapAndAddProposalsToArray(array: StoreProposal[], bcValidators: BcPropo
   });
   return active;
 }
+export function mapProposalTallyResult(tally?: Tally): ProposalTallyResult {
+  if (tally === undefined) {
+    throw new Error('mapProposalTallyResult -tally is undefined');
+  }
+  if (tally.yes === undefined || 
+      tally.no === undefined || 
+      tally.abstain === undefined ||
+      tally.no_with_veto === undefined) {
+    throw new Error('mapProposalTallyResult - some of tally votes is undefined');
+  }
+  return new ProposalTallyResult(
+    BigInt(tally.yes),
+    BigInt(tally.abstain),
+    BigInt(tally.no),
+    BigInt(tally.no_with_veto));
+}
 export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
   if (proposal === undefined) {
     throw new Error('proposal is undefined');
@@ -61,11 +77,7 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
   // })
 
   const content = new ProposalContent(proposal.content["@type"], proposal.content.title, proposal.content.description/*, changes*/);
-  const finalTallyResult = new ProposalsTallyRes(
-    BigInt(proposal.final_tally_result.yes),
-    BigInt(proposal.final_tally_result.abstain),
-    BigInt(proposal.final_tally_result.no),
-    BigInt(proposal.final_tally_result.no_with_veto));
+  const finalTallyResult = mapProposalTallyResult(proposal.final_tally_result);
   const totalDeposit = proposal.total_deposit.map((el)=> {
     return mapCoin(el, el.denom)
   });
