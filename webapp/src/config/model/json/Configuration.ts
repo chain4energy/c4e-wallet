@@ -31,6 +31,12 @@ export interface Configuration {
   operationGas: Gas,
   viewDenoms: ViewDenom[],
   keplrGasPriceSteps: KeplrGasPriceSteps;
+  minPeriodBetweenDataRefresh: number,
+  blockDataRefreshTimeout: number,
+  dashboardDataRefreshTimeout: number,
+  validatorsDataRefreshTimeout: number,
+  accountDataRefreshTimeout: number,
+  proposalsPageLimit: number
   testMode?: boolean,
   testFileName?: string,
 

@@ -1,6 +1,6 @@
-import {Coin, toPercentage} from "@/models/store/common";
+import {Coin, findByDenom, toPercentage} from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
-import { BigDecimal, divideBigInts } from "./big.decimal";
+import { divideBigInts } from "./big.decimal";
 
 export enum ProposalStatus {
   PASSED= 'PROPOSAL_STATUS_PASSED' ,
@@ -44,6 +44,10 @@ export class Proposal {
 
   public isDepositPeriod() {
     return this.status === ProposalStatus.DEPOSIT_PERIOD;
+  }
+  
+  public getTotalDepositByDenom(denom = useConfigurationStore().config.stakingDenom): Coin {
+    return findByDenom(this.totalDeposit, denom);
   }
 }
 export class ProposalContent {
@@ -158,5 +162,17 @@ export class TallyParams {
     this.quorum = quorum;
     this.threshold = threshold;
     this.vetoThreshold = vetoThreshold;
+  }
+
+  public getQuorumPercentageView(precision = 2): string {
+    return toPercentage(this.quorum, precision);
+  }
+
+  public getThresholdPercentageView(precision = 2): string {
+    return toPercentage(this.threshold, precision);
+  }
+
+  public getVetoThresholdPercentageView(precision = 2): string {
+    return toPercentage(this.vetoThreshold, precision);
   }
 }

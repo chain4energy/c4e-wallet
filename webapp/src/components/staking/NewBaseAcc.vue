@@ -24,7 +24,7 @@ import {computed, ComputedRef, onBeforeMount, onUnmounted, reactive, ref, Unwrap
 import {useUserStore} from "@/store/user.store";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import ValidatorsDataTable from "@/components/stacking/ValidatorsDataTable.vue";
+import ValidatorsDataTable from "@/components/staking/ValidatorsDataTable.vue";
 
 const validatorsStore = useValidatorsStore();
 const userStore = useUserStore();

@@ -17,6 +17,8 @@ export function mockKeplr() {
     getOfflineSigner: jest.fn(() => { }),
     experimentalSuggestChain: jest.fn(async () => { }),
     enable: jest.fn(async () => { }),
+    getKey: jest.fn(async () => {return {isNanoLedger: false} }),
+
   } as unknown as Keplr;
   const mockedKeplr = mockedKeplrImpl as jest.Mocked<Keplr>;
   window.keplr = mockedKeplr

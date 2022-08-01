@@ -28,6 +28,7 @@ import AppFooter from "@/components/layout/AppFooter.vue";
 import {useConfigurationStore} from "@/store/configuration.store";
 import { useUserStore } from "@/store/user.store";
 import dataService from './services/data.service';
+import router from './router';
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 onBeforeMount(() => {

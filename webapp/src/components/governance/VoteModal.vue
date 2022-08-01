@@ -24,7 +24,7 @@
           <span v-else>
           <p>{{ $t("GOVERNANCE_VIEW.VOTE_CONDITION") }}</p>
           <Button
-            @click="useUserStore().fetchAccountData()" :label="$t('GOVERNANCE_VIEW.LOGIN')" class="p-button-raised p-button-rounded" />
+            @click="dataService.onKeplrLogIn()" :label="$t('GOVERNANCE_VIEW.LOGIN')" class="p-button-raised p-button-rounded" />
           </span>
         </div>
       </div>
@@ -37,6 +37,7 @@
 import {ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import { VoteOption } from "@/api/account.api";
+import dataService from '@/services/data.service';
 
 // const props = defineProps({
 //   title: {

@@ -9,6 +9,8 @@ import { mapStakingPool } from "@/models/mapper/tokens.mapper";
 import { Coin, DecCoin } from "@/models/store/common";
 import { SupplyResponse } from "@/models/blockchain/tokens";
 import { findByDenomAndMapDecCoin, mapCoin } from "@/models/mapper/common.mapper";
+import queries from "./queries";
+import { formatString } from "@/utils/string-formatter";
 
 export class TokensApi extends BaseApi {
 
@@ -16,9 +18,9 @@ export class TokensApi extends BaseApi {
     return ServiceTypeEnum.TOKENS_API;
   }
 
-  private STAKING_POOL_URL = process.env.VUE_APP_STAKING_POOL_URL;
-  private TOTAL_SUPPLY_URL = process.env.VUE_APP_TOTAL_SUPPLY_URL;
-  private COMMUNITY_POOL_URL =  process.env.VUE_APP_COMMUNITY_POOL_URL;
+  private STAKING_POOL_URL = queries.blockchain.STAKING_POOL_URL;
+  private TOTAL_SUPPLY_URL = queries.blockchain.TOTAL_SUPPLY_URL;
+  private COMMUNITY_POOL_URL = queries.blockchain.COMMUNITY_POOL_URL;
 
   public async fetchStakingPool(lockscreen: boolean): Promise<RequestResponse<StakingPool, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: StakingPoolResponse | undefined) => { return mapStakingPool(bcData?.pool); };
@@ -28,7 +30,7 @@ export class TokensApi extends BaseApi {
 
   public async fetchTotalSupply(denom: string, lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: SupplyResponse | undefined) => {return mapCoin(bcData?.amount, denom);};
-    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.TOTAL_SUPPLY_URL + '/' + denom,
+    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+formatString(this.TOTAL_SUPPLY_URL, {denom: denom}),
       mapData, lockscreen, null, 'fetchTotalSupply - ');
   }
 

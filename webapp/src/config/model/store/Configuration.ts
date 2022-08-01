@@ -78,6 +78,12 @@ export class Configuration implements JsonConfiguration {
   isEmpty: boolean;
   testMode: boolean;
   keplrGasPriceSteps: KeplrGasPriceSteps;
+  minPeriodBetweenDataRefresh: number;
+  blockDataRefreshTimeout: number;
+  dashboardDataRefreshTimeout: number;
+  validatorsDataRefreshTimeout: number;
+  accountDataRefreshTimeout: number;
+  proposalsPageLimit: number;
   testFileName?: string;
   public static readonly emptyConfiguration = new Configuration();
 
@@ -101,6 +107,12 @@ export class Configuration implements JsonConfiguration {
       }
       this.viewDenoms = viewDenoms;
       this.keplrGasPriceSteps = new KeplrGasPriceSteps(configuration.keplrGasPriceSteps);
+      this.minPeriodBetweenDataRefresh = configuration.minPeriodBetweenDataRefresh;
+      this.blockDataRefreshTimeout = configuration.blockDataRefreshTimeout;
+      this.dashboardDataRefreshTimeout = configuration.dashboardDataRefreshTimeout;
+      this.validatorsDataRefreshTimeout = configuration.validatorsDataRefreshTimeout;
+      this.accountDataRefreshTimeout = configuration.accountDataRefreshTimeout;
+      this.proposalsPageLimit = configuration.proposalsPageLimit;
       this.isEmpty = false;
       this.testMode = configuration.testMode ? configuration.testMode : false;
       this.testFileName = configuration.testFileName;
@@ -118,6 +130,12 @@ export class Configuration implements JsonConfiguration {
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
       this.keplrGasPriceSteps = new KeplrGasPriceSteps(undefined);
+      this.minPeriodBetweenDataRefresh = 60000;
+      this.blockDataRefreshTimeout = 60000;
+      this.dashboardDataRefreshTimeout = 60000;
+      this.validatorsDataRefreshTimeout = 60000;
+      this.accountDataRefreshTimeout = 60000;
+      this.proposalsPageLimit = 10;
       this.isEmpty = true;
       this.testMode = false;
     }
@@ -137,6 +155,14 @@ export class Configuration implements JsonConfiguration {
       return viewDenomConf.viewDenom;
     }
     return origDenom;
+  }
+
+  public getViewDenomConversionFactor(origDenom = this.stakingDenom): number {
+    const viewDenomConf = this.getViewDenomConfig(origDenom);
+    if (viewDenomConf) {
+      return viewDenomConf.conversionFactor;
+    }
+    return 1;
   }
 
   public getViewAmount(origAmount: bigint | number | BigDecimal, precision = 4, reduceBigNumber = false, origDenom = this.stakingDenom): string {

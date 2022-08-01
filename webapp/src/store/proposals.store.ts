@@ -57,21 +57,42 @@ export const useProposalsStore = defineStore({
           }
         });
     },
-    async fetchProposalById(id: number, lockscreen = true){
-      const index = this.proposalById.get(id);
-      const proposal = index !== undefined ? this.proposals[index] : undefined;
-      if(proposal !== undefined) {
-        this.proposal = proposal;
-      } else {
+    async fetchProposalById(
+      id: number,
+      onSuccess: (() => void) | undefined = undefined,
+      onError: (() => void) | undefined = undefined,
+      lockscreen = true,
+      forceRemoteFetch = false
+    ){
+      const remoteFetch = async () => {
         await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then((resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.proposal = resp.data.proposal;
+            if (onSuccess) {
+              onSuccess();
+            }
           } else {
             const message = 'Error fetching proposal data';
             logger.logToConsole(LogLevel.ERROR, message);
             toast.error(message);
+            if (onError) {
+              onError();
+            }
           }
         });
+      }
+      if (forceRemoteFetch) {
+        return await remoteFetch();
+      }
+      const index = this.proposalById.get(id);
+      const proposal = index !== undefined ? this.proposals[index] : undefined;
+      if(proposal !== undefined) {
+        this.proposal = proposal;
+        if (onSuccess) {
+          onSuccess();
+        }
+      } else {
+        await remoteFetch();
       }
     },
     async setProposalFromLocal(proposal: Proposal){
@@ -103,22 +124,31 @@ export const useProposalsStore = defineStore({
     clearProposals() {
       this.proposals = Array<Proposal>();
       this.numberOfActiveProposals = 0;
-      this.proposal = Object();
+      this.proposal = undefined;
       this.paginationKey = null;
+    },
+    clearProposal() {
+      this.proposal = undefined;
     },
     clear() {
       this.clearProposals();
       this.tallyParams = new TallyParams(Number.NaN, Number.NaN, Number.NaN);
+      this.minDeposit = new Coin(0n, useConfigurationStore().config.stakingDenom);
     }
   },
   getters: {
-
+    hasProposals(): boolean {
+      return this.proposals.length > 0;
+    },
+    hasProposal(): boolean {
+      return this.proposal !== undefined;
+    },
     getProposals(): Proposal[] {
       return this.proposals;
     },
-   getPaginationKey(): string | null {
-     return this.paginationKey;
-   },
+    getPaginationKey(): string | null {
+      return this.paginationKey;
+    },
     getProposal(): Proposal | undefined {
       return this.proposal;
     },

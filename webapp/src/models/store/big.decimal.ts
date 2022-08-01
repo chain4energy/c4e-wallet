@@ -128,7 +128,7 @@ function divideBigIntsWithRound(rounded: boolean, dividend: bigint, divisor: big
   const absB = divisor >= 0n ? divisor : -divisor
   const absRemainderDoubled = (absA % absB) * 2n 
   return dividend / divisor + (
-    rounded && absRemainderDoubled < absB
+    !rounded || absRemainderDoubled < absB
       ? 0n
       : (dividend > 0n) === (divisor > 0n)
           ? 1n

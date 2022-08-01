@@ -104,10 +104,7 @@ async function testModeAxios<T = any, R = AxiosResponse<T, any>, D = any>(config
 
     if (params.length > 0) {
       url += '?';
-      console.log('ZZZZZZZZZZZZZZZZ: ');
-
       for(let i = 0; i < params.length; i++) {
-        console.log('XXXXXXXXX: ' + params[i] );
         url += params[i][0] + '=' + params[i][1] ;
         if (i < params.length - 1) {
           url += '&';
@@ -126,7 +123,6 @@ async function testModeAxios<T = any, R = AxiosResponse<T, any>, D = any>(config
   if (!action.data) {
     throw new Error('No action.data');
   }
-  console.log('HURRAAAAAAAAAAAAAA');
   return {
     data: action.data,
     status: action.status,

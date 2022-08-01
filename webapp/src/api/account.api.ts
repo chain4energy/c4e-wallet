@@ -12,6 +12,8 @@ import { AccountResponse, BalanceResponse} from "@/models/blockchain/account";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ConnectionInfo } from "@/api/wallet.connecton.api";
 import { mapAccount, createNonexistentAccount } from "@/models/mapper/account.mapper";
+import { formatString } from "@/utils/string-formatter";
+import queries from "./queries";
 
 import {
   MsgBeginRedelegate,
@@ -31,6 +33,8 @@ import { RewardsResponse } from "@/models/blockchain/distribution";
 import { Rewards } from "@/models/store/distribution";
 import { mapRewards } from "@/models/mapper/distribution.mapper";
 import { mapCoin } from "@/models/mapper/common.mapper";
+import { EncodeObject } from "@cosmjs/proto-signing";
+import { BigDecimal } from "@/models/store/big.decimal";
 
 export enum VoteOption {
   Yes = CosmVoteOption.VOTE_OPTION_YES,
@@ -45,11 +49,11 @@ export class AccountApi extends TxBroadcastBaseApi {
     return ServiceTypeEnum.ACCOUNT_API;
   }
 
-  private ACCOUNT_URL = process.env.VUE_APP_ACCOUNT_URL;
-  private BALANCE_URL = process.env.VUE_APP_BALANCE_URL;
-  private STAKED_AMOUNT_URL = process.env.VUE_APP_STAKED_AMOUNT_URL;
-  private UNSTAKED_AMOUNT_URL = process.env.VUE_APP_UNSTAKED_AMOUNT_URL;
-  private REWARDS_URL = process.env.VUE_APP_REWARDS_URL;
+  private ACCOUNT_URL = queries.blockchain.ACCOUNT_URL;
+  private BALANCE_URL = queries.blockchain.BALANCE_URL;
+  private STAKED_AMOUNT_URL = queries.blockchain.STAKED_AMOUNT_URL;
+  private UNSTAKED_AMOUNT_URL = queries.blockchain.UNSTAKED_AMOUNT_URL;
+  private REWARDS_URL = queries.blockchain.REWARDS_URL;
 
 
   public async fetchAccount(address: string, lockscreen: boolean): Promise<RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>> {
@@ -65,7 +69,7 @@ export class AccountApi extends TxBroadcastBaseApi {
       return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(errorResponse.error);
     };
     const mapData = (bcData: AccountResponse | undefined) => {return mapAccount(bcData?.account);};
-    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.ACCOUNT_URL + address,
+    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+formatString(this.ACCOUNT_URL, {address: address}),
       mapData, lockscreen, null, 'fetchAccount - ', displayAsError, handleError);
   }
 
@@ -77,7 +81,7 @@ export class AccountApi extends TxBroadcastBaseApi {
 
   public async fetchBalance(address: string, denom: string, lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: BalanceResponse | undefined) => {return mapCoin(bcData?.balance, denom);};
-    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.BALANCE_URL + address + '/by_denom?denom=' + denom,
+    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+formatString(this.BALANCE_URL, {address: address, denom: denom}),
       mapData, lockscreen, null, 'fetchBalance - ');
   }
 
@@ -85,76 +89,96 @@ export class AccountApi extends TxBroadcastBaseApi {
     const mapData = (bcData: DelegationsResponse | undefined) => {return mapDelegations(bcData?.delegation_responses);};
     const mapAndAddData = (data: Delegations, bcData: DelegationsResponse | undefined) => {return mapAndAddDelegations(data, bcData?.delegation_responses);};
 
-    return  await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+this.STAKED_AMOUNT_URL + address,
+    return  await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+formatString(this.STAKED_AMOUNT_URL, {address: address}),
             mapData, mapAndAddData, lockscreen, null, 'fetchDelegations - ');
   }
   public async fetchUnbondingDelegations(address: string, lockscreen: boolean): Promise<RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: UnbondigDelegationsResponse | undefined) => {return mapUnbondingDelegations(bcData?.unbonding_responses);};
     const mapAndAddData = (data: UnbondingDelegations, bcData: UnbondigDelegationsResponse | undefined) => {return mapAndAddUnbondingDelegations(data, bcData?.unbonding_responses);};
 
-    return  await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+this.UNSTAKED_AMOUNT_URL + address + '/unbonding_delegations',
+    return  await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.bcApiURL+formatString(this.UNSTAKED_AMOUNT_URL, {address: address}),
             mapData, mapAndAddData, lockscreen, null, 'fetchUnbondingDelegations - ');
   }
   public async fetchRewards(address: string, lockscreen: boolean): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: RewardsResponse | undefined) => {return mapRewards(bcData);};
-    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.REWARDS_URL + address + '/rewards',
+    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+formatString(this.REWARDS_URL, {address: address}),
       mapData, lockscreen, null, 'fetchRewards - ');
   }
   public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
-
-    const msg = {
-      typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
-      value: MsgDelegate.fromPartial({
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.staking.v1beta1.MsgDelegate';
+      const val = {
         delegatorAddress: connection.account,
         validatorAddress: validator,
         amount: {
           denom: config.stakingDenom,
-          amount: amount,
+          amount: bcAmount,
         }
-      }),
-    };
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }]
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgDelegate.fromPartial(val) }]
+      }
+    }
+    
 
     const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
-    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 
   public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
+    this.logToConsole(LogLevel.DEBUG, 'undelegate')
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
 
-    const msg = {
-      typeUrl: '/cosmos.staking.v1beta1.MsgUndelegate',
-      value: MsgUndelegate.fromPartial({
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.staking.v1beta1.MsgUndelegate';
+      const val = {
         delegatorAddress: connection.account,
         validatorAddress: validator,
         amount: {
           denom: config.stakingDenom,
-          amount: amount,
+          amount: bcAmount,
         }
-      }),
-    };
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }]
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgUndelegate.fromPartial(val) }]
+      }
+    }
 
     const fee = this.createFee(config.operationGas.undelegate, config.stakingDenom);
-    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 
   public async redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
 
-    const msg = {
-      typeUrl: '/cosmos.staking.v1beta1.MsgBeginRedelegate',
-      value: MsgBeginRedelegate.fromPartial({
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.staking.v1beta1.MsgBeginRedelegate';
+      const val = {
         delegatorAddress: connection.account,
         validatorSrcAddress: validatorSrc,
         validatorDstAddress: validatorDst,
         amount: {
           denom: config.stakingDenom,
-          amount: amount,
+          amount: bcAmount,
         }
-      }),
-    };
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }]
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgBeginRedelegate.fromPartial(val) }]
+      }
+    }
+
     const fee = this.createFee(config.operationGas.redelegate, config.stakingDenom);
-    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 
   // TODO proposalId as Long
@@ -163,39 +187,49 @@ export class AccountApi extends TxBroadcastBaseApi {
 
     const config = useConfigurationStore().config;
 
-    const msg = {
-      typeUrl: '/cosmos.gov.v1beta1.MsgVote',
-      value: MsgVote.fromPartial({
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.gov.v1beta1.MsgVote';
+      const val = {
         option: option.valueOf(),
         proposalId,
         voter: connection.account,
-      }),
-    };
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }]
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgVote.fromPartial(val) }]
+      }
+    }
+
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
-    return await this.signAndBroadcast(connection, [msg], fee, '', true, null);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 
   public async claimRewards(connection: ConnectionInfo, validatorsAddresses: IterableIterator<string>): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
-
-    const messages = [];
-    for (const validator of validatorsAddresses) {
-      const msg = {
-        typeUrl: '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward',
-        value: MsgWithdrawDelegatorReward.fromPartial({
+    const messages: EncodeObject[] = [];
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] | TxBroadcastError => {
+      const typeUrl = '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward';
+      
+      for (const validator of validatorsAddresses) {
+        const val = {
           delegatorAddress: connection.account,
           validatorAddress: validator,
-        })
-      };
-      messages.push(msg);
+        }
+        const msg: EncodeObject = isLedger ? { typeUrl: typeUrl, value: val } : { typeUrl: typeUrl, value: MsgWithdrawDelegatorReward.fromPartial(val) };
+        messages.push(msg);
+
+      }
+      if (messages.length === 0) {
+        this.logToConsole(LogLevel.INFO, 'claimRewards: No rewards to claim');
+        return new TxBroadcastError('No rewards to claim');
+      }
+      return messages;
     }
 
-    if (messages.length === 0) {
-      this.logToConsole(LogLevel.INFO, 'claimRewards: No rewards to claim');
-      return new RequestResponse<TxData, TxBroadcastError>(new TxBroadcastError('No rewards to claim'));
-    }
+
 
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
-    return await this.signAndBroadcast(connection, messages, fee, '', true, null);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 }
