@@ -70,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted, PropType } from "vue";
+import { computed, onUnmounted, onUpdated, PropType } from "vue";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from "@/models/store/validator";
 import {ref} from "vue";
@@ -91,15 +91,16 @@ const redelegateTo = ref()
 
 const canModify = computed(() => useUserStore().getConnectionType);
 const validators = computed(() => {
-    return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress)
-  // return props.validator.operator_address
+    return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress);
   });
+const { value: { delegatedViewAmount: delegatedViewAmount } } = computed(() => {
+  return useValidatorsStore().getValidators.find(({ operatorAddress }) => operatorAddress === props.validator.operatorAddress);
+});
 const actionRedelegate = ref(false)
 const amount = ref('');
 const keplrResult = ref();
 const emit = defineEmits(['close', 'success']);
 
-const amountMultiplier= ref(1000000);
 
 setLocale({
   mixed: {
@@ -107,38 +108,43 @@ setLocale({
     notType: `must be a number in format xxx.xxx`,
   }
 });
+const amountSchema = ref()
+function createAmountSchema(){
+  amountSchema.value = object({
+    value:
+      string()
+        .defined()
+        .matches(/^\d{0,10}(\.\d{0,6})?$/gm, "must have not more than 6 digits after dot"),
+    numDelegation:
+      number()
+        .moreThan(0, "should be more than 0")
+        .lessThan(Number(useUserStore().getBalanceViewAmount()),`must be less than ${useUserStore().getBalanceViewAmount()}`), // TODO some bigint validation
+    numUnDelegation:
+      number()
+        .moreThan(0, "should be more than 0")
+        .lessThan(Number(delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
+    numRedelegate:
+      number()
+        .moreThan(0, "should be more than 0")
+        .lessThan(Number(delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
+  });
+}
 
-let amountSchema = object({
-  value:
-    string()
-    .defined()
-    .matches(/^\d{0,10}(\.\d{0,6})?$/gm, "must have not more than 6 digits after dot"),
-  numDelegation:
-    number()
-    .moreThan(0, "should be more than 0")
-    .lessThan(Number(useUserStore().getBalanceViewAmount()),`must be less than ${useUserStore().getBalanceViewAmount()}`), // TODO some bigint validation
-  numUnDelegation:
-    number()
-      .moreThan(0, "should be more than 0")
-      .lessThan(Number(props.validator.delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
-  numRedelegate:
-    number()
-      .moreThan(0, "should be more than 0")
-      .lessThan(Number(props.validator.delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
+onUpdated(()=>{
+  createAmountSchema()
 });
+
 
 async function delegate() {
   try {
-    await amountSchema.validate({value:amount.value, numDelegation: Number(amount.value) });
-    let trueAmount = Number(amount.value) * amountMultiplier.value;
-    await useUserStore().delegate(props.validator.operatorAddress, trueAmount.toString())
+    await amountSchema.value.validate({value:amount.value, numDelegation: Number(amount.value) });
+    await useUserStore().delegate(props.validator.operatorAddress, amount.value)
       .then((resp) => {
+        console.log(resp)
         emit('success');
       });
 
   } catch (err) {
-    console.log(err)
-    // keplrResult.value = err.errors;
     keplrResult.value = err.errors;
     toast.error('transaction failed')
   }
@@ -147,9 +153,8 @@ async function delegate() {
 async function undelegate() {
 
   try {
-    await amountSchema.validate({value:amount.value, numUnDelegation: Number(amount.value) });
-    let trueAmount = Number(amount.value) * amountMultiplier.value;
-    await useUserStore().undelegate(props.validator.operatorAddress, String(trueAmount)).then((resp) => {
+    await amountSchema.value.validate({value:amount.value, numUnDelegation: Number(amount.value) });
+    await useUserStore().undelegate(props.validator.operatorAddress, String(amount.value)).then((resp) => {
       emit('success')
     });
   } catch (err) {
@@ -160,9 +165,8 @@ async function undelegate() {
 
 async function redelegate() {
   try {
-    await amountSchema.validate({value:amount.value, numRedelegate: Number(amount.value) });
-    let trueAmount = Number(amount.value) *  amountMultiplier.value;
-    useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(trueAmount)).then((resp) => {
+    await amountSchema.value.validate({value:amount.value, numRedelegate: Number(amount.value) });
+    useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value)).then((resp) => {
       emit('success')
     });
   } catch (err) {

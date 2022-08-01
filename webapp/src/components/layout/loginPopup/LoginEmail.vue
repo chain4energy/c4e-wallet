@@ -29,17 +29,16 @@ import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue'
 import dataService from '@/services/data.service';
 import { useUserStore } from "@/store/user.store";
 const emit = defineEmits(['close']);
-const userStore = useUserStore()
+const userStore = useUserStore();
 
 import { ref } from "vue";
 
-const email = ref('')
+const email = ref('');
 
 function submit(){
   dataService.onAddressLogIn((email.value), () => {
-    emit('close')
+    emit('close');
   });
-  // userStore.connectAsAddress(email.value)
 }
 
 </script>
