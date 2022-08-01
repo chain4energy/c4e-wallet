@@ -15,22 +15,22 @@
     <div class="voting-result">
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
-        <div>{{ yesPercentage }}%</div>
+        <div>{{ proposal?.finalTallyResult.getYesPercentageView() }}%</div>
         <div>({{proposal.finalTallyResult.getYesView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
-        <div>{{ abstainPercentage }}%</div>
+        <div>{{ proposal?.finalTallyResult.getAbstainPercentageView() }}%</div>
         <div>({{proposal.finalTallyResult.getAbstainView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
-        <div>{{ noPercentage }}%</div>
+        <div>{{ proposal?.finalTallyResult.getNoPercentageView() }}%</div>
         <div>({{proposal.finalTallyResult.getNoView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
-        <div>{{ noWithVetoPercentage }}%</div>
+        <div>{{ proposal?.finalTallyResult.getNoWithVetoPercentageView() }}%</div>
         <div>({{proposal.finalTallyResult.getNoWithVetoView(2, true)}})</div>
       </div>
     </div>
@@ -79,27 +79,9 @@ const icons  = new Map<string, string>([
   [ProposalStatus.VOTING_PERIOD, '']
 ]);
 
-
-
 const sumOfVotes = computed(() => {
   const val = props.proposal?.finalTallyResult.total
   return (val && val > 0) ? val : -1n;
-});
-
-const yesPercentage = computed(() => {
-  return props.proposal?.finalTallyResult.getYesPercentageView();
-});
-
-const noPercentage = computed(() => {
-  return props.proposal?.finalTallyResult.getNoPercentageView();
-});
-
-const abstainPercentage = computed(() => {
-  return props.proposal?.finalTallyResult.getAbstainPercentageView();
-});
-
-const noWithVetoPercentage = computed(() => {
-  return props.proposal?.finalTallyResult.getNoWithVetoPercentageView();
 });
 
 
