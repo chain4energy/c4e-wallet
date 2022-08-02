@@ -284,3 +284,30 @@ export function expectTallyParams(
   expect(tallyParams.vetoThreshold).toBe(expectedVetoThreshold);
 }
 
+export function createProposalUserVoteResponse(option: string) {
+  return {
+    data: {
+      proposal_vote: [
+        {
+          option: option
+        }
+      ]
+    }
+  }
+}
+
+export function createYesProposalUserVoteResponse() {
+  return createProposalUserVoteResponse("VOTE_OPTION_YES");
+}
+
+export function createAbstainProposalUserVoteResponse() {
+  return createProposalUserVoteResponse("VOTE_OPTION_ABSTAIN");
+}
+
+export function createNoProposalUserVoteResponse() {
+  return createProposalUserVoteResponse("VOTE_OPTION_NO");
+}
+
+export function createVetoProposalUserVoteResponse() {
+  return createProposalUserVoteResponse("VOTE_OPTION_NO_WITH_VETO");
+}

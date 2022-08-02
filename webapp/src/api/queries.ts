@@ -22,7 +22,7 @@ export default {
         'averageTime: average_time' + 
       '}' +
     '}',
-    PROPOSAL_USER_VOTE_URL: 'query MyQuery {' +
+    PROPOSAL_USER_VOTE_QUERY: 'query UserVote {' +
       'proposal_vote(where: {proposal_id: {_eq: {proposalId}}, voter_address: {_eq: "{voter}"}}) {' +
         'option' +
       '}' +
