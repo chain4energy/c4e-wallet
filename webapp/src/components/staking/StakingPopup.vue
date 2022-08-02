@@ -37,7 +37,7 @@
         <div v-if="actionRedelegate" class="validationPopup__description">
           <label style="width: 100%" for="validators">
             <select v-model="redelegateTo" style="width: 100%"  id="validators" name="Validators">
-              <option :value="items" v-for="items in validatorsToRedelegate" :key="items">{{items.description.moniker}}</option>
+              <option :hidden="item.operatorAddress === validator.operatorAddress || !item.active" :value="item" v-for="item in useValidatorsStore().getValidators" :key="item">{{item.description.moniker}}</option>
             </select>
           </label>
 <!--          <input type="" style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">-->
@@ -91,9 +91,9 @@ onUnmounted(() => document.body.style.overflow = "auto");
 const redelegateTo = ref()
 
 const canModify = computed(() => useUserStore().getConnectionType);
-const validatorsToRedelegate = computed(() => {
-    return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress); // TODO probalbly ony active validators
-  });
+// const validatorsToRedelegate = computed(() => {
+//     return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress); // TODO probalbly ony active validators
+//   });
 const actionRedelegate = ref(false)
 const amount = ref('');
 const validationError = ref();
@@ -113,7 +113,6 @@ const delegationAmountSchema = createValidSchema(
 const reundelegationAmountSchema = createValidSchema(
   () => props.validator.delegatedAmount,
   () => props.validator.delegatedViewAmount)
-
 
 function createValidSchema(maxAmount: () => bigint, maxAmountMessage: () => string) {
   return object({

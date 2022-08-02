@@ -76,6 +76,9 @@ export class Validator{
     }
   }
 
+  public get active(): boolean {
+    return this.status === ValidatorStatus.Bonded;
+  }
 }
 
 export class ValidatorDescription {
