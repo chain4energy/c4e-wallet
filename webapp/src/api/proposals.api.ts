@@ -68,6 +68,6 @@ export class ProposalsApi extends BaseApi {
     const mapData = (hasureData: ProposalVoteResponse | undefined) => { 
         return mapProposalVoteResponse(hasureData); 
     };
-    return this.axiosHasuraCall(formatString(queries.hasura.PROPOSAL_USER_VOTE_URL, {proposalId: id, voter: voter}), mapData, lockscreen, null, 'fetchProposalVote - ');
+    return this.axiosHasuraCall(formatString(queries.hasura.PROPOSAL_USER_VOTE_QUERY, {proposalId: id, voter: voter}), mapData, lockscreen, null, 'fetchProposalVote - ');
   }
 }

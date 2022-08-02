@@ -1,14 +1,21 @@
 import { GovernanceParameters, Tally } from "@/models/blockchain/proposals";
-import { mapDepositParams, mapProposal, mapProposalByID, mapProposals, mapProposalTallyResult, mapTallyParams } from "@/models/mapper/proposals.mapper";
+import { ProposalVoteResponse } from "@/models/hasura/proposal.vote";
+import { mapDepositParams, mapProposal, mapProposalByID, mapProposals, mapProposalTallyResult, mapProposalVoteResponse, mapTallyParams } from "@/models/mapper/proposals.mapper";
+import { VoteOption } from "@/models/store/proposal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { createPinia, setActivePinia } from "pinia";
 import { expectCoin } from "../utils/common.blockchain.data.util";
 import {
+  createAbstainProposalUserVoteResponse,
   createDepositParamsResponseData,
+  createNoProposalUserVoteResponse,
   createProposal,
   createProposals,
   createProposalTallyResult,
+  createProposalUserVoteResponse,
   createTallyParamsResponseData,
+  createVetoProposalUserVoteResponse,
+  createYesProposalUserVoteResponse,
   defaultProposals,
   defaultProposalsParameters,
   expectProposal, expectProposals, expectTallyParams, expectTallyResult
@@ -61,7 +68,6 @@ describe('tests mapping of proposals related data',  () => {
 
   it('map tally result - no yes', async ()=> {
     const brokenTally = {
-      // yes: '123',
       abstain: '12334',
       no: '43850834075',
       no_with_veto: '19283012073',
@@ -73,7 +79,6 @@ describe('tests mapping of proposals related data',  () => {
   it('map tally result - no abstain', async ()=> {
     const brokenTally = {
       yes: '123',
-      // abstain: '12334',
       no: '43850834075',
       no_with_veto: '19283012073',
     } as Tally
@@ -85,7 +90,6 @@ describe('tests mapping of proposals related data',  () => {
     const brokenTally = {
       yes: '123',
       abstain: '12334',
-      // no: '43850834075',
       no_with_veto: '19283012073',
     } as Tally
     expect(()=> {mapProposalTallyResult(brokenTally)}).toThrowError(new Error('mapProposalTallyResult - some of tally votes is undefined'));
@@ -97,7 +101,6 @@ describe('tests mapping of proposals related data',  () => {
       yes: '123',
       abstain: '12334',
       no: '43850834075',
-      // no_with_veto: '19283012073',
     } as Tally
     expect(()=> {mapProposalTallyResult(brokenTally)}).toThrowError(new Error('mapProposalTallyResult - some of tally votes is undefined'));
 
@@ -161,4 +164,45 @@ describe('tests mapping of proposals related data',  () => {
 
   })
 
+  it('map voting option - yes success', async ()=> {
+    const depositCoin = mapProposalVoteResponse(createYesProposalUserVoteResponse());
+    expect(depositCoin).toBe(VoteOption.Yes);
+  })
+
+  it('map voting option - abstain success', async ()=> {
+    const depositCoin = mapProposalVoteResponse(createAbstainProposalUserVoteResponse());
+    expect(depositCoin).toBe(VoteOption.Abstain);
+  })
+
+  it('map voting option - no success', async ()=> {
+    const depositCoin = mapProposalVoteResponse(createNoProposalUserVoteResponse());
+    expect(depositCoin).toBe(VoteOption.No);
+  })
+
+  it('map voting option - veto success', async ()=> {
+    const depositCoin = mapProposalVoteResponse(createVetoProposalUserVoteResponse());
+    expect(depositCoin).toBe(VoteOption.NoWithVeto);
+  })
+
+  it('map voting option - no vote success', async ()=> {
+    const depositCoin = mapProposalVoteResponse({data: {proposal_vote: []}} as ProposalVoteResponse);
+    expect(depositCoin).toBeNull();
+  })
+
+  it('map voting option - undefined resp', async ()=> {
+    expect(()=> {mapProposalVoteResponse(undefined)}).toThrowError(new Error('mapProposalVoteResponse - proposal vote response is undefined'));
+  })
+
+  it('map voting option - undefined data', async ()=> {
+    expect(()=> {mapProposalVoteResponse({} as ProposalVoteResponse)}).toThrowError(new Error('mapProposalVoteResponse - proposal vote response data is undefined'));
+  })
+
+  it('map voting option - undefined proposal vote', async ()=> {
+    expect(()=> {mapProposalVoteResponse({data: {}} as ProposalVoteResponse)}).toThrowError(new Error('mapProposalVoteResponse - proposal vote is undefined'));
+  })
+
+  it('map voting option - unexpected vote type', async ()=> {
+    expect(()=> {mapProposalVoteResponse(createProposalUserVoteResponse('UNEXPECTED_TYPE'))}).toThrowError(new Error("Unsupported vote option: 'UNEXPECTED_TYPE'"));
+  })
 });
+

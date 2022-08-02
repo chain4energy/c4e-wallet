@@ -8,7 +8,6 @@ import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
 import { useUserStore } from "./user.store";
-import i18n from "@/plugins/i18n";
 
 const toast = useToast()
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -54,6 +53,7 @@ export const useProposalsStore = defineStore({
 
             this.proposals.forEach((el,index) => {
               mappedIndexes.set(el.proposalId,index);
+              this.proposalsTally.delete(el.proposalId);
               if (el.isVotingPeriod()) {
                 this.fetchVotingProposalTallyResult(el.proposalId, false, lockscreen);
               }
@@ -85,6 +85,7 @@ export const useProposalsStore = defineStore({
             if (useUserStore().isLoggedIn) {
               promises.push(this.fetchProposalUserVote(id, useUserStore().getAccount.address))
             }
+            this.proposalTally = undefined;
             if (resp.data.proposal.isVotingPeriod()) {
               promises.push(this.fetchVotingProposalTallyResult(id, true, lockscreen));
             }
@@ -235,25 +236,6 @@ export const useProposalsStore = defineStore({
         return proposal.finalTallyResult;
       }
       
-    },
-    getUserVoteView(): string | null {
-      if (this.userVote !== null) {
-        switch(this.userVote) {
-          case VoteOption.Yes: {
-            return i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES')
-          }
-          case VoteOption.Abstain: {
-            return i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN')
-          }
-          case VoteOption.No: {
-            return i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO')
-          }
-          case VoteOption.NoWithVeto: {
-            return i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO')
-          }
-        }
-      }
-      return null;
     }
   }
 });
