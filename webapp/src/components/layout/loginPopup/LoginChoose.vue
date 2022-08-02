@@ -89,6 +89,13 @@ import { useUserStore } from "@/store/user.store";
   }
   &__body{
     width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    button {
+      width: 100%;
+      height: 60px;
+    }
   }
   &__description{
     width: 100%;

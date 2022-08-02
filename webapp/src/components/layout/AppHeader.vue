@@ -15,7 +15,7 @@
           <div class="navbar-nav right">
 
             <div class="acc-address" v-if="useUserStore().isLoggedIn">
-              {{useUserStore().getAccount.address}}
+              {{ useUserStore().getAccount.address.slice(0, 8)}}...{{useUserStore().getAccount.address.slice(-6) }}
             </div>
             
             <LangSwitch class="nav-link mx-1"/>
@@ -103,19 +103,12 @@ function logout(){
 @import '../../styles/variables.scss';
 
 .acc-address {
-  max-width: 150px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+
   margin-top: 2px;
   padding: 0.5rem;
   background-color: $main-lighter-color;
   border-radius: 1rem;
 
-  &:hover {
-    max-width: 600px;
-    overflow: visible;
-  }
 
 }
 .userdata {
