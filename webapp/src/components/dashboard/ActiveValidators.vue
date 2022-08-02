@@ -1,14 +1,10 @@
 <template>
-  <div class="container">
-    <div class="left">
+  <div class="tile">
       <Icon name="FileCheck"></Icon>
-    </div>
-    <div class="right">
-      <div>{{ $t("DASHBOARD_VIEW.VALIDATORS") }} </div>
-      <div class="info">
-        {{useValidatorsStore().getNumberOfActiveValidators}}
+      <div class="text">
+        <span class="label">{{ $t('DASHBOARD_VIEW.VALIDATORS') }}</span>
+        <span class="value small">{{useValidatorsStore().getNumberOfActiveValidators}}</span>
       </div>
-    </div>
   </div>
 </template>
 
@@ -24,18 +20,5 @@ import {useValidatorsStore} from "@/store/validators.store";
 </script>
 
 <style scoped lang="scss">
-.container {
-  display: flex;
-  max-width: 210px;
-  margin: auto auto 30px;
-  flex-wrap: wrap;
-  padding: 15px 10px;
-  width: 100%;
 
-  box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
-
-  .info {
-    font-weight:bold;
-  }
-}
 </style>

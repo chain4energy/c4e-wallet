@@ -48,6 +48,7 @@
     "LOGIN": "Login"
   },
   "DASHBOARD_VIEW": {
+    "BONDED_TOKENS": "Bonded tokens",
     "VALIDATORS": "Validators",
     "LATEST_BLOCK": "Latest block",
     "TOTAL_SUPPLY": "Total supply",

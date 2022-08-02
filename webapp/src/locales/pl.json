@@ -48,6 +48,7 @@
     "LOGIN": "Login"
   },
   "DASHBOARD_VIEW": {
+    "BONDED_TOKENS": "Bonded tokens",
     "VALIDATORS": "Walidatory",
     "LATEST_BLOCK": "Ostatni blok",
     "TOTAL_SUPPLY": "Całkowita podaż",

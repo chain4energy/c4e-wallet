@@ -1,30 +1,38 @@
 <template>
-  <div class="container">
-    <div class="top">
-      <span style="font-weight:bold;">{{ $t("DASHBOARD_VIEW.TOKENOMICS") }}</span>
-    </div>
-    <div class="main-content">
-      <div class="left">
-        <div class="info">{{ bounded }}</div>
-        <div><div class="color-div me-2" style="background-color:#26697f"></div>{{ $t("DASHBOARD_VIEW.BOUNDED") }}</div>
-        <div>{{ boundedPercentage }}%</div>
-      </div>
-      <div class="middle">
-        <div class="info">{{ unBounded }}</div>
-        <div><div class="color-div me-2" style="background-color:#fff1a9"></div>{{ $t("DASHBOARD_VIEW.UNBOUNDED") }}</div>
-        <div>{{unboundedPercentage}}%</div>
-      </div>
-      <div id="chartdiv">
-        <div>
-          <v-chart :option="option" autoresize />
+   <div class="pools-tile">
+    <div class="legend">
+      <h5 style="font-weight: bold; margin-bottom: 10px;">{{ $t("DASHBOARD_VIEW.TOKENOMICS") }}</h5>
+        <div class="legend-item">
+          <div class="dot" style="background: #27697F"> </div>
+          <div> {{ $t("DASHBOARD_VIEW.BOUNDED") }}</div>
+          <Icon name="ArrowRight" />
+          <div style="font-weight: bold">
+            {{ bounded }}
+          </div>
+          <div class="dot"></div>
+          <div>{{ boundedPercentage }}%</div>
         </div>
-      </div>
+        <div class="legend-item">
+          <div class="dot" style="background: #fff1a9"></div>
+          <div> {{ $t("DASHBOARD_VIEW.UNBOUNDED") }}</div>
+          <Icon name="ArrowRight" />
+          <div style="font-weight: bold">{{unBounded }}
+          </div>
+          <div class="dot"></div>
+          <div>{{ unboundedPercentage }}%</div>
+        </div>
+        <div class="legend-item">
+          <div class="dot" style="background: #72bf44"></div>
+          <div> {{ $t("DASHBOARD_VIEW.UNBOUNDED") }}</div>
+          <Icon name="ArrowRight" />
+          <div style="font-weight: bold">{{ unBounding }}
+          </div>
+        </div>
     </div>
-    <div class="bottom">
-      <div><div class="color-div me-2" style="background-color:#27697F"></div>{{ $t("DASHBOARD_VIEW.BOUNDED") }}</div>
-      <div><div class="color-div me-2" style="background-color:#fff1a9"></div>{{ $t("DASHBOARD_VIEW.UNBOUNDED") }}</div>
-      <div><div class="color-div me-2" style="background-color:#72bf44"></div>{{ $t("DASHBOARD_VIEW.UNBOUNDING") }}</div>
+      <div id="chartdiv">
+        <v-chart :option="option" autoresize />
     </div>
+
 
   </div>
 </template>
@@ -61,7 +69,7 @@ const unboundedPercentage = computed(() => {
 });
 
 const unboundingPercentage = computed(() => {
-  return tokensStore.getUnboundingPercentage()
+  return tokensStore.getUnboundingPercentage();
 });
 
 const bounded = computed((): string => {
@@ -69,7 +77,7 @@ const bounded = computed((): string => {
 });
 
 const unBounded = computed((): string => {
-  return tokensStore.getTotalUnbondedViewAmount()
+  return tokensStore.getTotalUnbondedViewAmount();
 });
 
 const unBounding = computed((): string => {
@@ -88,10 +96,12 @@ const option = ref( {
   },
   series: [
     {
-      width: '100%',
-      height: '100%',
+      width: '150%',
+      height: '130%',
       startAngle: 180,
       endAngle: 360,
+      top: '20%',
+      left: '-5%',
       type: 'pie',
       radius: ['50%', '90%'],
       center: ['50%', '43%'],
@@ -161,103 +171,11 @@ const option = ref( {
 <style scoped lang="scss">
 @import '../../styles/variables.scss';
 
-.color-div{
-  width:20px;
-  height:20px;
-  float:left;
-  border-radius: 50%;
-}
-.container {
-
-  flex-wrap: wrap;
-  padding: 15px 10px;
+#chartdiv {
   width: 100%;
-  height: 250px;
-  box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
-  max-width: 550px;
-  margin: auto auto 30px;
-  .info {
-    font-weight:bold;
-  }
-  .top {
-    height: 15%;
-    text-align: left;
-    padding-left: 30px;
-  }
-  .main-content {
-    height: 70%;
-    display: flex;
-    flex-wrap: wrap;
-    div {
-      padding-left: 10px;
-    }
-    .left {
-      width: 25%;
-      text-align: left;
-    }
-    .middle {
-      width: 25%;
-      text-align: left;
-    }
-    #chartdiv {
-      width: 50%;
-      height: 100%;
-      overflow: hidden;
-      div {
-        padding-bottom: 30px;
-        height: 200%;
-      }
-    }
-  }
-  .bottom {
-    display: flex;
-    flex-direction: row;
-    height: 15%;
-    div {
-      padding-left: 8px;
-    }
-  }
-
+  height: 100%;
+  overflow: visible;
+  margin-right: 70px;
+    margin-left: -300px;
 }
-
-@media only screen and (max-width: 500px) {
-
-  .container{
-    overflow: hidden;
-    height:fit-content;
-    .top {
-      height: 40px;
-    }
-    .main-content{
-      height: 250px;
-      .left,
-      .middle{
-        order: 0;
-        flex: 0 50%;
-      }
-      #chartdiv {
-        flex: 1 100%;
-
-      }
-    }
-    .bottom {
-      display: flex;
-      margin-top: 50px;
-    }
-    #chartdiv {
-      top:0px;
-      width: 50%;
-      height: 150px;
-      overflow: hidden;
-      div {
-        padding-bottom: 30px;
-        height: 100%;
-      }
-    }
-  }
-
-
-}
-
-
 </style>
