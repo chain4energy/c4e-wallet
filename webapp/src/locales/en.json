@@ -133,6 +133,7 @@
     "STAKING": "Staking",
     "DASHBOARD": "Dashboard",
     "PROPOSALSLIST": "Proposals list",
-    "GOVERNANCE": "Governance"
+    "GOVERNANCE": "Governance",
+    "GOVERNANCEDETAILS": "Governance details"
   }
 }
