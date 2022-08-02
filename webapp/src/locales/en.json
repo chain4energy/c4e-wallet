@@ -67,7 +67,7 @@
     "AVERAGE_BLOCK_TIME": "Average block time",
     "CIRCULATING_SUPPLY": "Circulating supply",
     "INFLATION": "Inflation",
-    "STAKING_APR": "Staking APR"
+    "STACKING_APR": "Staking APR"
   },
   "STAKING_VIEW": {
     "TABS": {

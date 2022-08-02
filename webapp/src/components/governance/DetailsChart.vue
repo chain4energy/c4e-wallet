@@ -114,8 +114,8 @@ const option = computed(() => {
 @import '../../styles/variables.scss';
 
 .chart-container {
-  height: 543px;
-  width: 437px;
+  height: 560px;
+  width: 100%;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   border-radius: 10px;
   .top {
@@ -143,12 +143,8 @@ const option = computed(() => {
     justify-content: space-around;
   }
   .bottom {
-    padding-top: 15px;
     button {
-      width:170px;
-      height: 40px;
-      background-color: $primary-green-color;
-      border: none;
+      width: 150px;
     }
   }
 }
