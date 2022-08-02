@@ -46,21 +46,26 @@ export const useProposalsStore = defineStore({
 
     async fetchProposals(lockscreen = true){
       await apiFactory.proposalsApi().fetchProposals(this.paginationKey, lockscreen)
-        .then((resp) => {
+        .then(async (resp) => {
           if (resp.response.isSuccess() && resp.response.data !== undefined){
             this.proposals = this.proposals.concat(resp.response.data.proposals);
             const mappedIndexes = new Map<number, number>();
+            const tallys = Array<Promise<void>>();
 
             this.proposals.forEach((el,index) => {
               mappedIndexes.set(el.proposalId,index);
               this.proposalsTally.delete(el.proposalId);
               if (el.isVotingPeriod()) {
-                this.fetchVotingProposalTallyResult(el.proposalId, false, lockscreen);
+                tallys.push(this.fetchVotingProposalTallyResult(el.proposalId, false, lockscreen));
               }
             });
+
             this.proposalById = mappedIndexes;
             this.numberOfActiveProposals = resp.response.data.numberOfActive;
             this.paginationKey = resp.nextKey;
+            if (tallys.length > 0) {
+              await Promise.all(tallys);
+            }
           } else {
             const message = 'Error fetching proposals data';
             logger.logToConsole(LogLevel.ERROR, message);
