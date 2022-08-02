@@ -173,7 +173,7 @@ describe('test proposals API', () => {
   });
   
   
-  it('fetch request of one proposal', async ()=> {
+  it('fetch one proposal', async ()=> {
     const proposal = {
       data: createProposalResponseData()
     };
@@ -186,6 +186,48 @@ describe('test proposals API', () => {
     expect(result.data).not.toBeUndefined();
     expect(result.data?.proposal.proposalId).toEqual(Number(proposal.data.proposal.proposal_id))
   });
+
+  it('fetch one proposal - wrong data', async ()=> {
+    const tally = {
+      data: {}
+    };
+
+    mockedAxios.request.mockResolvedValue(tally);
+    const result = await api.fetchProposalById(12, false)
+    expect(result.isError()).toBe(true)
+    expect(result.isSuccess()).toBe(false)
+    expect(result.data).toBeUndefined()
+    expect(result.error).not.toBeUndefined()
+    expect(result.error?.name).toBe(defaultErrorName);
+    expect(result.error?.message).toBe('Proposal is undefined');
+    expect(result.error?.data).toBeUndefined();
+    
+  });
+
+  it('fetch one proposal - error', async ()=> {
+    const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
+
+    const status = 400;
+    const error = createErrorResponse(status, 3, errorMessage);
+
+    mockedAxios.request.mockRejectedValueOnce(error);
+    const result = await api.fetchProposalById(13, false)
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultAxiosErrorName);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
+    expect(result.error?.data?.code).toBe(3);
+    expect(result.error?.data?.message).toBe(errorMessage);
+  
+  });
+
+
+
+
+
+
+
+
 
   it('fetch tally result', async ()=> {
     const yes = 123n;

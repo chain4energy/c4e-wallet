@@ -33,9 +33,9 @@ export function createProposalsResponseData(
     }
   };
 }
-export function createProposalResponseData(){
+export function createProposalResponseData(status = "PROPOSAL_STATUS_PASSED"){
     return{
-      proposal: createProposal(),
+      proposal: createProposal(status),
     };
 }
 export function expectProposal(actualProposal: Proposal, expectedBcProposal: any) {
@@ -76,7 +76,7 @@ export function findNumberOfActiveProposals(proposalsParameters = defaultProposa
   })
   return active;
 }
-export function createProposal(){
+export function createProposal(status = "PROPOSAL_STATUS_PASSED"){
   const proposal = {
     proposal_id: "2",
     content: {
@@ -93,7 +93,7 @@ export function createProposal(){
         },
       ]
     },
-    status: "PROPOSAL_STATUS_PASSED",
+    status: status,
     final_tally_result: {
       yes: '123',
       abstain: '12334',
