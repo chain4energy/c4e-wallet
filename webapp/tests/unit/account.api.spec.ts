@@ -24,11 +24,11 @@ import {
 import { RequestResponse } from '@/models/request-response';
 import { TxBroadcastError, TxData } from '@/api/tx.broadcast.base.api';
 import Long from 'long';
-import { VoteOption } from '@/api/account.api';
 import { mockAxios, mockKeplr } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
 import { defaultGas, defaultMemo, defaultTxErrorResponse, defaultTxSuccessResponse, msgBeginRedelegateTypeUrl, msgDelegateTypeUrl, msgUndelegateTypeUrl, msgVoteTypeUrl, msgWithdrawDelegatorRewardTypeUrl } from '../utils/tx.broadcast.blockchain.data.util';
 import { BigDecimal } from '@/models/store/big.decimal';
+import { VoteOption } from '@/models/store/proposal';
 
 jest.mock("axios");
 const mockedAxios = mockAxios();

@@ -102,6 +102,7 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onLogOut');
     window.clearInterval(this.accountIntervalId);
     this.disableKeplrAccountChangeListener();
+    useProposalsStore().clearUserVote();
     useUserStore().logOut();
   }
 
@@ -168,11 +169,17 @@ class DataService extends LoggedService {
   }
 
   private onLoginSuccess(onSuccess?: () => void) {
-    this.logToConsole(LogLevel.DEBUG, 'onLoginSuccess');
+    const instancce = DataService.getInstance();
+    instancce.logToConsole(LogLevel.DEBUG, 'onLoginSuccess');
 
     const now = new Date().getTime();
-    this.lastAccountTimeout = now;
-    this.accountIntervalId = window.setInterval(refreshAccountData, this.accountTimeout);
+    instancce.lastAccountTimeout = now;
+    instancce.accountIntervalId = window.setInterval(refreshAccountData, instancce.accountTimeout);
+    const propId = useProposalsStore().proposal;
+    const userAddress = useUserStore().getAccount.address;
+    if (propId !== undefined && userAddress !== '') {
+      useProposalsStore().fetchProposalUserVote(propId.proposalId, userAddress);
+    }
     if (onSuccess) {
       onSuccess();
     }

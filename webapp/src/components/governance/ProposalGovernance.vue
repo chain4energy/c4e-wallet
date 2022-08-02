@@ -34,22 +34,22 @@
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
           <div>{{ yesPercentage }}%</div>
-          <div>({{props.proposal.finalTallyResult.getYesView(2, true)}})</div>
+          <div>({{ useProposalsStore().getProposalTally(proposal).getYesView(2, true)}})</div>
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
           <div>{{ abstainPercentage }}%</div>
-          <div>({{props.proposal.finalTallyResult.getAbstainView(2, true)}})</div>
+          <div>({{ useProposalsStore().getProposalTally(proposal).getAbstainView(2, true)}})</div>
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
           <div>{{ noPercentage }}%</div>
-          <div>({{props.proposal.finalTallyResult.getNoView(2, true)}})</div>
+          <div>({{ useProposalsStore().getProposalTally(proposal).getNoView(2, true)}})</div>
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
           <div>{{ noWithVetoPercentage }}%</div>
-          <div>({{props.proposal.finalTallyResult.getNoWithVetoView(2, true)}})</div>
+          <div>({{ useProposalsStore().getProposalTally(proposal).getNoWithVetoView(2, true)}})</div>
         </div>
       </div>
 
@@ -71,6 +71,7 @@ import {LegendComponent, TitleComponent, TooltipComponent, GridComponent} from "
 import {useRouter} from "vue-router";
 import {Proposal, ProposalStatus} from "@/models/store/proposal";
 import { createProposalListChartData } from '@/charts/governance';
+import { useProposalsStore } from '@/store/proposals.store';
 
 use([
   CanvasRenderer,
@@ -98,39 +99,39 @@ const icons  = new Map<string, string>([
 ]);
 
 const yesPercentage = computed(() => {
-  return props.proposal.finalTallyResult.getYesPercentageView();
+  return useProposalsStore().getProposalTally(props.proposal).getYesPercentageView();
 });
 
 const noPercentage = computed(() => {
-  return props.proposal.finalTallyResult.getNoPercentageView();
+  return useProposalsStore().getProposalTally(props.proposal).getNoPercentageView();
 });
 
 const abstainPercentage = computed(() => {
-  return props.proposal.finalTallyResult.getAbstainPercentageView();
+  return useProposalsStore().getProposalTally(props.proposal).getAbstainPercentageView();
 });
 
 const noWithVetoPercentage = computed(() => {
-  return props.proposal.finalTallyResult.getNoWithVetoPercentageView();
+  return useProposalsStore().getProposalTally(props.proposal).getNoWithVetoPercentageView();
 });
 
 const yes = computed(() => {
-  return props.proposal.finalTallyResult.getYesView();
+  return useProposalsStore().getProposalTally(props.proposal).getYesView();
 });
 
 const no = computed(() => {
-  return props.proposal.finalTallyResult.getNoView();
+  return useProposalsStore().getProposalTally(props.proposal).getNoView();
 });
 
 const abstain = computed(() => {
-  return props.proposal.finalTallyResult.getAbstainView();
+  return useProposalsStore().getProposalTally(props.proposal).getAbstainView();
 });
 
 const noWithVeto = computed(() => {
-  return props.proposal.finalTallyResult.getNoWithVetoView();
+  return useProposalsStore().getProposalTally(props.proposal).getNoWithVetoView();
 });
 
 const sumOfVotes = computed(() => {
-  const val = props.proposal.finalTallyResult.total
+  const val = useProposalsStore().getProposalTally(props.proposal).total
   return val > 0n ? val : -1n;
 });
 const formattedDate = (value: Date) => {

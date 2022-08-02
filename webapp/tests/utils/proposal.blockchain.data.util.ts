@@ -1,4 +1,4 @@
-import { Proposal, ProposalStatus, TallyParams } from "@/models/store/proposal";
+import { Proposal, ProposalStatus, ProposalTallyResult, TallyParams } from "@/models/store/proposal";
 import { Validator } from "@/models/store/validator";
 import { BigDecimal } from "../../src/models/store/big.decimal";
 export const defaultProposals = [
@@ -184,6 +184,45 @@ export function createProposals(
   }
   return proposalsArray;
 }
+
+export function createProposalTallyResponse(
+  yes: string,
+  abstain: string,
+  no: string,
+  noWithVeto: string,
+) {
+  return {
+    tally: createProposalTallyResult(yes, abstain, no, noWithVeto)
+  }
+}
+
+export function createProposalTallyResult(
+  yes: string,
+  abstain: string,
+  no: string,
+  noWithVeto: string,
+) {
+  return {
+    yes: yes,
+    abstain: abstain,
+    no: no,
+    no_with_veto: noWithVeto,
+  }
+}
+
+export function expectTallyResult(
+  result: ProposalTallyResult | undefined,
+  yes: bigint,
+  abstain: bigint,
+  no: bigint,
+  noWithVeto: bigint
+) {
+  expect(result?.yes).toBe(yes);
+  expect(result?.no).toBe(no);
+  expect(result?.abstain).toBe(abstain);
+  expect(result?.noWithVeto).toBe(noWithVeto);
+}
+
 export function expectEmptyProposals(proposalsData: { proposals: Proposal[], numberOfActive: number } | undefined) {
   expect(proposalsData).not.toBeUndefined();
   expect(proposalsData?.proposals.length).toBe(0);

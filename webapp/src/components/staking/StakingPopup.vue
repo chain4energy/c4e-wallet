@@ -44,7 +44,7 @@
         </div>
         <div class="validationPopup__description">
           <label style="width: 100%;" for="amount">
-            <span v-for="item in keplrResult" :key="item">{{item}}</span>
+            <ul v-for="item in keplrResult" :key="item"><li>{{item}}</li></ul>
             <input :placeholder="$t('COMMON.INPUT.AMOUNT') " autocomplete="off" style="width: 100%;" name="amount"  v-model="amount">
           </label>
         </div>
@@ -70,12 +70,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted, PropType } from "vue";
+import { computed, onUnmounted, onUpdated, PropType } from "vue";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from "@/models/store/validator";
 import {ref} from "vue";
 import { useValidatorsStore } from "@/store/validators.store";
-import { object, number, setLocale } from 'yup';
+import { object, number, setLocale, string } from "yup";
 import { useToast } from "vue-toastification";
 import dataService from '@/services/data.service';
 
@@ -91,97 +91,86 @@ const redelegateTo = ref()
 
 const canModify = computed(() => useUserStore().getConnectionType);
 const validators = computed(() => {
-    return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress)
-  // return props.validator.operator_address
+    return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress);
   });
+const refreshedValidator = computed(() =>{
+  return useValidatorsStore().getValidators.find(element => element.operatorAddress === props.validator.operatorAddress);
+})
 const actionRedelegate = ref(false)
 const amount = ref('');
-const keplrResult = ref('');
+const keplrResult = ref();
 const emit = defineEmits(['close', 'success']);
 
-let max = useUserStore().getTotal
 
 setLocale({
-  number: {
-    lessThan: `must be less than ${max}`,
-    moreThan: 'should be more than 0'
-  },
   mixed: {
     defined: `this is required field`,
-    notType: `must be a number`,
+    notType: `must be a number in format xxx.xxx`,
   }
 });
+const amountSchema = ref()
+function createAmountSchema(){
+  amountSchema.value = object({
+    value:
+      string()
+        .defined()
+        .matches(/^\d{0,10}(\.\d{0,6})?$/gm, "must have not more than 6 digits after dot"),
+    numDelegation:
+      number()
+        .moreThan(0, "should be more than 0")
+        .lessThan(Number(useUserStore().getBalanceViewAmount()),`must be less than ${useUserStore().getBalanceViewAmount()}`), // TODO some bigint validation
+    numUnDelegation:
+      number()
+        .moreThan(0, "should be more than 0")
+        .lessThan(Number(refreshedValidator.value.delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
+    numRedelegate:
+      number()
+        .moreThan(0, "should be more than 0")
+        .lessThan(Number(refreshedValidator.value.delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
+  });
+}
 
-let amountSchema = object({
-  value:
-    number()
-    .defined()
-    .moreThan(0)
-    .lessThan(Number(useUserStore().getTotal)) // TODO some bigint validation
+onUpdated(()=>{
+  createAmountSchema();
 });
 
 
 async function delegate() {
   try {
-    await amountSchema.validate(amount);
-    // const transaction: transaction = {
-    //   validatorSrcAddress: props.validator.operator_address,
-    //   amount: amount.value,
-    //   type: type
-    // };
-    //   await useUserStore().tokensTransaction(transaction).then((res) =>{
-    //     emit('success', "success");
-    //     toast.success('transaction passed')
-    //   })
+    await amountSchema.value.validate({value:amount.value, numDelegation: Number(amount.value) });
     await useUserStore().delegate(props.validator.operatorAddress, amount.value)
       .then((resp) => {
-      emit('success')
-    });
+        console.log(resp)
+        emit('success');
+      });
+
   } catch (err) {
-    // keplrResult.value = err.errors;
-    keplrResult.value = 'error';
+    keplrResult.value = err.errors;
     toast.error('transaction failed')
   }
 }
 
 async function undelegate() {
+
   try {
-    await amountSchema.validate(amount);
-    // const transaction: transaction = {
-    //   validatorSrcAddress: props.validator.operator_address,
-    //   amount: amount.value,
-    //   type: type
-    // };
-      // await useUserStore().tokensTransaction(transaction).then((res) =>{
-      //   emit('success', "success");
-      //   toast.success('transaction passed')
-      // })
-    await useUserStore().undelegate(props.validator.operatorAddress, amount.value).then((resp) => {
+    await amountSchema.value.validate({value:amount.value, numUnDelegation: Number(amount.value) });
+    await useUserStore().undelegate(props.validator.operatorAddress, String(amount.value)).then((resp) => {
       emit('success')
     });
   } catch (err) {
-    // keplrResult.value = err.errors;
-     keplrResult.value = 'error';
+    keplrResult.value = err.errors;
     toast.error('transaction failed')
   }
 }
 
 async function redelegate() {
   try {
-    await amountSchema.validate(amount);
-    // const transaction: transaction= {
-    //   delegatorAddress: useUserStore().getAccount.address,
-    //   address: props.validator.operator_address,
-    //   validatorDstAddress: redelegateTo.value.operator_address,
-    //   amount: amount.value,
-    //   type: 'redelegate'
-    // };
-    // useUserStore().tokensTransaction(transaction)
-    useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, amount.value).then((resp) => {
+    await amountSchema.value.validate({value:amount.value, numRedelegate: Number(amount.value) });
+    useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value)).then((resp) => {
       emit('success')
     });
   } catch (err) {
-    keplrResult.value = 'error';
+    keplrResult.value = err.errors;
     toast.error('transaction failed')
   }
 }

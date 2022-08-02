@@ -36,8 +36,8 @@
 
 import {ref} from "vue";
 import {useUserStore} from "@/store/user.store";
-import { VoteOption } from "@/api/account.api";
 import dataService from '@/services/data.service';
+import { VoteOption } from "@/models/store/proposal";
 
 // const props = defineProps({
 //   title: {

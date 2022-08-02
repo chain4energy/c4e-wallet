@@ -1,5 +1,5 @@
-import { GovernanceParameters } from "@/models/blockchain/proposals";
-import { mapDepositParams, mapProposal, mapProposalByID, mapProposals, mapTallyParams } from "@/models/mapper/proposals.mapper";
+import { GovernanceParameters, Tally } from "@/models/blockchain/proposals";
+import { mapDepositParams, mapProposal, mapProposalByID, mapProposals, mapProposalTallyResult, mapTallyParams } from "@/models/mapper/proposals.mapper";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { createPinia, setActivePinia } from "pinia";
 import { expectCoin } from "../utils/common.blockchain.data.util";
@@ -7,10 +7,11 @@ import {
   createDepositParamsResponseData,
   createProposal,
   createProposals,
+  createProposalTallyResult,
   createTallyParamsResponseData,
   defaultProposals,
   defaultProposalsParameters,
-  expectProposal, expectProposals, expectTallyParams
+  expectProposal, expectProposals, expectTallyParams, expectTallyResult
 } from "../utils/proposal.blockchain.data.util";
 
 const proposalId = defaultProposals[0];
@@ -42,6 +43,65 @@ describe('tests mapping of proposals related data',  () => {
     expectProposals(storeProposals);
 
   });
+
+  it('map tally result', async ()=> {
+    const yes = 123n;
+    const abstain = 12334n;
+    const no = 43850834075n;
+    const noWithVeto = 19283012073n;
+    const tallyResp = createProposalTallyResult(yes.toString(), abstain.toString(), no.toString(), noWithVeto.toString());
+    const storeTally = mapProposalTallyResult(tallyResp);
+    expectTallyResult(storeTally, yes, abstain, no, noWithVeto);
+  })
+
+
+  it('map tally result - undefined tally params', async ()=> {
+    expect(()=> {mapProposalTallyResult(undefined)}).toThrowError(new Error('mapProposalTallyResult -tally is undefined'));
+  })
+
+  it('map tally result - no yes', async ()=> {
+    const brokenTally = {
+      // yes: '123',
+      abstain: '12334',
+      no: '43850834075',
+      no_with_veto: '19283012073',
+    } as Tally
+    expect(()=> {mapProposalTallyResult(brokenTally)}).toThrowError(new Error('mapProposalTallyResult - some of tally votes is undefined'));
+
+  })
+
+  it('map tally result - no abstain', async ()=> {
+    const brokenTally = {
+      yes: '123',
+      // abstain: '12334',
+      no: '43850834075',
+      no_with_veto: '19283012073',
+    } as Tally
+    expect(()=> {mapProposalTallyResult(brokenTally)}).toThrowError(new Error('mapProposalTallyResult - some of tally votes is undefined'));
+
+  })
+
+  it('map tally result - no no', async ()=> {
+    const brokenTally = {
+      yes: '123',
+      abstain: '12334',
+      // no: '43850834075',
+      no_with_veto: '19283012073',
+    } as Tally
+    expect(()=> {mapProposalTallyResult(brokenTally)}).toThrowError(new Error('mapProposalTallyResult - some of tally votes is undefined'));
+
+  })
+
+  it('map tally result - no no_with_veto', async ()=> {
+    const brokenTally = {
+      yes: '123',
+      abstain: '12334',
+      no: '43850834075',
+      // no_with_veto: '19283012073',
+    } as Tally
+    expect(()=> {mapProposalTallyResult(brokenTally)}).toThrowError(new Error('mapProposalTallyResult - some of tally votes is undefined'));
+
+  })
 
   it('map tally params', async ()=> {
     const quorum = 0.23432;

@@ -1,6 +1,7 @@
 import {Coin, findByDenom, toPercentage} from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { divideBigInts } from "./big.decimal";
+import { VoteOption as CosmVoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
 
 export enum ProposalStatus {
   PASSED= 'PROPOSAL_STATUS_PASSED' ,
@@ -10,11 +11,19 @@ export enum ProposalStatus {
   DEPOSIT_PERIOD = 'PROPOSAL_STATUS_DEPOSIT_PERIOD',
   VOTING_PERIOD = 'PROPOSAL_STATUS_VOTING_PERIOD'
 }
+
+export enum VoteOption {
+  Yes = CosmVoteOption.VOTE_OPTION_YES,
+  Abstain = CosmVoteOption.VOTE_OPTION_ABSTAIN,
+  No = CosmVoteOption.VOTE_OPTION_NO,
+  NoWithVeto = CosmVoteOption.VOTE_OPTION_NO_WITH_VETO,
+}
+
 export class Proposal {
   proposalId: number;
   content: ProposalContent;
   status: ProposalStatus;
-  finalTallyResult: ProposalsTallyRes;
+  finalTallyResult: ProposalTallyResult;
   submitTime: Date;
   depositEndTime: Date;
   totalDeposit: Array<Coin>;
@@ -24,7 +33,7 @@ export class Proposal {
     proposalId: number,
     content: ProposalContent,
     status: ProposalStatus,
-    finalTallyResult: ProposalsTallyRes,
+    finalTallyResult: ProposalTallyResult,
     submitTime: Date,
     depositEndTime: Date,
     totalDeposit: Array<Coin>,
@@ -46,6 +55,10 @@ export class Proposal {
     return this.status === ProposalStatus.DEPOSIT_PERIOD;
   }
   
+  public isVotingPeriod() {
+    return this.status === ProposalStatus.VOTING_PERIOD;
+  }
+
   public getTotalDepositByDenom(denom = useConfigurationStore().config.stakingDenom): Coin {
     return findByDenom(this.totalDeposit, denom);
   }
@@ -80,7 +93,7 @@ export class ProposalsValue{
   }
 }
 
-export class ProposalsTallyRes{
+export class ProposalTallyResult{
   yes: bigint;
   abstain: bigint;
   no: bigint;

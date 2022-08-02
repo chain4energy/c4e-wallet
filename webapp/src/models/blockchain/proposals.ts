@@ -16,12 +16,7 @@ export interface Proposal {
     // changes: Array<ProposalChanges>
   },
   status: string,
-  final_tally_result: {
-    yes: string,
-    abstain: string,
-    no: string,
-    no_with_veto: string,
-  },
+  final_tally_result: Tally,
   submit_time: string,
   deposit_end_time: string,
   total_deposit:Array<Coin>
@@ -56,3 +51,14 @@ export interface TallyParams {
   threshold: string;
   veto_threshold: string;
 }
+
+export interface Tally {
+  yes: string,
+  abstain: string,
+  no: string,
+  no_with_veto: string,
+}
+export interface TallyResponse {
+  tally: Tally
+}
+

@@ -7,7 +7,6 @@ import { RequestResponse } from '@/models/request-response';
 import { useConfigurationStore } from "./configuration.store";
 import { Delegations, UnbondingDelegations } from "@/models/store/staking";
 import { Rewards } from "@/models/store/distribution";
-import { VoteOption } from "@/api/account.api";
 import { TxBroadcastError, TxData } from "@/api/tx.broadcast.base.api";
 import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
@@ -17,6 +16,7 @@ import { useBlockStore } from "./block.store";
 import i18n from "@/plugins/i18n";
 import { formatString } from "@/utils/string-formatter";
 import { useProposalsStore } from "./proposals.store";
+import { VoteOption } from "@/models/store/proposal";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);

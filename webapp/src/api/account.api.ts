@@ -21,7 +21,6 @@ import {
   MsgUndelegate,
 } from "cosmjs-types/cosmos/staking/v1beta1/tx";
 import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
-import { VoteOption as CosmVoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
 
 import {
   MsgWithdrawDelegatorReward
@@ -35,13 +34,9 @@ import { mapRewards } from "@/models/mapper/distribution.mapper";
 import { mapCoin } from "@/models/mapper/common.mapper";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { BigDecimal } from "@/models/store/big.decimal";
+import { VoteOption } from "@/models/store/proposal";
 
-export enum VoteOption {
-  Yes = CosmVoteOption.VOTE_OPTION_YES,
-  Abstain = CosmVoteOption.VOTE_OPTION_ABSTAIN,
-  No = CosmVoteOption.VOTE_OPTION_NO,
-  NoWithVeto = CosmVoteOption.VOTE_OPTION_NO_WITH_VETO,
-}
+
 
 export class AccountApi extends TxBroadcastBaseApi {
 

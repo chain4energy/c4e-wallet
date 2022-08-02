@@ -10,7 +10,9 @@ import {
   expectProposal,
   expectProposals,
   expectTallyParams,
-  createDepositParamsResponseData
+  createDepositParamsResponseData,
+  createProposalTallyResponse,
+  expectTallyResult
 } from "../utils/proposal.blockchain.data.util";
 import { mockAxios } from "../utils/mock.util";
 import { axiosErrorMessagePrefix, createErrorResponse, defaultAxiosErrorName, defaultDenom, defaultErrorName, expectCoin } from "../utils/common.blockchain.data.util";
@@ -179,5 +181,69 @@ describe('test proposals API', () => {
     expect(result.error).toBeUndefined();
     expect(result.data).not.toBeUndefined();
     expect(result.data?.proposal.proposalId).toEqual(Number(proposal.data.proposal.proposal_id))
+  });
+
+
+
+
+
+
+
+
+
+
+  it('fetch tally result', async ()=> {
+    const yes = 123n;
+    const abstain = 12334n;
+    const no = 43850834075n;
+    const noWithVeto = 19283012073n;
+
+    const tally = {
+      data: createProposalTallyResponse(yes.toString(), abstain.toString(), no.toString(), noWithVeto.toString())
+    };
+
+    mockedAxios.request.mockResolvedValue(tally);
+    const result = await api.fetchVotingProposalTallyResult(2, false)
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data).not.toBeUndefined()
+    if (result.data) {
+      expectTallyResult(result.data, yes, abstain, no, noWithVeto);
+    }
+  });
+
+  it('fetch tally result - wrong data', async ()=> {
+    const tally = {
+      data: {}
+    };
+
+    mockedAxios.request.mockResolvedValue(tally);
+    const result = await api.fetchVotingProposalTallyResult(2, false)
+    expect(result.isError()).toBe(true)
+    expect(result.isSuccess()).toBe(false)
+    expect(result.data).toBeUndefined()
+    expect(result.error).not.toBeUndefined()
+    expect(result.error?.name).toBe(defaultErrorName);
+    expect(result.error?.message).toBe('mapProposalTallyResult -tally is undefined');
+    expect(result.error?.data).toBeUndefined();
+    
+  });
+
+  it('fetch tally result - error', async ()=> {
+    const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
+
+    const status = 400;
+    const error = createErrorResponse(status, 3, errorMessage);
+
+    mockedAxios.request.mockRejectedValueOnce(error);
+    const result = await api.fetchVotingProposalTallyResult(2, false)
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultAxiosErrorName);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
+    expect(result.error?.data?.code).toBe(3);
+    expect(result.error?.data?.message).toBe(errorMessage);
+  
   });
 });
