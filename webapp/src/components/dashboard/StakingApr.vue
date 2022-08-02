@@ -1,14 +1,10 @@
 <template>
-  <div class="container">
-    <div class="left">
+  <div class="tile">
       <Icon name="Coins"></Icon>
-    </div>
-    <div class="right">
-      <div>{{ $t('DASHBOARD_VIEW.STAKING_APR') }}</div>
-      <div class="info">
-        <span>17,84%</span>
+      <div class="text">
+        <span class="label">{{ $t('DASHBOARD_VIEW.STACKING_APR') }}</span>
+        <span class="value">17,84%</span>
       </div>
-    </div>
   </div>
 </template>
 
@@ -19,21 +15,5 @@ import Icon from "../features/IconComponent.vue";
 </script>
 
 <style scoped lang="scss">
-.container {
-  display: flex;
-  flex-wrap: wrap;
 
-  padding: 15px 10px;
-  width: 244px;
-  height: 112px;
-  box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
-  .left {
-
-  }
-  .right{
-    .info {
-      font-weight:bold;
-    }
-  }
-}
 </style>

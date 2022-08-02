@@ -1,9 +1,9 @@
 <template>
   <div class="tile">
-    <Icon name="Circle"></Icon>
+    <Icon name="Link"></Icon>
     <div class="text">
-      <span class="label">{{ $t('DASHBOARD_VIEW.CIRCULATING_SUPPLY') }}</span>
-      <span class="value small">1231231231 c4e</span>
+      <span class="label">{{ $t('DASHBOARD_VIEW.BONDED_TOKENS') }}</span>
+      <span class="value">464644/7117812</span>
     </div>
   </div>
 </template>

@@ -1,7 +1,6 @@
 <template>
-
-  <div v-for="proposal in useProposalsStore().getProposals" :key="proposal" >
-    <proposal-governance :proposal="proposal"></proposal-governance>
+  <div class="proposals-grid">
+      <proposal-governance v-for="proposal in useProposalsStore().getProposals" :key="proposal" :proposal="proposal"></proposal-governance>
   </div>
 </template>
 <script lang="ts">
@@ -50,6 +49,19 @@ const load = () => {
 
 </script>
 
-<style scoped>
+<style lang='scss' scoped>
+.proposals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+  box-sizing: border-box;
+  width: 100%;
+}
 
+@media screen and (max-width: 990px) {
+  .proposals-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

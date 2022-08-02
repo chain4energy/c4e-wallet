@@ -1,32 +1,34 @@
 <template>
-  <div class="container">
-    <div class="left">
-      <div class="top">{{ $t("DASHBOARD_VIEW.POOLS") }}</div>
-      <div class="info">
-        <div >
-          <div><div class="color-div" style="background-color:#fff1a9"></div> {{ $t("DASHBOARD_VIEW.COMMUNITY_POOL") }}</div>
+  <div class="pools-tile">
+    <div class="legend">
+      <h5 style="font-weight: bold; margin-bottom: 10px;">{{ $t("DASHBOARD_VIEW.POOLS") }}</h5>
+        <div class="legend-item">
+          <div class="dot" style="background: #fff1a9"> </div>
+          <div> {{ $t("DASHBOARD_VIEW.COMMUNITY_POOL") }}</div>
+          <Icon name="ArrowRight" />
           <div style="font-weight: bold">
             {{ communityPool }} {{tokensStore.getCommunityPool.getViewDenom()}}
           </div>
         </div>
-        <div >
-          <div><div class="color-div" style="background-color:#72bf44"></div> {{ $t("DASHBOARD_VIEW.STRATEGIC_REVERSE_POOL") }}</div>
+        <div class="legend-item">
+          <div class="dot" style="background: #72bf44"></div>
+          <div> {{ $t("DASHBOARD_VIEW.STRATEGIC_REVERSE_POOL") }}</div>
+          <Icon name="ArrowRight" />
           <div style="font-weight: bold">{{ strategicReversePool }} {{ tokensStore.getStrategicReversePool.getViewDenom() }}
           </div>
         </div>
-        <div >
-          <div><div class="color-div" style="background-color:#26697f"></div> {{ $t("DASHBOARD_VIEW.AIRDROP") }}</div>
+        <div class="legend-item">
+          <div class="dot" style="background: #26697f"></div>
+          <div> {{ $t("DASHBOARD_VIEW.AIRDROP") }}</div>
+          <Icon name="ArrowRight" />
           <div style="font-weight: bold">{{ airdropPool }} {{ tokensStore.getAirdropPool.getViewDenom() }}
           </div>
         </div>
-      </div>
     </div>
-    <div class="right">
       <div id="chartdiv">
         <v-chart :option="option" autoresize />
-      </div>
-
     </div>
+
 
   </div>
 
@@ -39,6 +41,7 @@ import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import {computed, onBeforeMount, ref} from "vue";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
+import Icon from "../features/IconComponent.vue";
 import {useTokensStore} from "@/store/tokens.store";
 import { createDashboardPoolsChartData } from "@/charts/dashboard";
 
@@ -74,49 +77,10 @@ const option = computed(() => {
 </script>
 
 <style scoped lang="scss">
-.container {
-  display: flex;
-  flex-wrap: wrap;
-  height: 250px;
-  width: 100%;
-  max-width: 450px;
-  margin: auto auto 30px;
-
-  box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
-  .top {
-    height: 15%;
-    font-weight: bold;
-  }
-  .bottom{
-    display: flex;
-  }
-  .left {
-    width: 50%;
-    .info {
-      text-align: left;
-      word-wrap: break-word;
-      .color-div{
-        width:20px;
-        height:20px;
-        float:left;
-        border-radius: 50%;
-      }
-    }
-  }
-  .right{
-    min-height: 200px;
-    padding-top: 2%;
-    width: 50%;
-    height: 100%;
-  }
-}
-
 #chartdiv {
-  width: 100%;
-  height: 100%;
-
-  padding-top: 5px;
-  margin: 0 auto;
+  width: 80%;
+  margin-bottom: -30px;
+  margin-left: -10px;
   background: transparent url("@/assets/logo.png") no-repeat center ;
   background-size: 50px;
 }

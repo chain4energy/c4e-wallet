@@ -170,10 +170,15 @@ const option = computed(() => {
 @import '../../styles/variables.scss';
 
 .proposal-container {
-  max-width: 562px;
-  min-height: 317px;
+  min-height: 320px;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   border-radius: 10px;
+
+  &:hover {
+    cursor: pointer;
+    background: rgb(245, 245, 245);
+  }
+
   .top {
     overflow: auto;
     .id {
