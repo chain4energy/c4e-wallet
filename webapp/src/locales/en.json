@@ -47,7 +47,8 @@
     "YOUR_VOTE": "Your vote",
     "VOTE_CONDITION": "To make voting you have to be logged in",
     "VOTE": "Vote",
-    "LOGIN": "Login"
+    "LOGIN": "Login",
+    "USER_VOTE": "You voted:"
   },
   "DASHBOARD_VIEW": {
     "VALIDATORS": "Validators",

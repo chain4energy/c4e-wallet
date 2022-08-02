@@ -2,6 +2,18 @@
   <div v-if="proposal" class="details-container">
     <div class="id"><h3>#{{ proposal.proposalId }}</h3> </div>
     <h4 style="padding-left:20px">{{ proposal.content.title }}</h4>
+    <div v-if="useProposalsStore().userVote === VoteOption.Yes" class="user-vote-yes">
+      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} {{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES') }}
+    </div>
+    <div v-else-if="useProposalsStore().userVote === VoteOption.Abstain" class="user-vote-abstain">
+      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} {{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN') }}
+    </div>
+    <div v-else-if="useProposalsStore().userVote === VoteOption.No" class="user-vote-no">
+      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} {{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO') }}
+    </div>
+    <div v-else-if="useProposalsStore().userVote === VoteOption.NoWithVeto" class="user-vote-veto">
+      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} {{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO') }}
+    </div>
     <div class="info">
       <div class="left">
         <div>{{ $t("GOVERNANCE_VIEW.TOTAL_DEPOSIT") }}:</div>
@@ -34,6 +46,7 @@
 import moment from "moment";
 import {useProposalsStore} from "@/store/proposals.store";
 import { Proposal } from "@/models/store/proposal";
+import { VoteOption } from "@/models/store/proposal";
 
 const props = defineProps<{
   proposal?: Proposal
@@ -54,6 +67,19 @@ const formattedDate = (value: Date) => {
   border-radius: 10px;
   .id{
     padding: 15px 20px;
+  }
+
+  .user-vote-yes {
+    background-color: #72bf44;
+  }
+  .user-vote-abstain {
+    background-color: #27697f;
+  }
+  .user-vote-no {
+    background-color: #e02626;
+  }
+  .user-vote-veto {
+    background-color: #fff1a9;
   }
   .info {
     display: flex;

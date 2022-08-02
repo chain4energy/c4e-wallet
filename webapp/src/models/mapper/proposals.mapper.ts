@@ -8,9 +8,11 @@ import {
   ProposalTallyResult,
   ProposalStatus,
   TallyParams,
+  VoteOption,
 } from "@/models/store/proposal";
 import { Coin } from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
+import { ProposalVoteResponse } from "../hasura/proposal.vote";
 
 export function mapProposals(proposals: BcProposal[] | undefined): { proposals: StoreProposal[], numberOfActive: number }  {
   if (proposals === undefined) {
@@ -118,6 +120,7 @@ function mapProposalStatus(proposalStatus: string | undefined): ProposalStatus  
   }
 }
 
+
 export function mapTallyParams(governanceParams: GovernanceParameters | undefined): TallyParams  {
   if (governanceParams === undefined) {
     throw new Error('mapTallyParams - governanceParams is undefined');
@@ -148,4 +151,35 @@ export function mapDepositParams(governanceParams: GovernanceParameters | undefi
   }
   const coin = governanceParams.deposit_params.min_deposit.find(c => c.denom === useConfigurationStore().config.stakingDenom);
   return mapCoin(coin, useConfigurationStore().config.stakingDenom);
+}
+
+export function mapProposalVoteResponse(proposalVoteResponse: ProposalVoteResponse | undefined): VoteOption | null {
+  if (proposalVoteResponse === undefined) {
+    throw new Error('mapProposalVoteResponse - proposal vote response is undefined');
+  }
+  if (proposalVoteResponse.data === undefined) {
+    throw new Error('mapProposalVoteResponse - proposal vote response data is undefined');
+  }
+  if (proposalVoteResponse.data.proposal_vote === undefined) {
+    throw new Error('mapProposalVoteResponse - proposal vote is undefined');
+  }
+  if (proposalVoteResponse.data.proposal_vote.length === 0) {
+    return null;
+  }
+  switch (proposalVoteResponse.data.proposal_vote[0].option) {
+    case "VOTE_OPTION_YES": {
+      return VoteOption.Yes;
+    }
+    case "VOTE_OPTION_ABSTAIN": {
+      return VoteOption.Abstain;
+    }
+    case "VOTE_OPTION_NO":{
+      return VoteOption.No;
+    }
+    case "VOTE_OPTION_NO_WITH_VETO": {
+      return VoteOption.NoWithVeto;
+    }
+    default:
+      throw new Error(`Unsupported vote option: '${proposalVoteResponse.data.proposal_vote[0].option}'`);
+  }
 }

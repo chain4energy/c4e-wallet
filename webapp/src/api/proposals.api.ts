@@ -1,14 +1,15 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import { RequestResponse } from "@/models/request-response";
-import BaseApi, { BlockchainPagination } from "@/api/base.api";
-import {Proposal, ProposalTallyResult, TallyParams } from "@/models/store/proposal";
+import BaseApi, { BlockchainPagination, HasuraErrorData } from "@/api/base.api";
+import {Proposal, ProposalTallyResult, TallyParams, VoteOption } from "@/models/store/proposal";
 import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
 import { ProposalsResponse, ProposalResponse, GovernanceParameters, TallyResponse } from "@/models/blockchain/proposals";
-import { mapDepositParams, mapProposalByID, mapProposals, mapProposalTallyResult, mapTallyParams } from "@/models/mapper/proposals.mapper";
+import { mapDepositParams, mapProposalByID, mapProposals, mapProposalVoteResponse, mapProposalTallyResult, mapTallyParams } from "@/models/mapper/proposals.mapper";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { Coin } from "@/models/store/common";
 import queries from "./queries";
 import { formatString } from "@/utils/string-formatter";
+import { ProposalVoteResponse } from "@/models/hasura/proposal.vote";
 
 export class ProposalsApi extends BaseApi {
 
@@ -61,5 +62,12 @@ export class ProposalsApi extends BaseApi {
     const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+formatString(this.PROPOSAL_TALLY_URL, {id: id}),
       mapData, lockscreen, null, 'fetchVotingProposalTallyResult - ');
     return result;
+  }
+
+  public async fetchProposalVote(id: number, voter: string, lockscreen: boolean): Promise<RequestResponse<VoteOption | null, ErrorData<HasuraErrorData>>> {
+    const mapData = (hasureData: ProposalVoteResponse | undefined) => { 
+        return mapProposalVoteResponse(hasureData); 
+    };
+    return this.axiosHasuraCall(formatString(queries.hasura.PROPOSAL_USER_VOTE_URL, {proposalId: id, voter: voter}), mapData, lockscreen, null, 'fetchProposalVote - ');
   }
 }

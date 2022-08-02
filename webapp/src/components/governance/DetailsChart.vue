@@ -3,7 +3,7 @@
     <div class="top">
 
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
-      <span>{{ proposal.finalTallyResult.getTotalView(2, true) }} {{ useConfigurationStore().config.getViewDenom() }}</span>
+      <span>{{ useProposalsStore().getProposalTally(proposal).getTotalView(2, true) }} {{ useConfigurationStore().config.getViewDenom() }}</span>
     </div>
     <div class="chartdiv">
       <v-chart :option="option" autoresize />

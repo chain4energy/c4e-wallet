@@ -23,7 +23,7 @@ export default {
       '}' +
     '}',
     PROPOSAL_USER_VOTE_URL: 'query MyQuery {' +
-      'proposal_vote(where: {proposal_id: {_eq: {proposal_id}}, voter_address: {_eq: "{voter}"}}) {' +
+      'proposal_vote(where: {proposal_id: {_eq: {proposalId}}, voter_address: {_eq: "{voter}"}}) {' +
         'option' +
       '}' +
     '}' 

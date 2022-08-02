@@ -1,12 +1,14 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {Proposal, ProposalTallyResult, TallyParams} from "@/models/store/proposal";
+import {Proposal, ProposalTallyResult, TallyParams, VoteOption} from "@/models/store/proposal";
 import { useToast} from "vue-toastification";
 import { Coin } from "@/models/store/common";
 import { useConfigurationStore } from "./configuration.store";
 import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
+import { useUserStore } from "./user.store";
+import i18n from "@/plugins/i18n";
 
 const toast = useToast()
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -20,7 +22,8 @@ interface ProposalsState {
   proposalTally: ProposalTallyResult | undefined
   paginationKey: string | null
   tallyParams: TallyParams,
-  minDeposit: Coin
+  minDeposit: Coin,
+  userVote: VoteOption | null;
 }
 
 export const useProposalsStore = defineStore({
@@ -36,7 +39,8 @@ export const useProposalsStore = defineStore({
       proposalTally: undefined,
       paginationKey: null,
       tallyParams: new TallyParams(Number.NaN, Number.NaN, Number.NaN),
-      minDeposit: new Coin(0n, useConfigurationStore().config.stakingDenom)
+      minDeposit: new Coin(0n, useConfigurationStore().config.stakingDenom),
+      userVote: null
     };
   },
   actions: {
@@ -71,12 +75,21 @@ export const useProposalsStore = defineStore({
       lockscreen = true,
       forceRemoteFetch = false
     ){
+      logger.logToConsole(LogLevel.INFO, 'fetchProposalById ')
+
       const remoteFetch = async () => {
-        await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then((resp) => {
+        await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then(async (resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.proposal = resp.data.proposal;
+            const promises = Array<Promise<void>>();
+            if (useUserStore().isLoggedIn) {
+              promises.push(this.fetchProposalUserVote(id, useUserStore().getAccount.address))
+            }
             if (resp.data.proposal.isVotingPeriod()) {
-              this.fetchVotingProposalTallyResult(id, true, lockscreen);
+              promises.push(this.fetchVotingProposalTallyResult(id, true, lockscreen));
+            }
+            if (promises.length > 0) {
+              await Promise.all(promises);
             }
             if (onSuccess) {
               onSuccess();
@@ -97,6 +110,9 @@ export const useProposalsStore = defineStore({
       const proposal = this.getProposalById(id);
       if(proposal !== undefined) {
         this.proposal = proposal;
+        if (useUserStore().isLoggedIn) {
+          await this.fetchProposalUserVote(id, useUserStore().getAccount.address);
+        }
         if (onSuccess) {
           onSuccess();
         }
@@ -115,6 +131,19 @@ export const useProposalsStore = defineStore({
           }
         } else {
           const message = 'Error fetching proposal tally data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
+        }
+      });
+    },
+
+    async fetchProposalUserVote(id: number, voter: string, lockscreen = true) {
+      logger.logToConsole(LogLevel.INFO, 'fetchProposalUserVote')
+      await apiFactory.proposalsApi().fetchProposalVote(id, voter, lockscreen).then((resp) => {
+        if (resp.isSuccess() && resp.data !== undefined){
+          this.userVote = resp.data;
+        } else {
+          const message = 'Error fetching proposal user vote';
           logger.logToConsole(LogLevel.ERROR, message);
           toast.error(message);
         }
@@ -154,6 +183,11 @@ export const useProposalsStore = defineStore({
     clearProposal() {
       this.proposal = undefined;
       this.proposalTally = undefined;
+      this.userVote = null;
+
+    },
+    clearUserVote() {
+      this.userVote = null;
     },
     clear() {
       this.clearProposals();
@@ -201,8 +235,26 @@ export const useProposalsStore = defineStore({
         return proposal.finalTallyResult;
       }
       
+    },
+    getUserVoteView(): string | null {
+      if (this.userVote !== null) {
+        switch(this.userVote) {
+          case VoteOption.Yes: {
+            return i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES')
+          }
+          case VoteOption.Abstain: {
+            return i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN')
+          }
+          case VoteOption.No: {
+            return i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO')
+          }
+          case VoteOption.NoWithVeto: {
+            return i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO')
+          }
+        }
+      }
+      return null;
     }
   }
 });
-
 

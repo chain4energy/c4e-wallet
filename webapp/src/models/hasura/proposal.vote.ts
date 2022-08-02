@@ -1,5 +1,5 @@
 export interface ProposalVoteResponse {
-  dat: {
+  data: {
     proposal_vote: {
       option: string
     }[]
