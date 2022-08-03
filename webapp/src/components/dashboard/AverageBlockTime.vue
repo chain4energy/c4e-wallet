@@ -1,9 +1,10 @@
 <template>
-  <div class="container">
-    <div>{{ $t("DASHBOARD_VIEW.AVERAGE_BLOCK_TIME") }}</div>
-    <div class="info">
-      {{ blockStore.getAverageBlockTimeView() }}s
-    </div>
+  <div class="tile">
+      <Icon name="Clock"></Icon>
+      <div class="text">
+        <span class="label">{{ $t('DASHBOARD_VIEW.AVERAGE_BLOCK_TIME') }}</span>
+        <span class="value small">{{ blockStore.getAverageBlockTimeView() }}s</span>
+      </div>
   </div>
 </template>
 

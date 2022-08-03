@@ -103,6 +103,6 @@ const option = computed(() => {
   height: 100%;
   overflow: visible;
   margin-right: 70px;
-    margin-left: -300px;
+    // margin-left: -300px;
 }
 </style>

@@ -15,7 +15,8 @@
           </svg>
           <h2>{{ validator.description.moniker }}</h2>
         </div>
-        <Button @click="$emit('close')">{{ $t('COMMON.CLOSE') }}</Button>
+          <Button icon="pi pi-times" style="width: 5px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
+
       </div>
       <div class="validationPopup__body">
         <h3>{{ $t('STAKING_VIEW.STAKING_POPUP.HEADER') }}</h3>
@@ -45,7 +46,10 @@
         <div class="validationPopup__description">
           <label style="width: 100%;" for="amount">
             <ul v-for="item in validationError" :key="item"><li>{{item}}</li></ul>
-            <input :placeholder="$t('COMMON.INPUT.AMOUNT') " autocomplete="off" style="width: 100%;" name="amount"  v-model="amount">
+            <span class="p-float-label" style="width: 100%">
+              <InputText id="amount" type="text" v-model="amount"  style="width: 100%" />
+              <label for="amount">{{$t('COMMON.INPUT.AMOUNT')}}</label>
+            </span>
           </label>
         </div>
       </div>
@@ -62,7 +66,7 @@
       </div>
 
       <div v-else class="validationPopup__btns">
-        <p> {{ $t('ERRORS.LOGIN_WALLET')}} </p>
+        {{ $t('ERRORS.LOGIN_WALLET')}}
         <Button @click="dataService.onKeplrLogIn()">{{ $t('LOGIN.LOGIN' )}}</Button> <!-- TODO is connectKeplr correct? -->
       </div>
     </div>
@@ -302,7 +306,7 @@ function redelegateState(state: boolean){
     display: flex;
     width: 100%;
     justify-content: flex-end;
-
+    align-items: center;
   }
 }
 </style>

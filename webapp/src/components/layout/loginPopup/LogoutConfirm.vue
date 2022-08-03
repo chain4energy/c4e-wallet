@@ -3,8 +3,11 @@
     <div class="loginPopup__background" @click="$emit('close')"></div>
     <div class="loginPopup__holder">
       <div class="loginChoose__holder">
-        <h2>Wallet</h2>
-        <Button @click="$emit('close')"> close </Button>
+        <div class="top-bar">
+          <h2>Wallet</h2>
+          <Button icon="pi pi-times" style="margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
+
+        </div>
         <div class="loginChoose__body">
           <div class="loginChoose__description">
             <div style="display: flex; align-items: center; justify-content: space-evenly;">
@@ -69,6 +72,14 @@ function copyTxt(){
 </script>
 
 <style scoped lang="scss">
+
+.top-bar {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .loginPopup {
   color: #001b31;
   position: fixed;

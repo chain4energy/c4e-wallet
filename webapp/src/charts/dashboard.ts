@@ -29,7 +29,7 @@ function createDashboardPoolsSingleChartData(formatter: any, data: { value: stri
     series: [{
       width: '90%',
       height: '90%',
-      center: ['55%', '50%'],
+      center: ['55%', '55%'],
       name: 'Pools',
       type: 'pie',
       radius: ['50%', '100%'],
@@ -136,13 +136,13 @@ function createTokenomicsSingleChartData(formatter: any, data: { value: string, 
     },
     series: [
       {
-        width: '100%',
-        height: '100%',
+        width: '130%',
+        height: '130%',
         startAngle: 180,
         endAngle: 360,
         type: 'pie',
-        radius: ['50%', '90%'],
-        center: ['50%', '43%'],
+        radius: ['50%', '85%'],
+        center: ['45%', '55%'],
         avoidLabelOverlap: true,
         label: {
           show: false,

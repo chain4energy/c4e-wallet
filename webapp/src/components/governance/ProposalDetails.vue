@@ -2,41 +2,37 @@
   <div v-if="proposal" class="details-container">
     <div class="id"><h3>#{{ proposal.proposalId }}</h3> </div>
     <h4 style="padding-left:20px">{{ proposal.content.title }}</h4>
-    <div v-if="useProposalsStore().userVote === VoteOption.Yes" class="user-vote-yes">
-      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} {{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES') }}
+    <div v-if="useProposalsStore().userVote === VoteOption.Yes" class="vote user-vote-yes">
+      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES') }}</b>
     </div>
-    <div v-else-if="useProposalsStore().userVote === VoteOption.Abstain" class="user-vote-abstain">
-      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} {{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN') }}
+    <div v-else-if="useProposalsStore().userVote === VoteOption.Abstain" class="vote user-vote-abstain">
+      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN') }}</b>
     </div>
-    <div v-else-if="useProposalsStore().userVote === VoteOption.No" class="user-vote-no">
-      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} {{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO') }}
+    <div v-else-if="useProposalsStore().userVote === VoteOption.No" class="vote user-vote-no">
+      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO') }}</b>
     </div>
-    <div v-else-if="useProposalsStore().userVote === VoteOption.NoWithVeto" class="user-vote-veto">
-      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} {{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO') }}
+    <div v-else-if="useProposalsStore().userVote === VoteOption.NoWithVeto" class="vote user-vote-veto">
+      {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO') }}</b>
     </div>
     <div class="info">
-      <div class="left">
-        <div>{{ $t("GOVERNANCE_VIEW.TOTAL_DEPOSIT") }}:</div>
-        <div>{{ $t("GOVERNANCE_VIEW.VOTING_START") }}:</div>
-        <div>{{ $t("GOVERNANCE_VIEW.VOTING_END") }}:</div>
-        <div>{{ $t("GOVERNANCE_VIEW.TYPE") }}:</div>
-        <div>{{ $t("GOVERNANCE_VIEW.SUBMIT_TIME") }}:</div>
-        <div>{{ $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") }}:</div>
-        <div>{{ $t("GOVERNANCE_VIEW.QUORUM") }}:</div>
-        <div>{{ $t("GOVERNANCE_VIEW.THRESHOLD") }}:</div>
-        <div>{{ $t("GOVERNANCE_VIEW.VETO_THRESHOLD") }}:</div>
-      </div>
-      <div class="right">
-        <div>{{ proposal.getTotalDepositByDenom().getViewAmount() }} {{ proposal.getTotalDepositByDenom().getViewDenom()  }}</div>
-        <div>{{formattedDate(proposal.votingStartTime) }}</div>
-        <div>{{formattedDate(proposal.votingEndTime) }}</div>
-        <div>{{ proposal.content.type }}</div>
-        <div>{{ formattedDate(proposal.submitTime) }}</div>
-        <div>{{ formattedDate(proposal.depositEndTime) }}</div>
-        <div>{{ proposalsStore.getTallyParams.getQuorumPercentageView() }}%</div>
-        <div>{{ proposalsStore.getTallyParams.getThresholdPercentageView() }}%</div>
-        <div>{{ proposalsStore.getTallyParams.getVetoThresholdPercentageView() }}%</div>
-      </div>
+        <span>{{ $t("GOVERNANCE_VIEW.TOTAL_DEPOSIT") }}:</span>
+        <span>{{ proposal.getTotalDepositByDenom().getViewAmount() }} {{ proposal.getTotalDepositByDenom().getViewDenom()  }}</span>
+        <span>{{ $t("GOVERNANCE_VIEW.VOTING_START") }}:</span>
+        <span>{{formattedDate(proposal.votingStartTime) }}</span>
+        <span>{{ $t("GOVERNANCE_VIEW.VOTING_END") }}:</span>
+        <span>{{formattedDate(proposal.votingEndTime) }}</span>
+        <span>{{ $t("GOVERNANCE_VIEW.TYPE") }}:</span>
+        <span>{{ proposal.content.type }}</span>
+        <span>{{ $t("GOVERNANCE_VIEW.SUBMIT_TIME") }}:</span>
+        <span>{{ formattedDate(proposal.submitTime) }}</span>
+        <span>{{ $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") }}:</span>
+        <span>{{ formattedDate(proposal.depositEndTime) }}</span>
+        <span>{{ $t("GOVERNANCE_VIEW.QUORUM") }}:</span>
+        <span>{{ proposalsStore.getTallyParams.getQuorumPercentageView() }}%</span>
+        <span>{{ $t("GOVERNANCE_VIEW.THRESHOLD") }}:</span>
+        <span>{{ proposalsStore.getTallyParams.getThresholdPercentageView() }}%</span>
+        <span>{{ $t("GOVERNANCE_VIEW.VETO_THRESHOLD") }}:</span>
+        <span>{{ proposalsStore.getTallyParams.getVetoThresholdPercentageView() }}%</span>
     </div>
   </div>
 </template>
@@ -61,12 +57,18 @@ const formattedDate = (value: Date) => {
 
 <style scoped lang="scss">
 .details-container{
+  box-sizing: border-box;
   text-align: left;
+  height: 100%;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
-  max-width: 700px;
   border-radius: 10px;
   .id{
     padding: 15px 20px;
+  }
+
+  .vote {
+    padding-left: 20px;
+    margin-bottom: 10px;
   }
 
   .user-vote-yes {
@@ -82,17 +84,33 @@ const formattedDate = (value: Date) => {
     background-color: #fff1a9;
   }
   .info {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    line-height: 1.8rem;
+    box-sizing: border-box;
+    padding: 20px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 
-    .left{
-      padding-left: 20px;
+    span {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
-    .right {
-      padding-left: 40px;
 
+    span:nth-child(odd) {
+      color: grey;
     }
+    
   }
 
+@media screen and (max-width: 900px) {
+  .info {
+    grid-template-columns: 2fr 3fr;
+    font-size: 0.8em;
+  }
+}
 
 }
 </style>

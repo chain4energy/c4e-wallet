@@ -79,8 +79,8 @@ const option = computed(() => {
 <style scoped lang="scss">
 #chartdiv {
   width: 80%;
-  margin-bottom: -30px;
-  margin-left: -10px;
+  // margin-bottom: -30px;
+  // margin-left: -10px;
   background: transparent url("@/assets/logo.png") no-repeat center ;
   background-size: 50px;
 }
