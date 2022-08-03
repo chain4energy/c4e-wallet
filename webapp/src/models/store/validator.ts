@@ -44,9 +44,9 @@ export class Validator{
     return useUserStore().getDelegations.getAmountByValidator(this.operatorAddress);
   }
 
-  public get delegatedViewAmount(): string {
-    return useUserStore().getDelegations.getViewAmountByValidator(this.operatorAddress);
-  }
+  // public get delegatedViewAmount(): string {
+  //   return useUserStore().getDelegations.getViewAmountByValidator(this.operatorAddress);
+  // }
 
   public get undelegatingAmount(): bigint {
     return useUserStore().getUndelegations.getAmountByValidator(this.operatorAddress);
@@ -78,6 +78,10 @@ export class Validator{
 
   public get active(): boolean {
     return this.status === ValidatorStatus.Bonded;
+  }
+
+  public getDelegatedViewAmount(precision = 4): string {
+    return useUserStore().getDelegations.getViewAmountByValidator(this.operatorAddress, precision);
   }
 }
 

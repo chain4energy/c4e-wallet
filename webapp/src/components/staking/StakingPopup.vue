@@ -112,11 +112,11 @@ setLocale({
 
 const delegationAmountSchema = createValidSchema(
   () => useUserStore().getBalance,
-  () => useUserStore().getBalanceViewAmount(6));
+  () => useUserStore().getBalanceViewAmount(useConfigurationStore().config.getViewDenomDecimals()));
 
 const reundelegationAmountSchema = createValidSchema(
   () => props.validator.delegatedAmount,
-  () => props.validator.delegatedViewAmount)
+  () => props.validator.getDelegatedViewAmount(useConfigurationStore().config.getViewDenomDecimals()))
 
 function createValidSchema(maxAmount: () => bigint, maxAmountMessage: () => string) {
   return object({

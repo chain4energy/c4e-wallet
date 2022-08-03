@@ -34,7 +34,7 @@
         </Column>
         <Column :header="$t(`STAKING_VIEW.TABLE_HEADERS.STAKE`)" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
           <template #body="{data}">
-            <span>{{ data.delegatedViewAmount }}</span>
+            <span>{{ data.getDelegatedViewAmount() }}</span>
             <!-- <span v-else>updating</span> -->
           </template>
         </Column>
