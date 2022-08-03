@@ -23,7 +23,6 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-// import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import Icon from "../features/IconComponent.vue";
 import {PermissionsService} from "@/services/permissions/permissions.service";
 import { useRoute, useRouter } from "vue-router";

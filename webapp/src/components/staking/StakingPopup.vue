@@ -158,7 +158,7 @@ function lessThanOrEqualTo(value: string | undefined, lessThan: bigint): boolean
 }
 
 async function delegate() {
-  
+
   try {
     await delegationAmountSchema.validate({value:amount.value });
     await useUserStore().delegate(props.validator.operatorAddress, amount.value)
@@ -197,7 +197,7 @@ async function redelegate() {
 
 }
 function redelegateState(state: boolean){
-  actionRedelegate.value = state
+  actionRedelegate.value = state;
 }
 </script>
 
