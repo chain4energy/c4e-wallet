@@ -46,7 +46,7 @@
           </label>
         </div>
 
-        <div v-if="stakingAction === StakingAction.DELEGATE" class="validationPopup__description">
+        <div v-if="stakingAction === StakingAction.REDELEGATE" class="validationPopup__description">
           <label style="width: 100%" for="validators">
             <input style="width: 100%" type="text" v-model="redelegateTo"  list="validators">
             <datalist  id="validators">
