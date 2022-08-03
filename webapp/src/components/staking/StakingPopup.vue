@@ -37,19 +37,21 @@
         </div>
         <div class="validationPopup__description">
           <label style="width: 100%" for="validators">
-            <select v-model="stakingAaction" style="width: 100%"  id="validators" name="Validators">
+            <select v-model="stakingAction" style="width: 100%"  id="action" name="action">
               <option :value="StakingAction.DELEGATE" :key="StakingAction.DELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}</option>
               <option :value="StakingAction.UNDELEGATE" :key="StakingAction.UNDELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</option>
               <option :value="StakingAction.REDELEGATE" :key="StakingAction.REDELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</option>
             </select>
+            
           </label>
         </div>
 
-        <div v-if="stakingAaction === StakingAction.REDELEGATE" class="validationPopup__description">
+        <div v-if="stakingAction === StakingAction.DELEGATE" class="validationPopup__description">
           <label style="width: 100%" for="validators">
-            <select v-model="redelegateTo" style="width: 100%"  id="validators" name="Validators">
-              <option :value="item" v-for="item of filteringValidatorsIterator(validator)" :key="item">{{item.description.moniker}}</option>
-            </select>
+            <input style="width: 100%" type="text" v-model="redelegateTo"  list="validators">
+            <datalist  id="validators">
+              <option :value="item" v-for="item in validatorsToRedelegate" :key="item">{{item}}</option>
+            </datalist>
           </label>
         </div>
 
@@ -66,9 +68,9 @@
       </div>
       <div class="validationPopup__btnHolder" v-if="useUserStore().isLoggedIn && canModify" >
         <div class="validationPopup__btns" >
-          <Button v-if="stakingAaction === StakingAction.DELEGATE" @click="delegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}</Button>
-          <Button v-if="stakingAaction === StakingAction.UNDELEGATE" @click="undelegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</Button>
-          <Button v-if="stakingAaction === StakingAction.REDELEGATE" @click="redelegate">{{ $t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</Button>
+          <Button v-if="stakingAction === StakingAction.DELEGATE" @click="delegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}</Button>
+          <Button v-if="stakingAction === StakingAction.UNDELEGATE" @click="undelegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</Button>
+          <Button v-if="stakingAction === StakingAction.REDELEGATE" @click="redelegate">{{ $t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</Button>
         </div>
         <!-- <div class="validationPopup__btns" v-if="actionRedelegate">
           <Button @click="redelegateState(false)">{{ $t('COMMON.RETURN') }}</Button>
@@ -85,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from "@/models/store/validator";
 import {ref} from "vue";
@@ -110,15 +112,19 @@ const props = defineProps<{
 }>();
 
 document.body.style.overflow = "hidden";
-onUnmounted(() => document.body.style.overflow = "auto");
+onUnmounted(() => {
+  document.body.style.overflow = "auto";
+});
 
 const redelegateTo = ref()
-const stakingAaction = ref<StakingAction>(StakingAction.DELEGATE)
+const stakingAction = ref<StakingAction>(StakingAction.DELEGATE)
+let validators = useValidatorsStore().getValidators
+  .filter(element => element.operatorAddress !== props.validator.operatorAddress && element.active); // TODO probalbly ony active validators
+const validatorsToRedelegate = ref(validators.map(el => el.description.moniker));
 
 const canModify = computed(() => useUserStore().getConnectionType);
-// const validatorsToRedelegate = computed(() => {
-//     return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress); // TODO probalbly ony active validators
-//   });
+
+
 const actionRedelegate = ref(false)
 const amount = ref('');
 const validationError = ref();
@@ -179,7 +185,7 @@ function lessThanOrEqualTo(value: string | undefined, lessThan: bigint): boolean
 }
 
 async function delegate() {
-  
+
   try {
     await delegationAmountSchema.validate({value:amount.value });
     await useUserStore().delegate(props.validator.operatorAddress, amount.value)
@@ -207,9 +213,13 @@ async function undelegate() {
 }
 
 async function redelegate() {
+  let actualValidator = useValidatorsStore().getValidators.find(el => {
+    return redelegateTo.value === el.description.moniker
+  });
+  console.log(actualValidator)
   try {
     await reundelegationAmountSchema.validate({value:amount.value });
-      useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value)).then((resp) => {
+      useUserStore().redelegate(props.validator.operatorAddress, actualValidator.operatorAddress, String(amount.value)).then((resp) => {
       emit('success')
     });
   } catch (err) {
@@ -218,7 +228,7 @@ async function redelegate() {
 
 }
 function redelegateState(state: boolean){
-  actionRedelegate.value = state
+  actionRedelegate.value = state;
 }
 </script>
 

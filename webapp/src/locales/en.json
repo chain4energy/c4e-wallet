@@ -5,7 +5,16 @@
     "LOGIN_ADDRESS": "Login with address",
     "LOGIN_KEPLR": "Login with Keplr wallet",
     "ADDRESS_HELP": "Explore with any address",
-    "VIEW_EXPLORER": "View on explorer"
+    "VIEW_EXPLORER": "View on explorer",
+    "ADDRESS_VALIDATION": {
+      "EMPTY": "must be not empty",
+      "NOT_THIS_NETWORK": "must match the network",
+      "TOO_SHORT": "this address is too short",
+      "SEPARATOR": "no separator for this address",
+      "CHECK_SUM": "Invalid checksum",
+      "CHARACTER": "do not use special symbols",
+      "INVALID": "invalid address"
+    }
   },
   "TABLES": {
     "CONTRACTS": {

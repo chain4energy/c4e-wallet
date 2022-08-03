@@ -54,7 +54,7 @@ export class Proposal {
   public isDepositPeriod() {
     return this.status === ProposalStatus.DEPOSIT_PERIOD;
   }
-  
+
   public isVotingPeriod() {
     return this.status === ProposalStatus.VOTING_PERIOD;
   }
