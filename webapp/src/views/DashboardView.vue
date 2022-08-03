@@ -74,23 +74,9 @@ import StakingApr from "@/components/dashboard/StakingApr.vue";
 
 @media screen and (max-width: 1150px) {
   .dashboard-grid {
-    .inflation { grid-area: 1 / 1 / 2 / 6; }
-    .stacking-apr { grid-area: 1 / 6 / 2 / 11; }
-    .bonded-tokens { grid-area: 1 / 7 / 2 / 11; }
-    .pools { grid-area: 2 / 1 / 4 / 11; }
-    .tokenomics { grid-area: 4 / 1 / 6 / 11; }
-    .latest-block { grid-area: 6 / 1 / 7 / 3; }
-    .circulating-supply { grid-area: 6 / 3 / 7 / 5; }
-    .validators { grid-area: 6 / 5 / 7 / 7; }
-    .total-supply { grid-area: 6 / 7 / 7 / 9; }
-    .max-supply { grid-area: 6 / 9 / 7 / 11; }
-  }
-}
-
-@media screen and (max-width: 900px) {
-  .dashboard-grid {
     display: flex;
     flex-direction: column;
   }
 }
+
 </style>

@@ -53,17 +53,28 @@
         flex-direction: column;
         align-items: flex-start;
         min-width: 200px;
-        justify-content: center;
+        justify-content: flex-start;
 
-        .legend-item {
-            display: grid;
-            grid-template-columns: 20px 1fr;
-            margin-bottom: 15px;
-            align-items: center;
+        h5 {
+            margin-bottom: 2rem;
+        }
 
-            svg {
-                height: 15px;
-                width: 15px;
+        .items {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+
+            .legend-item {
+                display: grid;
+                grid-template-columns: 20px 1fr;
+                margin-bottom: 15px;
+                align-items: center;
+    
+                svg {
+                    height: 15px;
+                    width: 15px;
+                }
             }
         }
 
@@ -78,4 +89,34 @@
     width: 15px;
     height: 15px;
     border-radius: 50%;
+}
+
+@media screen and (max-width: 1150px) {
+    .pools-tile {
+        flex-direction: column;
+        justify-content: flex-start;
+        .legend {
+            .items {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-around;
+            }
+
+        }
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .pools-tile {
+        flex-direction: column;
+        justify-content: flex-start;
+        .legend {
+            .items {
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+            }
+
+        }
+    }
 }
