@@ -5,7 +5,7 @@
       <Icon name="SidebarOpen"/>
     </div>
     <nav class="sidebar display-none">
-      <router-link :to="menuItem.href" v-for="(menuItem,index) of menu" @click="changeSelected(menuItem.href)" :key="menuItem">
+      <router-link :to="menuItem.href" v-for="(menuItem,index) of menu" :key="menuItem">
         <span class="sidebar-element">
           <span class="icon" :class="{ 'active': index === selected }">
             <Icon :name="menuItem.icon.element"/>
@@ -37,7 +37,7 @@ const menu = computed(() => {
 
 const selected = computed(()=> {
   let current = menu.value.find(element => element.href == router.currentRoute.value.path);
-    return current?.id || 0
+    return current?.id
 })
 
 
@@ -59,9 +59,6 @@ function hideSidebar() {
   showSidebar.classList.add('display-flex');
 }
 
-function changeSelected(path: string) {
-  router.push(path)
-}
 
 </script>
 
