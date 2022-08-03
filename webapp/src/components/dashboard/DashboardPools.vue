@@ -1,7 +1,8 @@
 <template>
   <div class="pools-tile">
     <div class="legend">
-      <h5 style="font-weight: bold; margin-bottom: 10px;">{{ $t("DASHBOARD_VIEW.POOLS") }}</h5>
+    <h5 style="font-weight: bold;">{{ $t("DASHBOARD_VIEW.POOLS") }}</h5>
+    <div class="items">
         <div class="legend-item">
           <div class="dot" style="background: #fff1a9"> </div>
           <div> {{ $t("DASHBOARD_VIEW.COMMUNITY_POOL") }}</div>
@@ -24,6 +25,7 @@
           <div style="font-weight: bold">{{ airdropPool }} {{ tokensStore.getAirdropPool.getViewDenom() }}
           </div>
         </div>
+    </div>
     </div>
       <div id="chartdiv">
         <v-chart :option="option" autoresize />
@@ -83,6 +85,13 @@ const option = computed(() => {
   // margin-left: -10px;
   background: transparent url("@/assets/logo.png") no-repeat center ;
   background-size: 50px;
+}
+
+@media screen and (max-width: 1150px) {
+  #chartdiv {
+    height: 350px;
+    align-self: center;
+  }
 }
 
 </style>

@@ -1,7 +1,8 @@
 <template>
    <div class="pools-tile">
     <div class="legend">
-      <h5 style="font-weight: bold; margin-bottom: 10px;">{{ $t("DASHBOARD_VIEW.TOKENOMICS") }}</h5>
+      <h5 style="font-weight: bold;">{{ $t("DASHBOARD_VIEW.TOKENOMICS") }}</h5>
+      <div class="items">
         <div class="legend-item">
           <div class="dot" style="background: #27697F"> </div>
           <div> {{ $t("DASHBOARD_VIEW.BOUNDED") }}</div>
@@ -28,6 +29,7 @@
           <div style="font-weight: bold">{{ unBounding }}
           </div>
         </div>
+      </div>
     </div>
       <div id="chartdiv">
         <v-chart :option="option" autoresize />
@@ -98,11 +100,26 @@ const option = computed(() => {
 <style scoped lang="scss">
 @import '../../styles/variables.scss';
 
+@media screen and (min-width: 951px) {
+  
+}
+
 #chartdiv {
   width: 100%;
   height: 100%;
   overflow: visible;
   margin-right: 70px;
+  margin-left: -50px;
+  
     // margin-left: -300px;
+}
+
+@media screen and (max-width: 1150px) {
+  #chartdiv {
+    height: 350px;
+    align-self: center;
+    margin-right: 0px;
+    margin-left: 0px;
+  }
 }
 </style>
