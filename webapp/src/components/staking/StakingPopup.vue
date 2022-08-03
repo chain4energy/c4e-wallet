@@ -37,9 +37,10 @@
         </div>
         <div v-if="actionRedelegate" class="validationPopup__description">
           <label style="width: 100%" for="validators">
-            <select v-model="redelegateTo" style="width: 100%"  id="validators" name="Validators">
-              <option :hidden="item.operatorAddress === validator.operatorAddress || !item.active" :value="item" v-for="item in useValidatorsStore().getValidators" :key="item">{{item.description.moniker}}</option>
-            </select>
+            <input style="width: 100%" type="text" v-model="redelegateTo"  list="validators">
+            <datalist  id="validators">
+              <option :value="item" v-for="item in validatorsToRedelegate" :key="item">{{item}}</option>
+            </datalist>
           </label>
 <!--          <input type="" style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">-->
         </div>
@@ -74,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from "@/models/store/validator";
 import {ref} from "vue";
@@ -90,14 +91,19 @@ const props = defineProps<{
 }>();
 
 document.body.style.overflow = "hidden";
-onUnmounted(() => document.body.style.overflow = "auto");
+onUnmounted(() => {
+  document.body.style.overflow = "auto";
+});
 
-const redelegateTo = ref()
+let validators = useValidatorsStore().getValidators
+  .filter(element => element.operatorAddress !== props.validator.operatorAddress && element.active); // TODO probalbly ony active validators
+const validatorsToRedelegate = ref(validators.map(el => el.description.moniker));
+
+const redelegateTo = ref();
 
 const canModify = computed(() => useUserStore().getConnectionType);
-// const validatorsToRedelegate = computed(() => {
-//     return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress); // TODO probalbly ony active validators
-//   });
+
+
 const actionRedelegate = ref(false)
 const amount = ref('');
 const validationError = ref();
@@ -186,9 +192,13 @@ async function undelegate() {
 }
 
 async function redelegate() {
+  let actualValidator = useValidatorsStore().getValidators.find(el => {
+    return redelegateTo.value === el.description.moniker
+  });
+  console.log(actualValidator)
   try {
     await reundelegationAmountSchema.validate({value:amount.value });
-      useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value)).then((resp) => {
+      useUserStore().redelegate(props.validator.operatorAddress, actualValidator.operatorAddress, String(amount.value)).then((resp) => {
       emit('success')
     });
   } catch (err) {

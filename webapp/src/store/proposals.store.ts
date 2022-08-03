@@ -240,7 +240,6 @@ export const useProposalsStore = defineStore({
         }
         return proposal.finalTallyResult;
       }
-      
     }
   }
 });
