@@ -3,43 +3,43 @@
     <div class="top">
 
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
-      <span>{{ useProposalsStore().getProposalTally(proposal).getTotalView(2, true) }} {{ useConfigurationStore().config.getViewDenom() }}</span>
+      <span>{{ useProposalsStore().getSelectedProposalTally.getTotalView(2, true) }} {{ useConfigurationStore().config.getViewDenom() }}</span>
     </div>
     <div class="chartdiv">
       <v-chart :option="option" autoresize />
       <div class="inside">
-        <Icon :name=icons.get(proposal.status)></Icon>
-        {{ $t("GOVERNANCE_VIEW."+proposal.status)}}
+        <Icon :name=icons.get(getProposalStatus())></Icon>
+        {{ $t("GOVERNANCE_VIEW."+getProposalStatus())}}
       </div>
     </div>
     <div class="voting-result">
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
-        <div>{{ useProposalsStore().getProposalTally(proposal).getYesPercentageView() }}%</div>
-        <div>({{ useProposalsStore().getProposalTally(proposal).getYesView(2, true)}})</div>
+        <div>{{ useProposalsStore().getSelectedProposalTally.getYesPercentageView() }}%</div>
+        <div>({{ useProposalsStore().getSelectedProposalTally.getYesView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
-        <div>{{ useProposalsStore().getProposalTally(proposal).getAbstainPercentageView() }}%</div>
-        <div>({{useProposalsStore().getProposalTally(proposal).getAbstainView(2, true)}})</div>
+        <div>{{ useProposalsStore().getSelectedProposalTally.getAbstainPercentageView() }}%</div>
+        <div>({{useProposalsStore().getSelectedProposalTally.getAbstainView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
-        <div>{{ useProposalsStore().getProposalTally(proposal).getNoPercentageView() }}%</div>
-        <div>({{useProposalsStore().getProposalTally(proposal).getNoView(2, true)}})</div>
+        <div>{{ useProposalsStore().getSelectedProposalTally.getNoPercentageView() }}%</div>
+        <div>({{useProposalsStore().getSelectedProposalTally.getNoView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
-        <div>{{ useProposalsStore().getProposalTally(proposal).getNoWithVetoPercentageView() }}%</div>
-        <div>({{useProposalsStore().getProposalTally(proposal).getNoWithVetoView(2, true)}})</div>
+        <div>{{ useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentageView() }}%</div>
+        <div>({{useProposalsStore().getSelectedProposalTally.getNoWithVetoView(2, true)}})</div>
       </div>
     </div>
     <div class="bottom">
       <Button
         :label="$t('GOVERNANCE_VIEW.VOTE')"
         class="p-button-raised p-button-rounded"
-        data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="proposal.status !== ProposalStatus.VOTING_PERIOD" />
-      <VoteModal id="voteModal" :proposalId="proposal.proposalId" :title="proposal.content.title"></VoteModal>
+        data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="useProposalsStore().getProposal?.status !== ProposalStatus.VOTING_PERIOD" />
+      <VoteModal id="voteModal" :proposalId="proposal.proposalId" :title="getProposalTitle()"></VoteModal>
     </div>
   </div>
 </template>
@@ -80,25 +80,25 @@ const icons  = new Map<string, string>([
 ]);
 
 const sumOfVotes = computed(() => {
-  const val = useProposalsStore().getProposalTally(props.proposal).total
+  const val = useProposalsStore().getSelectedProposalTally.total
   return (val && val > 0) ? val : -1n;
 });
 
 
 const yes = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getYesView();
+  return useProposalsStore().getSelectedProposalTally.getYesView();
 });
 
 const no = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getNoView();
+  return useProposalsStore().getSelectedProposalTally.getNoView();
 });
 
 const abstain = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getAbstainView();
+  return useProposalsStore().getSelectedProposalTally.getAbstainView();
 });
 
 const noWithVeto = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getNoWithVetoView();
+  return useProposalsStore().getSelectedProposalTally.getNoWithVetoView();
 });
 
 const option = computed(() => {
@@ -107,6 +107,16 @@ const option = computed(() => {
   }
   return createProposalDetailsChartData(yes.value, abstain.value, no.value, noWithVeto.value, sumOfVotes.value)
 });
+
+function getProposalTitle() {
+  const result = useProposalsStore().getProposal?.content.title;
+  return result ? result : '';
+}
+
+function getProposalStatus(): ProposalStatus{
+  const result = useProposalsStore().getProposal?.status;
+  return result ? result : ProposalStatus.UNSPECIFIED;
+}
 
 </script>
 
