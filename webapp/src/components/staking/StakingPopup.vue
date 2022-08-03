@@ -15,7 +15,8 @@
           </svg>
           <h2>{{ validator.description.moniker }}</h2>
         </div>
-        <Button @click="$emit('close')">{{ $t('COMMON.CLOSE') }}</Button>
+          <Button icon="pi pi-times" style="width: 5px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
+
       </div>
       <div class="validationPopup__body">
         <h3>{{ $t('STAKING_VIEW.STAKING_POPUP.HEADER') }}</h3>
@@ -37,15 +38,18 @@
         <div v-if="actionRedelegate" class="validationPopup__description">
           <label style="width: 100%" for="validators">
             <select v-model="redelegateTo" style="width: 100%"  id="validators" name="Validators">
-              <option :value="items" v-for="items in validators" :key="items">{{items.description.moniker}}</option>
+              <option :hidden="item.operatorAddress === validator.operatorAddress || !item.active" :value="item" v-for="item in useValidatorsStore().getValidators" :key="item">{{item.description.moniker}}</option>
             </select>
           </label>
 <!--          <input type="" style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">-->
         </div>
         <div class="validationPopup__description">
           <label style="width: 100%;" for="amount">
-            <ul v-for="item in keplrResult" :key="item"><li>{{item}}</li></ul>
-            <input :placeholder="$t('COMMON.INPUT.AMOUNT') " autocomplete="off" style="width: 100%;" name="amount"  v-model="amount">
+            <ul v-for="item in validationError" :key="item"><li>{{item}}</li></ul>
+            <span class="p-float-label" style="width: 100%">
+              <InputText id="amount" type="text" v-model="amount"  style="width: 100%" />
+              <label for="amount">{{$t('COMMON.INPUT.AMOUNT')}}</label>
+            </span>
           </label>
         </div>
       </div>
@@ -62,7 +66,7 @@
       </div>
 
       <div v-else class="validationPopup__btns">
-        <p> {{ $t('ERRORS.LOGIN_WALLET')}} </p>
+        {{ $t('ERRORS.LOGIN_WALLET')}}
         <Button @click="dataService.onKeplrLogIn()">{{ $t('LOGIN.LOGIN' )}}</Button> <!-- TODO is connectKeplr correct? -->
       </div>
     </div>
@@ -70,14 +74,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted, onUpdated, PropType } from "vue";
+import { computed, onUnmounted } from "vue";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from "@/models/store/validator";
 import {ref} from "vue";
 import { useValidatorsStore } from "@/store/validators.store";
-import { object, number, setLocale, string } from "yup";
-import { useToast } from "vue-toastification";
+import { object, setLocale, string } from "yup";
 import dataService from '@/services/data.service';
+import { BigDecimal } from "@/models/store/big.decimal";
+import { useConfigurationStore } from "@/store/configuration.store";
+import i18n from "@/plugins/i18n";
 
 const props = defineProps<{
   validator: Validator
@@ -85,94 +91,110 @@ const props = defineProps<{
 
 document.body.style.overflow = "hidden";
 onUnmounted(() => document.body.style.overflow = "auto");
-const toast = useToast()
 
 const redelegateTo = ref()
 
 const canModify = computed(() => useUserStore().getConnectionType);
-const validators = computed(() => {
-    return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress);
-  });
-const refreshedValidator = computed(() =>{
-  return useValidatorsStore().getValidators.find(element => element.operatorAddress === props.validator.operatorAddress);
-})
+// const validatorsToRedelegate = computed(() => {
+//     return useValidatorsStore().getValidators.filter(element => element.operatorAddress !== props.validator.operatorAddress); // TODO probalbly ony active validators
+//   });
 const actionRedelegate = ref(false)
 const amount = ref('');
-const keplrResult = ref();
+const validationError = ref();
 const emit = defineEmits(['close', 'success']);
 
 
 setLocale({
   mixed: {
-    defined: `this is required field`,
-    notType: `must be a number in format xxx.xxx`,
+    defined: i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.REQUIRED'),
   }
 });
-const amountSchema = ref()
-function createAmountSchema(){
-  amountSchema.value = object({
-    value:
-      string()
-        .defined()
-        .matches(/^\d{0,10}(\.\d{0,6})?$/gm, "must have not more than 6 digits after dot"),
-    numDelegation:
-      number()
-        .moreThan(0, "should be more than 0")
-        .lessThan(Number(useUserStore().getBalanceViewAmount()),`must be less than ${useUserStore().getBalanceViewAmount()}`), // TODO some bigint validation
-    numUnDelegation:
-      number()
-        .moreThan(0, "should be more than 0")
-        .lessThan(Number(refreshedValidator.value.delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
-    numRedelegate:
-      number()
-        .moreThan(0, "should be more than 0")
-        .lessThan(Number(refreshedValidator.value.delegatedViewAmount),`must be less than ${props.validator.delegatedViewAmount}`),
-  });
+
+const delegationAmountSchema = createValidSchema(
+  () => useUserStore().getBalance,
+  () => useUserStore().getBalanceViewAmount(useConfigurationStore().config.getViewDenomDecimals()));
+
+const reundelegationAmountSchema = createValidSchema(
+  () => props.validator.delegatedAmount,
+  () => props.validator.getDelegatedViewAmount(useConfigurationStore().config.getViewDenomDecimals()))
+
+function createValidSchema(maxAmount: () => bigint, maxAmountMessage: () => string) {
+  return object({
+  value:
+    string()
+      .defined()
+      .test('not-empty', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.REQUIRED'), (value: string | undefined) => {return value ? value.length > 0 : false})
+      .matches(/^\d*(\.\d{0,6})?$/gm, i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.NUMBER', {decimal: useConfigurationStore().config.getViewDenomDecimals()}))
+      .test('delgation-moreThan', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MIN'), moreThan)
+      .test('delgation-lessThan', () => i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MAX', {max:maxAmountMessage()}), (value: string | undefined):boolean => {
+        return lessThanOrEqualTo(value, maxAmount())
+      })
+});
 }
 
-onUpdated(()=>{
-  createAmountSchema();
-});
+function checkValue(value: string | undefined, check: (value:  string) => boolean): boolean {
+  if (value === String()) {
+    return false;
+  }
+  if (!value) {
+    return true;
+  }
+  try {
+    return check(value);
+  } catch (err) {
+    return false;
+  }
+}
 
+function moreThan(value: string | undefined): boolean {
+  return checkValue(value, (value:  string) => (new BigDecimal(value)).isBiggerThan(0))
+}
+
+function lessThanOrEqualTo(value: string | undefined, lessThan: bigint): boolean {
+  return checkValue(value, (value:  string) => {
+    const factor = useConfigurationStore().config.getViewDenomConversionFactor();
+    return (new BigDecimal(lessThan)).isBiggerThan(new BigDecimal(value).multiply(factor));
+  })
+}
 
 async function delegate() {
+  
   try {
-    await amountSchema.value.validate({value:amount.value, numDelegation: Number(amount.value) });
+    await delegationAmountSchema.validate({value:amount.value });
     await useUserStore().delegate(props.validator.operatorAddress, amount.value)
       .then((resp) => {
         console.log(resp)
         emit('success');
       });
-
   } catch (err) {
-    keplrResult.value = err.errors;
-    toast.error('transaction failed')
+    validationError.value = err.errors;
   }
+
 }
 
 async function undelegate() {
 
   try {
-    await amountSchema.value.validate({value:amount.value, numUnDelegation: Number(amount.value) });
+    await reundelegationAmountSchema.validate({value:amount.value });
     await useUserStore().undelegate(props.validator.operatorAddress, String(amount.value)).then((resp) => {
-      emit('success')
-    });
+        emit('success')
+      });
   } catch (err) {
-    keplrResult.value = err.errors;
-    toast.error('transaction failed')
+    validationError.value = err.errors;
   }
+
 }
 
 async function redelegate() {
   try {
-    await amountSchema.value.validate({value:amount.value, numRedelegate: Number(amount.value) });
-    useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value)).then((resp) => {
+    await reundelegationAmountSchema.validate({value:amount.value });
+      useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value)).then((resp) => {
       emit('success')
     });
   } catch (err) {
-    keplrResult.value = err.errors;
-    toast.error('transaction failed')
+    validationError.value = err.errors;
   }
+
 }
 function redelegateState(state: boolean){
   actionRedelegate.value = state
@@ -284,7 +306,7 @@ function redelegateState(state: boolean){
     display: flex;
     width: 100%;
     justify-content: flex-end;
-
+    align-items: center;
   }
 }
 </style>

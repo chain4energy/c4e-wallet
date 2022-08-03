@@ -67,7 +67,7 @@
     "AVERAGE_BLOCK_TIME": "Average block time",
     "CIRCULATING_SUPPLY": "Circulating supply",
     "INFLATION": "Inflation",
-    "STAKING_APR": "Staking APR"
+    "STACKING_APR": "Staking APR"
   },
   "STAKING_VIEW": {
     "TABS": {
@@ -100,7 +100,13 @@
       "VALIDATOR_DESCRIPTION": "Validator for SmartContract chains",
       "DELEGATE": "Delegate",
       "UNDELEGATE": "Undelegate",
-      "REDELEGATE": "Redelegate"
+      "REDELEGATE": "Redelegate",
+      "AMOUNT": {
+        "REQUIRED": "Amount is required",
+        "NUMBER": "Amount must be a number with max {decimal} decimal places",
+        "MIN": "Amount must be more than 0",
+        "MAX": "Max amount is {max}"
+      }
     },
     "VALIDATORS": "Validators",
     "NO_VALIDATORS": "no validators found",

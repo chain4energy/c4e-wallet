@@ -1,9 +1,15 @@
 <template>
-    <div class="container">
+    <div class="container-grid">
       <template v-if="everythingIsReady">
-        <DetailsChart :proposal="proposal"></DetailsChart>
-        <ProposalDetails :proposal="proposal"></ProposalDetails>
-        <ProposalDescription :proposal="proposal"></ProposalDescription>
+        <div class="details">
+          <ProposalDetails :proposal="proposal"></ProposalDetails>
+        </div>
+        <div class="chart">
+          <DetailsChart :proposal="proposal"></DetailsChart>
+        </div>
+        <div class="description">
+          <ProposalDescription :proposal="proposal"></ProposalDescription>
+        </div>
       </template>
     </div>
 
@@ -46,7 +52,23 @@ const everythingIsReady = ref(false);
 
 <style scoped lang="scss">
 @import '../styles/variables.scss';
-.container{
+.container-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+
+    .details { grid-area: 1 / 1 / 2 / 5; }
+    .chart { grid-area: 1 / 5 / 2 / 7; }
+    .description { grid-area: 2 / 1 / 3 / 7; }
+}
+
+@media screen and (max-width: 1100px) {
+  .container-grid {
+    display: flex;
+    flex-direction: column;
+  }
 }
 </style>
 
