@@ -35,14 +35,25 @@
             <a :href="validator.description.website">{{validator.description.website}}</a>
           </div>
         </div>
-        <div v-if="actionRedelegate" class="validationPopup__description">
+        <div class="validationPopup__description">
+          <label style="width: 100%" for="validators">
+            <select v-model="stakingAaction" style="width: 100%"  id="validators" name="Validators">
+              <option :value="StakingAction.DELEGATE" :key="StakingAction.DELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}</option>
+              <option :value="StakingAction.UNDELEGATE" :key="StakingAction.UNDELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</option>
+              <option :value="StakingAction.REDELEGATE" :key="StakingAction.REDELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</option>
+            </select>
+          </label>
+        </div>
+
+        <div v-if="stakingAaction === StakingAction.REDELEGATE" class="validationPopup__description">
           <label style="width: 100%" for="validators">
             <select v-model="redelegateTo" style="width: 100%"  id="validators" name="Validators">
               <option :value="item" v-for="item of filteringValidatorsIterator(validator)" :key="item">{{item.description.moniker}}</option>
             </select>
           </label>
-<!--          <input type="" style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">-->
         </div>
+
+
         <div class="validationPopup__description">
           <label style="width: 100%;" for="amount">
             <ul v-for="item in validationError" :key="item"><li>{{item}}</li></ul>
@@ -54,15 +65,15 @@
         </div>
       </div>
       <div class="validationPopup__btnHolder" v-if="useUserStore().isLoggedIn && canModify" >
-        <div class="validationPopup__btns" v-if="!actionRedelegate">
-          <Button @click="undelegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</Button>
-          <Button @click="delegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}</Button>
-          <Button @click="redelegateState(true)">{{ $t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</Button>
+        <div class="validationPopup__btns" >
+          <Button v-if="stakingAaction === StakingAction.DELEGATE" @click="delegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}</Button>
+          <Button v-if="stakingAaction === StakingAction.UNDELEGATE" @click="undelegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</Button>
+          <Button v-if="stakingAaction === StakingAction.REDELEGATE" @click="redelegate">{{ $t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</Button>
         </div>
-        <div class="validationPopup__btns" v-if="actionRedelegate">
+        <!-- <div class="validationPopup__btns" v-if="actionRedelegate">
           <Button @click="redelegateState(false)">{{ $t('COMMON.RETURN') }}</Button>
           <Button @click="redelegate">{{ $t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</Button>
-        </div>
+        </div> -->
       </div>
 
       <div v-else class="validationPopup__btns">
@@ -86,6 +97,11 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import i18n from "@/plugins/i18n";
 import { filteringIterator } from "@/utils/filtering-iterator";
 
+enum StakingAction {
+  DELEGATE,
+  UNDELEGATE,
+  REDELEGATE
+}
 function filteringValidatorsIterator(validator: Validator) {
   return filteringIterator<Validator>(useValidatorsStore().getValidators.values(), (val: Validator) => {return val.operatorAddress !== validator.operatorAddress && val.active})
 }
@@ -97,6 +113,7 @@ document.body.style.overflow = "hidden";
 onUnmounted(() => document.body.style.overflow = "auto");
 
 const redelegateTo = ref()
+const stakingAaction = ref<StakingAction>(StakingAction.DELEGATE)
 
 const canModify = computed(() => useUserStore().getConnectionType);
 // const validatorsToRedelegate = computed(() => {
