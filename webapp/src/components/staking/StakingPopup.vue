@@ -38,7 +38,7 @@
         <div v-if="actionRedelegate" class="validationPopup__description">
           <label style="width: 100%" for="validators">
             <select v-model="redelegateTo" style="width: 100%"  id="validators" name="Validators">
-              <option :hidden="item.operatorAddress === validator.operatorAddress || !item.active" :value="item" v-for="item in useValidatorsStore().getValidators" :key="item">{{item.description.moniker}}</option>
+              <option :value="item" v-for="item of filteringValidatorsIterator(validator)" :key="item">{{item.description.moniker}}</option>
             </select>
           </label>
 <!--          <input type="" style="width: 100%; border: 1px solid #DFDFDF;border-radius: 6px; " v-model="amount">-->
@@ -84,7 +84,11 @@ import dataService from '@/services/data.service';
 import { BigDecimal } from "@/models/store/big.decimal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import i18n from "@/plugins/i18n";
+import { filteringIterator } from "@/utils/filtering-iterator";
 
+function filteringValidatorsIterator(validator: Validator) {
+  return filteringIterator<Validator>(useValidatorsStore().getValidators.values(), (val: Validator) => {return val.operatorAddress !== validator.operatorAddress && val.active})
+}
 const props = defineProps<{
   validator: Validator
 }>();
