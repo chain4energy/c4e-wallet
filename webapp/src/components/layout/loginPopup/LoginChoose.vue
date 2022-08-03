@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import LoginEmail from '@/components/layout/loginPopup/LoginAddreess.vue';
+import LoginEmail from '@/components/layout/loginPopup/LoginAddress.vue';
 import LoginKeplr from '@/components/layout/loginPopup/LogoutConfirm.vue';
 import { useUserStore } from "@/store/user.store";
 
