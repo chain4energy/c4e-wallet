@@ -6,9 +6,9 @@
     </div>
     <form @submit.prevent class="loginEmail__body">
       <div class="loginEmail__description">
-        
+        <span>{{result}}</span>
         <span class="p-float-label" style="width: 100%">
-          <InputText id="email" type="text" v-model="email"  style="width: 100%" />
+          <InputText id="email" type="text" v-model="address"  style="width: 100%" />
           <label for="email">{{$t('LOGIN.ADDRESS_HELP')}}</label>
         </span>
         <!-- <input v-model="email"> -->
@@ -22,17 +22,87 @@
 import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue'
 import dataService from '@/services/data.service';
 import { useUserStore } from "@/store/user.store";
+import * as bench32 from 'bech32';
+import { ref } from "vue";
+import { number, object, setLocale, string, ValidationError } from "yup";
+import i18n from "@/plugins/i18n";
+
+
 const emit = defineEmits(['close']);
 const userStore = useUserStore();
+const result = ref();
 
-import { ref } from "vue";
 
-const email = ref('');
 
-function submit(){
-  dataService.onAddressLogIn((email.value), () => {
-    emit('close');
-  });
+setLocale({
+  mixed: {
+    defined: `this is required field`,
+    notType: `must be a number in format xxx.xxx`,
+  }
+});
+
+async function validateAddress(address : string){
+  try {
+    let bech32 = bench32;
+    const words = bech32.decode(address);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+const amountSchema = object({
+  address:
+    string()
+      .required('must not be empty')
+      .test(
+        'validate Address', function(address){
+          let bech32 = bench32;
+          let words: { prefix: string; words: number[] };
+          words = bech32.decode(address);
+          if(words?.prefix === 'c4e'){
+            return true;
+          } else {
+            const message = String(words).slice(7);
+            this.createError({message: message});
+            return false;
+          }
+        }
+      )
+});
+
+const address = ref('');
+
+async function submit(){
+  try{
+    await amountSchema.validate({address: address.value});
+    dataService.onAddressLogIn((address.value), () => {
+      emit('close');
+    });
+  } catch (err){
+    if(address.value ==='' || !address.value.match(/\bc4e/)){
+      switch (address.value){
+        case '': result.value =  i18n.global.t('LOGIN.ADDRESS_VALIDATION.EMPTY');
+          break;
+        default: result.value = i18n.global.t('LOGIN.ADDRESS_VALIDATION.NOT_THIS_NETWORK');
+          break;
+      }
+
+    } else {
+      console.log(String(err).slice(7))
+      switch (String(err).slice(7)){
+        case address.value + ' too short' || 'Data too short':  result.value = i18n.global.t('LOGIN.ADDRESS_VALIDATION.TOO_SHORT');
+          break;
+        case 'No separator character for '+ address.value: result.value = i18n.global.t('LOGIN.ADDRESS_VALIDATION.SEPARATOR');
+          break;
+        case 'Invalid checksum for '+ address.value: result.value = i18n.global.t('LOGIN.ADDRESS_VALIDATION.CHECK_SUM');
+          break;
+        default: result.value =  i18n.global.t('LOGIN.ADDRESS_VALIDATION.INVALID');
+          break;
+      }
+    }
+
+  }
+
 }
 
 </script>
