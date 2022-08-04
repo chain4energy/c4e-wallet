@@ -29,7 +29,7 @@ const routes: Array<RouteRecordRaw> = [
   stakingRoutes,
   {
     path: '/governance',
-    name: 'Governance',
+    name: 'GOVERNANCE_PROPOSALSLIST',
     component: GovernanceView,
     children: [
       {

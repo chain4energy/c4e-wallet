@@ -138,6 +138,7 @@
     "DASHBOARD": "Dashboard",
     "PROPOSALSLIST": "Proposals list",
     "GOVERNANCE": "Governance",
+    "GOVERNANCE_PROPOSALSLIST": "Governance / Proposals list",
     "GOVERNANCEDETAILS": "Governance details"
   },
   "TOAST": {

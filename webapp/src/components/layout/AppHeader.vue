@@ -4,15 +4,14 @@
     <nav class="navbar navbar-expand-lg navbar-dark background">
       <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
       <LogoutKeplr v-if="logoutPopupStatus === true" :logout-type="useUserStore().getConnectionType" @close="logoutPopupStatus = false"></LogoutKeplr>
-      <div class="container-fluid">
+    <div class="navbar-container">
+      
+      <div class="container-fluid d-flex justify-content-between">
+        <span class="d-flex" style="align-items: center">
         <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
-        <Button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </Button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        </span>
 
-          <div class="navbar-nav right">
+          <div class="navbar-nav" style="align-items: center">
 
             <div class="acc-address" v-if="useUserStore().isLoggedIn">
               {{ useUserStore().getAccount.address.slice(0, 8)}}...{{useUserStore().getAccount.address.slice(-6) }}
@@ -20,27 +19,20 @@
             
             <LangSwitch class="nav-link mx-1"/>
             
-            <Button
-              v-if="!useUserStore().isLoggedIn"
-              icon=" pi pi-power-off"
-              style="margin-top: -8px;"
-              class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="loginPopupStatus =! loginPopupStatus"></Button>
-            <Button
-              v-if="useUserStore().isLoggedIn"
-              icon=" pi pi-power-off"
-              style="margin-top: -8px;"
-              class="nav-link p-button-rounded p-button-text p-button-lg mx-1"
-              @click="logout"
-            ></Button>
+            <Button v-if="!useUserStore().isLoggedIn" icon=" pi pi-power-off" style="transform: translateY(-4px)" class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="loginPopupStatus =! loginPopupStatus"></Button>
+            
+            <Button v-if="useUserStore().isLoggedIn" icon=" pi pi-power-off" style="transform: translateY(-4px)" class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logout"></Button>
+            
+            
           </div>
         </div>
 
-      </div>
       <div class="bottom-container">
         <h2>{{$t("SECTION_TITLES." + currentRouteName?.toUpperCase())}}</h2>
-          <!-- <breadcrumbs-component /> -->
+          <breadcrumbs-component />
       </div>
       <UserData v-if="useUserStore().isLoggedIn"/>
+      </div>
     </nav>
 
 </template>
@@ -63,6 +55,11 @@ const globalFilter = useGlobalFilterStore();
 
 const loginPopupStatus = ref(false);
 const logoutPopupStatus = ref(false);
+const dropdown = ref(false);
+
+const toggleDropdown = () => {
+  dropdown.value = !dropdown.value;
+};
 
 const currentRouteName = computed(() => {
   console.log(router.currentRoute.value);
@@ -108,62 +105,77 @@ function logout(){
   padding: 0.5rem;
   background-color: $main-lighter-color;
   border-radius: 1rem;
-
-
-}
-.userdata {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 50%);
-}
-.background {
-  background-image: url('@/assets/header/background.svg');
-  //background-position: right 20px bottom -250px;
-  background-size:     cover;                      /* <------ */
-  background-repeat:   no-repeat;
-  background-position: center center;
-  position:sticky;
-  color: white;
-  top: 0px;
-  z-index: 20;
-  padding-bottom: 20px;
-
-.badge {
-  position: relative;
-  top: -40px;
-  right: -10px;
-  border-radius: 50%;
-  background-color: aqua;
-  color: black;
-}
-.right {
-  position: absolute;
-  right: 20px;
-  top:10px;
-  display: flex;
-  align-items: center;
-}
-.left {
-  margin-left: 40px;
-}
-.bottom-container {
-  padding: 3vh 10vw;
-  display:flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
 }
 
-.p-inputtext {
-  border-radius: 20px;
-}
-.p-input-icon-right>i {
-  margin-top: -1rem;
-}
-@media (min-width: 992px) {
-  .navbar-expand-lg{
-    flex-wrap: wrap;
+@media screen and (max-width: 700px) {
+  .acc-address {
+    display: none;
   }
 }
+.navbar-brand:hover{
+  cursor: pointer;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255,255,255,.8) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
+  color: var(--secondary-color) !important;
+}
+// .userdata {
+//   position: absolute;
+//   bottom: 0;
+//   left: 50%;
+//   transform: translate(-50%, 50%);
+// }
+// .background {
+//   background-image: url('@/assets/header/background.svg');
+//   //background-position: right 20px bottom -250px;
+//   background-size:     cover;                      /* <------ */
+//   background-repeat:   no-repeat;
+//   background-position: center center;
+//   position:sticky;
+//   color: white;
+//   top: 0px;
+//   z-index: 20;
+//   padding-bottom: 20px;
+
+// .badge {
+//   position: relative;
+//   top: -40px;
+//   right: -10px;
+//   border-radius: 50%;
+//   background-color: aqua;
+//   color: black;
+// }
+// .right {
+//   position: absolute;
+//   right: 20px;
+//   top:10px;
+//   display: flex;
+//   align-items: center;
+// }
+// .left {
+//   margin-left: 40px;
+// }
+// .bottom-container {
+//   padding: 3vh 10vw;
+//   display:flex;
+//   flex-direction: column;
+//   align-items: flex-start;
+// }
+// }
+
+// .p-inputtext {
+//   border-radius: 20px;
+// }
+// .p-input-icon-right>i {
+//   margin-top: -1rem;
+// }
+// @media (min-width: 992px) {
+//   .navbar-expand-lg{
+//     flex-wrap: wrap;
+//   }
+// }
 </style>
