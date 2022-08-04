@@ -38,7 +38,10 @@
       <Button
         :label="$t('GOVERNANCE_VIEW.VOTE')"
         class="p-button-raised p-button-rounded"
-        data-bs-toggle="modal" data-bs-target="#voteModal" :disabled="useProposalsStore().getProposal?.status !== ProposalStatus.VOTING_PERIOD" />
+        data-bs-toggle="modal" data-bs-target="#voteModal"
+        :disabled="
+        useProposalsStore().getProposal?.status !== ProposalStatus.VOTING_PERIOD"
+      />
       <VoteModal id="voteModal" :proposalId="proposal.proposalId" :title="getProposalTitle()"></VoteModal>
     </div>
   </div>
@@ -59,6 +62,7 @@ import {ProposalStatus} from "@/models/store/proposal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { createProposalDetailsChartData } from "@/charts/governance";
 import { useProposalsStore } from "@/store/proposals.store";
+import { useUserStore } from "@/store/user.store";
 
 
 use([
@@ -68,6 +72,7 @@ use([
   TooltipComponent,
   LegendComponent
 ]);
+
 
 const props = defineProps<{
   proposal?: Proposal
