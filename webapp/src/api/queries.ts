@@ -27,5 +27,8 @@ export default {
         'option' +
       '}' +
     '}' 
+  },
+  keybase: {
+    QUERY_URL: '/_/api/1.0/user/user_search.json?q={keybaseHash}&num_wanted=1'
   }
 };

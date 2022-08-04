@@ -162,11 +162,8 @@ function createValidSchema(maxAmount: () => bigint, maxAmountMessage: () => stri
 }
 
 function checkValue(value: string | undefined, check: (value:  string) => boolean): boolean {
-  if (value === String()) {
-    return false;
-  }
   if (!value) {
-    return true;
+    return false;
   }
   try {
     return check(value);

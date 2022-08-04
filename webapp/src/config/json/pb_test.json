@@ -2,6 +2,7 @@
   "bcApiURL": "api",
   "bcRpcURL": "https://rpc.chain4energy.org",
   "hasuraURL": "hasura",
+  "keybaseURL": "https://keybase.io",
   "stakingPageURL": "https://app-testnet.chain4energy.org/",
   "addressPrefix": "c4e",
   "stakingDenom": "uc4e",
