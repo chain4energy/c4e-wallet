@@ -42,15 +42,16 @@
               <option :value="StakingAction.UNDELEGATE" :key="StakingAction.UNDELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</option>
               <option :value="StakingAction.REDELEGATE" :key="StakingAction.REDELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</option>
             </select>
-            
+
           </label>
         </div>
 
         <div v-if="stakingAction === StakingAction.REDELEGATE" class="validationPopup__description">
           <label style="width: 100%" for="validators">
+            <span v-if="addressError">{{addressError}}</span>
             <input style="width: 100%" type="text" v-model="redelegateTo"  list="validators">
             <datalist  id="validators">
-              <option :value="item" v-for="item in validatorsToRedelegate" :key="item">{{item}}</option>
+              <option :value="item" v-for="(item, index) in validatorsToRedelegate" :key="index">{{item}}</option>
             </datalist>
           </label>
         </div>
@@ -119,7 +120,7 @@ onUnmounted(() => {
 const redelegateTo = ref()
 const stakingAction = ref<StakingAction>(StakingAction.DELEGATE)
 let validators = useValidatorsStore().getValidators
-  .filter(element => element.operatorAddress !== props.validator.operatorAddress && element.active); // TODO probalbly ony active validators
+  .filter(element => element.operatorAddress !== props.validator.operatorAddress && element.active);
 const validatorsToRedelegate = ref(validators.map(el => el.description.moniker));
 
 const canModify = computed(() => useUserStore().getConnectionType);
@@ -128,6 +129,7 @@ const canModify = computed(() => useUserStore().getConnectionType);
 const actionRedelegate = ref(false)
 const amount = ref('');
 const validationError = ref();
+const addressError = ref()
 const emit = defineEmits(['close', 'success']);
 
 
@@ -155,7 +157,7 @@ function createValidSchema(maxAmount: () => bigint, maxAmountMessage: () => stri
       .test('delgation-moreThan', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MIN'), moreThan)
       .test('delgation-lessThan', () => i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MAX', {max:maxAmountMessage()}), (value: string | undefined):boolean => {
         return lessThanOrEqualTo(value, maxAmount())
-      })
+      }),
 });
 }
 
@@ -216,15 +218,20 @@ async function redelegate() {
   let actualValidator = useValidatorsStore().getValidators.find(el => {
     return redelegateTo.value === el.description.moniker
   });
-  console.log(actualValidator)
-  try {
-    await reundelegationAmountSchema.validate({value:amount.value });
+  if(actualValidator){
+    addressError.value = undefined
+    try {
+      await reundelegationAmountSchema.validate({value:amount.value });
       useUserStore().redelegate(props.validator.operatorAddress, actualValidator.operatorAddress, String(amount.value)).then((resp) => {
-      emit('success')
-    });
-  } catch (err) {
-    validationError.value = err.errors;
+        emit('success')
+      });
+    } catch (err) {
+      validationError.value = err.errors;
+    }
+  } else {
+    addressError.value = i18n.global.t('STAKING_VIEW.STAKING_POPUP.VALIDATOR_NOT_DEFINED')
   }
+
 
 }
 function redelegateState(state: boolean){
