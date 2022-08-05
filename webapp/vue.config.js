@@ -3,7 +3,7 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
-    host: 'localhost',
+    host: '',
     port: 9000,
     proxy: {
       '/api/': {
