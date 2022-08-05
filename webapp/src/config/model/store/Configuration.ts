@@ -146,7 +146,7 @@ export class Configuration implements JsonConfiguration {
     if (viewDenomConf) {
       return viewDenomConf.coinDecimals;
     }
-    return 1;
+    return 0;
   }
 
   public getViewDenom(origDenom = this.stakingDenom): string {

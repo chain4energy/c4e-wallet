@@ -12,11 +12,15 @@ import {
   expectTallyParams,
   createDepositParamsResponseData,
   createProposalTallyResponse,
-  expectTallyResult
+  expectTallyResult,
+  createYesProposalUserVoteResponse
 } from "../utils/proposal.blockchain.data.util";
 import { mockAxios } from "../utils/mock.util";
 import { axiosErrorMessagePrefix, createErrorResponse, defaultAxiosErrorName, defaultDenom, defaultErrorName, expectCoin } from "../utils/common.blockchain.data.util";
 import { useConfigurationStore } from "@/store/configuration.store";
+import { VoteOption } from "@/models/store/proposal";
+import { defaultHasuraErrorMessage, defaultHasuraErrorName } from "../utils/common.hasura.data.util";
+import { createErrorResponse as createHasuraErrorResponse, createHasuraError } from '../utils/common.hasura.data.util';
 
 const mockedAxios = mockAxios();
 // const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -169,7 +173,7 @@ describe('test proposals API', () => {
   });
   
   
-  it('fetch request of one proposal', async ()=> {
+  it('fetch one proposal', async ()=> {
     const proposal = {
       data: createProposalResponseData()
     };
@@ -183,6 +187,39 @@ describe('test proposals API', () => {
     expect(result.data?.proposal.proposalId).toEqual(Number(proposal.data.proposal.proposal_id))
   });
 
+  it('fetch one proposal - wrong data', async ()=> {
+    const tally = {
+      data: {}
+    };
+
+    mockedAxios.request.mockResolvedValue(tally);
+    const result = await api.fetchProposalById(12, false)
+    expect(result.isError()).toBe(true)
+    expect(result.isSuccess()).toBe(false)
+    expect(result.data).toBeUndefined()
+    expect(result.error).not.toBeUndefined()
+    expect(result.error?.name).toBe(defaultErrorName);
+    expect(result.error?.message).toBe('Proposal is undefined');
+    expect(result.error?.data).toBeUndefined();
+    
+  });
+
+  it('fetch one proposal - error', async ()=> {
+    const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
+
+    const status = 400;
+    const error = createErrorResponse(status, 3, errorMessage);
+
+    mockedAxios.request.mockRejectedValueOnce(error);
+    const result = await api.fetchProposalById(13, false)
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultAxiosErrorName);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
+    expect(result.error?.data?.code).toBe(3);
+    expect(result.error?.data?.message).toBe(errorMessage);
+  
+  });
 
 
 
@@ -244,6 +281,81 @@ describe('test proposals API', () => {
     expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
+  
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+  it('fetch user vote - success', async ()=> {
+    const vote = {
+      data: createYesProposalUserVoteResponse()
+    };
+
+    mockedAxios.request.mockResolvedValue(vote);
+    const result = await api.fetchProposalVote(2, 'testAddr', false)
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data).not.toBeUndefined()
+    if (result.data) {
+      expect(result.data).toBe(VoteOption.Yes);
+    }
+  });
+
+  it('fetch user vote - hasura err', async ()=> {
+    const errMessage = 'err message';
+    const vote = {
+      data: createHasuraError(errMessage)
+    };
+
+    mockedAxios.request.mockResolvedValue(vote);
+    const result = await api.fetchProposalVote(2, '', false)
+    expect(result.data).toBeUndefined();
+    expect(result.error).not.toBeUndefined();
+    expect(result.error?.message).toBe(defaultHasuraErrorMessage);
+    expect(result.error?.name).toBe(defaultHasuraErrorName);
+    expect(result.error?.status).toBe(200);
+    expect(result.error?.data?.errors).not.toBeUndefined();
+    expect(result.error?.data?.errors.length).toBe(1);
+    expect(result.error?.data?.errors[0].message).toBe(errMessage);
+    
+  });
+
+  it('fetch user vote - wrong data', async ()=> {
+    const vote = {
+      data: {}
+    };
+
+    mockedAxios.request.mockResolvedValue(vote);
+    const result = await api.fetchProposalVote(2, '', false)
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultErrorName);
+    expect(result.error?.message).toBe('mapProposalVoteResponse - proposal vote response data is undefined');
+    expect(result.error?.data).toBeUndefined();
+    
+  });
+
+  it('fetch user vote - error', async ()=> {
+    const status = 400;
+    const error = createHasuraErrorResponse(status);
+
+    mockedAxios.request.mockRejectedValueOnce(error);
+    const result = await api.fetchProposalVote(2, '', false)
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultAxiosErrorName);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
+    expect(result.error?.data).toBeUndefined();
   
   });
 });

@@ -33,9 +33,9 @@ export function createProposalsResponseData(
     }
   };
 }
-export function createProposalResponseData(){
+export function createProposalResponseData(status = "PROPOSAL_STATUS_PASSED"){
     return{
-      proposal: createProposal(),
+      proposal: createProposal(status),
     };
 }
 export function expectProposal(actualProposal: Proposal, expectedBcProposal: any) {
@@ -76,7 +76,7 @@ export function findNumberOfActiveProposals(proposalsParameters = defaultProposa
   })
   return active;
 }
-export function createProposal(){
+export function createProposal(status = "PROPOSAL_STATUS_PASSED"){
   const proposal = {
     proposal_id: "2",
     content: {
@@ -93,7 +93,7 @@ export function createProposal(){
         },
       ]
     },
-    status: "PROPOSAL_STATUS_PASSED",
+    status: status,
     final_tally_result: {
       yes: '123',
       abstain: '12334',
@@ -284,3 +284,30 @@ export function expectTallyParams(
   expect(tallyParams.vetoThreshold).toBe(expectedVetoThreshold);
 }
 
+export function createProposalUserVoteResponse(option: string) {
+  return {
+    data: {
+      proposal_vote: [
+        {
+          option: option
+        }
+      ]
+    }
+  }
+}
+
+export function createYesProposalUserVoteResponse() {
+  return createProposalUserVoteResponse("VOTE_OPTION_YES");
+}
+
+export function createAbstainProposalUserVoteResponse() {
+  return createProposalUserVoteResponse("VOTE_OPTION_ABSTAIN");
+}
+
+export function createNoProposalUserVoteResponse() {
+  return createProposalUserVoteResponse("VOTE_OPTION_NO");
+}
+
+export function createVetoProposalUserVoteResponse() {
+  return createProposalUserVoteResponse("VOTE_OPTION_NO_WITH_VETO");
+}

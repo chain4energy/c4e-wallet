@@ -5,7 +5,7 @@
     <div class="loginChoose__body">
       <Button @click="$emit('typeChange', LoginEmail)">
       <Icon style="margin-right: 10px;" name="Globe"></Icon>
-        {{ $t('LOGIN.LOGIN_ADDRESS') }} 
+        {{ $t('LOGIN.LOGIN_ADDRESS') }}
       </Button>
       <Button @click="$emit('keplr')" >
         <span class="keplr-logo">K</span>
@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import LoginEmail from '@/components/layout/loginPopup/LoginEmail.vue';
+import LoginEmail from '@/components/layout/loginPopup/LoginAddress.vue';
 import LoginKeplr from '@/components/layout/loginPopup/LogoutConfirm.vue';
 import { useUserStore } from "@/store/user.store";
 
