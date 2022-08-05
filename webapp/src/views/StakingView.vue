@@ -6,31 +6,6 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from "@/store/user.store";
-import router from "@/router";
-import { mapGetters } from "pinia";
-import { onMounted, watch } from "vue";
-import { AccountType } from "@/models/store/account";
-
-onMounted(()=> {
-  if(!useUserStore().isContinuousVestingAccount){
-    router.push({name: 'base'})
-  } else {
-    router.push({name: 'vesting'})
-  }
-})
-watch(
-  () => useUserStore().getAccountType,
-  (accType) => {
-    if(accType !== AccountType.ContinuousVestingAccount){ // TODO check if isContinuousVestingAccount can be used ??
-      router.push({name: 'base'})
-    } else {
-      router.push({name: 'vesting'})
-    }
-    console.log(accType)
-  }
-)
-
 </script>
 
 <style scoped lang="scss">

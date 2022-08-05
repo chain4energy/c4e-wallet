@@ -117,7 +117,7 @@
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",
         "MIN": "Amount must be more than 0",
-        "MAX": "Max amount is {max}"
+        "MAX": "Max amount exceeded. Available amount {max}"
       },
       "VALIDATOR_NOT_DEFINED": "this field is required"
     },
