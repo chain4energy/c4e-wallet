@@ -41,7 +41,7 @@ import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
-import {computed, onBeforeMount, ref} from "vue";
+import { computed } from "vue";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import Icon from "../features/IconComponent.vue";
 import {useTokensStore} from "@/store/tokens.store";
@@ -56,9 +56,6 @@ use([
 ]);
 
 const tokensStore = useTokensStore();
-// onBeforeMount(() => {
-//   tokensStore.fetchPools();
-// });
 
 const communityPool = computed(() => {
   return tokensStore.getCommunityPool.getViewAmount();

@@ -12,10 +12,6 @@
 import {useTokensStore} from "@/store/tokens.store";
 
 const tokensStore = useTokensStore();
-
-// onBeforeMount(() => {
-//   tokensStore.fetchTotalSupply();
-// });
 </script>
 
 <style scoped lang="scss">

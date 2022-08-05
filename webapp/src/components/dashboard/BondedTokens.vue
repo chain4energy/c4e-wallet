@@ -10,8 +10,6 @@
 
 <script setup lang="ts">
 import Icon from "../features/IconComponent.vue";
-
-
 </script>
 
 <style scoped lang="scss">
