@@ -150,7 +150,6 @@ export const useTokensStore = defineStore({
                     - this.airdropPool.amount
                     - this.getStakingPool.bondedTokens
                     - this.getStakingPool.notBondedTokens;
-      console.log('FFFFFF: ' + amount);
       const amountDec = new BigDecimal(amount).subtract(this.communityPool.amount);
       return new DecCoin(amountDec, this.totalSupply.denom);
     },
