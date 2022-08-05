@@ -33,6 +33,10 @@ export class ConnectionInfo {
     this.connectionType = connectionType;
   }
 
+  public isKeplr(): boolean {
+    return this.connectionType === ConnectionType.Keplr;
+  }
+
 }
 
 export class ConnectionError {
