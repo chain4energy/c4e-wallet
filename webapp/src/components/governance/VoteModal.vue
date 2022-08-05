@@ -45,17 +45,6 @@ import dataService from '@/services/data.service';
 import { VoteOption } from "@/models/store/proposal";
 const err = ref()
 
-// const props = defineProps({
-//   title: {
-//     type: String,
-//     required: true
-//   },
-//   proposalId: {
-//     type: Number,
-//     required: true
-//   }
-// });
-
 const props = defineProps<{
   title: string
   proposalId: number
