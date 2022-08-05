@@ -17,6 +17,7 @@ import i18n from "@/plugins/i18n";
 import { formatString } from "@/utils/string-formatter";
 import { useProposalsStore } from "./proposals.store";
 import { VoteOption } from "@/models/store/proposal";
+import dataService from "@/services/data.service";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -51,7 +52,7 @@ export const useUserStore = defineStore({
     async reconnect(onSuccess?: () => void){
       logger.logToConsole(LogLevel.DEBUG, 'reconnect: ', JSON.stringify(this.connectionInfo));
       if(this.connectionInfo.connectionType === ConnectionType.Keplr){
-        await this.connectKeplr(onSuccess);
+        dataService.onKeplrLogIn()
       } else if(this.connectionInfo.connectionType === ConnectionType.Address){
         await this.connectAsAddress(this.connectionInfo.account, onSuccess);
       }

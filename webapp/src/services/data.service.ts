@@ -8,6 +8,7 @@ import { useValidatorsStore } from "@/store/validators.store";
 import { LoggedService } from "./logged.service";
 import { LogLevel } from "./logger/log-level";
 import { ServiceTypeEnum } from "./logger/service-type.enum";
+import { ConnectionType } from "@/api/wallet.connecton.api";
 
 const keplrKeyStoreChange = 'keplr_keystorechange';
 
@@ -242,7 +243,7 @@ class DataService extends LoggedService {
     if (!this.skipRefreshing(this.lastValidatorsTimeout)) {
       useBlockStore().fetchLatestBlock(false).then(() => {
         this.lastValidatorsTimeout = new Date().getTime();
-      })
+      });
     }
   }
 
