@@ -1,0 +1,37 @@
+{
+  "bcApiURL": "http://10.0.14.81:1317",
+  "bcRpcURL": "http://10.0.14.81:26657",
+  "hasuraURL": "http://10.0.7.86:8080/v1/graphql",
+  "keybaseURL": "https://keybase.io",
+  "stakingPageURL": "https://app-testnet.chain4energy.org/",
+  "addressPrefix": "c4e",
+  "stakingDenom": "uc4e",
+  "strategicPoolAddress": "c4e1m2z0c7am94zc4te33hnmh54w4zgufft5cgqxu7",
+  "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+  "chainId": "perun-testnet-1",
+  "operationGas": {
+    "vote": 1200000,
+    "delegate": 1300000,
+    "undelegate": 1400000,
+    "redelegate": 1500000,
+    "claimRewards": 2500000
+  },
+  "viewDenoms": [
+    {
+      "denom": "uc4e",
+      "viewDenom": "C4E",
+      "coinDecimals": 6
+    }
+  ],
+  "keplrGasPriceSteps": {
+    "low": 0.01,
+    "average": 0.025,
+    "high": 0.03
+  },
+  "minPeriodBetweenDataRefresh": 1000,
+  "blockDataRefreshTimeout": 3000,
+  "dashboardDataRefreshTimeout": 3000,
+  "validatorsDataRefreshTimeout": 10000,
+  "accountDataRefreshTimeout": 10000,
+  "proposalsPageLimit": 10
+}

@@ -8,7 +8,6 @@ import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
 import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
-import { string } from "yup";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
@@ -19,6 +18,7 @@ interface TokensState {
   communityPool: DecCoin
   strategicReversePool: Coin
   airdropPool: Coin
+  inflation: number
 }
 
 export const useTokensStore = defineStore({
@@ -31,7 +31,8 @@ export const useTokensStore = defineStore({
       totalSupply: emptyCoin,
       communityPool: new DecCoin(new BigDecimal(0), denom),
       strategicReversePool: emptyCoin,
-      airdropPool: emptyCoin
+      airdropPool: emptyCoin,
+      inflation: Number.NaN
     };
   },
   actions: {
@@ -103,6 +104,17 @@ export const useTokensStore = defineStore({
         }
       });
     },
+    async fetchInflation(lockscreen = true) {
+      await apiFactory.tokensApi().fetchInflation(lockscreen).then(response => {
+        if (response.isSuccess() && response.data !== undefined) {
+          this.inflation = response.data;
+        } else {
+          const message = 'Error fetching inflation data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          // toast.error(message);  // TODO uncomment when inflation on testnet
+        } 
+      });
+    },
     clear() {
       const denom = useConfigurationStore().config.stakingDenom;
       const emptyCoin = new Coin(0n, denom);
@@ -111,6 +123,7 @@ export const useTokensStore = defineStore({
       this.communityPool = new DecCoin(new BigDecimal(0), denom);
       this.strategicReversePool = emptyCoin;
       this.airdropPool = emptyCoin;
+      this.inflation = Number.NaN
     }
   },
   getters: {
@@ -149,6 +162,25 @@ export const useTokensStore = defineStore({
     },
     getAirdropPool(): Coin {
       return this.airdropPool;
+    },
+    getInflationPercentage(): (precision?: number) => string {
+      return (precision = 2) => {
+        if (isNaN(this.inflation)) {
+          return 'NaN';
+        }
+        return toPercentage(this.inflation, precision);
+      }
+    },
+    getAprPercentage(): (precision?: number) => string {
+      return (precision = 2) => {
+        if (isNaN(this.inflation)) {
+          return 'NaN';
+        }
+        if (this.getStakingPool.bondedTokens=== 0n) {
+          return toPercentage(0, precision);
+        }
+        return toPercentage(new BigDecimal(this.inflation).multiply(this.totalSupply.amount).divide(this.getStakingPool.bondedTokens), precision);
+      }
     },
     getBoundedPercentage(): (precision?: number) => string {
       return (precision = 2) => {

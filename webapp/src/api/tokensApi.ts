@@ -4,7 +4,7 @@ import BaseApi from "@/api/base.api";
 import {useConfigurationStore} from "@/store/configuration.store";
 import { ErrorData } from "@/api/base.api";
 import { StakingPool } from "@/models/store/tokens";
-import { CommunityPoolResponse, StakingPoolResponse } from "@/models/blockchain/tokens";
+import { CommunityPoolResponse, InflationResponse, StakingPoolResponse } from "@/models/blockchain/tokens";
 import { mapStakingPool } from "@/models/mapper/tokens.mapper";
 import { Coin, DecCoin } from "@/models/store/common";
 import { SupplyResponse } from "@/models/blockchain/tokens";
@@ -33,6 +33,17 @@ export class TokensApi extends BaseApi {
     const mapData = (bcData: SupplyResponse | undefined) => {return mapCoin(bcData?.amount, denom);};
     return  await this.axiosGetBlockchainApiCall(formatString(this.TOTAL_SUPPLY_URL, {denom: denom}),
       mapData, lockscreen, null, 'fetchTotalSupply - ');
+  }
+
+  public async fetchInflation(lockscreen: boolean): Promise<RequestResponse<number, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (inflation: InflationResponse | undefined) => {
+      if (!inflation || !inflation.inflation) {
+        return Number.NaN;
+      }
+      return Number(inflation.inflation);
+    };
+    return  await this.axiosGetBlockchainApiCall(queries.blockchain.INFLATION_URL,
+      mapData, lockscreen, null, 'fetchInflation - ', undefined, undefined, true); // TODO remove skit toast when inflation on testnet
   }
 
   public async fetchCommunityPoolByDenom(denom: string, lockscreen: boolean): Promise<RequestResponse<DecCoin, ErrorData<BlockchainApiErrorData>>> {
