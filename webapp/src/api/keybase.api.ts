@@ -1,9 +1,9 @@
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { RequestResponse } from "@/models/request-response";
-import BaseApi, { KeybaseErrorData } from "@/api/base.api";
+import BaseApi from "@/api/base.api";
 import { ErrorData } from "@/api/base.api";
 import queries from "./queries";
-import { PictureUrlResponse } from "@/models/keybase/proposal.vote";
+import { KeybaseErrorData, PictureUrlResponse } from "@/models/keybase/keybase";
 import { formatString } from "@/utils/string-formatter";
 
 export class KeybaseApi extends BaseApi {

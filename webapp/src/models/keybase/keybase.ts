@@ -14,3 +14,11 @@ export interface KeybaseResponse {
     name: string
   },
 }
+
+export interface KeybaseErrorData extends KeybaseResponse {
+  status: {
+    code: number,
+    name: string,
+    desc: string
+  },
+}

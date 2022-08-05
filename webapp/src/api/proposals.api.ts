@@ -1,8 +1,8 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import { RequestResponse } from "@/models/request-response";
-import BaseApi, { BlockchainPagination, HasuraErrorData } from "@/api/base.api";
+import BaseApi, { BlockchainPagination } from "@/api/base.api";
 import {Proposal, ProposalTallyResult, TallyParams, VoteOption } from "@/models/store/proposal";
-import { ErrorData, BlockchainApiErrorData } from "@/api/base.api";
+import { ErrorData } from "@/api/base.api";
 import { ProposalsResponse, ProposalResponse, GovernanceParameters, TallyResponse } from "@/models/blockchain/proposals";
 import { mapDepositParams, mapProposalByID, mapProposals, mapProposalVoteResponse, mapProposalTallyResult, mapTallyParams } from "@/models/mapper/proposals.mapper";
 import { useConfigurationStore } from "@/store/configuration.store";
@@ -10,6 +10,8 @@ import { Coin } from "@/models/store/common";
 import queries from "./queries";
 import { formatString } from "@/utils/string-formatter";
 import { ProposalVoteResponse } from "@/models/hasura/proposal.vote";
+import { BlockchainApiErrorData } from "@/models/blockchain/common";
+import { HasuraErrorData } from "@/models/hasura/error";
 
 export class ProposalsApi extends BaseApi {
 
@@ -28,14 +30,14 @@ export class ProposalsApi extends BaseApi {
   public async fetchProposals(paginationKey: string | null, lockscreen: boolean): Promise<{ response: RequestResponse<{ proposals: Proposal[], numberOfActive: number}, ErrorData<BlockchainApiErrorData>>, nextKey: string | null }> {
     const mapData = (bcData: ProposalsResponse | undefined) => {return mapProposals(bcData?.proposals);};
     const pagination = new BlockchainPagination(paginationKey ? paginationKey : undefined, useConfigurationStore().config.proposalsPageLimit, true);
-    const result = await this.axiosGetBlockchainApiPaginatedCall(useConfigurationStore().config.bcApiURL+this.PROPOSALS_URL,
+    const result = await this.axiosGetBlockchainApiPaginatedCall(this.PROPOSALS_URL,
     pagination, mapData, lockscreen, null, 'fetchAllProposals - ');
     return result;
   }
   public async fetchProposalById(id: number, lockscreen: boolean): Promise<RequestResponse<{ proposal: Proposal}, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: ProposalResponse | undefined) => {return mapProposalByID(bcData?.proposal);};
 
-    const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+formatString(this.PROPOSALS_BY_ID_URL, {id: id}),
+    const result = await this.axiosGetBlockchainApiCall(formatString(this.PROPOSALS_BY_ID_URL, {id: id}),
       mapData, lockscreen, null, 'fetchAllProposals - ');
     return result;
   }
@@ -43,7 +45,7 @@ export class ProposalsApi extends BaseApi {
   public async fetchTallyParams(lockscreen: boolean): Promise<RequestResponse<TallyParams, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (govParams: GovernanceParameters | undefined) => {return mapTallyParams(govParams);};
 
-    const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.TALLYING_URL,
+    const result = await this.axiosGetBlockchainApiCall(this.TALLYING_URL,
       mapData, lockscreen, null, 'fetchTallyParams - ');
     return result;
   }
@@ -51,7 +53,7 @@ export class ProposalsApi extends BaseApi {
   public async fetchDepositParams(lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (govParams: GovernanceParameters | undefined) => {return mapDepositParams(govParams);};
 
-    const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+this.DEPOSIT_URL,
+    const result = await this.axiosGetBlockchainApiCall(this.DEPOSIT_URL,
       mapData, lockscreen, null, 'fetchDepositParams - ');
     return result;
   }
@@ -59,7 +61,7 @@ export class ProposalsApi extends BaseApi {
   public async fetchVotingProposalTallyResult(id: number, lockscreen: boolean): Promise<RequestResponse<ProposalTallyResult, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (tally: TallyResponse | undefined) => {return mapProposalTallyResult(tally?.tally);};
 
-    const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.bcApiURL+formatString(this.PROPOSAL_TALLY_URL, {id: id}),
+    const result = await this.axiosGetBlockchainApiCall(formatString(this.PROPOSAL_TALLY_URL, {id: id}),
       mapData, lockscreen, null, 'fetchVotingProposalTallyResult - ');
     return result;
   }
