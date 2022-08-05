@@ -8,6 +8,7 @@ import { useValidatorsStore } from "@/store/validators.store";
 import { LoggedService } from "./logged.service";
 import { LogLevel } from "./logger/log-level";
 import { ServiceTypeEnum } from "./logger/service-type.enum";
+import { ConnectionInfo } from "@/api/wallet.connecton.api";
 
 const keplrKeyStoreChange = 'keplr_keystorechange';
 
@@ -88,15 +89,14 @@ class DataService extends LoggedService {
 
   public onKeplrLogIn(onSuccess?: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onKeplrLogIn');
-    useUserStore().connectKeplr(() => {
-      this.enableKeplrAccountChangeListener();
-      this.onLoginSuccess(onSuccess);
+    useUserStore().connectKeplr((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo, onSuccess);
     });
   }
 
   public onAddressLogIn(address: string, onSuccess?: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onAddressLogIn');
-    useUserStore().connectAsAddress(address, () => {this.onLoginSuccess(onSuccess)});
+    useUserStore().connectAsAddress(address, (connetionInfo: ConnectionInfo) => {this.onLoginSuccess(connetionInfo, onSuccess)});
   }
 
   public onLogOut() {
@@ -169,10 +169,12 @@ class DataService extends LoggedService {
     useUserStore().connectKeplr();
   }
 
-  private onLoginSuccess(onSuccess?: () => void) {
+  private onLoginSuccess(connetionInfo: ConnectionInfo, onSuccess?: () => void) {
     const instancce = DataService.getInstance();
-    instancce.logToConsole(LogLevel.DEBUG, 'onLoginSuccess');
-
+    instancce.logToConsole(LogLevel.DEBUG, 'onLoginSuccess: ' + connetionInfo.isKeplr());
+    if (connetionInfo.isKeplr()) {
+      instancce.enableKeplrAccountChangeListener();
+    }
     const now = new Date().getTime();
     instancce.lastAccountTimeout = now;
     instancce.accountIntervalId = window.setInterval(refreshAccountData, instancce.accountTimeout);
@@ -242,15 +244,17 @@ class DataService extends LoggedService {
     if (!this.skipRefreshing(this.lastValidatorsTimeout)) {
       useBlockStore().fetchLatestBlock(false).then(() => {
         this.lastValidatorsTimeout = new Date().getTime();
-      })
+      });
     }
   }
 
   private enableKeplrAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'enableKeplrAccountChangeListener');
     window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
   }
 
   private disableKeplrAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'disableKeplrAccountChangeListener');
     window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
   }
 

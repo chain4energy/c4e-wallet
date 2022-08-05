@@ -48,21 +48,21 @@ export const useUserStore = defineStore({
     };
   },
   actions: {
-    async reconnect(onSuccess?: () => void){
+    async reconnect(onSuccess?: (connectionInfo: ConnectionInfo) => void){
       logger.logToConsole(LogLevel.DEBUG, 'reconnect: ', JSON.stringify(this.connectionInfo));
       if(this.connectionInfo.connectionType === ConnectionType.Keplr){
-        await this.connectKeplr(onSuccess);
+        await this.connectKeplr(onSuccess); 
       } else if(this.connectionInfo.connectionType === ConnectionType.Address){
         await this.connectAsAddress(this.connectionInfo.account, onSuccess);
       }
     },
-    async connectKeplr(onSuccess?: () => void) {
+    async connectKeplr(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
       await this.connect(
         apiFactory.walletApi().connectKeplr(),
         onSuccess
         );
     },
-    async connectAsAddress(address: string, onSuccess?: () => void) {
+    async connectAsAddress(address: string, onSuccess?: (connectionInfo: ConnectionInfo) => void) {
       await this.connect(
         apiFactory.walletApi().connectAddress(address),
         onSuccess
@@ -70,7 +70,7 @@ export const useUserStore = defineStore({
     },
     async connect(
       connectionResponse: Promise<RequestResponse<ConnectionInfo, ConnectionError>>,
-      onSuccess?: () => void
+      onSuccess?: (connectionInfo: ConnectionInfo) => void
     ) {
       await connectionResponse.then(async (response) => {
         if (response.isError() || response.data === undefined) {
@@ -85,7 +85,7 @@ export const useUserStore = defineStore({
           await this.fetchAccountData();
           if (this.isLoggedIn) {
             if (onSuccess !== undefined) {
-              onSuccess();
+              onSuccess(response.data);
             }
             logger.logToConsole(LogLevel.DEBUG, 'Address: "' + address + '" Connected');
             toast.success(i18n.global.t('TOAST.SUCCESS.ADDRESS_CONNECTED', {address: address}));
