@@ -35,7 +35,7 @@
             <a :href="validator.description.website">{{validator.description.website}}</a>
           </div>
         </div>
-        <div class="validationPopup__description">
+        <div v-if="useUserStore().isLoggedIn" class="validationPopup__description">
           <label style="width: 100%" for="validators">
             <select v-model="stakingAction" style="width: 100%"  id="action" name="action">
               <option :value="StakingAction.DELEGATE" :key="StakingAction.DELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}</option>

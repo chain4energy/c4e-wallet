@@ -81,7 +81,6 @@ const globalFilter = useGlobalFilterStore();
 const expandedRows = ref([]);
 const firstRecord = ref(0);
 
-//TODO: dlaczego ??? to musi być tu tworzone a nie w mount
 let paging = new PagingModel(["login"]);
 const slots = useSlots();
 

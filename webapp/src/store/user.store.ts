@@ -63,7 +63,6 @@ export const useUserStore = defineStore({
         );
     },
     async connectAsAddress(address: string, onSuccess?: () => void) {
-      // TODO address validations
       await this.connect(
         apiFactory.walletApi().connectAddress(address),
         onSuccess
