@@ -60,9 +60,15 @@ export const useValidatorsStore = defineStore({
     getInactiveValidators(): Validator[]{
       return this.validators.filter((el) => el.status !== ValidatorStatus.Bonded);
     },
-    getValidatorsWithDelegations(): Validator[]{
+    getUserValidators(): Validator[]{
       const delegations = useUserStore().delegations;
-      return this.validators.filter((el) => delegations.delegations.has(el.operatorAddress));
+      const undelegations = useUserStore().undelegations;
+      const rewards = useUserStore().rewards;
+      return this.validators.filter(
+        (el) => delegations.delegations.has(el.operatorAddress) 
+                  || undelegations.undelegations.has(el.operatorAddress)
+                  || rewards.rewards.has(el.operatorAddress)
+        );
     },
     getNumberOfActiveValidators(): number {
       return this.numberOfActiveValidators;

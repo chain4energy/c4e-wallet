@@ -5,7 +5,7 @@
         <ValidatorsDataTable :validators="useValidatorsStore().getValidators"/>
       </TabPanel>
       <TabPanel v-if="isLoggedIn" :header="$t(`STAKING_VIEW.TABS.STAKED`)">
-        <ValidatorsDataTable :validators="useValidatorsStore().getValidatorsWithDelegations"/>
+        <ValidatorsDataTable :validators="useValidatorsStore().getUserValidators"/>
       </TabPanel>
       <TabPanel :header="$t(`STAKING_VIEW.TABS.ACTIVE`)">
         <ValidatorsDataTable :validators="useValidatorsStore().getActiveValidators"/>
