@@ -77,7 +77,7 @@
     "UNBOUNDED": "Unbounded",
     "UNBOUNDING": "Unbounding",
     "AVERAGE_BLOCK_TIME": "Average block time",
-    "CIRCULATING_SUPPLY": "Circulating supply",
+    "CIRCULATING_SUPPLY": "Circulating supply (TODO - to define - now: TOTAL - Pools - bonded)",
     "INFLATION": "Inflation",
     "STACKING_APR": "Staking APR"
   },

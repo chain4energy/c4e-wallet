@@ -9,8 +9,6 @@
 </template>
 
 <script setup lang="ts">
-
-import {onBeforeMount} from "vue";
 import {useTokensStore} from "@/store/tokens.store";
 
 const tokensStore = useTokensStore();

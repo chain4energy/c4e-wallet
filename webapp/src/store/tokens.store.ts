@@ -131,6 +131,16 @@ export const useTokensStore = defineStore({
     getTotalSupply(): Coin {
       return this.totalSupply;
     },
+    getCirculatingSupply(): DecCoin {
+      const amount = this.totalSupply.amount
+                    - this.strategicReversePool.amount
+                    - this.airdropPool.amount
+                    - this.getStakingPool.bondedTokens
+                    - this.getStakingPool.notBondedTokens;
+      console.log('FFFFFF: ' + amount);
+      const amountDec = new BigDecimal(amount).subtract(this.communityPool.amount);
+      return new DecCoin(amountDec, this.totalSupply.denom);
+    },
     getCommunityPool(): DecCoin {
       return this.communityPool;
     },
