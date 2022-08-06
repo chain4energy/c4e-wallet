@@ -4,7 +4,18 @@ import { BigDecimal, divideBigInts } from "./big.decimal";
 import { toPercentage } from "./common";
 import i18n from '@/plugins/i18n';
 
-export class Validator{
+export interface ValidatorBase {
+  rank: number;
+  operatorAddress: string;
+  description: ValidatorDescriptionBase;
+}
+
+export interface ValidatorDescriptionBase {
+  moniker: string;
+  pictureUrl?: string;
+}
+
+export class Validator implements ValidatorBase {
   operatorAddress: string;
   jailed: boolean;
   status: ValidatorStatus;
@@ -85,7 +96,7 @@ export class Validator{
   }
 }
 
-export class ValidatorDescription {
+export class ValidatorDescription implements ValidatorDescriptionBase{
   moniker: string;
   identity: string;
   website: string;

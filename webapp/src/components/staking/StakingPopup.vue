@@ -1,6 +1,8 @@
 <template>
   <div class="validationPopup">
     <div class="validationPopup__background"></div>
+
+
     <div class="validationPopup__holder">
       <div class="validationPopup__header">
         <div>
@@ -18,78 +20,90 @@
           <Button icon="pi pi-times" style="width: 5px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
 
       </div>
-      <div class="validationPopup__body">
-        <h3>{{ $t('STAKING_VIEW.STAKING_POPUP.HEADER') }}</h3>
-        <div class="validationPopup__description">
-          <div class="validationPopup__descriptionIcon">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="20" height="20" fill="white"/>
-              <path d="M9.99984 18.3333C14.6022 18.3333 18.3332 14.6023 18.3332 9.99996C18.3332 5.39759 14.6022 1.66663 9.99984 1.66663C5.39746 1.66663 1.6665 5.39759 1.6665 9.99996C1.6665 14.6023 5.39746 18.3333 9.99984 18.3333Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M1.6665 10H18.3332" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M9.99984 1.66663C12.0842 3.94859 13.2688 6.90999 13.3332 9.99996C13.2688 13.0899 12.0842 16.0513 9.99984 18.3333C7.91544 16.0513 6.73088 13.0899 6.6665 9.99996C6.73088 6.90999 7.91544 3.94859 9.99984 1.66663V1.66663Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="validationPopup__description-info">
-            <p>{{ $t('COMMON.DESCRIPTION') }}</p>
-            <p>{{ $t('COMMON.THE') }} {{validator.description.moniker}} {{ $t('STAKING_VIEW.STAKING_POPUP.VALIDATOR_DESCRIPTION') }}</p>
-            <a :href="validator.description.website">{{validator.description.website}}</a>
-          </div>
-        </div>
-        <div v-if="useUserStore().isLoggedIn" class="validationPopup__description">
-          <label style="width: 100%" for="validators">
-            <select v-model="stakingAction" style="width: 100%"  id="action" name="action">
-              <option :value="StakingAction.DELEGATE" :key="StakingAction.DELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}</option>
-              <option :value="StakingAction.UNDELEGATE" :key="StakingAction.UNDELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</option>
-              <option :value="StakingAction.REDELEGATE" :key="StakingAction.REDELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</option>
-            </select>
+      <Form @submit="action" :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body">
 
-          </label>
-        </div>
+        <div class="validationPopup__body">
+          <h3>{{ $t('STAKING_VIEW.STAKING_POPUP.HEADER') }}</h3>
+          <div class="validationPopup__description">
+            <div class="validationPopup__descriptionIcon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="20" height="20" fill="white"/>
+                <path d="M9.99984 18.3333C14.6022 18.3333 18.3332 14.6023 18.3332 9.99996C18.3332 5.39759 14.6022 1.66663 9.99984 1.66663C5.39746 1.66663 1.6665 5.39759 1.6665 9.99996C1.6665 14.6023 5.39746 18.3333 9.99984 18.3333Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1.6665 10H18.3332" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9.99984 1.66663C12.0842 3.94859 13.2688 6.90999 13.3332 9.99996C13.2688 13.0899 12.0842 16.0513 9.99984 18.3333C7.91544 16.0513 6.73088 13.0899 6.6665 9.99996C6.73088 6.90999 7.91544 3.94859 9.99984 1.66663V1.66663Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="validationPopup__description-info">
+              <p>{{ $t('COMMON.DESCRIPTION') }}</p>
+              <p>{{ $t('COMMON.THE') }} {{validator.description.moniker}} {{ $t('STAKING_VIEW.STAKING_POPUP.VALIDATOR_DESCRIPTION') }}</p>
+              <a :href="validator.description.website">{{validator.description.website}}</a>
+            </div>
+          </div>
+          <div class="validationPopup__description">
+            <Dropdown v-model="stakingAction" :options="actions" optionLabel="name" optionValue="type" placeholder="Select a action" :disabled="!canModify"/>
+          </div>
 
-        <div v-if="stakingAction === StakingAction.REDELEGATE" class="validationPopup__description">
-          <AutoComplete v-model="redelegateTo" :suggestions="filteredValidators" @complete="searchValidator($event)" field="description.moniker"
-                       :dropdown="true" force-selection style="width: 100%">
-            <template #item="slotProps">
-             <div>
-                  {{slotProps.item.rank}}.
-                  <ValidatorLogo :validator="slotProps.item" class="validator-image"></ValidatorLogo>
-                  {{slotProps.item.description.moniker}}
+          <div v-if="stakingAction === StakingAction.REDELEGATE" class="validationPopup__description">
+            <div class="field">
+              <Field v-model="redelegateTo" placeholder=" " name="redelegateTo" v-slot="{ field, handleChange }"  >
+                <Dropdown :options="filteredValidators" optionLabel="description.moniker" :placeholder="$t('STAKING_VIEW.STAKING_POPUP.INPUT.REDELEGATE_VALIDATOR')" :filter="true" :showClear="true"
+                        :filterFields="['description.moniker', 'rank']" :model-value="field.value" 
+                        @update:modelValue="handleChange" :class="{ 'p-invalid': errors.redelegateTo, 'is-invalid': errors.redelegateTo }" :disabled="!canModify">
+                    <template #value="slotProps">
+                        <div v-if="slotProps.value">
+                          {{slotProps.value.rank}}.
+                          <ValidatorLogo :validator="slotProps.value" class="validator-image"></ValidatorLogo>
+                          {{slotProps.value.description.moniker}}
+                        </div>
+                    </template>
+                    <template #option="slotProps">
+                        <div>
+                          {{slotProps.option.rank}}.
+                          <ValidatorLogo :validator="slotProps.option" class="validator-image"></ValidatorLogo>
+                          {{slotProps.option.description.moniker}}
+                        </div>
+                    </template>
+                </Dropdown>
+              </Field>
+              <span>{{$t('STAKING_VIEW.STAKING_POPUP.INPUT.REDELEGATE_VALIDATOR')}}</span>
+              <div class="invalid-feedback">
+                {{ errors.redelegateTo ? errors.redelegateTo : "" }}
               </div>
-            </template>
-          </AutoComplete>
+            </div>
+          </div>
+
+          <div class="validationPopup__description">
+            <div class="field">
+              <Field v-model="amount" name="amount" placeholder=" " type="text" class="form-control" style="width: 100%;" :class="{ 'is-invalid': errors.amount }" :disabled="!canModify"></Field>
+              <span>{{$t('COMMON.INPUT.AMOUNT')}}</span>
+              <div class="invalid-feedback">
+                {{ errors.amount ? errors.amount : "" }}
+              </div>
+            </div>
+          </div>
+         
+        </div>
+        <div class="validationPopup__btnHolder" v-if="canModify" >
+          <div class="validationPopup__btns" >
+            <Button :label="$t('STAKING_VIEW.STAKING_POPUP.DELEGATE')" v-if="stakingAction === StakingAction.DELEGATE" type="submit"></Button>
+            <Button :label="$t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE')" v-if="stakingAction === StakingAction.UNDELEGATE" type="submit"></Button>
+            <Button :label="$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE')" v-if="stakingAction === StakingAction.REDELEGATE" type="submit"></Button>
+          </div>
         </div>
 
-        <div class="validationPopup__description">
-          <label style="width: 100%;" for="amount">
-            <ul v-for="item in validationError" :key="item"><li>{{item}}</li></ul>
-            <span class="p-float-label" style="width: 100%">
-              <InputText id="amount" type="text" v-model="amount"  style="width: 100%" />
-              <label for="amount">{{$t('COMMON.INPUT.AMOUNT')}}</label>
-            </span>
-          </label>
+        <div v-else class="validationPopup__btns">
+          {{ $t('ERRORS.LOGIN_WALLET')}}
+          <Button @click="dataService.onKeplrLogIn()">{{ $t('LOGIN.LOGIN' )}}</Button> <!-- TODO is connectKeplr correct? -->
         </div>
-      </div>
-      <div class="validationPopup__btnHolder" v-if="useUserStore().isLoggedIn && canModify" >
-        <div class="validationPopup__btns" >
-          <Button v-if="stakingAction === StakingAction.DELEGATE" @click="delegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}</Button>
-          <Button v-if="stakingAction === StakingAction.UNDELEGATE" @click="undelegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</Button>
-          <Button v-if="stakingAction === StakingAction.REDELEGATE" @click="redelegate">{{ $t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</Button>
-        </div>
-      </div>
-
-      <div v-else class="validationPopup__btns">
-        {{ $t('ERRORS.LOGIN_WALLET')}}
-        <Button @click="dataService.onKeplrLogIn()">{{ $t('LOGIN.LOGIN' )}}</Button> <!-- TODO is connectKeplr correct? -->
-      </div>
+      </Form>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted } from "vue";
+import { ref, computed, onUnmounted } from "vue";
 import {useUserStore} from "@/store/user.store";
-import { Validator } from "@/models/store/validator";
-import {ref} from "vue";
+import { Validator, ValidatorBase } from "@/models/store/validator";
 import { useValidatorsStore } from "@/store/validators.store";
 import { object, setLocale, string, ValidationError } from "yup";
 import dataService from '@/services/data.service';
@@ -99,15 +113,22 @@ import i18n from "@/plugins/i18n";
 import { filteringIterator } from "@/utils/filtering-iterator";
 import { AutoCompleteCompleteEvent } from "primevue/autocomplete";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
+import {Field, Form} from "vee-validate";
+import { YupSequentialStringSchema } from "@/utils/yup-utils";
+
 
 enum StakingAction {
   DELEGATE,
   UNDELEGATE,
   REDELEGATE
 }
-function filteringValidatorsIterator(validator: Validator) {
-  return filteringIterator<Validator>(useValidatorsStore().getValidators.values(), (val: Validator) => {return val.operatorAddress !== validator.operatorAddress && val.active})
-}
+
+const actions = [
+  {type: StakingAction.DELEGATE, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATE')},
+  {type: StakingAction.UNDELEGATE, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE')},
+  {type: StakingAction.REDELEGATE, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.REDELEGATE')},
+  ]
+
 const props = defineProps<{
   validator: Validator
 }>();
@@ -117,14 +138,13 @@ onUnmounted(() => {
   document.body.style.overflow = "auto";
 });
 
-const filteredValidators = ref<Validator[]>(filterForRedelegation())
+const filteredValidators = ref<ValidatorBase[]>(filterForRedelegation())
 const redelegateTo = ref<Validator>()
 const stakingAction = ref<StakingAction>(StakingAction.DELEGATE)
 
-function filterForRedelegation(filter?: (val: Validator) => boolean): Validator[]{
-  const filtred = useValidatorsStore().getValidators
-    .filter(
-      element => {
+function filterForRedelegation(filter?: (val: Validator) => boolean): ValidatorBase[]{
+  const filtred = useValidatorsStore().getValidators.filter(
+    element => {
         const condition = element.operatorAddress !== props.validator.operatorAddress && element.active;
         if (!filter) {
           return condition;
@@ -132,16 +152,26 @@ function filterForRedelegation(filter?: (val: Validator) => boolean): Validator[
           return condition && filter(element);
         }
       }
+    )
+    .map((val) => {
+        return {
+        rank: val.rank,
+        operatorAddress: val.operatorAddress,
+        description: {
+          moniker: val.description.moniker,
+          pictureUrl: val.description.pictureUrl
+        }
+      }
+      }
     );
   return filtred
 }
 
 const canModify = computed<boolean>(() => {
-  return useUserStore().connectionInfo.modifiable
+  return useUserStore().isLoggedIn && useUserStore().connectionInfo.modifiable
   });
 
 const amount = ref('');
-const validationError = ref<string[]>();
 const emit = defineEmits(['close', 'success']);
 
 
@@ -151,27 +181,17 @@ setLocale({
   }
 });
 
-const delegationAmountSchema = createValidSchema(
-  () => useUserStore().getBalance,
-  () => useUserStore().getBalanceViewAmount(useConfigurationStore().config.getViewDenomDecimals()));
-
-const reundelegationAmountSchema = createValidSchema(
-  () => props.validator.delegatedAmount,
-  () => props.validator.getDelegatedViewAmount(useConfigurationStore().config.getViewDenomDecimals()))
-
-function createValidSchema(maxAmount: () => bigint, maxAmountMessage: () => string) {
-  return object({
-  value:
-    string()
-      .defined()
-      .test('not-empty', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.REQUIRED'), (value: string | undefined) => {return value ? value.length > 0 : false})
-      .matches(/^\d*(\.\d{0,6})?$/gm, i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.NUMBER', {decimal: useConfigurationStore().config.getViewDenomDecimals()}))
-      .test('delgation-moreThan', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MIN'), moreThan)
-      .test('delgation-lessThan', () => i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MAX', {max:maxAmountMessage()}), (value: string | undefined):boolean => {
-        return lessThanOrEqualTo(value, maxAmount())
-      }),
+const baseSchema = object().shape({
+  redelegateTo: object().nullable().test('validator', i18n.global.t('STAKING_VIEW.STAKING_POPUP.VALIDATOR.REQUIRED'), (value: any) => {
+    return stakingAction.value === StakingAction.REDELEGATE ? value ? true : false : true;
+  }),
+  amount: YupSequentialStringSchema([string().defined(),
+      string().test('not-empty', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.REQUIRED'), (value: string | undefined) => {return value ? value.length > 0 : false}),
+      string().matches(/^\d*(\.\d{0,6})?$/gm, i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.NUMBER', {decimal: useConfigurationStore().config.getViewDenomDecimals()})),
+      string().test('delgation-moreThan', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MIN'), moreThan),
+      string().test('delgation-lessThan', () => i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MAX', {max:maxAmountMessageData()}), lessThanOrEqualTo)
+    ])
 });
-}
 
 function checkValue(value: string | undefined, check: (value:  string) => boolean): boolean {
   if (!value) {
@@ -188,80 +208,59 @@ function moreThan(value: string | undefined): boolean {
   return checkValue(value, (value:  string) => (new BigDecimal(value)).isBiggerThan(0))
 }
 
-function lessThanOrEqualTo(value: string | undefined, lessThan: bigint): boolean {
+function lessThanOrEqualTo(value: string | undefined): boolean {
   return checkValue(value, (value:  string) => {
     const factor = useConfigurationStore().config.getViewDenomConversionFactor();
+    const lessThan = stakingAction.value === StakingAction.DELEGATE ? useUserStore().getBalance : props.validator.delegatedAmount
     return (new BigDecimal(lessThan)).isBiggerThan(new BigDecimal(value).multiply(factor));
   })
 }
 
-async function delegate() {
+function maxAmountMessageData(): string {
+  return stakingAction.value === StakingAction.DELEGATE ? 
+      useUserStore().getBalanceViewAmount(useConfigurationStore().config.getViewDenomDecimals()) :
+      props.validator.getDelegatedViewAmount(useConfigurationStore().config.getViewDenomDecimals())
+}
 
-  try {
-    await delegationAmountSchema.validate({value:amount.value });
-    await useUserStore().delegate(props.validator.operatorAddress, amount.value)
-      .then((resp) => {
-        console.log(resp)
-        emit('success');
-      });
-  } catch (err) {
-    if (err instanceof ValidationError) {
-      validationError.value = (err as ValidationError).errors;
-    } else {
-      validationError.value = [(err as Error).message]
+function action() {
+  switch(stakingAction.value) {
+    case StakingAction.DELEGATE: {
+      delegate();
+      break;
+    }
+    case StakingAction.UNDELEGATE: {
+      undelegate();
+      break;
+    }
+    case StakingAction.REDELEGATE: {
+      redelegate();
+      break;
     }
   }
+}
 
+async function delegate() {
+  await useUserStore().delegate(props.validator.operatorAddress, amount.value)
+    .then((resp) => {
+      console.log(resp)
+      emit('success');
+    });
 }
 
 async function undelegate() {
-
-  try {
-    await reundelegationAmountSchema.validate({value:amount.value });
-    await useUserStore().undelegate(props.validator.operatorAddress, amount.value).then((resp) => {
-        emit('success')
-      });
-  } catch (err) {
-    if (err instanceof ValidationError) {
-      validationError.value = (err as ValidationError).errors;
-    } else {
-      validationError.value = [(err as Error).message]
-    }
-  }
-
+  await useUserStore().undelegate(props.validator.operatorAddress, amount.value).then((resp) => {
+      emit('success')
+    });
 }
 
 async function redelegate() {
-  try {
-    await reundelegationAmountSchema.validate({value:amount.value });
-    if (redelegateTo.value) {
-      useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value)).then((resp) => {
-        emit('success')
-      });
-    } else {
-      validationError.value = ['Validator not selected']; // TODO locale
-    }
-  } catch (err) {
-    if (err instanceof ValidationError) {
-      validationError.value = (err as ValidationError).errors;
-    } else {
-      validationError.value = [(err as Error).message]
-    }
+  if (redelegateTo.value) {
+    useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value)).then((resp) => {
+      emit('success')
+    });
   }
 }
 
-const searchValidator = (event: AutoCompleteCompleteEvent) => {
-  setTimeout(() => {
-      if (!event.query.trim().length) {
-          filteredValidators.value = filterForRedelegation();
-      }
-      else {
-          filteredValidators.value = filterForRedelegation((v) => {
-              return v.description.moniker.toLowerCase().includes(event.query.toLowerCase());
-          });
-      }
-  }, 250);
-};
 </script>
 
 <style scoped lang="scss">
@@ -335,6 +334,7 @@ const searchValidator = (event: AutoCompleteCompleteEvent) => {
     width: 100%;
   }
   &__description{
+    position: relative;
     width: 100%;
     margin-top: 10px;
     display: flex;
@@ -376,5 +376,127 @@ const searchValidator = (event: AutoCompleteCompleteEvent) => {
 .validator-image {
   height: 18px;
   width: 18px;
+}
+
+
+
+
+.field {
+  position: relative;
+  margin-top: 10px;
+  width: 100%;
+
+
+  input {
+    padding: 15px;
+    border-radius: 15px;
+    height: 40px;
+  }
+
+  select {
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  span {
+    padding:15px;
+    max-width: 700px;
+    pointer-events: none;
+    position:absolute;
+    float: left;
+    text-align: left;
+    left:0;
+    top:0;
+    transition: 0.2s;
+    transition-timing-function: ease;
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+    opacity:0.5;
+  }
+
+  .tooltip-icon {
+    top: 0;
+    left: -50px;
+    position: absolute;
+    padding: 16px;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  input:focus + span, input:not(:placeholder-shown) + span {
+    opacity:1;
+    transform: scale(0.75) translateY(-100%) translateX(-20%);
+  }
+
+  /* Internet Explorer i Edge*/
+  input:focus + span, input:not(:-ms-input-placeholder) + span {
+    opacity:1;
+    transform: scale(0.75) translateY(-100%) translateX(-20%);
+  }
+
+  select:focus + span, select:valid + span {
+    opacity:1;
+    transform: scale(0.75) translateY(-100%) translateX(-20%);
+  }
+
+  select:disabled + span, select:valid + span {
+    opacity:1;
+    transform: scale(0.75) translateY(-100%) translateX(-20%);
+  }
+
+  /* Internet Explorer i Edge*/
+  select:focus + span, select:not(:-ms-input-placeholder) + span {
+    opacity:1;
+    transform: scale(0.75) translateY(-100%) translateX(-20%);
+  }
+}
+
+.p-dropdown {
+  width: 200px !important;
+}
+
+.p-dropdown .p-dropdown-trigger {
+  margin: auto 0 !important;
+}
+
+.p-tooltip {
+  max-width: 100vw !important;
+}
+
+@media (max-width: 550px) {
+  .field {
+    span {
+      width: 280px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    input:focus + span, input:not(:placeholder-shown) + span {
+      overflow: visible;
+
+    }
+
+    /* Internet Explorer i Edge*/
+    input:focus + span, input:not(:-ms-input-placeholder) + span {
+      overflow: visible;
+    }
+
+    select:focus + span, select:valid + span {
+      overflow: visible;
+    }
+
+    /* Internet Explorer i Edge*/
+    select:focus + span, select:not(:-ms-input-placeholder) + span {
+      overflow: visible;
+    }
+  }
+}
+
+.p-dropdown {
+  width: 100% !important;
+}
+
+.p-invalid {
+  background-image: url("data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" width=\"12\" height=\"12\" fill=\"none\" stroke=\"#dc3545\"><circle cx=\"6\" cy=\"6\" r=\"4.5\"/><path stroke-linejoin=\"round\" d=\"M5.8 3.6h.4L6 6.5z\"/><circle cx=\"6\" cy=\"8.2\" r=\".6\" fill=\"#dc3545\" stroke=\"none\"/></svg>");
 }
 </style>

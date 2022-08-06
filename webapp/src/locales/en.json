@@ -117,7 +117,13 @@
         "MIN": "Amount must be more than 0",
         "MAX": "Max amount exceeded. Available amount {max}"
       },
-      "VALIDATOR_NOT_DEFINED": "this field is required"
+      "VALIDATOR": {
+        "REQUIRED": "Validator selection is required"
+      },
+      "VALIDATOR_NOT_DEFINED": "this field is required",
+      "INPUT": {
+        "REDELEGATE_VALIDATOR": "Redelegate to"
+      }
     },
     "VALIDATORS": "Validators",
     "NO_VALIDATORS": "no validators found",

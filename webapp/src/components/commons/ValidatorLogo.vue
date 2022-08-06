@@ -3,10 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import { Validator } from '@/models/store/validator.js';
+import { ValidatorBase } from '@/models/store/validator.js';
 
 const props = defineProps<{
-  validator: Validator,
+  validator: ValidatorBase,
   class?: string
 }>();
 
