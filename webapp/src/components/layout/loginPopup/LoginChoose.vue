@@ -5,11 +5,11 @@
     <div class="loginChoose__body">
       <Button @click="$emit('typeChange', LoginEmail)">
       <Icon style="margin-right: 10px;" name="Globe"></Icon>
-        {{ $t('LOGIN.LOGIN_ADDRESS') }}
+        {{ $t('CONNECT.CONNECT_ADDRESS') }}
       </Button>
       <Button @click="$emit('keplr')" >
         <span class="keplr-logo">K</span>
-        {{ $t('LOGIN.LOGIN_KEPLR') }}
+        {{ $t('CONNECT.CONNECT_KEPLR') }}
 
       </button>
     </div>

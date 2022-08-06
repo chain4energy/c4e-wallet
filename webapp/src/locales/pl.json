@@ -1,9 +1,9 @@
 {
   "TTT": "Leg",
-  "LOGIN" : {
-    "LOGIN": "Login",
-    "LOGIN_ADDRESS": "Login with address",
-    "LOGIN_KEPLR": "Login with Keplr wallet",
+  "CONNECT" : {
+    "CONNECT": "Login",
+    "CONNECT_ADDRESS": "Login with address",
+    "CONNECT_KEPLR": "Login with Keplr wallet",
     "ADDRESS_HELP": "Explore with any address",
     "VIEW_EXPLORER": "View on explorer"
   },
@@ -44,8 +44,7 @@
     "VETO_THRESHOLD": "Veto threshold",
     "YOUR_VOTE": "Your vote",
     "VOTE_CONDITION": "To make voting you have to be logged in",
-    "VOTE": "Vote",
-    "LOGIN": "Login"
+    "VOTE": "Vote"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Bonded tokens",
@@ -127,8 +126,8 @@
     }
   },
   "ERRORS": {
-    "LOGIN": "Musisz być zalogowany",
-    "LOGIN_WALLET": "Musisz być zalogowany za pomocą portfela"
+    "CONNECT": "Musisz być zalogowany",
+    "CONNECT_WALLET": "Musisz być zalogowany za pomocą portfela"
   },
   "SECTION_TITLES": {
     "STAKING": "Staking",

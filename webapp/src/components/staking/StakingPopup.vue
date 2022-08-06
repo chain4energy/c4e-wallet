@@ -92,8 +92,8 @@
         </div>
 
         <div v-else class="validationPopup__btns">
-          {{ $t('ERRORS.LOGIN_WALLET')}}
-          <Button @click="dataService.onKeplrLogIn()">{{ $t('LOGIN.LOGIN' )}}</Button> <!-- TODO is connectKeplr correct? -->
+          {{ $t('ERRORS.CONNECT_WALLET')}}
+          <Button @click="dataService.onKeplrLogIn()">{{ $t('CONNECT.CONNECT' )}}</Button> <!-- TODO is connectKeplr correct? -->
         </div>
       </Form>
     </div>

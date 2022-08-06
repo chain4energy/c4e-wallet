@@ -1,14 +1,14 @@
 <template>
   <div class="loginEmail">
     <div class="loginEmail__header">
-      <h3>{{ $t('LOGIN.LOGIN_ADDRESS') }}</h3>
+      <h3>{{ $t('CONNECT.CONNECT_ADDRESS') }}</h3>
       <Button icon="pi pi-times" style="width: 5px" @click="$emit('back')" class="p-button-rounded p-button-secondary p-button-text" />
     </div>
     <Form @submit="submit" :validation-schema="amountSchema" v-slot="{ errors }" class="loginEmail__body">
       <div class="loginEmail__description">
         <div class="field">
           <Field v-model="address" name="address" placeholder=" " type="text" class="form-control" style="width: 100%;" :class="{ 'is-invalid': errors.address }"></Field>
-          <span>{{$t('LOGIN.ADDRESS_HELP')}}</span>
+          <span>{{$t('CONNECT.ADDRESS_HELP')}}</span>
           <div class="invalid-feedback">
             {{ errors.address ? errors.address : "" }}
           </div>
@@ -38,13 +38,13 @@ let errorMessageType = '';
 async function validateAddress(address: string | undefined){
   console.log('validateAddress: ' + address)
   if (!address) {
-    errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.EMPTY');
+    errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.EMPTY');
     return false;
   }
   try {
     const words = bench32.decode(address);
     if(words?.prefix !== useConfigurationStore().config.addressPrefix){
-      errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.NOT_THIS_NETWORK', {prefix: useConfigurationStore().config.addressPrefix});
+      errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.NOT_THIS_NETWORK', {prefix: useConfigurationStore().config.addressPrefix});
     }
     return true;
   } catch (err) {
@@ -54,8 +54,8 @@ async function validateAddress(address: string | undefined){
 }
 const amountSchema = object().shape({
   address: YupSequentialStringSchema([
-      string().required(i18n.global.t('LOGIN.ADDRESS_VALIDATION.EMPTY')),
-      string().test('validate Address', i18n.global.t('LOGIN.ADDRESS_VALIDATION.NOT_THIS_NETWORK', {prefix: useConfigurationStore().config.addressPrefix}), (address: string | undefined) => {
+      string().required(i18n.global.t('CONNECT.ADDRESS_VALIDATION.EMPTY')),
+      string().test('validate Address', i18n.global.t('CONNECT.ADDRESS_VALIDATION.NOT_THIS_NETWORK', {prefix: useConfigurationStore().config.addressPrefix}), (address: string | undefined) => {
         if (!address) {
           return false;
         }
@@ -69,16 +69,16 @@ function onWrongAddress(address: string, err: string) {
   console.log(err.slice(7))
   switch (err.slice(7)){
     case address + ' too short' || 'Data too short': 
-      errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.TOO_SHORT');
+      errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.TOO_SHORT');
       break;
     case 'No separator character for '+ address: 
-      errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.SEPARATOR');
+      errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.SEPARATOR');
       break;
     case 'Invalid checksum for '+ address: 
-      errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.CHECK_SUM');
+      errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.CHECK_SUM');
       break;
     default: 
-      errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.INVALID');
+      errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.INVALID');
       break;
   }
 }

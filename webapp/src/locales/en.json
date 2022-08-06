@@ -1,9 +1,9 @@
 {
   "TTT": "Leg",
-  "LOGIN" : {
-    "LOGIN": "Login",
-    "LOGIN_ADDRESS": "Login with address",
-    "LOGIN_KEPLR": "Login with Keplr wallet",
+  "CONNECT" : {
+    "CONNECT": "Connect",
+    "CONNECT_ADDRESS": "Connect with address",
+    "CONNECT_KEPLR": "Connect with Keplr wallet",
     "ADDRESS_HELP": "Explore with any address",
     "VIEW_EXPLORER": "View on explorer",
     "ADDRESS_VALIDATION": {
@@ -57,7 +57,6 @@
     "YOUR_VOTE": "Your vote",
     "VOTE_CONDITION": "To make voting you have to be logged in",
     "VOTE": "Vote",
-    "LOGIN": "Login",
     "USER_VOTE": "You voted:"
   },
   "DASHBOARD_VIEW": {
@@ -153,8 +152,8 @@
     }
   },
   "ERRORS": {
-    "LOGIN": "You Have to be logged in",
-    "LOGIN_WALLET": "You Have to be logged in with wallet"
+    "CONNECT": "You Have to be connected",
+    "CONNECT_WALLET": "You Have to be connected with Keplr"
   },
   "SECTION_TITLES": {
     "STAKING": "Staking",

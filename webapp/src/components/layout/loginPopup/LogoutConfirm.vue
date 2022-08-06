@@ -19,7 +19,7 @@
                 <div>
                   <Button @click="copyTxt" style="width: 30%">copy</Button>
                   <a :href="`https://explorer-testnet.chain4energy.org/accounts/${useUserStore().getAccount.address}`"
-                     target="_blank">{{ $t('LOGIN.VIEW_EXPLORER')}}</a>
+                     target="_blank">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>
                 </div>
 
               </div>

@@ -29,7 +29,7 @@
           <span v-else>
           <p>{{ $t("GOVERNANCE_VIEW.VOTE_CONDITION") }}</p>
           <Button
-            @click="dataService.onKeplrLogIn()" :label="$t('GOVERNANCE_VIEW.LOGIN')" class="p-button-raised p-button-rounded" />
+            @click="dataService.onKeplrLogIn()" :label="$t('CONNECT.CONNECT')" class="p-button-raised p-button-rounded" />
           </span>
         </div>
       </div>
