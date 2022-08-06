@@ -153,7 +153,7 @@ function filterForRedelegation(filter?: (val: Validator) => boolean): ValidatorB
         }
       }
     )
-    .map((val) => {
+    .map((val) => { // mapping to new object because of vee validate uses JSON.stringify that does not support bigint
         return {
         rank: val.rank,
         operatorAddress: val.operatorAddress,
