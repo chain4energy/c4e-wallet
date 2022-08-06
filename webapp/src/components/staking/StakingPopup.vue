@@ -44,11 +44,11 @@
           </div>
 
           <div v-if="stakingAction === StakingAction.REDELEGATE" class="validationPopup__description">
-            <div class="field">
+            <div class="field-local">
               <Field v-model="redelegateTo" placeholder=" " name="redelegateTo" v-slot="{ field, handleChange }"  >
                 <Dropdown :options="filteredValidators" optionLabel="description.moniker" :placeholder="$t('STAKING_VIEW.STAKING_POPUP.INPUT.REDELEGATE_VALIDATOR')" :filter="true" :showClear="true"
                         :filterFields="['description.moniker', 'rank']" :model-value="field.value" 
-                        @update:modelValue="handleChange" :class="{ 'p-invalid': errors.redelegateTo, 'is-invalid': errors.redelegateTo }" :disabled="!canModify">
+                        @update:modelValue="handleChange"  :class="{ 'p-invalid': errors.redelegateTo, 'is-invalid': errors.redelegateTo }" :disabled="!canModify">
                     <template #value="slotProps">
                         <div v-if="slotProps.value">
                           {{slotProps.value.rank}}.
@@ -264,6 +264,7 @@ async function redelegate() {
 </script>
 
 <style scoped lang="scss">
+
 .validationPopup{
   position: fixed;
   top:0;
@@ -381,7 +382,7 @@ async function redelegate() {
 
 
 
-.field {
+.field-local  {
   position: relative;
   margin-top: 10px;
   width: 100%;

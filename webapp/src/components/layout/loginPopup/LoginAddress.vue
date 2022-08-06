@@ -1,108 +1,92 @@
 <template>
   <div class="loginEmail">
     <div class="loginEmail__header">
-      <h3>Login with Email</h3>
+      <h3>{{ $t('LOGIN.LOGIN_ADDRESS') }}</h3>
       <Button icon="pi pi-times" style="width: 5px" @click="$emit('back')" class="p-button-rounded p-button-secondary p-button-text" />
     </div>
-    <form @submit.prevent class="loginEmail__body">
+    <Form @submit="submit" :validation-schema="amountSchema" v-slot="{ errors }" class="loginEmail__body">
       <div class="loginEmail__description">
-        <span>{{result}}</span>
-        <span class="p-float-label" style="width: 100%">
-          <InputText id="email" type="text" v-model="address"  style="width: 100%" />
-          <label for="email">{{$t('LOGIN.ADDRESS_HELP')}}</label>
-        </span>
-        <!-- <input v-model="email"> -->
-        <Button @click="submit">{{ $t('COMMON.CONNECT')}}</Button>
+        <div class="field">
+          <Field v-model="address" name="address" placeholder=" " type="text" class="form-control" style="width: 100%;" :class="{ 'is-invalid': errors.address }"></Field>
+          <span>{{$t('LOGIN.ADDRESS_HELP')}}</span>
+          <div class="invalid-feedback">
+            {{ errors.address ? errors.address : "" }}
+          </div>
+          <Button type="submit">{{ $t('COMMON.CONNECT')}}</Button>
+        </div>
       </div>
-    </form>
+    </Form>
   </div>
 </template>
 
 <script setup lang="ts">
-import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue'
+// import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue'
 import dataService from '@/services/data.service';
-import { useUserStore } from "@/store/user.store";
 import * as bench32 from 'bech32';
 import { ref } from "vue";
-import { number, object, setLocale, string, ValidationError } from "yup";
+import { object, string } from "yup";
 import i18n from "@/plugins/i18n";
+import {Field, Form} from "vee-validate";
+import { useConfigurationStore } from '@/store/configuration.store.ts';
+import { YupSequentialStringSchema } from '@/utils/yup-utils.ts';
 
 
 const emit = defineEmits(['close']);
-const userStore = useUserStore();
-const result = ref();
+const address = ref('');
+let errorMessageType = '';
 
-
-
-setLocale({
-  mixed: {
-    defined: `this is required field`,
-    notType: `must be a number in format xxx.xxx`,
+async function validateAddress(address: string | undefined){
+  console.log('validateAddress: ' + address)
+  if (!address) {
+    errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.EMPTY');
+    return false;
   }
-});
-
-async function validateAddress(address : string){
   try {
-    let bech32 = bench32;
-    const words = bech32.decode(address);
+    const words = bench32.decode(address);
+    if(words?.prefix !== useConfigurationStore().config.addressPrefix){
+      errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.NOT_THIS_NETWORK', {prefix: useConfigurationStore().config.addressPrefix});
+    }
     return true;
   } catch (err) {
+    onWrongAddress(address, String(err));
     return false;
   }
 }
-const amountSchema = object({
-  address:
-    string()
-      .required('must not be empty')
-      .test(
-        'validate Address', function(address){
-          let bech32 = bench32;
-          let words: { prefix: string; words: number[] };
-          words = bech32.decode(address);
-          if(words?.prefix === 'c4e'){
-            return true;
-          } else {
-            const message = String(words).slice(7);
-            this.createError({message: message});
-            return false;
-          }
+const amountSchema = object().shape({
+  address: YupSequentialStringSchema([
+      string().required(i18n.global.t('LOGIN.ADDRESS_VALIDATION.EMPTY')),
+      string().test('validate Address', i18n.global.t('LOGIN.ADDRESS_VALIDATION.NOT_THIS_NETWORK', {prefix: useConfigurationStore().config.addressPrefix}), (address: string | undefined) => {
+        if (!address) {
+          return false;
         }
-      )
+        return address.startsWith(useConfigurationStore().config.addressPrefix);
+      }),
+      string().test('validate Address', i18n.global.t(errorMessageType), validateAddress)
+  ])
 });
 
-const address = ref('');
+function onWrongAddress(address: string, err: string) {
+  console.log(err.slice(7))
+  switch (err.slice(7)){
+    case address + ' too short' || 'Data too short': 
+      errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.TOO_SHORT');
+      break;
+    case 'No separator character for '+ address: 
+      errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.SEPARATOR');
+      break;
+    case 'Invalid checksum for '+ address: 
+      errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.CHECK_SUM');
+      break;
+    default: 
+      errorMessageType = i18n.global.t('LOGIN.ADDRESS_VALIDATION.INVALID');
+      break;
+  }
+}
 
 async function submit(){
-  try{
-    await amountSchema.validate({address: address.value});
     dataService.onAddressLogIn((address.value), () => {
       emit('close');
     });
-  } catch (err){
-    if(address.value ==='' || !address.value.match(/\bc4e/)){
-      switch (address.value){
-        case '': result.value =  i18n.global.t('LOGIN.ADDRESS_VALIDATION.EMPTY');
-          break;
-        default: result.value = i18n.global.t('LOGIN.ADDRESS_VALIDATION.NOT_THIS_NETWORK');
-          break;
-      }
-
-    } else {
-      console.log(String(err).slice(7))
-      switch (String(err).slice(7)){
-        case address.value + ' too short' || 'Data too short':  result.value = i18n.global.t('LOGIN.ADDRESS_VALIDATION.TOO_SHORT');
-          break;
-        case 'No separator character for '+ address.value: result.value = i18n.global.t('LOGIN.ADDRESS_VALIDATION.SEPARATOR');
-          break;
-        case 'Invalid checksum for '+ address.value: result.value = i18n.global.t('LOGIN.ADDRESS_VALIDATION.CHECK_SUM');
-          break;
-        default: result.value =  i18n.global.t('LOGIN.ADDRESS_VALIDATION.INVALID');
-          break;
-      }
-    }
-
-  }
-
 }
 
 </script>

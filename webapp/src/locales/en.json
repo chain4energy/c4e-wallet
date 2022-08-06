@@ -7,13 +7,13 @@
     "ADDRESS_HELP": "Explore with any address",
     "VIEW_EXPLORER": "View on explorer",
     "ADDRESS_VALIDATION": {
-      "EMPTY": "must be not empty",
-      "NOT_THIS_NETWORK": "must match the network",
-      "TOO_SHORT": "this address is too short",
-      "SEPARATOR": "no separator for this address",
-      "CHECK_SUM": "Invalid checksum",
-      "CHARACTER": "do not use special symbols",
-      "INVALID": "invalid address"
+      "EMPTY": "Address is required",
+      "NOT_THIS_NETWORK": "Address must start with prefix '{prefix}'",
+      "TOO_SHORT": "Address is too short",
+      "SEPARATOR": "No separator for this address",
+      "CHECK_SUM": "Invalid address checksum",
+      "CHARACTER": "Do not use special symbols",
+      "INVALID": "Invalid address"
     }
   },
   "TABLES": {
