@@ -23,20 +23,26 @@ export class ConnectionInfo {
   readonly account: string;
   readonly modifiable: boolean;
   readonly connectionType: ConnectionType;
-
+  readonly accountName?: string;
   constructor(
     account = '',
     modifiable = false,
-    connectionType = ConnectionType.Disconnected) {
+    connectionType = ConnectionType.Disconnected,
+    accountName?: string) {
     this.account = account;
     this.modifiable = modifiable;
     this.connectionType = connectionType;
+    this.accountName = accountName;
+
   }
 
   public isKeplr(): boolean {
     return this.connectionType === ConnectionType.Keplr;
   }
 
+  public isAddress(): boolean {
+    return this.connectionType === ConnectionType.Address;
+  }
 }
 
 export class ConnectionError {
@@ -69,12 +75,15 @@ export default class WalletConnectionApi extends LoggedService {
         const chainInfo = this.createKeplrConfig();
         await window.keplr.experimentalSuggestChain(chainInfo);
         await window.keplr.enable(chainInfo.chainId);
+        const key = await window.keplr.getKey(chainInfo.chainId);
+
         const offlineSigner = window.keplr.getOfflineSigner(chainInfo.chainId);
         const account = await offlineSigner.getAccounts();
         const connection: ConnectionInfo = new ConnectionInfo(
           account[0].address,
           true,
           ConnectionType.Keplr,
+          key?.name
         );
         return new RequestResponse<ConnectionInfo, any>(undefined, connection);
       } else {

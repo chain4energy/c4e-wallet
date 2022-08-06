@@ -14,6 +14,9 @@
           <div class="navbar-nav" style="align-items: center">
 
             <div class="acc-address" v-if="useUserStore().isLoggedIn">
+              <span v-if="useUserStore().connectionInfo.isKeplr()" class="keplr-logo">K</span>
+              <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
+              <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName}}: </span>
               {{ useUserStore().getAccount.address.slice(0, 8)}}...{{useUserStore().getAccount.address.slice(-6) }}
             </div>
             
@@ -101,10 +104,21 @@ function logout(){
 
 .acc-address {
 
-  margin-top: 2px;
-  padding: 0.5rem;
-  background-color: $main-lighter-color;
-  border-radius: 1rem;
+  // margin-top: 2px;
+  // position: relative;
+  // padding: 0.5rem;
+  // background-color: $main-lighter-color;
+  // border-radius: 1rem;
+}
+
+.keplr-logo {
+  padding: 0px 5px;
+  border-radius: 5px;
+  color: $main-color;
+  background-color: rgba(255,255,255);
+  box-sizing: border-box;
+  font-weight: bold;
+  margin-right: 10px;
 }
 
 @media screen and (max-width: 700px) {
