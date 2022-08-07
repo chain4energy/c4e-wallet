@@ -27,9 +27,11 @@
               @click="onVoteClick" :label="$t('GOVERNANCE_VIEW.VOTE')" class="p-button-raised p-button-rounded" data-bs-dismiss="modal" />
           </span>
           <span v-else>
-          <p>{{ $t("GOVERNANCE_VIEW.VOTE_CONDITION") }}</p>
-          <Button
-            @click="dataService.onKeplrLogIn()" :label="$t('CONNECT.CONNECT')" class="p-button-raised p-button-rounded" />
+            <p>{{ $t("GOVERNANCE_VIEW.VOTE_CONDITION") }}</p>
+            <Button
+              @click="dataService.onKeplrLogIn()" class="p-button-raised p-button-rounded">
+              <span class="keplr-logo">K</span> {{ $t('CONNECT.CONNECT' )}}
+            </Button>
           </span>
         </div>
       </div>

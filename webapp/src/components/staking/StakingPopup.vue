@@ -93,7 +93,9 @@
 
         <div v-else class="validationPopup__btns">
           {{ $t('ERRORS.CONNECT_WALLET')}}
-          <Button @click="dataService.onKeplrLogIn()">{{ $t('CONNECT.CONNECT' )}}</Button> <!-- TODO is connectKeplr correct? -->
+          <Button @click="dataService.onKeplrLogIn()">
+            <span class="keplr-logo">K</span> {{ $t('CONNECT.CONNECT' )}}
+          </Button>
         </div>
       </Form>
     </div>
@@ -382,7 +384,7 @@ async function redelegate() {
 
 
 
-.field-local  {
+.field-local  {  // TODO somehow take  global class: field
   position: relative;
   margin-top: 10px;
   width: 100%;

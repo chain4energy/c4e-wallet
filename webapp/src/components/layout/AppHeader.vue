@@ -100,7 +100,6 @@ function logout(){
 </script>
 
 <style scoped lang="scss">
-@import '../../styles/variables.scss';
 
 .acc-address {
 
@@ -113,12 +112,7 @@ function logout(){
 
 .keplr-logo {
   padding: 0px 5px;
-  border-radius: 5px;
-  color: $main-color;
   background-color: rgba(255,255,255);
-  box-sizing: border-box;
-  font-weight: bold;
-  margin-right: 10px;
 }
 
 @media screen and (max-width: 700px) {

@@ -11,7 +11,7 @@
         <span class="keplr-logo">K</span>
         {{ $t('CONNECT.CONNECT_KEPLR') }}
 
-      </button>
+      </Button>
     </div>
   </div>
 </template>
@@ -24,17 +24,7 @@ import { useUserStore } from "@/store/user.store";
 </script>
 
 <style scoped lang="scss">
-@import '../../../styles/variables.scss';
 
-.keplr-logo {
-  padding: 0px 7px;
-  border-radius: 5px;
-  color: $main-color;
-  background-color: $secondary-color;
-  box-sizing: border-box;
-  font-weight: bold;
-  margin-right: 10px;
-}
 .loginChoose{
   position: fixed;
   top:0;
