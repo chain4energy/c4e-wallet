@@ -123,7 +123,7 @@
         <div v-else class="validationPopup__btns">
           {{ $t('ERRORS.CONNECT_WALLET')}}
           <Button @click="dataService.onKeplrLogIn()">
-            <span class="keplr-logo">K</span> {{ $t('CONNECT.CONNECT' )}}
+          <KeplrLogo/> {{ $t('CONNECT.CONNECT' )}}
           </Button>
         </div>
       </Form>
@@ -149,6 +149,7 @@ import { YupSequentialStringSchema } from "@/utils/yup-utils";
 import StakeManagementIcon, { StakeManagementIconType }from "../commons/StakeManagementIcon.vue";
 import BlockHidingDropdown from "../commons/BlockHidingDropdown.vue";
 import ValidatorsStatusLabel, { ValidatorsStatusLabelType } from "../commons/ValidatorsStatusLabel.vue";
+import KeplrLogo from "../commons/KeplrLogo.vue";
 
 const enableValidatorsHide = ref(true);
 

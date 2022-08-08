@@ -1,4 +1,12 @@
-@import '@/styles/variables.scss';
+<template>
+  <span class="keplr-logo">K</span>
+</template>
+
+<script setup lang="ts">
+
+</script>
+<style scoped lang="scss">
+@import '../../styles/variables.scss';
 
 .keplr-logo {
   padding: 0px 7px;
@@ -9,3 +17,5 @@
   font-weight: bold;
   margin-right: 10px;
 }
+
+</style>

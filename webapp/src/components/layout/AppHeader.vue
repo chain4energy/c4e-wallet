@@ -14,7 +14,7 @@
           <div class="navbar-nav" style="align-items: center">
 
             <div class="acc-address" v-if="useUserStore().isLoggedIn">
-              <span v-if="useUserStore().connectionInfo.isKeplr()" class="keplr-logo">K</span>
+              <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
               <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
               <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName}}: </span>
               {{ useUserStore().getAccount.address.slice(0, 8)}}...{{useUserStore().getAccount.address.slice(-6) }}
@@ -52,6 +52,7 @@ import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
 import { computed, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
+import KeplrLogo from '../commons/KeplrLogo.vue';
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
