@@ -1,7 +1,7 @@
 <script lang="ts">
-import Dropdown from 'primevue/dropdown';
-
-export default {
+import Dropdown from 'primevue/dropdown/Dropdown.vue';
+import { defineComponent } from 'vue'
+export default defineComponent({
   name: 'block-hiding-dropdown',
   extends: Dropdown,
 
@@ -13,7 +13,6 @@ export default {
   },
   methods: {
     hide(isFocus:boolean) {
-      console.log('hide: '  + this.hideEnabled);
       if (this.hideEnabled) {
         (Dropdown as any).methods.hide.call(this, isFocus);
       }
@@ -21,6 +20,6 @@ export default {
     }
   }
 
-}
+})
 
 </script>
