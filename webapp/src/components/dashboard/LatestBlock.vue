@@ -2,7 +2,7 @@
   <div class="tile">
     <Icon name="TrendingUp"></Icon>
     <div class="text">
-      <span class="label">{{ $t('DASHBOARD_VIEW.MAX_SUPPLY') }}</span>
+      <span class="label">{{ $t('DASHBOARD_VIEW.LATEST_BLOCK') }}</span>
       <span class="value small">{{ blockStore.getLatestBlockHeight }}</span>
     </div>
   </div>

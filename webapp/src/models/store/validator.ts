@@ -91,17 +91,19 @@ export class ValidatorDescription {
   website: string;
   securityContact: string;
   details: string;
-
+  pictureUrl?: string;
   constructor (moniker: string,
       identity: string,
       website: string,
       securityContact: string,
-      details: string) {
+      details: string,
+      pictureUrl?: string) {
     this.moniker = moniker;
     this.identity = identity;
     this.website = website;
     this.securityContact = securityContact;
     this.details = details;
+    this.pictureUrl = pictureUrl;
   }
 }
 

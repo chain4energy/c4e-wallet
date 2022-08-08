@@ -1,5 +1,6 @@
 <template>
   <div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    {{}}
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-body">
@@ -18,8 +19,12 @@
             <label for="abstain">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</label>
           </div>
           <span v-if="useUserStore().isLoggedIn">
+            <p v-if="useUserStore().getTotalDelegatedViewAmount()== 0">
+              {{$t('GOVERNANCE_VIEW.ERRORS.NO_STAKED')}}
+            </p>
             <Button
-              @click="onVoteClick" :label="$t('GOVERNANCE_VIEW.VOTE')" class="p-button-raised p-button-rounded"  data-bs-dismiss="modal" />
+              :disabled="useUserStore().getTotalDelegatedViewAmount() == 0"
+              @click="onVoteClick" :label="$t('GOVERNANCE_VIEW.VOTE')" class="p-button-raised p-button-rounded" data-bs-dismiss="modal" />
           </span>
           <span v-else>
           <p>{{ $t("GOVERNANCE_VIEW.VOTE_CONDITION") }}</p>
@@ -38,6 +43,7 @@ import {ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import dataService from '@/services/data.service';
 import { VoteOption } from "@/models/store/proposal";
+const err = ref()
 
 // const props = defineProps({
 //   title: {
@@ -54,14 +60,17 @@ const props = defineProps<{
   title: string
   proposalId: number
 }>()
+const emit = defineEmits(['close']);
 
 const picked = ref<VoteOption>();
 
 const onVoteClick = () => {
   if (picked.value !== undefined){
-    useUserStore().vote(picked.value, props.proposalId)
+    useUserStore().vote(picked.value, props.proposalId);
+    emit('close')
+
   } else {
-    // TODO
+    err.value='err';
   }
 };
 </script>

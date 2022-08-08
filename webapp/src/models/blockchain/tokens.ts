@@ -16,3 +16,7 @@ export interface SupplyResponse {
 export interface CommunityPoolResponse {
   pool: Coin[]
 }
+
+export interface InflationResponse {
+  inflation: string;
+}

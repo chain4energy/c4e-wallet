@@ -39,6 +39,7 @@ import InputText from "primevue/inputtext";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Image from 'primevue/image';
+import AutoComplete from "primevue/autocomplete"
 import piniaPersist from 'pinia-plugin-persist';
 //https://www.npmjs.com/package/vue-debounce
 import { vue3Debounce } from 'vue-debounce';
@@ -77,6 +78,7 @@ app.use(router)
   .component('InputText', InputText)
   .component('DataTable', DataTable)
   .component('Column', Column)
+  .component('AutoComplete', AutoComplete)
   .component('Image' , Image)
   .component('Icon', IconComponent)
   .component('v-chart', ECharts)

@@ -22,6 +22,7 @@ export interface Configuration {
   bcApiURL: string,
   bcRpcURL: string,
   hasuraURL: string,
+  keybaseURL: string,
   stakingPageURL: string,
   addressPrefix: string,
   stakingDenom: string,

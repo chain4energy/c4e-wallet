@@ -2,16 +2,16 @@
   <div v-if="proposal" class="details-container">
     <div class="id"><h3>#{{ proposal.proposalId }}</h3> </div>
     <h4 style="padding-left:20px">{{ proposal.content.title }}</h4>
-    <div v-if="useProposalsStore().userVote === VoteOption.Yes" class="vote user-vote-yes">
+    <div v-if="voted === VoteOption.Yes" class="vote user-vote-yes">
       {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES') }}</b>
     </div>
-    <div v-else-if="useProposalsStore().userVote === VoteOption.Abstain" class="vote user-vote-abstain">
+    <div v-else-if="voted === VoteOption.Abstain" class="vote user-vote-abstain">
       {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN') }}</b>
     </div>
-    <div v-else-if="useProposalsStore().userVote === VoteOption.No" class="vote user-vote-no">
+    <div v-else-if="voted === VoteOption.No" class="vote user-vote-no">
       {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO') }}</b>
     </div>
-    <div v-else-if="useProposalsStore().userVote === VoteOption.NoWithVeto" class="vote user-vote-veto">
+    <div v-else-if="voted === VoteOption.NoWithVeto" class="vote user-vote-veto">
       {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO') }}</b>
     </div>
     <div class="info">
@@ -43,6 +43,7 @@ import moment from "moment";
 import {useProposalsStore} from "@/store/proposals.store";
 import { Proposal } from "@/models/store/proposal";
 import { VoteOption } from "@/models/store/proposal";
+import { computed } from "vue";
 
 const props = defineProps<{
   proposal?: Proposal
@@ -52,6 +53,7 @@ const proposalsStore = useProposalsStore();
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');
 };
+const voted = computed(() => {return useProposalsStore().userVote})
 
 </script>
 
@@ -102,7 +104,7 @@ const formattedDate = (value: Date) => {
     span:nth-child(odd) {
       color: grey;
     }
-    
+
   }
 
 @media screen and (max-width: 900px) {

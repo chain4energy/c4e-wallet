@@ -7,6 +7,9 @@ import { LoggedService } from '@/services/logged.service';
 import { LocalSpinner } from "@/services/model/localSpinner";
 import { PaginatedResponse } from '@/models/blockchain/pagination';
 import { useConfigurationStore } from '@/store/configuration.store';
+import { KeybaseErrorData, KeybaseResponse } from '@/models/keybase/keybase';
+import { BlockchainApiErrorData } from '@/models/blockchain/common';
+import { HasuraErrorData } from '@/models/hasura/error';
 
 const toast = useToast();
 
@@ -56,27 +59,105 @@ export class ErrorData<D> {
 
 }
 
-export interface BlockchainApiErrorData {
-  code: number;
-  message: string;
-  details?: string;
-
-}
-
-export interface HasuraErrorData {
-  errors:[
-    {
-      message: string
-    }
-  ]
-}
-
 export default abstract class BaseApi extends LoggedService {
   protected getAxiosInstance: () => AxiosInstance;
 
   constructor(axiosInstanceProvider: () => AxiosInstance) {
     super();
     this.getAxiosInstance = axiosInstanceProvider;
+  }
+
+  private async axiosWith200ErrorCall<T, H, E>(
+    config: AxiosRequestConfig,
+    mapData: (hasureData: H | undefined) => T,
+    lockScreen: boolean,
+    localSpinner: LocalSpinner | null,
+    logPrefix: string,
+    isResponseError: (data: RequestResponse<H, ErrorData<E>>) => boolean,
+    skipErrorToast = false,
+    messages: {
+      errorResponseName: string,
+      errorResponseMassage: string,
+      errorResponseToast: string,
+      mappingErrorMassage: string,
+    },
+    errorDataToInfo?: (data: E) => string,
+
+  ): Promise<RequestResponse<T, ErrorData<E>>>
+  {
+
+    const result = await this.axiosCall<H, E>(
+      config,
+      lockScreen,
+      localSpinner,
+      skipErrorToast,
+      logPrefix,
+      undefined,
+      errorDataToInfo
+    );
+    if (result.isError()) {
+      return new RequestResponse<T, ErrorData<E>>(result.error);
+    }
+    const asError = result.data as unknown as E;
+    if (isResponseError(result)) {
+      const errorResp = new ErrorData<E>(messages.errorResponseName, messages.errorResponseMassage, 200, asError, errorDataToInfo);
+      return this.createErrorResponseWithToast(errorResp, messages.errorResponseToast, !skipErrorToast);
+    }
+    try {
+      const mappedData = mapData(result.data);
+      return new RequestResponse<T, ErrorData<E>>(undefined, mappedData);
+    } catch (err) {
+      const error = err as Error;
+      this.logToConsole(LogLevel.ERROR, logPrefix + messages.mappingErrorMassage + this.getServiceType(), error.message);
+      return this.createErrorResponseWithToast(new ErrorData<E>(error.name, error.message), messages.mappingErrorMassage, !skipErrorToast);
+    }
+    
+  }
+
+  protected async axiosKeybaseCall<T, H extends KeybaseResponse>(
+    query: string,
+    mapData: (hasureData: H | undefined) => T,
+    lockScreen: boolean,
+    localSpinner: LocalSpinner | null,
+    logPrefix: string,
+    skipErrorToast = false
+  ): Promise<RequestResponse<T, ErrorData<KeybaseErrorData>>>
+  {
+    const config = {
+      method: 'GET',
+      url: useConfigurationStore().config.keybaseURL + query,
+    }
+
+    const errorDataToInfo = (data: KeybaseErrorData) => {
+      let message = '';
+      if (data.status) {
+          message += '\r\n\tcode: ' + data.status.code
+          message += '\r\n\tname: ' + data.status.name
+          message += '\r\n\tdesc: ' + data.status.desc
+      }
+      return message;
+    };
+
+    const isResponseError = (response: RequestResponse<H, ErrorData<KeybaseErrorData>>) => {return response.data?.status.code !== 0}
+
+    const messages = {
+      errorResponseName: 'KeybaseError',
+      errorResponseMassage: 'Keybase error received',
+      errorResponseToast: 'Hasura Error: ',
+      mappingErrorMassage: 'Keybase mapping error: ',
+    }
+
+    return this.axiosWith200ErrorCall<T, H, KeybaseErrorData>(
+      config,
+      mapData,
+      lockScreen,
+      localSpinner,
+      logPrefix,
+      isResponseError,
+      skipErrorToast,
+      messages,
+      errorDataToInfo
+    );
   }
 
   protected async axiosHasuraCall<T, H>(
@@ -88,6 +169,14 @@ export default abstract class BaseApi extends LoggedService {
     skipErrorToast = false
   ): Promise<RequestResponse<T, ErrorData<HasuraErrorData>>>
   {
+    const config = {
+      method: 'POST',
+      url: useConfigurationStore().config.hasuraURL,
+      data: {
+        query: query,
+      }
+    }
+
     const errorDataToInfo = (data: HasuraErrorData) => {
       let message = '';
       if (data.errors) {
@@ -98,38 +187,29 @@ export default abstract class BaseApi extends LoggedService {
       return message;
     };
 
-    const result = await this.axiosCall<H, HasuraErrorData>(
-      {
-        method: 'POST',
-        url: useConfigurationStore().config.hasuraURL,
-        data: {
-          query: query,
-        }
-      },
+    const isResponseError = (response: RequestResponse<H, ErrorData<HasuraErrorData>>) => {
+      const asError = response.data as unknown as HasuraErrorData;  
+      return asError.errors && asError.errors.length > 0
+    }
+
+    const messages = {
+      errorResponseName: 'HasuraError',
+      errorResponseMassage: 'Hasura error received',
+      errorResponseToast: 'Hasura Error: ',
+      mappingErrorMassage: 'Hasura mapping error: ',
+    }
+
+    return this.axiosWith200ErrorCall<T, H, HasuraErrorData>(
+      config,
+      mapData,
       lockScreen,
       localSpinner,
-      skipErrorToast,
       logPrefix,
-      undefined,
+      isResponseError,
+      skipErrorToast,
+      messages,
       errorDataToInfo
     );
-    if (result.isError()) {
-      return new RequestResponse<T, ErrorData<HasuraErrorData>>(result.error);
-    }
-    const asError = result.data as unknown as HasuraErrorData;
-    if (asError.errors && asError.errors.length > 0) {
-      const errorResp = new ErrorData<HasuraErrorData>('HasuraError', 'Hasura error received', 200, asError, errorDataToInfo);
-      return this.createErrorResponseWithToast(errorResp, 'Hasura Error: ', !skipErrorToast);
-    }
-    try {
-      const mappedData = mapData(result.data);
-      return new RequestResponse<T, ErrorData<HasuraErrorData>>(undefined, mappedData);
-    } catch (err) {
-      const error = err as Error;
-      this.logToConsole(LogLevel.ERROR, logPrefix + 'haasura mapping error: ' + this.getServiceType(), error.message);
-      return this.createErrorResponseWithToast(new ErrorData<HasuraErrorData>(error.name, error.message), 'Haasura mapping error: ', !skipErrorToast);
-    }
-    
   }
 
   protected async axiosGetBlockchainApiPaginatedCall<T, BC extends PaginatedResponse>(
@@ -169,7 +249,7 @@ export default abstract class BaseApi extends LoggedService {
   {
     const func = (): Promise<RequestResponse<BC, ErrorData<BlockchainApiErrorData>>> => { return this.axiosBlockchainApiCall({
       method: 'GET',
-      url: url
+      url: useConfigurationStore().config.bcApiURL + url
     }, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);}
     return this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError, skipErrorToast);
   }
@@ -271,7 +351,7 @@ export default abstract class BaseApi extends LoggedService {
     }
     const result: RequestResponse<P, ErrorData<BlockchainApiErrorData>> = await this.axiosBlockchainApiCall({
       method: 'GET',
-      url: url,
+      url: useConfigurationStore().config.bcApiURL + url,
       params: paginationData
     }, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);
     return result;

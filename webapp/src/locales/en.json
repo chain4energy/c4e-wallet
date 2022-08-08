@@ -40,6 +40,9 @@
       "ABSTAIN": "Abstain",
       "NO_WITH_VETO": "No with Veto"
     },
+    "ERRORS": {
+      "NO_STAKED": "Your voice will not be counted (only staked amount is counting in vote but you have '0')"
+    },
     "TOTAL": "Total",
     "DESCRIPTION": "Description",
     "AUTHOR": "Author",
@@ -74,7 +77,7 @@
     "UNBOUNDED": "Unbounded",
     "UNBOUNDING": "Unbounding",
     "AVERAGE_BLOCK_TIME": "Average block time",
-    "CIRCULATING_SUPPLY": "Circulating supply",
+    "CIRCULATING_SUPPLY": "Circulating supply (TODO - to define - now: TOTAL - Pools - bonded)",
     "INFLATION": "Inflation",
     "STACKING_APR": "Staking APR"
   },
@@ -114,8 +117,9 @@
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",
         "MIN": "Amount must be more than 0",
-        "MAX": "Max amount is {max}"
-      }
+        "MAX": "Max amount exceeded. Available amount {max}"
+      },
+      "VALIDATOR_NOT_DEFINED": "this field is required"
     },
     "VALIDATORS": "Validators",
     "NO_VALIDATORS": "no validators found",

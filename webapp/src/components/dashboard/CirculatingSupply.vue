@@ -3,14 +3,15 @@
     <Icon name="Circle"></Icon>
     <div class="text">
       <span class="label">{{ $t('DASHBOARD_VIEW.CIRCULATING_SUPPLY') }}</span>
-      <span class="value small">1231231231 c4e</span>
+      <span class="value small">{{ supply.getViewAmount()}} {{ supply.getViewDenom() }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Icon from "../features/IconComponent.vue";
-
+import {useTokensStore} from "@/store/tokens.store";
+import { computed, ref } from "vue";
+const supply = computed(() => useTokensStore().getCirculatingSupply)
 
 </script>
 

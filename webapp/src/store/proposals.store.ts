@@ -281,6 +281,6 @@ export const useProposalsStore = defineStore({
     return this.proposal.finalTallyResult;
   }
 
-  }
+  },
 });
 

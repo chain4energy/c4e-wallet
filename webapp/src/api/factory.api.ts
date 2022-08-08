@@ -6,6 +6,7 @@ import {AccountApi} from "@/api/account.api";
 import WalletConnectionApi from "./wallet.connecton.api";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
 import { Namespace } from "@vue/compiler-core";
+import { KeybaseApi } from "./keybase.api";
 
 let testfileName = '';
 
@@ -19,8 +20,10 @@ class ApiFactory {
   private readonly _tokensApi = new TokensApi(() => this._axios);
   private readonly _blockApi = new BlockApi(() => this._axios);
   private readonly _proposalsApi = new ProposalsApi(() => this._axios);
-  private readonly _accountApi = new AccountApi(() => this._axios)
-  private readonly _walletApi = new WalletConnectionApi()
+  private readonly _accountApi = new AccountApi(() => this._axios);
+  private readonly _walletApi = new WalletConnectionApi();
+  private readonly _keybaseApi = new KeybaseApi(() => this._axios);
+
   private testMode = false;
 
   private constructor() {
@@ -51,6 +54,9 @@ class ApiFactory {
   }
   public walletApi(): WalletConnectionApi{
     return this._walletApi;
+  }
+  public keybaseApi(): KeybaseApi{
+    return this._keybaseApi;
   }
   public setAxiosInstance(axios: AxiosInstance) {
     this._axios = axios;

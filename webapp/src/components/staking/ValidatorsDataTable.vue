@@ -15,7 +15,13 @@
       </template>
       <template v-slot:columns>
         <Column field="rank" :header="$t(`STAKING_VIEW.TABLE_HEADERS.RANK`)" :sortable="true"></Column>
-        <Column field="description.moniker" :header="$t(`STAKING_VIEW.TABLE_HEADERS.NAME`)" :sortable="true"></Column>
+        <Column field="description.moniker" :header="$t(`STAKING_VIEW.TABLE_HEADERS.NAME`)" :sortable="true">
+          <template #body="{data}">
+            <ValidatorLogo :validator="data" class="validator-image"></ValidatorLogo>
+            <!-- <img v-if="data.description.pictureUrl" class="validator-image" :src="data.description.pictureUrl" width="50" height="50"/> -->
+            <span>{{ data.description.moniker }}</span>
+          </template>
+        </Column>
         <Column field="status" :header="$t(`STAKING_VIEW.TABLE_HEADERS.STATUS`)" :sortable="true">
           <template #body="{data}">
             <span>{{ data.viewStatus }}</span>
@@ -80,6 +86,7 @@ import {useUserStore} from "@/store/user.store";
 import StakingPopup from "@/components/staking/StakingPopup.vue";
 import {FilterMatchMode, FilterOperator} from "primevue/api";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
+import ValidatorLogo from "../commons/ValidatorLogo.vue";
 
 const popupOpened = ref(false);
 const currentValidator = ref({})
@@ -164,5 +171,10 @@ const filters = ref({
 </script>
 
 <style scoped>
-
+.validator-image {
+  height: 2.5rem;
+  min-height: 2.5rem;
+  width: 2.5rem;
+  min-width: 2.5rem; 
+}
 </style>

@@ -30,6 +30,7 @@ function createConfigurationProfiles(): Map<string, string> {
     const areTestProfilesActive = Boolean(testProfilesActive);
     if (areTestProfilesActive) {
       result.set("PB Test", "pb_test.json");
+      result.set("Internal testnet", "int-testnet.json");
     }
   }
 

@@ -35,26 +35,29 @@
             <a :href="validator.description.website">{{validator.description.website}}</a>
           </div>
         </div>
-        <div class="validationPopup__description">
+        <div v-if="useUserStore().isLoggedIn" class="validationPopup__description">
           <label style="width: 100%" for="validators">
             <select v-model="stakingAction" style="width: 100%"  id="action" name="action">
               <option :value="StakingAction.DELEGATE" :key="StakingAction.DELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}</option>
               <option :value="StakingAction.UNDELEGATE" :key="StakingAction.UNDELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</option>
               <option :value="StakingAction.REDELEGATE" :key="StakingAction.REDELEGATE">{{$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</option>
             </select>
-            
+
           </label>
         </div>
 
         <div v-if="stakingAction === StakingAction.REDELEGATE" class="validationPopup__description">
-          <label style="width: 100%" for="validators">
-            <input style="width: 100%" type="text" v-model="redelegateTo"  list="validators">
-            <datalist  id="validators">
-              <option :value="item" v-for="item in validatorsToRedelegate" :key="item">{{item}}</option>
-            </datalist>
-          </label>
+          <AutoComplete v-model="redelegateTo" :suggestions="filteredValidators" @complete="searchValidator($event)" field="description.moniker"
+                       :dropdown="true" force-selection style="width: 100%">
+            <template #item="slotProps">
+             <div>
+                  {{slotProps.item.rank}}.
+                  <ValidatorLogo :validator="slotProps.item" class="validator-image"></ValidatorLogo>
+                  {{slotProps.item.description.moniker}}
+              </div>
+            </template>
+          </AutoComplete>
         </div>
-
 
         <div class="validationPopup__description">
           <label style="width: 100%;" for="amount">
@@ -72,10 +75,6 @@
           <Button v-if="stakingAction === StakingAction.UNDELEGATE" @click="undelegate()">{{ $t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE') }}</Button>
           <Button v-if="stakingAction === StakingAction.REDELEGATE" @click="redelegate">{{ $t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</Button>
         </div>
-        <!-- <div class="validationPopup__btns" v-if="actionRedelegate">
-          <Button @click="redelegateState(false)">{{ $t('COMMON.RETURN') }}</Button>
-          <Button @click="redelegate">{{ $t('STAKING_VIEW.STAKING_POPUP.REDELEGATE') }}</Button>
-        </div> -->
       </div>
 
       <div v-else class="validationPopup__btns">
@@ -87,17 +86,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from "vue";
+import { computed, onUnmounted } from "vue";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from "@/models/store/validator";
 import {ref} from "vue";
 import { useValidatorsStore } from "@/store/validators.store";
-import { object, setLocale, string } from "yup";
+import { object, setLocale, string, ValidationError } from "yup";
 import dataService from '@/services/data.service';
 import { BigDecimal } from "@/models/store/big.decimal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import i18n from "@/plugins/i18n";
 import { filteringIterator } from "@/utils/filtering-iterator";
+import { AutoCompleteCompleteEvent } from "primevue/autocomplete";
+import ValidatorLogo from "../commons/ValidatorLogo.vue";
 
 enum StakingAction {
   DELEGATE,
@@ -116,18 +117,31 @@ onUnmounted(() => {
   document.body.style.overflow = "auto";
 });
 
-const redelegateTo = ref()
+const filteredValidators = ref<Validator[]>(filterForRedelegation())
+const redelegateTo = ref<Validator>()
 const stakingAction = ref<StakingAction>(StakingAction.DELEGATE)
-let validators = useValidatorsStore().getValidators
-  .filter(element => element.operatorAddress !== props.validator.operatorAddress && element.active); // TODO probalbly ony active validators
-const validatorsToRedelegate = ref(validators.map(el => el.description.moniker));
 
-const canModify = computed(() => useUserStore().getConnectionType);
+function filterForRedelegation(filter?: (val: Validator) => boolean): Validator[]{
+  const filtred = useValidatorsStore().getValidators
+    .filter(
+      element => {
+        const condition = element.operatorAddress !== props.validator.operatorAddress && element.active;
+        if (!filter) {
+          return condition;
+        } else {
+          return condition && filter(element);
+        }
+      }
+    );
+  return filtred
+}
 
+const canModify = computed<boolean>(() => {
+  return useUserStore().connectionInfo.modifiable
+  });
 
-const actionRedelegate = ref(false)
 const amount = ref('');
-const validationError = ref();
+const validationError = ref<string[]>();
 const emit = defineEmits(['close', 'success']);
 
 
@@ -155,16 +169,13 @@ function createValidSchema(maxAmount: () => bigint, maxAmountMessage: () => stri
       .test('delgation-moreThan', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MIN'), moreThan)
       .test('delgation-lessThan', () => i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MAX', {max:maxAmountMessage()}), (value: string | undefined):boolean => {
         return lessThanOrEqualTo(value, maxAmount())
-      })
+      }),
 });
 }
 
 function checkValue(value: string | undefined, check: (value:  string) => boolean): boolean {
-  if (value === String()) {
-    return false;
-  }
   if (!value) {
-    return true;
+    return false;
   }
   try {
     return check(value);
@@ -194,7 +205,11 @@ async function delegate() {
         emit('success');
       });
   } catch (err) {
-    validationError.value = err.errors;
+    if (err instanceof ValidationError) {
+      validationError.value = (err as ValidationError).errors;
+    } else {
+      validationError.value = [(err as Error).message]
+    }
   }
 
 }
@@ -203,33 +218,50 @@ async function undelegate() {
 
   try {
     await reundelegationAmountSchema.validate({value:amount.value });
-    await useUserStore().undelegate(props.validator.operatorAddress, String(amount.value)).then((resp) => {
+    await useUserStore().undelegate(props.validator.operatorAddress, amount.value).then((resp) => {
         emit('success')
       });
   } catch (err) {
-    validationError.value = err.errors;
+    if (err instanceof ValidationError) {
+      validationError.value = (err as ValidationError).errors;
+    } else {
+      validationError.value = [(err as Error).message]
+    }
   }
 
 }
 
 async function redelegate() {
-  let actualValidator = useValidatorsStore().getValidators.find(el => {
-    return redelegateTo.value === el.description.moniker
-  });
-  console.log(actualValidator)
   try {
     await reundelegationAmountSchema.validate({value:amount.value });
-      useUserStore().redelegate(props.validator.operatorAddress, actualValidator.operatorAddress, String(amount.value)).then((resp) => {
-      emit('success')
-    });
+    if (redelegateTo.value) {
+      useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value)).then((resp) => {
+        emit('success')
+      });
+    } else {
+      validationError.value = ['Validator not selected']; // TODO locale
+    }
   } catch (err) {
-    validationError.value = err.errors;
+    if (err instanceof ValidationError) {
+      validationError.value = (err as ValidationError).errors;
+    } else {
+      validationError.value = [(err as Error).message]
+    }
   }
+}
 
-}
-function redelegateState(state: boolean){
-  actionRedelegate.value = state;
-}
+const searchValidator = (event: AutoCompleteCompleteEvent) => {
+  setTimeout(() => {
+      if (!event.query.trim().length) {
+          filteredValidators.value = filterForRedelegation();
+      }
+      else {
+          filteredValidators.value = filterForRedelegation((v) => {
+              return v.description.moniker.toLowerCase().includes(event.query.toLowerCase());
+          });
+      }
+  }, 250);
+};
 </script>
 
 <style scoped lang="scss">
@@ -339,5 +371,10 @@ function redelegateState(state: boolean){
     justify-content: flex-end;
     align-items: center;
   }
+}
+
+.validator-image {
+  height: 18px;
+  width: 18px;
 }
 </style>
