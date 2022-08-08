@@ -70,8 +70,14 @@ export const useValidatorsStore = defineStore({
                   || rewards.rewards.has(el.operatorAddress)
         );
     },
+    getNumberOfAllValidators(): number {
+      return this.validators.length;
+    },
     getNumberOfActiveValidators(): number {
       return this.numberOfActiveValidators;
+    },
+    getNumberOfInactiveValidators(): number {
+      return this.validators.length - this.numberOfActiveValidators;
     },
   }
 });

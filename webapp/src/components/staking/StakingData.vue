@@ -1,16 +1,28 @@
 <template>
   <div>
-    <TabView>
-      <TabPanel :header="$t(`STAKING_VIEW.TABS.ALL`)">
+    <TabView lazy>
+      <TabPanel>
+        <template #header>
+          <ValidatorsStatusLabel status="all"/>
+        </template>
         <ValidatorsDataTable :validators="useValidatorsStore().getValidators"/>
       </TabPanel>
-      <TabPanel v-if="isLoggedIn" :header="$t(`STAKING_VIEW.TABS.STAKED`)">
+      <TabPanel v-if="isLoggedIn">
+        <template #header>
+          <ValidatorsStatusLabel status="staked"/>
+        </template>
         <ValidatorsDataTable :validators="useValidatorsStore().getUserValidators"/>
       </TabPanel>
-      <TabPanel :header="$t(`STAKING_VIEW.TABS.ACTIVE`)">
+      <TabPanel>
+        <template #header>
+          <ValidatorsStatusLabel status="active"/>
+        </template>
         <ValidatorsDataTable :validators="useValidatorsStore().getActiveValidators"/>
       </TabPanel>
-      <TabPanel :header="$t(`STAKING_VIEW.TABS.INACTIVE`)">
+      <TabPanel>
+        <template #header>
+          <ValidatorsStatusLabel status="inactive"/>
+        </template>
         <ValidatorsDataTable :validators="useValidatorsStore().getInactiveValidators"/>
       </TabPanel>
     </TabView>
@@ -25,15 +37,12 @@ import {useUserStore} from "@/store/user.store";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import ValidatorsDataTable from "@/components/staking/ValidatorsDataTable.vue";
+import ValidatorsStatusLabel from "../commons/ValidatorsStatusLabel.vue";
 
 const validatorsStore = useValidatorsStore();
 const userStore = useUserStore();
 
 const isLoggedIn = computed(() => userStore.isLoggedIn);
-
-// onBeforeMount(() => {
-//   validatorsStore.fetchValidators();
-// })
 
 </script>
 

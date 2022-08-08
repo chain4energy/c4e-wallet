@@ -46,24 +46,44 @@
           <div v-if="stakingAction.type === StakingAction.REDELEGATE" class="validationPopup__description">
             <div class="field-local">
               <Field v-model="redelegateTo" placeholder=" " name="redelegateTo" v-slot="{ field, handleChange }"  >
-                <Dropdown :options="filteredValidators" optionLabel="description.moniker" :placeholder="$t('STAKING_VIEW.STAKING_POPUP.INPUT.REDELEGATE_VALIDATOR')" :filter="true" :showClear="true"
+                <BlockHidingDropdown :hide-enabled="enableValidatorsHide" name="redelegateToValidator" input-id="redelegateToValidator" :options="filteredValidators" optionLabel="description.moniker" :placeholder="$t('STAKING_VIEW.STAKING_POPUP.INPUT.REDELEGATE_VALIDATOR')" :showClear="true"
                         :filterFields="['description.moniker', 'rank']" :model-value="field.value" 
                         @update:modelValue="handleChange"  :class="{ 'p-invalid': errors.redelegateTo, 'is-invalid': errors.redelegateTo }" :disabled="!canModify">
                     <template #value="slotProps">
                         <div v-if="slotProps.value">
-                          {{slotProps.value.rank}}.
+                          {{slotProps.value.rank}}
                           <ValidatorLogo :validator="slotProps.value" class="validator-image-small"></ValidatorLogo>
                           {{slotProps.value.description.moniker}}
                         </div>
                     </template>
                     <template #option="slotProps">
                         <div>
-                          {{slotProps.option.rank}}.
+                          {{slotProps.option.rank}}
                           <ValidatorLogo :validator="slotProps.option" class="validator-image-small"></ValidatorLogo>
                           {{slotProps.option.description.moniker}}
                         </div>
                     </template>
-                </Dropdown>
+                    <template #header>
+                      <div style="background-color: blue; padding: 10px">
+                        <div style="display: inline-block;">
+                          <span class="p-input-icon-left" >
+                            <i class="pi pi-search" />
+                            <InputText v-model="redelagateToFilter" type="text" placeholder="Search" />
+                          </span>
+                        </div>
+                        <div style="display: inline-block;">
+                          <Dropdown style="background-color: green; width: 200px !important;" @show="atShowChild" @hide="atHideChild" name="activityFilter" input-id="activityFilter" v-model="activityFilter" :options="activityFilterOptions" optionLabel="name" placeholder="Select type">
+                            <template #value="slotProps">
+                              <ValidatorsStatusLabel :status="slotProps.value.status"/>
+                            </template>
+                            <template #option="slotProps">
+                                <ValidatorsStatusLabel :status="slotProps.option.status"/>
+                            </template>
+                          </Dropdown>
+                        </div>
+                      </div>
+                    </template>
+                </BlockHidingDropdown>
               </Field>
               <span>{{$t('STAKING_VIEW.STAKING_POPUP.INPUT.REDELEGATE_VALIDATOR')}}</span>
               <div class="invalid-feedback">
@@ -114,7 +134,7 @@
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from "vue";
 import {useUserStore} from "@/store/user.store";
-import { Validator, ValidatorBase } from "@/models/store/validator";
+import { Validator, ValidatorBase, ValidatorStatus } from "@/models/store/validator";
 import { useValidatorsStore } from "@/store/validators.store";
 import { object, setLocale, string, ValidationError } from "yup";
 import dataService from '@/services/data.service';
@@ -126,9 +146,33 @@ import { AutoCompleteCompleteEvent } from "primevue/autocomplete";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
 import {Field, Form} from "vee-validate";
 import { YupSequentialStringSchema } from "@/utils/yup-utils";
-import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
-import StakeManagementIconType from "../commons/StakeManagementIcon.ts";
+import StakeManagementIcon, { StakeManagementIconType }from "../commons/StakeManagementIcon.vue";
+import BlockHidingDropdown from "../commons/BlockHidingDropdown.vue";
+import ValidatorsStatusLabel, { ValidatorsStatusLabelType } from "../commons/ValidatorsStatusLabel.vue";
 
+const enableValidatorsHide = ref(true);
+
+function atHideChild(e: any) {
+  enableValidatorsHide.value = true;
+}
+function atShowChild(e: any) {
+  enableValidatorsHide.value = false;
+}
+
+interface ActivityFilterData {
+  types: ValidatorStatus[],
+  status: ValidatorsStatusLabelType,
+}
+
+const activityFilterOptions: ActivityFilterData[] = [
+  {types: [ValidatorStatus.Bonded, ValidatorStatus.Unbonded, ValidatorStatus.Unbonding, ValidatorStatus.Unspecified], status: 'all'},
+  {types: [ValidatorStatus.Bonded], status: 'active'},
+  {types: [ValidatorStatus.Unbonded, ValidatorStatus.Unbonding, ValidatorStatus.Unspecified], status: 'inactive'},
+  ]
+
+const activityFilter = ref<ActivityFilterData>(activityFilterOptions[0])
+
+const redelagateToFilter = ref('');
 
 enum StakingAction {
   DELEGATE,
@@ -157,14 +201,27 @@ onUnmounted(() => {
   document.body.style.overflow = "auto";
 });
 
-const filteredValidators = ref<ValidatorBase[]>(filterForRedelegation())
+const filteredValidators = computed<ValidatorBase[]>(() => {
+  return filterForRedelegation((val: Validator) => {
+    const activityTypeFilter = activityFilter.value.types.some((type) => {
+      return type === val.status})
+    if (!redelagateToFilter.value) {
+      return activityTypeFilter;
+    }
+    const valToLowerCase = redelagateToFilter.value.toLowerCase();
+    const searchFilter = String(val.rank).toLowerCase().includes(valToLowerCase) 
+    || val.description.moniker.toLowerCase().includes(valToLowerCase);
+
+    return searchFilter && activityTypeFilter;
+  });
+})
 const redelegateTo = ref<Validator>()
 const stakingAction = ref<ActionData>(defualtAction)
 
 function filterForRedelegation(filter?: (val: Validator) => boolean): ValidatorBase[]{
   const filtred = useValidatorsStore().getValidators.filter(
     element => {
-        const condition = element.operatorAddress !== props.validator.operatorAddress && element.active;
+        const condition = element.operatorAddress !== props.validator.operatorAddress;
         if (!filter) {
           return condition;
         } else {
