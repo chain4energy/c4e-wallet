@@ -27,9 +27,11 @@
               @click="onVoteClick" :label="$t('GOVERNANCE_VIEW.VOTE')" class="p-button-raised p-button-rounded" data-bs-dismiss="modal" />
           </span>
           <span v-else>
-          <p>{{ $t("GOVERNANCE_VIEW.VOTE_CONDITION") }}</p>
-          <Button
-            @click="dataService.onKeplrLogIn()" :label="$t('GOVERNANCE_VIEW.LOGIN')" class="p-button-raised p-button-rounded" />
+            <p>{{ $t("GOVERNANCE_VIEW.VOTE_CONDITION") }}</p>
+            <Button
+              @click="dataService.onKeplrLogIn()" class="p-button-raised p-button-rounded">
+              <KeplrLogo/> {{ $t('CONNECT.CONNECT' )}}
+            </Button>
           </span>
         </div>
       </div>
@@ -43,18 +45,9 @@ import {ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import dataService from '@/services/data.service';
 import { VoteOption } from "@/models/store/proposal";
-const err = ref()
+import KeplrLogo from "../commons/KeplrLogo.vue";
 
-// const props = defineProps({
-//   title: {
-//     type: String,
-//     required: true
-//   },
-//   proposalId: {
-//     type: Number,
-//     required: true
-//   }
-// });
+const err = ref()
 
 const props = defineProps<{
   title: string

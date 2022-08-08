@@ -14,6 +14,9 @@
           <div class="navbar-nav" style="align-items: center">
 
             <div class="acc-address" v-if="useUserStore().isLoggedIn">
+              <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
+              <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
+              <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName}}: </span>
               {{ useUserStore().getAccount.address.slice(0, 8)}}...{{useUserStore().getAccount.address.slice(-6) }}
             </div>
             
@@ -49,6 +52,7 @@ import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
 import { computed, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
+import KeplrLogo from '../commons/KeplrLogo.vue';
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
@@ -97,14 +101,19 @@ function logout(){
 </script>
 
 <style scoped lang="scss">
-@import '../../styles/variables.scss';
 
 .acc-address {
 
-  margin-top: 2px;
-  padding: 0.5rem;
-  background-color: $main-lighter-color;
-  border-radius: 1rem;
+  // margin-top: 2px;
+  // position: relative;
+  // padding: 0.5rem;
+  // background-color: $main-lighter-color;
+  // border-radius: 1rem;
+}
+
+.keplr-logo {
+  padding: 0px 5px;
+  background-color: rgba(255,255,255);
 }
 
 @media screen and (max-width: 700px) {

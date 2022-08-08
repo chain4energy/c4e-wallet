@@ -5,18 +5,19 @@
     <div class="loginChoose__body">
       <Button @click="$emit('typeChange', LoginEmail)">
       <Icon style="margin-right: 10px;" name="Globe"></Icon>
-        {{ $t('LOGIN.LOGIN_ADDRESS') }}
+        {{ $t('CONNECT.CONNECT_ADDRESS') }}
       </Button>
       <Button @click="$emit('keplr')" >
-        <span class="keplr-logo">K</span>
-        {{ $t('LOGIN.LOGIN_KEPLR') }}
+        <KeplrLogo/>
+        {{ $t('CONNECT.CONNECT_KEPLR') }}
 
-      </button>
+      </Button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import KeplrLogo from '@/components/commons/KeplrLogo.vue';
 import LoginEmail from '@/components/layout/loginPopup/LoginAddress.vue';
 import LoginKeplr from '@/components/layout/loginPopup/LogoutConfirm.vue';
 import { useUserStore } from "@/store/user.store";
@@ -24,17 +25,7 @@ import { useUserStore } from "@/store/user.store";
 </script>
 
 <style scoped lang="scss">
-@import '../../../styles/variables.scss';
 
-.keplr-logo {
-  padding: 0px 7px;
-  border-radius: 5px;
-  color: $main-color;
-  background-color: $secondary-color;
-  box-sizing: border-box;
-  font-weight: bold;
-  margin-right: 10px;
-}
 .loginChoose{
   position: fixed;
   top:0;

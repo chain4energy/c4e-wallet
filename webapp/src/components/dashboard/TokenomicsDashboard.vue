@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeMount, ref} from "vue";
+import { computed } from "vue";
 import {useTokensStore} from "@/store/tokens.store";
 import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
@@ -59,10 +59,6 @@ use([
 ]);
 
 const tokensStore = useTokensStore();
-
-// onBeforeMount(() => {
-//   tokensStore.fetchStakingPool();
-// });
 
 const boundedPercentage = computed(() => {
   return tokensStore.getBoundedPercentage();

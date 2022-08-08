@@ -1,30 +1,43 @@
-export function filteringIterator<T>(origIterator: IterableIterator<T>, filter: (val: T) => boolean): IterableIterator<T> {
-  return new FilteringIterableIterator(origIterator, filter);
+export function filteringIterator<T, M = T>(origIterator: IterableIterator<T>, filter: (val: T) => boolean, map?: (val: T) => M,): IterableIterator<M> {
+  return new FilteringIterableIterator(origIterator, filter, map);
 }
 
-class FilteringIterableIterator<T> implements IterableIterator<T> {
+class FilteringIterableIterator<T, M = T> implements IterableIterator<M> {
 
   private iterator: IterableIterator<T>;
   private filter: (val: T) => boolean;
+  private map: (val: T) => M;
 
   constructor(
     iterator: IterableIterator<T>,
-    filter: (val: T) => boolean
+    filter: (val: T) => boolean,
+    map?: (val: T) => M,
   ) {
     this.iterator = iterator;
     this.filter = filter;
+    if (map) {
+      this.map = map;
+    } else {
+      this.map = (val: T): M => {return (val as unknown as M)};
+    }
   }
 
-  [Symbol.iterator](): IterableIterator<T> {
+  [Symbol.iterator](): IterableIterator<M> {
    return this;
   }
-  next(...args: [] | [undefined]): IteratorResult<T, any> {
+  next(...args: [] | [undefined]): IteratorResult<M, any> {
     const next = this.iterator.next(...args)
     if (next.done) {
-      return next;
+      return {
+        done : next.done,
+        value : this.map(next.value)
+      }
     }
     const val = next.value;
-    return this.filter(val) ? next : this.next(...args);
+    return this.filter(val) ? {
+      done : next.done,
+      value : this.map(next.value)
+    } : this.next(...args);
   }
 
 }

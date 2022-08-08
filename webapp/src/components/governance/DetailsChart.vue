@@ -62,8 +62,6 @@ import {ProposalStatus} from "@/models/store/proposal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { createProposalDetailsChartData } from "@/charts/governance";
 import { useProposalsStore } from "@/store/proposals.store";
-import { useUserStore } from "@/store/user.store";
-
 
 use([
   CanvasRenderer,
