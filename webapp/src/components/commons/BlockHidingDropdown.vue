@@ -16,10 +16,8 @@ export default defineComponent({
       if (this.hideEnabled) {
         (Dropdown as any).methods.hide.call(this, isFocus);
       }
-      
     }
   }
-
 })
 
 </script>

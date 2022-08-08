@@ -10,7 +10,6 @@
           <h2>{{ validator.description.moniker }}</h2>
         </div>
           <Button icon="pi pi-times" style="width: 5px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
-
       </div>
       <Form @submit="action" :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body">
 
@@ -27,63 +26,13 @@
             </div>
           </div>
           <div class="validationPopup__description">
-            <Dropdown v-model="stakingAction" :options="actions" optionLabel="name" placeholder="Select a action" :disabled="!canModify">
-              <template #value="slotProps">
-                  <div v-if="slotProps.value" >
-                    <StakeManagementIcon :icon="slotProps.value.icon" class="dropdown-option"/>
-                    {{slotProps.value.name}} 
-                  </div>
-              </template>
-              <template #option="slotProps">
-                <div>
-                  <StakeManagementIcon :icon="slotProps.option.icon" class="dropdown-option"/>
-                  {{slotProps.option.name}}
-                </div>
-              </template>
-            </Dropdown>
+            <StakingActionVue v-model="stakingAction" :disabled="!canModify"/>
           </div>
 
-          <div v-if="stakingAction.type === StakingAction.REDELEGATE" class="validationPopup__description">
+          <div v-if="stakingAction === StakingAction.REDELEGATE" class="validationPopup__description">
             <div class="field-local">
               <Field v-model="redelegateTo" placeholder=" " name="redelegateTo" v-slot="{ field, handleChange }"  >
-                <BlockHidingDropdown :hide-enabled="enableValidatorsHide" name="redelegateToValidator" input-id="redelegateToValidator" :options="filteredValidators" optionLabel="description.moniker" :placeholder="$t('STAKING_VIEW.STAKING_POPUP.INPUT.REDELEGATE_VALIDATOR')" :showClear="true"
-                        :filterFields="['description.moniker', 'rank']" :model-value="field.value" 
-                        @update:modelValue="handleChange"  :class="{ 'p-invalid': errors.redelegateTo, 'is-invalid': errors.redelegateTo }" :disabled="!canModify">
-                    <template #value="slotProps">
-                        <div v-if="slotProps.value">
-                          {{slotProps.value.rank}}
-                          <ValidatorLogo :validator="slotProps.value" class="validator-image-small"></ValidatorLogo>
-                          {{slotProps.value.description.moniker}}
-                        </div>
-                    </template>
-                    <template #option="slotProps">
-                        <div>
-                          {{slotProps.option.rank}}
-                          <ValidatorLogo :validator="slotProps.option" class="validator-image-small"></ValidatorLogo>
-                          {{slotProps.option.description.moniker}}
-                        </div>
-                    </template>
-                    <template #header>
-                      <div style="background-color: blue; padding: 10px">
-                        <div style="display: inline-block;">
-                          <span class="p-input-icon-left" >
-                            <i class="pi pi-search" />
-                            <InputText v-model="redelagateToFilter" type="text" placeholder="Search" />
-                          </span>
-                        </div>
-                        <div style="display: inline-block;">
-                          <Dropdown style="background-color: green; width: 200px !important;" @show="atShowChild" @hide="atHideChild" name="activityFilter" input-id="activityFilter" v-model="activityFilter" :options="activityFilterOptions" optionLabel="name" placeholder="Select type">
-                            <template #value="slotProps">
-                              <ValidatorsStatusLabel :status="slotProps.value.status"/>
-                            </template>
-                            <template #option="slotProps">
-                                <ValidatorsStatusLabel :status="slotProps.option.status"/>
-                            </template>
-                          </Dropdown>
-                        </div>
-                      </div>
-                    </template>
-                </BlockHidingDropdown>
+                <StakingRedelegate :validator="validator" @update:modelValue="handleChange" :model-value="field.value" :class="{ 'p-invalid': errors.redelegateTo, 'is-invalid': errors.redelegateTo }" :disabled="!canModify"/>
               </Field>
               <span>{{$t('STAKING_VIEW.STAKING_POPUP.INPUT.REDELEGATE_VALIDATOR')}}</span>
               <div class="invalid-feedback">
@@ -105,15 +54,15 @@
         </div>
         <div class="validationPopup__btnHolder" v-if="canModify" >
           <div class="validationPopup__btns" >
-            <Button v-if="stakingAction.type === StakingAction.DELEGATE" type="submit">
+            <Button v-if="stakingAction === StakingAction.DELEGATE" type="submit">
               <StakeManagementIcon icon="delegate"/>
               {{$t('STAKING_VIEW.STAKING_POPUP.DELEGATE')}}
             </Button>
-            <Button v-if="stakingAction.type === StakingAction.UNDELEGATE" type="submit">
+            <Button v-if="stakingAction === StakingAction.UNDELEGATE" type="submit">
               <StakeManagementIcon icon="undelegate"/>
               {{$t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE')}}
             </Button>
-            <Button v-if="stakingAction.type === StakingAction.REDELEGATE" type="submit">
+            <Button v-if="stakingAction === StakingAction.REDELEGATE" type="submit">
               <StakeManagementIcon icon="redelegate"/>
               {{$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE')}}  
             </Button>
@@ -134,64 +83,22 @@
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from "vue";
 import {useUserStore} from "@/store/user.store";
-import { Validator, ValidatorBase, ValidatorStatus } from "@/models/store/validator";
-import { useValidatorsStore } from "@/store/validators.store";
+import { Validator } from "@/models/store/validator";
 import { object, setLocale, string, ValidationError } from "yup";
 import dataService from '@/services/data.service';
 import { BigDecimal } from "@/models/store/big.decimal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import i18n from "@/plugins/i18n";
-import { filteringIterator } from "@/utils/filtering-iterator";
-import { AutoCompleteCompleteEvent } from "primevue/autocomplete";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
 import {Field, Form} from "vee-validate";
 import { YupSequentialStringSchema } from "@/utils/yup-utils";
-import StakeManagementIcon, { StakeManagementIconType }from "../commons/StakeManagementIcon.vue";
-import BlockHidingDropdown from "../commons/BlockHidingDropdown.vue";
-import ValidatorsStatusLabel, { ValidatorsStatusLabelType } from "../commons/ValidatorsStatusLabel.vue";
+import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
 import KeplrLogo from "../commons/KeplrLogo.vue";
+import StakingActionVue from "./StakingAction.vue";
+import { StakingAction } from "./StakingAction";
+import StakingRedelegate from "./StakingRedelegate.vue";
 
-const enableValidatorsHide = ref(true);
-
-function atHideChild(e: any) {
-  enableValidatorsHide.value = true;
-}
-function atShowChild(e: any) {
-  enableValidatorsHide.value = false;
-}
-
-interface ActivityFilterData {
-  types: ValidatorStatus[],
-  status: ValidatorsStatusLabelType,
-}
-
-const activityFilterOptions: ActivityFilterData[] = [
-  {types: [ValidatorStatus.Bonded, ValidatorStatus.Unbonded, ValidatorStatus.Unbonding, ValidatorStatus.Unspecified], status: 'all'},
-  {types: [ValidatorStatus.Bonded], status: 'active'},
-  {types: [ValidatorStatus.Unbonded, ValidatorStatus.Unbonding, ValidatorStatus.Unspecified], status: 'inactive'},
-  ]
-
-const activityFilter = ref<ActivityFilterData>(activityFilterOptions[0])
-
-const redelagateToFilter = ref('');
-
-enum StakingAction {
-  DELEGATE,
-  UNDELEGATE,
-  REDELEGATE
-}
-
-interface ActionData {
-  type: StakingAction,
-  name: string,
-  icon: StakeManagementIconType
-}
-const defualtAction: ActionData = {type: StakingAction.DELEGATE, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATE'), icon: 'delegate'};
-const actions: ActionData[] = [
-  defualtAction,
-  {type: StakingAction.UNDELEGATE, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE'), icon: 'undelegate'},
-  {type: StakingAction.REDELEGATE, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.REDELEGATE'), icon: 'redelegate'},
-  ]
+const emit = defineEmits(['close', 'success']);
 
 const props = defineProps<{
   validator: Validator
@@ -202,54 +109,15 @@ onUnmounted(() => {
   document.body.style.overflow = "auto";
 });
 
-const filteredValidators = computed<ValidatorBase[]>(() => {
-  return filterForRedelegation((val: Validator) => {
-    const activityTypeFilter = activityFilter.value.types.some((type) => {
-      return type === val.status})
-    if (!redelagateToFilter.value) {
-      return activityTypeFilter;
-    }
-    const valToLowerCase = redelagateToFilter.value.toLowerCase();
-    const searchFilter = String(val.rank).toLowerCase().includes(valToLowerCase) 
-    || val.description.moniker.toLowerCase().includes(valToLowerCase);
 
-    return searchFilter && activityTypeFilter;
-  });
-})
 const redelegateTo = ref<Validator>()
-const stakingAction = ref<ActionData>(defualtAction)
-
-function filterForRedelegation(filter?: (val: Validator) => boolean): ValidatorBase[]{
-  const filtred = useValidatorsStore().getValidators.filter(
-    element => {
-        const condition = element.operatorAddress !== props.validator.operatorAddress;
-        if (!filter) {
-          return condition;
-        } else {
-          return condition && filter(element);
-        }
-      }
-    )
-    .map((val) => { // mapping to new object because of vee validate uses JSON.stringify that does not support bigint
-        return {
-        rank: val.rank,
-        operatorAddress: val.operatorAddress,
-        description: {
-          moniker: val.description.moniker,
-          pictureUrl: val.description.pictureUrl
-        }
-      }
-      }
-    );
-  return filtred
-}
+const stakingAction = ref<StakingAction>(StakingAction.DELEGATE)
 
 const canModify = computed<boolean>(() => {
   return useUserStore().isLoggedIn && useUserStore().connectionInfo.modifiable
   });
 
 const amount = ref('');
-const emit = defineEmits(['close', 'success']);
 
 
 setLocale({
@@ -260,7 +128,7 @@ setLocale({
 
 const baseSchema = object().shape({
   redelegateTo: object().nullable().test('validator', i18n.global.t('STAKING_VIEW.STAKING_POPUP.VALIDATOR.REQUIRED'), (value: any) => {
-    return stakingAction.value?.type === StakingAction.REDELEGATE ? value ? true : false : true;
+    return stakingAction.value === StakingAction.REDELEGATE ? value ? true : false : true;
   }),
   amount: YupSequentialStringSchema([string().defined(),
       string().test('not-empty', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.REQUIRED'), (value: string | undefined) => {return value ? value.length > 0 : false}),
@@ -288,19 +156,19 @@ function moreThan(value: string | undefined): boolean {
 function lessThanOrEqualTo(value: string | undefined): boolean {
   return checkValue(value, (value:  string) => {
     const factor = useConfigurationStore().config.getViewDenomConversionFactor();
-    const lessThan = stakingAction.value?.type === StakingAction.DELEGATE ? useUserStore().getBalance : props.validator.delegatedAmount
+    const lessThan = stakingAction.value === StakingAction.DELEGATE ? useUserStore().getBalance : props.validator.delegatedAmount
     return (new BigDecimal(lessThan)).isBiggerThan(new BigDecimal(value).multiply(factor));
   })
 }
 
 function maxAmountMessageData(): string {
-  return stakingAction.value?.type === StakingAction.DELEGATE ? 
+  return stakingAction.value === StakingAction.DELEGATE ? 
       useUserStore().getBalanceViewAmount(useConfigurationStore().config.getViewDenomDecimals()) :
       props.validator.getDelegatedViewAmount(useConfigurationStore().config.getViewDenomDecimals())
 }
 
 function action() {
-  switch(stakingAction.value?.type) {
+  switch(stakingAction.value) {
     case StakingAction.DELEGATE: {
       delegate();
       break;
