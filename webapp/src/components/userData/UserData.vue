@@ -153,6 +153,7 @@ console.log(useUserStore().getAccount.continuousVestingData);
     width: 40%;
     min-height: 100%;
     max-height: 80px;
+    border-radius: 0 6px 6px 0;
     background: #0F3153;
   }
   &__rewardAmount{
