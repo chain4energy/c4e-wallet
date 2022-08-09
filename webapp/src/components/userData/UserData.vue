@@ -3,7 +3,7 @@
   <div class="userdata__accountData">
     <div class="userdata__accountData-base" >
     <div class="userdata__icon">
-      <C4EIcon icon="c4e-circle"/>
+      <C4EIcon icon="c4e-circle" size="30"/>
     </div>
     <div class="userdata__amounts">
       <p>{{ $t('USER_DATA.TOTAL') }}</p>

@@ -1,7 +1,7 @@
 <template>
   <div :id="id" >
     <defs>
-      <filter id="inset-shadow" filterRes="1">
+      <filter id="inset-shadow">
         <feColorMatrix type="matrix" values="0 0 0 0 0 
               0 0 0 0 0 
               0 0 0 0 0 

@@ -140,8 +140,11 @@ function getProposalStatus(): ProposalStatus{
     height: 70%;
     position: relative;
     .inside{
+      width: 50%;
       position: absolute;
       top: 42%;
+      // -ms-transform: translateY(-50%);
+      // transform: translateY(-50%);
       margin:auto;
       text-align: center;
       left: 0;

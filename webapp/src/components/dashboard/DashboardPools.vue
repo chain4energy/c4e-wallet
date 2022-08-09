@@ -29,6 +29,7 @@
     </div>
       <ShadowedSvgChart id="poolschartdiv">
         <v-chart :option="option" autoresize />
+          <C4EIcon icon="c4e-circle" class="inside" size="80"/>
       </ShadowedSvgChart>
   </div>
 
@@ -45,6 +46,7 @@ import Icon from "../features/IconComponent.vue";
 import {useTokensStore} from "@/store/tokens.store";
 import { createDashboardPoolsChartData } from "@/charts/dashboard";
 import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
+import C4EIcon from "../commons/C4EIcon.vue";
 
 use([
   SVGRenderer,
@@ -76,18 +78,51 @@ const option = computed(() => {
 
 <style scoped lang="scss">
 #poolschartdiv {
-  width: 80%;
+  width: 100%;
   // margin-bottom: -30px;
   // margin-left: -10px;
-  background: transparent url("@/assets/logo.png") no-repeat center ;
-  background-size: 50px;
+  // background: transparent url("@/assets/logo.png") no-repeat center ;
+  // background-size: 50px;
+position: relative;
+  .inside{
+    width: 40%;
+      position: absolute;
+      top: 50%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+      margin:auto;
+      text-align: center;
+      vertical-align: middle;
+      left: 0;
+      right: 0;
+
+    }
+
 }
 
 @media screen and (max-width: 1150px) {
   #poolschartdiv {
     height: 350px;
     align-self: center;
+
+    .inside{
+      width: 40%;
+      position: absolute;
+      top: 50%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+      margin:auto;
+      text-align: center;
+      vertical-align: middle;
+      left: 0;
+      right: 0;
+
+    }
   }
+}
+
+.c4e-icon {
+  color: #27697F;
 }
 
 </style>
