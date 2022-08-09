@@ -66,7 +66,7 @@ import {computed} from "vue";
 import {BarChart} from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
-import {CanvasRenderer} from "echarts/renderers";
+import {SVGRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent, GridComponent} from "echarts/components";
 import {useRouter} from "vue-router";
 import {Proposal, ProposalStatus} from "@/models/store/proposal";
@@ -74,7 +74,7 @@ import { createProposalListChartData } from '@/charts/governance';
 import { useProposalsStore } from '@/store/proposals.store';
 
 use([
-  CanvasRenderer,
+  SVGRenderer,
   BarChart,
   TitleComponent,
   TooltipComponent,

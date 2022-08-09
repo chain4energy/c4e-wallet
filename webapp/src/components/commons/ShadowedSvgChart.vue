@@ -7,10 +7,10 @@
               0 0 0 0 0 
               0 0 10 0 0">
         </feColorMatrix>
-        <feGaussianBlur stdDeviation="2"></feGaussianBlur>
+        <feGaussianBlur stdDeviation="3"></feGaussianBlur>
         <feComposite operator="in" in2="SourceGraphic"></feComposite>
         <feDiffuseLighting surfaceScale="200" diffuseConstant="1" kernelUnitLength="1" lighting-color="white" result="lightmap">
-          <fePointLight x="100" y="0" z="100"></fePointLight>
+          <fePointLight x="10" y="0" z="100"></fePointLight>
         </feDiffuseLighting>
         <feGaussianBlur stdDeviation="10"></feGaussianBlur>
         <feColorMatrix type="luminanceToAlpha"></feColorMatrix>
@@ -42,6 +42,8 @@ async function addShadow() {
       chartElement.removeChild(defs)
     }
     const svg = chartElement.getElementsByTagName("x-vue-echarts").item(0)?.getElementsByTagName("div").item(0)?.getElementsByTagName("svg").item(0);
+    const isSvg: boolean = svg !== null;
+    console.log(`Shadow ${props.id} - ${isSvg}`)
     const svgElem = svg as SVGElement;
     svgElem.innerHTML = defs?.outerHTML + svgElem.innerHTML
     svgElem.setAttribute('filter', 'url(#inset-shadow)');
