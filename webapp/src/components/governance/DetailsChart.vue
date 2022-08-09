@@ -5,13 +5,13 @@
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
       <span>{{ useProposalsStore().getSelectedProposalTally.getTotalView(2, true) }} {{ useConfigurationStore().config.getViewDenom() }}</span>
     </div>
-    <div class="chartdiv">
-      <v-chart :option="option" autoresize />
-      <div class="inside">
-        <Icon :name=icons.get(getProposalStatus())></Icon>
-        {{ $t("GOVERNANCE_VIEW."+getProposalStatus())}}
-      </div>
-    </div>
+    <ShadowedSvgChart id="voteschartdiv" class="chartdiv">
+        <v-chart :option="option" autoresize />
+        <div class="inside">
+          <Icon :name=icons.get(getProposalStatus())></Icon>
+          {{ $t("GOVERNANCE_VIEW."+getProposalStatus())}}
+        </div>
+    </ShadowedSvgChart>
     <div class="voting-result">
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
@@ -53,7 +53,7 @@ import {computed, ref} from "vue";
 import {PieChart} from "echarts/charts";
 import VChart from "vue-echarts";
 import {use} from "echarts/core";
-import {CanvasRenderer} from "echarts/renderers";
+import {SVGRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import VoteModal from "@/components/governance/VoteModal.vue";
 import Icon from "../features/IconComponent.vue";
@@ -62,9 +62,10 @@ import {ProposalStatus} from "@/models/store/proposal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { createProposalDetailsChartData } from "@/charts/governance";
 import { useProposalsStore } from "@/store/proposals.store";
+import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 
 use([
-  CanvasRenderer,
+  SVGRenderer,
   PieChart,
   TitleComponent,
   TooltipComponent,

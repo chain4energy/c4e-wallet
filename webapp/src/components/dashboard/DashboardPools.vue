@@ -27,11 +27,9 @@
         </div>
     </div>
     </div>
-      <div id="chartdiv">
+      <ShadowedSvgChart id="poolschartdiv">
         <v-chart :option="option" autoresize />
-    </div>
-
-
+      </ShadowedSvgChart>
   </div>
 
 </template>
@@ -40,15 +38,16 @@
 import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
-import { CanvasRenderer } from "echarts/renderers";
+import { SVGRenderer } from "echarts/renderers";
 import { computed } from "vue";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import Icon from "../features/IconComponent.vue";
 import {useTokensStore} from "@/store/tokens.store";
 import { createDashboardPoolsChartData } from "@/charts/dashboard";
+import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 
 use([
-  CanvasRenderer,
+  SVGRenderer,
   PieChart,
   TitleComponent,
   TooltipComponent,
@@ -76,7 +75,7 @@ const option = computed(() => {
 </script>
 
 <style scoped lang="scss">
-#chartdiv {
+#poolschartdiv {
   width: 80%;
   // margin-bottom: -30px;
   // margin-left: -10px;
@@ -85,7 +84,7 @@ const option = computed(() => {
 }
 
 @media screen and (max-width: 1150px) {
-  #chartdiv {
+  #poolschartdiv {
     height: 350px;
     align-self: center;
   }
