@@ -1,7 +1,7 @@
 <template>
   <div :id="id" >
     <defs>
-      <filter id="inset-shadow">
+      <filter id="inset-shadow" filterRes="1">
         <feColorMatrix type="matrix" values="0 0 0 0 0 
               0 0 0 0 0 
               0 0 0 0 0 
@@ -34,6 +34,10 @@ onMounted(() => {
 
 });
 
+function isSafari() {
+  return navigator.vendor && navigator.vendor.indexOf('Apple') > -1 
+}
+
 async function addShadow() {
   const chartElement = document.getElementById(props.id);
   if (chartElement) {
@@ -43,7 +47,9 @@ async function addShadow() {
     }
     const svg = chartElement.getElementsByTagName("x-vue-echarts").item(0)?.getElementsByTagName("div").item(0)?.getElementsByTagName("svg").item(0);
     const isSvg: boolean = svg !== null;
-    console.log(`Shadow ${props.id} - ${isSvg}`)
+    if (isSafari() || !isSvg) {
+      return;
+    }
     const svgElem = svg as SVGElement;
     svgElem.innerHTML = defs?.outerHTML + svgElem.innerHTML
     svgElem.setAttribute('filter', 'url(#inset-shadow)');
