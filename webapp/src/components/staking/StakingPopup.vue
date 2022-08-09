@@ -1,16 +1,16 @@
 <template>
   <div class="validationPopup">
     <div class="validationPopup__background"></div>
-
-
     <div class="validationPopup__holder">
       <div class="validationPopup__header">
         <div>
           <ValidatorLogo :validator="validator" class="validator-image-big"></ValidatorLogo>
           <h2>{{ validator.description.moniker }}</h2>
         </div>
+        <StakingWarning v-if="stakingAction !== StakingAction.REDELEGATE" :action="stakingAction"/>
           <Button icon="pi pi-times" style="width: 5px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
       </div>
+
       <Form @submit="action" :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body">
 
         <div class="validationPopup__body">
@@ -25,10 +25,10 @@
               <a :href="validator.description.website">{{validator.description.website}}</a>
             </div>
           </div>
+          <CoinAmount :amount="props.validator.delegatedAmount" :show-denom="true" :precision="4" :orig-denom="'c4e'" :reduce-big-number="true"/>
           <div class="validationPopup__description">
             <StakingActionVue v-model="stakingAction" :disabled="!canModify"/>
           </div>
-
           <div v-if="stakingAction === StakingAction.REDELEGATE" class="validationPopup__description">
             <div class="field-local">
               <Field v-model="redelegateTo" placeholder=" " name="redelegateTo" v-slot="{ field, handleChange }"  >
@@ -50,7 +50,6 @@
               </div>
             </div>
           </div>
-         
         </div>
         <div class="validationPopup__btnHolder" v-if="canModify" >
           <div class="validationPopup__btns" >
@@ -64,11 +63,10 @@
             </Button>
             <Button v-if="stakingAction === StakingAction.REDELEGATE" type="submit">
               <StakeManagementIcon icon="redelegate"/>
-              {{$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE')}}  
+              {{$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE')}}
             </Button>
           </div>
         </div>
-
         <div v-else class="validationPopup__btns">
           {{ $t('ERRORS.CONNECT_WALLET')}}
           <Button @click="dataService.onKeplrLogIn()">
@@ -97,6 +95,8 @@ import KeplrLogo from "../commons/KeplrLogo.vue";
 import StakingActionVue from "./StakingAction.vue";
 import { StakingAction } from "./StakingAction";
 import StakingRedelegate from "./StakingRedelegate.vue";
+import StakingWarning from "@/components/commons/StakingWarning.vue";
+import CoinAmount from "@/components/commons/CoinAmount.vue";
 
 const emit = defineEmits(['close', 'success']);
 
@@ -162,7 +162,7 @@ function lessThanOrEqualTo(value: string | undefined): boolean {
 }
 
 function maxAmountMessageData(): string {
-  return stakingAction.value === StakingAction.DELEGATE ? 
+  return stakingAction.value === StakingAction.DELEGATE ?
       useUserStore().getBalanceViewAmount(useConfigurationStore().config.getViewDenomDecimals()) :
       props.validator.getDelegatedViewAmount(useConfigurationStore().config.getViewDenomDecimals())
 }

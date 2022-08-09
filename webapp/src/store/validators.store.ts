@@ -6,6 +6,7 @@ import { useToast } from "vue-toastification";
 import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
+import { Params } from "@/models/store/params";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -13,6 +14,7 @@ const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
 interface ValidatorsState {
   validators: Validator[]
   numberOfActiveValidators: number
+  params : Params
 }
 
 export const useValidatorsStore = defineStore({
@@ -21,6 +23,7 @@ export const useValidatorsStore = defineStore({
     return {
       validators: Array<Validator>(),
       numberOfActiveValidators: 0,
+      params : Object() as Params
     };
   },
   actions: {
@@ -42,6 +45,14 @@ export const useValidatorsStore = defineStore({
           }
       });
 
+    },
+    async fetchStackingParams(lockscreen = true) {
+      await apiFactory.validatorsApi().fetchStakingParams(lockscreen).then((resp) => {
+        if (resp.isSuccess() && resp.data !== undefined){
+          console.log(resp)
+          this.params = resp.data
+        }
+      })
     },
 
     clear() {
@@ -65,7 +76,7 @@ export const useValidatorsStore = defineStore({
       const undelegations = useUserStore().undelegations;
       const rewards = useUserStore().rewards;
       return this.validators.filter(
-        (el) => delegations.delegations.has(el.operatorAddress) 
+        (el) => delegations.delegations.has(el.operatorAddress)
                   || undelegations.undelegations.has(el.operatorAddress)
                   || rewards.rewards.has(el.operatorAddress)
         );
@@ -79,6 +90,9 @@ export const useValidatorsStore = defineStore({
     getNumberOfInactiveValidators(): number {
       return this.validators.length - this.numberOfActiveValidators;
     },
+    getParamsUnbondingTime(): number{
+      return this.params.unbonding_time
+    }
   }
 });
 
