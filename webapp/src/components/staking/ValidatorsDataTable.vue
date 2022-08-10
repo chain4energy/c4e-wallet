@@ -5,14 +5,11 @@
       <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>
       <template #header>
         <div>
-          <h5 v-if="isValidatorsTable()" class="m-0">{{ $t("STAKING_VIEW.VALIDATORS") }}</h5>
-                <span v-if="isValidatorsTable()" class="p-input-icon-left search-bar">
-                  <i class="pi pi-search" />
-                  <InputText style="width: 100%" type="text" v-model="filters['global'].value" placeholder="Search" />
-                  <i class="pi pi-times-circle" style="transform: translateX(-30px)" @click="filters['global'].value = ''"/>
-              </span>
-          <h5 v-if="isDelegationsTable()" class="m-0">{{ $t("STAKING_VIEW.USER_DELEGATIONS") }}</h5>
-          <h5 v-if="isUndelegationsTable()" class="m-0">{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</h5>
+          <span v-if="isValidatorsTable()" class="p-input-icon-left search-bar">
+            <i class="pi pi-search" />
+            <InputText style="width: 100%" type="text" v-model="filters['global'].value" placeholder="Search" />
+            <i class="pi pi-times-circle" style="transform: translateX(-30px)" @click="filters['global'].value = ''"/>
+          </span>
         </div>
       </template>
       <template v-slot:columns>
