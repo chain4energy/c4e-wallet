@@ -4,8 +4,8 @@
     <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick">
       <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>
       <template #header>
-        <div style="display: flex; justify-content: center">
-                <span class="p-input-icon-left" style="width: 70%">
+        <div>
+                <span class="p-input-icon-left search-bar">
                   <i class="pi pi-search" />
                   <InputText style="width: 100%" type="text" v-model="filters['global'].value" placeholder="Search" />
                   <i class="pi pi-times-circle" style="transform: translateX(-30px)" @click="filters['global'].value = ''"/>
@@ -16,6 +16,7 @@
         <Column field="rank" :header="$t(`STAKING_VIEW.TABLE_HEADERS.RANK`)" :sortable="true">
           <template #body="{data}">
             <div class="rank">
+              <div :class="data.status == ValidatorStatus.Bonded ? '' : 'opacity-0'" style="display: flex;"><div class="badge-staked">Staked</div> <div class="arrow"></div></div>
               <div :class="data.status == ValidatorStatus.Bonded ? '' : 'opacity-0'" style="display: flex;"><div class="badge-staked">Staked</div> <div class="arrow"></div></div>
               <span>{{data.rank}}</span>
             </div>
@@ -267,4 +268,39 @@ const filters = ref({
       background: $secondary-color;
       color: white;
     }
+
+  .search-bar {
+    width: 40%;
+    float: right;
+    transform: translateY(-200%);
+    z-index: -1;
+    margin-bottom: -200%;
+  }
+
+  .p-datatable .p-datatable-header {
+    margin-bottom: -50px;
+  }
+
+  .p-datatable-wrapper {
+    margin-top: -40px !important;
+    transform: translateY(-40px) !important;
+  }
+
+  @media screen and (max-width: 950px) {
+    .search-bar {
+      width: 100%;
+      transform: none;
+      z-index: 5;
+      margin-bottom: 20px;
+    }
+
+    .p-datatable .p-datatable-header {
+      margin-bottom: 0px;
+    }
+
+    .p-datatable-wrapper {
+      margin-top: 0px !important;
+      transform: none !important;
+    }
+  }
 </style>
