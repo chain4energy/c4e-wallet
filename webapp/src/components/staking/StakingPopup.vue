@@ -26,17 +26,19 @@
             </div>
           </div>
           <div class="validationPopup__description">
-            <StakingActionVue v-model="stakingAction" :disabled="!canModify"/>
+            <StakingActionVue v-model="stakingAction" :disabled="!canModify" :redelegation-direction="redelegationDirection"/>
           </div>
 
           <div v-if="stakingAction === StakingAction.REDELEGATE" class="validationPopup__description">
             <div class="field-local">
-              <Field v-model="redelegateTo" placeholder=" " name="redelegateTo" v-slot="{ field, handleChange }"  >
-                <StakingRedelegate :validator="validator" @update:modelValue="handleChange" :model-value="field.value" :class="{ 'p-invalid': errors.redelegateTo, 'is-invalid': errors.redelegateTo }" :disabled="!canModify"/>
+              <Field v-model="redelegateValidator" placeholder=" " name="redelegateValidator" v-slot="{ field, handleChange }"  >
+                <StakingRedelegate :validator="validator" @update:modelValue="handleChange" :model-value="field.value" 
+                          :class="{ 'p-invalid': errors.redelegateValidator, 'is-invalid': errors.redelegateValidator }" :disabled="!canModify"
+                          :redelegation-direction="redelegationDirection"/>
               </Field>
-              <span>{{$t('STAKING_VIEW.STAKING_POPUP.INPUT.REDELEGATE_VALIDATOR')}}</span>
+              <span>{{getRedelagatePlaceholder(redelegationDirection)}}</span>
               <div class="invalid-feedback">
-                {{ errors.redelegateTo ? errors.redelegateTo : "" }}
+                {{ errors.redelegateValidator ? errors.redelegateValidator : "" }}
               </div>
             </div>
           </div>
@@ -97,11 +99,13 @@ import KeplrLogo from "../commons/KeplrLogo.vue";
 import StakingActionVue from "./StakingAction.vue";
 import { StakingAction } from "./StakingAction";
 import StakingRedelegate from "./StakingRedelegate.vue";
+import { RedelegationDirection, getRedelagatePlaceholder } from "./StakingRedelegate";
 
 const emit = defineEmits(['close', 'success']);
 
 const props = defineProps<{
-  validator: Validator
+  validator: Validator,
+  redelegationDirection: RedelegationDirection
 }>();
 
 document.body.style.overflow = "hidden";
@@ -110,7 +114,7 @@ onUnmounted(() => {
 });
 
 
-const redelegateTo = ref<Validator>()
+const redelegateValidator = ref<Validator>()
 const stakingAction = ref<StakingAction>(StakingAction.DELEGATE)
 
 const canModify = computed<boolean>(() => {
@@ -127,7 +131,7 @@ setLocale({
 });
 
 const baseSchema = object().shape({
-  redelegateTo: object().nullable().test('validator', i18n.global.t('STAKING_VIEW.STAKING_POPUP.VALIDATOR.REQUIRED'), (value: any) => {
+  redelegateValidator: object().nullable().test('validator', i18n.global.t('STAKING_VIEW.STAKING_POPUP.VALIDATOR.REQUIRED'), (value: any) => {
     return stakingAction.value === StakingAction.REDELEGATE ? value ? true : false : true;
   }),
   amount: YupSequentialStringSchema([string().defined(),
@@ -184,23 +188,45 @@ function action() {
   }
 }
 
+function getValidatorDst() {
+  if (props.redelegationDirection === RedelegationDirection.FROM) {
+    return props.validator.operatorAddress;
+  }
+  return redelegateValidator.value?.operatorAddress;
+}
+
+function getValidatorSrc() {
+  if (props.redelegationDirection === RedelegationDirection.FROM) {
+    return redelegateValidator.value?.operatorAddress;
+  }
+  return props.validator.operatorAddress;
+}
+
 async function delegate() {
-  await useUserStore().delegate(props.validator.operatorAddress, amount.value)
+  const dst = getValidatorDst();
+  if (dst) {
+  await useUserStore().delegate(dst, amount.value)
     .then((resp) => {
       console.log(resp)
       emit('success');
     });
+  } // TODO else
 }
 
 async function undelegate() {
-  await useUserStore().undelegate(props.validator.operatorAddress, amount.value).then((resp) => {
+  const dst = getValidatorDst();
+  if (dst) {
+    await useUserStore().undelegate(dst, amount.value).then((resp) => {
       emit('success')
     });
+  } // TODO else
 }
 
 async function redelegate() {
-  if (redelegateTo.value) {
-    useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value)).then((resp) => {
+  const dst = getValidatorDst();
+  const src = getValidatorSrc();
+  if (dst && src) {
+    useUserStore().redelegate(src, dst, String(amount.value)).then((resp) => {
       emit('success')
     });
   }

@@ -1,5 +1,5 @@
 <template>
-  <BlockHidingDropdown v-model="redelegateTo" :hide-enabled="enableValidatorsHide" name="redelegateToValidator" input-id="redelegateToValidator" :options="filteredValidators" optionLabel="description.moniker" :placeholder="$t('STAKING_VIEW.STAKING_POPUP.INPUT.REDELEGATE_VALIDATOR')" :showClear="true"
+  <BlockHidingDropdown v-model="redelegateValidator" :hide-enabled="enableValidatorsHide" name="redelegateValidator" input-id="redelegateValidator" :options="filteredValidators" optionLabel="description.moniker" :placeholder="getRedelagatePlaceholder(redelegationDirection)" :showClear="true"
           :filterFields="['description.moniker', 'rank']" 
           @update:modelValue="onValueChange"  :class="props.class" :disabled="disabled">
       <template #value="slotProps">
@@ -21,10 +21,10 @@
           <div style="display: inline-block;">
             <span class="p-input-icon-left" >
               <i class="pi pi-search" />
-              <InputText v-model="redelagateToFilter" type="text" placeholder="Search" />
+              <InputText v-model="redelagateFilter" type="text" placeholder="Search" />
             </span>
           </div>
-          <div style="display: inline-block;">
+          <div style="display: inline-block;" v-if="redelegationDirection === RedelegationDirection.TO">
             <Dropdown style="background-color: green; width: 200px !important;" @show="atShowChild" @hide="atHideChild" name="activityFilter" input-id="activityFilter" v-model="activityFilter" :options="activityFilterOptions" optionLabel="name" placeholder="Select type">
               <template #value="slotProps">
                 <ValidatorsStatusLabel :status="slotProps.value.status"/>
@@ -40,17 +40,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from "vue";
+import { ref, computed, onUnmounted, PropType } from "vue";
 import {useUserStore} from "@/store/user.store";
 import { Validator, ValidatorBase, ValidatorStatus } from "@/models/store/validator";
 import { useValidatorsStore } from "@/store/validators.store";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
 import BlockHidingDropdown from "../commons/BlockHidingDropdown.vue";
 import ValidatorsStatusLabel, { ValidatorsStatusLabelType } from "../commons/ValidatorsStatusLabel.vue";
+import { RedelegationDirection, getRedelagatePlaceholder } from "./StakingRedelegate";
 
 const emit = defineEmits(['update:modelValue']);
 
 const props = defineProps({
+  
   disabled: {
     type: Boolean,
     default: false
@@ -61,8 +63,11 @@ const props = defineProps({
   },
   modelValue: Validator,
   class: String,
-  field: Object
-
+  field: Object,
+  redelegationDirection: {
+    type: String as PropType<RedelegationDirection>,
+    required: true
+  }
 })
 
 function onValueChange(e: any) {
@@ -91,24 +96,39 @@ const activityFilterOptions: ActivityFilterData[] = [
 
 const activityFilter = ref<ActivityFilterData>(activityFilterOptions[0])
 
-const redelagateToFilter = ref('');
+const redelagateFilter = ref('');
 
 
 const filteredValidators = computed<ValidatorBase[]>(() => {
-  return filterForRedelegation((val: Validator) => {
-    const activityTypeFilter = activityFilter.value.types.some((type) => {
-      return type === val.status})
-    if (!redelagateToFilter.value) {
-      return activityTypeFilter;
-    }
-    const valToLowerCase = redelagateToFilter.value.toLowerCase();
-    const searchFilter = String(val.rank).toLowerCase().includes(valToLowerCase) 
-    || val.description.moniker.toLowerCase().includes(valToLowerCase);
+  if (props.redelegationDirection === RedelegationDirection.TO) {
+    return filterForRedelegation((val: Validator) => {
+      const activityTypeFilter = activityFilter.value.types.some((type) => {
+        return type === val.status})
 
-    return searchFilter && activityTypeFilter;
-  });
+      // const valToLowerCase = redelagateToFilter.value.toLowerCase();
+      // const searchFilter = String(val.rank).toLowerCase().includes(valToLowerCase) 
+      // || val.description.moniker.toLowerCase().includes(valToLowerCase);
+
+      return searchFilter(val) && activityTypeFilter;
+    });
+  } else {
+    return useValidatorsStore().getUserDelgationsValidators.filter((val) => {
+      return searchFilter(val)
+    });
+  }
 })
-const redelegateTo = ref<Validator>()
+
+function searchFilter(val: Validator): boolean {
+  if (!redelagateFilter.value) {
+    return true;
+  }
+  const valToLowerCase = redelagateFilter.value.toLowerCase();
+  return String(val.rank).toLowerCase().includes(valToLowerCase) 
+      || val.description.moniker.toLowerCase().includes(valToLowerCase);
+}
+
+
+const redelegateValidator = ref<Validator>()
 
 function filterForRedelegation(filter?: (val: Validator) => boolean): ValidatorBase[]{
   const filtred = useValidatorsStore().getValidators.filter(

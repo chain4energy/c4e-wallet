@@ -16,11 +16,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { PropType, ref } from "vue";
 import i18n from "@/plugins/i18n";
 import StakeManagementIcon, { StakeManagementIconType }from "../commons/StakeManagementIcon.vue";
 import { DropdownChangeEvent } from "primevue/dropdown";
 import { StakingAction } from "./StakingAction";
+import { getRedelagatePlaceholder, RedelegationDirection } from "./StakingRedelegate";
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -30,6 +31,10 @@ const props = defineProps({
     default: false
   },
   modelValue: Number,
+  redelegationDirection: {
+    type: String as PropType<RedelegationDirection>,
+    required: true
+  }
 })
 
 function onValueChange(e: DropdownChangeEvent) {
@@ -45,7 +50,7 @@ const defualtAction: ActionData = {type: StakingAction.DELEGATE, name: i18n.glob
 const actions: ActionData[] = [
   defualtAction,
   {type: StakingAction.UNDELEGATE, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE'), icon: 'undelegate'},
-  {type: StakingAction.REDELEGATE, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.REDELEGATE'), icon: 'redelegate'},
+  {type: StakingAction.REDELEGATE, name: getRedelagatePlaceholder(props.redelegationDirection), icon: 'redelegate'},
   ]
 
 const stakingAction = ref<ActionData | undefined>(actions.find((val) => {return val.type === props.modelValue}))

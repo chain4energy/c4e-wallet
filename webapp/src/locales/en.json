@@ -120,7 +120,8 @@
       },
       "VALIDATOR_NOT_DEFINED": "this field is required",
       "INPUT": {
-        "REDELEGATE_VALIDATOR": "Redelegate to"
+        "REDELEGATE_TO_VALIDATOR": "Redelegate to",
+        "REDELEGATE_FROM_VALIDATOR": "Redelegate from"
       }
     },
     "VALIDATORS": "Validators",

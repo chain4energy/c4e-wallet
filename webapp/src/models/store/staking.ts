@@ -90,6 +90,10 @@ export class UnbondingDelegationEntry {
   public getViewAmountAndDenom(precision = 4): { amount: string, denom: string } {
     return useConfigurationStore().config.getViewAmountAndDenom(this.amount, precision);
   }
+
+  public getCompletionTimeDateString(): string {
+    return this.completionTime.toLocaleString();
+  }
 }
 
 export class UnbondingDelegations {

@@ -1,6 +1,6 @@
 <template>
   <span>
-    <StakingPopup v-if="!isUndelegationsTable() && popupOpened" :validator="currentValidator" @success="trsansactionSuccess" @close="checkBTN"/>
+    <StakingPopup v-if="!isUndelegationsTable() && popupOpened" :validator="currentValidator" @success="trsansactionSuccess" @close="checkBTN" :redelegation-direction="getRedelegationDirection()"/>
     <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick" :paginator="false">
       <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>
       <template #header>
@@ -14,8 +14,6 @@
           <h5 v-if="isDelegationsTable()" class="m-0">{{ $t("STAKING_VIEW.USER_DELEGATIONS") }}</h5>
           <h5 v-if="isUndelegationsTable()" class="m-0">{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</h5>
         </div>
-
-
       </template>
       <template v-slot:columns>
         <Column v-if="isValidatorsTable()" field="rank" :header="$t(`STAKING_VIEW.TABLE.RANK`)" :sortable="true">
@@ -70,7 +68,7 @@
         </Column>
         <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="true" sortField="entry.completionTime">
           <template #body="{data}">
-            <span>{{ data.entry.completionTime }}</span>
+            <span>{{ data.entry.getCompletionTimeDateString() }}</span>
           </template>
         </Column>
         <Column v-if="!isUndelegationsTable()" field="operator_address">
@@ -121,12 +119,15 @@ import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
 import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
 import { getUnstakings, ValidatorsDataTableType, ValidatorUnstaking } from "./ValidatorsDataTable";
+import { RedelegationDirection } from "./StakingRedelegate";
 
+function getRedelegationDirection() {
+  if (isValidatorsTable()) {
+    return RedelegationDirection.FROM;
+  }
+  return RedelegationDirection.TO;
 
-
-
-// export type ValidatorsDataTableType = ValidatorsDataTableTypeEnum.VALIDATORS | ValidatorsDataTableTypeEnum.DELEGATIONS | ValidatorsDataTableTypeEnum.VALIDATORS;
-
+}
 
 const popupOpened = ref(false);
 const currentValidator = ref({})
@@ -136,21 +137,12 @@ const props = defineProps<{
   validators: Array<Validator>
 }>();
 
-// const props = defineProps({
-//   validators: {
-//     type: Array<Validator>,
-//     required: true
-//   }
-// });
 const userStore = useUserStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<Validator>());
 
 async function trsansactionSuccess(arg: string) {
-  //close popup
   popupOpened.value = !popupOpened.value;
-
-  // useUserStore().reconectAcc()
 }
 
 function checkBTN(item: Validator){
