@@ -4,9 +4,9 @@
     <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick" :paginator="false">
       <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>
       <template #header>
-        <div style="display: flex; justify-content: space-between">
+        <div>
           <h5 v-if="isValidatorsTable()" class="m-0">{{ $t("STAKING_VIEW.VALIDATORS") }}</h5>
-                <span v-if="isValidatorsTable()" class="p-input-icon-left" style="width: 70%">
+                <span v-if="isValidatorsTable()" class="p-input-icon-left search-bar">
                   <i class="pi pi-search" />
                   <InputText style="width: 100%" type="text" v-model="filters['global'].value" placeholder="Search" />
                   <i class="pi pi-times-circle" style="transform: translateX(-30px)" @click="filters['global'].value = ''"/>
@@ -19,7 +19,11 @@
         <Column v-if="isValidatorsTable()" field="rank" :header="$t(`STAKING_VIEW.TABLE.RANK`)" :sortable="true">
           <template #body="{data}">
             <div class="rank">
-              <div :class="data.status == ValidatorStatus.Bonded ? '' : 'opacity-0'" style="display: flex;"><div class="badge-staked">Staked</div> <div class="arrow"></div></div>
+              <div style="display: flex; flex-direction: column">
+                <!-- TUTAJ SĄ 2 FLAGI STAKED I UNSTAKED -->
+                <div :class="data.status == ValidatorStatus.Bonded ? '' : 'opacity-0'" style="display: flex; margin: 1px 0"><div class="badge-staking staked">Staked</div></div>
+                <div :class="data.status == ValidatorStatus.Bonded ? '' : 'opacity-0'" style="display: flex; margin: 1px 0"><div class="badge-staking unstaked">Unstaked</div></div>
+              </div>
               <span>{{data.rank}}</span>
             </div>
           </template>
@@ -223,30 +227,53 @@ const filters = ref({
 
 .rank {
   display: flex;
+  align-items: center;
 
   span {
     margin-left: 5px;
   }
 }
-.badge-staked {
+.badge-staking {
   height: 20px;
-  background: $primary-green-color;
   transform: translateX(-100%);
   margin-right: -20px;
   padding: 2px 5px;
   font-size: 10px;
   box-sizing: border-box;
-  color: white;
 
-}
-  .arrow {
+  &::after {
     width: 0; 
     height: 0; 
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
-    border-left: 10px solid $primary-green-color;
-        margin-left: -21.7px;
+    border-left: 10px solid white;
+    margin-left: -21.7px;
+    content: '';
+    float: right;
+    position: absolute;
+    right: -9.2px;
+    transform: translateY(-2px);
   }
+}
+
+.staked {
+  background: $primary-green-color;
+  color: white;
+
+  &::after {
+    border-left: 10px solid $primary-green-color;
+  }
+}
+
+.unstaked {
+  background: grey;
+  color: white;
+
+  &::after {
+    border-left: 10px solid grey;
+  }
+}
+
 
   .opacity-0 {
     opacity: 0;
@@ -294,4 +321,39 @@ const filters = ref({
       background: $secondary-color;
       color: white;
     }
+
+  .search-bar {
+    width: 40%;
+    float: right;
+    transform: translateY(-200%);
+    z-index: -1;
+    margin-bottom: -200%;
+  }
+
+  .p-datatable .p-datatable-header {
+    margin-bottom: -50px;
+  }
+
+  .p-datatable-wrapper {
+    margin-top: -40px !important;
+    transform: translateY(-40px) !important;
+  }
+
+  @media screen and (max-width: 950px) {
+    .search-bar {
+      width: 100%;
+      transform: none;
+      z-index: 5;
+      margin-bottom: 20px;
+    }
+
+    .p-datatable .p-datatable-header {
+      margin-bottom: 0px;
+    }
+
+    .p-datatable-wrapper {
+      margin-top: 0px !important;
+      transform: none !important;
+    }
+  }
 </style>
