@@ -22,9 +22,9 @@
             
             <LangSwitch class="nav-link mx-1"/>
             
-            <Button v-if="!useUserStore().isLoggedIn" icon=" pi pi-power-off" style="transform: translateY(-4px)" class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="loginPopupStatus =! loginPopupStatus"></Button>
+            <Button v-if="!useUserStore().isLoggedIn" class="secondary" @click="loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
             
-            <Button v-if="useUserStore().isLoggedIn" icon=" pi pi-power-off" style="transform: translateY(-4px)" class="nav-link p-button-rounded p-button-text p-button-lg mx-1"  @click="logout"></Button>
+            <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
             
             
           </div>
