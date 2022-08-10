@@ -16,8 +16,11 @@
         <Column field="rank" :header="$t(`STAKING_VIEW.TABLE_HEADERS.RANK`)" :sortable="true">
           <template #body="{data}">
             <div class="rank">
-              <div :class="data.status == ValidatorStatus.Bonded ? '' : 'opacity-0'" style="display: flex;"><div class="badge-staked">Staked</div> <div class="arrow"></div></div>
-              <div :class="data.status == ValidatorStatus.Bonded ? '' : 'opacity-0'" style="display: flex;"><div class="badge-staked">Staked</div> <div class="arrow"></div></div>
+              <div style="display: flex; flex-direction: column">
+                <!-- TUTAJ SĄ 2 FLAGI STAKED I UNSTAKED -->
+                <div :class="data.status == ValidatorStatus.Bonded ? '' : 'opacity-0'" style="display: flex; margin: 1px 0"><div class="badge-staking staked">Staked</div></div>
+                <div :class="data.status == ValidatorStatus.Bonded ? '' : 'opacity-0'" style="display: flex; margin: 1px 0"><div class="badge-staking unstaked">Unstaked</div></div>
+              </div>
               <span>{{data.rank}}</span>
             </div>
           </template>
@@ -197,30 +200,53 @@ const filters = ref({
 
 .rank {
   display: flex;
+  align-items: center;
 
   span {
     margin-left: 5px;
   }
 }
-.badge-staked {
+.badge-staking {
   height: 20px;
-  background: $primary-green-color;
   transform: translateX(-100%);
   margin-right: -20px;
   padding: 2px 5px;
   font-size: 10px;
   box-sizing: border-box;
-  color: white;
 
-}
-  .arrow {
+  &::after {
     width: 0; 
     height: 0; 
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
-    border-left: 10px solid $primary-green-color;
-        margin-left: -21.7px;
+    border-left: 10px solid white;
+    margin-left: -21.7px;
+    content: '';
+    float: right;
+    position: absolute;
+    right: -9.2px;
+    transform: translateY(-2px);
   }
+}
+
+.staked {
+  background: $primary-green-color;
+  color: white;
+
+  &::after {
+    border-left: 10px solid $primary-green-color;
+  }
+}
+
+.unstaked {
+  background: grey;
+  color: white;
+
+  &::after {
+    border-left: 10px solid grey;
+  }
+}
+
 
   .opacity-0 {
     opacity: 0;
