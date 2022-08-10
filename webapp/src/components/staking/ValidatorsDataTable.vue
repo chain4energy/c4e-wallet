@@ -1,6 +1,6 @@
 <template>
   <span>
-    <StakingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
+    <StakingPopup v-if="!isUndelegationsTable() && popupOpened" :validator="currentValidator" @success="trsansactionSuccess" @close="checkBTN"/>
     <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick" :paginator="false">
       <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>
       <template #header>
@@ -71,7 +71,7 @@
           </template>
         </Column>
 
-        <Column v-if="isLoggedIn && !isUndelegationsTable()">
+        <Column v-if="isLoggedIn && isValidatorsTable()">
           <template #body="{data}">
             <span style="cursor: pointer" @click="onRowExpand(data)" v-if="isValidatorRowExpandable(data)">
               <Icon @click="onRowExpand(data)" v-if="data.operatorAddress != expandedRow[0]?.operatorAddress" name="ChevronRight" />
@@ -81,7 +81,7 @@
         </Column>
 
       </template>
-      <template  v-if="!isUndelegationsTable()" v-slot:expanded-columns="{expandedData}">
+      <template  v-if="isValidatorsTable()" v-slot:expanded-columns="{expandedData}">
         <div style="display: flex; flex-direction: row;">
           <div style="display: flex; flex-direction: column; margin-right: 20px">
             <p>{{ $t(`STAKING_VIEW.TABLE.UNSTAKING`) }}</p>
