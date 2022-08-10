@@ -16,6 +16,11 @@
     background-color: rgb(247, 247, 247) !important;
 }
 
+.p-datatable .p-datatable-header {
+    background: none !important;
+    border: 0 !important;
+}
+
 .p-datatable .p-datatable-tbody > tr {
     overflow: hidden !important;
     height: 65px !important;
@@ -71,6 +76,10 @@
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
     background: $main-lighter-color;
+}
+
+.p-datatable .p-sortable-column .p-sortable-column-icon {
+    color: $primary-green-color;
 }
 
 @media (max-width: 960px) {

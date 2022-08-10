@@ -1,7 +1,7 @@
 <template>
   <div class="proposal-container" v-on:click="showDetailsClick">
     <div class="top">
-      <span class="id fw-bold"><h2>#{{ proposal.proposalId }}</h2> </span>
+      <span class="id fw-bold">#{{ proposal.proposalId }} </span>
       <div class="voting-status">
         <Icon :name=icons.get(proposal.status)>
         </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}</div>
@@ -28,8 +28,10 @@
     </div>
     <div class="bottom" v-if="proposal.status !== ProposalStatus.DEPOSIT_PERIOD">
       <div style="width:100%; height:20px" class="chartdiv">
-        <v-chart :option="option" autoresize />
+        <v-chart :option="option" />
       </div>
+
+      
       <div class="voting-result">
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
@@ -184,8 +186,11 @@ const option = computed(() => {
     overflow: auto;
     .id {
       float: left;
-      padding-top: 15px;
-      padding-left: 25px;
+      margin-top: 15px;
+      margin-left: 25px;
+      padding: 10px 15px;
+      border: 2px solid black;
+      border-radius: 15px;
     }
     .voting-status {
       float: right;
