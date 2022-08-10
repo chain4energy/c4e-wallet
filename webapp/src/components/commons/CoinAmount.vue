@@ -1,9 +1,13 @@
 <template>
-<div>
-  {{amount}}
-  <p v-if="coins.showDenom">{{coins.origDenom}}</p>
-  {{coins.amount}}
-</div>
+  <div class="amount">
+    <slot name="logo"></slot>
+    <div class="amount__amount">
+      <div v-for="(items, index) in props.coins" :key="index">
+        <p>{{items.name}}</p>
+        <p>{{transformToExpView(viewedAmount(items.amount))}}</p>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -11,30 +15,55 @@ import { BigDecimal } from "@/models/store/big.decimal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { computed, ref } from "vue";
 
-const coins = defineProps<{
-  amount: bigint | number | BigDecimal,
+const props = defineProps<{
+  coins:[
+    {
+      name: string,
+      amount: bigint | number | BigDecimal,
+    }
+  ]
   precision: number,
   reduceBigNumber: boolean,
-  origDenom: string,
   showDenom: boolean,
-}>();
+}>()
 
-const amount = computed(() => {
+function viewedAmount(amount: bigint | number | BigDecimal ) {
   return useConfigurationStore().config.getViewAmount(
-    coins.amount || 0,
-    coins.precision || 4,
-    coins.reduceBigNumber || false,
-    coins.origDenom || 'c4e').toString();
-});
+    amount || 0,
+    props.precision || 4,
+    props.reduceBigNumber || false)
+}
 
-const a = ref(useConfigurationStore().config.getViewAmount(
-  coins.amount || 0,
-  coins.precision || 4,
-  coins.reduceBigNumber || false,
-  coins.origDenom || 'c4e').toString());
+function transformToExpView(amount: bigint | number | BigDecimal) {
+  let internationalNumberFormat;
+  if(props.reduceBigNumber){
+    internationalNumberFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: props.precision, notation: "compact",
+      compactDisplay: "short"});
+  } else {
+    internationalNumberFormat = new Intl.NumberFormat("en-US", {minimumFractionDigits: props.precision});
+  }
+
+  const thousends =  internationalNumberFormat.format(amount);
+  return thousends;
+}
 
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.amount{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding:5%;
+  box-shadow: 0 4px 20px rgb(0 0 0 / 11%);
+  background: #FFFFFF;
+  border-radius: 8px;
+  &__amount{
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+}
 </style>
