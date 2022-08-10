@@ -69,7 +69,7 @@ export function mapUnbondingDelegation(undelegation: BcUnbondigDelegation | unde
   }
   const entries = new Array<UnbondingDelegationEntry>();
   undelegation.entries.forEach(e => {
-    entries.push(new UnbondingDelegationEntry(BigInt(e.balance)));
+    entries.push(new UnbondingDelegationEntry(BigInt(e.balance), new Date(e.completion_time)));
   });
 
   return new StoreUnbondigDelegation(undelegation.validator_address, entries);

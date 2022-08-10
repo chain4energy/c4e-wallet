@@ -72,21 +72,19 @@
       "ACTIVE": "aktywny",
       "INACTIVE": "Nieaktywny"
     },
-    "TABLE_HEADERS": {
+    "TABLE": {
       "RANK": "Ranga",
       "NAME": "Nazwa",
       "STATUS": "Status",
       "VOTING_POWER": "Siła głosu",
-      "STAKE": "Twoja stawka"
+      "STAKE": "Twoja stawka",
+      "UNSTAKING": "Your unstaking",
+      "REWARDS": "Nagrody"
     },
     "VALIDATOR_STATUS": {
       "ACTIVE": "Active PL",
       "INACTIVE": "Inactive PL",
       "JAILED": "Jailed PL"
-    },
-    "TABLE_EXPANDED": {
-      "UNSTAKING": "Your unstaking",
-      "REWARDS": "Nagrody"
     },
     "TABLE_BUTTONS": {
       "MANAGE_BTN": "Zarządzać"

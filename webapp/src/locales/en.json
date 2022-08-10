@@ -85,21 +85,20 @@
       "ACTIVE": "Active",
       "INACTIVE": "Inactive"
     },
-    "TABLE_HEADERS": {
+    "TABLE": {
       "RANK": "Rank",
       "NAME": "Name",
       "STATUS": "Status",
       "VOTING_POWER": "Voting Power",
-      "STAKE": "Your stake"
+      "STAKE": "Your stake",
+      "UNSTAKING": "Your unstaking",
+      "REWARDS": "Rewards",
+      "UNSTAKING_COMPLETION": "Until"
     },
     "VALIDATOR_STATUS": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive",
       "JAILED": "Jailed"
-    },
-    "TABLE_EXPANDED": {
-      "UNSTAKING": "Your unstaking",
-      "REWARDS": "Rewards"
     },
     "TABLE_BUTTONS": {
       "MANAGE_BTN": "Manage"
@@ -126,7 +125,10 @@
     },
     "VALIDATORS": "Validators",
     "NO_VALIDATORS": "no validators found",
-    "VALIDATORS_LOADING" : "Loading validators data. Please wait."
+    "VALIDATORS_LOADING" : "Loading validators data. Please wait.",
+    "USER_DELEGATIONS": "Your delegations",
+    "USER_UNDELEGATIONS": "Your undelegations"
+
   },
   "USER_DATA": {
     "TOTAL": "Total",

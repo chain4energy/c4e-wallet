@@ -1,29 +1,33 @@
 <template>
   <div>
+    <ValidatorsDataTable v-if="isLoggedIn" :validators="useValidatorsStore().getUserDelgationsValidators" :type="ValidatorsDataTableType.DELEGATIONS"/>
+
+    <ValidatorsDataTable v-if="isLoggedIn" :validators="useValidatorsStore().getUserUndelgationsValidators" :type="ValidatorsDataTableType.UNDELEGATIONS"/>
+
     <TabView lazy>
       <TabPanel>
         <template #header>
           <ValidatorsStatusLabel status="all"/>
         </template>
-        <ValidatorsDataTable :validators="useValidatorsStore().getValidators"/>
+        <ValidatorsDataTable :validators="useValidatorsStore().getValidators" :type="ValidatorsDataTableType.VALIDATORS"/>
       </TabPanel>
-      <TabPanel v-if="isLoggedIn">
+      <!-- <TabPanel v-if="isLoggedIn">
         <template #header>
           <ValidatorsStatusLabel status="staked"/>
         </template>
-        <ValidatorsDataTable :validators="useValidatorsStore().getUserValidators"/>
-      </TabPanel>
+        <ValidatorsDataTable :validators="useValidatorsStore().getUserValidators" :type="ValidatorsDataTableType.VALIDATORS"/>
+      </TabPanel> -->
       <TabPanel>
         <template #header>
           <ValidatorsStatusLabel status="active"/>
         </template>
-        <ValidatorsDataTable :validators="useValidatorsStore().getActiveValidators"/>
+        <ValidatorsDataTable :validators="useValidatorsStore().getActiveValidators" :type="ValidatorsDataTableType.VALIDATORS"/>
       </TabPanel>
       <TabPanel>
         <template #header>
           <ValidatorsStatusLabel status="inactive"/>
         </template>
-        <ValidatorsDataTable :validators="useValidatorsStore().getInactiveValidators"/>
+        <ValidatorsDataTable :validators="useValidatorsStore().getInactiveValidators" :type="ValidatorsDataTableType.VALIDATORS"/>
       </TabPanel>
     </TabView>
 
@@ -38,6 +42,8 @@ import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import ValidatorsDataTable from "@/components/staking/ValidatorsDataTable.vue";
 import ValidatorsStatusLabel from "../commons/ValidatorsStatusLabel.vue";
+import DelegationsTable from "./DelegationsTable.vue";
+import { ValidatorsDataTableType } from "./ValidatorsDataTable";
 
 const validatorsStore = useValidatorsStore();
 const userStore = useUserStore();

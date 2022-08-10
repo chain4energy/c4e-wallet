@@ -70,6 +70,20 @@ export const useValidatorsStore = defineStore({
                   || rewards.rewards.has(el.operatorAddress)
         );
     },
+    getUserDelgationsValidators(): Validator[]{
+      const delegations = useUserStore().delegations;
+      const rewards = useUserStore().rewards;
+      return this.validators.filter(
+        (el) => delegations.delegations.has(el.operatorAddress) 
+                  || rewards.rewards.has(el.operatorAddress)
+        );
+    },
+    getUserUndelgationsValidators(): Validator[]{
+      const undelegations = useUserStore().undelegations;
+      return this.validators.filter(
+        (el) => undelegations.undelegations.has(el.operatorAddress)
+        );
+    },
     getNumberOfAllValidators(): number {
       return this.validators.length;
     },

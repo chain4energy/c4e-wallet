@@ -71,9 +71,11 @@ export class UnbondingDelegation {
 
 export class UnbondingDelegationEntry {
   amount: bigint;
+  completionTime: Date;
 
-  constructor (amount: bigint) {
+  constructor (amount: bigint, completionTime: Date) {
     this.amount = amount;
+    this.completionTime = completionTime;
   }
 
   public getViewDenom(): string {
