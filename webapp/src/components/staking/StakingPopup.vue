@@ -25,7 +25,7 @@
               <a :href="validator.description.website">{{validator.description.website}}</a>
             </div>
           </div>
-          <CoinAmount :amount="props.validator.delegatedAmount" :show-denom="true" :precision="4" :orig-denom="'c4e'" :reduce-big-number="true"/>
+          <CoinAmount :amount="props.validator.delegatedAmount" :show-denom="true" :precision="4" :orig-denom="useConfigurationStore().config.getViewDenom()" :reduce-big-number="false"/>
           <div class="validationPopup__description">
             <StakingActionVue v-model="stakingAction" :disabled="!canModify"/>
           </div>

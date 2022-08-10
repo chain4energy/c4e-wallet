@@ -126,7 +126,7 @@ function fromInternalValue(value: bigint): BigDecimal {
 function divideBigIntsWithRound(rounded: boolean, dividend: bigint, divisor: bigint): bigint {
   const absA = dividend >= 0n ? dividend : -dividend
   const absB = divisor >= 0n ? divisor : -divisor
-  const absRemainderDoubled = (absA % absB) * 2n 
+  const absRemainderDoubled = (absA % absB) * 2n
   return dividend / divisor + (
     !rounded || absRemainderDoubled < absB
       ? 0n
