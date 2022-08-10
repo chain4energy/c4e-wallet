@@ -7,7 +7,7 @@
              :lazy="isLazyLoading()"
              :removable-sort="true"
              :totalRecords="getAmount()"
-             :paginator="true" :rows="10" v-model:first="firstRecord"
+             :paginator="paginator" :rows="10" v-model:first="firstRecord"
              template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
              @page="pageEvent($event)"
              @sort="sortEvent($event)"
@@ -103,7 +103,11 @@ const props = defineProps({
   },
   expandedRows:{
     type: Array
-  }
+  },
+  paginator: {
+    type: Boolean,
+    default: true
+  },
 });
 
 function getExpandedRows(){
