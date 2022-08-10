@@ -43,7 +43,7 @@ export class TokensApi extends BaseApi {
       return Number(inflation.inflation);
     };
     return  await this.axiosGetBlockchainApiCall(queries.blockchain.INFLATION_URL,
-      mapData, lockscreen, null, 'fetchInflation - ', undefined, undefined, true); // TODO remove skit toast when inflation on testnet
+      mapData, lockscreen, null, 'fetchInflation - ', undefined, undefined, true); // TODO remove skip toast when inflation on testnet
   }
 
   public async fetchCommunityPoolByDenom(denom: string, lockscreen: boolean): Promise<RequestResponse<DecCoin, ErrorData<BlockchainApiErrorData>>> {

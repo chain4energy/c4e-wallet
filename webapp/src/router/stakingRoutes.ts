@@ -1,11 +1,11 @@
 import StakingView from "@/views/StakingView.vue";
-import NewBaseAccount from '@/components/staking/NewBaseAcc.vue';
+import StakingData from '@/components/staking/StakingData.vue';
 import VestingAcc from "@/components/staking/VestingAcc.vue"
 import { useUserStore } from "@/store/user.store";
 
 const stakingRoutes = {
   path: '/staking',
   name: 'staking',
-  component: NewBaseAccount,
+  component: StakingData,
 };
 export default stakingRoutes;

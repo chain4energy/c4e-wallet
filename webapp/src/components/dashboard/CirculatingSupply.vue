@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import {useTokensStore} from "@/store/tokens.store";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 const supply = computed(() => useTokensStore().getCirculatingSupply)
 
 </script>

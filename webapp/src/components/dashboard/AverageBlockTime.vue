@@ -9,17 +9,9 @@
 </template>
 
 <script setup lang="ts">
-
-// import {onBeforeMount} from "vue";
 import {useBlockStore} from "@/store/block.store";
 
 const blockStore = useBlockStore();
-
-// onBeforeMount(() => {
-
-//   blockStore.fetchAverageBlockTime();
-// });
-
 </script>
 
 <style scoped lang="scss">

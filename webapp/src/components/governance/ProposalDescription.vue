@@ -1,8 +1,6 @@
 <template>
   <div v-if="proposal" class="description">
     <h2>{{ $t("GOVERNANCE_VIEW.DESCRIPTION") }}</h2>
-    <div> <span style="color: gray">{{ $t("GOVERNANCE_VIEW.AUTHOR") }}: </span>Jan Kowalski</div>
-    <div><span style="color: gray;">{{ $t("GOVERNANCE_VIEW.CHANGED_PARAMETER") }}</span></div>
     <div style="margin-top: 20px;">
       {{ proposal.content.description }}
     </div>

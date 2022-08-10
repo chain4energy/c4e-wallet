@@ -1,0 +1,112 @@
+// @import "./variables.scss";
+
+.field {
+  position: relative;
+  margin-top: 10px;
+  width: 100%;
+
+
+  input {
+    padding: 15px;
+    border-radius: 15px;
+    height: 40px;
+  }
+
+  select {
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  span {
+    padding:15px;
+    max-width: 700px;
+    pointer-events: none;
+    position:absolute;
+    float: left;
+    text-align: left;
+    left:0;
+    top:0;
+    transition: 0.2s;
+    transition-timing-function: ease;
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+    opacity:0.5;
+  }
+
+  .tooltip-icon {
+    top: 0;
+    left: -50px;
+    position: absolute;
+    padding: 16px;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  input:focus + span, input:not(:placeholder-shown) + span {
+    opacity:1;
+    transform: scale(0.75) translateY(-100%) translateX(-20%);
+  }
+
+  /* Internet Explorer i Edge*/
+  input:focus + span, input:not(:-ms-input-placeholder) + span {
+    opacity:1;
+    transform: scale(0.75) translateY(-100%) translateX(-20%);
+  }
+
+  select:focus + span, select:valid + span {
+    opacity:1;
+    transform: scale(0.75) translateY(-100%) translateX(-20%);
+  }
+
+  select:disabled + span, select:valid + span {
+    opacity:1;
+    transform: scale(0.75) translateY(-100%) translateX(-20%);
+  }
+
+  /* Internet Explorer i Edge*/
+  select:focus + span, select:not(:-ms-input-placeholder) + span {
+    opacity:1;
+    transform: scale(0.75) translateY(-100%) translateX(-20%);
+  }
+}
+
+.p-dropdown {
+  width: 100% !important;
+}
+
+.p-dropdown .p-dropdown-trigger {
+  margin: auto 0 !important;
+}
+
+.p-tooltip {
+  max-width: 100vw !important;
+}
+
+@media (max-width: 550px) {
+  .field {
+    span {
+      width: 280px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    input:focus + span, input:not(:placeholder-shown) + span {
+      overflow: visible;
+
+    }
+
+    /* Internet Explorer i Edge*/
+    input:focus + span, input:not(:-ms-input-placeholder) + span {
+      overflow: visible;
+    }
+
+    select:focus + span, select:valid + span {
+      overflow: visible;
+    }
+
+    /* Internet Explorer i Edge*/
+    select:focus + span, select:not(:-ms-input-placeholder) + span {
+      overflow: visible;
+    }
+  }
+}
