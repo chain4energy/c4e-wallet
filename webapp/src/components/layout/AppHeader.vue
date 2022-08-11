@@ -5,7 +5,7 @@
       <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
       <LogoutKeplr v-if="logoutPopupStatus === true" :logout-type="useUserStore().getConnectionType" @close="logoutPopupStatus = false"></LogoutKeplr>
     <div class="navbar-container">
-      
+
       <div class="container-fluid d-flex justify-content-between">
         <span class="d-flex" style="align-items: center">
         <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
@@ -13,20 +13,20 @@
 
           <div class="navbar-nav" style="align-items: center">
 
-            <div class="acc-address" v-if="useUserStore().isLoggedIn">
+            <div @click="openAccInfo"  class="acc-address" v-if="useUserStore().isLoggedIn">
               <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
               <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
               <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName}}: </span>
               {{ useUserStore().getAccount.address.slice(0, 8)}}...{{useUserStore().getAccount.address.slice(-6) }}
             </div>
-            
+
             <LangSwitch class="nav-link mx-1"/>
-            
+
             <Button v-if="!useUserStore().isLoggedIn" class="secondary" @click="loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
-            
+
             <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
-            
-            
+
+
           </div>
         </div>
 
@@ -69,9 +69,12 @@ const currentRouteName = computed(() => {
   console.log(router.currentRoute.value);
   return router.currentRoute.value.name;
 });
-
-function logout(){
+function openAccInfo(){
   logoutPopupStatus.value = !logoutPopupStatus.value;
+}
+function logout(){
+
+  useUserStore().logOut()
   // switch (useUserStore().getConnectionType){
   //   case 1: logoutPopupStatus.value = 1;
   //     break;
@@ -103,7 +106,7 @@ function logout(){
 <style scoped lang="scss">
 
 .acc-address {
-
+  cursor: pointer;
   // margin-top: 2px;
   // position: relative;
   // padding: 0.5rem;

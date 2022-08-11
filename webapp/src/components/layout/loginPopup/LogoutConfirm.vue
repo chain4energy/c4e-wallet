@@ -14,7 +14,12 @@
               <div class="loginChoose__descriptionIcon">
                 <img :src="logo">
               </div>
-              <div class="loginPopup__data" style="display: flex; flex-direction: column; justify-items: left">
+              <div class="loginPopup__addressHolder">
+                <p>{{useUserStore().getAccount.address}}</p>
+                <Icon name="Copy" @click="copyTxt">copy</Icon>
+              </div>
+
+              <!--<div class="loginPopup__data" style="display: flex; flex-direction: column; justify-items: left">
                 <p>{{ useUserStore().getAccount.address.slice(0, 13)}}...{{useUserStore().getAccount.address.slice(-6)}}</p>
                 <div>
                   <Button @click="copyTxt" style="width: 30%">copy</Button>
@@ -22,10 +27,15 @@
                      target="_blank">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>
                 </div>
 
-              </div>
+              </div>-->
             </div>
-            <Button class="loginPopup__disconect" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
           </div>
+          <div>
+            <a :href="`https://explorer-testnet.chain4energy.org/accounts/${useUserStore().getAccount.address}`"
+               target="_blank" class="loginPopup__disconnect p-button">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>
+            <Button class="loginPopup__disconnect" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
+          </div>
+
         </div>
       </div>
     </div>
@@ -39,6 +49,7 @@ import { ConnectionType } from "@/api/wallet.connecton.api";
 import { computed, PropType } from "vue";
 import { Validator } from "@/models/store/validator";
 import { useToast } from "vue-toastification";
+import Icon from "@/components/features/IconComponent"
 import dataService from '@/services/data.service';
 
 const props = defineProps({
@@ -93,7 +104,15 @@ function copyTxt(){
   width: 100%;
   height: 100vh;
   z-index: 10;
-  
+  &__addressHolder{
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    border: 1px solid black;
+    justify-content: space-between;
+    width: 100%;
+  }
   p{
     margin-bottom: 0;
   }
@@ -117,22 +136,13 @@ function copyTxt(){
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
     border-radius: 8px;
   }
-  &__data{
-
-    button{
-      border: none;
-      background: transparent;
-      color: #0A6BDD;
-      text-align: left;
-    }
-  }
-  &__disconect{
+  &__disconnect{
     margin-left: 10px;
     border: 1px solid #72BF44;
     border-radius: 24px;
     background-color: #FFFFFF;
-    width: 161px;
     padding:11px 24px 13px 24px;
+    text-decoration: none;
     &:hover{
       background-color: #72BF44;
       color: #FFFFFF;

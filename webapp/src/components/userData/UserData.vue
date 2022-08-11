@@ -2,14 +2,16 @@
 <div class="userdata">
   <div class="userdata__accountData">
     <div class="userdata__accountData-base" >
-    <div class="userdata__icon">
-      <C4EIcon icon="c4e-circle" size="30"/>
-    </div>
-    <div class="userdata__amounts">
+      <AmountView :coins="representData" :precision="4" :show-denom="true" :reduce-big-number="false">
+        <template v-slot:logo-front>
+          <C4EIcon icon="c4e-circle" size="30"/>
+        </template>
+      </AmountView>
+    <!--<div class="userdata__amounts">
       <p>{{ $t('USER_DATA.TOTAL') }}</p>
       <p>{{total || 0}}</p>
-    </div>
-    <div class="userdata__amounts">
+    </div>-->
+    <!--<div class="userdata__amounts">
       <p>{{ $t('USER_DATA.AVAILABLE') }}</p>
       <p>{{useUserStore().getBalanceViewAmount() || 0}}</p>
     </div>
@@ -20,7 +22,7 @@
     <div class="userdata__amounts">
       <p>{{ $t('USER_DATA.UNSTAKING') }}</p>
       <p>{{useUserStore().getTotalUndelegatingViewAmount() || 0}}</p>
-    </div>
+    </div>-->
     <div class="userdata__accountData-vesting-first" v-if="useUserStore().isContinuousVestingAccount">
       <div>
         <p>{{ $t('USER_DATA.LOCKED') }}</p>
@@ -62,6 +64,8 @@ import { Account } from "@/models/store/account";
 import {useBlockStore} from "@/store/block.store";
 import { computed, ref } from "vue";
 import C4EIcon from "../commons/C4EIcon.vue";
+import AmountView from "@/components/commons/AmountView.vue";
+import i18n from "@/plugins/i18n";
 
 function claimRewards(){
   useUserStore().claimRewards();
@@ -69,11 +73,35 @@ function claimRewards(){
 // useBlockStore().fetchLatestBlock();
 // setInterval(useBlockStore().fetchLatestBlock, 6000);
 
-const total = computed(() => useUserStore().getTotalViewAmount());
-const locked = computed(()=> useUserStore().getVestingLockViewAmount());
+const total = computed(() => useUserStore().getTotal);
+const locked = computed(()=> useUserStore().getVestingLockAmount);
+const available = computed(() => useUserStore().getBalance);
+const stacked = computed(()=> useUserStore().getTotalDelegated);
+const unstaked = computed(()=> useUserStore().getTotalUndelegating);
 // const startTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
 // const endTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
-console.log(useUserStore().getAccount.continuousVestingData);
+
+const representData = computed(()=> {
+  const coins = [
+    {
+      header : i18n.global.t('USER_DATA.TOTAL'),
+      amount: total.value || 0
+    },
+    {
+      header : i18n.global.t('USER_DATA.AVAILABLE'),
+      amount: available.value || 0
+    },
+    {
+      header : i18n.global.t('USER_DATA.STAKED'),
+      amount: stacked.value || 0
+    },
+    {
+      header : i18n.global.t('USER_DATA.UNSTAKING'),
+      amount: unstaked.value || 0
+   },
+  ];
+  return coins;
+});
 </script>
 
 <style scoped lang="scss">
