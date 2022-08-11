@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h5 class="m-0">{{ $t("STAKING_VIEW.USER_DELEGATIONS") }}</h5>
+    <h5 v-if="isLoggedIn" class="m-0">{{ $t("STAKING_VIEW.USER_DELEGATIONS") }}</h5>
     <ValidatorsDataTable v-if="isLoggedIn" :validators="useValidatorsStore().getUserDelgationsValidators" :type="ValidatorsDataTableType.DELEGATIONS"/>
-    <h5 class="m-0">{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</h5>
+    <h5 v-if="isLoggedIn" class="m-0">{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</h5>
     <ValidatorsDataTable v-if="isLoggedIn" :validators="useValidatorsStore().getUserUndelgationsValidators" :type="ValidatorsDataTableType.UNDELEGATIONS"/>
     <h5 class="m-0">{{ $t("STAKING_VIEW.VALIDATORS") }}</h5>
     <TabView lazy>
