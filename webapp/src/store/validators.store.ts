@@ -91,7 +91,7 @@ export const useValidatorsStore = defineStore({
       return this.validators.length - this.numberOfActiveValidators;
     },
     getParamsUnbondingTime(): number{
-      return this.params.unbonding_time
+      return this.params.unbondingTime
     }
   }
 });

@@ -1,9 +1,9 @@
 export class Params {
-  unbonding_time: number;
-  max_validators: number;
-  max_entries: number;
-  historical_entries: number;
-  bond_denom: string;
+  unbondingTime: number;
+  maxValidators: number;
+  maxEntries: number;
+  historicalEntries: number;
+  bondDenom: string;
   dateWhenComplete: Date
   constructor(
     unbonding_time: string,
@@ -12,11 +12,11 @@ export class Params {
     historical_entries: number,
     bond_denom: string,
     ) {
-      this.unbonding_time = Number(unbonding_time.slice(0, -1))/86400
-      this.max_entries = max_entries;
-      this.max_validators = max_validators;
-      this.historical_entries = historical_entries;
-      this.bond_denom = bond_denom;
+      this.unbondingTime = Number(unbonding_time.slice(0, -1))/86400
+      this.maxEntries = max_entries;
+      this.maxValidators = max_validators;
+      this.historicalEntries = historical_entries;
+      this.bondDenom = bond_denom;
       this.dateWhenComplete = new Date(Date.now() + Number(unbonding_time.slice(0, -1))* 1000);
 
     }

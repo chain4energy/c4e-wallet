@@ -121,22 +121,17 @@
         "MAX": "Max amount exceeded. Available amount {max}"
       },
       "WARNINGS": {
-        "COMMONS": {
-          "DAYS": "days"
-        },
         "DELEGATIONS": {
-          "HEADER": "Stacking will lock your funds for",
-          "CONDITION1": "You will need to undelegate in order for your stacked assets to be liquid again.",
-          "CONDITION2":"This proccess will take",
-          "COMPLETE": "days to complete"
-
+          "HEADER": "Staking will lock your funds for {timeToComplete} days",
+          "TEXT": "You will need to undelegate in order for your staked assets to be liquid again. This proccess will take {timeToComplete} days to complete"
         },
         "UNDELEGATIONS": {
           "HEADER": "Once the unbonding period begins you will:",
-          "CONDITION1": "Once the unbonding period begins you will:",
-          "CONDITION2": "not be able to cancel the unbonding",
-          "CONDITION3": "need to wait",
-          "CONDITIONS_HELPER": "day for the amount to be liquid"
+          "TEXTS": [
+            "not receive staking rewards",
+            "not be able to cancel the unbonding",
+            "need to wait {timeToComplete} day for the amount to be liquid"
+          ]
         }
       },
       "VALIDATOR": {

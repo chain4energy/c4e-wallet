@@ -1,46 +1,72 @@
 <template>
   <div class="warning">
-    <div v-if="props.action === StakingAction.DELEGATE">
-      <h3>{{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.HEADER')}} {{timeToComplete}} {{ $t('STAKING_VIEW.STAKING_POPUP.WARNINGS.COMMONS.DAYS') }}</h3>
-      <span>
-        {{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.CONDITION1')}}
-        {{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.CONDITION2')}} {{timeToComplete}} {{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.COMPLETE')}}
+    <div>
+      <h3><Icon name="AlertTriangle"/>{{$t(header, headerVariables)}}</h3>
+      <span v-if="textTypeData.type === TextType.STRING">
+        {{$t(texts, textsVariables)}}
       </span>
-    </div>
-    <div v-if="props.action === StakingAction.UNDELEGATE">
-      <h3>{{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.HEADER')}} </h3>
-      <ul>
-        <li>{{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.CONDITION1')}} </li>
-        <li>{{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.CONDITION2')}}</li>
-        <li>{{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.CONDITION3')}} {{timeToComplete}} {{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.CONDITIONS_HELPER')}}</li>
+      <ul v-else-if="textTypeData.type === TextType.ARRAY">
+        <li v-for="index in textTypeData.amount" :key="index">
+          {{$t(`${texts}[${index - 1}]`, textsVariables)}}
+        </li>
       </ul>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useValidatorsStore } from "@/store/validators.store";
-import { StakingAction } from "@/components/staking/StakingAction.ts";
 import { computed } from "vue";
-
-const validatorsStore = useValidatorsStore();
+import i18n from "@/plugins/i18n";
 
 const props = defineProps<{
-  action: StakingAction
+  header: string,
+  headerVariables: any,
+  texts: string,
+  textsVariables:  any,
 }>();
 
-validatorsStore.fetchStackingParams();
+const textTypeData = computed(() => getTextsLength(props.texts))
 
-const timeToComplete = computed(() => {
-  return validatorsStore.getParamsUnbondingTime;
-})
+enum TextType {
+  STRING,
+  ARRAY
+}
+
+function getTextsLength(key: string): {type: TextType | undefined, amount: number } {
+  const split = key.split('.');
+  let result: any = i18n.global.getLocaleMessage(i18n.global.locale);
+  split.forEach((s) => {
+    result = result[s];
+    if (!result) {
+      return {
+        type: undefined,
+        amount: 0
+      }
+    }
+  })
+  if (typeof result === 'string') {
+    return {
+      type: TextType.STRING,
+      amount: 1
+    }
+  } else if ( result instanceof Array) {
+    return {
+      type: TextType.ARRAY,
+      amount: result.length
+    }
+  }
+  return {
+    type: undefined,
+    amount: 0
+  }
+}
 </script>
 
 <style scoped lang="scss">
 .warning{
   display: flex;
-  align-content: center;
-  align-items: center;
+  align-content: left;
+  align-items: left;
   max-width: 407px;
   background-color: #fef6f6;
   color: #fc4b53;
