@@ -15,7 +15,7 @@ export type C4EIconType = 'c4e-circle';
 
 const props = defineProps<{
   icon: C4EIconType,
-  size: number,
+  size: string,
 }>();
 
 </script>

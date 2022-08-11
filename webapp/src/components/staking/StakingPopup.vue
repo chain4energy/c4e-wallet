@@ -7,12 +7,12 @@
           <ValidatorLogo :validator="validator" class="validator-image-big"></ValidatorLogo>
           <h2>{{ validator.description.moniker }}</h2>
         </div>
-        <StakingWarning v-if="stakingAction === StakingAction.DELEGATE" 
+        <WarningMessage v-if="stakingAction === StakingAction.DELEGATE" 
               header="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.HEADER"
               :header-variables="{timeToComplete: timeToComplete}"
               texts="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.TEXT"
               :texts-variables="{timeToComplete: timeToComplete}"/>
-        <StakingWarning v-else-if="stakingAction === StakingAction.UNDELEGATE" 
+        <WarningMessage v-else-if="stakingAction === StakingAction.UNDELEGATE" 
               header="STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.HEADER"
               :header-variables="{timeToComplete: timeToComplete}"
               texts="STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.TEXTS"
@@ -116,7 +116,7 @@ import KeplrLogo from "../commons/KeplrLogo.vue";
 import StakingActionVue from "./StakingAction.vue";
 import { StakingAction } from "./StakingAction";
 import StakingRedelegate from "./StakingRedelegate.vue";
-import StakingWarning from "@/components/commons/StakingWarning.vue";
+import WarningMessage from "@/components/commons/WarningMessage.vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import C4EIcon from "../commons/C4EIcon.vue";
 import { useValidatorsStore } from "@/store/validators.store";
@@ -253,7 +253,6 @@ const amountToPass = computed(() => {
 });
 
 const timeToComplete = computed(() => {
-  console.log('asdsafsdfds: ' + useValidatorsStore().getParamsUnbondingTime)
   return useValidatorsStore().getParamsUnbondingTime;
 })
 
