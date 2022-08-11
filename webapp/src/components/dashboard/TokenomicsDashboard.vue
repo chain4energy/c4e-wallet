@@ -31,10 +31,9 @@
         </div>
       </div>
     </div>
-      <div id="chartdiv">
-        <v-chart :option="option" autoresize />
-    </div>
-
+      <ShadowedSvgChart id="tokenchartdiv">
+        <v-chart :option="option" autoresize/>
+      </ShadowedSvgChart>
 
   </div>
 </template>
@@ -46,12 +45,13 @@ import {useTokensStore} from "@/store/tokens.store";
 import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
-import { CanvasRenderer } from "echarts/renderers";
+import { SVGRenderer } from "echarts/renderers";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import { createTokenomicsChartData } from "@/charts/dashboard";
+import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 
 use([
-  CanvasRenderer,
+  SVGRenderer,
   PieChart,
   TitleComponent,
   TooltipComponent,
@@ -100,7 +100,7 @@ const option = computed(() => {
   
 }
 
-#chartdiv {
+#tokenchartdiv {
   width: 100%;
   height: 100%;
   overflow: visible;
@@ -111,7 +111,7 @@ const option = computed(() => {
 }
 
 @media screen and (max-width: 1150px) {
-  #chartdiv {
+  #tokenchartdiv {
     height: 350px;
     align-self: center;
     margin-right: 0px;

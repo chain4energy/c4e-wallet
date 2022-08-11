@@ -1,20 +1,29 @@
 <template>
   <span>
     <StakingPopup :validator="currentValidator" v-if="popupOpened" @success="trsansactionSuccess" @close="checkBTN"/>
-    <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick">
+    <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick" :paginator="false">
       <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>
       <template #header>
-        <div style="display: flex; justify-content: space-between">
-          <h5 class="m-0">{{ $t("STAKING_VIEW.VALIDATORS") }}</h5>
-                <span class="p-input-icon-left">
+        <div>
+                <span class="p-input-icon-left search-bar">
                   <i class="pi pi-search" />
-                  <InputText type="text" v-model="filters['global'].value" placeholder="Search" />
-                  <i class="pi pi-times-circle" @click="filters['global'].value = ''"/>
+                  <InputText style="width: 100%" type="text" v-model="filters['global'].value" placeholder="Search" />
+                  <i class="pi pi-times-circle" style="transform: translateX(-30px)" @click="filters['global'].value = ''"/>
               </span>
         </div>
       </template>
       <template v-slot:columns>
-        <Column field="rank" :header="$t(`STAKING_VIEW.TABLE_HEADERS.RANK`)" :sortable="true"></Column>
+        <Column field="rank" :header="$t(`STAKING_VIEW.TABLE_HEADERS.RANK`)" :sortable="true">
+          <template #body="{data}">
+            <div class="rank">
+              <div style="display: flex; flex-direction: column">
+                <div :class="data.delegatedAmount > 0n ? '' : 'opacity-0'" style="display: flex; margin: 1px 0"><div class="badge-staking staked">{{$t(`STAKING_VIEW.INDICATOR.STAKE`)}}</div></div>
+                <div :class="data.undelegatingAmount > 0n ? '' : 'opacity-0'" style="display: flex; margin: 1px 0"><div class="badge-staking unstaked">{{$t(`STAKING_VIEW.INDICATOR.UNSTAKING`)}}</div></div>
+              </div>
+              <span>{{data.rank}}</span>
+            </div>
+          </template>
+        </Column>
         <Column field="description.moniker" :header="$t(`STAKING_VIEW.TABLE_HEADERS.NAME`)" :sortable="true">
           <template #body="{data}">
             <ValidatorLogo :validator="data"></ValidatorLogo>
@@ -24,12 +33,16 @@
         </Column>
         <Column field="status" :header="$t(`STAKING_VIEW.TABLE_HEADERS.STATUS`)" :sortable="true">
           <template #body="{data}">
-            <span>{{ data.viewStatus }}</span>
+            <span v-if="data.viewStatus == 'Active'" class="badge active">{{ data.viewStatus }}</span>
+            <span v-if="data.viewStatus != 'Active'" class="badge deactivated">{{ data.viewStatus }}</span>
           </template>
         </Column>
         <Column field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
           <template #body="{data}">
-            <span>{{ data.commission.rateViewPercentage }}%</span>
+            <div v-if="Number(data.commission.rateViewPercentage) < 5" class="commision level-1">{{ data.commission.rateViewPercentage }}%</div>
+            <div v-if="Number(data.commission.rateViewPercentage) >= 5 && Number(data.commission.rateViewPercentage) < 10" class="commision level-2">{{ data.commission.rateViewPercentage }}%</div>
+            <div v-if="Number(data.commission.rateViewPercentage) >= 10 && Number(data.commission.rateViewPercentage) < 25" class="commision level-3">{{ data.commission.rateViewPercentage }}%</div>
+            <div v-if="Number(data.commission.rateViewPercentage) >= 25" class="commision level-4">{{ data.commission.rateViewPercentage }}%</div>
           </template>
         </Column>
         <Column field="votingPower" :header="$t(`STAKING_VIEW.TABLE_HEADERS.VOTING_POWER`)" :sortable="true" sortField="tokens">
@@ -174,6 +187,145 @@ const filters = ref({
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '../../styles/variables.scss';
 
+.validator-image {
+  height: 2.5rem;
+  min-height: 2.5rem;
+  width: 2.5rem;
+  min-width: 2.5rem; 
+}
+
+.rank {
+  display: flex;
+  align-items: center;
+
+  span {
+    margin-left: 5px;
+  }
+}
+.badge-staking {
+  height: 20px;
+  transform: translateX(-100%);
+  margin-right: -20px;
+  padding: 2px 5px;
+  font-size: 10px;
+  box-sizing: border-box;
+
+  &::after {
+    width: 0; 
+    height: 0; 
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid white;
+    margin-left: -21.7px;
+    content: '';
+    float: right;
+    position: absolute;
+    right: -9.2px;
+    transform: translateY(-2px);
+  }
+}
+
+.staked {
+  background: $primary-green-color;
+  color: white;
+
+  &::after {
+    border-left: 10px solid $primary-green-color;
+  }
+}
+
+.unstaked {
+  background: grey;
+  color: white;
+
+  &::after {
+    border-left: 10px solid grey;
+  }
+}
+
+
+  .opacity-0 {
+    opacity: 0;
+  }
+
+  .badge {
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+  }
+
+  .active {
+    background: $primary-green-color;
+    box-shadow: none;
+  }
+
+  .deactivated {
+    background: gray;
+    box-shadow: none;
+  }
+
+  .commision {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 2px 10px;
+    border-radius: 15px;
+  }
+
+  .level-1 {
+      background: $consumption-red;
+      color: white;
+    }
+
+    .level-2 {
+      background: $accents-light-warning;
+      color: black;
+    }
+
+    .level-3 {
+      background: $main-lighter-color;
+      color: white;
+    }
+
+    .level-4 {
+      background: $secondary-color;
+      color: white;
+    }
+
+  .search-bar {
+    width: 40%;
+    float: right;
+    transform: translateY(-200%);
+    z-index: -1;
+    margin-bottom: -200%;
+  }
+
+  .p-datatable .p-datatable-header {
+    margin-bottom: -50px;
+  }
+
+  .p-datatable-wrapper {
+    margin-top: -40px !important;
+    transform: translateY(-40px) !important;
+  }
+
+  @media screen and (max-width: 950px) {
+    .search-bar {
+      width: 100%;
+      transform: none;
+      z-index: 5;
+      margin-bottom: 20px;
+    }
+
+    .p-datatable .p-datatable-header {
+      margin-bottom: 0px;
+    }
+
+    .p-datatable-wrapper {
+      margin-top: 0px !important;
+      transform: none !important;
+    }
+  }
 </style>
