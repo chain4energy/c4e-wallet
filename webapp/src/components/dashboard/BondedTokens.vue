@@ -8,6 +8,8 @@
   </div>
 </template>
 
+
+<!-- TODO shpuld we remove it-->
 <script setup lang="ts">
 import Icon from "../features/IconComponent.vue";
 </script>
