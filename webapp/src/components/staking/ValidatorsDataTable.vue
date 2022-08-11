@@ -322,7 +322,7 @@ const filters = ref({
     width: 40%;
     float: right;
     transform: translateY(-200%);
-    z-index: -1;
+    z-index: 3;
     margin-bottom: -200%;
   }
 
