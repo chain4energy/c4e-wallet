@@ -31,26 +31,35 @@
         <v-chart :option="option" />
       </div>
 
-      
+
       <div class="voting-result">
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
-          <div>{{ yesPercentage }}%</div>
+          <div>
+            <PercentsView :amount="yesPercentage" :precision="2"/>
+          </div>
           <div>({{ useProposalsStore().getProposalTally(proposal).getYesView(2, true)}})</div>
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
-          <div>{{ abstainPercentage }}%</div>
+          <div>
+            <PercentsView :amount="abstainPercentage" :precision="2"/>
+          </div>
           <div>({{ useProposalsStore().getProposalTally(proposal).getAbstainView(2, true)}})</div>
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
-          <div>{{ noPercentage }}%</div>
+          <div>
+            <PercentsView :amount=" noPercentage" :precision="2"/>
+          </div>
           <div>({{ useProposalsStore().getProposalTally(proposal).getNoView(2, true)}})</div>
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
-          <div>{{ noWithVetoPercentage }}%</div>
+
+          <div>
+            <PercentsView :amount="noWithVetoPercentage" :precision="2"/>
+          </div>
           <div>({{ useProposalsStore().getProposalTally(proposal).getNoWithVetoView(2, true)}})</div>
         </div>
       </div>
@@ -74,6 +83,7 @@ import {useRouter} from "vue-router";
 import {Proposal, ProposalStatus} from "@/models/store/proposal";
 import { createProposalListChartData } from '@/charts/governance';
 import { useProposalsStore } from '@/store/proposals.store';
+import PercentsView from "@/components/commons/PercentsView"
 
 use([
   SVGRenderer,

@@ -15,22 +15,23 @@
     <div class="voting-result">
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
-        <div>{{ useProposalsStore().getSelectedProposalTally.getYesPercentageView() }}%</div>
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getYesPercentageView()" :precision="2"></PercentsView>
         <div>({{ useProposalsStore().getSelectedProposalTally.getYesView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
-        <div>{{ useProposalsStore().getSelectedProposalTally.getAbstainPercentageView() }}%</div>
+
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getAbstainPercentageView()" :precision="2"></PercentsView>
         <div>({{useProposalsStore().getSelectedProposalTally.getAbstainView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
-        <div>{{ useProposalsStore().getSelectedProposalTally.getNoPercentageView() }}%</div>
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoPercentageView()" :precision="2"></PercentsView>
         <div>({{useProposalsStore().getSelectedProposalTally.getNoView(2, true)}})</div>
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
-        <div>{{ useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentageView() }}%</div>
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentageView()" :precision="2"></PercentsView>
         <div>({{useProposalsStore().getSelectedProposalTally.getNoWithVetoView(2, true)}})</div>
       </div>
     </div>
@@ -63,6 +64,7 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { createProposalDetailsChartData } from "@/charts/governance";
 import { useProposalsStore } from "@/store/proposals.store";
 import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
+import PercentsView from "@/components/commons/PercentsView.vue";
 
 use([
   SVGRenderer,
