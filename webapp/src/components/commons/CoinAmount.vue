@@ -43,8 +43,8 @@ function transformToExpView(amount: bigint | number | BigDecimal) {
     internationalNumberFormat = new Intl.NumberFormat("en-US", {minimumFractionDigits: props.precision});
   }
 
-  const thousends =  internationalNumberFormat.format(amount);
-  return thousends;
+  const thousands =  internationalNumberFormat.format(amount);
+  return thousands;
 }
 
 </script>

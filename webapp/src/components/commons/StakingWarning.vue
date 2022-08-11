@@ -1,17 +1,18 @@
 <template>
   <div class="warning">
     <div v-if="props.action === StakingAction.DELEGATE">
-      <h3>Stacking will lock your funds for {{timeToComplete}}  days</h3>
-      <span>You will need to undelegate in order for your stacked assets to be liquid again.
-        This proccess will take {{timeToComplete}} day to complete.
+      <h3>{{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.HEADER')}} {{timeToComplete}} {{ $t('STAKING_VIEW.STAKING_POPUP.WARNINGS.COMMONS.DAYS') }}</h3>
+      <span>
+        {{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.CONDITION1')}}
+        {{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.CONDITION2')}} {{timeToComplete}} {{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.COMPLETE')}}
       </span>
     </div>
     <div v-if="props.action === StakingAction.UNDELEGATE">
-      <h3>Once the unbonding period begins you will:</h3>
+      <h3>{{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.HEADER')}} </h3>
       <ul>
-        <li>not recieve staking rewards</li>
-        <li>not be able to cancel the unbonding</li>
-        <li>need to wait {{timeToComplete}} day for the amount to be liquid</li>
+        <li>{{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.CONDITION1')}} </li>
+        <li>{{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.CONDITION2')}}</li>
+        <li>{{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.CONDITION3')}} {{timeToComplete}} {{$t('STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.CONDITIONS_HELPER')}}</li>
       </ul>
     </div>
   </div>
