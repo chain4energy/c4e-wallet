@@ -34,19 +34,18 @@
               <a :href="validator.description.website">{{validator.description.website}}</a>
             </div>
           </div>-->
-          <CoinAmount
+          <AmountView
+            class="validationPopup__amount"
             :coins="amountToPass"
             :show-denom="true"
             :precision="4"
             :orig-denom="useConfigurationStore().config.getViewDenom()"
             :reduce-big-number="false">
-            <template v-slot:logo>
-              <div class="userdata__icon">
-                <C4EIcon icon="c4e-circle" size="30"/>
-              </div>
+            <template v-slot:logo-front>
+              <C4EIcon icon="c4e-circle" size="30"/>
             </template>
 
-          </CoinAmount>
+          </AmountView>
           <div class="validationPopup__description">
             <StakingActionVue v-model="stakingAction" :disabled="!canModify"/>
           </div>
@@ -117,7 +116,7 @@ import StakingActionVue from "./StakingAction.vue";
 import { StakingAction } from "./StakingAction";
 import StakingRedelegate from "./StakingRedelegate.vue";
 import WarningMessage from "@/components/commons/WarningMessage.vue";
-import CoinAmount from "@/components/commons/CoinAmount.vue";
+import AmountView from "@/components/commons/AmountView.vue";
 import C4EIcon from "../commons/C4EIcon.vue";
 import { useValidatorsStore } from "@/store/validators.store";
 
@@ -233,17 +232,19 @@ const amountToPass = computed(() => {
   switch(stakingAction.value) {
     case StakingAction.DELEGATE: {
       coins = [];
-      coins.push({amount: props.validator.delegatedAmount, name: 'delgated'});
+      coins.push({
+        amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')},
+        {amount: useUserStore().getBalance|| 0, header:  i18n.global.t('STAKING_VIEW.STAKING_POPUP.AVAILABLE_TO_DELEGATE')});
       break;
     }
     case StakingAction.UNDELEGATE: {
       coins = [];
-      coins.push({amount: props.validator.undelegatingAmount, name: 'undelgated'}, {amount: props.validator.delegatedAmount, name: 'delgated'});
+      coins.push({amount: props.validator.undelegatingAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.UNDELEGATED')}, {amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')});
       break;
     }
     case StakingAction.REDELEGATE: {
       coins = [];
-      coins.push({amount: props.validator.delegatedAmount, name: 'delgated'});
+      coins.push({amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')});
       break;
     }
     default: coins = []; coins.push(0);
@@ -287,6 +288,12 @@ function getWarningParams() {
       background-color: #72BF44;
       color: #FFFFFF;
     }
+  }
+  &__amount{
+    padding:5%;
+    box-shadow: 0 4px 20px rgb(0 0 0 / 11%);
+    background: #FFFFFF;
+    border-radius: 8px;
   }
   &__background{
     position: fixed;
