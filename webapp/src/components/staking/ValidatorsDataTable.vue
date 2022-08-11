@@ -47,7 +47,7 @@
         </Column>
         <Column field="votingPower" :header="$t(`STAKING_VIEW.TABLE_HEADERS.VOTING_POWER`)" :sortable="true" sortField="tokens">
           <template #body="{data}">
-            <span v-if="data.votingPower">{{ data.votingPowerViewPercentage }}%</span> 
+            <span v-if="data.votingPower">{{ data.votingPowerViewPercentage }}%</span>
             <span v-else>updating</span>
           </template>
         </Column>
@@ -194,7 +194,7 @@ const filters = ref({
   height: 2.5rem;
   min-height: 2.5rem;
   width: 2.5rem;
-  min-width: 2.5rem; 
+  min-width: 2.5rem;
 }
 
 .rank {
@@ -214,8 +214,8 @@ const filters = ref({
   box-sizing: border-box;
 
   &::after {
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
     border-left: 10px solid white;

@@ -141,7 +141,6 @@ function copyTxt(){
     border: 1px solid #72BF44;
     border-radius: 24px;
     background-color: #FFFFFF;
-    width: 161px;
     padding:11px 24px 13px 24px;
     text-decoration: none;
     &:hover{
