@@ -110,6 +110,10 @@
       "DELEGATE": "Delegate",
       "UNDELEGATE": "Undelegate",
       "REDELEGATE": "Redelegate",
+      "DELEGATED": "Delegated",
+      "UNDELEGATED": "Undelegated",
+      "REDELEGATED": "Redelegated",
+      "AVAILABLE_TO_DELEGATE": "available to delegate",
       "AMOUNT": {
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",
