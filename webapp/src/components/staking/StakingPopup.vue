@@ -228,17 +228,19 @@ const amountToPass = computed(() => {
   switch(stakingAction.value) {
     case StakingAction.DELEGATE: {
       coins = [];
-      coins.push({amount: props.validator.delegatedAmount, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')}, {amount: useUserStore().getBalance|| 0, name:  i18n.global.t('STAKING_VIEW.STAKING_POPUP.AVAILABLE_TO_DELEGATE')});
+      coins.push({
+        amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')},
+        {amount: useUserStore().getBalance|| 0, header:  i18n.global.t('STAKING_VIEW.STAKING_POPUP.AVAILABLE_TO_DELEGATE')});
       break;
     }
     case StakingAction.UNDELEGATE: {
       coins = [];
-      coins.push({amount: props.validator.undelegatingAmount, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.UNDELEGATED')}, {amount: props.validator.delegatedAmount, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')});
+      coins.push({amount: props.validator.undelegatingAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.UNDELEGATED')}, {amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')});
       break;
     }
     case StakingAction.REDELEGATE: {
       coins = [];
-      coins.push({amount: props.validator.delegatedAmount, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')});
+      coins.push({amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')});
       break;
     }
     default: coins = []; coins.push(0);
