@@ -96,7 +96,26 @@
       "VALIDATOR_DESCRIPTION": "Walidator dla sieci SmartContract",
       "DELEGATE": "Delegat",
       "UNDELEGATE": "Cofnij delegację",
-      "REDELEGATE": "redelegować"
+      "REDELEGATE": "redelegować",
+      "WARNINGS": {
+        "COMMONS": {
+          "DAYS": "days"
+        },
+        "DELEGATIONS": {
+          "HEADER": "Stacking will lock your funds for",
+          "CONDITION1": "You will need to undelegate in order for your stacked assets to be liquid again.",
+          "CONDITION2":"This proccess will take",
+          "COMPLETE": "days to complete"
+
+        },
+        "UNDELEGATIONS": {
+          "HEADER": "Once the unbonding period begins you will:",
+          "CONDITION1": "Once the unbonding period begins you will:",
+          "CONDITION2": "not be able to cancel the unbonding",
+          "CONDITION3": "need to wait",
+          "CONDITIONS_HELPER": "day for the amount to be liquid"
+        }
+      }
     },
     "VALIDATORS": "Walidatory",
     "NO_VALIDATORS": "nie znaleziono walidatorów",
