@@ -178,7 +178,7 @@ export class Configuration implements JsonConfiguration {
         result = (origAmount / viewDenomConf.conversionFactor);
       } else {
         result = origAmount.divide( viewDenomConf.conversionFactor);
-      } 
+      }
     } else {
       if (typeof origAmount === 'bigint') {
         result = new BigDecimal(origAmount);
@@ -199,7 +199,7 @@ export class Configuration implements JsonConfiguration {
     } else {
       val = new BigDecimal(number);
     }
-  
+
     let suffix = ''
     if (val.isBiggerThanOrEqualTo(1e12)) {
       val = val.divide(1e12);
@@ -213,7 +213,7 @@ export class Configuration implements JsonConfiguration {
     } else if (val.isBiggerThanOrEqualTo(1e3)) {
       val = val.divide(1e3);
       suffix = 'k';
-    } 
+    }
     return val.toFixed(precision) + (suffix !== '' ? ` ${suffix}` : '');
   }
 
@@ -228,7 +228,7 @@ export class Configuration implements JsonConfiguration {
         amount = (origAmount / viewDenomConf.conversionFactor).toFixed(precision);
       } else {
         amount = origAmount.divide( viewDenomConf.conversionFactor).toFixed(precision);
-      } 
+      }
       return {amount: amount, denom: denom};
     }
     if (typeof origAmount === 'bigint') {

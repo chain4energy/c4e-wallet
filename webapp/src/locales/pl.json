@@ -5,7 +5,16 @@
     "CONNECT_ADDRESS": "Login with address",
     "CONNECT_KEPLR": "Login with Keplr wallet",
     "ADDRESS_HELP": "Explore with any address",
-    "VIEW_EXPLORER": "View on explorer"
+    "VIEW_EXPLORER": "View on explorer",
+    "ADDRESS_VALIDATION": {
+      "EMPTY": "Address is required",
+      "NOT_THIS_NETWORK": "Address must start with prefix '{prefix}'",
+      "TOO_SHORT": "Address is too short",
+      "SEPARATOR": "No separator for this address",
+      "CHECK_SUM": "Invalid address checksum",
+      "CHARACTER": "Do not use special symbols",
+      "INVALID": "Invalid address"
+    }
   },
   "TABLES": {
     "CONTRACTS": {
@@ -31,6 +40,9 @@
       "ABSTAIN": "Wstrzymanie",
       "NO_WITH_VETO": "Nie z Veto"
     },
+    "ERRORS": {
+      "NO_STAKED": "Your voice will not be counted (only staked amount is counting in vote but you have '0')"
+    },
     "TOTAL": "Total",
     "DESCRIPTION": "Description",
     "TOTAL_DEPOSIT": "Total deposit",
@@ -44,7 +56,8 @@
     "VETO_THRESHOLD": "Veto threshold",
     "YOUR_VOTE": "Your vote",
     "VOTE_CONDITION": "To make voting you have to be logged in",
-    "VOTE": "Vote"
+    "VOTE": "Vote",
+    "USER_VOTE": "You voted:"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Bonded tokens",
@@ -89,12 +102,43 @@
     "TABLE_BUTTONS": {
       "MANAGE_BTN": "Zarządzać"
     },
+    "INDICATOR": {
+      "STAKE": "Staked",
+      "UNSTAKING": "Unstaking"
+    },
     "STAKING_POPUP": {
       "HEADER": "Moja delegacja",
       "VALIDATOR_DESCRIPTION": "Walidator dla sieci SmartContract",
       "DELEGATE": "Delegat",
       "UNDELEGATE": "Cofnij delegację",
-      "REDELEGATE": "redelegować"
+      "REDELEGATE": "redelegować",
+      "AMOUNT": {
+        "REQUIRED": "Amount is required",
+        "NUMBER": "Amount must be a number with max {decimal} decimal places",
+        "MIN": "Amount must be more than 0",
+        "MAX": "Max amount exceeded. Available amount {max}"
+      },
+      "WARNINGS": {
+        "DELEGATIONS": {
+          "HEADER": "Staking will lock your funds for {timeToComplete} days",
+          "TEXT": "You will need to undelegate in order for your staked assets to be liquid again. This proccess will take {timeToComplete} days to complete"
+        },
+        "UNDELEGATIONS": {
+          "HEADER": "Once the unbonding period begins you will:",
+          "TEXTS": [
+            "not receive staking rewards",
+            "not be able to cancel the unbonding",
+            "need to wait {timeToComplete} day for the amount to be liquid"
+          ]
+        }
+      },
+      "VALIDATOR": {
+        "REQUIRED": "Validator selection is required"
+      },
+      "VALIDATOR_NOT_DEFINED": "this field is required",
+      "INPUT": {
+        "REDELEGATE_VALIDATOR": "Redelegate to"
+      }
     },
     "VALIDATORS": "Walidatory",
     "NO_VALIDATORS": "nie znaleziono walidatorów",
@@ -134,5 +178,11 @@
     "GOVERNANCE": "Governance",
     "GOVERNANCE_PROPOSALSLIST": "Governance / Proposals list",
     "GOVERNANCEDETAILS": "Governance details"
+  },
+  "TOAST": {
+    "SUCCESS": {
+      "ADDRESS_CONNECTED": "Address: '{address}' Connected",
+      "ADDRESS_DISCONNECTED": "Address: '{address}' Disconnected"
+    }
   }
 }

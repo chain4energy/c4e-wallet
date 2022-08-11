@@ -119,6 +119,20 @@
         "MIN": "Amount must be more than 0",
         "MAX": "Max amount exceeded. Available amount {max}"
       },
+      "WARNINGS": {
+        "DELEGATIONS": {
+          "HEADER": "Staking will lock your funds for {timeToComplete} days",
+          "TEXT": "You will need to undelegate in order for your staked assets to be liquid again. This proccess will take {timeToComplete} days to complete"
+        },
+        "UNDELEGATIONS": {
+          "HEADER": "Once the unbonding period begins you will:",
+          "TEXTS": [
+            "not receive staking rewards",
+            "not be able to cancel the unbonding",
+            "need to wait {timeToComplete} day for the amount to be liquid"
+          ]
+        }
+      },
       "VALIDATOR": {
         "REQUIRED": "Validator selection is required"
       },

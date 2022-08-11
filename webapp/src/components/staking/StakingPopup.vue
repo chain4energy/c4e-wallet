@@ -1,21 +1,30 @@
 <template>
   <div class="validationPopup">
     <div class="validationPopup__background"></div>
-
-
     <div class="validationPopup__holder">
       <div class="validationPopup__header">
         <div>
           <ValidatorLogo :validator="validator" class="validator-image-big"></ValidatorLogo>
           <h2>{{ validator.description.moniker }}</h2>
         </div>
-          <Button icon="pi pi-times" style="width: 5px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
+        <WarningMessage v-if="stakingAction === StakingAction.DELEGATE" 
+              header="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.HEADER"
+              :header-variables="{timeToComplete: timeToComplete}"
+              texts="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.TEXT"
+              :texts-variables="{timeToComplete: timeToComplete}"/>
+        <WarningMessage v-else-if="stakingAction === StakingAction.UNDELEGATE" 
+              header="STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.HEADER"
+              :header-variables="{timeToComplete: timeToComplete}"
+              texts="STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.TEXTS"
+              :texts-variables="{timeToComplete: timeToComplete}"/>
+        <Button icon="pi pi-times" style="width: 5px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
       </div>
+
       <Form @submit="action" :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body">
 
         <div class="validationPopup__body">
           <h3>{{ $t('STAKING_VIEW.STAKING_POPUP.HEADER') }}</h3>
-          <div class="validationPopup__description">
+          <!--<div class="validationPopup__description">
             <div class="validationPopup__descriptionIcon">
               <Icon name="Globe"></Icon>
             </div>
@@ -24,11 +33,23 @@
               <p>{{ $t('COMMON.THE') }} {{validator.description.moniker}} {{ $t('STAKING_VIEW.STAKING_POPUP.VALIDATOR_DESCRIPTION') }}</p>
               <a :href="validator.description.website">{{validator.description.website}}</a>
             </div>
-          </div>
+          </div>-->
+          <CoinAmount
+            :coins="amountToPass"
+            :show-denom="true"
+            :precision="4"
+            :orig-denom="useConfigurationStore().config.getViewDenom()"
+            :reduce-big-number="false">
+            <template v-slot:logo>
+              <div class="userdata__icon">
+                <C4EIcon icon="c4e-circle" size="30"/>
+              </div>
+            </template>
+
+          </CoinAmount>
           <div class="validationPopup__description">
             <StakingActionVue v-model="stakingAction" :disabled="!canModify" :redelegation-direction="redelegationDirection"/>
           </div>
-
           <div v-if="stakingAction === StakingAction.REDELEGATE" class="validationPopup__description">
             <div class="field-local">
               <Field v-model="redelegateValidator" placeholder=" " name="redelegateValidator" v-slot="{ field, handleChange }"  >
@@ -52,7 +73,6 @@
               </div>
             </div>
           </div>
-         
         </div>
         <div class="validationPopup__btnHolder" v-if="canModify" >
           <div class="validationPopup__btns" >
@@ -66,11 +86,10 @@
             </Button>
             <Button v-if="stakingAction === StakingAction.REDELEGATE" type="submit">
               <StakeManagementIcon icon="redelegate"/>
-              {{$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE')}}  
+              {{$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE')}}
             </Button>
           </div>
         </div>
-
         <div v-else class="validationPopup__btns">
           {{ $t('ERRORS.CONNECT_WALLET')}}
           <Button @click="dataService.onKeplrLogIn()">
@@ -100,6 +119,10 @@ import StakingActionVue from "./StakingAction.vue";
 import { StakingAction } from "./StakingAction";
 import StakingRedelegate from "./StakingRedelegate.vue";
 import { RedelegationDirection, getRedelagatePlaceholder } from "./StakingRedelegate";
+import WarningMessage from "@/components/commons/WarningMessage.vue";
+import CoinAmount from "@/components/commons/CoinAmount.vue";
+import C4EIcon from "../commons/C4EIcon.vue";
+import { useValidatorsStore } from "@/store/validators.store";
 
 const emit = defineEmits(['close', 'success']);
 
@@ -114,11 +137,11 @@ onUnmounted(() => {
 });
 
 
-const redelegateValidator = ref<Validator>()
-const stakingAction = ref<StakingAction>(StakingAction.DELEGATE)
+const redelegateValidator = ref<Validator>();
+const stakingAction = ref<StakingAction>(StakingAction.DELEGATE);
 
 const canModify = computed<boolean>(() => {
-  return useUserStore().isLoggedIn && useUserStore().connectionInfo.modifiable
+  return useUserStore().isLoggedIn && useUserStore().connectionInfo.modifiable;
   });
 
 const amount = ref('');
@@ -135,7 +158,7 @@ const baseSchema = object().shape({
     return stakingAction.value === StakingAction.REDELEGATE ? value ? true : false : true;
   }),
   amount: YupSequentialStringSchema([string().defined(),
-      string().test('not-empty', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.REQUIRED'), (value: string | undefined) => {return value ? value.length > 0 : false}),
+      string().test('not-empty', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.REQUIRED'), (value: string | undefined) => {return value ? value.length > 0 : false;}),
       string().matches(/^\d*(\.\d{0,6})?$/gm, i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.NUMBER', {decimal: useConfigurationStore().config.getViewDenomDecimals()})),
       string().test('delgation-moreThan', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MIN'), moreThan),
       string().test('delgation-lessThan', () => i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MAX', {max:maxAmountMessageData()}), lessThanOrEqualTo)
@@ -154,21 +177,21 @@ function checkValue(value: string | undefined, check: (value:  string) => boolea
 }
 
 function moreThan(value: string | undefined): boolean {
-  return checkValue(value, (value:  string) => (new BigDecimal(value)).isBiggerThan(0))
+  return checkValue(value, (value:  string) => (new BigDecimal(value)).isBiggerThan(0));
 }
 
 function lessThanOrEqualTo(value: string | undefined): boolean {
   return checkValue(value, (value:  string) => {
     const factor = useConfigurationStore().config.getViewDenomConversionFactor();
-    const lessThan = stakingAction.value === StakingAction.DELEGATE ? useUserStore().getBalance : props.validator.delegatedAmount
+    const lessThan = stakingAction.value === StakingAction.DELEGATE ? useUserStore().getBalance : props.validator.delegatedAmount;
     return (new BigDecimal(lessThan)).isBiggerThan(new BigDecimal(value).multiply(factor));
-  })
+  });
 }
 
 function maxAmountMessageData(): string {
-  return stakingAction.value === StakingAction.DELEGATE ? 
+  return stakingAction.value === StakingAction.DELEGATE ?
       useUserStore().getBalanceViewAmount(useConfigurationStore().config.getViewDenomDecimals()) :
-      props.validator.getDelegatedViewAmount(useConfigurationStore().config.getViewDenomDecimals())
+      props.validator.getDelegatedViewAmount(useConfigurationStore().config.getViewDenomDecimals());
 }
 
 function action() {
@@ -207,7 +230,7 @@ async function delegate() {
   if (dst) {
   await useUserStore().delegate(dst, amount.value)
     .then((resp) => {
-      console.log(resp)
+      console.log(resp);
       emit('success');
     });
   } // TODO else
@@ -231,7 +254,37 @@ async function redelegate() {
     });
   }
 }
+const amountToPass = computed(() => {
+  let coins = [];
+  switch(stakingAction.value) {
+    case StakingAction.DELEGATE: {
+      coins = [];
+      coins.push({amount: props.validator.delegatedAmount, name: 'delgated'});
+      break;
+    }
+    case StakingAction.UNDELEGATE: {
+      coins = [];
+      coins.push({amount: props.validator.undelegatingAmount, name: 'undelgated'}, {amount: props.validator.delegatedAmount, name: 'delgated'});
+      break;
+    }
+    case StakingAction.REDELEGATE: {
+      coins = [];
+      coins.push({amount: props.validator.delegatedAmount, name: 'delgated'});
+      break;
+    }
+    default: coins = []; coins.push(0);
+    break;
+  }
+  return coins;
+});
 
+const timeToComplete = computed(() => {
+  return useValidatorsStore().getParamsUnbondingTime;
+})
+
+function getWarningParams() {
+  return {timeToComplete: useValidatorsStore().getParamsUnbondingTime}
+}
 </script>
 
 <style scoped lang="scss">

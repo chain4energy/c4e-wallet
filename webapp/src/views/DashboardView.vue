@@ -15,11 +15,11 @@
       </div>
       <div class="latest-block">
         <latest-block />
-      </div>  
+      </div>
       <div class="circulating-supply">
         <CirculatingSupply />
       </div>
-      
+
       <div class="validators">
         <active-validators />
       </div>
@@ -65,10 +65,10 @@ import StakingApr from "@/components/dashboard/StakingApr.vue";
   .stacking-apr { grid-area: 1 / 6 / 2 / 11; }
   .pools { grid-area: 2 / 1 / 4 / 5; }
   .tokenomics { grid-area: 2 / 5 / 4 / 11; }
-  .latest-block { grid-area: 4 / 1 / 5 / 3; }
+  .latest-block {grid-area: 4 / 7 / 5 / 9;}
   .circulating-supply { grid-area: 4 / 3 / 5 / 5; }
   .validators { grid-area: 4 / 5 / 5 / 7; }
-  .total-supply { grid-area: 4 / 7 / 5 / 9; }
+  .total-supply { grid-area: 4 / 1 / 5 / 3; }
   .max-supply { grid-area: 4 / 9 / 5 / 11; }
 }
 
