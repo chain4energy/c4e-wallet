@@ -17,9 +17,8 @@
           <template #body="{data}">
             <div class="rank">
               <div style="display: flex; flex-direction: column">
-                <!-- TUTAJ SĄ 2 FLAGI STAKED I UNSTAKED -->
-                <div :class="data.status == ValidatorStatus.Bonded ? '' : 'opacity-0'" style="display: flex; margin: 1px 0"><div class="badge-staking staked">Staked</div></div>
-                <div :class="data.status == ValidatorStatus.Bonded ? '' : 'opacity-0'" style="display: flex; margin: 1px 0"><div class="badge-staking unstaked">Unstaked</div></div>
+                <div :class="data.delegatedAmount > 0n ? '' : 'opacity-0'" style="display: flex; margin: 1px 0"><div class="badge-staking staked">{{$t(`STAKING_VIEW.INDICATOR.STAKE`)}}</div></div>
+                <div :class="data.undelegatingAmount > 0n ? '' : 'opacity-0'" style="display: flex; margin: 1px 0"><div class="badge-staking unstaked">{{$t(`STAKING_VIEW.INDICATOR.UNSTAKING`)}}</div></div>
               </div>
               <span>{{data.rank}}</span>
             </div>

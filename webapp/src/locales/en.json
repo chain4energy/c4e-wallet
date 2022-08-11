@@ -103,6 +103,10 @@
     "TABLE_BUTTONS": {
       "MANAGE_BTN": "Manage"
     },
+    "INDICATOR": {
+      "STAKE": "Staked",
+      "UNSTAKING": "Unstaking"
+    },
     "STAKING_POPUP": {
       "HEADER": "My delegation",
       "VALIDATOR_DESCRIPTION": "Validator for SmartContract chains",
