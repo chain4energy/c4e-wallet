@@ -3,13 +3,15 @@
       <Icon name="Clock"></Icon>
       <div class="text">
         <span class="label">{{ $t('DASHBOARD_VIEW.AVERAGE_BLOCK_TIME') }}</span>
-        <span class="value small">{{ blockStore.getAverageBlockTimeView() }}s</span>
+        <span class="value small" ><FormattedNumber :amount="blockStore.getAverageBlockTime" :precision="2"/>s</span>
+        <!-- <span class="value small">{{ blockStore.getAverageBlockTimeView() }}s</span> -->
       </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import {useBlockStore} from "@/store/block.store";
+import FormattedNumber from "../commons/FormattedNumber.vue";
 
 const blockStore = useBlockStore();
 </script>

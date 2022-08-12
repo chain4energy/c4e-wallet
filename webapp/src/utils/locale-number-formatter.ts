@@ -28,7 +28,7 @@ export function formatBigNumber(locale: string, amount: string) {
     intPart = intPart.slice(0, -3);
   }
   const decis = intAndDec[1] ? intAndDec[1].replace(/\.?0+$/, "") : '';
-  return intAndDec[1] != undefined && decis.length > 0 ? formated += decSeparator + intAndDec[1] : formated
+  return intAndDec[1] != undefined && decis.length > 0 ? formated += decSeparator + intAndDec[1] : formated;
 }
 
 export function reduceBigNumber(locale: string, number: bigint | number | BigDecimal, precision: number): string {

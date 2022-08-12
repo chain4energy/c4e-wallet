@@ -1,27 +1,19 @@
 <template>
-    <span><FormattedNumber :amount="retrieveConvertedAmount()" :precision="precision" :reduceBigNumber="reduceBigNumber" /><span v-if="showDenom">&nbsp;{{ getDenom()}}</span></span>
+    <span>{{transformToExpView()}}</span>
 </template>
 
 <script setup lang="ts">
 import { BigDecimal } from "@/models/store/big.decimal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { Coin, DecCoin } from "@/models/store/common";
-import FormattedNumber from "./FormattedNumber.vue";
+import i18n from "@/plugins/i18n";
+import { formatBigNumber, reduceBigNumber } from "@/utils/locale-number-formatter";
 
 const props = defineProps<{
-  amount: bigint | number | BigDecimal | Coin | DecCoin,
+  amount: bigint | number | BigDecimal,
   precision?: number,
   reduceBigNumber?: boolean,
-  showDenom?: boolean,
 }>()
-
-function getDenom(): string {
-  if (props.amount instanceof Coin || props.amount instanceof DecCoin) {
-    return useConfigurationStore().config.getConvertedDenom(props.amount.denom);
-  } else {
-    return useConfigurationStore().config.getConvertedDenom();
-  }
-}
 
 function retrieveConvertedAmount(): number | BigDecimal {
   if (props.amount instanceof Coin || props.amount instanceof DecCoin) {
@@ -38,14 +30,14 @@ function retrieveConvertedAmount(): number | BigDecimal {
 //     props.reduceBigNumber || false);
 // }
 
-// function transformToExpView() {
-//   // const amountStr = viewedAmount();
-//   const locale = i18n.global.t('NUMBER_FORMAT_LOCALE');
-//   if (props.reduceBigNumber) {
-//     return reduceBigNumber(locale, retrieveConvertedAmount(), props.precision || 4);
-//   }
-//   return formatBigNumber(locale, retrieveConvertedAmount().toFixed(props.precision || 4));
-// }
+function transformToExpView() {
+  // const amountStr = viewedAmount();
+  const locale = i18n.global.t('NUMBER_FORMAT_LOCALE');
+  if (props.reduceBigNumber) {
+    return reduceBigNumber(locale, props.amount, props.precision || 4);
+  }
+  return formatBigNumber(locale, typeof props.amount === 'bigint' ? props.amount.toString() : props.amount.toFixed(props.precision || 4));
+}
 
 
 </script>

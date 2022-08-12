@@ -71,12 +71,12 @@
         </Column>
         <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.REWARDS`)" :sortable="true" sortField="rewardsAmountSort">
           <template #body="{data}">
-            <span>{{ data.rewardsViewAmount }}</span>
+            <CoinAmount :amount="data.rewardsAmount" :show-denom="true"/>
           </template>
         </Column>
         <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING`)" :sortable="true" sortField="entry.amount">
           <template #body="{data}">
-            <span>{{ data.entry.getViewAmount() }}</span>
+            <CoinAmount :amount="data.entry.amount" :show-denom="true"/>
           </template>
         </Column>
         <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="true" sortField="entry.completionTime">
