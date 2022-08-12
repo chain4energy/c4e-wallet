@@ -39,7 +39,7 @@
             :coins="amountToPass"
             :show-denom="true"
             :precision="4"
-            :orig-denom="useConfigurationStore().config.getViewDenom()"
+            :orig-denom="useConfigurationStore().config.getConvertedDenom()"
             :reduce-big-number="false">
             <template v-slot:logo-front>
               <C4EIcon icon="c4e-circle" size="30"/>

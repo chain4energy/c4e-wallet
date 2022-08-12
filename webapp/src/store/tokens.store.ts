@@ -130,6 +130,12 @@ export const useTokensStore = defineStore({
     getStakingPool(): StakingPool {
       return this.stakingPool;
     },
+    getTotalBonded(): bigint {
+      return this.getStakingPool.bondedTokens
+    },
+    getTotalUnbonding(): bigint {
+      return this.getStakingPool.notBondedTokens;
+    },
     getTotalUnbonded(): bigint {
       return this.getTotalSupply.amount
       - this.getStakingPool.bondedTokens

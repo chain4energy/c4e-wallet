@@ -42,7 +42,7 @@ export class Rewards {
 
   public getTotalRewardsViewDenom(): string {
     const config = useConfigurationStore().config;
-    return config.getViewDenom(config.stakingDenom);
+    return config.getConvertedDenom(config.stakingDenom);
   }
 
   public getTotalRewardsViewAmount(precision = 4): string {

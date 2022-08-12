@@ -4,10 +4,7 @@
     <div class="amount__amount">
       <div v-for="(items, index) in props.coins" :key="index">
         <p v-if="items.header">{{items.header}}</p>
-        <div style="display: flex">
-          <p>{{transformToExpView(viewedAmount(items.amount))}}</p>
-          <p v-if="showDenom">{{useConfigurationStore().config.getViewDenom()}}</p>
-        </div>
+        <CoinAmount :amount="items.amount" :precision="precision" :show-denom="showDenom" :reduce-big-number="reduceBigNumber"/>
       </div>
     </div>
     <slot name="logo-back"></slot>
@@ -19,6 +16,7 @@ import { BigDecimal } from "@/models/store/big.decimal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { computed, ref } from "vue";
 import { Coin, DecCoin } from "@/models/store/common";
+import CoinAmount from "./CoinAmount.vue";
 
 const props = defineProps<{
   coins:[
@@ -31,26 +29,6 @@ const props = defineProps<{
   reduceBigNumber: boolean,
   showDenom: boolean,
 }>()
-
-function viewedAmount(amount: bigint | number | BigDecimal ) {
-  return useConfigurationStore().config.getViewAmount(
-    amount || 0,
-    props.precision || 4,
-    props.reduceBigNumber || false);
-}
-
-function transformToExpView(amount: bigint | number | BigDecimal | Coin | DecCoin) {
-  let internationalNumberFormat;
-  if(props.reduceBigNumber){
-    internationalNumberFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: props.precision, notation: "compact",
-      compactDisplay: "short"});
-  } else {
-    internationalNumberFormat = new Intl.NumberFormat("en-US", {minimumFractionDigits: props.precision});
-  }
-
-  const thousands =  internationalNumberFormat.format(amount);
-  return thousands;
-}
 
 </script>
 

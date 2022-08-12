@@ -2,7 +2,7 @@
 <div class="userdata">
   <div class="userdata__accountData">
     <div class="userdata__accountData-base" >
-      <AmountView :coins="representData" :precision="4" :show-denom="true" :reduce-big-number="false">
+      <AmountView :coins="representData" :show-denom="true">
         <template v-slot:logo-front>
           <C4EIcon icon="c4e-circle" size="30"/>
         </template>
@@ -26,7 +26,7 @@
     <div class="userdata__accountData-vesting-first" v-if="useUserStore().isContinuousVestingAccount">
       <div>
         <p>{{ $t('USER_DATA.LOCKED') }}</p>
-        <p>{{locked}}</p>
+        <CoinAmount :amount="locked" :show-denom="true"/>
       </div>
     </div>
     <!-- <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
@@ -49,7 +49,7 @@
   <div class="userdata__rewards">
     <div class="userdata__rewardAmount">
       <Icon name="Gift" class="gift-color"></Icon>
-      <p>{{useUserStore().getTotalRewardsViewAmount() || '0'}}</p>
+      <CoinAmount :amount="useUserStore().getTotalRewards" :show-denom="true"/>
     </div>
     <Button class="secondary" @click="claimRewards">{{ $t('USER_DATA.CLAIM_REWARDS') }}</Button>
 
@@ -66,6 +66,7 @@ import { computed, ref } from "vue";
 import C4EIcon from "../commons/C4EIcon.vue";
 import AmountView from "@/components/commons/AmountView.vue";
 import i18n from "@/plugins/i18n";
+import CoinAmount from "../commons/CoinAmount.vue";
 
 function claimRewards(){
   useUserStore().claimRewards();

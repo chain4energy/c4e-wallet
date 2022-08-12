@@ -3,7 +3,7 @@
     <div class="top">
 
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
-      <span>{{ useProposalsStore().getSelectedProposalTally.getTotalView(2, true) }} {{ useConfigurationStore().config.getViewDenom() }}</span>
+      <span>{{ useProposalsStore().getSelectedProposalTally.getTotalView(2, true) }} {{ useConfigurationStore().config.getConvertedDenom() }}</span>
     </div>
     <ShadowedSvgChart id="voteschartdiv" class="chartdiv">
         <v-chart :option="option" autoresize />
