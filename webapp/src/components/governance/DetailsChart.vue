@@ -15,22 +15,22 @@
     <div class="voting-result">
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
-        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getYesPercentageView()" :precision="2"></PercentsView>
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getYesPercentage()" :precision="2"></PercentsView>
         (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
-        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getAbstainPercentageView()" :precision="2"></PercentsView>
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getAbstainPercentage()" :precision="2"></PercentsView>
         (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
-        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoPercentageView()" :precision="2"></PercentsView>
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoPercentage()" :precision="2"></PercentsView>
         (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
-        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentageView()" :precision="2"></PercentsView>
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentage()" :precision="2"></PercentsView>
         (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)
       </div>
     </div>
@@ -92,19 +92,19 @@ const sumOfVotes = computed(() => {
 
 
 const yes = computed(() => {
-  return useProposalsStore().getSelectedProposalTally.getYesView();
+  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.yes);
 });
 
 const no = computed(() => {
-  return useProposalsStore().getSelectedProposalTally.getNoView();
+  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.no);
 });
 
 const abstain = computed(() => {
-  return useProposalsStore().getSelectedProposalTally.getAbstainView();
+  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.abstain);
 });
 
 const noWithVeto = computed(() => {
-  return useProposalsStore().getSelectedProposalTally.getNoWithVetoView();
+  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.noWithVeto);
 });
 
 const option = computed(() => {

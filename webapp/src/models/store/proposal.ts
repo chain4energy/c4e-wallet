@@ -133,30 +133,30 @@ export class ProposalTallyResult{
     return useConfigurationStore().config.getViewAmount(this.noWithVeto, precision, reduceBigNumber);
   }
 
-  public getYesPercentageView(precision = 2): number | BigDecimal | bigint {
+  public getYesPercentage(): BigDecimal {
     if (this.total <= 0n) {
-      return 0;
+      return new BigDecimal(0);
     }
     return divideBigInts(this.yes, this.total);
   }
 
-  public getAbstainPercentageView(precision = 2): number | bigint | BigDecimal{
+  public getAbstainPercentage(): BigDecimal{
     if (this.total <= 0n) {
-      return 0;
+      return new BigDecimal(0);
     }
     return divideBigInts(this.abstain, this.total);
   }
 
-  public getNoPercentageView(precision = 2): number | bigint | BigDecimal {
+  public getNoPercentage(): BigDecimal {
     if (this.total <= 0n) {
-      return 0;
+      return new BigDecimal(0);
     }
     return divideBigInts(this.no, this.total);
   }
 
-  public getNoWithVetoPercentageView(): number | bigint | BigDecimal {
+  public getNoWithVetoPercentage(): BigDecimal {
     if (this.total <= 0n) {
-      return 0;
+      return new BigDecimal(0);
     }
     return divideBigInts(this.noWithVeto, this.total);
   }

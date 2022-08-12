@@ -84,6 +84,7 @@ import { createProposalListChartData } from '@/charts/governance';
 import { useProposalsStore } from '@/store/proposals.store';
 import CoinAmount from '../commons/CoinAmount.vue';
 import PercentsView from "@/components/commons/PercentsView"
+import { useConfigurationStore } from '@/store/configuration.store';
 
 use([
   SVGRenderer,
@@ -111,35 +112,35 @@ const icons  = new Map<string, string>([
 ]);
 
 const yesPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getYesPercentageView();
+  return useProposalsStore().getProposalTally(props.proposal).getYesPercentage();
 });
 
 const noPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getNoPercentageView();
+  return useProposalsStore().getProposalTally(props.proposal).getNoPercentage();
 });
 
 const abstainPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getAbstainPercentageView();
+  return useProposalsStore().getProposalTally(props.proposal).getAbstainPercentage();
 });
 
 const noWithVetoPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getNoWithVetoPercentageView();
+  return useProposalsStore().getProposalTally(props.proposal).getNoWithVetoPercentage();
 });
 
 const yes = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getYesView();
+  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).yes);
 });
 
 const no = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getNoView();
+  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).no);
 });
 
 const abstain = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getAbstainView();
+  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).abstain);
 });
 
 const noWithVeto = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getNoWithVetoView();
+  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).noWithVeto);
 });
 
 const sumOfVotes = computed(() => {
@@ -162,7 +163,7 @@ const option = computed(() => {
     },
     {
       amount: abstain.value,
-      percentage: abstain.value
+      percentage: abstainPercentage.value
     },
     {
       amount: no.value,

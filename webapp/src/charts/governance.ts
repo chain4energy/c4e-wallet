@@ -1,4 +1,7 @@
+import { BigDecimal } from "@/models/store/big.decimal";
+import { toPercentage } from "@/models/store/common";
 import i18n from "@/plugins/i18n";
+import { formatBigNumber } from "@/utils/locale-number-formatter";
 
 
 const yesColor = '#72bf44';
@@ -7,51 +10,59 @@ const noColor = '#e02626';
 const noWithVetoColor = '#fff1a9';
 const noVotesColor = '#797777';
 
-export function createProposalDetailsChartData(yes: string, abstain: string, no: string, noWithVeto: string, sum: bigint) {
+export function createProposalDetailsChartData(yes: number | BigDecimal, abstain: number | BigDecimal, no: number | BigDecimal, noWithVeto: number | BigDecimal, sum: bigint, precision = 4) {
   if (sum > 0) {
+    const formatter = function (params: any) {
+      return `
+        <b>${params.data.name}</b></br>
+        <b>${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), params.value)}</b>
+        <b>(${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), String(params.percent))}%)</b>`
+    };
     return createProposalDetailsSingleChartData(
-      '{b} <br/>{c} ({d}%)',
+      formatter,
       [
         {value: yes, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES'), color: yesColor},
         {value: abstain, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN'), color: abstainColor},
         {value: no, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO'), color: '#e02626'},
         {value: noWithVeto, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO'), color: '#fff1a9'}
-      ]
+      ], precision
     )
   } else {
     return createProposalDetailsSingleChartData(
       'No votes <br/>0 (0%)',
       [
-        {value: '1', name: '', color: noVotesColor}
-      ]
+        {value: 1, name: '', color: noVotesColor}
+      ], precision
     )
   }
 }
 
 export function createProposalListChartData(
   yes: {
-    amount: string
-    percentage: string
+    amount: number | BigDecimal
+    percentage: BigDecimal
   }, 
   abstain: {
-    amount: string
-    percentage: string
+    amount: number | BigDecimal
+    percentage: BigDecimal
   },
   no: {
-    amount: string
-    percentage: string
+    amount: number | BigDecimal
+    percentage: BigDecimal
   },
   noWithVeto: {
-    amount: string
-    percentage: string
+    amount: number | BigDecimal
+    percentage: BigDecimal
   },
-  sum: bigint) {
+  sum: bigint,
+  precision = 4,
+  percentagePrecision = 2) {
 
     if (sum > 0) {
       const formatter = function (params: any) {
         return `
           <b>${params.seriesName}</b></br>
-          <b>${params.value} (${params.data.name}%)</b>`
+          <b>${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), params.value)} (${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), String(params.data.name))}%)</b>`
       };
 
       return createProposalListSingleChartData(
@@ -61,20 +72,24 @@ export function createProposalListChartData(
           {amount: abstain.amount, percentage: abstain.percentage ,name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN'), color: abstainColor},
           {amount: no.amount, percentage: no.percentage ,name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO'), color: noColor},
           {amount: noWithVeto.amount, percentage: noWithVeto.percentage ,name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO'), color: noWithVetoColor},
-        ]
+        ],
+        precision,
+        percentagePrecision
       )
     } else {
       return createProposalListSingleChartData(
         'No votes <br/>0 (0%)',
         [
-          {amount: '1', percentage: '0' ,name: '', color: noVotesColor}
-        ]
+          {amount: 1, percentage: new BigDecimal(0) ,name: '', color: noVotesColor}
+        ],
+        precision,
+        percentagePrecision
       )
     }
 
 }
 
-function createProposalDetailsSingleChartData(formatter: any, data: {value: string, name: string, color: string}[]) {
+function createProposalDetailsSingleChartData(formatter: any, data: {value: number | BigDecimal, name: string, color: string}[], precision: number) {
     return {
       tooltip: {
         trigger: 'item',
@@ -97,7 +112,7 @@ function createProposalDetailsSingleChartData(formatter: any, data: {value: stri
           position: 'center'
         },
 
-        data: data.map(d => {return createProposalDetailsChartSeriesData(d.value, d.name, d.color)}),
+        data: data.map(d => {return createProposalDetailsChartSeriesData(d.value, d.name, d.color, precision)}),
       }],
 
     };
@@ -105,9 +120,9 @@ function createProposalDetailsSingleChartData(formatter: any, data: {value: stri
 }
 
 
-function createProposalDetailsChartSeriesData(value: string, name: string, color: string) {
+function createProposalDetailsChartSeriesData(value: number | BigDecimal, name: string, color: string, precision: number) {
   return {
-    value: value,
+    value: value.toFixed(precision),
     name: name,
     itemStyle: {
       label: {
@@ -121,7 +136,7 @@ function createProposalDetailsChartSeriesData(value: string, name: string, color
   }
 }
 
-function createProposalListSingleChartData(formatter: any, data: {amount: string, percentage: string, name: string, color: string}[]) {
+function createProposalListSingleChartData(formatter: any, data: {amount: number | BigDecimal, percentage: BigDecimal, name: string, color: string}[], precision: number, percentagePrecision: number) {
   return {
     tooltip: {
       trigger: 'item',
@@ -139,13 +154,13 @@ function createProposalListSingleChartData(formatter: any, data: {amount: string
     itemStyle: {
       barBorderRadius: [50,50,50,50]
     },
-    series: data.map(d => {return createProposalListChartSeriesData(d.amount, d.percentage, d.name, d.color)}),
+    series: data.map(d => {return createProposalListChartSeriesData(d.amount, d.percentage, d.name, d.color, precision, percentagePrecision)}),
   
   } ;
 
 }
 
-function createProposalListChartSeriesData(amount: string, percentage: string, name: string, color: string) {
+function createProposalListChartSeriesData(amount: number | BigDecimal, percentage: BigDecimal, name: string, color: string, precision: number, percentagePrecision: number) {
   return {
     name: name,
     type: 'bar',
@@ -155,6 +170,6 @@ function createProposalListChartSeriesData(amount: string, percentage: string, n
     emphasis: {
       focus: 'series'
     },
-    data: [{name: percentage, value: amount}]
+    data: [{name: toPercentage(percentage, percentagePrecision), value: amount.toFixed(precision)}]
   }
 }
