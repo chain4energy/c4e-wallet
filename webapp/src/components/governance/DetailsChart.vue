@@ -3,7 +3,7 @@
     <div class="top">
 
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
-      <span>{{ useProposalsStore().getSelectedProposalTally.getTotalView(2, true) }} {{ useConfigurationStore().config.getViewDenom() }}</span>
+      <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/>
     </div>
     <ShadowedSvgChart id="voteschartdiv" class="chartdiv">
         <v-chart :option="option" autoresize />
@@ -15,23 +15,23 @@
     <div class="voting-result">
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
-        <div>{{ useProposalsStore().getSelectedProposalTally.getYesPercentageView() }}%</div>
-        <div>({{ useProposalsStore().getSelectedProposalTally.getYesView(2, true)}})</div>
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getYesPercentageView()" :precision="2"></PercentsView>
+        (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
-        <div>{{ useProposalsStore().getSelectedProposalTally.getAbstainPercentageView() }}%</div>
-        <div>({{useProposalsStore().getSelectedProposalTally.getAbstainView(2, true)}})</div>
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getAbstainPercentageView()" :precision="2"></PercentsView>
+        (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
-        <div>{{ useProposalsStore().getSelectedProposalTally.getNoPercentageView() }}%</div>
-        <div>({{useProposalsStore().getSelectedProposalTally.getNoView(2, true)}})</div>
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoPercentageView()" :precision="2"></PercentsView>
+        (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
-        <div>{{ useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentageView() }}%</div>
-        <div>({{useProposalsStore().getSelectedProposalTally.getNoWithVetoView(2, true)}})</div>
+        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentageView()" :precision="2"></PercentsView>
+        (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)
       </div>
     </div>
     <div class="bottom">
@@ -63,6 +63,8 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { createProposalDetailsChartData } from "@/charts/governance";
 import { useProposalsStore } from "@/store/proposals.store";
 import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
+import CoinAmount from "../commons/CoinAmount.vue";
+import PercentsView from "@/components/commons/PercentsView.vue";
 
 use([
   SVGRenderer,

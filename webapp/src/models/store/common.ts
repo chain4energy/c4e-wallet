@@ -11,7 +11,7 @@ export class Coin {
   }
 
   public getViewDenom(): string {
-    return useConfigurationStore().config.getViewDenom(this.denom);
+    return useConfigurationStore().config.getConvertedDenom(this.denom);
   }
 
   public getViewAmount(precision = 4, reduceBigNumber = false): string {
@@ -34,7 +34,7 @@ export class DecCoin {
   }
 
   public getViewDenom(): string {
-    return useConfigurationStore().config.getViewDenom(this.denom);
+    return useConfigurationStore().config.getConvertedDenom(this.denom);
   }
 
   public getViewAmount(precision = 4, reduceBigNumber = false): string {

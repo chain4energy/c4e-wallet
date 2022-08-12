@@ -48,8 +48,8 @@ export class Validator implements ValidatorBase {
     return new BigDecimal(0);
   }
 
-  public get votingPowerViewPercentage(): string {
-    return toPercentage(this.votingPower)
+  public get votingPowerViewPercentage(): number | bigint | BigDecimal {
+    return this.votingPower
   }
 
   public get delegatedAmount(): bigint {
@@ -136,8 +136,8 @@ export class ValidatorCommission {
     this.maxChangeRate = max_change_rate;
   }
 
-  public get rateViewPercentage(): string {
-    return toPercentage(this.rate, 2)
+  public get rateViewPercentage(): number | bigint | BigDecimal {
+    return this.rate
   }
 }
 

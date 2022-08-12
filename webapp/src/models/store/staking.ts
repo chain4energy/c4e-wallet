@@ -11,7 +11,7 @@ export class Delegation {
 
   public getViewDenom(): string {
     const config = useConfigurationStore().config;
-    return config.getViewDenom(config.stakingDenom);
+    return config.getConvertedDenom(config.stakingDenom);
   }
 
   public getViewAmount(precision = 4): string {
@@ -44,7 +44,7 @@ export class Delegations {
 
   public getTotalDelegatedViewDenom(): string {
     const config = useConfigurationStore().config;
-    return config.getViewDenom(config.stakingDenom);
+    return config.getConvertedDenom(config.stakingDenom);
   }
 
   public getTotalDelegatedViewAmount(precision = 4): string {
@@ -80,7 +80,7 @@ export class UnbondingDelegationEntry {
 
   public getViewDenom(): string {
     const config = useConfigurationStore().config;
-    return config.getViewDenom(config.stakingDenom);
+    return config.getConvertedDenom(config.stakingDenom);
   }
 
   public getViewAmount(precision = 4): string {
@@ -119,7 +119,7 @@ export class UnbondingDelegations {
 
   public getTotalUndelegatingViewDenom(): string {
     const config = useConfigurationStore().config;
-    return config.getViewDenom(config.stakingDenom);
+    return config.getConvertedDenom(config.stakingDenom);
   }
 
   public getTotalUndelegatingViewAmount(precision = 4): string {

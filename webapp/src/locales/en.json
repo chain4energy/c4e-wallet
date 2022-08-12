@@ -193,5 +193,6 @@
       "ADDRESS_CONNECTED": "Address: '{address}' Connected",
       "ADDRESS_DISCONNECTED": "Address: '{address}' Disconnected"
     }
-  }
+  },
+  "NUMBER_FORMAT_LOCALE": "en-US"
 }

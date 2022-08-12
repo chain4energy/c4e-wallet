@@ -1,6 +1,6 @@
 import {Coin, findByDenom, toPercentage} from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
-import { divideBigInts } from "./big.decimal";
+import { BigDecimal, divideBigInts } from "./big.decimal";
 import { VoteOption as CosmVoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
 
 export enum ProposalStatus {
@@ -133,32 +133,32 @@ export class ProposalTallyResult{
     return useConfigurationStore().config.getViewAmount(this.noWithVeto, precision, reduceBigNumber);
   }
 
-  public getYesPercentageView(precision = 2): string {
+  public getYesPercentageView(precision = 2): number | BigDecimal | bigint {
     if (this.total <= 0n) {
-      return toPercentage(0, precision);
+      return 0;
     }
-    return toPercentage(divideBigInts(this.yes, this.total), precision);
+    return divideBigInts(this.yes, this.total);
   }
 
-  public getAbstainPercentageView(precision = 2): string {
+  public getAbstainPercentageView(precision = 2): number | bigint | BigDecimal{
     if (this.total <= 0n) {
-      return toPercentage(0, precision);
+      return 0;
     }
-    return toPercentage(divideBigInts(this.abstain, this.total), precision);
+    return divideBigInts(this.abstain, this.total);
   }
 
-  public getNoPercentageView(precision = 2): string {
+  public getNoPercentageView(precision = 2): number | bigint | BigDecimal {
     if (this.total <= 0n) {
-      return toPercentage(0, precision);
+      return 0;
     }
-    return toPercentage(divideBigInts(this.no, this.total), precision);
+    return divideBigInts(this.no, this.total);
   }
 
-  public getNoWithVetoPercentageView(precision = 2): string {
+  public getNoWithVetoPercentageView(): number | bigint | BigDecimal {
     if (this.total <= 0n) {
-      return toPercentage(0, precision);
+      return 0;
     }
-    return toPercentage(divideBigInts(this.noWithVeto, this.total), precision);
+    return divideBigInts(this.noWithVeto, this.total);
   }
 }
 
@@ -177,15 +177,15 @@ export class TallyParams {
     this.vetoThreshold = vetoThreshold;
   }
 
-  public getQuorumPercentageView(precision = 2): string {
-    return toPercentage(this.quorum, precision);
+  public getQuorumPercentageView(): number {
+    return this.quorum;
   }
 
-  public getThresholdPercentageView(precision = 2): string {
-    return toPercentage(this.threshold, precision);
+  public getThresholdPercentageView(): number {
+    return this.threshold;
   }
 
-  public getVetoThresholdPercentageView(precision = 2): string {
-    return toPercentage(this.vetoThreshold, precision);
+  public getVetoThresholdPercentageView(): number {
+    return this.vetoThreshold;
   }
 }

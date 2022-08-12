@@ -11,7 +11,7 @@ export class StakingPool {
 
   public getViewDenom(): string {
     const config = useConfigurationStore().config;
-    return config.getViewDenom(config.stakingDenom);
+    return config.getConvertedDenom(config.stakingDenom);
   }
 
   public getBondedTokensViewAmount(precision = 4): string {

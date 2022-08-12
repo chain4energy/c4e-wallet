@@ -16,7 +16,7 @@
     </div>
     <div class="info">
         <span>{{ $t("GOVERNANCE_VIEW.TOTAL_DEPOSIT") }}:</span>
-        <span>{{ proposal.getTotalDepositByDenom().getViewAmount() }} {{ proposal.getTotalDepositByDenom().getViewDenom()  }}</span>
+        <CoinAmount :amount="proposal.getTotalDepositByDenom()" :show-denom="true"/>
         <span>{{ $t("GOVERNANCE_VIEW.VOTING_START") }}:</span>
         <span>{{formattedDate(proposal.votingStartTime) }}</span>
         <span>{{ $t("GOVERNANCE_VIEW.VOTING_END") }}:</span>
@@ -28,11 +28,15 @@
         <span>{{ $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") }}:</span>
         <span>{{ formattedDate(proposal.depositEndTime) }}</span>
         <span>{{ $t("GOVERNANCE_VIEW.QUORUM") }}:</span>
-        <span>{{ proposalsStore.getTallyParams.getQuorumPercentageView() }}%</span>
+        <span><PercentsView :amount="proposalsStore.getTallyParams.getQuorumPercentageView()" :precision="2"/></span>
         <span>{{ $t("GOVERNANCE_VIEW.THRESHOLD") }}:</span>
-        <span>{{ proposalsStore.getTallyParams.getThresholdPercentageView() }}%</span>
+        <span>
+          <PercentsView :amount="proposalsStore.getTallyParams.getThresholdPercentageView()" :precision="2"/>
+        </span>
         <span>{{ $t("GOVERNANCE_VIEW.VETO_THRESHOLD") }}:</span>
-        <span>{{ proposalsStore.getTallyParams.getVetoThresholdPercentageView() }}%</span>
+        <span>
+          <PercentsView :amount="proposalsStore.getTallyParams.getVetoThresholdPercentageView()" :precision="2"/>
+        </span>
     </div>
   </div>
 </template>
@@ -44,6 +48,8 @@ import {useProposalsStore} from "@/store/proposals.store";
 import { Proposal } from "@/models/store/proposal";
 import { VoteOption } from "@/models/store/proposal";
 import { computed } from "vue";
+import CoinAmount from "../commons/CoinAmount.vue";
+import PercentsView from "@/components/commons/PercentsView"
 
 const props = defineProps<{
   proposal?: Proposal

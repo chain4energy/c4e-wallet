@@ -39,7 +39,7 @@
             :coins="amountToPass"
             :show-denom="true"
             :precision="4"
-            :orig-denom="useConfigurationStore().config.getViewDenom()"
+            :orig-denom="useConfigurationStore().config.getConvertedDenom()"
             :reduce-big-number="false">
             <template v-slot:logo-front>
               <C4EIcon icon="c4e-circle" size="30"/>
@@ -196,7 +196,7 @@ function maxAmountMessageData(): string {
 function action() {
   switch(stakingAction.value) {
     case StakingAction.DELEGATE: {
-      delegate();
+      delegate()
       break;
     }
     case StakingAction.UNDELEGATE: {
@@ -229,7 +229,7 @@ async function delegate() {
   if (dst) {
   await useUserStore().delegate(dst, amount.value)
     .then((resp) => {
-      console.log(resp);
+      console.log(resp)
       emit('success');
     });
   } // TODO else
@@ -258,8 +258,8 @@ const amountToPass = computed(() => {
   switch(stakingAction.value) {
     case StakingAction.DELEGATE: {
       coins = [];
-      coins.push({
-        amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')},
+      coins.push(
+        {amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')},
         {amount: useUserStore().getBalance|| 0, header:  i18n.global.t('STAKING_VIEW.STAKING_POPUP.AVAILABLE_TO_DELEGATE')});
       break;
     }

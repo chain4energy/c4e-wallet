@@ -7,27 +7,40 @@
           <div class="dot" style="background: #27697F"> </div>
           <div> {{ $t("DASHBOARD_VIEW.BOUNDED") }}</div>
           <Icon name="ArrowRight" />
-          <div style="font-weight: bold">
+          <CoinAmount :amount="tokensStore.getTotalBonded" :show-denom="true" style="font-weight: bold"/>
+<!-- 
+          <div >
             {{ bounded }}
-          </div>
+          </div> -->
           <div class="dot"></div>
-          <div>{{ boundedPercentage }}%</div>
+          <div>
+            <PercentsView :amount="boundedPercentage" :precision="2"></PercentsView>
+          </div>
         </div>
         <div class="legend-item">
           <div class="dot" style="background: #fff1a9"></div>
           <div> {{ $t("DASHBOARD_VIEW.UNBOUNDED") }}</div>
           <Icon name="ArrowRight" />
-          <div style="font-weight: bold">{{unBounded }}
-          </div>
+          <CoinAmount :amount="tokensStore.getTotalUnbonded" :show-denom="true" style="font-weight: bold"/>
+
+          <!-- <div style="font-weight: bold">{{unBounded }}
+          </div> -->
           <div class="dot"></div>
-          <div>{{ unboundedPercentage }}%</div>
+          <div>
+            <PercentsView :amount="unboundedPercentage" :precision="2"></PercentsView>
+          </div>
         </div>
         <div class="legend-item">
           <div class="dot" style="background: #72bf44"></div>
-          <div> {{ $t("DASHBOARD_VIEW.UNBOUNDED") }}</div>
+          <div> {{ $t("DASHBOARD_VIEW.UNBOUNDING") }}</div>
           <Icon name="ArrowRight" />
-          <div style="font-weight: bold">{{ unBounding }}
+          <CoinAmount :amount="tokensStore.getTotalUnbonding" :show-denom="true" style="font-weight: bold"/>
+          <div class="dot"></div>
+          <div>
+            <PercentsView :amount="unboundingPercentage" :precision="2"></PercentsView>
           </div>
+          <!-- <div style="font-weight: bold">{{ unBounding }}
+          </div> -->
         </div>
       </div>
     </div>
@@ -49,6 +62,10 @@ import { SVGRenderer } from "echarts/renderers";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import { createTokenomicsChartData } from "@/charts/dashboard";
 import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
+import CoinAmount from "../commons/CoinAmount.vue";
+import { useConfigurationStore } from "@/store/configuration.store";
+import { BigDecimal } from "@/models/store/big.decimal";
+import PercentsView from "@/components/commons/PercentsView.vue";
 
 use([
   SVGRenderer,
@@ -71,21 +88,29 @@ const unboundingPercentage = computed(() => {
   return tokensStore.getUnboundingPercentage();
 });
 
-const bounded = computed((): string => {
-  return tokensStore.getStakingPool.getBondedTokensViewAmount();
+const bounded = computed((): number | BigDecimal => {
+  return useConfigurationStore().config.getConvertedAmount(tokensStore.getTotalBonded);
+  // return tokensStore.getStakingPool.getBondedTokensViewAmount();
 });
 
-const unBounded = computed((): string => {
-  return tokensStore.getTotalUnbondedViewAmount();
+const unBounded = computed((): number | BigDecimal => {
+  return useConfigurationStore().config.getConvertedAmount(tokensStore.getTotalUnbonded);
+  // return tokensStore.getTotalUnbondedViewAmount();
 });
 
-const unBounding = computed((): string => {
-  return tokensStore.getStakingPool.getNotBondedTokensViewAmount();
+const unBounding = computed((): number | BigDecimal => {
+  return useConfigurationStore().config.getConvertedAmount(tokensStore.getTotalUnbonding);
+  // return tokensStore.getStakingPool.getNotBondedTokensViewAmount();
 });
 
-const totalSupply = computed((): string => {
-  return tokensStore.getTotalSupply.getViewAmount();
+const totalSupply = computed((): number | BigDecimal => {
+  return useConfigurationStore().config.getConvertedAmount(tokensStore.getTotalSupply.amount);
+  // return tokensStore.getTotalSupply.getViewAmount();
 });
+
+// const option = computed(() => {
+//   return createTokenomicsChartData(bounded.value, unBounded.value, unBounding.value, totalSupply.value)
+// })
 
 const option = computed(() => {
   return createTokenomicsChartData(bounded.value, unBounded.value, unBounding.value, totalSupply.value)
@@ -97,7 +122,7 @@ const option = computed(() => {
 @import '../../styles/variables.scss';
 
 @media screen and (min-width: 951px) {
-  
+
 }
 
 #tokenchartdiv {
@@ -106,7 +131,7 @@ const option = computed(() => {
   overflow: visible;
   margin-right: 70px;
   margin-left: -50px;
-  
+
     // margin-left: -300px;
 }
 

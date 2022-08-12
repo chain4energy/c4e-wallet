@@ -1,4 +1,6 @@
+import { BigDecimal } from "@/models/store/big.decimal";
 import i18n from "@/plugins/i18n"
+import { formatBigNumber } from "@/utils/locale-number-formatter";
 
 const communityPoolColor = '#fff1a9';
 const strategicReversePoolColor = '#72bf44';
@@ -8,18 +10,23 @@ const bondedColor = '#26697f';
 const unBoundedColor = '#fff1a9';
 const unBoundingColor = '#72bf44';
 
-export function createDashboardPoolsChartData(communityPool: string, strategicReversePool: string, airdropPool: string) {
+export function createDashboardPoolsChartData(communityPool: number | BigDecimal, strategicReversePool: number | BigDecimal, airdropPool: number | BigDecimal, precision = 4) {
+  const formatter = function (params: any) {
+    return `
+      <b>${params.data.name}</b></br>
+      <b>${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), params.value)}</b>`
+  };
   return createDashboardPoolsSingleChartData(
-    '{b} <br/>{c}',
+    formatter,
     [
       { value: communityPool, name: i18n.global.t('DASHBOARD_VIEW.COMMUNITY_POOL'), color: communityPoolColor },
       { value: strategicReversePool, name: i18n.global.t('DASHBOARD_VIEW.STRATEGIC_REVERSE_POOL'), color: strategicReversePoolColor },
       { value: airdropPool, name: i18n.global.t('DASHBOARD_VIEW.AIRDROP'), color: airdropPoolColor }
-    ]
+    ], precision
   )
 }
 
-function createDashboardPoolsSingleChartData(formatter: any, data: { value: string, name: string, color: string }[]) {
+function createDashboardPoolsSingleChartData(formatter: any, data: { value: number | BigDecimal, name: string, color: string }[], precision: number) {
   return {
     tooltip: {
       trigger: 'item',
@@ -73,15 +80,15 @@ function createDashboardPoolsSingleChartData(formatter: any, data: { value: stri
       labelLine: {
         show: false
       },
-      data: data.map(d => { return createDashboardPoolsChartSeriesData(d.value, d.name, d.color) })
+      data: data.map(d => { return createDashboardPoolsChartSeriesData(d.value, d.name, d.color,precision) })
     }]
   };
 
 }
 
-function createDashboardPoolsChartSeriesData(value: string, name: string, color: string) {
+function createDashboardPoolsChartSeriesData(value: number | BigDecimal, name: string, color: string, precision: number) {
   return {
-    value: value,
+    value: value.toFixed(precision),
     name: name,
     itemStyle: {
       label: {
@@ -103,23 +110,29 @@ function createDashboardPoolsChartSeriesData(value: string, name: string, color:
 
 
 
-export function createTokenomicsChartData(bounded: string, unBounded: string, unBounding: string, total: string) {
+export function createTokenomicsChartData(bounded: number | BigDecimal, unBounded: number | BigDecimal, unBounding: number | BigDecimal, total: number | BigDecimal, precision = 4) {
+  const formatter = function (params: any) {
+    return `
+      <b>${params.data.name}</b></br>
+      <b>${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), params.value)}</b>`
+  };
+
   return createTokenomicsSingleChartData(
-    '{b} <br/>{c}',
+    formatter,
     [
-      { value: bounded, color: bondedColor },
-      { value: unBounded, color: unBoundedColor },
-      { value: unBounding, color: unBoundingColor }
-    ], total
+      { value: bounded, name: i18n.global.t('DASHBOARD_VIEW.BOUNDED'), color: bondedColor },
+      { value: unBounded, name: i18n.global.t('DASHBOARD_VIEW.UNBOUNDED'), color: unBoundedColor },
+      { value: unBounding, name: i18n.global.t('DASHBOARD_VIEW.UNBOUNDING'), color: unBoundingColor }
+    ], total, precision
   )
 }
 
 
 
-function createTokenomicsSingleChartData(formatter: any, data: { value: string, color: string }[], total: string) {
-  const dataToset: any[] = data.map(d => { return createTokenomicsChartSeriesData(d.value, d.color) });
+function createTokenomicsSingleChartData(formatter: any, data: { value: number | BigDecimal, name: string, color: string }[], total: number | BigDecimal, precision: number) {
+  const dataToset: any[] = data.map(d => { return createTokenomicsChartSeriesData(d.value, d.name, d.color, precision) });
   dataToset.push({
-    value: total,
+    value: total.toFixed(precision),
     name: null,
 
     itemStyle: { opacity: 0 },
@@ -169,10 +182,10 @@ function createTokenomicsSingleChartData(formatter: any, data: { value: string, 
       trigger: 'item',
       formatter: formatter
     },
-    legend: {
-      orient: 'vertical',
-      left: 10,
-    },
+    // legend: {
+    //   orient: 'vertical',
+    //   left: 10,
+    // },
     series: [
       {
         width: '130%',
@@ -206,9 +219,10 @@ function createTokenomicsSingleChartData(formatter: any, data: { value: string, 
   return result;
 }
 
-function createTokenomicsChartSeriesData(value: string, color: string) {
+function createTokenomicsChartSeriesData(value: number | BigDecimal, name: string, color: string, precision: number) {
   return {
-    value: value,
+    value: value.toFixed(precision),
+    name: name,
     itemStyle: {
       label: {
         show: false

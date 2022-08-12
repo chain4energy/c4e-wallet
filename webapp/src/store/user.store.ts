@@ -51,7 +51,7 @@ export const useUserStore = defineStore({
     async reconnect(onSuccess?: (connectionInfo: ConnectionInfo) => void){
       logger.logToConsole(LogLevel.DEBUG, 'reconnect: ', JSON.stringify(this.connectionInfo));
       if(this.connectionInfo.connectionType === ConnectionType.Keplr){
-        await this.connectKeplr(onSuccess); 
+        await this.connectKeplr(onSuccess);
       } else if(this.connectionInfo.connectionType === ConnectionType.Address){
         await this.connectAsAddress(this.connectionInfo.account, onSuccess);
       }
@@ -142,7 +142,7 @@ export const useUserStore = defineStore({
       const connectionInfo = this.connectionInfo;
       await apiFactory.accountApi().delegate(connectionInfo, validator, amount).then(async (resp) => {
         if (resp.isError()) {
-          await onTxDeliveryFailure(connectionInfo, this, resp, 'Delegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validator + ' failed');
+          await onTxDeliveryFailure(connectionInfo, this, resp, 'Delegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validator + ' failed').then(resp=>{return resp})
         } else {
           const allResults = await Promise.all([
             fetchBalance(connectionInfo, this, true),
@@ -389,6 +389,7 @@ async function fetchRewards(connectionInfo: ConnectionInfo, state: UserState, lo
 async function onTxDeliveryFailure(connectionInfo: ConnectionInfo, state: UserState, response: RequestResponse<TxData, TxBroadcastError>, message: string) {
   logger.logToConsole(LogLevel.ERROR, message);
   toast.error(message);
+  return message
   if (response.error?.hasTxData()) {
     await fetchBalance(connectionInfo, state, false);
   }

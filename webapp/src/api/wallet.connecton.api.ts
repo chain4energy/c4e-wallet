@@ -120,20 +120,20 @@ export default class WalletConnectionApi extends LoggedService {
         bech32PrefixConsPub: config.addressPrefix + "valconspub"
       },
       stakeCurrency: {
-        coinDenom: config.getViewDenom(),
+        coinDenom: config.getConvertedDenom(),
         coinMinimalDenom: config.stakingDenom,
         coinDecimals: config.getViewDenomDecimals()
       },
       feeCurrencies: [
         {
-          coinDenom: config.getViewDenom(),
+          coinDenom: config.getConvertedDenom(),
           coinMinimalDenom: config.stakingDenom,
           coinDecimals: config.getViewDenomDecimals()
         }
       ],
       currencies: [
         {
-          coinDenom: config.getViewDenom(),
+          coinDenom: config.getConvertedDenom(),
           coinMinimalDenom: config.stakingDenom,
           coinDecimals: config.getViewDenomDecimals()
         }

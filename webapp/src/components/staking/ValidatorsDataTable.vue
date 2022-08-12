@@ -39,21 +39,34 @@
         </Column>
         <Column v-if="isValidatorsTable()" field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
           <template #body="{data}">
-            <div v-if="Number(data.commission.rateViewPercentage) < 5" class="commision level-1">{{ data.commission.rateViewPercentage }}%</div>
-            <div v-if="Number(data.commission.rateViewPercentage) >= 5 && Number(data.commission.rateViewPercentage) < 10" class="commision level-2">{{ data.commission.rateViewPercentage }}%</div>
-            <div v-if="Number(data.commission.rateViewPercentage) >= 10 && Number(data.commission.rateViewPercentage) < 25" class="commision level-3">{{ data.commission.rateViewPercentage }}%</div>
-            <div v-if="Number(data.commission.rateViewPercentage) >= 25" class="commision level-4">{{ data.commission.rateViewPercentage }}%</div>
+              <PercentsView :amount="data.commission.rateViewPercentage" :precision="2"></PercentsView>
           </template>
         </Column>
         <Column v-if="isValidatorsTable()" field="votingPower" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">
           <template #body="{data}">
-            <span v-if="data.votingPower">{{ data.votingPowerViewPercentage }}%</span>
+            <div v-if="data.votingPower">
+            <div v-if="data.votingPower < 0.05" class="commision level-1">
+              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            <div v-if="data.votingPower >= 0.05 && data.votingPower < .10" class="commision level-2">
+              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            <div v-if="data.votingPower >= .10 && data.votingPower < .25" class="commision level-3">
+              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            <div v-if="data.votingPower >= .25" class="commision level-4">
+              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            </div>
             <span v-else>updating</span>
           </template>
         </Column>
         <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.STAKE`)" :sortable="true" sortField="delegatedAmount">
           <template #body="{data}">
-            <span>{{ data.getDelegatedViewAmount() }}</span>
+            <CoinAmount :amount="data.delegatedAmount" :show-denom="true"/>
+
+            <!-- <span>{{ data.getDelegatedViewAmount() }}</span> -->
+            <!-- <span v-else>updating</span> -->
           </template>
         </Column>
         <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.REWARDS`)" :sortable="true" sortField="rewardsAmountSort">
@@ -94,11 +107,11 @@
         <div style="display: flex; flex-direction: row;">
           <div style="display: flex; flex-direction: column; margin-right: 20px">
             <p>{{ $t(`STAKING_VIEW.TABLE.UNSTAKING`) }}</p>
-            <p>{{ expandedData.data.undelegatingViewAmount }}</p>
+            <CoinAmount :amount="expandedData.data.undelegatingAmount" :show-denom="true"/>
           </div>
           <div style="display: flex; flex-direction: column">
             <p>{{ $t(`STAKING_VIEW.TABLE.REWARDS`) }}</p>
-            <p>{{ expandedData.data.rewardsViewAmount }}</p> <!-- TODONUMBER -->
+            <CoinAmount :amount="expandedData.data.rewardsAmount" :show-denom="true"/>
           </div>
         </div>
       </template>
@@ -120,6 +133,8 @@ import ValidatorLogo from "../commons/ValidatorLogo.vue";
 import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
 import { getUnstakings, ValidatorsDataTableType, ValidatorUnstaking } from "./ValidatorsDataTable";
 import { RedelegationDirection } from "./StakingRedelegate";
+import CoinAmount from "../commons/CoinAmount.vue";
+import PercentsView from "@/components/commons/PercentsView"
 
 function getRedelegationDirection() {
   if (isValidatorsTable()) {
