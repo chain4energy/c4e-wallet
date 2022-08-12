@@ -10,10 +10,6 @@ export class Coin {
     this.denom = denom;
   }
 
-  public getViewDenom(): string {
-    return useConfigurationStore().config.getConvertedDenom(this.denom);
-  }
-
 }
 
 export class DecCoin {
@@ -23,10 +19,6 @@ export class DecCoin {
   constructor(amount: BigDecimal, denom: string) {
     this.amount = amount;
     this.denom = denom;
-  }
-
-  public getViewDenom(): string {
-    return useConfigurationStore().config.getConvertedDenom(this.denom);
   }
 
 }

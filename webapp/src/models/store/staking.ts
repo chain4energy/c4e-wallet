@@ -9,11 +9,6 @@ export class Delegation {
     this.amount = amount;
   }
 
-  public getViewDenom(): string {
-    const config = useConfigurationStore().config;
-    return config.getConvertedDenom();
-  }
-
 }
 
 export class Delegations {
@@ -49,11 +44,6 @@ export class UnbondingDelegationEntry {
   constructor (amount: bigint, completionTime: Date) {
     this.amount = amount;
     this.completionTime = completionTime;
-  }
-
-  public getViewDenom(): string {
-    const config = useConfigurationStore().config;
-    return config.getConvertedDenom(config.stakingDenom);
   }
 
   public getCompletionTimeDateString(): string {

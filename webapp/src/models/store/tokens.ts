@@ -9,9 +9,4 @@ export class StakingPool {
     this.notBondedTokens = notBondedTokens;
   }
 
-  public getViewDenom(): string { // TODO =========
-    const config = useConfigurationStore().config;
-    return config.getConvertedDenom(config.stakingDenom);
-  }
-
 }
