@@ -19,11 +19,11 @@
             <label for="abstain">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</label>
           </div>
           <span v-if="useUserStore().isLoggedIn">
-            <p v-if="useUserStore().getTotalDelegatedViewAmount()== 0">
+            <p v-if="useUserStore().getTotalDelegated === 0n">
               {{$t('GOVERNANCE_VIEW.ERRORS.NO_STAKED')}}
             </p>
             <Button
-              :disabled="useUserStore().getTotalDelegatedViewAmount() == 0"
+              :disabled="useUserStore().getTotalDelegated === 0n"
               @click="onVoteClick" :label="$t('GOVERNANCE_VIEW.VOTE')" class="p-button-raised p-button-rounded" data-bs-dismiss="modal" />
           </span>
           <span v-else>

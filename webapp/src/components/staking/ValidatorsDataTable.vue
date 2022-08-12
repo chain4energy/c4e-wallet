@@ -39,7 +39,7 @@
         </Column>
         <Column v-if="isValidatorsTable()" field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
           <template #body="{data}">
-              <PercentsView :amount="data.commission.rateViewPercentage" :precision="2"></PercentsView>
+              <PercentsView :amount="data.commission.rate" :precision="2"></PercentsView>
           </template>
         </Column>
         <Column v-if="isValidatorsTable()" field="votingPower" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">

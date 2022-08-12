@@ -248,29 +248,14 @@ export const useUserStore = defineStore({
     getBalance(): bigint {
       return this.balance;
     },
-    getBalanceViewAmount(): (precision?: number) => string {
-      return (precision = 4) => {
-        return useConfigurationStore().config.getViewAmount(this.balance, precision);
-      }
-    },
     getTotalRewards(): BigDecimal {
       return this.rewards.totalRewards;
-    },
-    getTotalRewardsViewAmount(): (precision?: number) => string {
-      return (precision = 4) => {
-        return this.rewards.getTotalRewardsViewAmount(precision);
-      }
     },
     getRewards():Rewards {
       return this.rewards;
     },
     getTotalUndelegating(): bigint {
       return this.undelegations.totalUndelegating;
-    },
-    getTotalUndelegatingViewAmount(): (precision?: number) => string {
-      return (precision = 4) => {
-        return this.undelegations.getTotalUndelegatingViewAmount(precision);
-      }
     },
     getUndelegations(): UnbondingDelegations {
       return this.undelegations;
@@ -281,26 +266,11 @@ export const useUserStore = defineStore({
     getTotalDelegated(): bigint {
       return this.delegations.totalDelegated;
     },
-    getTotalDelegatedViewAmount(): (precision?: number) => string {
-      return (precision = 4) => {
-        return this.delegations.getTotalDelegatedViewAmount(precision);
-      }
-    },
     getVestingLockAmount() : bigint {
       return this.vestimgAccLocked;
     },
-    getVestingLockViewAmount(): (precision?: number) => string {
-      return (precision = 4) => {
-        return useConfigurationStore().config.getViewAmount(this.vestimgAccLocked, precision);
-      }
-    },
     getTotal() : bigint {
       return this.undelegations.totalUndelegating + this.delegations.totalDelegated + this.balance
-    },
-    getTotalViewAmount(): (precision?: number) => string {
-      return (precision = 4) => {
-        return useConfigurationStore().config.getViewAmount(this.getTotal, precision);
-      }
     }
   },
   persist: {

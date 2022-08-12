@@ -128,7 +128,7 @@ export const useProposalsStore = defineStore({
         this.proposalTally = undefined;
         if (proposal.isVotingPeriod()) {
           const tally = this.proposalsTally.get(proposal.proposalId);
-          logger.logToConsole(LogLevel.INFO, 'tally ' + tally?.getYesView())
+          logger.logToConsole(LogLevel.INFO, 'tally ' + tally?.yes)
 
           if (!tally) {
             promises.push(this.fetchVotingProposalTallyResult(id, true, lockscreen));
@@ -154,10 +154,10 @@ export const useProposalsStore = defineStore({
         if (resp.isSuccess() && resp.data !== undefined){
           if (storeSingle) {
             this.proposalTally = resp.data;
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', this.proposalTally.getYesView())
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', this.proposalTally.getAbstainView())
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', this.proposalTally.getNoView())
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', this.proposalTally.getNoWithVetoView())
+            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.yes))
+            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.abstain))
+            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.no))
+            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.noWithVeto))
 
 
           } else {

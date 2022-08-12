@@ -187,64 +187,6 @@ export class Configuration implements JsonConfiguration {
     return origAmount;
   }
 
-  public getViewAmount(origAmount: bigint | number | BigDecimal, precision = 4, reduceBigNumber = false, origDenom = this.stakingDenom): string {
-    const result = this. getConvertedAmount(origAmount, origDenom);
-    if (reduceBigNumber) {
-      return this.bigNumbersView(result, precision);
-    }
-    return result.toFixed(precision);
-  }
-
-  private bigNumbersView(number: bigint | number | BigDecimal, precision: number): string {
-    let val: BigDecimal;
-    if (number instanceof BigDecimal) {
-      val = number;
-    } else {
-      val = new BigDecimal(number);
-    }
-
-    let suffix = ''
-    if (val.isBiggerThanOrEqualTo(1e12)) {
-      val = val.divide(1e12);
-      suffix = 'T';
-    } else if (val.isBiggerThanOrEqualTo(1e9)) {
-      val = val.divide(1e9);
-      suffix = 'B';
-    } else if (val.isBiggerThanOrEqualTo(1e6)) {
-      val = val.divide(1e6);
-      suffix = 'M';
-    } else if (val.isBiggerThanOrEqualTo(1e3)) {
-      val = val.divide(1e3);
-      suffix = 'k';
-    }
-    return val.toFixed(precision) + (suffix !== '' ? ` ${suffix}` : '');
-  }
-
-
-
-  public getViewAmountAndDenom(origAmount: bigint | number | BigDecimal, precision = 4, origDenom = this.stakingDenom): { amount: string, denom: string } {
-    const result = this.getConvertedAmount(origAmount, origDenom);
-    return  { amount: result.toFixed(precision), denom: origDenom };
-    // const viewDenomConf = this.getViewDenomConfig(origDenom);
-    // if (viewDenomConf) {
-    //   const denom = viewDenomConf.viewDenom;
-    //   let amount: string;
-    //   if (typeof origAmount === 'bigint') {
-    //     amount = this.bigintToConvertedAmount(origAmount, viewDenomConf.conversionFactor, precision).toFixed(precision);
-    //   } else if (typeof origAmount === 'number') {
-    //     amount = (origAmount / viewDenomConf.conversionFactor).toFixed(precision);
-    //   } else {
-    //     amount = origAmount.divide( viewDenomConf.conversionFactor).toFixed(precision);
-    //   }
-    //   return {amount: amount, denom: denom};
-    // }
-    // if (typeof origAmount === 'bigint') {
-    //   return  { amount: this.bigIntToFixed(origAmount, precision), denom: origDenom };
-    // } else {
-    //   return { amount: origAmount.toFixed(precision), denom: origDenom };
-    // }
-  }
-
   private bigintToConvertedAmount(origAmount: bigint, conversionFactor: number): BigDecimal {
     // const helperValue = Math.pow(10, precision);
     // const helperValueBigInt = BigInt(helperValue);

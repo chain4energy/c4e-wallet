@@ -56,16 +56,8 @@ export class Validator implements ValidatorBase {
     return useUserStore().getDelegations.getAmountByValidator(this.operatorAddress);
   }
 
-  // public get delegatedViewAmount(): string {
-  //   return useUserStore().getDelegations.getViewAmountByValidator(this.operatorAddress);
-  // }
-
   public get undelegatingAmount(): bigint {
     return useUserStore().getUndelegations.getAmountByValidator(this.operatorAddress);
-  }
-
-  public get undelegatingViewAmount(): string {
-    return useUserStore().getUndelegations.getViewAmountByValidator(this.operatorAddress);
   }
 
   public get rewardsAmount(): BigDecimal {
@@ -73,14 +65,10 @@ export class Validator implements ValidatorBase {
   }
 
   public get rewardsAmountSort(): string {
-    return useUserStore().getRewards.getViewAmountByValidator(this.operatorAddress, useConfigurationStore().config.getViewDenomDecimals());
+    return useUserStore().getRewards.getAmountByValidator(this.operatorAddress).toString();
   }
 
-  public get rewardsViewAmount(): string {
-    return useUserStore().getRewards.getViewAmountByValidator(this.operatorAddress);
-  }
-
-  public get viewStatus(): string {
+  public get viewStatus(): string {  // TODO - make component ValidatorStatus
     switch (this.status) {
       case ValidatorStatus.Bonded:
         return i18n.global.t('STAKING_VIEW.VALIDATOR_STATUS.ACTIVE');
@@ -96,9 +84,6 @@ export class Validator implements ValidatorBase {
     return this.status === ValidatorStatus.Bonded;
   }
 
-  public getDelegatedViewAmount(precision = 4): string {
-    return useUserStore().getDelegations.getViewAmountByValidator(this.operatorAddress, precision);
-  }
 }
 
 export class ValidatorDescription implements ValidatorDescriptionBase{
@@ -136,9 +121,6 @@ export class ValidatorCommission {
     this.maxChangeRate = max_change_rate;
   }
 
-  public get rateViewPercentage(): number | bigint | BigDecimal {
-    return this.rate
-  }
 }
 
 export enum ValidatorStatus {

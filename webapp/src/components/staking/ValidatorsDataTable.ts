@@ -24,9 +24,6 @@ export class ValidatorUnstaking {
     return this.validator.description;
   }
 
-  public get undelegatingViewAmount() {
-    return this.validator.undelegatingViewAmount;
-  }
 }
 
 export function getUnstakings(validators: Validator[]) {

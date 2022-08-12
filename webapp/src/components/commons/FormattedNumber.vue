@@ -4,8 +4,7 @@
 
 <script setup lang="ts">
 import { BigDecimal } from "@/models/store/big.decimal";
-import i18n from "@/plugins/i18n";
-import { formatBigNumber, reduceBigNumber } from "@/utils/locale-number-formatter";
+import { formatBigNumberLocalized, reduceBigNumberLocalized } from "@/utils/locale-number-formatter";
 
 const props = defineProps<{
   amount: bigint | number | BigDecimal,
@@ -14,11 +13,13 @@ const props = defineProps<{
 }>()
 
 function transformToExpView() {
-  const locale = i18n.global.t('NUMBER_FORMAT_LOCALE');
-  if (props.reduceBigNumber) {
-    return reduceBigNumber(locale, props.amount, props.precision || 4);
+  if (typeof props.amount === 'number' && isNaN(props.amount)) {
+    return Number.NaN.toString(); // TODO some text?
   }
-  return formatBigNumber(locale, typeof props.amount === 'bigint' ? props.amount.toString() : props.amount.toFixed(props.precision || 4));
+  if (props.reduceBigNumber) {
+    return reduceBigNumberLocalized(props.amount, props.precision || 4);
+  }
+  return formatBigNumberLocalized(typeof props.amount === 'bigint' ? props.amount.toString() : props.amount.toFixed(props.precision || 4));
 }
 
 

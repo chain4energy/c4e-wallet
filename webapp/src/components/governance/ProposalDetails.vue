@@ -28,14 +28,14 @@
         <span>{{ $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") }}:</span>
         <span>{{ formattedDate(proposal.depositEndTime) }}</span>
         <span>{{ $t("GOVERNANCE_VIEW.QUORUM") }}:</span>
-        <span><PercentsView :amount="proposalsStore.getTallyParams.getQuorumPercentageView()" :precision="2"/></span>
+        <span><PercentsView :amount="proposalsStore.getTallyParams.quorum" :precision="2"/></span>
         <span>{{ $t("GOVERNANCE_VIEW.THRESHOLD") }}:</span>
         <span>
-          <PercentsView :amount="proposalsStore.getTallyParams.getThresholdPercentageView()" :precision="2"/>
+          <PercentsView :amount="proposalsStore.getTallyParams.threshold" :precision="2"/>
         </span>
         <span>{{ $t("GOVERNANCE_VIEW.VETO_THRESHOLD") }}:</span>
         <span>
-          <PercentsView :amount="proposalsStore.getTallyParams.getVetoThresholdPercentageView()" :precision="2"/>
+          <PercentsView :amount="proposalsStore.getTallyParams.vetoThreshold" :precision="2"/>
         </span>
     </div>
   </div>

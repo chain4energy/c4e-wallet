@@ -141,12 +141,6 @@ export const useTokensStore = defineStore({
       - this.getStakingPool.bondedTokens
       - this.getStakingPool.notBondedTokens;
     },
-    getTotalUnbondedViewAmount(): (precision?: number) => string {
-      return (precision = 4) => {
-        const unbonded = this.getTotalUnbonded
-        return useConfigurationStore().config.getViewAmount(unbonded, precision);
-      }
-    },
     getTotalSupply(): Coin {
       return this.totalSupply;
     },
@@ -168,48 +162,32 @@ export const useTokensStore = defineStore({
     getAirdropPool(): Coin {
       return this.airdropPool;
     },
-    getInflationPercentage(): (precision?: number) => string {
-      return (precision = 2) => {
-        if (isNaN(this.inflation)) {
-          return 'NaN';
-        }
-        return toPercentage(this.inflation, precision);
+    getAprPercentage(): BigDecimal | number {
+      if (isNaN(this.inflation)) {
+        return Number.NaN;
       }
-    },
-    getAprPercentage(): (precision?: number) => string {
-      return (precision = 2) => {
-        if (isNaN(this.inflation)) {
-          return 'NaN';
-        }
-        if (this.getStakingPool.bondedTokens=== 0n) {
-          return toPercentage(0, precision);
-        }
-        return toPercentage(new BigDecimal(this.inflation).multiply(this.totalSupply.amount).divide(this.getStakingPool.bondedTokens), precision);
+      if (this.getStakingPool.bondedTokens === 0n) {
+        return Number.POSITIVE_INFINITY;
       }
+      return new BigDecimal(this.inflation).multiply(this.totalSupply.amount).divide(this.getStakingPool.bondedTokens);
     },
-    getBoundedPercentage(): (precision?: number) => number | bigint | BigDecimal {
-      return (precision = 2) => {
+    getBoundedPercentage(): BigDecimal {
+      if (this.totalSupply.amount === 0n) {
+        return new BigDecimal(0);
+      }
+      return divideBigInts(this.stakingPool.bondedTokens, this.totalSupply.amount)
+    },
+    getUnboundedPercentage(): BigDecimal  {
         if (this.totalSupply.amount === 0n) {
-          return 0;
-        }
-        return divideBigInts(this.stakingPool.bondedTokens, this.totalSupply.amount)
-      }
-    },
-    getUnboundedPercentage(): (precision?: number) => number | bigint | BigDecimal  {
-      return (precision = 2) => {
-        if (this.totalSupply.amount === 0n) {
-          return 0;
+          return new BigDecimal(0);
         }
         return divideBigInts(this.getTotalUnbonded, this.totalSupply.amount);
-      }
     },
-    getUnboundingPercentage(): (precision?: number) => number | bigint | BigDecimal {
-      return (precision = 2) => {
-        if (this.totalSupply.amount === 0n) {
-          return 0;
-        }
-        return divideBigInts(this.stakingPool.notBondedTokens, this.totalSupply.amount);
+    getUnboundingPercentage(): BigDecimal {
+      if (this.totalSupply.amount === 0n) {
+        return new BigDecimal(0);
       }
+      return divideBigInts(this.stakingPool.notBondedTokens, this.totalSupply.amount);
     },
   }
 });

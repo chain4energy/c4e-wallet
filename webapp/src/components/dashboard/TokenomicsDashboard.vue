@@ -78,14 +78,14 @@ use([
 const tokensStore = useTokensStore();
 
 const boundedPercentage = computed(() => {
-  return tokensStore.getBoundedPercentage();
+  return tokensStore.getBoundedPercentage;
 });
 const unboundedPercentage = computed(() => {
-  return tokensStore.getUnboundedPercentage();
+  return tokensStore.getUnboundedPercentage;
 });
 
 const unboundingPercentage = computed(() => {
-  return tokensStore.getUnboundingPercentage();
+  return tokensStore.getUnboundingPercentage;
 });
 
 const bounded = computed((): number | BigDecimal => {

@@ -16,7 +16,7 @@ const props = defineProps<{
 const amount = computed(() => {
   if (typeof props.amount === 'number') {
     if (isNaN(props.amount)) {
-      return Number.NaN.toString();
+      return Number.NaN;
     }
     return props.amount * 100;
   } else if (typeof props.amount === 'bigint') {

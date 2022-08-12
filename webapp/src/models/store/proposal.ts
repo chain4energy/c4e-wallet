@@ -113,26 +113,6 @@ export class ProposalTallyResult{
     return this.yes + this.abstain + this.no + this.noWithVeto;
   }
 
-  public getTotalView(precision = 4, reduceBigNumber = false): string {
-    return useConfigurationStore().config.getViewAmount(this.total, precision, reduceBigNumber);
-  }
-
-  public getYesView(precision = 4, reduceBigNumber = false): string {
-    return useConfigurationStore().config.getViewAmount(this.yes, precision, reduceBigNumber);
-  }
-
-  public getAbstainView(precision = 4, reduceBigNumber = false): string {
-    return useConfigurationStore().config.getViewAmount(this.abstain, precision, reduceBigNumber);
-  }
-
-  public getNoView(precision = 4, reduceBigNumber = false): string {
-    return useConfigurationStore().config.getViewAmount(this.no, precision, reduceBigNumber);
-  }
-
-  public getNoWithVetoView(precision = 4, reduceBigNumber = false): string {
-    return useConfigurationStore().config.getViewAmount(this.noWithVeto, precision, reduceBigNumber);
-  }
-
   public getYesPercentage(): BigDecimal {
     if (this.total <= 0n) {
       return new BigDecimal(0);
@@ -177,15 +157,4 @@ export class TallyParams {
     this.vetoThreshold = vetoThreshold;
   }
 
-  public getQuorumPercentageView(): number {
-    return this.quorum;
-  }
-
-  public getThresholdPercentageView(): number {
-    return this.threshold;
-  }
-
-  public getVetoThresholdPercentageView(): number {
-    return this.vetoThreshold;
-  }
 }

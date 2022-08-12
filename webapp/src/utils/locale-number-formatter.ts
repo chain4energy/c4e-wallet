@@ -2,7 +2,12 @@ import { BigDecimal } from "@/models/store/big.decimal";
 import i18n from "@/plugins/i18n";
 
 export function formatBigNumberLocalized(amount: string) {
-  return formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), amount)
+  return formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), amount);
+}
+
+export function reduceBigNumberLocalized(number: bigint | number | BigDecimal, precision: number): string {
+  return reduceBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), number, precision);
+
 }
 
 export function formatBigNumber(locale: string, amount: string) {
