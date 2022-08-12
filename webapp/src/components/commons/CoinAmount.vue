@@ -7,7 +7,7 @@ import { BigDecimal } from "@/models/store/big.decimal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { Coin, DecCoin } from "@/models/store/common";
 import i18n from "@/plugins/i18n";
-import { formatBigNumber } from "@/utils/locale-number-formatter";
+import { formatBigNumber, reduceBigNumber } from "@/utils/locale-number-formatter";
 
 const props = defineProps<{
   amount: bigint | number | BigDecimal | Coin | DecCoin,
@@ -42,8 +42,10 @@ function retrieveConvertedAmount(): number | BigDecimal {
 function transformToExpView() {
   // const amountStr = viewedAmount();
   const locale = i18n.global.t('NUMBER_FORMAT_LOCALE');
-  const thousands =  formatBigNumber(locale, retrieveConvertedAmount().toFixed(props.precision || 4));
-  return thousands;
+  if (props.reduceBigNumber) {
+    return reduceBigNumber(locale, retrieveConvertedAmount(), props.precision || 4);
+  }
+  return formatBigNumber(locale, retrieveConvertedAmount().toFixed(props.precision || 4));
 }
 
 

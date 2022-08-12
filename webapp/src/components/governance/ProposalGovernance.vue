@@ -36,22 +36,22 @@
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
           <div>{{ yesPercentage }}%</div>
-          <div>({{ useProposalsStore().getProposalTally(proposal).getYesView(2, true)}})</div>
+          (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).yes" :reduce-big-number="true" :precision="2"/>)
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
           <div>{{ abstainPercentage }}%</div>
-          <div>({{ useProposalsStore().getProposalTally(proposal).getAbstainView(2, true)}})</div>
+          (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).abstain" :reduce-big-number="true" :precision="2"/>)
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
           <div>{{ noPercentage }}%</div>
-          <div>({{ useProposalsStore().getProposalTally(proposal).getNoView(2, true)}})</div>
+          (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).no" :reduce-big-number="true" :precision="2"/>)
         </div>
         <div>
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
           <div>{{ noWithVetoPercentage }}%</div>
-          <div>({{ useProposalsStore().getProposalTally(proposal).getNoWithVetoView(2, true)}})</div>
+          (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).noWithVeto" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
 
@@ -74,6 +74,7 @@ import {useRouter} from "vue-router";
 import {Proposal, ProposalStatus} from "@/models/store/proposal";
 import { createProposalListChartData } from '@/charts/governance';
 import { useProposalsStore } from '@/store/proposals.store';
+import CoinAmount from '../commons/CoinAmount.vue';
 
 use([
   SVGRenderer,

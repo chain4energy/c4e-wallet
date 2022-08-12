@@ -16,7 +16,7 @@
     </div>
     <div class="info">
         <span>{{ $t("GOVERNANCE_VIEW.TOTAL_DEPOSIT") }}:</span>
-        <span>{{ proposal.getTotalDepositByDenom().getViewAmount() }} {{ proposal.getTotalDepositByDenom().getViewDenom()  }}</span>
+        <CoinAmount :amount="proposal.getTotalDepositByDenom()" :show-denom="true"/>
         <span>{{ $t("GOVERNANCE_VIEW.VOTING_START") }}:</span>
         <span>{{formattedDate(proposal.votingStartTime) }}</span>
         <span>{{ $t("GOVERNANCE_VIEW.VOTING_END") }}:</span>
@@ -44,6 +44,7 @@ import {useProposalsStore} from "@/store/proposals.store";
 import { Proposal } from "@/models/store/proposal";
 import { VoteOption } from "@/models/store/proposal";
 import { computed } from "vue";
+import CoinAmount from "../commons/CoinAmount.vue";
 
 const props = defineProps<{
   proposal?: Proposal
