@@ -4,7 +4,7 @@
     <div class="userdata__accountData-base" >
       <AmountView :coins="representData" :show-denom="true">
         <template v-slot:logo-front>
-          <C4EIcon icon="c4e-circle" size="30"/>
+          <C4EIcon icon="c4e-circle" :size="30"/>
         </template>
       </AmountView>
     <!--<div class="userdata__amounts">

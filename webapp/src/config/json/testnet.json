@@ -10,11 +10,11 @@
   "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
   "chainId": "c4e-testnet-0.1.0",
   "operationGas": {
-    "vote": 20000,
-    "delegate": 30000,
-    "undelegate": 40000,
-    "redelegate": 50000,
-    "claimRewards": 250000
+    "vote": 200000,
+    "delegate": 300000,
+    "undelegate": 400000,
+    "redelegate": 500000,
+    "claimRewards": 2500000
   },
   "viewDenoms": [
     {

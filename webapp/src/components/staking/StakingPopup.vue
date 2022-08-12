@@ -192,7 +192,7 @@ function maxAmountMessageData(): string {
 function action() {
   switch(stakingAction.value) {
     case StakingAction.DELEGATE: {
-      delegate();
+      delegate()
       break;
     }
     case StakingAction.UNDELEGATE: {
@@ -209,22 +209,24 @@ function action() {
 async function delegate() {
   await useUserStore().delegate(props.validator.operatorAddress, amount.value)
     .then((resp) => {
-      console.log(resp);
+      console.log(resp)
       emit('success');
     });
 }
 
 async function undelegate() {
-  await useUserStore().undelegate(props.validator.operatorAddress, amount.value).then((resp) => {
+  await useUserStore().undelegate(props.validator.operatorAddress, amount.value)
+    .then((resp) => {
       emit('success');
     });
 }
 
 async function redelegate() {
   if (redelegateTo.value) {
-    useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value)).then((resp) => {
-      emit('success');
-    });
+    useUserStore().redelegate(props.validator.operatorAddress, redelegateTo.value.operatorAddress, String(amount.value))
+      .then((resp) => {
+        emit('success');
+      });
   }
 }
 const amountToPass = computed(() => {
@@ -232,8 +234,8 @@ const amountToPass = computed(() => {
   switch(stakingAction.value) {
     case StakingAction.DELEGATE: {
       coins = [];
-      coins.push({
-        amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')},
+      coins.push(
+        {amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')},
         {amount: useUserStore().getBalance|| 0, header:  i18n.global.t('STAKING_VIEW.STAKING_POPUP.AVAILABLE_TO_DELEGATE')});
       break;
     }

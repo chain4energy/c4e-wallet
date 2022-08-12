@@ -112,7 +112,7 @@ export const useTokensStore = defineStore({
           const message = 'Error fetching inflation data';
           logger.logToConsole(LogLevel.ERROR, message);
           // toast.error(message);  // TODO uncomment when inflation on testnet
-        } 
+        }
       });
     },
     clear() {
@@ -187,28 +187,28 @@ export const useTokensStore = defineStore({
         return toPercentage(new BigDecimal(this.inflation).multiply(this.totalSupply.amount).divide(this.getStakingPool.bondedTokens), precision);
       }
     },
-    getBoundedPercentage(): (precision?: number) => string {
+    getBoundedPercentage(): (precision?: number) => number | bigint | BigDecimal {
       return (precision = 2) => {
         if (this.totalSupply.amount === 0n) {
-          return toPercentage(0, precision);
+          return 0;
         }
-        return toPercentage(divideBigInts(this.stakingPool.bondedTokens, this.totalSupply.amount), precision);
+        return divideBigInts(this.stakingPool.bondedTokens, this.totalSupply.amount)
       }
     },
-    getUnboundedPercentage(): (precision?: number) => string {
+    getUnboundedPercentage(): (precision?: number) => number | bigint | BigDecimal  {
       return (precision = 2) => {
         if (this.totalSupply.amount === 0n) {
-          return toPercentage(0, precision);
+          return 0;
         }
-        return toPercentage(divideBigInts(this.getTotalUnbonded, this.totalSupply.amount), precision);
+        return divideBigInts(this.getTotalUnbonded, this.totalSupply.amount);
       }
     },
-    getUnboundingPercentage(): (precision?: number) => string {
+    getUnboundingPercentage(): (precision?: number) => number | bigint | BigDecimal {
       return (precision = 2) => {
         if (this.totalSupply.amount === 0n) {
-          return toPercentage(0, precision);
+          return 0;
         }
-        return toPercentage(divideBigInts(this.stakingPool.notBondedTokens, this.totalSupply.amount), precision);
+        return divideBigInts(this.stakingPool.notBondedTokens, this.totalSupply.amount);
       }
     },
   }

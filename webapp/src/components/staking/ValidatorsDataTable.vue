@@ -39,15 +39,25 @@
         </Column>
         <Column field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
           <template #body="{data}">
-            <div v-if="Number(data.commission.rateViewPercentage) < 5" class="commision level-1">{{ data.commission.rateViewPercentage }}%</div>
-            <div v-if="Number(data.commission.rateViewPercentage) >= 5 && Number(data.commission.rateViewPercentage) < 10" class="commision level-2">{{ data.commission.rateViewPercentage }}%</div>
-            <div v-if="Number(data.commission.rateViewPercentage) >= 10 && Number(data.commission.rateViewPercentage) < 25" class="commision level-3">{{ data.commission.rateViewPercentage }}%</div>
-            <div v-if="Number(data.commission.rateViewPercentage) >= 25" class="commision level-4">{{ data.commission.rateViewPercentage }}%</div>
+              <PercentsView :amount="data.commission.rateViewPercentage" :precision="2"></PercentsView>
           </template>
         </Column>
         <Column field="votingPower" :header="$t(`STAKING_VIEW.TABLE_HEADERS.VOTING_POWER`)" :sortable="true" sortField="tokens">
           <template #body="{data}">
-            <span v-if="data.votingPower">{{ data.votingPowerViewPercentage }}%</span>
+            <div v-if="data.votingPower">
+            <div v-if="data.votingPower < 0.05" class="commision level-1">
+              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            <div v-if="data.votingPower >= 0.05 && data.votingPower < .10" class="commision level-2">
+              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            <div v-if="data.votingPower >= .10 && data.votingPower < .25" class="commision level-3">
+              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            <div v-if="data.votingPower >= .25" class="commision level-4">
+              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            </div>
             <span v-else>updating</span>
           </template>
         </Column>
@@ -107,6 +117,7 @@ import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
 import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
 import CoinAmount from "../commons/CoinAmount.vue";
+import PercentsView from "@/components/commons/PercentsView"
 
 const popupOpened = ref(false);
 const currentValidator = ref({})

@@ -13,7 +13,9 @@
             {{ bounded }}
           </div> -->
           <div class="dot"></div>
-          <div>{{ boundedPercentage }}%</div>
+          <div>
+            <PercentsView :amount="boundedPercentage" :precision="2"></PercentsView>
+          </div>
         </div>
         <div class="legend-item">
           <div class="dot" style="background: #fff1a9"></div>
@@ -24,13 +26,16 @@
           <!-- <div style="font-weight: bold">{{unBounded }}
           </div> -->
           <div class="dot"></div>
-          <div>{{ unboundedPercentage }}%</div>
+          <div>
+            <PercentsView :amount="unboundedPercentage" :precision="2"></PercentsView>
+          </div>
         </div>
         <div class="legend-item">
           <div class="dot" style="background: #72bf44"></div>
-          <div> {{ $t("DASHBOARD_VIEW.UNBOUNDED") }}</div>
+          <div> {{ $t("DASHBOARD_VIEW.UNBOUNDING") }}</div>
           <Icon name="ArrowRight" />
           <CoinAmount :amount="tokensStore.getTotalUnbonding" :show-denom="true" style="font-weight: bold"/>
+          <PercentsView :amount="unboundingPercentage" :precision="2"></PercentsView>
           <!-- <div style="font-weight: bold">{{ unBounding }}
           </div> -->
         </div>
@@ -57,6 +62,7 @@ import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 import CoinAmount from "../commons/CoinAmount.vue";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { BigDecimal } from "@/models/store/big.decimal";
+import PercentsView from "@/components/commons/PercentsView.vue";
 
 use([
   SVGRenderer,
@@ -113,7 +119,7 @@ const option = computed(() => {
 @import '../../styles/variables.scss';
 
 @media screen and (min-width: 951px) {
-  
+
 }
 
 #tokenchartdiv {
@@ -122,7 +128,7 @@ const option = computed(() => {
   overflow: visible;
   margin-right: 70px;
   margin-left: -50px;
-  
+
     // margin-left: -300px;
 }
 
