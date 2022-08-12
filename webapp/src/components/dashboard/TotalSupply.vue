@@ -4,7 +4,6 @@
     <div class="text">
       <span class="label">{{ $t('DASHBOARD_VIEW.TOTAL_SUPPLY') }}</span>
       <CoinAmount :amount="tokensStore.totalSupply" :show-denom="true" class="value small"/>
-      <!-- <span class="value small">{{ tokensStore.totalSupply.getViewAmount()}} {{ tokensStore.totalSupply.getViewDenom() }}</span> -->
     </div>
   </div>
 </template>

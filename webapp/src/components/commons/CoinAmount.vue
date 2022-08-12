@@ -31,23 +31,6 @@ function retrieveConvertedAmount(): number | BigDecimal {
   }
 }
 
-// function viewedAmount(): string {
-//   return useConfigurationStore().config.getViewAmount(
-//     retrieveAmount() || 0,
-//     props.precision || 4,
-//     props.reduceBigNumber || false);
-// }
-
-// function transformToExpView() {
-//   // const amountStr = viewedAmount();
-//   const locale = i18n.global.t('NUMBER_FORMAT_LOCALE');
-//   if (props.reduceBigNumber) {
-//     return reduceBigNumber(locale, retrieveConvertedAmount(), props.precision || 4);
-//   }
-//   return formatBigNumber(locale, retrieveConvertedAmount().toFixed(props.precision || 4));
-// }
-
-
 </script>
 
 <style scoped lang="scss">

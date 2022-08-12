@@ -64,9 +64,6 @@
         <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.STAKE`)" :sortable="true" sortField="delegatedAmount">
           <template #body="{data}">
             <CoinAmount :amount="data.delegatedAmount" :show-denom="true"/>
-
-            <!-- <span>{{ data.getDelegatedViewAmount() }}</span> -->
-            <!-- <span v-else>updating</span> -->
           </template>
         </Column>
         <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.REWARDS`)" :sortable="true" sortField="rewardsAmountSort">

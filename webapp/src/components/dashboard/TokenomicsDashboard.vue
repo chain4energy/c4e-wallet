@@ -90,27 +90,19 @@ const unboundingPercentage = computed(() => {
 
 const bounded = computed((): number | BigDecimal => {
   return useConfigurationStore().config.getConvertedAmount(tokensStore.getTotalBonded);
-  // return tokensStore.getStakingPool.getBondedTokensViewAmount();
 });
 
 const unBounded = computed((): number | BigDecimal => {
   return useConfigurationStore().config.getConvertedAmount(tokensStore.getTotalUnbonded);
-  // return tokensStore.getTotalUnbondedViewAmount();
 });
 
 const unBounding = computed((): number | BigDecimal => {
   return useConfigurationStore().config.getConvertedAmount(tokensStore.getTotalUnbonding);
-  // return tokensStore.getStakingPool.getNotBondedTokensViewAmount();
 });
 
 const totalSupply = computed((): number | BigDecimal => {
   return useConfigurationStore().config.getConvertedAmount(tokensStore.getTotalSupply.amount);
-  // return tokensStore.getTotalSupply.getViewAmount();
 });
-
-// const option = computed(() => {
-//   return createTokenomicsChartData(bounded.value, unBounded.value, unBounding.value, totalSupply.value)
-// })
 
 const option = computed(() => {
   return createTokenomicsChartData(bounded.value, unBounded.value, unBounding.value, totalSupply.value)

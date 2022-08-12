@@ -7,34 +7,12 @@
           <C4EIcon icon="c4e-circle" :size="30"/>
         </template>
       </AmountView>
-    <!--<div class="userdata__amounts">
-      <p>{{ $t('USER_DATA.TOTAL') }}</p>
-      <p>{{total || 0}}</p>
-    </div>-->
-    <!--<div class="userdata__amounts">
-      <p>{{ $t('USER_DATA.AVAILABLE') }}</p>
-      <p>{{useUserStore().getBalanceViewAmount() || 0}}</p>
-    </div>
-    <div class="userdata__amounts">
-      <p>{{ $t('USER_DATA.STAKED') }}</p>
-      <p>{{useUserStore().getTotalDelegatedViewAmount() || 0}}</p>
-    </div>
-    <div class="userdata__amounts">
-      <p>{{ $t('USER_DATA.UNSTAKING') }}</p>
-      <p>{{useUserStore().getTotalUndelegatingViewAmount() || 0}}</p>
-    </div>-->
     <div class="userdata__accountData-vesting-first" v-if="useUserStore().isContinuousVestingAccount">
       <div>
         <p>{{ $t('USER_DATA.LOCKED') }}</p>
         <CoinAmount :amount="locked" :show-denom="true"/>
       </div>
     </div>
-    <!-- <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
-      <div>
-        <p>Lock start</p>
-        <p>{{ useUserStore().getAccount.continuousVestingData?.startTime.toLocaleString() }}</p>
-      </div>
-    </div> -->
     <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
       <div>
         <p>{{ $t('USER_DATA.VESTING_END') }}</p>

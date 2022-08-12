@@ -187,10 +187,10 @@ function lessThanOrEqualTo(value: string | undefined): boolean {
   });
 }
 
-function maxAmountMessageData(): string {
+function maxAmountMessageData(): number | BigDecimal {
   return stakingAction.value === StakingAction.DELEGATE ?
-      useUserStore().getBalanceViewAmount(useConfigurationStore().config.getViewDenomDecimals()) :
-      props.validator.getDelegatedViewAmount(useConfigurationStore().config.getViewDenomDecimals());
+    useConfigurationStore().config.getConvertedAmount(useUserStore().getBalance) :
+    useConfigurationStore().config.getConvertedAmount(props.validator.delegatedAmount);
 }
 
 function action() {
