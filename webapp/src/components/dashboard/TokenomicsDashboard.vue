@@ -35,7 +35,10 @@
           <div> {{ $t("DASHBOARD_VIEW.UNBOUNDING") }}</div>
           <Icon name="ArrowRight" />
           <CoinAmount :amount="tokensStore.getTotalUnbonding" :show-denom="true" style="font-weight: bold"/>
-          <PercentsView :amount="unboundingPercentage" :precision="2"></PercentsView>
+          <div class="dot"></div>
+          <div>
+            <PercentsView :amount="unboundingPercentage" :precision="2"></PercentsView>
+          </div>
           <!-- <div style="font-weight: bold">{{ unBounding }}
           </div> -->
         </div>
