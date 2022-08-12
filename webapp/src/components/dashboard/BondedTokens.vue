@@ -9,7 +9,7 @@
 </template>
 
 
-<!-- TODO shpuld we remove it-->
+<!-- TODO shpuld we remove this component-->
 <script setup lang="ts">
 import Icon from "../features/IconComponent.vue";
 </script>

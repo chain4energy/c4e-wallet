@@ -27,14 +27,12 @@
         <Column field="description.moniker" :header="$t(`STAKING_VIEW.TABLE.NAME`)" :sortable="true">
           <template #body="{data}">
             <ValidatorLogo :validator="data"></ValidatorLogo>
-            <!-- <img v-if="data.description.pictureUrl" class="validator-image" :src="data.description.pictureUrl" width="50" height="50"/> -->
             <span>{{ data.description.moniker }}</span>
           </template>
         </Column>
         <Column v-if="isValidatorsTable()" field="status" :header="$t(`STAKING_VIEW.TABLE.STATUS`)" :sortable="true">
           <template #body="{data}">
-            <span v-if="data.viewStatus == 'Active'" class="badge active">{{ data.viewStatus }}</span>
-            <span v-if="data.viewStatus != 'Active'" class="badge deactivated">{{ data.viewStatus }}</span>
+            <ValidatorStatusBadge :validator="data"/>
           </template>
         </Column>
         <Column v-if="isValidatorsTable()" field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
@@ -112,7 +110,6 @@
           </div>
         </div>
       </template>
-  <!--    <template v-slot:paginatorstart></template>-->
     </DataTableWrapper>
   </span>
 </template>
@@ -132,6 +129,7 @@ import { getUnstakings, ValidatorsDataTableType, ValidatorUnstaking } from "./Va
 import { RedelegationDirection } from "./StakingRedelegate";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView"
+import ValidatorStatusBadge from "./ValidatorStatusBadge.vue";
 
 function getRedelegationDirection() {
   if (isValidatorsTable()) {
@@ -285,22 +283,6 @@ const filters = ref({
 
   .opacity-0 {
     opacity: 0;
-  }
-
-  .badge {
-    padding: 5px;
-    border-radius: 5px;
-    color: white;
-  }
-
-  .active {
-    background: $primary-green-color;
-    box-shadow: none;
-  }
-
-  .deactivated {
-    background: gray;
-    box-shadow: none;
   }
 
   .commision {

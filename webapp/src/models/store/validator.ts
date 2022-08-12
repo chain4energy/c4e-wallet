@@ -68,18 +68,6 @@ export class Validator implements ValidatorBase {
     return useUserStore().getRewards.getAmountByValidator(this.operatorAddress).toString();
   }
 
-  public get viewStatus(): string {  // TODO - make component ValidatorStatus
-    switch (this.status) {
-      case ValidatorStatus.Bonded:
-        return i18n.global.t('STAKING_VIEW.VALIDATOR_STATUS.ACTIVE');
-      default:
-        if (this.jailed) {
-          return i18n.global.t('STAKING_VIEW.VALIDATOR_STATUS.JAILED');
-        }
-        return i18n.global.t('STAKING_VIEW.VALIDATOR_STATUS.INACTIVE');
-    }
-  }
-
   public get active(): boolean {
     return this.status === ValidatorStatus.Bonded;
   }
