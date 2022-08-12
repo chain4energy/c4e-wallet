@@ -53,7 +53,9 @@
         </Column>
         <Column :header="$t(`STAKING_VIEW.TABLE_HEADERS.STAKE`)" :sortable="true" v-if="isLoggedIn" sortField="delegatedAmount">
           <template #body="{data}">
-            <span>{{ data.getDelegatedViewAmount() }}</span>
+            <CoinAmount :amount="data.delegatedAmount" :show-denom="true"/>
+
+            <!-- <span>{{ data.getDelegatedViewAmount() }}</span> -->
             <!-- <span v-else>updating</span> -->
           </template>
         </Column>
@@ -80,11 +82,11 @@
         <div style="display: flex; flex-direction: row;">
           <div style="display: flex; flex-direction: column; margin-right: 20px">
             <p>{{ $t(`STAKING_VIEW.TABLE_EXPANDED.UNSTAKING`) }}</p>
-            <p>{{ expandedData.data.undelegatingViewAmount }}</p>
+            <CoinAmount :amount="expandedData.data.undelegatingAmount" :show-denom="true"/>
           </div>
           <div style="display: flex; flex-direction: column">
             <p>{{ $t(`STAKING_VIEW.TABLE_EXPANDED.REWARDS`) }}</p>
-            <p>{{ expandedData.data.rewardsViewAmount }}</p> <!-- TODONUMBER -->
+            <CoinAmount :amount="expandedData.data.rewardsAmount" :show-denom="true"/>
           </div>
         </div>
       </template>
@@ -104,6 +106,7 @@ import {FilterMatchMode, FilterOperator} from "primevue/api";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
 import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
+import CoinAmount from "../commons/CoinAmount.vue";
 
 const popupOpened = ref(false);
 const currentValidator = ref({})

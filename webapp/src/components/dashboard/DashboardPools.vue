@@ -7,23 +7,28 @@
           <div class="dot" style="background: #fff1a9"> </div>
           <div> {{ $t("DASHBOARD_VIEW.COMMUNITY_POOL") }}</div>
           <Icon name="ArrowRight" />
-          <div style="font-weight: bold">
+          <CoinAmount :amount="tokensStore.getCommunityPool" :show-denom="true" style="font-weight: bold"/>
+          <!-- <div style="font-weight: bold">
             {{ communityPool }} {{tokensStore.getCommunityPool.getViewDenom()}}
-          </div>
+          </div> -->
         </div>
         <div class="legend-item">
           <div class="dot" style="background: #72bf44"></div>
           <div> {{ $t("DASHBOARD_VIEW.STRATEGIC_REVERSE_POOL") }}</div>
           <Icon name="ArrowRight" />
+          <CoinAmount :amount="tokensStore.getStrategicReversePool" :show-denom="true" style="font-weight: bold"/>
+<!-- 
           <div style="font-weight: bold">{{ strategicReversePool }} {{ tokensStore.getStrategicReversePool.getViewDenom() }}
-          </div>
+          </div> -->
         </div>
         <div class="legend-item">
           <div class="dot" style="background: #26697f"></div>
           <div> {{ $t("DASHBOARD_VIEW.AIRDROP") }}</div>
           <Icon name="ArrowRight" />
+          <CoinAmount :amount="tokensStore.getAirdropPool" :show-denom="true" style="font-weight: bold"/>
+<!-- 
           <div style="font-weight: bold">{{ airdropPool }} {{ tokensStore.getAirdropPool.getViewDenom() }}
-          </div>
+          </div> -->
         </div>
     </div>
     </div>
@@ -47,6 +52,8 @@ import {useTokensStore} from "@/store/tokens.store";
 import { createDashboardPoolsChartData } from "@/charts/dashboard";
 import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 import C4EIcon from "../commons/C4EIcon.vue";
+import CoinAmount from "../commons/CoinAmount.vue";
+import { useConfigurationStore } from "@/store/configuration.store";
 
 use([
   SVGRenderer,
@@ -59,15 +66,15 @@ use([
 const tokensStore = useTokensStore();
 
 const communityPool = computed(() => {
-  return tokensStore.getCommunityPool.getViewAmount();
+  return useConfigurationStore().config.getConvertedAmount(tokensStore.getCommunityPool.amount);
 });
 
 const strategicReversePool = computed(() => {
-  return tokensStore.getStrategicReversePool.getViewAmount();
+  return useConfigurationStore().config.getConvertedAmount(tokensStore.getStrategicReversePool.amount);
 });
 
 const airdropPool = computed(() => {
-  return tokensStore.getAirdropPool.getViewAmount();
+  return useConfigurationStore().config.getConvertedAmount(tokensStore.getAirdropPool.amount);
 });
 
 const option = computed(() => {
