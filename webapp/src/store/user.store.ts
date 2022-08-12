@@ -142,7 +142,7 @@ export const useUserStore = defineStore({
       const connectionInfo = this.connectionInfo;
       await apiFactory.accountApi().delegate(connectionInfo, validator, amount).then(async (resp) => {
         if (resp.isError()) {
-          await onTxDeliveryFailure(connectionInfo, this, resp, 'Delegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validator + ' failed').then(resp=>{return resp})
+          await onTxDeliveryFailure(connectionInfo, this, resp, 'Delegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validator + ' failed');
         } else {
           const allResults = await Promise.all([
             fetchBalance(connectionInfo, this, true),
@@ -357,7 +357,6 @@ async function onTxDeliveryFailure(connectionInfo: ConnectionInfo, state: UserSt
   if (response.error?.hasTxData()) {
     await fetchBalance(connectionInfo, state, false);
   }
-  return message
 }
 
 function onRefreshingError(allResults: boolean[]) {
