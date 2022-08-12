@@ -15,22 +15,30 @@
     <div class="voting-result">
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
-        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getYesPercentage()" :precision="2"></PercentsView>
+        <div>
+          <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getYesPercentage()" :precision="2"></PercentsView>
+        </div>
         (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
-        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getAbstainPercentage()" :precision="2"></PercentsView>
+        <div>
+          <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getAbstainPercentage()" :precision="2"></PercentsView>
+        </div>
         (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
-        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoPercentage()" :precision="2"></PercentsView>
+        <div>
+          <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoPercentage()" :precision="2"></PercentsView>
+        </div>
         (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)
       </div>
       <div>
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
-        <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentage()" :precision="2"></PercentsView>
+        <div>
+          <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentage()" :precision="2"></PercentsView>
+        </div>
         (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)
       </div>
     </div>
