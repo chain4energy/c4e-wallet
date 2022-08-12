@@ -1,5 +1,3 @@
-import { useConfigurationStore } from "@/store/configuration.store";
-
 export class StakingPool {
   bondedTokens: bigint;
   notBondedTokens: bigint;

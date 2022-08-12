@@ -1,4 +1,3 @@
-import { useConfigurationStore } from "@/store/configuration.store";
 import { BigDecimal } from '@/models/store/big.decimal';
 
 export class Coin {

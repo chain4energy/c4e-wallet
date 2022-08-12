@@ -297,11 +297,6 @@ function clearStateForNonexistentAccount(state: UserState) {
   state.undelegations = new UnbondingDelegations();
 }
 
-// function disconnect(state: UserState) {
-
-
-// }
-
 function clearStateOnLogout(state: UserState) {
 
   state.connectionInfo = new ConnectionInfo();
@@ -359,10 +354,10 @@ async function fetchRewards(connectionInfo: ConnectionInfo, state: UserState, lo
 async function onTxDeliveryFailure(connectionInfo: ConnectionInfo, state: UserState, response: RequestResponse<TxData, TxBroadcastError>, message: string) {
   logger.logToConsole(LogLevel.ERROR, message);
   toast.error(message);
-  return message
   if (response.error?.hasTxData()) {
     await fetchBalance(connectionInfo, state, false);
   }
+  return message
 }
 
 function onRefreshingError(allResults: boolean[]) {
