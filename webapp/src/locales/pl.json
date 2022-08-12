@@ -57,7 +57,15 @@
     "YOUR_VOTE": "Your vote",
     "VOTE_CONDITION": "To make voting you have to be logged in",
     "VOTE": "Vote",
-    "USER_VOTE": "You voted:"
+    "USER_VOTE": "You voted:",
+    "PROPOSAL_TYPE": {
+      "PARAMETER_CHANGE_PROPOSAL": "Wnosek o zmianę parametru",
+      "COMMUNITY_POOL_SPEND_PROPOSAL": "Wniosek o wydatek kwoty z puli społęczności",
+      "COMMUNITY_POOL_SPEND_PROPOSAL_WITH_DEPOSIT": "Wniosek o wydatek kwoty z puli społęczności z depozytem",
+      "TEXT_PROPOSAL": "Wniosek tekstowy",
+      "CANCEL_SOFTWARE_UPGRADE_PROPOSAL": "Wniosek o anulowanie aktualizacji oprogramowania",
+      "SOFTWARE_UPGRADE_PROPOSAL": "Wniosek o aktualizację oprogramowania"
+    }
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Bonded tokens",

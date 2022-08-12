@@ -22,7 +22,7 @@
         <span>{{ $t("GOVERNANCE_VIEW.VOTING_END") }}:</span>
         <span>{{formattedDate(proposal.votingEndTime) }}</span>
         <span>{{ $t("GOVERNANCE_VIEW.TYPE") }}:</span>
-        <span>{{ proposal.content.type }}</span>
+        <ProposalType :proposal="proposal" />
         <span>{{ $t("GOVERNANCE_VIEW.SUBMIT_TIME") }}:</span>
         <span>{{ formattedDate(proposal.submitTime) }}</span>
         <span>{{ $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") }}:</span>
@@ -50,6 +50,7 @@ import { VoteOption } from "@/models/store/proposal";
 import { computed } from "vue";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView"
+import ProposalType from "./ProposalType.vue";
 
 const props = defineProps<{
   proposal?: Proposal

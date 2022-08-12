@@ -57,7 +57,15 @@
     "YOUR_VOTE": "Your vote",
     "VOTE_CONDITION": "To make voting you have to be logged in",
     "VOTE": "Vote",
-    "USER_VOTE": "You voted:"
+    "USER_VOTE": "You voted:",
+    "PROPOSAL_TYPE": {
+      "PARAMETER_CHANGE_PROPOSAL": "Parameter Change Proposal",
+      "COMMUNITY_POOL_SPEND_PROPOSAL": "Community Pool Spend Proposal",
+      "COMMUNITY_POOL_SPEND_PROPOSAL_WITH_DEPOSIT": "Community Pool Spend Proposal With Deposit",
+      "TEXT_PROPOSAL": "Text Proposal",
+      "CANCEL_SOFTWARE_UPGRADE_PROPOSAL": "Cancel Software Upgrade Proposal",
+      "SOFTWARE_UPGRADE_PROPOSAL": "Software Upgrade Proposal"
+    }
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Bonded tokens",
