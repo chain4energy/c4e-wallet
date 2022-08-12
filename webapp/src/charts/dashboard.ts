@@ -1,6 +1,6 @@
 import { BigDecimal } from "@/models/store/big.decimal";
 import i18n from "@/plugins/i18n"
-import { formatBigNumber } from "@/utils/locale-number-formatter";
+import { formatBigNumber, formatBigNumberLocalized } from "@/utils/locale-number-formatter";
 
 const communityPoolColor = '#fff1a9';
 const strategicReversePoolColor = '#72bf44';
@@ -14,7 +14,7 @@ export function createDashboardPoolsChartData(communityPool: number | BigDecimal
   const formatter = function (params: any) {
     return `
       <b>${params.data.name}</b></br>
-      <b>${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), params.value)}</b>`
+      <b>${formatBigNumberLocalized(params.value)}</b>`
   };
   return createDashboardPoolsSingleChartData(
     formatter,
@@ -114,7 +114,7 @@ export function createTokenomicsChartData(bounded: number | BigDecimal, unBounde
   const formatter = function (params: any) {
     return `
       <b>${params.data.name}</b></br>
-      <b>${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), params.value)}</b>`
+      <b>${formatBigNumberLocalized(params.value)}</b>`
   };
 
   return createTokenomicsSingleChartData(

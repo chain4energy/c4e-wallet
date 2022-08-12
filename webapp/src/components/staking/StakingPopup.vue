@@ -122,6 +122,7 @@ import WarningMessage from "@/components/commons/WarningMessage.vue";
 import AmountView from "@/components/commons/AmountView.vue";
 import C4EIcon from "../commons/C4EIcon.vue";
 import { useValidatorsStore } from "@/store/validators.store";
+import { formatBigNumberLocalized } from "@/utils/locale-number-formatter";
 
 const emit = defineEmits(['close', 'success']);
 
@@ -187,10 +188,11 @@ function lessThanOrEqualTo(value: string | undefined): boolean {
   });
 }
 
-function maxAmountMessageData(): number | BigDecimal {
-  return stakingAction.value === StakingAction.DELEGATE ?
+function maxAmountMessageData(): string {
+  const amount = stakingAction.value === StakingAction.DELEGATE ?
     useConfigurationStore().config.getConvertedAmount(useUserStore().getBalance) :
     useConfigurationStore().config.getConvertedAmount(props.validator.delegatedAmount);
+  return formatBigNumberLocalized(amount.toFixed(useConfigurationStore().config.getViewDenomDecimals()));
 }
 
 function action() {

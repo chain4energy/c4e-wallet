@@ -1,7 +1,7 @@
 import { BigDecimal } from "@/models/store/big.decimal";
 import { toPercentage } from "@/models/store/common";
 import i18n from "@/plugins/i18n";
-import { formatBigNumber } from "@/utils/locale-number-formatter";
+import { formatBigNumberLocalized } from "@/utils/locale-number-formatter";
 
 
 const yesColor = '#72bf44';
@@ -15,8 +15,8 @@ export function createProposalDetailsChartData(yes: number | BigDecimal, abstain
     const formatter = function (params: any) {
       return `
         <b>${params.data.name}</b></br>
-        <b>${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), params.value)}</b>
-        <b>(${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), String(params.percent))}%)</b>`
+        <b>${formatBigNumberLocalized(params.value)}</b>
+        <b>(${formatBigNumberLocalized(String(params.percent))}%)</b>`
     };
     return createProposalDetailsSingleChartData(
       formatter,
@@ -62,7 +62,7 @@ export function createProposalListChartData(
       const formatter = function (params: any) {
         return `
           <b>${params.seriesName}</b></br>
-          <b>${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), params.value)} (${formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), String(params.data.name))}%)</b>`
+          <b>${formatBigNumberLocalized(params.value)} (${formatBigNumberLocalized(String(params.data.name))}%)</b>`
       };
 
       return createProposalListSingleChartData(
