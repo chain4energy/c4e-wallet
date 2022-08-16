@@ -212,15 +212,16 @@ function action() {
   }
 }
 
-function getValidatorDst() {
-  if (props.redelegationDirection === RedelegationDirection.FROM) {
+function getValidatorDst(isRedelegate = false) {
+
+  if (!isRedelegate || props.redelegationDirection === RedelegationDirection.FROM) {
     return props.validator.operatorAddress;
   }
   return redelegateValidator.value?.operatorAddress;
 }
 
-function getValidatorSrc() {
-  if (props.redelegationDirection === RedelegationDirection.FROM) {
+function getValidatorSrc(isRedelegate = false) {
+  if (isRedelegate && props.redelegationDirection === RedelegationDirection.FROM) {
     return redelegateValidator.value?.operatorAddress;
   }
   return props.validator.operatorAddress;
@@ -247,8 +248,8 @@ async function undelegate() {
 }
 
 async function redelegate() {
-  const dst = getValidatorDst();
-  const src = getValidatorSrc();
+  const dst = getValidatorDst(true);
+  const src = getValidatorSrc(true);
   if (dst && src) {
     useUserStore().redelegate(src, dst, String(amount.value)).then((resp) => {
       emit('success')

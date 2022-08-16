@@ -202,7 +202,13 @@
   "TOAST": {
     "SUCCESS": {
       "ADDRESS_CONNECTED": "Address: '{address}' Connected",
-      "ADDRESS_DISCONNECTED": "Address: '{address}' Disconnected"
+      "ADDRESS_DISCONNECTED": "Address: '{address}' Disconnected",
+      "TX_DELIVERY": {
+        "TITLE": "TX delivery: Success!!!",
+        "HASH": "Hash",
+        "GAS_USED": "Gas Used",
+        "HEIGHT": "Height"
+      }
     }
   },
   "NUMBER_FORMAT_LOCALE": "en-US"

@@ -37,7 +37,9 @@ export interface Configuration {
   dashboardDataRefreshTimeout: number,
   validatorsDataRefreshTimeout: number,
   accountDataRefreshTimeout: number,
-  proposalsPageLimit: number
+  proposalsPageLimit: number,
+  explorerAccount: string,
+  explorerTx: string,
   testMode?: boolean,
   testFileName?: string,
 

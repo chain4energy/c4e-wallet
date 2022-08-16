@@ -85,6 +85,8 @@ export class Configuration implements JsonConfiguration {
   validatorsDataRefreshTimeout: number;
   accountDataRefreshTimeout: number;
   proposalsPageLimit: number;
+  explorerAccount: string;
+  explorerTx: string;
   testFileName?: string;
   public static readonly emptyConfiguration = new Configuration();
 
@@ -115,6 +117,8 @@ export class Configuration implements JsonConfiguration {
       this.validatorsDataRefreshTimeout = configuration.validatorsDataRefreshTimeout;
       this.accountDataRefreshTimeout = configuration.accountDataRefreshTimeout;
       this.proposalsPageLimit = configuration.proposalsPageLimit;
+      this.explorerAccount = configuration.explorerAccount;
+      this.explorerTx = configuration.explorerTx;
       this.isEmpty = false;
       this.testMode = configuration.testMode ? configuration.testMode : false;
       this.testFileName = configuration.testFileName;
@@ -139,6 +143,8 @@ export class Configuration implements JsonConfiguration {
       this.validatorsDataRefreshTimeout = 60000;
       this.accountDataRefreshTimeout = 60000;
       this.proposalsPageLimit = 10;
+      this.explorerAccount = '';
+      this.explorerTx = '';
       this.isEmpty = true;
       this.testMode = false;
     }
