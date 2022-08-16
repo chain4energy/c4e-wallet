@@ -10,7 +10,6 @@
       <div>
         <h5 class="fw-bold">{{ proposal.content.title }}</h5>
       </div>
-
       <div class="voting-date">
         <div class="start-date">
           <div>
