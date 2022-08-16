@@ -1,19 +1,19 @@
 {
   "TTT": "Leg",
   "CONNECT" : {
-    "CONNECT": "Login",
-    "CONNECT_ADDRESS": "Login with address",
-    "CONNECT_KEPLR": "Login with Keplr wallet",
-    "ADDRESS_HELP": "Explore with any address",
+    "CONNECT": "zaloguj",
+    "CONNECT_ADDRESS": "Zaloguj się z adresem",
+    "CONNECT_KEPLR": "Zaloguj się z Keplrem",
+    "ADDRESS_HELP": "Przeglądaj z dowolnym adresem",
     "VIEW_EXPLORER": "View on explorer",
     "ADDRESS_VALIDATION": {
-      "EMPTY": "Address is required",
-      "NOT_THIS_NETWORK": "Address must start with prefix '{prefix}'",
-      "TOO_SHORT": "Address is too short",
-      "SEPARATOR": "No separator for this address",
-      "CHECK_SUM": "Invalid address checksum",
-      "CHARACTER": "Do not use special symbols",
-      "INVALID": "Invalid address"
+      "EMPTY": "Adres jest wymagany",
+      "NOT_THIS_NETWORK": "Adres musi zaczynać się od prefiksu '{prefix}'",
+      "TOO_SHORT": "Adres jest za krótki",
+      "SEPARATOR": "Brak separatora dla tego adresu",
+      "CHECK_SUM": "Nieprawidłowa suma sprawdzjącaj",
+      "CHARACTER": "Nie używaj znaków specjalnych",
+      "INVALID": "Nieprawidłowy adres"
     }
   },
   "TABLES": {
@@ -29,35 +29,35 @@
     "TITLE" : "Menu_EN"
   },
   "GOVERNANCE_VIEW": {
-    "PROPOSAL_STATUS_PASSED": "Accepted",
-    "PROPOSAL_STATUS_REJECTED": "Rejected",
-    "PROPOSAL_STATUS_VOTING_PERIOD": "Voting",
-    "PROPOSAL_STATUS_DEPOSIT_PERIOD": "Deposit",
-    "PROPOSAL_STATUS_FAILED": "Failed",
+    "PROPOSAL_STATUS_PASSED": "Zaakceptowany",
+    "PROPOSAL_STATUS_REJECTED": "Odrzucony",
+    "PROPOSAL_STATUS_VOTING_PERIOD": "Okres głosowania",
+    "PROPOSAL_STATUS_DEPOSIT_PERIOD": "Okres depozytu",
+    "PROPOSAL_STATUS_FAILED": "Pirażka",
     "VOTING_OPTIONS": {
       "YES": "Tak",
       "NO": "Nie",
       "ABSTAIN": "Wstrzymanie",
-      "NO_WITH_VETO": "Nie z Veto"
+      "NO_WITH_VETO": "Nie z Weto"
     },
     "ERRORS": {
       "NO_STAKED": "Your voice will not be counted (only staked amount is counting in vote but you have '0')"
     },
-    "TOTAL": "Total",
-    "DESCRIPTION": "Description",
-    "TOTAL_DEPOSIT": "Total deposit",
-    "VOTING_START": "Voting start",
-    "VOTING_END": "Voting end",
-    "TYPE": "Type",
-    "SUBMIT_TIME": "Submit time",
-    "DEPOSIT_END_TIME": "Deposit end time",
-    "QUORUM": "Quorum",
-    "THRESHOLD": "Threshold",
-    "VETO_THRESHOLD": "Veto threshold",
-    "YOUR_VOTE": "Your vote",
-    "VOTE_CONDITION": "To make voting you have to be logged in",
-    "VOTE": "Vote",
-    "USER_VOTE": "You voted:",
+    "TOTAL": "Całość",
+    "DESCRIPTION": "Opis",
+    "TOTAL_DEPOSIT": "Całkowity depozyt",
+    "VOTING_START": "Start głosowania",
+    "VOTING_END": "Koniec głosowania",
+    "TYPE": "Typ",
+    "SUBMIT_TIME": "Czas zgłoszenia",
+    "DEPOSIT_END_TIME": "Koniec dostarczania depozytu",
+    "QUORUM": "Kworum",
+    "THRESHOLD": "Próg",
+    "VETO_THRESHOLD": "Próg weto",
+    "YOUR_VOTE": "Twój głos",
+    "VOTE_CONDITION": "Aby oddać głos musisz być zalogowany",
+    "VOTE": "Głosuj",
+    "USER_VOTE": "Zagłosowałeś:",
     "PROPOSAL_TYPE": {
       "PARAMETER_CHANGE_PROPOSAL": "Wnosek o zmianę parametru",
       "COMMUNITY_POOL_SPEND_PROPOSAL": "Wniosek o wydatek kwoty z puli społęczności",
@@ -68,58 +68,58 @@
     }
   },
   "DASHBOARD_VIEW": {
-    "BONDED_TOKENS": "Bonded tokens",
+    "BONDED_TOKENS": "Oddelegowane tokeny",
     "VALIDATORS": "Walidatory",
     "LATEST_BLOCK": "Ostatni blok",
     "TOTAL_SUPPLY": "Całkowita podaż",
     "MAX_SUPPLY": "Maksymalna podaż",
-    "POOLS": "Totalizator piłkarski",
+    "POOLS": "Pule",
     "COMMUNITY_POOL": "Pula społeczności",
-    "STRATEGIC_REVERSE_POOL": "Strategiczna pula odwrócona",
-    "AIRDROP": "Zrzut",
-    "TOKENOMICS": "Tokenomika C4E",
+    "STRATEGIC_REVERSE_POOL": "Pula strategiczna",
+    "AIRDROP": "Pula Fairdrop",
+    "TOKENOMICS": "Tokenomia",
     "BOUNDED": "Zobowiązany",
-    "UNBOUNDED": "Bezgraniczny",
-    "UNBOUNDING": "Bez ograniczeń",
-    "AVERAGE_BLOCK_TIME": "Średni czas blokowania",
-    "CIRCULATING_SUPPLY": "Оборотне постачання",
-    "INFLATION": "Інфляція",
-    "STACKING_APR": "Річна ставка"
+    "UNBOUNDED": "Odblokowany",
+    "UNBOUNDING": "Odblokowywanie",
+    "AVERAGE_BLOCK_TIME": "Średni czas bloku",
+    "CIRCULATING_SUPPLY": "Tokeny w obiegu",
+    "INFLATION": "Inflacja",
+    "STACKING_APR": "Nagroda za delegację tokenów (APR)"
   },
   "STAKING_VIEW": {
     "TABS": {
-      "ALL": "Wszystko",
-      "STAKED": "Stawiane",
-      "ACTIVE": "aktywny",
-      "INACTIVE": "Nieaktywny"
+      "ALL": "Wszyscy",
+      "STAKED": "Oddelegowany",
+      "ACTIVE": "Aktywni",
+      "INACTIVE": "Nieaktywni"
     },
     "TABLE": {
-      "RANK": "Ranga",
+      "RANK": "Pozycja",
       "NAME": "Nazwa",
       "STATUS": "Status",
       "VOTING_POWER": "Siła głosu",
-      "STAKE": "Twoja stawka",
-      "UNSTAKING": "Your unstaking",
+      "STAKE": "Twoja delegacja",
+      "UNSTAKING": "Twoje odblokowywanie",
       "REWARDS": "Nagrody"
     },
     "VALIDATOR_STATUS": {
-      "ACTIVE": "Active PL",
-      "INACTIVE": "Inactive PL",
-      "JAILED": "Jailed PL"
+      "ACTIVE": "Aktywny",
+      "INACTIVE": "Nieaktywny",
+      "JAILED": "Ukarany"
     },
     "TABLE_BUTTONS": {
       "MANAGE_BTN": "Zarządzać"
     },
     "INDICATOR": {
-      "STAKE": "Staked",
-      "UNSTAKING": "Unstaking"
+      "STAKE": "delegacja",
+      "UNSTAKING": "odblokowywanie"
     },
     "STAKING_POPUP": {
       "HEADER": "Moja delegacja",
-      "VALIDATOR_DESCRIPTION": "Walidator dla sieci SmartContract",
-      "DELEGATE": "Delegat",
-      "UNDELEGATE": "Cofnij delegację",
-      "REDELEGATE": "redelegować",
+      "VALIDATOR_DESCRIPTION": "Walidator dla sieci Chain4Energy",
+      "DELEGATE": "Oddeleguj",
+      "UNDELEGATE": "Wycofaj delegację",
+      "REDELEGATE": "Zmień delegację",
       "AMOUNT": {
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",
@@ -155,21 +155,21 @@
   "USER_DATA": {
     "TOTAL": "Całkowity",
     "AVAILABLE": "Do dyspozycji",
-    "STAKED": "Ułożone w stos",
-    "UNSTAKING": "Rozpakowywanie",
+    "STAKED": "Oddelegowane",
+    "UNSTAKING": "Odblokowywanie",
     "CLAIM_REWARDS": "Odbierz nagrody",
     "LOCKED": "Zablokowane",
-    "VESTING_END": "Koniec Vestingu"
+    "VESTING_END": "Data uwolnienia"
   },
   "COMMON": {
-    "CLOSE": "zamknąć",
-    "OPEN": "otwarty",
-    "BACK": "wstecz",
-    "DISCONNECT": "Rozłączyć się",
-    "CONNECT": "Łączyć",
+    "CLOSE": "Zamkij",
+    "OPEN": "Otwórz",
+    "BACK": "Cfnij",
+    "DISCONNECT": "Rozłącz",
+    "CONNECT": "Połącz",
     "DESCRIPTION": "Opis",
     "THE": "The",
-    "RETURN": "Zwrócić",
+    "RETURN": "Wróć",
     "INPUT": {
       "AMOUNT": "ilość",
       "ADDRESS": "adres"
@@ -180,17 +180,17 @@
     "CONNECT_WALLET": "Musisz być zalogowany za pomocą portfela"
   },
   "SECTION_TITLES": {
-    "STAKING": "Staking",
-    "DASHBOARD": "Dashboard",
-    "PROPOSALSLIST": "Proposals list",
-    "GOVERNANCE": "Governance",
-    "GOVERNANCE_PROPOSALSLIST": "Governance / Proposals list",
-    "GOVERNANCEDETAILS": "Governance details"
+    "STAKING": "Delegacja",
+    "DASHBOARD": "Panel",
+    "PROPOSALSLIST": "Lista propozycji",
+    "GOVERNANCE": "Zarządzanie",
+    "GOVERNANCE_PROPOSALSLIST": "Zarządzanie / Lista propozycji",
+    "GOVERNANCEDETAILS": "Szczegóły propozycji"
   },
   "TOAST": {
     "SUCCESS": {
-      "ADDRESS_CONNECTED": "Address: '{address}' Connected",
-      "ADDRESS_DISCONNECTED": "Address: '{address}' Disconnected"
+      "ADDRESS_CONNECTED": "Adres: '{address}' został połączony",
+      "ADDRESS_DISCONNECTED": "Adres: '{address}' został rozłączony"
     }
   },
   "NUMBER_FORMAT_LOCALE": "pl-PL"

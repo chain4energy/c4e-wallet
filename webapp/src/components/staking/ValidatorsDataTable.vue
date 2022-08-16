@@ -76,7 +76,8 @@
         </Column>
         <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="true" sortField="entry.completionTime">
           <template #body="{data}">
-            <span>{{ data.entry.getCompletionTimeDateString() }}</span>
+
+            <span><DateCommon :date="data.entry.getCompletionTimeDate()" /></span>
           </template>
         </Column>
         <Column v-if="!isUndelegationsTable()" field="operator_address">
@@ -129,6 +130,7 @@ import { getUnstakings, ValidatorsDataTableType, ValidatorUnstaking } from "./Va
 import { RedelegationDirection } from "./StakingRedelegate";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView"
+import DateCommon from "@/components/commons/DateCommon.vue";
 import ValidatorStatusBadge from "./ValidatorStatusBadge.vue";
 
 function getRedelegationDirection() {

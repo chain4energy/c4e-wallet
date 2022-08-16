@@ -18,15 +18,23 @@
         <span>{{ $t("GOVERNANCE_VIEW.TOTAL_DEPOSIT") }}:</span>
         <CoinAmount :amount="proposal.getTotalDepositByDenom()" :show-denom="true"/>
         <span>{{ $t("GOVERNANCE_VIEW.VOTING_START") }}:</span>
-        <span>{{formattedDate(proposal.votingStartTime) }}</span>
+        <span>
+          <DateCommon :date="proposal.votingStartTime"/>
+        </span>
         <span>{{ $t("GOVERNANCE_VIEW.VOTING_END") }}:</span>
-        <span>{{formattedDate(proposal.votingEndTime) }}</span>
+        <span>
+          <DateCommon :date="proposal.votingEndTime"/>
+        </span>
         <span>{{ $t("GOVERNANCE_VIEW.TYPE") }}:</span>
         <ProposalType :proposal="proposal" />
         <span>{{ $t("GOVERNANCE_VIEW.SUBMIT_TIME") }}:</span>
-        <span>{{ formattedDate(proposal.submitTime) }}</span>
+        <span>
+          <DateCommon :date="proposal.submitTime"/>
+        </span>
         <span>{{ $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") }}:</span>
-        <span>{{ formattedDate(proposal.depositEndTime) }}</span>
+        <span>
+          <DateCommon :date="proposal.depositEndTime"/>
+        </span>
         <span>{{ $t("GOVERNANCE_VIEW.QUORUM") }}:</span>
         <span><PercentsView :amount="proposalsStore.getTallyParams.quorum" :precision="2"/></span>
         <span>{{ $t("GOVERNANCE_VIEW.THRESHOLD") }}:</span>
@@ -50,6 +58,7 @@ import { VoteOption } from "@/models/store/proposal";
 import { computed } from "vue";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView"
+import DateCommon from "@/components/commons/DateCommon.vue";
 import ProposalType from "./ProposalType.vue";
 
 const props = defineProps<{

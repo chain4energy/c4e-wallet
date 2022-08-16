@@ -4,7 +4,7 @@
     <div class="amount__amount">
       <div v-for="(items, index) in props.coins" :key="index">
         <p v-if="items.header">{{items.header}}</p>
-        <CoinAmount :amount="items.amount" :precision="precision" :show-denom="showDenom" :reduce-big-number="reduceBigNumber"/>
+        <CoinAmount :amount="items.amount" :precision="precision" :show-denom="items.showDenom || showDenom" :reduce-big-number="reduceBigNumber"/>
       </div>
     </div>
     <slot name="logo-back"></slot>
@@ -23,6 +23,7 @@ const props = defineProps<{
     {
       header: string | undefined,
       amount: bigint | number | BigDecimal | Coin | DecCoin,
+      showDenom: boolean,
     }
   ]
   precision: number,

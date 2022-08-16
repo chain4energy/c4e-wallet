@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="proposal-container" v-on:click="showDetailsClick">
     <div class="top">
       <span class="id fw-bold">#{{ proposal.proposalId }} </span>
@@ -32,13 +32,13 @@
       <div class="voting-date">
         <div class="start-date">
           <div>
-            {{ formattedDate( proposal.isDepositPeriod() ? proposal.submitTime : proposal.votingStartTime ) }}
+            <DateCommon :date="proposal.isDepositPeriod() ? proposal.submitTime : proposal.votingStartTime"/>
           </div>
           <div class="green-background">{{ proposal.isDepositPeriod() ? $t("GOVERNANCE_VIEW.SUBMIT_TIME") : $t("GOVERNANCE_VIEW.VOTING_START") }}</div>
         </div>
         <div class="end-date">
           <div>
-            {{ formattedDate(proposal.isDepositPeriod() ? proposal.depositEndTime : proposal.votingEndTime ) }}
+            <DateCommon :date="proposal.isDepositPeriod() ? proposal.depositEndTime : proposal.votingEndTime"/>
           </div>
           <div class="blue-background">{{ proposal.isDepositPeriod() ? $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") : $t("GOVERNANCE_VIEW.VOTING_END") }}</div>
         </div>
@@ -101,7 +101,8 @@ import {Proposal, ProposalStatus} from "@/models/store/proposal";
 import { createProposalListChartData } from '@/charts/governance';
 import { useProposalsStore } from '@/store/proposals.store';
 import CoinAmount from '../commons/CoinAmount.vue';
-import PercentsView from "@/components/commons/PercentsView"
+import PercentsView from "@/components/commons/PercentsView";
+import DateCommon from "@/components/commons/DateCommon.vue"
 import { useConfigurationStore } from '@/store/configuration.store';
 
 use([
@@ -165,9 +166,7 @@ const sumOfVotes = computed(() => {
   const val = useProposalsStore().getProposalTally(props.proposal).total
   return val > 0n ? val : -1n;
 });
-const formattedDate = (value: Date) => {
-  return moment(value).format('DD MMMM YYYY HH:mm:ss');
-};
+
 
 const showDetailsClick = () => {
   router.push({name: 'governanceDetails', params: {id: props.proposal.proposalId}});
