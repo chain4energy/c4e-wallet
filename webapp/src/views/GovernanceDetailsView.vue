@@ -72,9 +72,7 @@ const everythingIsReady = ref(false);
     display: flex;
     cursor: pointer;
     flex-direction: row;
-    width: 30%;
     align-items: flex-start;
-    justify-content: space-evenly;
   }
 }
 
