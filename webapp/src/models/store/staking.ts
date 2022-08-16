@@ -91,8 +91,8 @@ export class UnbondingDelegationEntry {
     return useConfigurationStore().config.getViewAmountAndDenom(this.amount, precision);
   }
 
-  public getCompletionTimeDateString(): string {
-    return this.completionTime.toLocaleString();
+  public getCompletionTimeDate(): Date {
+    return this.completionTime;
   }
 }
 

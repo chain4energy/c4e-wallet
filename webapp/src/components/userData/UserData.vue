@@ -16,7 +16,7 @@
     <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
       <div>
         <p>{{ $t('USER_DATA.VESTING_END') }}</p>
-        <p>{{ useUserStore().getAccount.continuousVestingData?.endTime.toLocaleString() }}</p>
+        <p><DateCommon :date="useUserStore().getAccount.continuousVestingData?.endTime"/></p>
       </div>
     </div>
     <div class="userdata__amounts_last" v-if="!useUserStore().isContinuousVestingAccount"></div>
@@ -45,6 +45,7 @@ import C4EIcon from "../commons/C4EIcon.vue";
 import AmountView from "@/components/commons/AmountView.vue";
 import i18n from "@/plugins/i18n";
 import CoinAmount from "../commons/CoinAmount.vue";
+import DateCommon from "@/components/commons/DateCommon.vue";
 
 function claimRewards(){
   useUserStore().claimRewards();
