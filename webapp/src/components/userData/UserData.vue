@@ -2,7 +2,7 @@
 <div class="userdata">
   <div class="userdata__accountData">
     <div class="userdata__accountData-base" >
-      <AmountView :coins="representData" :show-denom="true">
+      <AmountView :coins="representData">
         <template v-slot:logo-front>
           <C4EIcon icon="c4e-circle" :size="30"/>
         </template>
@@ -65,19 +65,23 @@ const representData = computed(()=> {
   const coins = [
     {
       header : i18n.global.t('USER_DATA.TOTAL'),
-      amount: total.value || 0
+      amount: total.value || 0,
+      showDenom: true,
     },
     {
       header : i18n.global.t('USER_DATA.AVAILABLE'),
-      amount: available.value || 0
+      amount: available.value || 0,
+      showDenom: false,
     },
     {
       header : i18n.global.t('USER_DATA.STAKED'),
-      amount: stacked.value || 0
+      amount: stacked.value || 0,
+      showDenom: false,
     },
     {
       header : i18n.global.t('USER_DATA.UNSTAKING'),
-      amount: unstaked.value || 0
+      amount: unstaked.value || 0,
+      showDenom: false,
    },
   ];
   return coins;
