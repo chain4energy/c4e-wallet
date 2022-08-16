@@ -18,6 +18,10 @@
         <Icon :name=icons.get(proposal.status)>
         </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
       </div>
+      <div v-if="proposal.status == 'PROPOSAL_STATUS_FAILED'" class="voting-status failed">
+        <Icon :name=icons.get(proposal.status)>
+        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
+      </div>
     </div>
       
     <div class="middle">
@@ -242,6 +246,11 @@ const option = computed(() => {
       color: white;
     }
 
+    .failed {
+      background-color: black;
+      color: white;
+    }
+
     .deposit {
       background-color: grey;
       color: rgb(77, 77, 77);
@@ -290,7 +299,7 @@ const option = computed(() => {
       }
     }
   }
-  
+
   .bottom {
     height: 25%;
     width: 100%;
