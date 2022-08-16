@@ -4,7 +4,6 @@
 
 <script setup lang="ts">
 import {computed} from "vue";
-import moment from "moment/moment";
 
 const props = defineProps<{
   date: Date
