@@ -9,14 +9,18 @@
           </div>
           <div> #{{ proposalId }} {{ title }} </div>
           <div class="vote-options">
-            <input type="radio" id="yes" :value="VoteOption.Yes" v-model="picked">
-            <label for="yes">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</label>
-            <input type="radio" id="no" :value="VoteOption.No" v-model="picked">
-            <label for="no">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</label>
-            <input type="radio" id="no with veto" :value="VoteOption.NoWithVeto" v-model="picked">
-            <label for="no with veto">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</label>
-            <input type="radio" id="abstain" :value="VoteOption.Abstain" v-model="picked">
-            <label for="abstain">{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</label>
+            <div class="option yes" @click="changeVotingOption(VoteOption.Yes)" :class="picked == VoteOption.Yes ? 'picked' : ''">
+              <Icon name="CheckSquare" /> {{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}
+            </div>
+            <div class="option no" @click="changeVotingOption(VoteOption.No)" :class="picked == VoteOption.No ? 'picked' : ''">
+              <Icon name="XCircle" /> {{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}
+            </div>
+            <div class="option no-with-veto" @click="changeVotingOption(VoteOption.NoWithVeto)" :class="picked == VoteOption.NoWithVeto ? 'picked' : ''">
+              <Icon name="UserX" /> {{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}
+            </div>
+            <div class="option abstain" @click="changeVotingOption(VoteOption.Abstain)" :class="picked == VoteOption.Abstain ? 'picked' : ''">
+              <Icon name="Grab" /> {{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}
+            </div>
           </div>
           <span v-if="useUserStore().isLoggedIn">
             <p v-if="useUserStore().getTotalDelegated === 0n">
@@ -47,7 +51,7 @@ import dataService from '@/services/data.service';
 import { VoteOption } from "@/models/store/proposal";
 import KeplrLogo from "../commons/KeplrLogo.vue";
 
-const err = ref()
+const err = ref();
 
 const props = defineProps<{
   title: string
@@ -57,10 +61,14 @@ const emit = defineEmits(['close']);
 
 const picked = ref<VoteOption>();
 
+const changeVotingOption = (option: VoteOption) => {
+  picked.value = option; 
+};
+
 const onVoteClick = () => {
   if (picked.value !== undefined){
     useUserStore().vote(picked.value, props.proposalId);
-    emit('close')
+    emit('close');
 
   } else {
     err.value='err';
@@ -71,6 +79,10 @@ const onVoteClick = () => {
 <style scoped lang="scss">
 @import '../../styles/variables.scss';
 
+.picked {
+  background-color: #bbb;
+}
+
 button {
   width:170px;
   height: 40px;
@@ -79,20 +91,96 @@ button {
 }
 
 .vote-options {
-  input[type="radio"] {
-    display: none;
-  }
-  label {
+
+.option {
     box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
-    height: 73px;
+    box-sizing: border-box;
+    display: flex;
     width: 100%;
+    height: 50px;
     margin-bottom: 20px;
     border-radius: 10px;
+    overflow: hidden;
+    align-items: center;
     cursor: pointer;
     &:hover {
       opacity: 0.5;
     }
+}
+  .yes {
+    width: 100%;
+    height: 50px;
 
+    svg {
+      margin-right: 10px;
+      color: #72bf44;
+    }
+
+    &::before {
+        width: 20px;
+        height: 100%;
+        margin-right: 10px;
+        content: ' ';
+        background: #72bf44;
+        display: inline-block
+      }
+  }
+
+  .no {
+    width: 100%;
+    height: 50px;
+
+    svg {
+      margin-right: 10px;
+      color: #e02626;
+    }
+
+    &::before {
+        width: 20px;
+        height: 100%;
+        margin-right: 10px;
+        content: ' ';
+        background: #e02626;
+        display: inline-block
+      }
+  }
+
+  .no-with-veto {
+    width: 100%;
+    height: 50px;
+
+    svg {
+      margin-right: 10px;
+      color: #fff1a9;
+    }
+
+    &::before {
+        width: 20px;
+        height: 100%;
+        margin-right: 10px;
+        content: ' ';
+        background: #fff1a9;
+        display: inline-block
+      }
+  }
+
+  .abstain {
+    width: 100%;
+    height: 50px;
+
+    svg {
+      margin-right: 10px;
+      color: #27697f;
+    }
+
+    &::before {
+        width: 20px;
+        height: 100%;
+        margin-right: 10px;
+        content: ' ';
+        background: #27697f;
+        display: inline-block
+      }
   }
   input[type="radio"]:checked+label{
     background-color: #bbb !important;
