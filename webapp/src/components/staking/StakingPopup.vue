@@ -7,6 +7,8 @@
           <ValidatorLogo :validator="validator" class="validator-image-big"></ValidatorLogo>
           <h2>{{ validator.description.moniker }}</h2>
         </div>
+        <Button icon="pi pi-times" style="width: 5px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
+      </div>
         <WarningMessage v-if="stakingAction === StakingAction.DELEGATE" 
               header="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.HEADER"
               :header-variables="{timeToComplete: timeToComplete}"
@@ -17,8 +19,6 @@
               :header-variables="{timeToComplete: timeToComplete}"
               texts="STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.TEXTS"
               :texts-variables="{timeToComplete: timeToComplete}"/>
-        <Button icon="pi pi-times" style="width: 5px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
-      </div>
 
       <Form @submit="action" :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body">
 
@@ -56,7 +56,7 @@
                           :class="{ 'p-invalid': errors.redelegateValidator, 'is-invalid': errors.redelegateValidator }" :disabled="!canModify"
                           :redelegation-direction="redelegationDirection"/>
               </Field>
-              <span>{{getRedelagatePlaceholder(redelegationDirection)}}</span>
+              <!-- <span>{{getRedelagatePlaceholder(redelegationDirection)}}</span> -->
               <div class="invalid-feedback">
                 {{ errors.redelegateValidator ? errors.redelegateValidator : "" }}
               </div>
@@ -535,4 +535,5 @@ function getWarningParams() {
 .p-invalid {
   background-image: url("data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" width=\"12\" height=\"12\" fill=\"none\" stroke=\"#dc3545\"><circle cx=\"6\" cy=\"6\" r=\"4.5\"/><path stroke-linejoin=\"round\" d=\"M5.8 3.6h.4L6 6.5z\"/><circle cx=\"6\" cy=\"8.2\" r=\".6\" fill=\"#dc3545\" stroke=\"none\"/></svg>");
 }
+
 </style>

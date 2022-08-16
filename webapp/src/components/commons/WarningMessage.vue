@@ -1,11 +1,12 @@
 <template>
   <div class="warning">
-    <div>
-      <h3><Icon name="AlertTriangle"/>{{$t(header, headerVariables)}}</h3>
+      <Icon name="AlertTriangle"/>
+    <div class="warning-container">
+      <h3>{{$t(header, headerVariables)}}</h3>
       <span v-if="textTypeData.type === TextType.STRING">
         {{$t(texts, textsVariables)}}
       </span>
-      <ul v-else-if="textTypeData.type === TextType.ARRAY">
+      <ul style="margin-bottom: 0 !important" v-else-if="textTypeData.type === TextType.ARRAY">
         <li v-for="index in textTypeData.amount" :key="index">
           {{$t(`${texts}[${index - 1}]`, textsVariables)}}
         </li>
@@ -63,15 +64,31 @@ function getTextsLength(key: string): {type: TextType | undefined, amount: numbe
 </script>
 
 <style scoped lang="scss">
-.warning{
+
+
+.warning-container {
   display: flex;
-  align-content: left;
-  align-items: left;
-  max-width: 407px;
+  flex-direction: column;
+  text-align: left;
+}
+
+.warning{
+  display: grid;
+  grid-template-columns: 1fr 7fr;
+  align-self: center;
+  width: 80%;
   background-color: #fef6f6;
   color: #fc4b53;
   padding: 5px;
   border-radius: 8px;
+  align-items: center;
+  justify-items: center;
+  margin: 10px 0;
+
+  svg {
+    height: 40px; 
+    width: 40px;
+  }
 
   h3{
     font-size: 18px;

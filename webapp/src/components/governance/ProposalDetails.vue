@@ -76,18 +76,27 @@ const voted = computed(() => {return useProposalsStore().userVote})
   }
 
   .vote {
-    padding-left: 20px;
+    margin: 0 20px;
+    padding: 5px 0;
     margin-bottom: 10px;
+    border-radius: 15px;
+    text-align: center;
+    -webkit-box-shadow: inset 0px 3px 27px -12px rgba(66, 68, 90, 1);
+    -moz-box-shadow: inset 0px 3px 27px -12px rgba(66, 68, 90, 1);
+    box-shadow: inset 0px 3px 27px -12px rgba(66, 68, 90, 1);
   }
 
   .user-vote-yes {
     background-color: #72bf44;
+    color: white;
   }
   .user-vote-abstain {
     background-color: #27697f;
+    color: white;
   }
   .user-vote-no {
     background-color: #e02626;
+    color: white
   }
   .user-vote-veto {
     background-color: #fff1a9;

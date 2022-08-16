@@ -29,7 +29,7 @@
       <Icon name="Gift" class="gift-color"></Icon>
       <CoinAmount :amount="useUserStore().getTotalRewards" :show-denom="true"/>
     </div>
-    <Button class="secondary" @click="claimRewards">{{ $t('USER_DATA.CLAIM_REWARDS') }}</Button>
+    <Button class="outlined-secondary" @click="claimRewards">{{ $t('USER_DATA.CLAIM_REWARDS') }}</Button>
 
   </div>
 
@@ -84,6 +84,9 @@ const representData = computed(()=> {
 </script>
 
 <style scoped lang="scss">
+@import "../../styles/variables.scss";
+
+
 .userdata{
   display: flex;
   flex-direction: row;

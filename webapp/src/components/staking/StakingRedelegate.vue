@@ -17,7 +17,7 @@
           </div>
       </template>
       <template #header>
-        <div style="background-color: blue; padding: 10px">
+        <div style="padding: 10px">
           <div style="display: inline-block;">
             <span class="p-input-icon-left" >
               <i class="pi pi-search" />

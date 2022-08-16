@@ -2,10 +2,24 @@
   <div class="proposal-container" v-on:click="showDetailsClick">
     <div class="top">
       <span class="id fw-bold">#{{ proposal.proposalId }} </span>
-      <div class="voting-status">
+      <div v-if="proposal.status == 'PROPOSAL_STATUS_VOTING_PERIOD'" class="voting-status voting">
         <Icon :name=icons.get(proposal.status)>
-        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}</div>
+        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
+      </div>
+      <div v-if="proposal.status == 'PROPOSAL_STATUS_REJECTED'" class="voting-status rejected">
+        <Icon :name=icons.get(proposal.status)>
+        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
+      </div>
+      <div v-if="proposal.status == 'PROPOSAL_STATUS_PASSED'" class="voting-status accepted">
+        <Icon :name=icons.get(proposal.status)>
+        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
+      </div>
+      <div v-if="proposal.status == 'PROPOSAL_STATUS_DEPOSIT_PERIOD'" class="voting-status deposit">
+        <Icon :name=icons.get(proposal.status)>
+        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
+      </div>
     </div>
+      
     <div class="middle">
       <div>
         <h5 class="fw-bold">{{ proposal.content.title }}</h5>
@@ -210,9 +224,27 @@ const option = computed(() => {
       padding: 15px 0px;
       margin-left: auto;
       margin-right: auto;
+      border-radius: 0 10px 0 10px;
+    }
+
+    .voting {
       background-color: $primary-blue-color;
       color: white;
-      border-radius: 0 10px 0 10px;
+    }
+
+    .accepted {
+      background-color: $primary-green-color;
+      color: $primary-blue-color;
+    }
+
+    .rejected {
+      background-color: $error-red-color;
+      color: white;
+    }
+
+    .deposit {
+      background-color: grey;
+      color: rgb(77, 77, 77);
     }
   }
   .middle {
@@ -225,9 +257,16 @@ const option = computed(() => {
     .voting-date {
       padding-top: 15px;
       display: flex;
+      justify-content: center;
+
       .start-date {
         padding-right: 20px;
         border-right: 1px solid;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+
         .green-background {
           padding: 3px 10px;
           background-color: $success-color;
@@ -235,8 +274,13 @@ const option = computed(() => {
           border-radius: 20px;
         }
       }
+
       .end-date {
         padding-left: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
         .blue-background {
           padding: 3px 10px;
           background-color: $accents-link-color;
@@ -246,6 +290,7 @@ const option = computed(() => {
       }
     }
   }
+  
   .bottom {
     height: 25%;
     width: 100%;
