@@ -43,6 +43,10 @@ const routes: Array<RouteRecordRaw> = [
       }
     ]
   },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
+  }
 ];
 
 const router = createRouter({
