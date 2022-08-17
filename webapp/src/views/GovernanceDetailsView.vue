@@ -1,4 +1,5 @@
 <template>
+<span>
     <div class="container-grid">
       <template v-if="everythingIsReady">
         <div class="details">
@@ -7,11 +8,12 @@
         <div class="chart">
           <DetailsChart :proposal="proposal"></DetailsChart>
         </div>
-        <div class="description">
-          <ProposalDescription :proposal="proposal"></ProposalDescription>
-        </div>
       </template>
     </div>
+    <div class="description">
+      <ProposalDescription :proposal="proposal"></ProposalDescription>
+    </div>
+</span>
 
 </template>
 
@@ -55,14 +57,16 @@ const everythingIsReady = ref(false);
 .container-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(2, 1fr);
   grid-column-gap: 20px;
   grid-row-gap: 20px;
 
     .details { grid-area: 1 / 1 / 2 / 5; }
     .chart { grid-area: 1 / 5 / 2 / 7; }
-    .description { grid-area: 2 / 1 / 3 / 7; }
 }
+    .description {
+      width: 100%;
+      margin-top: 20px;
+    } 
 
 @media screen and (max-width: 1100px) {
   .container-grid {

@@ -164,7 +164,6 @@ function createProposalListChartSeriesData(amount: number | BigDecimal, percenta
   return {
     name: name,
     type: 'bar',
-
     color:color,
     stack: 'total',
     emphasis: {
