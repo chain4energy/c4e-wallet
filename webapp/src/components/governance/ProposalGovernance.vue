@@ -44,39 +44,55 @@
       </div>
     </div>
     <div class="bottom" v-if="proposal.status !== ProposalStatus.DEPOSIT_PERIOD">
-      <div style="max-width: 100%; min-width:100%; height:20px" class="chartdiv">
-        <v-chart :autoresize="true" :manualUpdate="true" :option="option" />
+      <div style="height:20px" class="chartdiv">
+        <div class="yes" :style="'flex-basis:' + yesPercentage * 100 + '%'"></div>
+        <div class="abstain" :style="'flex-basis:' + abstainPercentage * 100 + '%'"></div>
+        <div class="no" :style="'flex-basis:' + noPercentage * 100 + '%'"></div>
+        <div class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentage * 100 + '%'"></div>
+        <!-- <v-chart :option="option" /> -->
       </div>
 
 
       <div class="voting-result">
-        <div>
-          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
-          <div>
-            <PercentsView :amount="yesPercentage" :precision="2"/>
+        <div style="display: flex; align-items: center">
+          <div class="dot yes"></div>
+          <div class="bar-legend">
+            <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
+            <div>
+              <PercentsView :amount="yesPercentage" :precision="2"/>
+            </div>
+            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).yes" :reduce-big-number="true" :precision="2"/>)
           </div>
-          (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).yes" :reduce-big-number="true" :precision="2"/>)
         </div>
-        <div>
-          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
-          <div>
-            <PercentsView :amount="abstainPercentage" :precision="2"/>
+        <div style="display: flex; align-items: center">
+          <div class="dot abstain"></div>
+          <div class="bar-legend">
+            <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
+            <div>
+              <PercentsView :amount="abstainPercentage" :precision="2"/>
+            </div>
+            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).abstain" :reduce-big-number="true" :precision="2"/>)
           </div>
-          (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).abstain" :reduce-big-number="true" :precision="2"/>)
         </div>
-        <div>
-          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
-          <div>
-            <PercentsView :amount=" noPercentage" :precision="2"/>
+        <div style="display: flex; align-items: center">
+          <div class="dot no"></div>
+          <div class="bar-legend">
+            <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
+            <div>
+              <PercentsView :amount=" noPercentage" :precision="2"/>
+            </div>
+            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).no" :reduce-big-number="true" :precision="2"/>)
           </div>
-          (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).no" :reduce-big-number="true" :precision="2"/>)
         </div>
-        <div>
-          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
-          <div>
-            <PercentsView :amount="noWithVetoPercentage" :precision="2"/>
+        <div style="display: flex; align-items: center">
+          <div class="dot no-with-veto"></div>
+          <div class="bar-legend">
+            <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
+            <div>
+              <PercentsView :amount="noWithVetoPercentage" :precision="2"/>
+            </div>
+            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).noWithVeto" :reduce-big-number="true" :precision="2"/>)
           </div>
-          (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).noWithVeto" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
 
@@ -199,6 +215,10 @@ const option = computed(() => {
 <style scoped lang="scss">
 @import '../../styles/variables.scss';
 
+.bar-legend {
+  text-align: left;
+  margin-left: 10px;
+}
 .proposal-container {
   min-height: 360px;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
@@ -311,8 +331,35 @@ const option = computed(() => {
       justify-content: space-around;
     }
     .chartdiv {
-      margin-bottom: 15px;
+      margin: 0 auto 15px auto;
+      width: 90%;
+      display: flex;
+      border-radius: 15px;
+      overflow: hidden;
+
+      div {
+        height: 100%;
+        
+      }
+
+      
     }
   }
 }
+
+.yes {
+        background: $primary-green-color;
+      }
+
+      .no {
+        background: $error-red-color;
+      }
+
+      .no-with-veto {
+        background: #fff1a9;
+      }
+
+      .abstain {
+        background: #27697f;
+      }
 </style>
