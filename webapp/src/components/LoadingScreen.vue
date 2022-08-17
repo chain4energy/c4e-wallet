@@ -3,7 +3,8 @@
   <!--  <BlockUI id="blokUi" :blocked="splashStore.splashOn" :fullScreen="true">-->
 <!--    <div v-if="splashStore.splashOn" class="lds-hourglass"/>-->
   <div>
-    <loading v-model:active="splashStore.splashOn"/>
+    <loading v-model:active="splashStore.splashOn" ><C4ESpinner class="center"/></loading>
+    
 <!--    <loading v-model:active="ttt"/>-->
   </div>
 </template>
@@ -12,6 +13,7 @@
 import {useSplashStore} from '@/store/splash.store';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
+import C4ESpinner from './commons/C4ESpinner.vue';
 
 const splashStore = useSplashStore();
 // const ttt = true;
