@@ -3,7 +3,7 @@
   <!--  <BlockUI id="blokUi" :blocked="splashStore.splashOn" :fullScreen="true">-->
 <!--    <div v-if="splashStore.splashOn" class="lds-hourglass"/>-->
   <div>
-    <loading v-model:active="splashStore.splashOn" ><C4ESpinner class="center"/></loading>
+    <loading v-model:active="splashStore.splashOn" ><C4ESpinner class="c4e-icon" size="120"/></loading>
     
 <!--    <loading v-model:active="ttt"/>-->
   </div>
@@ -20,7 +20,11 @@ const splashStore = useSplashStore();
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/styles/variables.scss';
+.c4e-icon {
+  color: $primary-secondary-blue-color;
+}
 /*TODO - jakiś ładny spinner */
 .lds-hourglass {
   position: fixed;
