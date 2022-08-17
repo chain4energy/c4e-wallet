@@ -51,11 +51,6 @@ const load = () => {
   box-sizing: border-box;
   width: 100%;
 }
-//@media (max-width: 1344px) and (min-width:1200px) {
-//  .proposals-grid {
-//    grid-template-columns: repeat(auto-fill, minmax(calc(55% - 15px), 1fr));
-//  }
-//}
 
 @media screen and (max-width: 1024px) {
   .proposals-grid {
