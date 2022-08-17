@@ -16,7 +16,7 @@
               </div>
               <div class="loginPopup__addressHolder">
                 <p>{{useUserStore().getAccount.address}}</p>
-                <Icon name="Copy" @click="copyTxt">{{$t('CONNECT.COPY')}}</Icon>
+                <Icon name="Copy" @click="copyTxt">{{$t('COPY.ADDRESS')}}</Icon>
               </div>
 
               <!--<div class="loginPopup__data" style="display: flex; flex-direction: column; justify-items: left">
@@ -51,8 +51,8 @@ import { Validator } from "@/models/store/validator";
 import { useToast } from "vue-toastification";
 import Icon from "@/components/features/IconComponent"
 import dataService from '@/services/data.service';
-import i18n from "@/plugins/i18n";
 import { useConfigurationStore } from '@/store/configuration.store';
+import i18n from "@/plugins/i18n";
 
 const props = defineProps({
   logoutType:{
@@ -79,7 +79,7 @@ function logout(){
 
 function copyTxt(){
   navigator.clipboard.writeText(useUserStore().getAccount.address);
-  useToast().success(i18n.global.t('CONNECT.COPIED'))
+  useToast().success(i18n.global.t('COPY.ADDRESS'))
 }
 
 </script>

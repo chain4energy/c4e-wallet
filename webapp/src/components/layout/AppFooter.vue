@@ -1,9 +1,6 @@
 <template>
 
   <div class="footer">
-    <span>
-      <CurrentBlockchain></CurrentBlockchain>
-    </span>
     <span>FAQ</span>
     <span>Help</span>
     <span>Terms & Conditions</span>
@@ -29,7 +26,7 @@ onBeforeMount(() => {
   min-height: 50px;
   background-color: white;
 
-  padding: 20px 0 20px 0;
+  padding: 20px 0 20px 8%;
 
   span {
     float:left;

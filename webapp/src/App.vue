@@ -8,6 +8,7 @@
       </div>
     </div>
     <app-footer class="footer"/>
+    <CurrentBlockchain></CurrentBlockchain>
     <app-sidebar/>
   </div>
 </template>
@@ -17,7 +18,7 @@ import LoadingScreen from '@/components/LoadingScreen.vue';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import AppSidebar from '@/components/layout/AppSidebar.vue';
 
-import { inject, onBeforeMount, onMounted, watch } from "vue";
+import {inject, onBeforeMount, onMounted } from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
 import {createRouterBeforeEach} from '@/router/before_each';
 
@@ -25,10 +26,8 @@ import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
 import "primeicons/primeicons.css";
 import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
-import {useConfigurationStore} from "@/store/configuration.store";
-import { useUserStore } from "@/store/user.store";
 import dataService from './services/data.service';
-import router from './router';
+import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 onBeforeMount(() => {
@@ -37,14 +36,12 @@ onBeforeMount(() => {
 
 onMounted(() => {
   createRouterBeforeEach(logger);
-
 });
 
 window.onload = async () =>{
   dataService.onWindowLoad();
   // useUserStore().reconnect();
 };
-
 </script>
 
 <style lang="scss">
