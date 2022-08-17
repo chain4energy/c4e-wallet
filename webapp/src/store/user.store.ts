@@ -279,6 +279,9 @@ export const useUserStore = defineStore({
     },
     getTotal() : bigint {
       return this.undelegations.totalUndelegating + this.delegations.totalDelegated + this.balance
+    },
+    hasUndelegations(): boolean {
+      return this.undelegations.hasUnbondingDelegations();
     }
   },
   persist: {
