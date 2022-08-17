@@ -45,16 +45,21 @@ const load = () => {
 <style lang='scss' scoped>
 .proposals-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(calc(50% - 15px), 1fr));
   grid-column-gap: 15px;
   grid-row-gap: 15px;
   box-sizing: border-box;
   width: 100%;
 }
+//@media (max-width: 1344px) and (min-width:1200px) {
+//  .proposals-grid {
+//    grid-template-columns: repeat(auto-fill, minmax(calc(55% - 15px), 1fr));
+//  }
+//}
 
-@media screen and (max-width: 990px) {
+@media screen and (max-width: 1024px) {
   .proposals-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(1, 1fr);;
   }
 }
 </style>
