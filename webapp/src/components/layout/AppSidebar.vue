@@ -8,7 +8,8 @@
       <router-link :to="menuItem.href" v-for="(menuItem,index) of menu" :key="index">
         <span class="sidebar-element">
           <span class="icon" :class="{ 'active': index === selected }">
-            <Icon :name="menuItem.icon.element"/>
+            <Icon v-if="menuItem.icon.type === SideBarIconType.LUCIDE" :name="menuItem.icon.element"/>
+            <GovernanceIcon v-else-if="menuItem.icon.type === SideBarIconType.GOV" :icon="menuItem.icon.element"/>
           </span>
           <span class="title">{{ menuItem.title }}</span>
         </span>
@@ -26,6 +27,8 @@ import { computed, onMounted, ref } from "vue";
 import Icon from "../features/IconComponent.vue";
 import {PermissionsService} from "@/services/permissions/permissions.service";
 import { useRoute, useRouter } from "vue-router";
+import { SideBarIconType } from "@/services/permissions/sidebar.config";
+import GovernanceIcon from "../commons/GovernanceIcon.vue";
 
 const permissionsService = new PermissionsService();
 const router = useRouter()

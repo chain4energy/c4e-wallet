@@ -30,7 +30,7 @@ export class SidebarConfig{
     retVal.id = 1;
     retVal.href = '/staking';
     retVal.title = 'Staking';
-    retVal.icon = new SidebarIcon('Coins');
+    retVal.icon = new SidebarIcon('Wallet');
     return retVal;
   }
 
@@ -39,7 +39,7 @@ export class SidebarConfig{
     retVal.id = 2;
     retVal.href = '/governance';
     retVal.title = 'Governance';
-    retVal.icon = new SidebarIcon('Wallet');
+    retVal.icon = new SidebarIcon('Landmark');
     return retVal;
   }
 
@@ -53,9 +53,17 @@ export class SidebarElement {
 
 }
 
+export enum SideBarIconType {
+  LUCIDE,
+  GOV
+}
 export class SidebarIcon {
   element: string;
-  constructor(element: string) {
+  type: SideBarIconType;
+  constructor(element: string, type = SideBarIconType.LUCIDE) {
     this.element = element;
+    this.type = type;
   }
 }
+
+
