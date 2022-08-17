@@ -17,7 +17,7 @@ import i18n from "@/plugins/i18n";
 import { formatString } from "@/utils/string-formatter";
 import { useProposalsStore } from "./proposals.store";
 import { VoteOption } from "@/models/store/proposal";
-import TxSuccessToast from "@/components/commons/TxSuccessToast.vue"
+import TxToast from "@/components/commons/TxToast.vue"
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -379,7 +379,7 @@ function onTxDeliverySuccess(tx?: TxData) {
   if (tx) {
     logger.logToConsole(LogLevel.DEBUG, `Tx: ${tx.transactionHash} success. GasUsed: ${tx.gasUsed}`);
     const content = {
-      component: TxSuccessToast,
+      component: TxToast,
       props: {
         tx: tx
       },

@@ -1,9 +1,16 @@
 <template>
   <div class="t-container">
-    <div class="t-header">{{i18n.global.t("TOAST.SUCCESS.TX_DELIVERY.TITLE")}}</div>
+    <div v-if="isSuccess()" class="t-header">{{i18n.global.t("TOAST.SUCCESS.TX_DELIVERY.TITLE")}}</div>
+    <div v-else class="t-header">{{i18n.global.t("TOAST.ERROR.TX_DELIVERY.TITLE")}}</div>
+    <div v-if="!isSuccess() && errorTitleMessage">{{errorTitleMessage}}</div>
     <div class="t-body">
-
-      <table class="t-table">
+      <div v-if="tx !== undefined && !isSuccess() && tx.rawLog">{{tx.rawLog}}</div>
+      <div v-if="errorMessage !== undefined && !isSuccess()">{{errorMessage}}</div>
+      <table v-if="tx !== undefined" class="t-table">
+        <tr v-if="!isSuccess()">
+          <td>{{i18n.global.t("TOAST.ERROR.TX_DELIVERY.CODE")}}</td>
+          <td class="t-value">{{tx.code}}</td>
+        </tr>
         <tr>
           <td>{{i18n.global.t("TOAST.SUCCESS.TX_DELIVERY.HASH")}}</td>
           <td class="t-value">
@@ -31,8 +38,14 @@ import i18n from "@/plugins/i18n";
 import { useConfigurationStore } from "@/store/configuration.store";
 
 const props = defineProps<{
-  tx: TxData
+  tx?: TxData,
+  errorTitleMessage?: string,
+  errorMessage?: string
 }>();
+
+function isSuccess(): boolean {
+  return props.tx !== undefined && props.tx.code === 0;
+}
 
 </script>
 

@@ -209,7 +209,14 @@
         "GAS_USED": "Gas Used",
         "HEIGHT": "Height"
       }
+    },
+    "ERROR": {
+      "TX_DELIVERY": {
+        "TITLE": "TX delivery: Failure!!!",
+        "CODE": "Code"
+      }
     }
   },
+  
   "NUMBER_FORMAT_LOCALE": "en-US"
 }

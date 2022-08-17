@@ -197,6 +197,12 @@
         "GAS_USED": "Gaz",
         "HEIGHT": "Blok"
       }
+    },
+    "ERROR": {
+      "TX_DELIVERY": {
+        "TITLE": "Błąd transakcji!!!",
+        "CODE": "Kod"
+      }
     }
   },
   "NUMBER_FORMAT_LOCALE": "pl-PL"
