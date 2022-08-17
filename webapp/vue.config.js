@@ -1,6 +1,12 @@
 const { defineConfig } = require('@vue/cli-service')
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 module.exports = defineConfig({
+  pages:{
+    index:{
+      entry: 'src/main.ts',
+      title: 'Chain4Energy | C4E wallet'
+    },
+  },
   transpileDependencies: true,
   devServer: {
     host: '',
