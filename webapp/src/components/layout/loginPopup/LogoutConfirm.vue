@@ -16,7 +16,7 @@
               </div>
               <div class="loginPopup__addressHolder">
                 <p>{{useUserStore().getAccount.address}}</p>
-                <Icon name="Copy" @click="copyTxt">{{$t('CONNECT.COPY')}}</Icon>
+                <Icon name="Copy" @click="copyTxt">{{$t('COPY.ADDRESS')}}</Icon>
               </div>
 
               <!--<div class="loginPopup__data" style="display: flex; flex-direction: column; justify-items: left">
