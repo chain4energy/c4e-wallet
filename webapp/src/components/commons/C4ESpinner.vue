@@ -65,11 +65,11 @@ const props = defineProps<{
     transform: rotateY(0deg);
   }
   50% {
-    transform: rotateY(1800deg);
+    transform: rotateY(180deg);
     animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
   }
   100% {
-    transform: rotateY(3600deg);
+    transform: rotateY(360deg);
   }
 }
 
