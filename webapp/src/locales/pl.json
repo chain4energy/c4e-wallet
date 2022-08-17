@@ -205,5 +205,9 @@
       }
     }
   },
+  "COPY": {
+    "ADDRESS": "Adres został skopiowany do schowka",
+    "TX_HASH": "Hash transakcji skopiowany do schowka"
+  },
   "NUMBER_FORMAT_LOCALE": "pl-PL"
 }

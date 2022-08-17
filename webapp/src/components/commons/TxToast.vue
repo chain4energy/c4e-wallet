@@ -3,9 +3,14 @@
     <div v-if="isSuccess()" class="t-header">{{i18n.global.t("TOAST.SUCCESS.TX_DELIVERY.TITLE")}}</div>
     <div v-else class="t-header">{{i18n.global.t("TOAST.ERROR.TX_DELIVERY.TITLE")}}</div>
     <div v-if="!isSuccess() && errorTitleMessage">{{errorTitleMessage}}</div>
+    <div>
+        <a v-if="tx?.transactionHash !== undefined" class="link" :href="useConfigurationStore().config.explorerTx + tx.transactionHash"
+               target="_blank" >{{ i18n.global.t('CONNECT.VIEW_EXPLORER')}}<Icon class="toast-icon" name="ExternalLink"/></a>
+    </div>
     <div class="t-body">
       <div v-if="tx !== undefined && !isSuccess() && tx.rawLog">{{tx.rawLog}}</div>
       <div v-if="errorMessage !== undefined && !isSuccess()">{{errorMessage}}</div>
+      
       <table v-if="tx !== undefined" class="t-table">
         <tr v-if="!isSuccess()">
           <td>{{i18n.global.t("TOAST.ERROR.TX_DELIVERY.CODE")}}</td>
@@ -13,10 +18,8 @@
         </tr>
         <tr>
           <td>{{i18n.global.t("TOAST.SUCCESS.TX_DELIVERY.HASH")}}</td>
-          <td class="t-value">
-            <a class="t-tx-hash" :href="useConfigurationStore().config.explorerTx + tx.transactionHash">
-              {{ tx.transactionHash.slice(0, 6)}}...{{tx.transactionHash.slice(-6) }}
-            </a>
+          <td class="t-value t-value-copy" @click="copyTxHash">
+            {{ tx.transactionHash.slice(0, 6)}}...{{tx.transactionHash.slice(-6) }}<Icon class="toast-icon" name="Copy"/>
           </td>
         </tr>
         <tr>
@@ -36,6 +39,8 @@
 import { TxData } from "@/api/tx.broadcast.base.api";
 import i18n from "@/plugins/i18n";
 import { useConfigurationStore } from "@/store/configuration.store";
+import { useToast } from "vue-toastification";
+import Icon from "@/components/features/IconComponent.vue";
 
 const props = defineProps<{
   tx?: TxData,
@@ -47,10 +52,24 @@ function isSuccess(): boolean {
   return props.tx !== undefined && props.tx.code === 0;
 }
 
+function copyTxHash(){
+  if (props.tx?.transactionHash) {
+    navigator.clipboard.writeText(props.tx?.transactionHash);
+    useToast().success(i18n.global.t("COPY.TX_HASH"));
+  }
+}
+
 </script>
 
 <style scoped lang="scss">
 @import '@/styles/variables.scss';
+
+.link {
+  color: white;
+  &:hover {
+    color: blue;
+  }
+}
 .t-container {
   width: 100%;
   align-items: center;
@@ -83,5 +102,18 @@ function isSuccess(): boolean {
   margin-left: 15px;
   padding-left: 15px;
   // color: $main-color;
+}
+
+.t-value-copy {
+  text-decoration: underline;
+  &:hover {
+    cursor: pointer;
+    color: blue;
+  }
+}
+
+.toast-icon {
+  height: 0.7em;
+  margin-bottom: 5px;
 }
 </style>
