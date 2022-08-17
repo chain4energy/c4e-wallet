@@ -102,12 +102,40 @@
       <template  v-if="isValidatorsTable()" v-slot:expanded-columns="{expandedData}">
         <div style="display: flex; flex-direction: row;">
           <div style="display: flex; flex-direction: column; margin-right: 20px">
+            <p>{{ $t(`STAKING_VIEW.TABLE.STAKE`) }}</p>
+            <CoinAmount :amount="expandedData.data.delegatedAmount" :show-denom="true"/>
+          </div>
+          <div style="display: flex; flex-direction: column; margin-right: 20px">
             <p>{{ $t(`STAKING_VIEW.TABLE.UNSTAKING`) }}</p>
             <CoinAmount :amount="expandedData.data.undelegatingAmount" :show-denom="true"/>
           </div>
           <div style="display: flex; flex-direction: column">
             <p>{{ $t(`STAKING_VIEW.TABLE.REWARDS`) }}</p>
             <CoinAmount :amount="expandedData.data.rewardsAmount" :show-denom="true"/>
+          </div>
+        </div>
+        <div v-if="expandedData.data.undelegatingEntries && expandedData.data.undelegatingEntries.length > 0">
+          <div >
+            <DataTableWrapper 
+              :useExternalGlobalFilter="false"
+              :eager-loading-config="createValidatorUndelegationEntriesEagerLoadingConfig(expandedData.data.undelegatingEntries)"
+              :paginator="false">
+              <template #header>
+                <div>{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</div>
+              </template>
+              <template v-slot:columns>
+                <Column field="amount" header="Amount" :sortable="true">
+                  <template #body="{data}">
+                    <CoinAmount :amount="data.amount" :show-denom="true"/>
+                  </template>
+                </Column>
+                <Column field="completionTime" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="true">
+                  <template #body="{data}">
+                    <DateCommon :date="data.completionTime" />
+                  </template>
+                </Column>
+              </template>
+            </DataTableWrapper>
           </div>
         </div>
       </template>
@@ -132,6 +160,7 @@ import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView"
 import DateCommon from "@/components/commons/DateCommon.vue";
 import ValidatorStatusBadge from "./ValidatorStatusBadge.vue";
+import { UnbondingDelegationEntry } from "@/models/store/staking";
 
 function getRedelegationDirection() {
   if (isValidatorsTable()) {
@@ -173,6 +202,11 @@ function isDelegationsTable() {
 
 function isUndelegationsTable() {
   return props.type === ValidatorsDataTableType.UNDELEGATIONS;
+}
+
+function createValidatorUndelegationEntriesEagerLoadingConfig(entries: UnbondingDelegationEntry[]): EagerLoadingConfig<UnbondingDelegationEntry>{
+  const config = new EagerLoadingConfig<UnbondingDelegationEntry>(entries);
+  return config;
 }
 
 

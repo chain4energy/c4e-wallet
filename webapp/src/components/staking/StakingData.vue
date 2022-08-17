@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h5 v-if="isLoggedIn" class="m-0">{{ $t("STAKING_VIEW.USER_DELEGATIONS") }}</h5>
+    <h4 v-if="isLoggedIn" class="m-0">{{ $t("STAKING_VIEW.USER_DELEGATIONS") }}</h4>
     <ValidatorsDataTable v-if="isLoggedIn" :validators="useValidatorsStore().getUserDelgationsValidators" :type="ValidatorsDataTableType.DELEGATIONS"/>
-    <h5 v-if="isLoggedIn" class="m-0">{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</h5>
+    <h4 v-if="isLoggedIn" class="m-0">{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</h4>
     <ValidatorsDataTable v-if="isLoggedIn" :validators="useValidatorsStore().getUserUndelgationsValidators" :type="ValidatorsDataTableType.UNDELEGATIONS"/>
-    <h5 class="m-0">{{ $t("STAKING_VIEW.VALIDATORS") }}</h5>
+    <h4 class="m-0">{{ $t("STAKING_VIEW.VALIDATORS") }}</h4>
     <TabView lazy>
       <TabPanel>
         <template #header>
@@ -54,5 +54,8 @@ const isLoggedIn = computed(() => userStore.isLoggedIn);
 </script>
 
 <style scoped lang="scss">
-
+h4 {
+  font-weight: bold;
+  margin-top: 2em !important;
+}
 </style>

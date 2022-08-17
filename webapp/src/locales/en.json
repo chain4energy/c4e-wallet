@@ -1,5 +1,4 @@
 {
-  "TTT": "Leg",
   "CONNECT" : {
     "CONNECT": "Connect",
     "CONNECT_ADDRESS": "Connect with address",
@@ -198,7 +197,7 @@
     "DASHBOARD": "Dashboard",
     "PROPOSALSLIST": "Proposals list",
     "GOVERNANCE": "Governance",
-    "GOVERNANCE_PROPOSALSLIST": "Governance / Proposals list",
+    "GOVERNANCE_PROPOSALSLIST": "Governance",
     "GOVERNANCEDETAILS": "Proposal details"
   },
   "TOAST": {
@@ -218,6 +217,10 @@
         "CODE": "Code"
       }
     }
+  },
+  "COPY": {
+    "ADDRESS": "Address has been copied to clipboard",
+    "TX_HASH": "TX hash has been copied to clipboard"
   },
   
   "NUMBER_FORMAT_LOCALE": "en-US"
