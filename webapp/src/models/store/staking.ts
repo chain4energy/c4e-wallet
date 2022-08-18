@@ -69,4 +69,8 @@ export class UnbondingDelegations {
   public getEntriesByValidator(validatorAddress: string): UnbondingDelegationEntry[] | undefined {
     return this.undelegations.get(validatorAddress)?.entries
   }
+
+  public hasUnbondingDelegations(): boolean {
+    return this.undelegations.size > 0;
+  }
 }

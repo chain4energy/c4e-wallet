@@ -8,7 +8,7 @@
           <div style="display: flex; flex-direction: column">
             <h2>{{ validator.description.moniker }}</h2>
             <div style="display: flex;">
-              <p>commission</p>
+              <p>{{ $t('STAKING_VIEW.STAKING_POPUP.COMMISSION') }} -</p>
               <percents-view :amount="validator.commission.rate"></percents-view>
             </div>
           </div>

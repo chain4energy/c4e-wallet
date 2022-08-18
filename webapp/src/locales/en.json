@@ -132,6 +132,7 @@
       "REDELEGATED": "Redelegated",
       "AVAILABLE_TO_DELEGATE": "Available to delegate",
       "WEBSITE": "Website",
+      "COMMISSION": "Commission",
       "AMOUNT": {
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",
@@ -197,10 +198,10 @@
   "SECTION_TITLES": {
     "STAKING": "Staking",
     "DASHBOARD": "Dashboard",
-    "PROPOSALSLIST": "Proposals list",
+    "PROPOSALSLIST": "Governance",
     "GOVERNANCE": "Governance",
     "GOVERNANCE_PROPOSALSLIST": "Governance",
-    "GOVERNANCEDETAILS": "Proposal details"
+    "GOVERNANCEDETAILS": "Proposal"
   },
   "TOAST": {
     "SUCCESS": {

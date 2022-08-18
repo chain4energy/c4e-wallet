@@ -124,6 +124,7 @@
       "UNDELEGATE": "Wycofaj delegację",
       "REDELEGATE": "Zmień delegację",
       "WEBSITE": "Website",
+      "COMMISSION": "Commission",
       "AMOUNT": {
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",
@@ -186,10 +187,10 @@
   "SECTION_TITLES": {
     "STAKING": "Delegacja",
     "DASHBOARD": "Panel",
-    "PROPOSALSLIST": "Lista propozycji",
+    "PROPOSALSLIST": "Zarządzanie",
     "GOVERNANCE": "Zarządzanie",
-    "GOVERNANCE_PROPOSALSLIST": "Zarządzanie / Lista propozycji",
-    "GOVERNANCEDETAILS": "Szczegóły propozycji"
+    "GOVERNANCE_PROPOSALSLIST": "Zarządzanie",
+    "GOVERNANCEDETAILS": "Wniosek"
   },
   "TOAST": {
     "SUCCESS": {
