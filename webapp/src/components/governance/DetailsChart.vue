@@ -44,12 +44,14 @@
     </div>
     <div class="bottom">
       <Button
-        :label="$t('GOVERNANCE_VIEW.VOTE')"
         class="p-button-raised p-button-rounded"
         data-bs-toggle="modal" data-bs-target="#voteModal"
         :disabled="
         useProposalsStore().getProposal?.status !== ProposalStatus.VOTING_PERIOD"
-      />
+      >
+        <GovernanceIcon icon="vote"/>
+        {{$t('GOVERNANCE_VIEW.VOTE')}}
+      </Button>
       <VoteModal id="voteModal" :proposalId="proposal.proposalId" :title="getProposalTitle()"></VoteModal>
     </div>
   </div>
@@ -73,6 +75,7 @@ import { useProposalsStore } from "@/store/proposals.store";
 import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView.vue";
+import GovernanceIcon from "../commons/GovernanceIcon.vue";
 
 use([
   SVGRenderer,
@@ -174,5 +177,9 @@ function getProposalStatus(): ProposalStatus{
       width: 150px;
     }
   }
+}
+
+.gov-icon {
+  padding-right: 0.5rem;
 }
 </style>

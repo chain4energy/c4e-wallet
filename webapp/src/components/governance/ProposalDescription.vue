@@ -6,7 +6,6 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 
 import {Proposal} from "@/models/store/proposal";

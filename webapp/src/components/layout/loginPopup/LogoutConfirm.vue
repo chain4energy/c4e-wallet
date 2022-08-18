@@ -31,7 +31,7 @@
             </div>
           </div>
           <div>
-            <a :href="`https://explorer-testnet.chain4energy.org/accounts/${useUserStore().getAccount.address}`"
+            <a :href="`${useConfigurationStore().config.explorerAccount}${useUserStore().getAccount.address}`"
                target="_blank" class="loginPopup__disconnect p-button">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>
             <Button class="loginPopup__disconnect" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
           </div>
@@ -51,6 +51,7 @@ import { Validator } from "@/models/store/validator";
 import { useToast } from "vue-toastification";
 import Icon from "@/components/features/IconComponent"
 import dataService from '@/services/data.service';
+import { useConfigurationStore } from '@/store/configuration.store';
 
 const props = defineProps({
   logoutType:{

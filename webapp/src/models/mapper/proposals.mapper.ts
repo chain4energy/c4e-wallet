@@ -54,8 +54,8 @@ export function mapProposalTallyResult(tally?: Tally): ProposalTallyResult {
   if (tally === undefined) {
     throw new Error('mapProposalTallyResult -tally is undefined');
   }
-  if (tally.yes === undefined || 
-      tally.no === undefined || 
+  if (tally.yes === undefined ||
+      tally.no === undefined ||
       tally.abstain === undefined ||
       tally.no_with_veto === undefined) {
     throw new Error('mapProposalTallyResult - some of tally votes is undefined');

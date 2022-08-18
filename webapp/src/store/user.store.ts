@@ -17,6 +17,7 @@ import i18n from "@/plugins/i18n";
 import { formatString } from "@/utils/string-formatter";
 import { useProposalsStore } from "./proposals.store";
 import { VoteOption } from "@/models/store/proposal";
+import TxToast from "@/components/commons/TxToast.vue"
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -149,7 +150,9 @@ export const useUserStore = defineStore({
             fetchRewards(connectionInfo, this, true),
             fetchDelegations(connectionInfo, this, true),
           ]);
+          onTxDeliverySuccess(resp.data);
           onRefreshingError(allResults);
+
         }
       });
     },
@@ -164,6 +167,7 @@ export const useUserStore = defineStore({
             fetchRewards(connectionInfo, this, true),
             fetchDelegations(connectionInfo, this, true),
           ]);
+          onTxDeliverySuccess(resp.data);
           onRefreshingError(allResults);
         }
       });
@@ -180,6 +184,7 @@ export const useUserStore = defineStore({
             fetchDelegations(connectionInfo, this, true),
             fetchUnbondingDelegations(connectionInfo, this, true),
           ]);
+          onTxDeliverySuccess(resp.data);
           onRefreshingError(allResults);
         }
       });
@@ -195,6 +200,7 @@ export const useUserStore = defineStore({
             fetchBalance(connectionInfo, this, true),
             fetchRewards(connectionInfo, this, true),
           ]);
+          onTxDeliverySuccess(resp.data);
           onRefreshingError(allResults);
         }
       });
@@ -212,7 +218,9 @@ export const useUserStore = defineStore({
                 onRefreshingError([true]);
               },
               true,
-              true);
+              true
+            );
+            onTxDeliverySuccess(resp.data);
         }
       });
     },
@@ -364,5 +372,21 @@ function onRefreshingError(allResults: boolean[]) {
     logger.logToConsole(LogLevel.ERROR, 'Refereshing data error');
     toast.error('Refereshing data error');
     return;
+  }
+}
+
+function onTxDeliverySuccess(tx?: TxData) {
+  if (tx) {
+    logger.logToConsole(LogLevel.DEBUG, `Tx: ${tx.transactionHash} success. GasUsed: ${tx.gasUsed}`);
+    const content = {
+      component: TxToast,
+      props: {
+        tx: tx
+      },
+    }
+    toast.success(content, {icon: true,});
+  } else {
+    logger.logToConsole(LogLevel.WARNING, `Tx delivered successfully but cannt get TX data`);
+    toast.warning(`Tx delivered successfully but cannt get TX data`);
   }
 }

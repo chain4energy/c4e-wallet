@@ -75,8 +75,8 @@
     "MAX_SUPPLY": "Max supply",
     "POOLS": "Pools",
     "COMMUNITY_POOL": "Community pool",
-    "STRATEGIC_REVERSE_POOL": "Strategic reverse pool",
-    "AIRDROP": "Airdrop",
+    "STRATEGIC_REVERSE_POOL": "Strategic reserve pool",
+    "AIRDROP": "Fairdrop pool",
     "TOKENOMICS": "C4E Tokenomics",
     "BOUNDED": "Bounded",
     "UNBOUNDED": "Unbounded",
@@ -108,6 +108,10 @@
       "INACTIVE": "Inactive",
       "JAILED": "Jailed"
     },
+    "TABLE_EXPANDED": {
+      "UNSTAKING": "Your unstaking",
+      "REWARDS": "Rewards"
+    },
     "TABLE_BUTTONS": {
       "MANAGE_BTN": "Manage"
     },
@@ -122,9 +126,9 @@
       "UNDELEGATE": "Undelegate",
       "REDELEGATE": "Redelegate",
       "DELEGATED": "Delegated",
-      "UNDELEGATED": "Undelegated",
+      "UNDELEGATED": "Undelegating",
       "REDELEGATED": "Redelegated",
-      "AVAILABLE_TO_DELEGATE": "available to delegate",
+      "AVAILABLE_TO_DELEGATE": "Available to delegate",
       "AMOUNT": {
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",
@@ -159,7 +163,6 @@
     "VALIDATORS_LOADING" : "Loading validators data. Please wait.",
     "USER_DELEGATIONS": "Your delegations",
     "USER_UNDELEGATIONS": "Your undelegations"
-
   },
   "USER_DATA": {
     "TOTAL": "Total",
@@ -194,13 +197,26 @@
     "PROPOSALSLIST": "Proposals list",
     "GOVERNANCE": "Governance",
     "GOVERNANCE_PROPOSALSLIST": "Governance",
-    "GOVERNANCEDETAILS": "Governance details"
+    "GOVERNANCEDETAILS": "Proposal details"
   },
   "TOAST": {
     "SUCCESS": {
       "ADDRESS_CONNECTED": "Address: '{address}' Connected",
-      "ADDRESS_DISCONNECTED": "Address: '{address}' Disconnected"
+      "ADDRESS_DISCONNECTED": "Address: '{address}' Disconnected",
+      "TX_DELIVERY": {
+        "TITLE": "TX delivery: Success!!!",
+        "HASH": "Hash",
+        "GAS_USED": "Gas Used",
+        "HEIGHT": "Height"
+      }
+    },
+    "ERROR": {
+      "TX_DELIVERY": {
+        "TITLE": "TX delivery: Failure!!!",
+        "CODE": "Code"
+      }
     }
   },
+  
   "NUMBER_FORMAT_LOCALE": "en-US"
 }

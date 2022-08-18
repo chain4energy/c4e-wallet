@@ -8,6 +8,7 @@ import { LogLevel } from '@/services/logger/log-level';
 import { SigningStargateClient, isDeliverTxFailure, DeliverTxResponse } from "@cosmjs/stargate";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { RequestResponse } from '@/models/request-response';
+import TxToast from "@/components/commons/TxToast.vue"
 
 const toast = useToast();
 
@@ -152,13 +153,27 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
 
   private createTxErrorResponseWithToast(errorData: TxBroadcastError,toastMessageBeginning: string | undefined, showErrorToast: boolean): RequestResponse<TxData, TxBroadcastError> {
     if (showErrorToast) {
-      let errorDataString = errorData.message;
+      const errorDataString = toastMessageBeginning;
       if (errorData.txData !== undefined) {
-        errorDataString += '\r\nTx: ' + errorData.txData.transactionHash;
-        errorDataString += '\r\n\tHeight: ' + errorData.txData.height;
-        errorDataString += '\r\n\tCode: ' + errorData.txData.code;
+        const content = {
+          component: TxToast,
+          props: {
+            tx: errorData.txData,
+            errorTitleMessage: errorDataString
+          },
+        }
+        toast.error(content, {icon: true,});
+      } else {
+        const content = {
+          component: TxToast,
+          props: {
+            tx: errorData.txData,
+            errorTitleMessage: errorDataString,
+            errorMessage: errorData.message
+          },
+        }
+        toast.error(content, {icon: true,});
       }
-      toast.error(toastMessageBeginning + this.getServiceType() + '\r\n' + errorDataString);
     }
     return new RequestResponse<TxData, TxBroadcastError>(errorData);
   }

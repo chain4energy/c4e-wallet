@@ -46,8 +46,8 @@ export class UnbondingDelegationEntry {
     this.completionTime = completionTime;
   }
 
-  public getCompletionTimeDateString(): string {
-    return this.completionTime.toLocaleString();
+  public getCompletionTimeDate(): Date {
+    return this.completionTime;
   }
 }
 

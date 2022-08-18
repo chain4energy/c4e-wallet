@@ -2,6 +2,9 @@
 <span>
     <div class="container-grid">
       <template v-if="everythingIsReady">
+        <div class="goBack">
+          <div class="goBack__btn" @click="router.push({name: 'proposalsList'})" ><Icon name="ArrowLeft"/>Back</div>
+        </div>
         <div class="details">
           <ProposalDetails :proposal="proposal"></ProposalDetails>
         </div>
@@ -26,15 +29,16 @@ import ProposalDescription from "@/components/governance/ProposalDescription.vue
 import dataService from "@/services/data.service";
 import router from "@/router";
 import { useProposalsStore } from "@/store/proposals.store";
+import Icon from "@/components/features/IconComponent.vue";
 
 const route = useRoute();
 
 onBeforeMount(() => {
   dataService.onProposalSelected(
-    Number(route.params.id.toString()), 
+    Number(route.params.id.toString()),
     () => {
       everythingIsReady.value = true;
-    }, 
+    },
     () => {
       router.push({name: 'proposalsList'})
     }
@@ -57,21 +61,31 @@ const everythingIsReady = ref(false);
 .container-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   grid-column-gap: 20px;
   grid-row-gap: 20px;
-
-    .details { grid-area: 1 / 1 / 2 / 5; }
+details { grid-area: 1 / 1 / 2 / 5; }
     .chart { grid-area: 1 / 5 / 2 / 7; }
 }
     .description {
       width: 100%;
       margin-top: 20px;
     } 
+.goBack {
+
+  &__btn{
+    display: flex;
+    cursor: pointer;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
 
 @media screen and (max-width: 1100px) {
   .container-grid {
     display: flex;
     flex-direction: column;
+    cursor: pointer;
   }
 }
 </style>

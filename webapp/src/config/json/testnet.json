@@ -33,5 +33,7 @@
   "dashboardDataRefreshTimeout": 300000,
   "validatorsDataRefreshTimeout":600000,
   "accountDataRefreshTimeout": 90000,
-  "proposalsPageLimit": 50
+  "proposalsPageLimit": 50,
+  "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
+  "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/"
 }
