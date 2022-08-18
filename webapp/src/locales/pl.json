@@ -124,6 +124,7 @@
       "UNDELEGATE": "Wycofaj delegację",
       "REDELEGATE": "Zmień delegację",
       "WEBSITE": "Website",
+      "COMMISSION": "Commission",
       "AMOUNT": {
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",

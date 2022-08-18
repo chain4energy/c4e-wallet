@@ -131,6 +131,7 @@
       "REDELEGATED": "Redelegated",
       "AVAILABLE_TO_DELEGATE": "Available to delegate",
       "WEBSITE": "Website",
+      "COMMISSION": "Commission",
       "AMOUNT": {
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",
