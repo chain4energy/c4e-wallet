@@ -31,7 +31,15 @@ const selectionView = ref(false)
 
 const configMap = getConfigurationProfiles();
 
-onUpdated(()=> window.document.title = `Chain4Energy | C4E wallet (${useConfigurationStore().getConfigName})`);
+const chainName = computed(() => {
+  if(useConfigurationStore().getConfigName !== 'mainnet'){
+    return `(${useConfigurationStore().getConfigName})`;
+  } else {
+    return '';
+  }
+});
+
+onUpdated(()=> window.document.title = `Chain4Energy | C4E wallet ${chainName.value}`);
 
 const onChange = (event: any) => {
   useConfigurationStore().fetchConfig(event.target.value);
