@@ -130,6 +130,8 @@
       "UNDELEGATED": "Undelegating",
       "REDELEGATED": "Redelegated",
       "AVAILABLE_TO_DELEGATE": "Available to delegate",
+      "WEBSITE": "Website",
+      "COMMISSION": "Commission",
       "AMOUNT": {
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",
@@ -222,6 +224,6 @@
     "ADDRESS": "Address has been copied to clipboard",
     "TX_HASH": "TX hash has been copied to clipboard"
   },
-  
+
   "NUMBER_FORMAT_LOCALE": "en-US"
 }
