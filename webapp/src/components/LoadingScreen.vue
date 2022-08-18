@@ -3,7 +3,8 @@
   <!--  <BlockUI id="blokUi" :blocked="splashStore.splashOn" :fullScreen="true">-->
 <!--    <div v-if="splashStore.splashOn" class="lds-hourglass"/>-->
   <div>
-    <loading v-model:active="splashStore.splashOn"/>
+    <loading v-model:active="splashStore.splashOn" ><C4ESpinner class="c4e-icon" size="120"/></loading>
+    
 <!--    <loading v-model:active="ttt"/>-->
   </div>
 </template>
@@ -12,13 +13,18 @@
 import {useSplashStore} from '@/store/splash.store';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
+import C4ESpinner from './commons/C4ESpinner.vue';
 
 const splashStore = useSplashStore();
 // const ttt = true;
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/styles/variables.scss';
+.c4e-icon {
+  color: $primary-secondary-blue-color;
+}
 /*TODO - jakiś ładny spinner */
 .lds-hourglass {
   position: fixed;

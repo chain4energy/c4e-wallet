@@ -223,6 +223,10 @@ const option = computed(() => {
   min-height: 360px;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   border-radius: 10px;
+  @media (max-width: 1024px) {
+    max-width: 100%;
+    min-width: 100%;
+  }
 
   &:hover {
     cursor: pointer;
@@ -242,7 +246,7 @@ const option = computed(() => {
     .voting-status {
       float: right;
       height: 50px;
-      min-width: 150px;
+      width: 150px;
       padding: 15px 0px;
       margin-left: auto;
       margin-right: auto;

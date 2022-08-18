@@ -6,6 +6,8 @@
     "CONNECT_KEPLR": "Zaloguj się z Keplrem",
     "ADDRESS_HELP": "Przeglądaj z dowolnym adresem",
     "VIEW_EXPLORER": "View on explorer",
+    "COPY": "Copy",
+    "COPIED": "Adres został skopiowany do schowka (Correct? )",
     "ADDRESS_VALIDATION": {
       "EMPTY": "Adres jest wymagany",
       "NOT_THIS_NETWORK": "Adres musi zaczynać się od prefiksu '{prefix}'",
@@ -184,7 +186,7 @@
     "DASHBOARD": "Panel",
     "PROPOSALSLIST": "Lista propozycji",
     "GOVERNANCE": "Zarządzanie",
-    "GOVERNANCE_PROPOSALSLIST": "Zarządzanie / Lista propozycji",
+    "GOVERNANCE_PROPOSALSLIST": "Zarządzanie",
     "GOVERNANCEDETAILS": "Szczegóły propozycji"
   },
   "TOAST": {
@@ -204,6 +206,10 @@
         "CODE": "Kod"
       }
     }
+  },
+  "COPY": {
+    "ADDRESS": "Adres został skopiowany do schowka",
+    "TX_HASH": "Hash transakcji skopiowany do schowka"
   },
   "NUMBER_FORMAT_LOCALE": "pl-PL"
 }

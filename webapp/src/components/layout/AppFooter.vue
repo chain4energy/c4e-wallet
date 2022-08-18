@@ -1,9 +1,6 @@
 <template>
 
   <div class="footer">
-    <span>
-      <CurrentBlockchain></CurrentBlockchain>
-    </span>
     <span>FAQ</span>
     <span>Help</span>
     <span>Terms & Conditions</span>

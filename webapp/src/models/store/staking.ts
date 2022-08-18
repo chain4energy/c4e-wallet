@@ -65,4 +65,12 @@ export class UnbondingDelegations {
     this.undelegations.get(validatorAddress)?.entries.forEach(a => amount += a.amount);
     return amount;
   }
+
+  public getEntriesByValidator(validatorAddress: string): UnbondingDelegationEntry[] | undefined {
+    return this.undelegations.get(validatorAddress)?.entries
+  }
+
+  public hasUnbondingDelegations(): boolean {
+    return this.undelegations.size > 0;
+  }
 }

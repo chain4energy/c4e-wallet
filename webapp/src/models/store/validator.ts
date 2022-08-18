@@ -1,6 +1,7 @@
 import { useTokensStore } from "@/store/tokens.store";
 import { useUserStore } from "@/store/user.store";
 import { BigDecimal, divideBigInts } from "./big.decimal";
+import { UnbondingDelegationEntry } from "./staking";
 
 export interface ValidatorBase {
   rank: number;
@@ -69,6 +70,9 @@ export class Validator implements ValidatorBase {
     return this.status === ValidatorStatus.Bonded;
   }
 
+  public get undelegatingEntries(): UnbondingDelegationEntry[] | undefined {
+    return useUserStore().getUndelegations.getEntriesByValidator(this.operatorAddress);
+  }
 }
 
 export class ValidatorDescription implements ValidatorDescriptionBase{

@@ -1,11 +1,12 @@
 {
-  "TTT": "Leg",
   "CONNECT" : {
     "CONNECT": "Connect",
     "CONNECT_ADDRESS": "Connect with address",
     "CONNECT_KEPLR": "Connect with Keplr wallet",
     "ADDRESS_HELP": "Explore with any address",
     "VIEW_EXPLORER": "View on explorer",
+    "COPY": "Copy",
+    "COPIED": "Address have been copied to clipboard",
     "ADDRESS_VALIDATION": {
       "EMPTY": "Address is required",
       "NOT_THIS_NETWORK": "Address must start with prefix '{prefix}'",
@@ -216,6 +217,10 @@
         "CODE": "Code"
       }
     }
+  },
+  "COPY": {
+    "ADDRESS": "Address has been copied to clipboard",
+    "TX_HASH": "TX hash has been copied to clipboard"
   },
   
   "NUMBER_FORMAT_LOCALE": "en-US"
