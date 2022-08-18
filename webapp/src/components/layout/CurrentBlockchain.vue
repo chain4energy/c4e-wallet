@@ -24,12 +24,14 @@
 
 import { getConfigurationProfiles } from "@/config/configuration.profiles";
 import {useConfigurationStore} from "@/store/configuration.store";
-import {computed, ref} from "vue";
+import {computed, onUpdated, ref} from "vue";
 import {useBlockStore} from "@/store/block.store";
 
 const selectionView = ref(false)
 
 const configMap = getConfigurationProfiles();
+
+onUpdated(()=> window.document.title = `Chain4Energy | C4E wallet (${useConfigurationStore().getConfigName})`);
 
 const onChange = (event: any) => {
   useConfigurationStore().fetchConfig(event.target.value);
