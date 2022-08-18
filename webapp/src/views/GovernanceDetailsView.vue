@@ -1,10 +1,10 @@
 <template>
 <span>
-    <div class="container-grid">
-      <template v-if="everythingIsReady">
         <div class="goBack">
           <div class="goBack__btn" @click="router.push({name: 'proposalsList'})" ><Icon name="ArrowLeft"/>Back</div>
         </div>
+    <div class="container-grid">
+      <template v-if="everythingIsReady">
         <div class="details">
           <ProposalDetails :proposal="proposal"></ProposalDetails>
         </div>
@@ -61,19 +61,18 @@ const everythingIsReady = ref(false);
 .container-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(1, 2fr);
   grid-column-gap: 20px;
   grid-row-gap: 20px;
-    .details { grid-area: 2 / 1 / 2 / 5; }
-    .chart { grid-area: 2 / 5 / 2 / 7; }
-    .description { grid-area: 3 / 1 / 3 / 7; }
-}
 
-    .description {
-      width: 100%;
-      margin-top: 20px;
-    } 
-.goBack{
+  .details { grid-area: 1 / 1 / 2 / 5; }
+  .chart { grid-area: 1 / 5 / 2 / 7; }
+}
+  .description {
+    width: 100%;
+    margin-top: 20px;
+  } 
+
+.goBack {
 
   &__btn{
     display: flex;
