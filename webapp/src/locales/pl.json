@@ -114,7 +114,8 @@
     },
     "INDICATOR": {
       "STAKE": "delegacja",
-      "UNSTAKING": "odblokowywanie"
+      "UNSTAKING": "Twoje odblokowywanie",
+      "REWARDS": "Nagrody"
     },
     "STAKING_POPUP": {
       "HEADER": "Moja delegacja",
@@ -122,6 +123,7 @@
       "DELEGATE": "Oddeleguj",
       "UNDELEGATE": "Wycofaj delegację",
       "REDELEGATE": "Zmień delegację",
+      "WEBSITE": "Website",
       "AMOUNT": {
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",
@@ -186,7 +188,7 @@
     "DASHBOARD": "Panel",
     "PROPOSALSLIST": "Lista propozycji",
     "GOVERNANCE": "Zarządzanie",
-    "GOVERNANCE_PROPOSALSLIST": "Zarządzanie",
+    "GOVERNANCE_PROPOSALSLIST": "Zarządzanie / Lista propozycji",
     "GOVERNANCEDETAILS": "Szczegóły propozycji"
   },
   "TOAST": {

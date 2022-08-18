@@ -3,18 +3,29 @@
     <div class="validationPopup__background"></div>
     <div class="validationPopup__holder">
       <div class="validationPopup__header">
-        <div>
+        <div class="validationPopup__headerDescription">
           <ValidatorLogo :validator="validator" class="validator-image-big"></ValidatorLogo>
-          <h2>{{ validator.description.moniker }}</h2>
+          <div style="display: flex; flex-direction: column">
+            <h2>{{ validator.description.moniker }}</h2>
+            <div style="display: flex;">
+              <p>commission</p>
+              <percents-view :amount="validator.commission.rate"></percents-view>
+            </div>
+          </div>
+
+          <div class="validationPopup__headerDescription">
+            <Icon name="Globe"></Icon>
+            <a :href="validator.description.website" target="_blank">{{ $t('STAKING_VIEW.STAKING_POPUP.WEBSITE') }}</a>
+          </div>
         </div>
         <Button icon="pi pi-times" style="width: 5px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
       </div>
-        <WarningMessage v-if="stakingAction === StakingAction.DELEGATE" 
+        <WarningMessage v-if="stakingAction === StakingAction.DELEGATE"
               header="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.HEADER"
               :header-variables="{timeToComplete: timeToComplete}"
               texts="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.TEXT"
               :texts-variables="{timeToComplete: timeToComplete}"/>
-        <WarningMessage v-else-if="stakingAction === StakingAction.UNDELEGATE" 
+        <WarningMessage v-else-if="stakingAction === StakingAction.UNDELEGATE"
               header="STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.HEADER"
               :header-variables="{timeToComplete: timeToComplete}"
               texts="STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.TEXTS"
@@ -52,7 +63,7 @@
           <div v-if="stakingAction === StakingAction.REDELEGATE" class="validationPopup__description">
             <div class="field-local">
               <Field v-model="redelegateValidator" placeholder=" " name="redelegateValidator" v-slot="{ field, handleChange }"  >
-                <StakingRedelegate :validator="validator" @update:modelValue="handleChange" :model-value="field.value" 
+                <StakingRedelegate :validator="validator" @update:modelValue="handleChange" :model-value="field.value"
                           :class="{ 'p-invalid': errors.redelegateValidator, 'is-invalid': errors.redelegateValidator }" :disabled="!canModify"
                           :redelegation-direction="redelegationDirection"/>
               </Field>
@@ -123,6 +134,7 @@ import AmountView from "@/components/commons/AmountView.vue";
 import C4EIcon from "../commons/C4EIcon.vue";
 import { useValidatorsStore } from "@/store/validators.store";
 import { formatBigNumberLocalized } from "@/utils/locale-number-formatter";
+import PercentsView from "@/components/commons/PercentsView.vue";
 
 const emit = defineEmits(['close', 'success']);
 
@@ -348,15 +360,10 @@ function getWarningParams() {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    div{
-      display: flex;
-      align-items: baseline;
-      justify-items: center;
-      text-align: center;
-      :nth-child(1){
-        margin-right: 15px;
-      }
-    }
+  }
+  &__headerDescription{
+    display: flex;
+
   }
   &__form{
     display: flex;
