@@ -26,23 +26,16 @@ import { getConfigurationProfiles } from "@/config/configuration.profiles";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {computed, onUpdated, ref} from "vue";
 import {useBlockStore} from "@/store/block.store";
+import i18n from "@/plugins/i18n";
+import { changeTitle } from "@/utils/title-changer";
 
 const selectionView = ref(false)
 
 const configMap = getConfigurationProfiles();
 
-const chainName = computed(() => {
-  if(useConfigurationStore().getConfigName !== 'mainnet'){
-    return `(${useConfigurationStore().getConfigName})`;
-  } else {
-    return '';
-  }
-});
-
-onUpdated(()=> window.document.title = `Chain4Energy | C4E wallet ${chainName.value}`);
-
 const onChange = (event: any) => {
   useConfigurationStore().fetchConfig(event.target.value);
+  changeTitle()
 };
 const latestBlock = computed(() => useBlockStore().getLatestBlock)
 </script>

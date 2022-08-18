@@ -9,6 +9,7 @@
   "strategicPoolAddress": "c4e1m2z0c7am94zc4te33hnmh54w4zgufft5cgqxu7",
   "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
   "chainId": "perun-testnet-1",
+  "networkName": "Int-Testnet",
   "operationGas": {
     "vote": 1200000,
     "delegate": 1300000,
@@ -35,5 +36,6 @@
   "accountDataRefreshTimeout": 10000,
   "proposalsPageLimit": 10,
   "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
-  "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/"
+  "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
+  "isMainNetwork": false
 }
