@@ -197,10 +197,10 @@
   "SECTION_TITLES": {
     "STAKING": "Staking",
     "DASHBOARD": "Dashboard",
-    "PROPOSALSLIST": "Proposals list",
+    "PROPOSALSLIST": "Governance",
     "GOVERNANCE": "Governance",
     "GOVERNANCE_PROPOSALSLIST": "Governance",
-    "GOVERNANCEDETAILS": "Proposal details"
+    "GOVERNANCEDETAILS": "Proposal"
   },
   "TOAST": {
     "SUCCESS": {

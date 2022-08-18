@@ -187,10 +187,10 @@
   "SECTION_TITLES": {
     "STAKING": "Delegacja",
     "DASHBOARD": "Panel",
-    "PROPOSALSLIST": "Lista propozycji",
+    "PROPOSALSLIST": "Zarządzanie",
     "GOVERNANCE": "Zarządzanie",
-    "GOVERNANCE_PROPOSALSLIST": "Zarządzanie / Lista propozycji",
-    "GOVERNANCEDETAILS": "Szczegóły propozycji"
+    "GOVERNANCE_PROPOSALSLIST": "Zarządzanie",
+    "GOVERNANCEDETAILS": "Wniosek"
   },
   "TOAST": {
     "SUCCESS": {
