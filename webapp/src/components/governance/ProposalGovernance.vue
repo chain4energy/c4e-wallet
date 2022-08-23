@@ -336,6 +336,7 @@ const option = computed(() => {
       display: flex;
       border-radius: 15px;
       overflow: hidden;
+      background: grey;
 
       div {
         height: 100%;
@@ -356,7 +357,7 @@ const option = computed(() => {
       }
 
       .no-with-veto {
-        background: #fff1a9;
+        background: #FDDB2A;
       }
 
       .abstain {

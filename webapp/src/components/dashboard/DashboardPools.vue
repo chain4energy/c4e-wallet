@@ -4,7 +4,7 @@
     <h5 style="font-weight: bold;">{{ $t("DASHBOARD_VIEW.POOLS") }}</h5>
     <div class="items">
         <div class="legend-item">
-          <div class="dot" style="background: #fff1a9"> </div>
+          <div class="dot" style="background: #FDDB2A"> </div>
           <div> {{ $t("DASHBOARD_VIEW.COMMUNITY_POOL") }}</div>
           <Icon name="ArrowRight" />
           <CoinAmount :amount="tokensStore.getCommunityPool" :show-denom="true" style="font-weight: bold"/>

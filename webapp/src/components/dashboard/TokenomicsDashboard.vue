@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="legend-item">
-          <div class="dot" style="background: #fff1a9"></div>
+          <div class="dot" style="background: #FDDB2A"></div>
           <div> {{ $t("DASHBOARD_VIEW.UNBOUNDED") }}</div>
           <Icon name="ArrowRight" />
           <CoinAmount :amount="tokensStore.getTotalUnbonded" :show-denom="true" style="font-weight: bold"/>

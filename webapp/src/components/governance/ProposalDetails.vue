@@ -108,7 +108,7 @@ const voted = computed(() => {return useProposalsStore().userVote})
     color: white
   }
   .user-vote-veto {
-    background-color: #fff1a9;
+    background-color: #FDDB2A;
   }
   .info {
     display: grid;
