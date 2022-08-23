@@ -20,6 +20,7 @@ import { getSupportedLocales } from '@/utils/supported-locales';
 import { Locale, useI18n } from 'vue-i18n';
 import CountryFlag from 'vue-country-flag-next'; // https://www.npmjs.com/package/vue-country-flag-next
 import { reactive, ref } from 'vue';
+import { changeTitle } from '@/utils/title-changer';
 
 const locales = reactive(getSupportedLocales());
 const dropdown = ref(false);
@@ -27,6 +28,7 @@ const i18n = useI18n();
 
 const setLocale = (locale: Locale) => {
   i18n.locale.value = locale;
+  changeTitle();
 };
 
 const toggleDropdown = () => {

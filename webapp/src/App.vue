@@ -28,6 +28,7 @@ import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import dataService from './services/data.service';
 import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
+import { changeTitle } from './utils/title-changer';
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 onBeforeMount(() => {
@@ -36,6 +37,7 @@ onBeforeMount(() => {
 
 onMounted(() => {
   createRouterBeforeEach(logger);
+  changeTitle();
 });
 
 window.onload = async () =>{

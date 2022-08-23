@@ -74,6 +74,7 @@ export class Configuration implements JsonConfiguration {
   strategicPoolAddress: string;
   airdropPoolAddress: string;
   chainId: string;
+  networkName: string;
   operationGas: Gas;
   viewDenoms: ViewDenom[];
   isEmpty: boolean;
@@ -87,6 +88,7 @@ export class Configuration implements JsonConfiguration {
   proposalsPageLimit: number;
   explorerAccount: string;
   explorerTx: string;
+  isMainNetwork: boolean;
   testFileName?: string;
   public static readonly emptyConfiguration = new Configuration();
 
@@ -104,6 +106,7 @@ export class Configuration implements JsonConfiguration {
       this.strategicPoolAddress = configuration.strategicPoolAddress;
       this.airdropPoolAddress = configuration.airdropPoolAddress;
       this.chainId = configuration.chainId;
+      this.networkName = configuration.networkName,
       this.operationGas = new Gas(configuration.operationGas);
       const viewDenoms = Array<ViewDenom>();
       if (configuration.viewDenoms) {
@@ -119,6 +122,7 @@ export class Configuration implements JsonConfiguration {
       this.proposalsPageLimit = configuration.proposalsPageLimit;
       this.explorerAccount = configuration.explorerAccount;
       this.explorerTx = configuration.explorerTx;
+      this.isMainNetwork = configuration.isMainNetwork;
       this.isEmpty = false;
       this.testMode = configuration.testMode ? configuration.testMode : false;
       this.testFileName = configuration.testFileName;
@@ -133,6 +137,7 @@ export class Configuration implements JsonConfiguration {
       this.strategicPoolAddress = '';
       this.airdropPoolAddress = '';
       this.chainId = '';
+      this.networkName = '',
       this.operationGas = new Gas(undefined);
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
@@ -145,6 +150,7 @@ export class Configuration implements JsonConfiguration {
       this.proposalsPageLimit = 10;
       this.explorerAccount = '';
       this.explorerTx = '';
+      this.isMainNetwork = false;
       this.isEmpty = true;
       this.testMode = false;
     }

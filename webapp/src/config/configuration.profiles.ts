@@ -1,12 +1,13 @@
-const mainProfiles: [string, string][] = [ 
-  ["testnet", "testnet.json"],
-  ["mainnet", "mainnet.json"],
-];
+const mainnetFile = "mainnet.json";
+const testnetFile = "testnet.json";
+const pbNetFile = "pb_test.json";
+const internalTestnetFile = "int-testnet.json";
 
+let  initialProfile: { name: string, file: string};
 let CONFIGURATION_PROFILES: Map<string, string>;
 
 export function getConfigurationProfiles(): Map<string, string> {
-  if (!CONFIGURATION_PROFILES) {
+  if (!CONFIGURATION_PROFILES || CONFIGURATION_PROFILES.size < 2) {
     CONFIGURATION_PROFILES = createConfigurationProfiles();
   }
   return CONFIGURATION_PROFILES;
@@ -14,24 +15,52 @@ export function getConfigurationProfiles(): Map<string, string> {
 
 
 export function getIntialProfile(): { name: string, file: string} {
-  const prof = mainProfiles[0];
-  return {
-    name: prof[0],
-    file: prof[1]
+  if (!initialProfile) {
+    getConfigurationProfiles();
   }
+  return initialProfile
 }
 
+function getProfile(fileName: string) {
+  return require("@/config/json/" + fileName);
+}
 
 function createConfigurationProfiles(): Map<string, string> {
-  const result = new Map<string, string>(mainProfiles);
+  const result = new Map<string, string>();
+  const allProfiles = new Map<string, any>();
+  const mainnet = getProfile(mainnetFile);
+  const testnet = getProfile(testnetFile);
 
+  result.set(mainnet.networkName, mainnetFile);
+  result.set(testnet.networkName, testnetFile);
+
+  allProfiles.set(mainnetFile, mainnet);
+  allProfiles.set(testnetFile, testnet);
   const testProfilesActive = process.env.VUE_APP_TEST_PROFILES_ACTIVE;
+
   if (testProfilesActive) {
     const areTestProfilesActive = Boolean(testProfilesActive);
     if (areTestProfilesActive) {
-      result.set("PB Test", "pb_test.json");
-      result.set("Internal testnet", "int-testnet.json");
+      const pb = getProfile(pbNetFile);
+      result.set(pb.networkName, pbNetFile);
+      allProfiles.set(pbNetFile, pb);
+
+      const inetrnal = getProfile(internalTestnetFile);
+      result.set(inetrnal.networkName, internalTestnetFile);
+      allProfiles.set(internalTestnetFile, inetrnal);
+
     }
+  }
+
+  for (const [key, value] of allProfiles.entries()) {
+    console.log();
+    if (value.isMainNetwork) {
+      initialProfile = { name: value.networkName, file: key};
+      break;
+    }
+  }
+  if (!initialProfile) {
+    initialProfile = { name: mainnet.networkName, file: mainnetFile};
   }
 
   return result;

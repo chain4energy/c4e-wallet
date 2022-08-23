@@ -9,6 +9,7 @@
   "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
   "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
   "chainId": "c4e-testnet-0.1.0",
+  "networkName": "Testnet",
   "operationGas": {
     "vote": 200000,
     "delegate": 300000,
@@ -35,5 +36,6 @@
   "accountDataRefreshTimeout": 90000,
   "proposalsPageLimit": 50,
   "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
-  "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/"
+  "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
+  "isMainNetwork": true
 }

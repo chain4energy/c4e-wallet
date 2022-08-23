@@ -1,4 +1,5 @@
 {
+  "TITLE": "Chain4Energy {'|'} C4E wallet{addInfo}",
   "CONNECT" : {
     "CONNECT": "Connect",
     "CONNECT_ADDRESS": "Connect with address",
@@ -130,6 +131,8 @@
       "UNDELEGATED": "Undelegating",
       "REDELEGATED": "Redelegated",
       "AVAILABLE_TO_DELEGATE": "Available to delegate",
+      "WEBSITE": "Website",
+      "COMMISSION": "Commission",
       "AMOUNT": {
         "REQUIRED": "Amount is required",
         "NUMBER": "Amount must be a number with max {decimal} decimal places",
@@ -195,10 +198,10 @@
   "SECTION_TITLES": {
     "STAKING": "Staking",
     "DASHBOARD": "Dashboard",
-    "PROPOSALSLIST": "Proposals list",
+    "PROPOSALSLIST": "Governance",
     "GOVERNANCE": "Governance",
     "GOVERNANCE_PROPOSALSLIST": "Governance",
-    "GOVERNANCEDETAILS": "Proposal details"
+    "GOVERNANCEDETAILS": "Proposal"
   },
   "TOAST": {
     "SUCCESS": {
@@ -222,6 +225,6 @@
     "ADDRESS": "Address has been copied to clipboard",
     "TX_HASH": "TX hash has been copied to clipboard"
   },
-  
+
   "NUMBER_FORMAT_LOCALE": "en-US"
 }

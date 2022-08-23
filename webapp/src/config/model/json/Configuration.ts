@@ -29,6 +29,7 @@ export interface Configuration {
   strategicPoolAddress: string,
   airdropPoolAddress: string,
   chainId: string,
+  networkName: string,
   operationGas: Gas,
   viewDenoms: ViewDenom[],
   keplrGasPriceSteps: KeplrGasPriceSteps;
@@ -40,6 +41,7 @@ export interface Configuration {
   proposalsPageLimit: number,
   explorerAccount: string,
   explorerTx: string,
+  isMainNetwork: boolean,
   testMode?: boolean,
   testFileName?: string,
 
