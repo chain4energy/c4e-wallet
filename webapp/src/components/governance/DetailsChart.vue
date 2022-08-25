@@ -13,33 +13,45 @@
         </div>
     </ShadowedSvgChart>
     <div class="voting-result">
-      <div>
-        <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
-        <div>
-          <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getYesPercentage()" :precision="2"></PercentsView>
+      <div style="display: flex; align-items: center">
+        <div class="dot yes"></div>
+        <div class="bar-legend">
+          <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
+          <div style="font-weight: bold">
+            <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getYesPercentage()" :precision="2"></PercentsView>
+          </div>
+          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)
         </div>
-        (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)
       </div>
-      <div>
+      <div style="display: flex; align-items: center">
+        <div class="dot abstain"></div>
+        <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
-        <div>
+        <div style="font-weight: bold">
           <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getAbstainPercentage()" :precision="2"></PercentsView>
         </div>
         (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)
+        </div>
       </div>
-      <div>
+      <div style="display: flex; align-items: center">
+        <div class="dot no"></div>
+        <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
-        <div>
+        <div style="font-weight: bold">
           <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoPercentage()" :precision="2"></PercentsView>
         </div>
         (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)
       </div>
-      <div>
+      </div>
+      <div style="display: flex; align-items: center">
+        <div class="dot no-with-veto"></div>
+        <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
-        <div>
+        <div style="font-weight: bold">
           <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentage()" :precision="2"></PercentsView>
         </div>
         (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)
+      </div>
       </div>
     </div>
     <div class="bottom">
@@ -140,13 +152,24 @@ function getProposalStatus(): ProposalStatus{
 <style scoped lang="scss">
 @import '../../styles/variables.scss';
 
+.bar-legend {
+  text-align: left;
+  margin-left: 10px;
+}
+
 .chart-container {
   height: 560px;
   width: 100%;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   border-radius: 10px;
+  padding: 10px;
   .top {
     height: 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1em;
+    font-weight: bold;
   }
   .chartdiv {
     width: 100%;
@@ -156,6 +179,9 @@ function getProposalStatus(): ProposalStatus{
       width: 50%;
       position: absolute;
       top: 42%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       // -ms-transform: translateY(-50%);
       // transform: translateY(-50%);
       margin:auto;
@@ -171,12 +197,29 @@ function getProposalStatus(): ProposalStatus{
     border-top: 1px solid;
     display: flex;
     justify-content: space-around;
+    font-size: 0.8em;
   }
   .bottom {
     button {
       width: 150px;
     }
   }
+}
+
+.yes {
+  background: $primary-green-color;
+}
+
+.no {
+  background: $error-red-color;
+}
+
+.no-with-veto {
+  background: #FDDB2A;
+}
+
+.abstain {
+  background: #27697f;
 }
 
 .gov-icon {

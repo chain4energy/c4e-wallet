@@ -7,19 +7,21 @@
           <C4EIcon icon="c4e-circle" :size="30"/>
         </template>
       </AmountView>
-    <div class="userdata__accountData-vesting-first" v-if="useUserStore().isContinuousVestingAccount">
-      <div>
-        <p>{{ $t('USER_DATA.LOCKED') }}</p>
-        <CoinAmount :amount="locked" :show-denom="true"/>
-      </div>
-    </div>
-    <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
-      <div>
-        <p>{{ $t('USER_DATA.VESTING_END') }}</p>
-        <p><DateCommon :date="useUserStore().getAccount.continuousVestingData?.endTime"/></p>
-      </div>
-    </div>
-    <div class="userdata__amounts_last" v-if="!useUserStore().isContinuousVestingAccount"></div>
+      <!-- <div class="vesting">
+        <div class="userdata__accountData-vesting-first" v-if="useUserStore().isContinuousVestingAccount">
+          <div>
+            <p>{{ $t('USER_DATA.LOCKED') }}</p>
+            <CoinAmount :amount="locked" :show-denom="true"/>
+          </div>
+        </div>
+        <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
+          <div>
+            <p>{{ $t('USER_DATA.VESTING_END') }}</p>
+            <p><DateCommon :date="useUserStore().getAccount.continuousVestingData?.endTime"/></p>
+          </div>
+        </div>
+        <div class="userdata__amounts_last" v-if="!useUserStore().isContinuousVestingAccount"></div>
+      </div> -->
   </div>
 
   </div>
@@ -91,7 +93,14 @@ const representData = computed(()=> {
 <style scoped lang="scss">
 @import "../../styles/variables.scss";
 
+.vesting {
+  display: flex;
+  flex-wrap: nowrap;
 
+  div {
+    
+  }
+}
 .userdata{
   display: flex;
   flex-direction: row;
@@ -104,12 +113,15 @@ const representData = computed(()=> {
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.11);
   border-radius: 8px;
   color: #090909;
+  overflow: hidden;
+  transition: 0.2s all ease-in-out;
+  
   p{
     margin: 0;
   }
   &__accountData{
     display: flex;
-    width: 60%;
+    width: 70%;
     align-items: center;
     //padding: 20px 25px;
     justify-content: space-between;
@@ -149,14 +161,13 @@ const representData = computed(()=> {
     padding-right: 30px;
   }
   &__rewards{
-    display: flex;
+   display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     padding: 20px 25px;
-    width: 40%;
-    min-height: 100%;
-    max-height: 80px;
+    width: 30%;
+    height: 80px;
     border-radius: 0 6px 6px 0;
     background: #0F3153;
   }
@@ -192,5 +203,55 @@ const representData = computed(()=> {
 
 .c4e-icon {
   color: #0F3153;
+}
+
+@media screen and (max-width: 1400px) {
+  .userdata {
+    flex-direction: column;
+    max-height: 80px;
+
+    &:hover {
+      max-height: 240px;
+    }
+
+  &__rewards {
+    width: 100%;
+    justify-content: space-evenly;
+  }
+    &__accountData{ 
+      flex-direction: column;
+      width: 100%;
+      &-base{
+        width: 100%;
+        margin-left: 0;
+        justify-content: space-around;
+      }
+    }
+  }
+
+  .c4e-icon {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .userdata {
+    height: 80px;
+    transition: 0.2s all ease-in-out;
+
+    &:hover {
+      height: auto;
+      max-height: initial;
+    }
+
+    &__rewards {
+      flex-wrap: wrap;
+      height: auto;
+      padding: 10px;
+      justify-content: center;
+    }
+  }
+
+
 }
 </style>

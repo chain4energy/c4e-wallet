@@ -46,4 +46,8 @@ function retrieveConvertedAmount(): number | BigDecimal {
     flex-wrap: wrap;
   }
 }
+
+span {
+  font-weight: bold;
+}
 </style>

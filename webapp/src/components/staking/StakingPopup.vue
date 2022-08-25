@@ -363,7 +363,11 @@ function getWarningParams() {
   }
   &__headerDescription{
     display: flex;
+    margin: 0.5em;
 
+    a {
+      margin-left: 0.2em;
+    }
   }
   &__form{
     display: flex;
