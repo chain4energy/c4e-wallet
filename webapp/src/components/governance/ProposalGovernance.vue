@@ -348,7 +348,7 @@ const option = computed(() => {
   }
 }
 
-.yes {
+      .yes {
         background: $primary-green-color;
       }
 
