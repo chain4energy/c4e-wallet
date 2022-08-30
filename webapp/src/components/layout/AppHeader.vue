@@ -52,7 +52,7 @@
         </div>
         </span>
 
-          <div class="navbar-nav" style="align-items: center">
+          <div class="navbar-nav menu" style="align-items: center">
 
             <div @click="openAccInfo"  class="acc-address" v-if="useUserStore().isLoggedIn">
               <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
@@ -69,10 +69,42 @@
 
 
           </div>
+          <div class="navbar-nav mobile" @click="toggleDropdown" style="align-items: center">
+            <Icon name="Menu" />
+          </div>
         </div>
 
       
       <UserData v-if="useUserStore().isLoggedIn"/>
+      </div>
+      <div class="mobile-menu" :class="dropdown ? 'mobile-menu-open' : ''">
+        <div class="header">
+          <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
+          <div @click="toggleDropdown">
+            <Icon name="X" />
+          </div>
+        </div>
+        <!-- <div class="divider"></div> -->
+        <div @click="openAccInfo"  class="acc-address" v-if="useUserStore().isLoggedIn">
+          <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
+          <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
+          <span style="display: flex; flex-direction: column">
+            <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName}}: </span>
+            {{ useUserStore().getAccount.address.slice(0, 8)}}...{{useUserStore().getAccount.address.slice(-6) }}
+            <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout(); toggleDropdown()">{{ $t('COMMON.DISCONNECT') }}</Button>
+          </span>
+        </div>
+        <Button style="width: 90%" v-if="!useUserStore().isLoggedIn" class="secondary" @click="toggleDropdown(); loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
+        <div class="section-header">Navigation</div>
+          <router-link :to="menuItem.href" v-for="(menuItem,index) of menu" :key="index" @click="toggleDropdown">
+            <span class="sidebar-element">
+              <span class="icon" :class="{ 'active': index === selected }">
+                <Icon v-if="menuItem.icon.type === SideBarIconType.LUCIDE" :name="menuItem.icon.element"/>
+                <GovernanceIcon v-else-if="menuItem.icon.type === SideBarIconType.GOV" :icon="menuItem.icon.element"/>
+              </span>
+              <span class="title">{{ menuItem.title }}</span>
+            </span>
+          </router-link>
       </div>
     </nav>
 
@@ -85,11 +117,13 @@ import AutoLogOut from "@/components/fetures/AutoLogOut.vue";
 import  UserData from "@/components/userData/UserData.vue";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import LogoutKeplr from "@/components/layout/loginPopup/LogoutConfirm.vue";
+import { SideBarIconType } from "@/services/permissions/sidebar.config";
 
 import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
 import { computed, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
+import {PermissionsService} from "@/services/permissions/permissions.service";
 import KeplrLogo from '../commons/KeplrLogo.vue';
 
 const router = useRouter();
@@ -102,6 +136,17 @@ const dropdown = ref(false);
 const toggleDropdown = () => {
   dropdown.value = !dropdown.value;
 };
+
+const permissionsService = new PermissionsService();
+const menu = computed(() => {
+  return permissionsService.createSideBar();
+});
+
+
+const selected = computed(()=> {
+  let current = menu.value.find(element => element.href == router.currentRoute.value.path);
+    return current?.id;
+})
 
 const currentRouteName = computed(() => {
   console.log(router.currentRoute.value);
@@ -142,6 +187,121 @@ function logout(){
 </script>
 
 <style scoped lang="scss">
+@import '../../styles/variables.scss';
+
+.section-header {
+  background: $main-color;
+  font-weight: bold;
+  color: white;
+  padding: 0.5em 0;
+  width: 100vw;
+}
+.divider {
+  background: rgba(0,0,0,.1);
+  width: 300%;
+  height: 1px; 
+  transform: translateX(-50%);
+  margin: 0.5em 0;
+}
+.mobile-menu {
+  width: 100vw;
+  box-sizing: border-box;
+  display: flex;
+  background: white;
+  flex-direction: column;
+  z-index: 99999999;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 120vw;
+  transition: 0.2s ease-in-out all;
+  overflow: hidden;
+  color: $plain-text-color;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em 2em;
+    
+    div {
+      width: 25px;
+      height: 25px;
+      color: black;
+
+      &:last-of-type {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .acc-address {
+    display: flex;
+    align-items: center;
+  padding: 0.5em 2em;
+    justify-content: space-evenly;
+
+    .lucide-globe-icon {
+      width: 50px;
+      height: 70px;
+    }
+
+    .keplr-logo {
+      font-size: 2.5em;
+    }
+  }
+
+  .sidebar-element {
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+
+    .icon {
+      .lucide {
+        width: 40px;
+        height: 30px;
+      }
+    }
+    .active {
+      box-shadow: none !important;
+    }
+  }
+}
+
+a {
+  text-decoration: none;
+  padding: .5em 2em;
+  
+  &:hover {
+      background: rgba(0,0,0,.1);
+      color: $primary-green-color;
+    }
+}
+
+nav a.router-link-exact-active {
+  color: $primary-green-color !important;
+}
+.mobile-menu-open {
+  left: 0;
+}
+
+.mobile {
+  display: none;
+  
+  .lucide-menu-icon {
+    border: 1px solid $primary-green-color;
+    padding: 0.3em;
+    box-sizing: content-box;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: 0.2s ease-in-out all;
+
+    &:hover {
+      background-color: $primary-green-color;
+      color: $main-color;
+    }
+  }
+}
 
 .acc-address {
   cursor: pointer;
@@ -158,8 +318,12 @@ function logout(){
 }
 
 @media screen and (max-width: 700px) {
-  .acc-address {
+  .menu {
     display: none;
+  }
+
+  .mobile {
+    display: flex;
   }
 }
 .navbar-brand:hover{
