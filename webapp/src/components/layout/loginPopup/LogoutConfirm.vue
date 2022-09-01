@@ -10,14 +10,19 @@
         </div>
         <div class="loginChoose__body">
           <div class="loginChoose__description">
-            <div style="display: flex; align-items: center; justify-content: space-evenly;">
-              <div class="loginChoose__descriptionIcon">
-                <img :src="logo">
+            <div style="display: flex; align-items: center; justify-content: space-evenly; flex-direction: column;">
+              <div style="display: flex">
+                <div class="loginChoose__descriptionIcon">
+                  <img :src="logo">
+                </div>
+                <div class="loginPopup__addressHolder">
+                  <p>{{useUserStore().getAccount.address}}</p>
+                  <Icon name="Copy" @click="copyTxt">{{$t('COPY.ADDRESS')}}</Icon>
+                </div>
               </div>
-              <div class="loginPopup__addressHolder">
-                <p>{{useUserStore().getAccount.address}}</p>
-                <Icon name="Copy" @click="copyTxt">{{$t('COPY.ADDRESS')}}</Icon>
-              </div>
+               <a :href="`${useConfigurationStore().config.explorerAccount}${useUserStore().getAccount.address}`"
+                target="_blank" class="loginPopup__disconnect p-button">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>
+               <Button class="loginPopup__disconnect" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
 
               <!--<div class="loginPopup__data" style="display: flex; flex-direction: column; justify-items: left">
                 <p>{{ useUserStore().getAccount.address.slice(0, 13)}}...{{useUserStore().getAccount.address.slice(-6)}}</p>
@@ -29,11 +34,6 @@
 
               </div>-->
             </div>
-          </div>
-          <div>
-            <a :href="`${useConfigurationStore().config.explorerAccount}${useUserStore().getAccount.address}`"
-               target="_blank" class="loginPopup__disconnect p-button">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>
-            <Button class="loginPopup__disconnect" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
           </div>
 
         </div>
@@ -111,7 +111,6 @@ function copyTxt(){
     display: flex;
     align-items: center;
     border-radius: 5px;
-    border: 1px solid black;
     justify-content: space-between;
     width: 100%;
   }
@@ -145,6 +144,7 @@ function copyTxt(){
     background-color: #FFFFFF;
     padding:11px 24px 13px 24px;
     text-decoration: none;
+    width: 100% !important;
     &:hover{
       background-color: #72BF44;
       color: #FFFFFF;
@@ -168,7 +168,7 @@ function copyTxt(){
     border: 1px solid #72BF44;
     border-radius: 24px;
     background-color: #FFFFFF;
-    width: 161px;
+    width: 100%;
     padding:11px 24px 13px 24px;
     &:hover{
       background-color: #72BF44;
@@ -182,8 +182,7 @@ function copyTxt(){
     position: fixed;
     width: 100vw;
     height: 100vh;
-    background: #0F3153;
-    opacity: 0.85;
+    
     z-index: -1;
   }
   &__holder{
@@ -224,8 +223,8 @@ function copyTxt(){
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
     background: #FFFFFF;
+    flex-direction: column;
     border-radius: 8px;
     padding: 22px;
     border: 2px solid transparent;

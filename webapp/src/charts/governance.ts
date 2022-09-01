@@ -7,7 +7,7 @@ import { formatBigNumberLocalized } from "@/utils/locale-number-formatter";
 const yesColor = '#72bf44';
 const abstainColor = '#27697f';
 const noColor = '#e02626';
-const noWithVetoColor = '#fff1a9';
+const noWithVetoColor = '#FDDB2A';
 const noVotesColor = '#797777';
 
 export function createProposalDetailsChartData(yes: number | BigDecimal, abstain: number | BigDecimal, no: number | BigDecimal, noWithVeto: number | BigDecimal, sum: bigint, precision = 4) {
@@ -24,7 +24,7 @@ export function createProposalDetailsChartData(yes: number | BigDecimal, abstain
         {value: yes, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES'), color: yesColor},
         {value: abstain, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN'), color: abstainColor},
         {value: no, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO'), color: '#e02626'},
-        {value: noWithVeto, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO'), color: '#fff1a9'}
+        {value: noWithVeto, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO'), color: '#FDDB2A'}
       ], precision
     )
   } else {

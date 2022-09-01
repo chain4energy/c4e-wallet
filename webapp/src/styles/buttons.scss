@@ -21,8 +21,8 @@
 
 .secondary {
   background-color: $secondary-color !important;
-  color: $main-color !important;
-  border-color: $main-color !important;
+  color: white !important;
+  border-color: $secondary-color !important;
 
   &:hover {
     background-color: $secondary-darker-color !important;

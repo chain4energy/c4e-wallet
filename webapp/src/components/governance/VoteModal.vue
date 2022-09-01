@@ -151,7 +151,7 @@ button {
 
     svg {
       margin-right: 10px;
-      color: #fff1a9;
+      color: #FDDB2A;
     }
 
     &::before {
@@ -159,7 +159,7 @@ button {
         height: 100%;
         margin-right: 10px;
         content: ' ';
-        background: #fff1a9;
+        background: #FDDB2A;
         display: inline-block
       }
   }

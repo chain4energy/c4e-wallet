@@ -1,0 +1,10 @@
+@import './variables.scss';
+
+.Vue-Toastification__toast-component-body {
+    .t-container {
+        .t-body {
+            box-shadow: none !important;
+            border-radius: 7px !important;
+        }
+    }
+}

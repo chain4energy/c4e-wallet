@@ -1,4 +1,11 @@
 // @import "./variables.scss";
+.p-inputtext {
+  border-radius: 10px !important;
+}
+
+.pi-search {
+  color: $primary-green-color !important;
+}
 
 .field {
   position: relative;

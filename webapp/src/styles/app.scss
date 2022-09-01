@@ -6,7 +6,11 @@
 @import './tables.scss';
 @import './tiles.scss';
 @import "./inputs.scss";
+@import './toasts.scss';
 
+html, body {
+    overflow-x: hidden;
+}
 #app {
     font-family: 'Work Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
