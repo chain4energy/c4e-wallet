@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import DashboardView from '../views/DashboardView.vue';
+import FaqView from '../views/FaqView.vue';
+import TermsConditionsView from '../views/TermsConditionsView.vue';
+import PrivacyPolicyView from '../views/PrivacyPolicyView.vue';
 import StakingView from '../views/StakingView.vue';
 import GovernanceView from '../views/GovernanceView.vue';
 import GovernanceDetailsView from '../views/GovernanceDetailsView.vue';
@@ -42,6 +45,21 @@ const routes: Array<RouteRecordRaw> = [
 
       }
     ]
+  },
+  {
+    path: '/faq',
+    name: "faq",
+    component: FaqView
+  },
+  {
+    path: '/privacy_policy',
+    name: "privacy_policy",
+    component: PrivacyPolicyView
+  },
+  {
+    path: '/terms_conditions',
+    name: "terms_conditions",
+    component: TermsConditionsView
   },
   {
     path: '/:pathMatch(.*)*',

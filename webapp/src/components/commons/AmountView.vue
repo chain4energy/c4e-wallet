@@ -62,7 +62,8 @@ const locked = computed(()=> useUserStore().getVestingLockAmount);
   justify-content: space-between;
   width: 55%;
   height: 80px;
-  overflow: hidden
+  overflow: hidden;
+  z-index: 2;
 }
 
 .width-95 {
@@ -73,6 +74,7 @@ const locked = computed(()=> useUserStore().getVestingLockAmount);
   display: flex;
   align-items: center;
   width: 100%;
+  z-index: 2;
   position: relative;
   &__amount{
     width: 100%;
@@ -80,6 +82,7 @@ const locked = computed(()=> useUserStore().getVestingLockAmount);
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+  z-index: 2;
     margin-left: 10px;
   }
 }
@@ -98,6 +101,7 @@ const locked = computed(()=> useUserStore().getVestingLockAmount);
 .userdata-option {
   display: flex;
   flex-direction: column;
+  z-index: 2;
   align-items: flex-start;
   
   .header {

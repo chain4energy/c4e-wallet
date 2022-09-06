@@ -43,17 +43,21 @@
         <Column v-if="isValidatorsTable()" field="votingPower" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">
           <template #body="{data}">
             <div v-if="data.votingPower">
-            <div v-if="data.votingPower < 0.05" class="commision level-1">
-              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            <div v-if="data.votingPower < 0.05" class="commision">
+              <div class="level-1" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
+              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
             </div>
-            <div v-if="data.votingPower >= 0.05 && data.votingPower < .10" class="commision level-2">
-              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            <div v-if="data.votingPower >= 0.05 && data.votingPower < .10" class="commision">
+              <div class="level-2" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
+              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
             </div>
-            <div v-if="data.votingPower >= .10 && data.votingPower < .25" class="commision level-3">
-              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            <div v-if="data.votingPower >= .10 && data.votingPower < .25" class="commision">
+              <div class="level-3" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
+              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
             </div>
-            <div v-if="data.votingPower >= .25" class="commision level-4">
-              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            <div v-if="data.votingPower >= .25" class="commision">
+              <div class="level-4" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
+              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
             </div>
             </div>
             <span v-else>updating</span>
@@ -100,36 +104,36 @@
 
       </template>
       <template  v-if="isValidatorsTable()" v-slot:expanded-columns="{expandedData}">
-        <div style="display: flex; flex-direction: row;">
-          <div style="display: flex; flex-direction: column; margin-right: 20px">
-            <p>{{ $t(`STAKING_VIEW.TABLE.STAKE`) }}</p>
+        <div class="flex-container-details">
+          <div class="item">
+            <div>{{ $t(`STAKING_VIEW.TABLE.STAKE`) }}</div>
             <CoinAmount :amount="expandedData.data.delegatedAmount" :show-denom="true"/>
           </div>
-          <div style="display: flex; flex-direction: column; margin-right: 20px">
-            <p>{{ $t(`STAKING_VIEW.TABLE.UNSTAKING`) }}</p>
+          <div class="item">
+            <div>{{ $t(`STAKING_VIEW.TABLE.UNSTAKING`) }}</div>
             <CoinAmount :amount="expandedData.data.undelegatingAmount" :show-denom="true"/>
           </div>
-          <div style="display: flex; flex-direction: column">
-            <p>{{ $t(`STAKING_VIEW.TABLE.REWARDS`) }}</p>
+          <div class="item">
+            <div>{{ $t(`STAKING_VIEW.TABLE.REWARDS`) }}</div>
             <CoinAmount :amount="expandedData.data.rewardsAmount" :show-denom="true"/>
           </div>
         </div>
         <div v-if="expandedData.data.undelegatingEntries && expandedData.data.undelegatingEntries.length > 0">
-          <div >
+          <div style="max-width: 500px;">
             <DataTableWrapper 
               :useExternalGlobalFilter="false"
               :eager-loading-config="createValidatorUndelegationEntriesEagerLoadingConfig(expandedData.data.undelegatingEntries)"
               :paginator="false">
               <template #header>
-                <div>{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</div>
+                <h5 style="font-weight: bolder; margin-top: 20px; margin-bottom: -20px;">{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</h5>
               </template>
               <template v-slot:columns>
-                <Column field="amount" header="Amount" :sortable="true">
+                <Column field="amount" header="Amount" style="width: 200px" :sortable="false">
                   <template #body="{data}">
                     <CoinAmount :amount="data.amount" :show-denom="true"/>
                   </template>
                 </Column>
-                <Column field="completionTime" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="true">
+                <Column field="completionTime" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="false">
                   <template #body="{data}">
                     <DateCommon :date="data.completionTime" />
                   </template>
@@ -260,6 +264,23 @@ const filters = ref({
 <style lang="scss" scoped>
 @import '../../styles/variables.scss';
 
+.flex-container-details {
+  display: flex; 
+  flex-direction: row;
+
+  .item {
+    display: flex;
+    flex-direction: column;
+
+    div {
+      padding: 10px 10px 0 10px;
+      margin: 0 10px;
+      font-size: 1em;
+      color: gray;
+    }
+  }
+}
+
 .validator-image {
   height: 2.5rem;
   min-height: 2.5rem;
@@ -324,8 +345,25 @@ const filters = ref({
   .commision {
     width: 100%;
     box-sizing: border-box;
-    padding: 2px 10px;
+    height: 28px;
+    border: 1px solid grey;
     border-radius: 15px;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+
+    span {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .level-border {
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    color: white;
+    font-weight: bold;
   }
 
   .level-1 {
@@ -336,6 +374,7 @@ const filters = ref({
     .level-2 {
       background: $accents-light-warning;
       color: black;
+
     }
 
     .level-3 {

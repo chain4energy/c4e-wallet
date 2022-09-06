@@ -69,7 +69,7 @@ const closeDropdown = () => {
     border-radius: 10px 0 10px 10px;
     overflow: hidden;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
+    z-index: 100;
     span {
       color: $main-color;
       padding: 12px 16px;

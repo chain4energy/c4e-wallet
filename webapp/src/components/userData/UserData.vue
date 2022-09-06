@@ -115,6 +115,7 @@ const representData = computed(()=> {
   color: #090909;
   overflow: hidden;
   transition: 0.2s all ease-in-out;
+  z-index: 2;
   
   p{
     margin: 0;
@@ -122,6 +123,7 @@ const representData = computed(()=> {
   &__accountData{
     display: flex;
     width: 70%;
+    z-index: 2;
     align-items: center;
     //padding: 20px 25px;
     justify-content: space-between;
@@ -132,6 +134,7 @@ const representData = computed(()=> {
       align-items: center;
       // max-width: 50%;
       margin-left: 20px;
+      z-index: 2;
       justify-content: space-between;
     }
     &-vesting-first{
