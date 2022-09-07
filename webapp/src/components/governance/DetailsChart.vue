@@ -2,8 +2,11 @@
   <div v-if="proposal" class="chart-container">
     <div class="top">
 
-      <span>{{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
-      <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/>
+      <span>{{ $t("GOVERNANCE_VIEW.TOTAL_VOTED") }} / {{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
+      <span>
+        <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/> /
+        <CoinAmount :amount="tokensStore.totalSupply" :reduce-big-number="true" :precision="2"/>
+      </span>
     </div>
     <ShadowedSvgChart id="voteschartdiv" class="chartdiv">
         <v-chart :option="option" autoresize />
@@ -88,6 +91,7 @@ import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView.vue";
 import GovernanceIcon from "../commons/GovernanceIcon.vue";
+import {useTokensStore} from "@/store/tokens.store";
 
 use([
   SVGRenderer,
@@ -97,6 +101,8 @@ use([
   LegendComponent
 ]);
 
+
+const tokensStore = useTokensStore();
 
 const props = defineProps<{
   proposal?: Proposal

@@ -2,7 +2,7 @@
 <div class="userdata">
   <div class="userdata__accountData">
     <div class="userdata__accountData-base" >
-      <AmountView :coins="representData">
+      <AmountView :coins="representData" :showVesting="vestingStatus">
         <template v-slot:logo-front>
           <C4EIcon icon="c4e-circle" :size="30"/>
         </template>
@@ -62,7 +62,7 @@ const stacked = computed(()=> useUserStore().getTotalDelegated);
 const unstaked = computed(()=> useUserStore().getTotalUndelegating);
 // const startTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
 // const endTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
-
+const vestingStatus = true;
 const representData = computed(()=> {
   const coins = [
     {

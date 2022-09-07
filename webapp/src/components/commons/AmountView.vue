@@ -8,7 +8,7 @@
           <CoinAmount :amount="items.amount" :precision="precision" :show-denom="items.showDenom || showDenom" :reduce-big-number="reduceBigNumber"/>
         </div>
       </div>
-      <span class="vesting-container" v-if="useUserStore().isContinuousVestingAccount">
+      <span class="vesting-container" v-if="useUserStore().isContinuousVestingAccount && showVesting">
         <div class="vesting-flag">Vesting</div>
         <div class="userdata-option vesting-first" v-if="useUserStore().isContinuousVestingAccount">
               <span class="header">{{ $t('USER_DATA.LOCKED') }}</span>
@@ -46,6 +46,7 @@ const props = defineProps<{
   precision: number,
   reduceBigNumber: boolean,
   showDenom: boolean,
+  showVesting: boolean
 }>();
 
 const locked = computed(()=> useUserStore().getVestingLockAmount);

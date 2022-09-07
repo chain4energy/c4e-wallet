@@ -46,6 +46,7 @@
       "NO_STAKED": "Your voice will not be counted (only staked amount is counting in vote but you have '0')"
     },
     "TOTAL": "Total",
+    "TOTAL_VOTED": "Voted",
     "DESCRIPTION": "Description",
     "TOTAL_DEPOSIT": "Total deposit",
     "VOTING_START": "Voting start",
@@ -79,6 +80,7 @@
     "COMMUNITY_POOL": "Community pool",
     "STRATEGIC_REVERSE_POOL": "Strategic reserve pool",
     "AIRDROP": "Fairdrop pool",
+    "REMAINING_TOKENS": "Remaining tokens",
     "TOKENOMICS": "C4E Tokenomics",
     "BOUNDED": "Bonded",
     "UNBOUNDED": "Unbonded",

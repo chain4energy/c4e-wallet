@@ -9,8 +9,8 @@
 </template>
 
 <script setup lang="ts">
-import {useTokensStore} from "@/store/tokens.store";
 import CoinAmount from "../commons/CoinAmount.vue";
+import {useTokensStore} from "@/store/tokens.store";
 
 const tokensStore = useTokensStore();
 </script>

@@ -45,7 +45,8 @@
     "ERRORS": {
       "NO_STAKED": "Your voice will not be counted (only staked amount is counting in vote but you have '0')"
     },
-    "TOTAL": "Całość",
+    "TOTAL": "Total",
+    "TOTAL_VOTED": "Zagłosowało",
     "DESCRIPTION": "Opis",
     "TOTAL_DEPOSIT": "Całkowity depozyt",
     "VOTING_START": "Start głosowania",
@@ -79,6 +80,7 @@
     "COMMUNITY_POOL": "Pula społeczności",
     "STRATEGIC_REVERSE_POOL": "Pula strategiczna",
     "AIRDROP": "Pula Fairdrop",
+    "REMAINING_TOKENS": "Pozostałe tokeny",
     "TOKENOMICS": "Tokenomia",
     "BOUNDED": "Zablokowany",
     "UNBOUNDED": "Odblokowany",

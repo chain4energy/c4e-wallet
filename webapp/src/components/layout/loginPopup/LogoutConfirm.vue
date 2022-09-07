@@ -20,6 +20,25 @@
                   <Icon name="Copy" @click="copyTxt">{{$t('COPY.ADDRESS')}}</Icon>
                 </div>
               </div>
+                <span style="display: flex;width: 100%;align-items: center;justify-content: space-between;">
+                  <span>Connected to:</span> 
+                  <span>
+                    <span class="net-changer">
+                      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle opacity="0.2" cx="13" cy="13" r="6" fill="#088201">
+                          <animate attributeName="r" values="6;9;6" dur="2s" repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="13" cy="13" r="3" fill="#088201">
+                          <animate attributeName="r" values="1;4;1" dur="2s" repeatCount="indefinite" />
+                        </circle>
+                      </svg>
+                      <select class="currentBlockchain__selector" @change="onChange($event)">
+                        <option v-for="[key] in configMap" :key="key" :value="key" :selected= "key === useConfigurationStore().getConfigName">{{ key }}</option>
+                      </select>
+                    </span>
+                  </span> 
+
+                </span>
                <a :href="`${useConfigurationStore().config.explorerAccount}${useUserStore().getAccount.address}`"
                 target="_blank" class="loginPopup__disconnect p-button">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>
                <Button class="loginPopup__disconnect" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
@@ -52,6 +71,9 @@ import { useToast } from "vue-toastification";
 import Icon from "@/components/features/IconComponent"
 import dataService from '@/services/data.service';
 import { useConfigurationStore } from '@/store/configuration.store';
+import { getConfigurationProfiles } from "@/config/configuration.profiles";
+import {useBlockStore} from "@/store/block.store";
+import { changeTitle } from "@/utils/title-changer";
 import i18n from "@/plugins/i18n";
 
 const props = defineProps({
@@ -71,6 +93,15 @@ const logo = computed(() => {
 
 const emit = defineEmits(['close']);
 
+const configMap = getConfigurationProfiles();
+
+const onChange = (event: any) => {
+  useConfigurationStore().fetchConfig(event.target.value);
+  changeTitle();
+  emit('close');
+};
+const latestBlock = computed(() => useBlockStore().getLatestBlock)
+
 function logout(){
   dataService.onLogOut();
   // useUserStore().logOut()
@@ -85,6 +116,19 @@ function copyTxt(){
 </script>
 
 <style scoped lang="scss">
+.net-changer {
+  display: flex;
+  border-radius: 7px;
+  border: none;
+  background-color: rgb(216, 216, 216);
+  padding: 5px 10px;
+
+  select {
+    border: none;
+    background-color: rgb(216, 216, 216);
+    cursor: pointer;
+  }
+}
 
 .top-bar {
   display: flex;
