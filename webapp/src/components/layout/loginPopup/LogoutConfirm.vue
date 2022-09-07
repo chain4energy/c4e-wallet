@@ -12,8 +12,11 @@
           <div class="loginChoose__description">
             <div style="display: flex; align-items: center; justify-content: space-evenly; flex-direction: column;">
               <div style="display: flex">
-                <div class="loginChoose__descriptionIcon">
-                  <img :src="logo">
+                  <span v-if="showKeplrLogo">
+                    <KeplrLogo style="display: flex; background-color: #002C50; color: white; font-size: 2em; padding: 0 10px" />
+                  </span>
+                <div class="loginChoose__descriptionIcon" v-if="!showKeplrLogo">
+                  <img  :src="logo">
                 </div>
                 <div class="loginPopup__addressHolder">
                   <p>{{useUserStore().getAccount.address}}</p>
@@ -62,6 +65,7 @@
 </template>
 
 <script setup lang="ts">
+import KeplrLogo from '@/components/commons/KeplrLogo.vue';
 import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue';
 import { useUserStore } from "@/store/user.store";
 import { ConnectionType } from "@/api/wallet.connecton.api";
@@ -90,6 +94,14 @@ const logo = computed(() => {
     default : return 'Logout'
   }
 })
+
+const showKeplrLogo = computed(() => {
+  if(props.logoutType == ConnectionType.Keplr) {
+    return true;
+  } else {
+    return false;
+  }
+});
 
 const emit = defineEmits(['close']);
 
@@ -157,6 +169,11 @@ function copyTxt(){
     border-radius: 5px;
     justify-content: space-between;
     width: 100%;
+
+    svg {
+      width: 15px;
+      margin-right: 5px;
+    }
   }
   p{
     margin-bottom: 0;

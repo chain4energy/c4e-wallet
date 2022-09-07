@@ -1,13 +1,18 @@
 <template>
   <div class="loginChoose__holder">
-    <h2>Welcome</h2>
+    <div class="top-bar">
+      <h2>Welcome</h2>
+      <Button icon="pi pi-times" style="margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
+    </div>
+
+
     <p>The world’s first blockchain network based on green energy production</p>
     <div class="loginChoose__body">
       <Button @click="$emit('typeChange', LoginEmail)">
       <Icon style="margin-right: 10px;" name="Globe"></Icon>
         {{ $t('CONNECT.CONNECT_ADDRESS') }}
       </Button>
-      <Button @click="$emit('keplr')" >
+      <Button @click="$emit('keplr')" v-if="!isMobile()">
         <KeplrLogo/>
         {{ $t('CONNECT.CONNECT_KEPLR') }}
 
@@ -22,9 +27,21 @@ import LoginEmail from '@/components/layout/loginPopup/LoginAddress.vue';
 import LoginKeplr from '@/components/layout/loginPopup/LogoutConfirm.vue';
 import { useUserStore } from "@/store/user.store";
 
+function isMobile() {
+   if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+     return true;
+   } else {
+     return false;
+   }
+ }
 </script>
-
 <style scoped lang="scss">
+.top-bar {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
 
 .loginChoose{
   position: fixed;
