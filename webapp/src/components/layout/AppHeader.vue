@@ -95,6 +95,24 @@
           </span>
         </div>
         <Button style="width: 90%" v-if="!useUserStore().isLoggedIn" class="secondary" @click="toggleDropdown(); loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
+        <span style="display: flex;width: 100%;align-items: center;justify-content: space-around; margin: 10px 0;">
+          <span>Connected to:</span> 
+          <span>
+            <span class="net-changer">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle opacity="0.2" cx="13" cy="13" r="6" fill="#088201">
+                  <animate attributeName="r" values="6;9;6" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="13" cy="13" r="3" fill="#088201">
+                  <animate attributeName="r" values="1;4;1" dur="2s" repeatCount="indefinite" />
+                </circle>
+              </svg>
+              <select class="currentBlockchain__selector" @change="onChange($event)">
+                <option v-for="[key] in configMap" :key="key" :value="key" :selected= "key === useConfigurationStore().getConfigName">{{ key }}</option>
+              </select>
+            </span>
+          </span> 
+        </span>
         <div class="section-header">Navigation</div>
           <router-link :to="menuItem.href" v-for="(menuItem,index) of menu" :key="index" @click="toggleDropdown">
             <span class="sidebar-element">
@@ -118,7 +136,10 @@ import  UserData from "@/components/userData/UserData.vue";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import LogoutKeplr from "@/components/layout/loginPopup/LogoutConfirm.vue";
 import { SideBarIconType } from "@/services/permissions/sidebar.config";
-
+import { useConfigurationStore } from '@/store/configuration.store';
+import { getConfigurationProfiles } from "@/config/configuration.profiles";
+import {useBlockStore} from "@/store/block.store";
+import { changeTitle } from "@/utils/title-changer";
 import { useRouter } from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
 import { computed, ref } from "vue";
@@ -128,7 +149,7 @@ import KeplrLogo from '../commons/KeplrLogo.vue';
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
-
+const configMap = getConfigurationProfiles();
 const loginPopupStatus = ref(false);
 const logoutPopupStatus = ref(false);
 const dropdown = ref(false);
@@ -156,6 +177,15 @@ function openAccInfo(){
   logoutPopupStatus.value = !logoutPopupStatus.value;
 }
 function logout(){
+
+
+
+const onChange = (event: any) => {
+  useConfigurationStore().fetchConfig(event.target.value);
+  changeTitle();
+  logoutPopupStatus.value = false;
+};
+const latestBlock = computed(() => useBlockStore().getLatestBlock);
 
   useUserStore().logOut()
   // switch (useUserStore().getConnectionType){
@@ -188,6 +218,20 @@ function logout(){
 
 <style scoped lang="scss">
 @import '../../styles/variables.scss';
+
+.net-changer {
+  display: flex;
+  border-radius: 7px;
+  border: none;
+  background-color: rgb(216, 216, 216);
+  padding: 5px 10px;
+
+  select {
+    border: none;
+    background-color: rgb(216, 216, 216);
+    cursor: pointer;
+  }
+}
 
 .section-header {
   background: $main-color;

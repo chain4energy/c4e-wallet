@@ -8,7 +8,7 @@
           <CoinAmount :amount="items.amount" :precision="precision" :show-denom="items.showDenom || showDenom" :reduce-big-number="reduceBigNumber"/>
         </div>
       </div>
-      <span class="vesting-container" v-if="useUserStore().isContinuousVestingAccount">
+      <span class="vesting-container" v-if="useUserStore().isContinuousVestingAccount && showVesting">
         <div class="vesting-flag">Vesting</div>
         <div class="userdata-option vesting-first" v-if="useUserStore().isContinuousVestingAccount">
               <span class="header">{{ $t('USER_DATA.LOCKED') }}</span>
@@ -46,6 +46,7 @@ const props = defineProps<{
   precision: number,
   reduceBigNumber: boolean,
   showDenom: boolean,
+  showVesting: boolean
 }>();
 
 const locked = computed(()=> useUserStore().getVestingLockAmount);
@@ -62,7 +63,8 @@ const locked = computed(()=> useUserStore().getVestingLockAmount);
   justify-content: space-between;
   width: 55%;
   height: 80px;
-  overflow: hidden
+  overflow: hidden;
+  z-index: 2;
 }
 
 .width-95 {
@@ -73,6 +75,7 @@ const locked = computed(()=> useUserStore().getVestingLockAmount);
   display: flex;
   align-items: center;
   width: 100%;
+  z-index: 2;
   position: relative;
   &__amount{
     width: 100%;
@@ -80,6 +83,7 @@ const locked = computed(()=> useUserStore().getVestingLockAmount);
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+  z-index: 2;
     margin-left: 10px;
   }
 }
@@ -98,6 +102,7 @@ const locked = computed(()=> useUserStore().getVestingLockAmount);
 .userdata-option {
   display: flex;
   flex-direction: column;
+  z-index: 2;
   align-items: flex-start;
   
   .header {

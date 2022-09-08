@@ -9,8 +9,9 @@ const airdropPoolColor = '#26697f';
 const bondedColor = '#26697f';
 const unBoundedColor = '#fff1a9';
 const unBoundingColor = '#72bf44';
+const remainingTokensColor = '#E4E4E4';
 
-export function createDashboardPoolsChartData(communityPool: number | BigDecimal, strategicReversePool: number | BigDecimal, airdropPool: number | BigDecimal, precision = 4) {
+export function createDashboardPoolsChartData(remainingTokens: number | BigDecimal, communityPool: number | BigDecimal, strategicReversePool: number | BigDecimal, airdropPool: number | BigDecimal, precision = 4) {
   const formatter = function (params: any) {
     return `
       <b>${params.data.name}</b></br>
@@ -20,6 +21,7 @@ export function createDashboardPoolsChartData(communityPool: number | BigDecimal
     formatter,
     [
       { value: communityPool, name: i18n.global.t('DASHBOARD_VIEW.COMMUNITY_POOL'), color: communityPoolColor },
+      { value: remainingTokens, name: i18n.global.t('DASHBOARD_VIEW.REMAINING_TOKENS'), color: remainingTokensColor },
       { value: strategicReversePool, name: i18n.global.t('DASHBOARD_VIEW.STRATEGIC_REVERSE_POOL'), color: strategicReversePoolColor },
       { value: airdropPool, name: i18n.global.t('DASHBOARD_VIEW.AIRDROP'), color: airdropPoolColor }
     ], precision

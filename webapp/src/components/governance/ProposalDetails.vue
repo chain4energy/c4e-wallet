@@ -55,7 +55,7 @@ import moment from "moment";
 import {useProposalsStore} from "@/store/proposals.store";
 import { Proposal } from "@/models/store/proposal";
 import { VoteOption } from "@/models/store/proposal";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView"
 import DateCommon from "@/components/commons/DateCommon.vue";
@@ -65,6 +65,10 @@ const props = defineProps<{
   proposal?: Proposal
 }>();
 
+onMounted(() => {
+  console.log(props.proposal);
+});
+  
 const proposalsStore = useProposalsStore();
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');

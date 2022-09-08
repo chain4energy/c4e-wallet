@@ -18,7 +18,7 @@ interface TokensState {
   communityPool: DecCoin
   strategicReversePool: Coin
   airdropPool: Coin
-  inflation: number
+  inflation: number,
 }
 
 export const useTokensStore = defineStore({
@@ -32,7 +32,7 @@ export const useTokensStore = defineStore({
       communityPool: new DecCoin(new BigDecimal(0), denom),
       strategicReversePool: emptyCoin,
       airdropPool: emptyCoin,
-      inflation: Number.NaN
+      inflation: Number.NaN,
     };
   },
   actions: {

@@ -45,7 +45,8 @@
     "ERRORS": {
       "NO_STAKED": "Your voice will not be counted (only staked amount is counting in vote but you have '0')"
     },
-    "TOTAL": "Całość",
+    "TOTAL": "Total",
+    "TOTAL_VOTED": "Zagłosowało",
     "DESCRIPTION": "Opis",
     "TOTAL_DEPOSIT": "Całkowity depozyt",
     "VOTING_START": "Start głosowania",
@@ -79,14 +80,121 @@
     "COMMUNITY_POOL": "Pula społeczności",
     "STRATEGIC_REVERSE_POOL": "Pula strategiczna",
     "AIRDROP": "Pula Fairdrop",
+    "REMAINING_TOKENS": "Pozostałe tokeny",
     "TOKENOMICS": "Tokenomia",
-    "BOUNDED": "Zobowiązany",
+    "BOUNDED": "Zablokowany",
     "UNBOUNDED": "Odblokowany",
     "UNBOUNDING": "Odblokowywanie",
     "AVERAGE_BLOCK_TIME": "Średni czas bloku",
     "CIRCULATING_SUPPLY": "Tokeny w obiegu",
     "INFLATION": "Inflacja",
     "STACKING_APR": "Nagroda za delegację tokenów (APR)"
+  },
+  "FAQ_VIEW": {
+    "TITLES": {
+
+    },
+    "DESCRIPTIONS": {
+
+    }
+  },
+  "TERMS_CONDITIONS_VIEW": {
+    "TITLES": {
+      "terms_conditions": "C4E Wallet - Terms and Conditions",
+      "rights_obligations": "Rights and obligations",
+      "product": "Product",
+      "obligations_warranties": "Primary obligations and warranties",
+      "compliance_audit": "Compliance and audit",
+      "service_limitations": "Service limitations and modifications",
+      "intellectual_property_rights": "Intellectual property rights",
+      "termination": "Termination",
+      "limitation_of_liability": "Limitation of liability",
+      "restrictions": "Restrictions",
+      "indemnification": "Indemnification",
+      "no_class_proceedings": "No class proceedings",
+      "third_party_rights": "Third-party rights",
+      "entire_agreement": "Entire agreement",
+      "severability": "Severability and waiver",
+      "assignment": "Assignment",
+      "no_partnership": "No partnership",
+      "force_majeure": "Force majeure",
+      "law_jurisdiction": "Law and jurisdiction",
+      "contact": "Contact"
+    },
+    "DESCRIPTIONS": {
+      "terms_conditions_1": "Last update:  August 24th, 2022",
+      "terms_conditions_2": "Please review the terms and conditions contained herein carefully. By clicking “I agree” or accessing and/or using any C4E Product (the “Product”) on the C4E Website at https://wallet.chain4energy.org (the “Website”), provided by C4E DAO AG, You have read, understood, and accepted all of the following terms, as well as all of the terms which are incorporated herein by reference.",
+      "rights_obligations": "The following terms and conditions (the “Terms”) constitute a binding agreement between C4E DAO AG, a company duly incorporated under the laws of Switzerland, with registered office at Dammstrasse 16, 6300 Zug, hereinafter referred to as “The Company”, and the person, persons, or entity (“You” or “Your”) accessing and/or using C4E Platform.The platform includes code licensed under third-party license agreements, including open source made available or provided with the software. By accessing and/or using the C4E Platform, You have read, understood, and accepted all of the following Terms and agree to be legally bound by these Terms, in their most recent version; You further represent and warrant that: You have the right, power and authority to enter into these Terms on behalf of such corporation, governmental organization or other legal entity and to legally bind it to these Terms. Your access and/or use of the Product is contingent upon Your acceptance of these Terms. The Company may amend these Terms at any time. Amendments will be effective 24 (twentyfour) hours after the modified terms and conditions have been posted on C4E’s Website and/or Sent via e-mail to You, except for amendments that relate to new features or made for legal reasons, which will become effective immediately. If You do not agree to such modified terms, You should discontinue Your use of the Product.",
+      "product": "The Product is a free, open-source, client-side software interface that allows You to interact directly with the CHain4Energy blockchain (the “Blockchain”), while remaining in full control of Your keys and assets. When You access certain features of the Services, you will be able to create a wallet and/or access a wallet to perform a variety of transactions. By creating a wallet, You will receive a key and set up a password, but no account will be set up on the Website. All Your assets are on the Blockchain itself, and the Company has no control over them, neither the Company has access to Your wallet’s keys and/or passwords. No data leaves Your device or Your browser. The Company does not collect or hold any information on Your wallet or your activity. The Company cannot access wallets; recover keys, passwords, or other information; reset passwords; or reverse transactions. You are solely responsible for Your use of the Product, including without limitation for storing, backing-up, and maintaining the confidentiality of Your keys, passwords, and information, and for the security of any transactions You perform using the Website. You expressly relieve and release the Company from any and all liability and/or loss arising from your use of the Product.",
+      "obligations_warranties_1": "By using the Product, You warrant that:",
+      "obligations_warranties_2": "You are 18 years of age or older and that You agree to abide by this Terms and Condition.",
+      "obligations_warranties_3": "You will only use the Product for Permitted Use.",
+      "obligations_warranties_4": "Except for the open source contents of the Website, You will not modify, adapt, translate, reverse engineer, decompile, disassemble, or create derivative works in whole or in part with respect to the Product.",
+      "obligations_warranties_5": "You will not do anything to harm The Company’s reputation including C4E’s Products or Services. Including any representations about the Product provided.",
+      "obligations_warranties_6": "The Product is provided 'as is', without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and non infringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.",
+      "compliance_audit": "You must only access and use the Product for a bona fide and Lawful business use. You shall in connection with the use of the Product comply with all legislation, regulations, and other rules having equivalent force which are applicable to that party, including the Privacy Laws and all other Laws, rules and regulations that relate to the privacy, protection, use or disclosure of Personal Information, and any subordinate or associated regulations. You must comply with all Privacy Laws in relation to Personal Information.",
+      "service_limitations": "The Company will make reasonable efforts to keep the Product operational. However, certain technical difficulties or maintenance may, from time to time, result in temporary interruptions. To the extent permissible under applicable law, The Company reserves the right, periodically and at any time, to modify or discontinue, temporarily or permanently, functions and features of the Product, with or without notice, without liability to You, for any interruption, modification, or discontinuation of the Services or any function or feature thereof.",
+      "intellectual_property_rights": "You acknowledge and agree that, except for the open source contents, the Product is the property of The Company or its licensors. Subject to Your compliance with these Terms, The Company grants You a license access and/or use of the Product. The right to access and/or use the Product is a non-exclusive, non-transferable, revocable, limited license, and it is subject to the limitations and obligations contained herein. Nothing in these Terms gives You any license (other than as set out in this section), right, title, or ownership of, in, or to any of the Product. You acknowledge and agree that The Company retains all rights, title, and interest in and to all copyrights, trademarks, trade secrets, patents, and any other proprietary rights in the Product, the software and application programming interfaces (APIs) comprising the Product, and all content therein. You acknowledge and agree that “C4E”, its trademark, service mark, logo and graphics are the registered trademarks or trademarks of The Company. Upon Client’s consent, The Company may use the Client's name, logo, and related trademarks in any of The Company's publicity or marketing materials (whether in printed or electronic form) for the purpose of highlighting that the Client uses the The Company Product and Services and alongside any testimonials that the Client has agreed to give. The Client grants The Company such rights as are necessary to use its name, logo, related trademarks and testimonials for the purpose of this clause.",
+      "termination": "The Company may terminate these Terms or suspend Your use to the product at any time, including, without limitation, in the event of Your alleged or actual misuse of the Product or breach of these Terms.",
+      "limitation_of_liability_1": "In no event will The Company, its officers, shareholders, employees, agents, directors, subsidiaries, affiliates, successors, assigns, suppliers, or licensors be liable for any loss or damages, including without limitation, direct, indirect, special, consequential, or punitive loss or damages, arising from or related to Your use of the Services, whether in an action of contract, tort or otherwise, and regardless of whether such damages were foreseeable and whether or not The Company was advised of the possibility of such damages.",
+      "limitation_of_liability_2": "Without limiting the generality of the foregoing, The Company takes no responsibility for and will not be liable for any financial or other loss or damages arising from or related to the use of the C4E product.",
+      "limitation_of_liability_3": "The Product is integrated with third-party services. The Company takes no responsibility for any third-party services and will not be liable for any loss or damages caused by such third-party services.",
+      "limitation_of_liability_4": "The Product is provided on an “as is” and “as available” basis without any representation or warranty of any kind, whether express or implied, to the maximum extent permitted by applicable laws. The Company disclaims any implied warranties of title, merchantability, fitness for a particular purpose and/or non-infringement. In no event will the aggregate liability of The Company, arising out of or related to these Terms and/or the Services, exceed the amount of CHF 100 (one hundred).",
+      "restrictions": "By accessing and/or using the Product, You acknowledge and agree that You shall not use the Product if applicable laws, based on Your country of location, residency and/or citizenship, prohibit You from doing so in accordance with these Terms. By accessing and/or using the Product, You acknowledge and agree that You shall not use, or assist third parties to use, the Services in any way which may constitute a contravention of applicable laws or which may contradict the purposes or hinder the operations of the Product or hinder the operations of other users of the Product. Without limitation to the foregoing, You acknowledge and agree that You shall not use, or assist third parties to use the Product to, without limitation, avoid taxes, or engage in activities that may amount to market abuse (including, without limitation, front-running, wash trades, etc.), engage into illegal gambling, frauds, money laundering or terrorist activities.",
+      "indemnification_1": "To the fullest extent permitted under applicable laws, You agree to hold harmless and indemnify The Company, its officers, shareholders, employees, agents, directors, subsidiaries, affiliates, successors, assigns, suppliers, or licensors from and against all third-party claims and all liabilities, damages, assessments, losses, costs, or expenses (including reasonable attorney fees) resulting from or arising out of ",
+      "indemnification_2": "I - Your alleged or actual breach of these Terms, including, without limitation, Your express representations and warranties; ",
+      "indemnification_3": "II - Your alleged or actual use or misuse of the Product; and ",
+      "indemnification_4": "III - Your alleged or actual infringement or violation of any laws or of the rights of a third party.",
+      "no_class_proceedings": "You will only be permitted to pursue claims against The Company on an individual basis, not as a plaintiff or class member in any class or representative action or proceeding, and You will only be permitted to seek relief (including monetary, injunctive, and declaratory relief) on an individual basis.",
+      "third_party_rights": "Other than as expressly stated in the Agreement, a person who is not a party to this Agreement may not enforce any of its terms.",
+      "entire_agreement": "These Terms constitute all the terms and conditions agreed upon between You and The Company and supersede any prior agreements in relation to the subject matter of these Terms, whether written or oral.",
+      "severability": "Unless as otherwise stated in these Terms, should any provision of these Terms be held totally or partially invalid or unenforceable, such invalidity or unenforceability shall not in any manner affect or render invalid or unenforceable the remaining provisions of these Terms, and the application of that provision shall be enforced to the extent permitted by applicable laws. The failure of The Company to exercise or enforce any of the rights or provisions of these Terms shall not be considered as a waiver of The Company’s rights to do so.",
+      "assignment": "The Company may assign these Terms and/or delegate any of its obligations hereunder, in whole or in part. You may not assign these Terms or any part of them, nor transfer or sub-license Your rights under these Terms to any third party.",
+      "no_partnership": "Nothing contained in this Agreement shall be deemed or construed to create a principal and agent, partnership or joint venture relationship between You and The Company.‍",
+      "force_majeure": "The Company will not be deemed in default of these Terms to the extent that performance of its obligations is delayed or prevented by reason of any external force including, without limitation, war,insurrections, bank failures, telecommunications failure, Internet failure,strikes, fires, floods, earthquakes, labour disputes, epidemics, governmental regulations, freight embargoes, natural disaster, an act of government or any other cause beyond The Company ’s reasonable control. Notwithstanding the foregoing, nothing in this clause shall excuse the Client from any payment obligation under the Agreement.",
+      "law_jurisdiction": "The Agreement shall be governed by, and construed in accordance with Swiss law to the exclusion of Swiss international private law and any international treaties. All disputes arising from or under these Terms shall be subject to the exclusive jurisdiction of the competent courts of Zug, Switzerland.",
+      "contact": "If You have any questions regarding these Terms, please contact us at info@chain4energy.org "
+    }
+  },
+  "PRIVACY_POLICY_VIEW": {
+    "TITLES": {
+      "privacy_policy": "Privacy Policy",
+      "additional_local_information": "Additional local information",
+      "how_is_your_data_collected": "How is your data collected?",
+      "use_of_cookies": "Use of cookies",
+      "how_is_your_data_used": "How is your data used?",
+      "data_disclosure_to_third_parties": "Data disclosure to third parties",
+      "data_storage": "Data storage and transfer outside your country",
+      "storage_of_emails": "Storage of emails",
+      "data_security": "Data security and confidentiality",
+      "retained_data": "For how long is your data retained?",
+      "children_protection": "Protection of children",
+      "external_websites": "Links to External Websites",
+      "accessing_your_data": "How to access your data",
+      "data_controller": "C4E as data controller",
+      "contact": "Contact"
+    },
+    "DESCRIPTIONS": {
+      "privacy_policy_1": "The C4E DAO AG ('C4E') reserves the right to vary or amend this Privacy Policy Statement at any time. The most recent version of the Privacy Policy Statement will govern our use of your information and will always be available on the C4E Website. By continuing to access or use this Website after any changes become effective, you agree to accept the revised Privacy Policy. Please visit this Privacy Policy Statement on a regular basis to ensure that you have read the latest version. This Privacy Policy Statement was updated the last time on the date indicated at the end of the statement.",
+      "privacy_policy_2": "C4E is committed to protecting your privacy. This Privacy Policy concerns the entire online collection of personal data on the C4E Website over the World Wide Web and describes how your personal data is collected and used and how C4E fulfills its obligations under applicable data protection law.",
+      "privacy_policy_3": "The headings used for each of the paragraphs of this Privacy Policy Statement do not affect its interpretation. “You” means a user of this C4E Website. “We” means C4E DAO AG. “User data” or “data” means personal data that has been collected from users through various functionalities of the C4E Website or by the use of an e-mail address given on the C4E Website. “Personal data” means information relating to an identified or identifiable person.",
+      "additional_local_information": "C4E is company duly incorporated under the laws of Switzerland active in the software development and IT field.",
+      "how_is_your_data_collected": "We may collect personal data from you over the C4E Website in the following ways: You provide personal information to us, in particular your contact data like name and e-mail address, by using the various functionalities of the C4E Website (e.g. commenting functionality, subscription functionality, ordering functionality) or by sending information to a C4E e-mail address given on the C4E Website. You provide additional personal information to us which we may request from you from time to time following on from any contact you have made with us through the C4E Website. Such information may be necessary or unnecessary (optional) for the provision of services on this Website as indicated in any particular case. In no event, however, are you requested to provide confidential or sensitive personal data about you or other persons. Please avoid sending us such types of data. If you access the C4E Website or use services available via the C4E Website, your connection data will be collected by our servers and/or through cookies that may be placed in your computer (see below). Our servers will store your IP address in log files by which your computer can be identified as well as certain other connection data (e.g. time and amount of transferred data, product and release information from your Internet browser).",
+      "use_of_cookies": "C4E uses tracking technology such as cookies to gather connection data and to understand how users use the C4E Website. A cookie is an element of data that a website can send to your computer’s browser so that this computer will be recognized by the site on the user’s return. Cookies allow the web server to recognize your computer on connection to our Website, which in turn allows the server to make downloading of pages faster than on first viewing. Also cookies may be used to establish statistics about the use of this Website by gathering and analyzing various data (e.g. most visited pages, time spent by users on visited pages, etc.). Cookies will not be used to monitor website visits of a particular individual. Cookies placed on your computer will not be kept longer than necessary for the purposes indicated. It is possible to set the browser on your computer to notify you when a cookie is being recorded on your computer’s hard drive. It is generally also possible to set the browser to prevent cookies from being recorded on your computer. For the optimal use of this Website, however, we recommend that you do not block the recording of cookies on your computer. The procedure for refusal of cookies may differ depending on the software product. You may check with your software helpdesk or software supplier if you wish to refuse cookies. If you choose not to receive cookies, you may not be able to use certain functionalities or pages of this Website.",
+      "how_is_your_data_used": "The user data collected over the C4E Website is processed for the following purposes: We will use your connection data for statistical purposes and to manage and improve the usability of the C4E Website by means of particular software (e.g. Google analytics) or cookies (see use of cookies). We will use your contact data to (i) answer any queries you have about this Website and to notify you of any changes to this Website; (ii) provide you with information you have requested (subscription functionality); and (iii) inform you about C4E and events that may be of interest to you (marketing activities), unless you inform us that you wish not to receive any promotion material from C4E (see Terms of Use). We will include your comments that you provide through the commenting functionality of this Website or otherwise in anonymous reports, statistics, surveys and pools which we make available on this Website. However, these types of information will not enable readers to identify individuals or individual businesses. Your comments are made available on this Website in anonymous form, unless you have expressly agreed otherwise.",
+      "data_disclosure_to_third_parties": "We will not disclose your personal data to third parties, except for the following: (1) disclosure of data if legally required or ordered by an authority or a court; (2) disclosure of data to external service providers who support C4E in the area of data processing or otherwise; (3) disclosure of data to third parties in corporate reorganizations, disposals or acquisitions; (4) disclosure of data to third parties if necessary to protect the interests of C4E or other users. We will not sell, rent, distribute or otherwise make your contact or other data commercially available to any third party, except with your prior permission.",
+      "data_storage": "Any data you send over the Internet to the C4E Website is stored and processed in ______________, as the C4E Website is operated on a platform of ____________ a service provider with principal place of business in ________________ and is processed according to applicable data protection and privacy laws. Some data will also be stored on servers of the C4E Group. Accordingly, your personal data will be transferred to and processed in locations outside the country in which you are viewing this Website (the “User Country”). Any data or material sent or uploaded by you will be accessible in countries outside the User Country. If your User Country is within the European Economic Area (“EEA”) or is Switzerland or another country providing an adequate level of data protection, please note that your personal data will also be accessible and processed in countries with a lower level of data protection. In these situations C4E will ensure (by entering into a written agreement or otherwise) that an adequate level of data protection is maintained by the recipients of your data in accordance with applicable data protection law.",
+      "storage_of_emails": "All incoming and outgoing e-mail messages are automatically stored in the C4E Electronic Message Repository for the purpose of preserving the evidential weight of e-mails. The e-mails are protected by legal, technical and organizational measures and are processed according to applicable data protection and privacy laws. They may only be accessed in justified cases in accordance with applicable laws and regulations (e.g. court order, suspicion of criminal conduct, breach of regulatory obligations, material breach of employment contract). Access is only granted to employees of the C4E Group in defined functions (e.g. litigation, legal, compliance, risk). The process steps as well as the search criteria used are pre-defined. All e-mails are disposed of after a pre-determined period of time and according to legal requirements. If you do not wish the retention of private e-mails by the C4E Group, we strongly advise you not to send private, non-business related e-mails to C4E e-mail accounts.",
+      "data_security_1": "C4E applies and ensures that service providers apply technical and organizational security measures that are appropriate to protect personal data against accidental or unlawful destruction or accidental loss, alteration, unauthorized disclosure or access and against all other unlawful forms of processing.",
+      "data_security_2": "The accessing and entering of information on the C4E Website by users take place over the Internet which is an open and unprotected network. This data transfer takes place in non-encrypted form. Therefore, we are not able to guarantee the security of your data during the transfer to the Website. You confirm to be aware of the risks of unencrypted transmission of data via the Internet. C4E shall not be liable for any damage caused by such transfer. For this reason, please do not send us any confidential or sensitive personal data.",
+      "data_security_3": "You may communicate with us by e-mail. E-mail messages sent over the Internet are neither confidential nor secure. They may be viewed by third parties, lost, intercepted or altered. E-mails may be transferred across national borders, even if both sender and recipient are located in the same country. C4E or any company of the C4E Group will not be liable for any damages suffered in connection with the use of e-mails or any other electronic messaging system when communicating with us.",
+      "retained_data": "C4E retains the personal information collected over the C4E Website for as long as required or permitted by law and regulations. Comments that you provide to us using the commenting functionality of the C4E Website are generally deleted after one year, unless C4E has a particular business interest in such information in which case the comments are retained for a longer period of time, subject to applicable data protection law.",
+      "children_protection": "C4E does not wish to collect over the C4E Website personal data from individuals under the age of 18. Individuals under the age of 18 are requested to receive permission from their parent or legal guardian before providing any personal data to C4E on the C4E Website.",
+      "external_websites": "From the C4E Website you are able to obtain access to websites operated by third parties (“External Websites”). This Privacy Policy does not apply to External Websites. External Websites are not monitored or maintained by C4E. We are not responsible for the privacy policies of any External Websites (see Terms of Use). Please read the privacy policy of each External Website prior to accessing or sending personal data to the site.",
+      "accessing_your_data": "You are entitled to ask for a copy of your personal data which has been collected online and stored on the C4E Website. You may also ask to have your data rectified or deleted as required by applicable data protection law. For more information please contact us using details in the contact box above.",
+      "data_controller": "C4E is responsible as data controller for the processing of your personal data on the C4E Website under Swiss data protection law to the extent applicable.",
+      "contact": "If you have any questions relating to the processing of your data or this Privacy Policy, please contact us using the general contact functionality provided on this Website."
+    }
   },
   "STAKING_VIEW": {
     "TABS": {
@@ -190,7 +298,10 @@
     "PROPOSALSLIST": "Zarządzanie",
     "GOVERNANCE": "Zarządzanie",
     "GOVERNANCE_PROPOSALSLIST": "Zarządzanie",
-    "GOVERNANCEDETAILS": "Wniosek"
+    "GOVERNANCEDETAILS": "Wniosek",
+    "FAQ": "FAQ",
+    "PRIVACY_POLICY": "Polityka prywatności",
+    "TERMS_CONDITIONS": "Zasady i warunki użytkowania"
   },
   "TOAST": {
     "SUCCESS": {

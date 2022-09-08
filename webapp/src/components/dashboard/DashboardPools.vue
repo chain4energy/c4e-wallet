@@ -10,6 +10,12 @@
           <CoinAmount :amount="tokensStore.getCommunityPool" :show-denom="true" style="font-weight: bold"/>
         </div>
         <div class="legend-item">
+          <div class="dot" style="background: #E4E4E4"> </div>
+          <div> {{ $t("DASHBOARD_VIEW.REMAINING_TOKENS") }}</div>
+          <Icon name="ArrowRight" />
+          <CoinAmount :amount="remainingTokens" :show-denom="true" style="font-weight: bold"/>
+        </div>
+        <div class="legend-item">
           <div class="dot" style="background: #72bf44"></div>
           <div> {{ $t("DASHBOARD_VIEW.STRATEGIC_REVERSE_POOL") }}</div>
           <Icon name="ArrowRight" />
@@ -68,8 +74,16 @@ const airdropPool = computed(() => {
   return useConfigurationStore().config.getConvertedAmount(tokensStore.getAirdropPool.amount);
 });
 
+const totalSupply = computed(() => {
+  return useConfigurationStore().config.getConvertedAmount(tokensStore.getTotalSupply.amount);
+});
+
+const remainingTokens = computed(() => {
+  return totalSupply.value - communityPool.value - strategicReversePool.value - airdropPool.value
+});
+
 const option = computed(() => {
-  return createDashboardPoolsChartData(communityPool.value, strategicReversePool.value, airdropPool.value);
+  return createDashboardPoolsChartData(remainingTokens.value, communityPool.value, strategicReversePool.value, airdropPool.value);
 })
 
 </script>
