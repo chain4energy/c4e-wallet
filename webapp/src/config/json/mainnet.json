@@ -37,5 +37,5 @@
   "proposalsPageLimit": 50,
   "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
   "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
-  "isMainNetwork": false
+  "isMainNetwork": true
 }
