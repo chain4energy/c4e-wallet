@@ -67,11 +67,12 @@ class DataService extends LoggedService {
       useTokensStore().fetchTotalSupply(lockScreen),
       useTokensStore().fetchStakingPool(lockScreen),
       useTokensStore().fetchInflation(lockScreen),
+      useTokensStore().fetchLockedVesting(lockScreen),
       useValidatorsStore().fetchValidators(lockScreen),
       useValidatorsStore().fetchStackingParams(lockScreen),
       useProposalsStore().fetchTallyParams(),
       useProposalsStore().fetchDepositParams(),
-      
+
     ]).then(() => {
       const now = new Date().getTime();
       this.lastBlockTimeout = now;

@@ -1,5 +1,6 @@
 import { useConfigurationStore } from "@/store/configuration.store";
 import { Coin, findByDenom } from "./common";
+import {calculateLockedVesting} from "@/utils/vesting-utils";
 
 export enum AccountType {
   Disconnected,
@@ -48,24 +49,14 @@ export class ContinuousVestingData {
     return findByDenom(this.originalVesting, denom);
   }
 
-  public calculateVestingLocked(latestBlockTime: Date): bigint{
-    const validtime = latestBlockTime.getTime();
+  public calculateVestingLocked(latestBlockTime: Date): bigint {
+    const blockTime = latestBlockTime.getTime();
     const endTime = this.endTime.getTime();
-    if (validtime >= endTime) {
-      return 0n;
-    }
     const startTime = this.startTime.getTime();
     const denom = useConfigurationStore().config.stakingDenom;
-    const origVesting = this.getOriginalVestingByDenom(denom).amount;
-    if (validtime <= startTime) {
-      return origVesting;
-    }
+    const origVestingAmount = this.getOriginalVestingByDenom(denom).amount;
 
-    const x = validtime - startTime;
-    const y = endTime - startTime;
-    const unlocked = (BigInt(x) * origVesting) / BigInt(y);
-    const locked = origVesting - unlocked;
-    return locked;
+    return calculateLockedVesting(startTime, endTime, blockTime, origVestingAmount);
   }
 }
 
