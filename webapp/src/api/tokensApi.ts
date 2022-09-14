@@ -1,17 +1,22 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {RequestResponse} from "@/models/request-response";
-import BaseApi from "@/api/base.api";
-import {useConfigurationStore} from "@/store/configuration.store";
-import { ErrorData } from "@/api/base.api";
-import { StakingPool } from "@/models/store/tokens";
-import { CommunityPoolResponse, InflationResponse, StakingPoolResponse } from "@/models/blockchain/tokens";
-import { mapStakingPool } from "@/models/mapper/tokens.mapper";
-import { Coin, DecCoin } from "@/models/store/common";
-import { SupplyResponse } from "@/models/blockchain/tokens";
-import { findByDenomAndMapDecCoin, mapCoin } from "@/models/mapper/common.mapper";
+import BaseApi, {ErrorData} from "@/api/base.api";
+import {StakingPool} from "@/models/store/tokens";
+import {
+  CommunityPoolResponse,
+  InflationResponse,
+  StakingPoolResponse,
+  SupplyResponse
+} from "@/models/blockchain/tokens";
+import {mapStakingPool} from "@/models/mapper/tokens.mapper";
+import {Coin, DecCoin} from "@/models/store/common";
+import {findByDenomAndMapDecCoin, mapCoin} from "@/models/mapper/common.mapper";
 import queries from "./queries";
-import { formatString } from "@/utils/string-formatter";
-import { BlockchainApiErrorData } from "@/models/blockchain/common";
+import {formatString} from "@/utils/string-formatter";
+import {BlockchainApiErrorData} from "@/models/blockchain/common";
+import {HasuraErrorData} from "@/models/hasura/error";
+import {HasuraVestingAccountsRespone} from "@/models/hasura/vesting.accounts";
+import {mapLockedVesting} from "@/models/mapper/locked.vesting.mapper";
 
 export class TokensApi extends BaseApi {
 
@@ -52,4 +57,8 @@ export class TokensApi extends BaseApi {
       mapData, lockscreen, null, 'fetchCommunityPoolByDenom - ');
   }
 
+  public async fetchVestingAccounts(lockscreen: boolean): Promise<RequestResponse<bigint, ErrorData<HasuraErrorData>>> {
+    const mapData = (hasureData: HasuraVestingAccountsRespone | undefined) => {return mapLockedVesting(hasureData?.data);};
+    return this.axiosHasuraCall(queries.hasura.ALL_VESTING_ACCOUNTS, mapData, lockscreen, null, 'fetchVestingAccounts - ');
+  }
 }

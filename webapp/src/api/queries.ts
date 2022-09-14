@@ -28,6 +28,13 @@ export default {
       'proposal_vote(where: {proposal_id: {_eq: {proposalId}}, voter_address: {_eq: "{voter}"}}) {' +
         'option' +
       '}' +
+    '}',
+    ALL_VESTING_ACCOUNTS: 'query VestingAccount {' +
+      'vesting_account(where: {type: {_eq: "cosmos.vesting.v1beta1.ContinuousVestingAccount"}}) {' +
+        'start_time,' +
+        'end_time,' +
+        'original_vesting,' +
+      '}' +
     '}'
   },
   keybase: {

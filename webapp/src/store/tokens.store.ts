@@ -1,13 +1,15 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import { StakingPool } from "@/models/store/tokens";
-import { Coin, DecCoin, toPercentage } from "@/models/store/common";
+import { Coin, DecCoin } from "@/models/store/common";
 import { useConfigurationStore } from "./configuration.store";
 import { useToast } from "vue-toastification";
 import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
 import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
+import {useBlockStore} from "@/store/block.store";
+import {ContinuousVestingData} from "@/models/store/account";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
@@ -19,6 +21,7 @@ interface TokensState {
   strategicReversePool: Coin
   airdropPool: Coin
   inflation: number,
+  lockedVesting: bigint,
 }
 
 export const useTokensStore = defineStore({
@@ -33,6 +36,7 @@ export const useTokensStore = defineStore({
       strategicReversePool: emptyCoin,
       airdropPool: emptyCoin,
       inflation: Number.NaN,
+      lockedVesting: BigInt(0),
     };
   },
   actions: {
@@ -115,6 +119,16 @@ export const useTokensStore = defineStore({
         }
       });
     },
+    fetchLockedVesting: async function (lockscreen = true) {
+      await apiFactory.tokensApi().fetchVestingAccounts(lockscreen).then(response => {
+        if (response.isSuccess() && response.data !== undefined) {
+          this.lockedVesting = response.data;
+        } else {
+          const message = 'Error fetching locked vesting';
+          logger.logToConsole(LogLevel.ERROR, message);
+        }
+      });
+    },
     clear() {
       const denom = useConfigurationStore().config.stakingDenom;
       const emptyCoin = new Coin(0n, denom);
@@ -131,7 +145,7 @@ export const useTokensStore = defineStore({
       return this.stakingPool;
     },
     getTotalBonded(): bigint {
-      return this.getStakingPool.bondedTokens
+      return this.getStakingPool.bondedTokens;
     },
     getTotalUnbonding(): bigint {
       return this.getStakingPool.notBondedTokens;
@@ -145,11 +159,10 @@ export const useTokensStore = defineStore({
       return this.totalSupply;
     },
     getCirculatingSupply(): DecCoin {
-      const amount = this.totalSupply.amount
+      const amount =  this.getTotalUnbonded
                     - this.strategicReversePool.amount
-                    - this.airdropPool.amount
-                    - this.getStakingPool.bondedTokens
-                    - this.getStakingPool.notBondedTokens;
+                    - this.getAirdropPool.amount
+                    - this.getLockedVesting;
       const amountDec = new BigDecimal(amount).subtract(this.communityPool.amount);
       return new DecCoin(amountDec, this.totalSupply.denom);
     },
@@ -161,6 +174,9 @@ export const useTokensStore = defineStore({
     },
     getAirdropPool(): Coin {
       return this.airdropPool;
+    },
+    getLockedVesting(): bigint {
+      return this.lockedVesting;
     },
     getAprPercentage(): BigDecimal | number {
       if (isNaN(this.inflation)) {
@@ -175,7 +191,7 @@ export const useTokensStore = defineStore({
       if (this.totalSupply.amount === 0n) {
         return new BigDecimal(0);
       }
-      return divideBigInts(this.stakingPool.bondedTokens, this.totalSupply.amount)
+      return divideBigInts(this.stakingPool.bondedTokens, this.totalSupply.amount);
     },
     getUnboundedPercentage(): BigDecimal  {
         if (this.totalSupply.amount === 0n) {
