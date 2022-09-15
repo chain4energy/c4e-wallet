@@ -1,9 +1,9 @@
 {
-  "bcApiURL": "https://lcd-mainnet.chain4energy.org",
-  "bcRpcURL": "https://rpc-mainnet.chain4energy.org",
+  "bcApiURL": "https://lcd.c4e.io",
+  "bcRpcURL": "https://rpc.c4e.io",
   "hasuraURL": "https://hasura-testnet.chain4energy.org/v1/graphql",
   "keybaseURL": "https://keybase.io",
-  "stakingPageURL": "https://app-testnet.chain4energy.org/",
+  "stakingPageURL": "https://wallet.c4e.io/staking",
   "addressPrefix": "c4e",
   "stakingDenom": "uc4e",
   "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
