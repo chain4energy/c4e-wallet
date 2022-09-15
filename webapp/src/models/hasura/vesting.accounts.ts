@@ -14,5 +14,5 @@ export interface VestingAccount {
 
 export interface CoinVesting {
   denom: string,
-  amount: bigint
+  amount: string
 }
