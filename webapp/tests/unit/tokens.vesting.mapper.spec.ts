@@ -11,7 +11,7 @@ import {mockAxios} from "../utils/mock.util";
 import {defaultDenom} from "../utils/common.blockchain.data.util";
 jest.mock("axios");
 const mockedAxios = mockAxios();
-const blockStore = useBlockStore();
+
 
 const currentDate = new Date();
 const startTime = currentDate.getTime();
@@ -22,7 +22,7 @@ const amount = 1000000n;
 
 describe('tests mapping of locked vesting', () => {
   setActivePinia(createPinia());
-
+  const blockStore = useBlockStore()
 
   it('calculates locked vesting funciton', async () => {
     const lockedVestingDidntStart = calculateLockedVesting(startTime, endTime, startTime - 10000, amount);
