@@ -1,7 +1,7 @@
 {
   "bcApiURL": "https://lcd.c4e.io",
   "bcRpcURL": "https://rpc.c4e.io",
-  "hasuraURL": "https://hasura-testnet.chain4energy.org/v1/graphql",
+  "hasuraURL": "https://hasura.c4e.io/v1/graphql",
   "keybaseURL": "https://keybase.io",
   "stakingPageURL": "https://wallet.c4e.io/staking",
   "addressPrefix": "c4e",
