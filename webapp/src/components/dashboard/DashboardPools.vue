@@ -79,7 +79,7 @@ const totalSupply = computed(() => {
 });
 
 const remainingTokens = computed(() => {
-  return totalSupply.value - communityPool.value - strategicReversePool.value - airdropPool.value
+  return useConfigurationStore().config.getConvertedAmount(tokensStore.getRemainingTokens.amount);
 });
 
 const option = computed(() => {

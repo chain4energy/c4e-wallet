@@ -21,11 +21,11 @@
           <div style="display: inline-block;">
             <span class="p-input-icon-left" >
               <i class="pi pi-search" />
-              <InputText v-model="redelagateFilter" type="text" placeholder="Search" />
+              <InputText v-model="redelagateFilter" type="text" placeholder="Search" style="border-radius: 15px !important; margin-right: 5px;" />
             </span>
           </div>
           <div style="display: inline-block;" v-if="redelegationDirection === RedelegationDirection.TO">
-            <Dropdown style="background-color: green; width: 200px !important;" @show="atShowChild" @hide="atHideChild" name="activityFilter" input-id="activityFilter" v-model="activityFilter" :options="activityFilterOptions" optionLabel="name" placeholder="Select type">
+            <Dropdown style="width: 200px !important;" @show="atShowChild" @hide="atHideChild" name="activityFilter" input-id="activityFilter" v-model="activityFilter" :options="activityFilterOptions" optionLabel="name" placeholder="Select type">
               <template #value="slotProps">
                 <ValidatorsStatusLabel :status="slotProps.value.status"/>
               </template>

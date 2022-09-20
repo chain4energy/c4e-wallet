@@ -175,6 +175,13 @@ export const useTokensStore = defineStore({
     getAirdropPool(): Coin {
       return this.airdropPool;
     },
+    getRemainingTokens(): DecCoin {
+      const amount = this.totalSupply.amount
+        - this.strategicReversePool.amount 
+        - this.airdropPool.amount;
+      const amountDec = new BigDecimal(amount).subtract(this.communityPool.amount);
+      return new DecCoin(amountDec, this.totalSupply.denom);
+    },
     getLockedVesting(): bigint {
       return this.lockedVesting;
     },
