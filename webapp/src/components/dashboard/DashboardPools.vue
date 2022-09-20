@@ -13,7 +13,7 @@
           <div class="dot" style="background: #E4E4E4"> </div>
           <div> {{ $t("DASHBOARD_VIEW.REMAINING_TOKENS") }}</div>
           <Icon name="ArrowRight" />
-          <CoinAmount :amount="remainingTokens" :show-denom="true" style="font-weight: bold"/>
+          <CoinAmount :amount="tokensStore.getRemainingTokens" :show-denom="true" style="font-weight: bold"/>
         </div>
         <div class="legend-item">
           <div class="dot" style="background: #72bf44"></div>
