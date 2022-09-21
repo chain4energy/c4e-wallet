@@ -3,7 +3,7 @@ import { mockAxios } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
 import { createErrorResponse, defaultDenom, expectCoin, expectDecCoin } from '../utils/common.blockchain.data.util';
 import { useTokensStore } from '@/store/tokens.store';
-import { createCommunityPoolResponseData, createStakingPoolResponseData, createSupplyResponseData, expectStakingPool } from '../utils/tokens.blockchain.data.util';
+import { createCommunityPoolResponseData, createStakingPoolResponseData, createSupplyResponseData, createVestingsLocked, expectStakingPool } from '../utils/tokens.blockchain.data.util';
 import { useConfigurationStore } from '@/store/configuration.store';
 import { createSingleBalanceResponseData } from '../utils/account.blockchain.data.util';
 import { BigDecimal } from '@/models/store/big.decimal';
@@ -134,6 +134,38 @@ describe('tokens store tests', () => {
     await tokensStore.fetchAirdropPool();
 
     expectCoin(tokensStore.getAirdropPool, 0n, defaultDenom);
+  });
+
+
+
+
+
+
+
+
+
+  it('fetches locked vesting - success', async () => {
+    const amount = 12345n;
+    const delegated = 10000n;
+    const tokensStore = useTokensStore();
+
+    const vestings = {
+      data: createVestingsLocked(amount.toString(), delegated.toString())
+    };
+
+    mockedAxios.request.mockResolvedValueOnce(vestings);
+    await tokensStore.fetchLockedVesting();
+    expect(tokensStore.getLockedVesting).toBe(amount - delegated)
+
+  });
+
+  it('fetches locked vesting - error', async () => {
+    const tokensStore = useTokensStore();
+    const validatorsError = createErrorResponse(404, 5, 'some error');
+    mockedAxios.request.mockRejectedValueOnce(validatorsError);
+    await tokensStore.fetchLockedVesting();
+
+    expect(tokensStore.getLockedVesting).toBe(0n)
   });
 
 });

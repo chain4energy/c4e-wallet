@@ -2,7 +2,7 @@ import { setActivePinia, createPinia } from 'pinia'
 import apiFactory from "@/api/factory.api";
 import { mockAxios } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
-import { createCommunityPoolResponseData, createStakingPoolResponseData, createSupplyResponseData, expectStakingPool } from '../utils/tokens.blockchain.data.util';
+import { createCommunityPoolResponseData, createStakingPoolResponseData, createSupplyResponseData, createVestingsLocked, expectStakingPool } from '../utils/tokens.blockchain.data.util';
 import { axiosErrorMessagePrefix, defaultAxiosErrorName, createErrorResponse, defaultErrorName, defaultDenom, expectCoin, expectDecCoin } from '../utils/common.blockchain.data.util';
 import { BigDecimal } from '@/models/store/big.decimal';
 
@@ -180,6 +180,53 @@ describe('tokens api tests', () => {
     expect(result.error).toBeUndefined()
 
     expectDecCoin(result.data, new BigDecimal(0), defaultDenom);
+  });
+
+  it('gets vestings locked - exists', async () => {
+    const amount = 12345n;
+    const delegated = 10000n;
+
+    const vestings = {
+      data: createVestingsLocked(amount.toString(), delegated.toString())
+    };
+
+    mockedAxios.request.mockResolvedValue(vestings);
+    const result = await api.fetchVestingLockedNotDelegated(false);
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data).toBe(amount - delegated)
+  });
+
+  it('gets vestings locked - errors', async () => {
+    const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
+
+    const status = 400;
+    const error = createErrorResponse(status, 3, errorMessage);
+
+    mockedAxios.request.mockRejectedValueOnce(error);
+    const result = await api.fetchVestingLockedNotDelegated(false);
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.error?.name).toBe(defaultAxiosErrorName);
+    expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
+    expect(result.error?.data?.code).toBe(3);
+    expect(result.error?.data?.message).toBe(errorMessage);
+
+  });
+
+  it('gets vestings locked - bad data', async () => { 
+    const supply = {
+      data: {}
+    };
+
+    mockedAxios.request.mockResolvedValue(supply);
+    const result = await api.fetchVestingLockedNotDelegated(false);
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+
+    expect(result.data).toBe(0n)
   });
 });
 

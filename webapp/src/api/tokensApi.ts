@@ -59,7 +59,7 @@ export class TokensApi extends BaseApi {
 
   public async fetchVestingLockedNotDelegated(lockscreen: boolean): Promise<RequestResponse<bigint, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: Vestings | undefined) => {
-      if (bcData) {
+      if (bcData && bcData.vesting_all_amount && bcData.delegated_vesting_amount) {
         return BigInt(bcData.vesting_all_amount) - BigInt(bcData.delegated_vesting_amount)
       }
       return 0n

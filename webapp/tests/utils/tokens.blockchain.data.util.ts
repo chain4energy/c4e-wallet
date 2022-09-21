@@ -44,3 +44,12 @@ export function expectStakingPool(stakingPool: StakingPool | undefined, expected
   expect(stakingPool?.bondedTokens).toBe(expectedBonded);
   expect(stakingPool?.notBondedTokens).toBe(expectedNotBonded);
 }
+
+export function createVestingsLocked(vestingAllAmount: string, delegatedVestingAmount: string) {
+  return {
+    vesting_all_amount: vestingAllAmount,
+    vesting_in_pools_amount: "0",
+    vesting_in_accounts_amount: "0",
+    delegated_vesting_amount: delegatedVestingAmount
+  }
+}
