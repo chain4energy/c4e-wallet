@@ -105,7 +105,7 @@ export default class WalletConnectionApi extends LoggedService {
     const config = useConfigurationStore().config;
     const chainInfo = {
       chainId: config.chainId,
-      chainName: config.chainId,
+      chainName: config.keplrNetworkName,
       rpc: config.bcRpcURL,
       rest: config.bcApiURL,
       bip44: {

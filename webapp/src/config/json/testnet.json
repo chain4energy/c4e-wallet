@@ -10,6 +10,7 @@
   "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
   "chainId": "c4e-testnet-0.1.0",
   "networkName": "Testnet",
+  "keplrNetworkName": "Chain 4 Energy Testnet",
   "operationGas": {
     "vote": 200000,
     "delegate": 300000,

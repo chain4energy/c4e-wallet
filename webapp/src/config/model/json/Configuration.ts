@@ -30,6 +30,7 @@ export interface Configuration {
   airdropPoolAddress: string,
   chainId: string,
   networkName: string,
+  keplrNetworkName: string,
   operationGas: Gas,
   viewDenoms: ViewDenom[],
   keplrGasPriceSteps: KeplrGasPriceSteps;

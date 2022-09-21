@@ -10,6 +10,7 @@
   "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
   "chainId": "perun-testnet-1",
   "networkName": "Int-Testnet",
+  "keplrNetworkName": "Chain 4 Energy internal testnet",
   "operationGas": {
     "vote": 1200000,
     "delegate": 1300000,

@@ -75,6 +75,7 @@ export class Configuration implements JsonConfiguration {
   airdropPoolAddress: string;
   chainId: string;
   networkName: string;
+  keplrNetworkName: string;
   operationGas: Gas;
   viewDenoms: ViewDenom[];
   isEmpty: boolean;
@@ -107,6 +108,7 @@ export class Configuration implements JsonConfiguration {
       this.airdropPoolAddress = configuration.airdropPoolAddress;
       this.chainId = configuration.chainId;
       this.networkName = configuration.networkName,
+      this.keplrNetworkName = configuration.keplrNetworkName,
       this.operationGas = new Gas(configuration.operationGas);
       const viewDenoms = Array<ViewDenom>();
       if (configuration.viewDenoms) {
@@ -138,6 +140,7 @@ export class Configuration implements JsonConfiguration {
       this.airdropPoolAddress = '';
       this.chainId = '';
       this.networkName = '',
+      this.keplrNetworkName = '',
       this.operationGas = new Gas(undefined);
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;

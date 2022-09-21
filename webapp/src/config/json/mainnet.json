@@ -10,6 +10,7 @@
   "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
   "chainId": "perun-1",
   "networkName": "Mainnet(perun-1)",
+  "keplrNetworkName": "Chain 4 Energy",
   "operationGas": {
     "vote": 250000,
     "delegate": 250000,
