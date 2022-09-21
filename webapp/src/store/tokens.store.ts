@@ -120,7 +120,7 @@ export const useTokensStore = defineStore({
       });
     },
     fetchLockedVesting: async function (lockscreen = true) {
-      await apiFactory.tokensApi().fetchVestingAccounts(lockscreen).then(response => {
+      await apiFactory.tokensApi().fetchVestingLockedNotDelegated(lockscreen).then(response => {
         if (response.isSuccess() && response.data !== undefined) {
           this.lockedVesting = response.data;
         } else {

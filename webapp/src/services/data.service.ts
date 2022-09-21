@@ -236,6 +236,7 @@ class DataService extends LoggedService {
         useTokensStore().fetchTotalSupply(lockScreen),
         useTokensStore().fetchStakingPool(lockScreen),
         useTokensStore().fetchInflation(lockScreen),
+        useTokensStore().fetchLockedVesting(lockScreen),
       ]).then(() => {
         this.lastDashboardTimeout = new Date().getTime();
       });

@@ -15,8 +15,7 @@ import queries from "./queries";
 import {formatString} from "@/utils/string-formatter";
 import {BlockchainApiErrorData} from "@/models/blockchain/common";
 import {HasuraErrorData} from "@/models/hasura/error";
-import {HasuraVestingAccountsRespone} from "@/models/hasura/vesting.accounts";
-import {mapLockedVesting} from "@/models/mapper/locked.vesting.mapper";
+import { Vestings } from "@/models/blockchain/c4e.vesting";
 
 export class TokensApi extends BaseApi {
 
@@ -27,6 +26,7 @@ export class TokensApi extends BaseApi {
   private STAKING_POOL_URL = queries.blockchain.STAKING_POOL_URL;
   private TOTAL_SUPPLY_URL = queries.blockchain.TOTAL_SUPPLY_URL;
   private COMMUNITY_POOL_URL = queries.blockchain.COMMUNITY_POOL_URL;
+  private VESTINGS_SUM_URL = queries.blockchain.VESTINGS_SUM_URL;
 
   public async fetchStakingPool(lockscreen: boolean): Promise<RequestResponse<StakingPool, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: StakingPoolResponse | undefined) => { return mapStakingPool(bcData?.pool); };
@@ -57,8 +57,14 @@ export class TokensApi extends BaseApi {
       mapData, lockscreen, null, 'fetchCommunityPoolByDenom - ');
   }
 
-  public async fetchVestingAccounts(lockscreen: boolean): Promise<RequestResponse<bigint, ErrorData<HasuraErrorData>>> {
-    const mapData = (hasureData: HasuraVestingAccountsRespone | undefined) => {return mapLockedVesting(hasureData?.data);};
-    return this.axiosHasuraCall(queries.hasura.ALL_VESTING_ACCOUNTS, mapData, lockscreen, null, 'fetchVestingAccounts - ');
+  public async fetchVestingLockedNotDelegated(lockscreen: boolean): Promise<RequestResponse<bigint, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: Vestings | undefined) => {
+      if (bcData) {
+        return BigInt(bcData.vesting_all_amount) - BigInt(bcData.delegated_vesting_amount)
+      }
+      return 0n
+    };
+    return  await this.axiosGetBlockchainApiCall(this.VESTINGS_SUM_URL,
+      mapData, lockscreen, null, 'fetchVestingLockedNotDelegated - ');
   }
 }

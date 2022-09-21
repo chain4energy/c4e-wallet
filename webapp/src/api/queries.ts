@@ -16,7 +16,9 @@ export default {
     REWARDS_URL: '/cosmos/distribution/v1beta1/delegators/{address}/rewards',
     PROPOSAL_TALLY_URL: '/cosmos/gov/v1beta1/proposals/{id}/tally',
     INFLATION_URL: '/c4e/minter/inflation',
-    STAKING_PARAMS_URL: '/cosmos/staking/v1beta1/params'
+    STAKING_PARAMS_URL: '/cosmos/staking/v1beta1/params',
+    VESTINGS_SUM_URL: '/c4e/vesting/vestings'
+
   },
   hasura: {
     AVERAGE_BLOCK_TIME_QUERY: 'query AverageBlockTime {' +
@@ -27,13 +29,6 @@ export default {
     PROPOSAL_USER_VOTE_QUERY: 'query UserVote {' +
       'proposal_vote(where: {proposal_id: {_eq: {proposalId}}, voter_address: {_eq: "{voter}"}}) {' +
         'option' +
-      '}' +
-    '}',
-    ALL_VESTING_ACCOUNTS: 'query VestingAccount {' +
-      'vesting_account(where: {type: {_eq: "cosmos.vesting.v1beta1.ContinuousVestingAccount"}}) {' +
-        'start_time,' +
-        'end_time,' +
-        'original_vesting,' +
       '}' +
     '}'
   },
