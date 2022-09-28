@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c4e-web-app
+  namespace: dev
+  labels:
+    app: c4e-web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c4e-web-app
+  template:
+    metadata:
+      labels:
+        app: c4e-web-app
+    spec:
+      containers:
+        - name: c4e-web-app
+          imagePullPolicy: Always
+          image: g99vzm03.gra7.container-registry.ovh.net/c4e-chain/c4e-web-app:v1.0.0-rc0
+          ports:
+            - containerPort: 8080
+      imagePullSecrets:
+        - name: regcred
