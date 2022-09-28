@@ -1,0 +1,42 @@
+{
+  "bcApiURL": "https://lcd-dev.c4e.io",
+  "bcRpcURL": "https://rpc-dev.c4e.io",
+  "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
+  "keybaseURL": "https://keybase.io",
+  "stakingPageURL": "https://wallet.c4e.io/staking",
+  "addressPrefix": "c4e",
+  "stakingDenom": "uc4e",
+  "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+  "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+  "chainId": "veles-dev-1",
+  "networkName": "Dev(veles-dev-1)",
+  "keplrNetworkName": "C4E Veles Dev",
+  "operationGas": {
+    "vote": 250000,
+    "delegate": 250000,
+    "undelegate": 250000,
+    "redelegate": 250000,
+    "claimRewards": 250000
+  },
+  "viewDenoms": [
+    {
+      "denom": "uc4e",
+      "viewDenom": "C4E",
+      "coinDecimals": 6
+    }
+  ],
+  "keplrGasPriceSteps": {
+    "low": 0.01,
+    "average": 0.025,
+    "high": 0.03
+  },
+  "minPeriodBetweenDataRefresh": 1000,
+  "blockDataRefreshTimeout": 30000,
+  "dashboardDataRefreshTimeout": 300000,
+  "validatorsDataRefreshTimeout":600000,
+  "accountDataRefreshTimeout": 90000,
+  "proposalsPageLimit": 50,
+  "explorerAccount": "https://explorer.c4e.io/accounts/",
+  "explorerTx": "https://explorer.c4e.io/transactions/",
+  "isMainNetwork": true
+}

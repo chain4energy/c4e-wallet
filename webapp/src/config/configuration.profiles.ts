@@ -1,5 +1,6 @@
 const mainnetFile = "mainnet.json";
 const testnetFile = "testnet.json";
+const devFile = "dev.json";
 const pbNetFile = "pb_test.json";
 const internalTestnetFile = "int-testnet.json";
 
@@ -30,12 +31,15 @@ function createConfigurationProfiles(): Map<string, string> {
   const allProfiles = new Map<string, any>();
   const mainnet = getProfile(mainnetFile);
   const testnet = getProfile(testnetFile);
+  const devnet = getProfile(devFile);
 
   result.set(mainnet.networkName, mainnetFile);
   result.set(testnet.networkName, testnetFile);
+  result.set(devnet.networkName, devFile);
 
   allProfiles.set(mainnetFile, mainnet);
   allProfiles.set(testnetFile, testnet);
+  allProfiles.set(devFile, devnet);
   const testProfilesActive = process.env.VUE_APP_TEST_PROFILES_ACTIVE;
 
   if (testProfilesActive) {

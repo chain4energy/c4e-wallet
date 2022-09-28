@@ -6,10 +6,7 @@ COPY ./webapp .
 RUN npm run build
 
 FROM nginx as production-stage
-RUN mkdir /app
-COPY --from=build-stage /webapp/dist /app
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
-COPY ./nginx/certs /etc/nginx/certs
+COPY --from=build-stage /webapp/dist /usr/share/nginx/html
 EXPOSE 80
 #EXPOSE 443
 
