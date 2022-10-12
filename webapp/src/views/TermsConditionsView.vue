@@ -6,7 +6,7 @@
 
     <h4>{{ $t('TERMS_CONDITIONS_VIEW.TITLES.rights_obligations') }}</h4>
     <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.rights_obligations') }}</div>
-    
+
     <h4>{{ $t('TERMS_CONDITIONS_VIEW.TITLES.product') }}</h4>
     <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.product') }}</div>
 
@@ -27,7 +27,7 @@
       </li>
     </ul>
     <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.obligations_warranties_6') }}</div>
-    
+
     <h4>{{ $t('TERMS_CONDITIONS_VIEW.TITLES.compliance_audit') }}</h4>
     <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.compliance_audit') }}</div>
 
@@ -45,9 +45,12 @@
     <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.limitation_of_liability_2') }}</div>
     <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.limitation_of_liability_3') }}</div>
     <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.limitation_of_liability_4') }}</div>
+    <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.limitation_of_liability_5') }}</div>
 
     <h4>{{ $t('TERMS_CONDITIONS_VIEW.TITLES.restrictions') }}</h4>
-    <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.restrictions') }}</div>
+    <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.restrictions_1') }}</div>
+    <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.restrictions_2') }}</div>
+    <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.restrictions_3') }}</div>
 
     <h4>{{ $t('TERMS_CONDITIONS_VIEW.TITLES.indemnification') }}</h4>
     <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.indemnification_1') }}</div>
@@ -69,7 +72,7 @@
 
     <h4>{{ $t('TERMS_CONDITIONS_VIEW.TITLES.assignment') }}</h4>
     <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.assignment') }}</div>
-    
+
     <h4>{{ $t('TERMS_CONDITIONS_VIEW.TITLES.no_partnership') }}</h4>
     <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.no_partnership') }}</div>
 

@@ -4,24 +4,33 @@
     <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.privacy_policy_1') }}</div>
     <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.privacy_policy_2') }}</div>
     <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.privacy_policy_3') }}</div>
-    
+
     <h4>{{ $t('PRIVACY_POLICY_VIEW.TITLES.additional_local_information') }}</h4>
     <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.additional_local_information') }}</div>
 
     <h4>{{ $t('PRIVACY_POLICY_VIEW.TITLES.how_is_your_data_collected') }}</h4>
-    <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.how_is_your_data_collected') }}</div>
+    <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.how_is_your_data_collected_1') }}</div>
+    <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.how_is_your_data_collected_2') }}</div>
+    <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.how_is_your_data_collected_3') }}</div>
 
     <h4>{{ $t('PRIVACY_POLICY_VIEW.TITLES.use_of_cookies') }}</h4>
     <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.use_of_cookies') }}</div>
 
     <h4>{{ $t('PRIVACY_POLICY_VIEW.TITLES.how_is_your_data_used') }}</h4>
-    <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.how_is_your_data_used') }}</div>
+    <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.how_is_your_data_used.head') }}</div>
+    <ul>
+      <li><div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.how_is_your_data_used.1') }}</div></li>
+      <li><div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.how_is_your_data_used.2') }}</div></li>
+      <li><div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.how_is_your_data_used.3') }}</div></li>
+    </ul>
 
     <h4>{{ $t('PRIVACY_POLICY_VIEW.TITLES.data_disclosure_to_third_parties') }}</h4>
     <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.data_disclosure_to_third_parties') }}</div>
+    <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.data_disclosure_to_third_parties_2') }}</div>
 
     <h4>{{ $t('PRIVACY_POLICY_VIEW.TITLES.data_storage') }}</h4>
     <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.data_storage') }}</div>
+    <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.data_storage_2') }}</div>
 
     <h4>{{ $t('PRIVACY_POLICY_VIEW.TITLES.storage_of_emails') }}</h4>
     <div class="text">{{ $t('PRIVACY_POLICY_VIEW.DESCRIPTIONS.storage_of_emails') }}</div>
