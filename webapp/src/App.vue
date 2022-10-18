@@ -31,13 +31,11 @@ import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
 import { changeTitle } from './utils/title-changer';
 
 const logger = inject<LoggerService>('logger') as LoggerService;
-onBeforeMount(() => {
-  dataService.onAppStart();
-});
+dataService.onAppStart();
 
 onMounted(() => {
   createRouterBeforeEach(logger);
-  changeTitle();
+  // changeTitle();
 });
 
 window.onload = async () =>{

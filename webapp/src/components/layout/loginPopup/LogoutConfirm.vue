@@ -24,7 +24,7 @@
                 </div>
               </div>
                 <span style="display: flex;width: 100%;align-items: center;justify-content: space-between;">
-                  <span>Connected to:</span> 
+                  <span>Connected to:</span>
                   <span>
                     <span class="net-changer">
                       <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -36,10 +36,10 @@
                         </circle>
                       </svg>
                       <select class="currentBlockchain__selector" @change="onChange($event)">
-                        <option v-for="[key] in configMap" :key="key" :value="key" :selected= "key === useConfigurationStore().getConfigName">{{ key }}</option>
+                        <option v-for="[key, item] in configMap" :key="key" :value="key" :selected= "curentNetwork === item.networkName">{{ item.networkName }}</option>
                       </select>
                     </span>
-                  </span> 
+                  </span>
 
                 </span>
                <a :href="`${useConfigurationStore().config.explorerAccount}${useUserStore().getAccount.address}`"
@@ -105,13 +105,17 @@ const showKeplrLogo = computed(() => {
 
 const emit = defineEmits(['close']);
 
-const configMap = getConfigurationProfiles();
-
 const onChange = (event: any) => {
-  useConfigurationStore().fetchConfig(event.target.value);
+  useConfigurationStore().setNetwork(event.target.value);
   changeTitle();
   emit('close');
 };
+
+const configMap = computed(() => {return useConfigurationStore().getConfigList;});
+const curentNetwork = computed(() => {
+  return useConfigurationStore().getConfigName;
+})
+
 const latestBlock = computed(() => useBlockStore().getLatestBlock)
 
 function logout(){
@@ -243,7 +247,7 @@ function copyTxt(){
     position: fixed;
     width: 100vw;
     height: 100vh;
-    
+
     z-index: -1;
   }
   &__holder{

@@ -14,7 +14,7 @@
     </div>
     <transition name="slide-fade">
       <select v-if="selectionView" class="currentBlockchain__selector" @change="onChange($event)">
-        <option v-for="[key] in configMap" :key="key" :value="key" :selected= "key === useConfigurationStore().getConfigName">{{ key }}</option>
+        <option v-for="[key, items] in configMap" :key="key" :value="key" :selected= "curentNetwork === items.networkName">{{ items.networkName }}</option>
       </select>
     </transition>
   </div>
@@ -31,10 +31,14 @@ import i18n from "@/plugins/i18n";
 
 const selectionView = ref(false)
 
-const configMap = getConfigurationProfiles();
+//const configMap = getConfigurationProfiles();
+const configMap = computed(() => {return useConfigurationStore().getConfigList;});
+const curentNetwork = computed(() => {
+  return useConfigurationStore().getConfigName;
+})
 
 const onChange = (event: any) => {
-  useConfigurationStore().fetchConfig(event.target.value);
+  useConfigurationStore().setNetwork(event.target.value);
   changeTitle()
 };
 const latestBlock = computed(() => useBlockStore().getLatestBlock)

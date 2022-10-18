@@ -45,15 +45,19 @@ class DataService extends LoggedService {
     return ServiceTypeEnum.DATA_SERVICE;
   }
 
-  public onAppStart() {
+  public async onAppStart() {
     this.logToConsole(LogLevel.DEBUG, 'onAppStart');
-    useConfigurationStore().fetchConfig();
-    const config = useConfigurationStore().config;
-    this.minBetweenRefreshmentsPeriod = config.minPeriodBetweenDataRefresh;
-    this.blockTimeout = config.blockDataRefreshTimeout;
-    this.dashboardTimeout = config.dashboardDataRefreshTimeout;
-    this.validatorsTimeout = config.validatorsDataRefreshTimeout;
-    this.accountTimeout = config.accountDataRefreshTimeout;
+    //useConfigurationStore().fetchConfig();
+    await useConfigurationStore().fetchConfigList().then((res) => {
+        const config = useConfigurationStore().getConfig;
+        this.minBetweenRefreshmentsPeriod = config.minPeriodBetweenDataRefresh;
+        this.blockTimeout = config.blockDataRefreshTimeout;
+        this.dashboardTimeout = config.dashboardDataRefreshTimeout;
+        this.validatorsTimeout = config.validatorsDataRefreshTimeout;
+        this.accountTimeout = config.accountDataRefreshTimeout;
+      }
+    );
+
     this.onInit()
   }
 

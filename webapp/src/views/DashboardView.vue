@@ -1,5 +1,5 @@
-<template>
-  <div class="container-fluid">
+<template >
+  <div v-if="configConfigured !== ''" class="container-fluid">
     <div class="dashboard-grid">
       <div class="inflation">
         <DashboardInflation />
@@ -44,6 +44,12 @@ import AverageBlockTime from "@/components/dashboard/AverageBlockTime.vue";
 import CirculatingSupply from "@/components/dashboard/CirculatingSupply.vue";
 import DashboardInflation from "@/components/dashboard/DashboardInflation.vue";
 import StakingApr from "@/components/dashboard/StakingApr.vue";
+import {useConfigurationStore} from "@/store/configuration.store";
+import {computed} from "vue";
+
+const configConfigured = computed(() => {
+  return useConfigurationStore().getConfigName
+})
 
 </script>
 

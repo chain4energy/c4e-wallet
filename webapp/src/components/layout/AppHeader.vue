@@ -74,7 +74,7 @@
           </div>
         </div>
 
-      
+
       <UserData v-if="useUserStore().isLoggedIn"/>
       </div>
       <div class="mobile-menu" :class="dropdown ? 'mobile-menu-open' : ''">
@@ -96,7 +96,7 @@
         </div>
         <Button style="width: 90%" v-if="!useUserStore().isLoggedIn" class="secondary" @click="toggleDropdown(); loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
         <span style="display: flex;width: 100%;align-items: center;justify-content: space-around; margin: 10px 0;">
-          <span>Connected to:</span> 
+          <span>Connected to:</span>
           <span>
             <span class="net-changer">
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -108,10 +108,10 @@
                 </circle>
               </svg>
               <select class="currentBlockchain__selector" @change="onChange($event)">
-                <option v-for="[key] in configMap" :key="key" :value="key" :selected= "key === useConfigurationStore().getConfigName">{{ key }}</option>
+                <option v-for="[key, item] in configMap" :key="key" :value="key" :selected= "curentNetwork === item.networkName">{{ item.networkName }}</option>
               </select>
             </span>
-          </span> 
+          </span>
         </span>
         <div class="section-header">Navigation</div>
           <router-link :to="menuItem.href" v-for="(menuItem,index) of menu" :key="index" @click="toggleDropdown">
@@ -149,7 +149,6 @@ import KeplrLogo from '../commons/KeplrLogo.vue';
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
-const configMap = getConfigurationProfiles();
 const loginPopupStatus = ref(false);
 const logoutPopupStatus = ref(false);
 const dropdown = ref(false);
@@ -157,7 +156,16 @@ const dropdown = ref(false);
 const toggleDropdown = () => {
   dropdown.value = !dropdown.value;
 };
+const configMap = computed(() => {return useConfigurationStore().getConfigList;});
+const curentNetwork = computed(() => {
+  return useConfigurationStore().getConfigName;
+})
 
+const onChange = (event: any) => {
+  useConfigurationStore().setNetwork(event.target.value);
+  changeTitle();
+  logoutPopupStatus.value = false;
+};
 const permissionsService = new PermissionsService();
 const menu = computed(() => {
   return permissionsService.createSideBar();
@@ -180,11 +188,6 @@ function logout(){
 
 
 
-const onChange = (event: any) => {
-  useConfigurationStore().fetchConfig(event.target.value);
-  changeTitle();
-  logoutPopupStatus.value = false;
-};
 const latestBlock = computed(() => useBlockStore().getLatestBlock);
 
   useUserStore().logOut()
@@ -243,7 +246,7 @@ const latestBlock = computed(() => useBlockStore().getLatestBlock);
 .divider {
   background: rgba(0,0,0,.1);
   width: 300%;
-  height: 1px; 
+  height: 1px;
   transform: translateX(-50%);
   margin: 0.5em 0;
 }
@@ -267,7 +270,7 @@ const latestBlock = computed(() => useBlockStore().getLatestBlock);
     justify-content: space-between;
     align-items: center;
     padding: 0.5em 2em;
-    
+
     div {
       width: 25px;
       height: 25px;
@@ -315,7 +318,7 @@ const latestBlock = computed(() => useBlockStore().getLatestBlock);
 a {
   text-decoration: none;
   padding: .5em 2em;
-  
+
   &:hover {
       background: rgba(0,0,0,.1);
       color: $primary-green-color;
@@ -331,7 +334,7 @@ nav a.router-link-exact-active {
 
 .mobile {
   display: none;
-  
+
   .lucide-menu-icon {
     border: 1px solid $primary-green-color;
     padding: 0.3em;
