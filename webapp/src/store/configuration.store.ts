@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import { Configuration } from "@/config/model/store/Configuration";
 import dataService from "@/services/data.service";
 import apiFactory from "@/api/factory.api";
-import { getConfigurationProfiles, getIntialProfile } from "@/config/configuration.profiles";
 import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";

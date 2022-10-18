@@ -137,7 +137,6 @@ import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import LogoutKeplr from "@/components/layout/loginPopup/LogoutConfirm.vue";
 import { SideBarIconType } from "@/services/permissions/sidebar.config";
 import { useConfigurationStore } from '@/store/configuration.store';
-import { getConfigurationProfiles } from "@/config/configuration.profiles";
 import {useBlockStore} from "@/store/block.store";
 import { changeTitle } from "@/utils/title-changer";
 import { useRouter } from 'vue-router';

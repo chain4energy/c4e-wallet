@@ -22,7 +22,6 @@
 
 <script setup lang="ts">
 
-import { getConfigurationProfiles } from "@/config/configuration.profiles";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {computed, ref} from "vue";
 import {useBlockStore} from "@/store/block.store";
@@ -30,8 +29,6 @@ import { changeTitle } from "@/utils/title-changer";
 import i18n from "@/plugins/i18n";
 
 const selectionView = ref(false)
-
-//const configMap = getConfigurationProfiles();
 const configMap = computed(() => {return useConfigurationStore().getConfigList;});
 const curentNetwork = computed(() => {
   return useConfigurationStore().getConfigName;

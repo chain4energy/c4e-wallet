@@ -75,7 +75,6 @@ import { useToast } from "vue-toastification";
 import Icon from "@/components/features/IconComponent"
 import dataService from '@/services/data.service';
 import { useConfigurationStore } from '@/store/configuration.store';
-import { getConfigurationProfiles } from "@/config/configuration.profiles";
 import {useBlockStore} from "@/store/block.store";
 import { changeTitle } from "@/utils/title-changer";
 import i18n from "@/plugins/i18n";
