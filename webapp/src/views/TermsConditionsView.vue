@@ -83,7 +83,7 @@
     <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.law_jurisdiction') }}</div>
 
     <h4>{{ $t('TERMS_CONDITIONS_VIEW.TITLES.contact') }}</h4>
-    <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.contact') }}</div>
+<!--    <div class="text">{{ $t('TERMS_CONDITIONS_VIEW.DESCRIPTIONS.CONTACTS') }}</div>-->
 
 
   </div>
