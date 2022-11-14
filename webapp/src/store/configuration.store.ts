@@ -72,8 +72,8 @@ export const useConfigurationStore = defineStore({
               this.configList.set(key, new Configuration(res.data[key]) );
             }
             if (res.data[key].isMainNetwork) {
+              this.configList.set(key, new Configuration(res.data[key]) );
               this.setNetwork(key);
-              dataService.onConfigurationChange();
             }
           }
         });
@@ -86,8 +86,8 @@ export const useConfigurationStore = defineStore({
               this.configList.set(key, new Configuration(res.data[key]) );
             }
             if (res.data[key].networkName === this.config.networkName) {
+              this.configList.set(key, new Configuration(res.data[key]) );
               this.setNetwork(key);
-              dataService.onConfigurationChange();
             }
           }
         });

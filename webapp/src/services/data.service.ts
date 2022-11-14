@@ -47,7 +47,6 @@ class DataService extends LoggedService {
 
   public async onAppStart() {
     this.logToConsole(LogLevel.DEBUG, 'onAppStart');
-    //useConfigurationStore().fetchConfig();
     await useConfigurationStore().fetchConfigList().then((res) => {
         const config = useConfigurationStore().getConfig;
         this.minBetweenRefreshmentsPeriod = config.minPeriodBetweenDataRefresh;
@@ -114,6 +113,7 @@ class DataService extends LoggedService {
   }
 
   public onConfigurationChange() {
+    alert('onConfigurationChange')
     this.logToConsole(LogLevel.DEBUG, 'onConfigurationChange');
     useSplashStore().increment();
     try {
@@ -122,16 +122,14 @@ class DataService extends LoggedService {
         this.onProposalDetailsError();
       }
       this.onLogOut();
-      Promise.all([
-        useBlockStore().clear(),
-        useProposalsStore().clear(),
-        useTokensStore().clear(),
-        useValidatorsStore().clear(),
-        window.clearInterval(this.blockIntervalId),
-        window.clearInterval(this.dashboardIntervalId),
-        window.clearInterval(this.validatorsIntervalId),
-      ]);
 
+      useBlockStore().clear();
+      useProposalsStore().clear();
+      useTokensStore().clear();
+      useValidatorsStore().clear();
+      window.clearInterval(this.blockIntervalId);
+      window.clearInterval(this.dashboardIntervalId);
+      window.clearInterval(this.validatorsIntervalId);
       this.onInit();
       if (refreshProposals) {
         useProposalsStore().fetchProposals(true);
