@@ -113,7 +113,6 @@ class DataService extends LoggedService {
   }
 
   public onConfigurationChange() {
-    alert('onConfigurationChange')
     this.logToConsole(LogLevel.DEBUG, 'onConfigurationChange');
     useSplashStore().increment();
     try {
