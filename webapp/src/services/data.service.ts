@@ -57,8 +57,6 @@ class DataService extends LoggedService {
         this.accountTimeout = config.accountDataRefreshTimeout;
       }
     );
-
-    this.onInit()
   }
 
   private onInit() {
@@ -110,6 +108,7 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onLogOut');
     window.clearInterval(this.accountIntervalId);
     this.disableKeplrAccountChangeListener();
+    useValidatorsStore().clear()
     useProposalsStore().clearUserVote();
     useUserStore().logOut();
   }
@@ -123,14 +122,16 @@ class DataService extends LoggedService {
         this.onProposalDetailsError();
       }
       this.onLogOut();
+      Promise.all([
+        useBlockStore().clear(),
+        useProposalsStore().clear(),
+        useTokensStore().clear(),
+        useValidatorsStore().clear(),
+        window.clearInterval(this.blockIntervalId),
+        window.clearInterval(this.dashboardIntervalId),
+        window.clearInterval(this.validatorsIntervalId),
+      ]);
 
-      useBlockStore().clear();
-      useProposalsStore().clear();
-      useTokensStore().clear();
-      useValidatorsStore().clear();
-      window.clearInterval(this.blockIntervalId);
-      window.clearInterval(this.dashboardIntervalId);
-      window.clearInterval(this.validatorsIntervalId);
       this.onInit();
       if (refreshProposals) {
         useProposalsStore().fetchProposals(true);

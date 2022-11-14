@@ -37,7 +37,7 @@ export const useValidatorsStore = defineStore({
               if (v.description.identity) {
                 fetchPicture(v);
               }
-            })
+            });
           } else {
             const message = 'Error fetching validators data';
             logger.logToConsole(LogLevel.ERROR, message);
@@ -49,10 +49,10 @@ export const useValidatorsStore = defineStore({
     async fetchStackingParams(lockscreen = true) {
       await apiFactory.validatorsApi().fetchStakingParams(lockscreen).then((resp) => {
         if (resp.isSuccess() && resp.data !== undefined){
-          console.log(resp)
-          this.params = resp.data
+          console.log(resp);
+          this.params = resp.data;
         }
-      })
+      });
     },
 
     clear() {
@@ -85,7 +85,7 @@ export const useValidatorsStore = defineStore({
       const delegations = useUserStore().delegations;
       const rewards = useUserStore().rewards;
       return this.validators.filter(
-        (el) => delegations.delegations.has(el.operatorAddress) 
+        (el) => delegations.delegations.has(el.operatorAddress)
                   || rewards.rewards.has(el.operatorAddress)
         );
     },
@@ -105,7 +105,7 @@ export const useValidatorsStore = defineStore({
       return this.validators.length - this.numberOfActiveValidators;
     },
     getParamsUnbondingTime(): number{
-      return this.params.unbondingTime
+      return this.params.unbondingTime;
     }
   }
 });
@@ -113,6 +113,6 @@ export const useValidatorsStore = defineStore({
 async function fetchPicture(validator: Validator) {
   const resp = await apiFactory.keybaseApi().fetchPictureAddress(validator.description.identity, false);
   if (resp.isSuccess() && resp.data !== undefined){
-    validator.description.pictureUrl = resp.data
+    validator.description.pictureUrl = resp.data;
   }
 }
