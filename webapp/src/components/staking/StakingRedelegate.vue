@@ -45,7 +45,7 @@ import { Validator, ValidatorBase, ValidatorStatus } from "@/models/store/valida
 import { useValidatorsStore } from "@/store/validators.store";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
 import BlockHidingDropdown from "../commons/BlockHidingDropdown.vue";
-import ValidatorsStatusLabel, { ValidatorsStatusLabelType } from "../commons/ValidatorsStatusLabel.vue";
+import ValidatorsStatusLabel, { ValidatorsStatusLabelType } from "@/components/commons/ValidatorsStatusLabel.vue";
 import { RedelegationDirection, getRedelagatePlaceholder } from "@/components/staking/StakingRedelegate.ts";
 
 const emit = defineEmits(['update:modelValue']);

@@ -547,6 +547,7 @@ function getWarningParams() {
 }
 .p-invalid {
   background-image: url('@/assets/err.png');
+  background-repeat: no-repeat;
 }
 
 </style>
