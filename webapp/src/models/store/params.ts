@@ -12,7 +12,7 @@ export class Params {
     historical_entries: number,
     bond_denom: string,
     ) {
-      this.unbondingTime = Number(unbonding_time.slice(0, -1))/86400
+      this.unbondingTime = Number(unbonding_time.slice(0, -1))/86400;
       this.maxEntries = max_entries;
       this.maxValidators = max_validators;
       this.historicalEntries = historical_entries;

@@ -26,19 +26,18 @@ import {useConfigurationStore} from "@/store/configuration.store";
 import {computed, ref} from "vue";
 import {useBlockStore} from "@/store/block.store";
 import { changeTitle } from "@/utils/title-changer";
-import i18n from "@/plugins/i18n";
 
-const selectionView = ref(false)
+const selectionView = ref(false);
 const configMap = computed(() => {return useConfigurationStore().getConfigList;});
 const curentNetwork = computed(() => {
   return useConfigurationStore().getConfigName;
-})
+});
 
 const onChange = (event: any) => {
   useConfigurationStore().setNetwork(event.target.value);
-  changeTitle()
+  changeTitle();
 };
-const latestBlock = computed(() => useBlockStore().getLatestBlock)
+const latestBlock = computed(() => useBlockStore().getLatestBlock);
 </script>
 
 <style scoped lang="scss">

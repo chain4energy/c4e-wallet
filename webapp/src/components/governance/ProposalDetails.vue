@@ -57,7 +57,7 @@ import { Proposal } from "@/models/store/proposal";
 import { VoteOption } from "@/models/store/proposal";
 import { computed, onMounted } from "vue";
 import CoinAmount from "../commons/CoinAmount.vue";
-import PercentsView from "@/components/commons/PercentsView"
+import PercentsView from "@/components/commons/PercentsView";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import ProposalType from "./ProposalType.vue";
 
@@ -68,12 +68,12 @@ const props = defineProps<{
 onMounted(() => {
   console.log(props.proposal);
 });
-  
+
 const proposalsStore = useProposalsStore();
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');
 };
-const voted = computed(() => {return useProposalsStore().userVote})
+const voted = computed(() => {return useProposalsStore().userVote;});
 
 </script>
 
@@ -94,9 +94,9 @@ const voted = computed(() => {return useProposalsStore().userVote})
     margin-bottom: 10px;
     border-radius: 15px;
     text-align: center;
-    -webkit-box-shadow: inset 0px 3px 27px -12px rgba(66, 68, 90, 1);
-    -moz-box-shadow: inset 0px 3px 27px -12px rgba(66, 68, 90, 1);
-    box-shadow: inset 0px 3px 27px -12px rgba(66, 68, 90, 1);
+    -webkit-box-shadow: inset 0 3px 27px -12px rgba(66, 68, 90, 1);
+    -moz-box-shadow: inset 0 3px 27px -12px rgba(66, 68, 90, 1);
+    box-shadow: inset 0 3px 27px -12px rgba(66, 68, 90, 1);
   }
 
   .user-vote-yes {

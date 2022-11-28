@@ -1,5 +1,5 @@
 import { GovernanceParameters, Proposal as BcProposal, Tally } from "@/models/blockchain/proposals";
-import { mapCoin } from "@/models/mapper/common.mapper"
+import { mapCoin } from "@/models/mapper/common.mapper";
 import {
   Proposal as StoreProposal,
   ProposalContent,
@@ -27,7 +27,7 @@ export function mapProposalByID(proposal: BcProposal | undefined): { proposal: S
   if (proposal === undefined) {
     throw new Error('Proposal is undefined');
   }
-  const result = mapProposal(proposal)
+  const result = mapProposal(proposal);
 
   return { proposal: result};
 }
@@ -81,7 +81,7 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
   const content = new ProposalContent(proposal.content["@type"], proposal.content.title, proposal.content.description/*, changes*/);
   const finalTallyResult = mapProposalTallyResult(proposal.final_tally_result);
   const totalDeposit = proposal.total_deposit.map((el)=> {
-    return mapCoin(el, el.denom)
+    return mapCoin(el, el.denom);
   });
 
   return new StoreProposal(
@@ -93,7 +93,7 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
     totalDeposit,
     new Date(proposal.voting_start_time),
     new Date(proposal.voting_end_time)
-  )
+  );
 }
 function mapProposalStatus(proposalStatus: string | undefined): ProposalStatus  {
   switch (proposalStatus) {

@@ -47,7 +47,7 @@ class DataService extends LoggedService {
 
   public async onAppStart() {
     this.logToConsole(LogLevel.DEBUG, 'onAppStart');
-    await useConfigurationStore().fetchConfigList().then((res) => {
+    await useConfigurationStore().fetchConfigList().then(() => {
         const config = useConfigurationStore().getConfig;
         this.minBetweenRefreshmentsPeriod = config.minPeriodBetweenDataRefresh;
         this.blockTimeout = config.blockDataRefreshTimeout;
@@ -100,14 +100,14 @@ class DataService extends LoggedService {
 
   public onAddressLogIn(address: string, onSuccess?: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onAddressLogIn');
-    useUserStore().connectAsAddress(address, (connetionInfo: ConnectionInfo) => {this.onLoginSuccess(connetionInfo, onSuccess)});
+    useUserStore().connectAsAddress(address, (connetionInfo: ConnectionInfo) => {this.onLoginSuccess(connetionInfo, onSuccess);});
   }
 
   public onLogOut() {
     this.logToConsole(LogLevel.DEBUG, 'onLogOut');
     window.clearInterval(this.accountIntervalId);
     this.disableKeplrAccountChangeListener();
-    useValidatorsStore().clear()
+    useValidatorsStore().clear();
     useProposalsStore().clearUserVote();
     useUserStore().logOut();
   }
@@ -215,7 +215,7 @@ class DataService extends LoggedService {
     if (!this.skipRefreshing(this.lastAccountTimeout)) {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
-      })
+      });
     }
   }
 
@@ -224,7 +224,7 @@ class DataService extends LoggedService {
     if (!this.skipRefreshing(this.lastBlockTimeout)) {
       useBlockStore().fetchLatestBlock(false).then(() => {
         this.lastBlockTimeout = new Date().getTime();
-      })
+      });
     }
   }
 
@@ -270,7 +270,7 @@ export default DataService.getInstance();
 
 const keystoreChangeListener = () => {
   DataService.getInstance().onKeplrKeyStoreChange();
-}
+};
 
 function refreshAccountData() {
   DataService.getInstance().refreshAccountData();

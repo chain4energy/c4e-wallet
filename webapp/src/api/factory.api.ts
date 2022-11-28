@@ -5,7 +5,6 @@ import {ProposalsApi} from "@/api/proposals.api";
 import {AccountApi} from "@/api/account.api";
 import WalletConnectionApi from "./wallet.connecton.api";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
-import { Namespace } from "@vue/compiler-core";
 import { KeybaseApi } from "./keybase.api";
 
 let testfileName = '';
@@ -27,7 +26,7 @@ class ApiFactory {
   private testMode = false;
 
   private constructor() {
-    this._axios = axios.create({});  
+    this._axios = axios.create({});
   }
 
   public static getInstance(): ApiFactory {
@@ -71,7 +70,7 @@ class ApiFactory {
 
   public runNormalMode() {
     if (this.testMode) {
-      this._axios = axios.create({}); 
+      this._axios = axios.create({});
       this.testMode = false;
     }
   }
@@ -96,7 +95,7 @@ async function testModeAxios<T = any, R = AxiosResponse<T, any>, D = any>(config
     const limit = config.params['pagination.limit'];
     const reverse = config.params['pagination.reverse'];
 
-    const params = []
+    const params = [];
     if (key) {
       params.push(['pagination.key', key]);
     }
@@ -137,7 +136,7 @@ async function testModeAxios<T = any, R = AxiosResponse<T, any>, D = any>(config
     config: config,
     request: undefined
   } as unknown as R;
-  
+
 }
 
 const skipPropertiesList = new Set([

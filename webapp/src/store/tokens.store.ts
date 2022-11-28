@@ -8,8 +8,6 @@ import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
 import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
-import {useBlockStore} from "@/store/block.store";
-import {ContinuousVestingData} from "@/models/store/account";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
@@ -137,7 +135,7 @@ export const useTokensStore = defineStore({
       this.communityPool = new DecCoin(new BigDecimal(0), denom);
       this.strategicReversePool = emptyCoin;
       this.airdropPool = emptyCoin;
-      this.inflation = Number.NaN
+      this.inflation = Number.NaN;
     }
   },
   getters: {
@@ -177,7 +175,7 @@ export const useTokensStore = defineStore({
     },
     getRemainingTokens(): DecCoin {
       const amount = this.totalSupply.amount
-        - this.strategicReversePool.amount 
+        - this.strategicReversePool.amount
         - this.airdropPool.amount;
       const amountDec = new BigDecimal(amount).subtract(this.communityPool.amount);
       return new DecCoin(amountDec, this.totalSupply.denom);

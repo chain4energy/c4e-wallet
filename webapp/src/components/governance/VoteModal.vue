@@ -56,13 +56,13 @@ const err = ref();
 const props = defineProps<{
   title: string
   proposalId: number
-}>()
+}>();
 const emit = defineEmits(['close']);
 
 const picked = ref<VoteOption>();
 
 const changeVotingOption = (option: VoteOption) => {
-  picked.value = option; 
+  picked.value = option;
 };
 
 const onVoteClick = () => {

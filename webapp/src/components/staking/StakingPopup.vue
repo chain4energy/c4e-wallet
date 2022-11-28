@@ -9,7 +9,7 @@
             <h2>{{ validator.description.moniker }}</h2>
             <div style="display: flex;">
               <p>{{ $t('STAKING_VIEW.STAKING_POPUP.COMMISSION') }} -</p>
-              <percents-view :amount="validator.commission.rate"></percents-view>
+              <percents-view :amount="validator.commission.rate" :precision="2"></percents-view>
             </div>
           </div>
 
@@ -45,6 +45,7 @@
               <a :href="validator.description.website">{{validator.description.website}}</a>
             </div>
           </div>-->
+
           <AmountView
             class="validationPopup__amount"
             :coins="amountToPass"
@@ -115,7 +116,7 @@
 import { ref, computed, onUnmounted } from "vue";
 import {useUserStore} from "@/store/user.store";
 import { Validator } from "@/models/store/validator";
-import { object, setLocale, string, ValidationError } from "yup";
+import { object, setLocale, string} from "yup";
 import dataService from '@/services/data.service';
 import { BigDecimal } from "@/models/store/big.decimal";
 import { useConfigurationStore } from "@/store/configuration.store";
@@ -126,9 +127,9 @@ import { YupSequentialStringSchema } from "@/utils/yup-utils";
 import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
 import KeplrLogo from "../commons/KeplrLogo.vue";
 import StakingActionVue from "./StakingAction.vue";
-import { StakingAction } from "./StakingAction";
+import { StakingAction } from "@/components/staking/StakingAction.ts";
 import StakingRedelegate from "./StakingRedelegate.vue";
-import { RedelegationDirection, getRedelagatePlaceholder } from "./StakingRedelegate";
+import { RedelegationDirection } from "@/components/staking/StakingRedelegate.ts";
 import WarningMessage from "@/components/commons/WarningMessage.vue";
 import AmountView from "@/components/commons/AmountView.vue";
 import C4EIcon from "../commons/C4EIcon.vue";
@@ -210,7 +211,7 @@ function maxAmountMessageData(): string {
 function action() {
   switch(stakingAction.value) {
     case StakingAction.DELEGATE: {
-      delegate()
+      delegate();
       break;
     }
     case StakingAction.UNDELEGATE: {
@@ -244,7 +245,7 @@ async function delegate() {
   if (dst) {
   await useUserStore().delegate(dst, amount.value)
     .then((resp) => {
-      console.log(resp)
+      console.log(resp);
       emit('success');
     });
   } // TODO else
@@ -253,8 +254,8 @@ async function delegate() {
 async function undelegate() {
   const dst = getValidatorDst();
   if (dst) {
-    await useUserStore().undelegate(dst, amount.value).then((resp) => {
-      emit('success')
+    await useUserStore().undelegate(dst, amount.value).then(() => {
+      emit('success');
     });
   } // TODO else
 }
@@ -263,8 +264,8 @@ async function redelegate() {
   const dst = getValidatorDst(true);
   const src = getValidatorSrc(true);
   if (dst && src) {
-    useUserStore().redelegate(src, dst, String(amount.value)).then((resp) => {
-      emit('success')
+    useUserStore().redelegate(src, dst, String(amount.value)).then(() => {
+      emit('success');
     });
   }
 }
@@ -296,10 +297,10 @@ const amountToPass = computed(() => {
 
 const timeToComplete = computed(() => {
   return useValidatorsStore().getParamsUnbondingTime;
-})
+});
 
 function getWarningParams() {
-  return {timeToComplete: useValidatorsStore().getParamsUnbondingTime}
+  return {timeToComplete: useValidatorsStore().getParamsUnbondingTime};
 }
 </script>
 
@@ -545,7 +546,7 @@ function getWarningParams() {
   float: left;
 }
 .p-invalid {
-  background-image: url("data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" width=\"12\" height=\"12\" fill=\"none\" stroke=\"#dc3545\"><circle cx=\"6\" cy=\"6\" r=\"4.5\"/><path stroke-linejoin=\"round\" d=\"M5.8 3.6h.4L6 6.5z\"/><circle cx=\"6\" cy=\"8.2\" r=\".6\" fill=\"#dc3545\" stroke=\"none\"/></svg>");
+  background-image: url('@/assets/err.png');
 }
 
 </style>

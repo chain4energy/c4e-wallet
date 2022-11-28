@@ -24,7 +24,7 @@ const amount = computed(() => {
   } else {
     return props.amount.multiply(100);
   }
-})
+});
 </script>
 
 <style scoped>

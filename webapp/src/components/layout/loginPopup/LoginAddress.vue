@@ -36,7 +36,7 @@ const address = ref('');
 let errorMessageType = '';
 
 async function validateAddress(address: string | undefined){
-  console.log('validateAddress: ' + address)
+  console.log('validateAddress: ' + address);
   if (!address) {
     errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.EMPTY');
     return false;
@@ -66,18 +66,18 @@ const amountSchema = object().shape({
 });
 
 function onWrongAddress(address: string, err: string) {
-  console.log(err.slice(7))
+  console.log(err.slice(7));
   switch (err.slice(7)){
-    case address + ' too short' || 'Data too short': 
+    case address + ' too short' || 'Data too short':
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.TOO_SHORT');
       break;
-    case 'No separator character for '+ address: 
+    case 'No separator character for '+ address:
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.SEPARATOR');
       break;
-    case 'Invalid checksum for '+ address: 
+    case 'Invalid checksum for '+ address:
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.CHECK_SUM');
       break;
-    default: 
+    default:
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.INVALID');
       break;
   }

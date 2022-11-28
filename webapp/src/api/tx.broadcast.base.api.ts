@@ -8,7 +8,7 @@ import { LogLevel } from '@/services/logger/log-level';
 import { SigningStargateClient, isDeliverTxFailure, DeliverTxResponse } from "@cosmjs/stargate";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { RequestResponse } from '@/models/request-response';
-import TxToast from "@/components/commons/TxToast.vue"
+import TxToast from "@/components/commons/TxToast.vue";
 
 const toast = useToast();
 
@@ -60,17 +60,17 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     };
     return fee;
   }
-  
+
   protected async signAndBroadcast(
-    connection: ConnectionInfo, 
+    connection: ConnectionInfo,
     getMessages: (isLedger: boolean) => readonly EncodeObject[] | TxBroadcastError,
     fee: StdFee | "auto" | number,
     memo: string,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
     skipErrorToast = false
-  ): Promise<RequestResponse<TxData, TxBroadcastError>> 
+  ): Promise<RequestResponse<TxData, TxBroadcastError>>
   {
-    this.logToConsole(LogLevel.DEBUG, 'signAndBroadcast')
+    this.logToConsole(LogLevel.DEBUG, 'signAndBroadcast');
     this.before(lockScreen, localSpinner);
     let clientToDisconnect: SigningStargateClient | undefined;
     try {
@@ -90,7 +90,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           !skipErrorToast
         );
       }
-       
+
       const messages = getMessages(isLedger);
       if (messages instanceof TxBroadcastError) {
         return new RequestResponse<TxData, TxBroadcastError>(messages);
@@ -120,7 +120,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       }
     }
   }
-  
+
   private async createClient(connectionType: ConnectionType): Promise<{ client: SigningStargateClient, isLedger: boolean }> {
     const { signer, isLedger } = await this.getOfflineSigner(connectionType);
     if (signer == undefined) {
@@ -133,7 +133,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     );
     return { client: client, isLedger: isLedger };
   }
-  
+
   private async getOfflineSigner(connectionType: ConnectionType) {
     switch(connectionType) {
       case ConnectionType.Keplr: {
@@ -161,7 +161,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
             tx: errorData.txData,
             errorTitleMessage: errorDataString
           },
-        }
+        };
         toast.error(content, {icon: true,});
       } else {
         const content = {
@@ -171,7 +171,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
             errorTitleMessage: errorDataString,
             errorMessage: errorData.message
           },
-        }
+        };
         toast.error(content, {icon: true,});
       }
     }

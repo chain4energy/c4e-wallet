@@ -40,7 +40,7 @@ onBeforeMount(() => {
       everythingIsReady.value = true;
     },
     () => {
-      router.push({name: 'proposalsList'})
+      router.push({name: 'proposalsList'});
     }
   );
 });
@@ -50,8 +50,8 @@ onUnmounted(() => {
 });
 
 const proposal = computed(()=> {
-  return useProposalsStore().getProposal
-})
+  return useProposalsStore().getProposal;
+});
 const everythingIsReady = ref(false);
 
 </script>
@@ -70,7 +70,7 @@ const everythingIsReady = ref(false);
   .description {
     width: 100%;
     margin-top: 20px;
-  } 
+  }
 
 .goBack {
 

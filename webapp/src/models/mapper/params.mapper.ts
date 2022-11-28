@@ -12,5 +12,5 @@ export function mapParameter( params: bcParams | undefined): StoreParams{
   if (params === undefined) {
     throw new Error('Validator is undefined');
   }
-  return new Params(params.unbonding_time, params.max_validators, params.max_entries, params.historical_entries, params.bond_denom)
+  return new Params(params.unbonding_time, params.max_validators, params.max_entries, params.historical_entries, params.bond_denom);
 }

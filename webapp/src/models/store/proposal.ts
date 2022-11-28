@@ -1,4 +1,4 @@
-import {Coin, findByDenom, toPercentage} from "@/models/store/common";
+import {Coin, findByDenom } from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { BigDecimal, divideBigInts } from "./big.decimal";
 import { VoteOption as CosmVoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";

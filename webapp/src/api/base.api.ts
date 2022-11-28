@@ -111,7 +111,7 @@ export default abstract class BaseApi extends LoggedService {
       this.logToConsole(LogLevel.ERROR, logPrefix + messages.mappingErrorMassage + this.getServiceType(), error.message);
       return this.createErrorResponseWithToast(new ErrorData<E>(error.name, error.message), messages.mappingErrorMassage, !skipErrorToast);
     }
-    
+
   }
 
   protected async axiosKeybaseCall<T, H extends KeybaseResponse>(
@@ -126,26 +126,26 @@ export default abstract class BaseApi extends LoggedService {
     const config = {
       method: 'GET',
       url: useConfigurationStore().config.keybaseURL + query,
-    }
+    };
 
     const errorDataToInfo = (data: KeybaseErrorData) => {
       let message = '';
       if (data.status) {
-          message += '\r\n\tcode: ' + data.status.code
-          message += '\r\n\tname: ' + data.status.name
-          message += '\r\n\tdesc: ' + data.status.desc
+          message += '\r\n\tcode: ' + data.status.code;
+          message += '\r\n\tname: ' + data.status.name;
+          message += '\r\n\tdesc: ' + data.status.desc;
       }
       return message;
     };
 
-    const isResponseError = (response: RequestResponse<H, ErrorData<KeybaseErrorData>>) => {return response.data?.status.code !== 0}
+    const isResponseError = (response: RequestResponse<H, ErrorData<KeybaseErrorData>>) => {return response.data?.status.code !== 0;};
 
     const messages = {
       errorResponseName: 'KeybaseError',
       errorResponseMassage: 'Keybase error received',
       errorResponseToast: 'Hasura Error: ',
       mappingErrorMassage: 'Keybase mapping error: ',
-    }
+    };
 
     return this.axiosWith200ErrorCall<T, H, KeybaseErrorData>(
       config,
@@ -175,29 +175,29 @@ export default abstract class BaseApi extends LoggedService {
       data: {
         query: query,
       }
-    }
+    };
 
     const errorDataToInfo = (data: HasuraErrorData) => {
       let message = '';
       if (data.errors) {
         data.errors.forEach(e => {
-          message += '\r\n\tMessage: ' + e.message
-        })
+          message += '\r\n\tMessage: ' + e.message;
+        });
       }
       return message;
     };
 
     const isResponseError = (response: RequestResponse<H, ErrorData<HasuraErrorData>>) => {
-      const asError = response.data as unknown as HasuraErrorData;  
-      return asError.errors && asError.errors.length > 0
-    }
+      const asError = response.data as unknown as HasuraErrorData;
+      return asError.errors && asError.errors.length > 0;
+    };
 
     const messages = {
       errorResponseName: 'HasuraError',
       errorResponseMassage: 'Hasura error received',
       errorResponseToast: 'Hasura Error: ',
       mappingErrorMassage: 'Hasura mapping error: ',
-    }
+    };
 
     return this.axiosWith200ErrorCall<T, H, HasuraErrorData>(
       config,
@@ -224,7 +224,7 @@ export default abstract class BaseApi extends LoggedService {
     skipErrorToast = false): Promise<{ response: RequestResponse<T, ErrorData<BlockchainApiErrorData>>, nextKey: string | null }>
   {
     let nextKey: string | null = null;
-    const func = async (): Promise<RequestResponse<BC, ErrorData<BlockchainApiErrorData>>> => { 
+    const func = async (): Promise<RequestResponse<BC, ErrorData<BlockchainApiErrorData>>> => {
       const result: RequestResponse<BC, ErrorData<BlockchainApiErrorData>> = await this.axiosGetBlockchainDataPaginatedCall(
         url, pagination, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast
       );
@@ -232,7 +232,7 @@ export default abstract class BaseApi extends LoggedService {
         nextKey = result.data.pagination.next_key;
       }
       return result;
-    }
+    };
 
     return { response: await this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError, skipErrorToast), nextKey: nextKey };
   }
@@ -250,7 +250,7 @@ export default abstract class BaseApi extends LoggedService {
     const func = (): Promise<RequestResponse<BC, ErrorData<BlockchainApiErrorData>>> => { return this.axiosBlockchainApiCall({
       method: 'GET',
       url: useConfigurationStore().config.bcApiURL + url
-    }, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);}
+    }, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);};
     return this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError, skipErrorToast);
   }
 
@@ -322,7 +322,7 @@ export default abstract class BaseApi extends LoggedService {
     logPrefix = '',
     displayAsError?: ((error: ErrorData<BlockchainApiErrorData>) => boolean),
     skipErrorToast = false
-    ): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>> 
+    ): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
   {
     return await this.axiosCall<T, BlockchainApiErrorData>(
       config,
@@ -420,7 +420,7 @@ export default abstract class BaseApi extends LoggedService {
       typeof value === 'bigint'
         ? value.toString()
         : value
-    )
+    );
   }
 }
 

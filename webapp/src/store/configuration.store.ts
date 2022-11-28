@@ -2,14 +2,7 @@ import { defineStore } from "pinia";
 import { Configuration } from "@/config/model/store/Configuration";
 import dataService from "@/services/data.service";
 import apiFactory from "@/api/factory.api";
-import { StoreLogger } from "@/services/logged.service";
-import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
-import { LogLevel } from "@/services/logger/log-level";
 import axios from "axios";
-import {config} from "@vue/test-utils";
-
-const logger = new StoreLogger(ServiceTypeEnum.CONFIG_STORE);
-
 
 interface ConfigurationState {
   config: Configuration
@@ -62,7 +55,7 @@ export const useConfigurationStore = defineStore({
 
 
     async fetchConfigList(){
-      this.configList = new Map<string, Configuration>()
+      this.configList = new Map<string, Configuration>();
       if(this.config.isEmpty && this.configList.size < 1){
         await axios.get('/config.json').then((res ) => {
           for(const key in res.data){

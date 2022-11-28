@@ -1,6 +1,6 @@
 import { BigDecimal } from "@/models/store/big.decimal";
-import i18n from "@/plugins/i18n"
-import { formatBigNumber, formatBigNumberLocalized } from "@/utils/locale-number-formatter";
+import i18n from "@/plugins/i18n";
+import { formatBigNumberLocalized } from "@/utils/locale-number-formatter";
 
 const communityPoolColor = '#fff1a9';
 const strategicReversePoolColor = '#72bf44';
@@ -15,7 +15,7 @@ export function createDashboardPoolsChartData(remainingTokens: number | BigDecim
   const formatter = function (params: any) {
     return `
       <b>${params.data.name}</b></br>
-      <b>${formatBigNumberLocalized(params.value)}</b>`
+      <b>${formatBigNumberLocalized(params.value)}</b>`;
   };
   return createDashboardPoolsSingleChartData(
     formatter,
@@ -25,7 +25,7 @@ export function createDashboardPoolsChartData(remainingTokens: number | BigDecim
       { value: strategicReversePool, name: i18n.global.t('DASHBOARD_VIEW.STRATEGIC_REVERSE_POOL'), color: strategicReversePoolColor },
       { value: airdropPool, name: i18n.global.t('DASHBOARD_VIEW.AIRDROP'), color: airdropPoolColor }
     ], precision
-  )
+  );
 }
 
 function createDashboardPoolsSingleChartData(formatter: any, data: { value: number | BigDecimal, name: string, color: string }[], precision: number) {
@@ -82,7 +82,7 @@ function createDashboardPoolsSingleChartData(formatter: any, data: { value: numb
       labelLine: {
         show: false
       },
-      data: data.map(d => { return createDashboardPoolsChartSeriesData(d.value, d.name, d.color,precision) })
+      data: data.map(d => { return createDashboardPoolsChartSeriesData(d.value, d.name, d.color,precision); })
     }]
   };
 
@@ -102,21 +102,14 @@ function createDashboardPoolsChartSeriesData(value: number | BigDecimal, name: s
       color: color
 
     }
-  }
+  };
 }
-
-
-
-
-
-
-
 
 export function createTokenomicsChartData(bounded: number | BigDecimal, unBounded: number | BigDecimal, unBounding: number | BigDecimal, total: number | BigDecimal, precision = 4) {
   const formatter = function (params: any) {
     return `
       <b>${params.data.name}</b></br>
-      <b>${formatBigNumberLocalized(params.value)}</b>`
+      <b>${formatBigNumberLocalized(params.value)}</b>`;
   };
 
   return createTokenomicsSingleChartData(
@@ -126,13 +119,13 @@ export function createTokenomicsChartData(bounded: number | BigDecimal, unBounde
       { value: unBounded, name: i18n.global.t('DASHBOARD_VIEW.UNBOUNDED'), color: unBoundedColor },
       { value: unBounding, name: i18n.global.t('DASHBOARD_VIEW.UNBOUNDING'), color: unBoundingColor }
     ], total, precision
-  )
+  );
 }
 
 
 
 function createTokenomicsSingleChartData(formatter: any, data: { value: number | BigDecimal, name: string, color: string }[], total: number | BigDecimal, precision: number) {
-  const dataToset: any[] = data.map(d => { return createTokenomicsChartSeriesData(d.value, d.name, d.color, precision) });
+  const dataToset: any[] = data.map(d => { return createTokenomicsChartSeriesData(d.value, d.name, d.color, precision); });
   dataToset.push({
     value: total.toFixed(precision),
     name: null,
@@ -235,5 +228,5 @@ function createTokenomicsChartSeriesData(value: number | BigDecimal, name: strin
       color: color
 
     }
-  }
+  };
 }

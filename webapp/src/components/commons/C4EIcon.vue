@@ -24,10 +24,10 @@
 <script setup lang="ts">
 export type C4EIconType = 'c4e-circle' | 'c4e-circle-no-dots' | 'c4e-4-only';
 
-const props = defineProps<{
-  icon: C4EIconType,
-  size: string,
-}>();
+//const props = defineProps<{
+//  icon: C4EIconType,
+//  size: string,
+//}>();
 
 </script>
 <style scoped>

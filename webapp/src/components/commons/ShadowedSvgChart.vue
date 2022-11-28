@@ -2,9 +2,9 @@
   <div :id="id" >
     <defs>
       <filter id="inset-shadow">
-        <feColorMatrix type="matrix" values="0 0 0 0 0 
-              0 0 0 0 0 
-              0 0 0 0 0 
+        <feColorMatrix type="matrix" values="0 0 0 0 0
+              0 0 0 0 0
+              0 0 0 0 0
               0 0 10 0 0">
         </feColorMatrix>
         <feGaussianBlur stdDeviation="3"></feGaussianBlur>
@@ -15,7 +15,7 @@
         <feGaussianBlur stdDeviation="10"></feGaussianBlur>
         <feColorMatrix type="luminanceToAlpha"></feColorMatrix>
         <feComposite operator="in" in2="SourceGraphic"></feComposite>
-        <feComposite operator="over" in2="SourceGraphic"></feComposite>      
+        <feComposite operator="over" in2="SourceGraphic"></feComposite>
       </filter>
     </defs>
     <slot></slot>
@@ -35,7 +35,7 @@ onMounted(() => {
 });
 
 function isSafari() {
-  return navigator.vendor && navigator.vendor.indexOf('Apple') > -1 
+  return navigator.vendor && navigator.vendor.indexOf('Apple') > -1;
 }
 
 async function addShadow() {
@@ -43,7 +43,7 @@ async function addShadow() {
   if (chartElement) {
     const defs = chartElement.getElementsByTagName("defs").item(0);
     if (defs) {
-      chartElement.removeChild(defs)
+      chartElement.removeChild(defs);
     }
     const svg = chartElement.getElementsByTagName("x-vue-echarts").item(0)?.getElementsByTagName("div").item(0)?.getElementsByTagName("svg").item(0);
     const isSvg: boolean = svg !== null;
@@ -51,7 +51,7 @@ async function addShadow() {
       return;
     }
     const svgElem = svg as SVGElement;
-    svgElem.innerHTML = defs?.outerHTML + svgElem.innerHTML
+    svgElem.innerHTML = defs?.outerHTML + svgElem.innerHTML;
     svgElem.setAttribute('filter', 'url(#inset-shadow)');
   }
 }

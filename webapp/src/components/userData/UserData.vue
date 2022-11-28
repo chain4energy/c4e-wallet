@@ -40,28 +40,21 @@
 
 <script setup lang="ts">
 import { useUserStore } from "@/store/user.store";
-import { Account } from "@/models/store/account";
-import {useBlockStore} from "@/store/block.store";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import C4EIcon from "../commons/C4EIcon.vue";
 import AmountView from "@/components/commons/AmountView.vue";
 import i18n from "@/plugins/i18n";
 import CoinAmount from "../commons/CoinAmount.vue";
-import DateCommon from "@/components/commons/DateCommon.vue";
 
 function claimRewards(){
   useUserStore().claimRewards();
 }
-// useBlockStore().fetchLatestBlock();
-// setInterval(useBlockStore().fetchLatestBlock, 6000);
 
 const total = computed(() => useUserStore().getTotal);
 const locked = computed(()=> useUserStore().getVestingLockAmount);
 const available = computed(() => useUserStore().getBalance);
 const stacked = computed(()=> useUserStore().getTotalDelegated);
 const unstaked = computed(()=> useUserStore().getTotalUndelegating);
-// const startTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
-// const endTime = computed(()=> useUserStore().getAccount.continuousVestingData?.getStartTimeDateString() || 'loading');
 const vestingStatus = true;
 const representData = computed(()=> {
   const coins = [
@@ -98,7 +91,7 @@ const representData = computed(()=> {
   flex-wrap: nowrap;
 
   div {
-    
+
   }
 }
 .userdata{
@@ -116,7 +109,7 @@ const representData = computed(()=> {
   overflow: hidden;
   transition: 0.2s all ease-in-out;
   z-index: 2;
-  
+
   p{
     margin: 0;
   }
@@ -221,7 +214,7 @@ const representData = computed(()=> {
     width: 100%;
     justify-content: space-evenly;
   }
-    &__accountData{ 
+    &__accountData{
       flex-direction: column;
       width: 100%;
       &-base{

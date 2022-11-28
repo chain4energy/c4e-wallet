@@ -74,7 +74,7 @@
 
 <script setup lang="ts">
 
-import {computed, ref} from "vue";
+import {computed} from "vue";
 import {PieChart} from "echarts/charts";
 import VChart from "vue-echarts";
 import {use} from "echarts/core";
@@ -115,7 +115,7 @@ const icons  = new Map<string, string>([
 ]);
 
 const sumOfVotes = computed(() => {
-  const val = useProposalsStore().getSelectedProposalTally.total
+  const val = useProposalsStore().getSelectedProposalTally.total;
   return (val && val > 0) ? val : -1n;
 });
 
@@ -140,7 +140,7 @@ const option = computed(() => {
   if (!yes.value || !abstain.value || !no.value || !noWithVeto.value) {
     return '';
   }
-  return createProposalDetailsChartData(yes.value, abstain.value, no.value, noWithVeto.value, sumOfVotes.value)
+  return createProposalDetailsChartData(yes.value, abstain.value, no.value, noWithVeto.value, sumOfVotes.value);
 });
 
 function getProposalTitle() {

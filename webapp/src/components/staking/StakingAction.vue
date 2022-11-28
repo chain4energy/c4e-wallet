@@ -3,7 +3,7 @@
     <template #value="slotProps">
         <div v-if="slotProps.value" >
           <StakeManagementIcon :icon="slotProps.value.icon" class="dropdown-option"/>
-          {{slotProps.value.name}} 
+          {{slotProps.value.name}}
         </div>
     </template>
     <template #option="slotProps">
@@ -18,10 +18,10 @@
 <script setup lang="ts">
 import { PropType, ref } from "vue";
 import i18n from "@/plugins/i18n";
-import StakeManagementIcon, { StakeManagementIconType }from "../commons/StakeManagementIcon.vue";
+import StakeManagementIcon, { StakeManagementIconType }from "@/components/commons/StakeManagementIcon.vue";
 import { DropdownChangeEvent } from "primevue/dropdown";
-import { StakingAction } from "./StakingAction";
-import { getRedelagatePlaceholder, RedelegationDirection } from "./StakingRedelegate";
+import { StakingAction } from "@/components/staking/StakingAction.ts";
+import { getRedelagatePlaceholder, RedelegationDirection } from "@/components/staking/StakingRedelegate.ts";
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -35,10 +35,10 @@ const props = defineProps({
     type: String as PropType<RedelegationDirection>,
     required: true
   }
-})
+});
 
 function onValueChange(e: DropdownChangeEvent) {
-  emit('update:modelValue', e.value.type) 
+  emit('update:modelValue', e.value.type);
 }
 
 interface ActionData {
@@ -51,9 +51,9 @@ const actions: ActionData[] = [
   defualtAction,
   {type: StakingAction.UNDELEGATE, name: i18n.global.t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE'), icon: 'undelegate'},
   {type: StakingAction.REDELEGATE, name: getRedelagatePlaceholder(props.redelegationDirection), icon: 'redelegate'},
-  ]
+  ];
 
-const stakingAction = ref<ActionData | undefined>(actions.find((val) => {return val.type === props.modelValue}))
+const stakingAction = ref<ActionData | undefined>(actions.find((val) => {return val.type === props.modelValue;}));
 
 </script>
 

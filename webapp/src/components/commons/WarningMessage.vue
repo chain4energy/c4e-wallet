@@ -26,7 +26,7 @@ const props = defineProps<{
   textsVariables:  any,
 }>();
 
-const textTypeData = computed(() => getTextsLength(props.texts))
+const textTypeData = computed(() => getTextsLength(props.texts));
 
 enum TextType {
   STRING,
@@ -42,24 +42,24 @@ function getTextsLength(key: string): {type: TextType | undefined, amount: numbe
       return {
         type: undefined,
         amount: 0
-      }
+      };
     }
-  })
+  });
   if (typeof result === 'string') {
     return {
       type: TextType.STRING,
       amount: 1
-    }
+    };
   } else if ( result instanceof Array) {
     return {
       type: TextType.ARRAY,
       amount: result.length
-    }
+    };
   }
   return {
     type: undefined,
     amount: 0
-  }
+  };
 }
 </script>
 
@@ -86,7 +86,7 @@ function getTextsLength(key: string): {type: TextType | undefined, amount: numbe
   margin: 10px 0;
 
   svg {
-    height: 40px; 
+    height: 40px;
     width: 40px;
   }
 

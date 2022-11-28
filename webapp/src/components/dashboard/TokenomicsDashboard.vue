@@ -8,7 +8,7 @@
           <div> {{ $t("DASHBOARD_VIEW.BOUNDED") }}</div>
           <Icon name="ArrowRight" />
           <CoinAmount :amount="tokensStore.getTotalBonded" :show-denom="true" style="font-weight: bold"/>
-<!-- 
+<!--
           <div >
             {{ bounded }}
           </div> -->
@@ -105,8 +105,8 @@ const totalSupply = computed((): number | BigDecimal => {
 });
 
 const option = computed(() => {
-  return createTokenomicsChartData(bounded.value, unBounded.value, unBounding.value, totalSupply.value)
-})
+  return createTokenomicsChartData(bounded.value, unBounded.value, unBounding.value, totalSupply.value);
+});
 
 </script>
 
@@ -131,8 +131,8 @@ const option = computed(() => {
   #tokenchartdiv {
     height: 350px;
     align-self: center;
-    margin-right: 0px;
-    margin-left: 0px;
+    margin-right: 0;
+    margin-left: 0;
   }
 }
 </style>

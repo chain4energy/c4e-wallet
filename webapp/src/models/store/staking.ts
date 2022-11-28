@@ -1,5 +1,3 @@
-import { useConfigurationStore } from "@/store/configuration.store";
-
 export class Delegation {
   validatorAddress: string;
   amount: bigint; // TODO Amount as Coin ??
@@ -67,7 +65,7 @@ export class UnbondingDelegations {
   }
 
   public getEntriesByValidator(validatorAddress: string): UnbondingDelegationEntry[] | undefined {
-    return this.undelegations.get(validatorAddress)?.entries
+    return this.undelegations.get(validatorAddress)?.entries;
   }
 
   public hasUnbondingDelegations(): boolean {

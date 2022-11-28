@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue'
+import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue';
 
 import { onUnmounted, ref, shallowRef } from "vue";
 import { useUserStore } from "@/store/user.store";
@@ -30,10 +30,10 @@ onUnmounted(() => {
 
 const emit = defineEmits(['close', 'typeChange']);
 
-const loginType = shallowRef(LoginChoose)
+const loginType = shallowRef(LoginChoose);
 
 function keplrConnect(){
-  dataService.onKeplrLogIn(() => {emit('close')});
+  dataService.onKeplrLogIn(() => {emit('close');});
   // useUserStore().connectKeplr().then(() => {
   //   if (useUserStore().isLoggedIn){
   //     emit('close')
@@ -59,7 +59,7 @@ function keplrConnect(){
   width: 100%;
   height: 100vh;
   z-index: 10;
-  
+
   p{
     margin-bottom: 0;
   }

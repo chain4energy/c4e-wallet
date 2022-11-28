@@ -23,7 +23,7 @@ export class LoggerService {
         logData.push(logInfo.data.length === 1 ? logInfo.data[0] : logInfo.data);
       }
       leggerFunc(...logData);
-    }
+    };
 
     switch (logInfo.level) {
       case LogLevel.ERROR:

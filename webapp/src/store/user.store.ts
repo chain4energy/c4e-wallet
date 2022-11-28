@@ -14,10 +14,9 @@ import { LogLevel } from '@/services/logger/log-level';
 import { BigDecimal } from "@/models/store/big.decimal";
 import { useBlockStore } from "./block.store";
 import i18n from "@/plugins/i18n";
-import { formatString } from "@/utils/string-formatter";
 import { useProposalsStore } from "./proposals.store";
 import { VoteOption } from "@/models/store/proposal";
-import TxToast from "@/components/commons/TxToast.vue"
+import TxToast from "@/components/commons/TxToast.vue";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -227,7 +226,7 @@ export const useUserStore = defineStore({
     async logOut() {
       logger.logToConsole(LogLevel.DEBUG, 'logOut before: ', JSON.stringify(this.connectionInfo));
       const address = this.connectionInfo.account;
-      const prevConType = this.connectionInfo.connectionType
+      const prevConType = this.connectionInfo.connectionType;
       clearStateOnLogout(this);
       if (prevConType !== ConnectionType.Disconnected) {
         toast.success(i18n.global.t('TOAST.SUCCESS.ADDRESS_DISCONNECTED', {address: address}));
@@ -278,7 +277,7 @@ export const useUserStore = defineStore({
       return this.vestimgAccLocked;
     },
     getTotal() : bigint {
-      return this.undelegations.totalUndelegating + this.delegations.totalDelegated + this.balance
+      return this.undelegations.totalUndelegating + this.delegations.totalDelegated + this.balance;
     },
     hasUndelegations(): boolean {
       return this.undelegations.hasUnbondingDelegations();
@@ -386,7 +385,7 @@ function onTxDeliverySuccess(tx?: TxData) {
       props: {
         tx: tx
       },
-    }
+    };
     toast.success(content, {icon: true,});
   } else {
     logger.logToConsole(LogLevel.WARNING, `Tx delivered successfully but cannt get TX data`);

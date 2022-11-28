@@ -114,12 +114,12 @@ export class AccountApi extends TxBroadcastBaseApi {
         }
       };
       if (isLedger) {
-        return [{ typeUrl: typeUrl, value: val }]
+        return [{ typeUrl: typeUrl, value: val }];
       } else {
-        return [{ typeUrl: typeUrl, value: MsgDelegate.fromPartial(val) }]
+        return [{ typeUrl: typeUrl, value: MsgDelegate.fromPartial(val) }];
       }
-    }
-    
+    };
+
 
     const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
@@ -127,7 +127,7 @@ export class AccountApi extends TxBroadcastBaseApi {
 
   public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
-    this.logToConsole(LogLevel.DEBUG, 'undelegate')
+    this.logToConsole(LogLevel.DEBUG, 'undelegate');
     const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
 
     const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
@@ -141,11 +141,11 @@ export class AccountApi extends TxBroadcastBaseApi {
         }
       };
       if (isLedger) {
-        return [{ typeUrl: typeUrl, value: val }]
+        return [{ typeUrl: typeUrl, value: val }];
       } else {
-        return [{ typeUrl: typeUrl, value: MsgUndelegate.fromPartial(val) }]
+        return [{ typeUrl: typeUrl, value: MsgUndelegate.fromPartial(val) }];
       }
-    }
+    };
 
     const fee = this.createFee(config.operationGas.undelegate, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
@@ -167,11 +167,11 @@ export class AccountApi extends TxBroadcastBaseApi {
         }
       };
       if (isLedger) {
-        return [{ typeUrl: typeUrl, value: val }]
+        return [{ typeUrl: typeUrl, value: val }];
       } else {
-        return [{ typeUrl: typeUrl, value: MsgBeginRedelegate.fromPartial(val) }]
+        return [{ typeUrl: typeUrl, value: MsgBeginRedelegate.fromPartial(val) }];
       }
-    }
+    };
 
     const fee = this.createFee(config.operationGas.redelegate, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
@@ -191,11 +191,11 @@ export class AccountApi extends TxBroadcastBaseApi {
         voter: connection.account,
       };
       if (isLedger) {
-        return [{ typeUrl: typeUrl, value: val }]
+        return [{ typeUrl: typeUrl, value: val }];
       } else {
-        return [{ typeUrl: typeUrl, value: MsgVote.fromPartial(val) }]
+        return [{ typeUrl: typeUrl, value: MsgVote.fromPartial(val) }];
       }
-    }
+    };
 
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
@@ -206,12 +206,12 @@ export class AccountApi extends TxBroadcastBaseApi {
     const messages: EncodeObject[] = [];
     const getMessages = (isLedger: boolean): readonly EncodeObject[] | TxBroadcastError => {
       const typeUrl = '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward';
-      
+
       for (const validator of validatorsAddresses) {
         const val = {
           delegatorAddress: connection.account,
           validatorAddress: validator,
-        }
+        };
         const msg: EncodeObject = isLedger ? { typeUrl: typeUrl, value: val } : { typeUrl: typeUrl, value: MsgWithdrawDelegatorReward.fromPartial(val) };
         messages.push(msg);
 
@@ -221,7 +221,7 @@ export class AccountApi extends TxBroadcastBaseApi {
         return new TxBroadcastError('No rewards to claim');
       }
       return messages;
-    }
+    };
 
 
 

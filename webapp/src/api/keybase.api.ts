@@ -13,11 +13,11 @@ export class KeybaseApi extends BaseApi {
   }
 
   public async fetchPictureAddress(keybaseHash: string, lockscreen: boolean): Promise<RequestResponse<string | undefined, ErrorData<KeybaseErrorData>>> {
-    const mapData = (kaybaseData: PictureUrlResponse | undefined): string | undefined => { 
+    const mapData = (kaybaseData: PictureUrlResponse | undefined): string | undefined => {
       if (!kaybaseData?.list || kaybaseData.list.length < 1) {
         return undefined;
       }
-      return kaybaseData.list[0].keybase?.picture_url
+      return kaybaseData.list[0].keybase?.picture_url;
     };
     return this.axiosKeybaseCall(formatString(queries.keybase.QUERY_URL, {keybaseHash: keybaseHash}), mapData, lockscreen, null, 'fetchPictureAddress - ');
   }

@@ -13,7 +13,7 @@ const props = defineProps<{
   precision?: number,
   reduceBigNumber?: boolean,
   showDenom?: boolean,
-}>()
+}>();
 
 function getDenom(): string {
   if (props.amount instanceof Coin || props.amount instanceof DecCoin) {

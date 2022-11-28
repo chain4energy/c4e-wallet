@@ -49,7 +49,7 @@ export function reduceBigNumber(locale: string, number: bigint | number | BigDec
     val = new BigDecimal(number);
   }
 
-  let suffix = ''
+  let suffix = '';
   if (val.isBiggerThanOrEqualTo(1e12)) {
     val = val.divide(1e12);
     suffix = 'T';

@@ -16,7 +16,7 @@ export function createProposalDetailsChartData(yes: number | BigDecimal, abstain
       return `
         <b>${params.data.name}</b></br>
         <b>${formatBigNumberLocalized(params.value)}</b>
-        <b>(${formatBigNumberLocalized(String(params.percent))}%)</b>`
+        <b>(${formatBigNumberLocalized(String(params.percent))}%)</b>`;
     };
     return createProposalDetailsSingleChartData(
       formatter,
@@ -26,14 +26,14 @@ export function createProposalDetailsChartData(yes: number | BigDecimal, abstain
         {value: no, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO'), color: '#e02626'},
         {value: noWithVeto, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO'), color: '#FDDB2A'}
       ], precision
-    )
+    );
   } else {
     return createProposalDetailsSingleChartData(
       'No votes <br/>0 (0%)',
       [
         {value: 1, name: '', color: noVotesColor}
       ], precision
-    )
+    );
   }
 }
 
@@ -41,7 +41,7 @@ export function createProposalListChartData(
   yes: {
     amount: number | BigDecimal
     percentage: BigDecimal
-  }, 
+  },
   abstain: {
     amount: number | BigDecimal
     percentage: BigDecimal
@@ -62,7 +62,7 @@ export function createProposalListChartData(
       const formatter = function (params: any) {
         return `
           <b>${params.seriesName}</b></br>
-          <b>${formatBigNumberLocalized(params.value)} (${formatBigNumberLocalized(String(params.data.name))}%)</b>`
+          <b>${formatBigNumberLocalized(params.value)} (${formatBigNumberLocalized(String(params.data.name))}%)</b>`;
       };
 
       return createProposalListSingleChartData(
@@ -75,7 +75,7 @@ export function createProposalListChartData(
         ],
         precision,
         percentagePrecision
-      )
+      );
     } else {
       return createProposalListSingleChartData(
         'No votes <br/>0 (0%)',
@@ -84,7 +84,7 @@ export function createProposalListChartData(
         ],
         precision,
         percentagePrecision
-      )
+      );
     }
 
 }
@@ -112,11 +112,11 @@ function createProposalDetailsSingleChartData(formatter: any, data: {value: numb
           position: 'center'
         },
 
-        data: data.map(d => {return createProposalDetailsChartSeriesData(d.value, d.name, d.color, precision)}),
+        data: data.map(d => {return createProposalDetailsChartSeriesData(d.value, d.name, d.color, precision);}),
       }],
 
     };
-  
+
 }
 
 
@@ -133,7 +133,7 @@ function createProposalDetailsChartSeriesData(value: number | BigDecimal, name: 
       },
       color: color,
     }
-  }
+  };
 }
 
 function createProposalListSingleChartData(formatter: any, data: {amount: number | BigDecimal, percentage: BigDecimal, name: string, color: string}[], precision: number, percentagePrecision: number) {
@@ -154,8 +154,8 @@ function createProposalListSingleChartData(formatter: any, data: {amount: number
     itemStyle: {
       barBorderRadius: [50,50,50,50]
     },
-    series: data.map(d => {return createProposalListChartSeriesData(d.amount, d.percentage, d.name, d.color, precision, percentagePrecision)}),
-  
+    series: data.map(d => {return createProposalListChartSeriesData(d.amount, d.percentage, d.name, d.color, precision, percentagePrecision);}),
+
   } ;
 
 }
@@ -170,5 +170,5 @@ function createProposalListChartSeriesData(amount: number | BigDecimal, percenta
       focus: 'series'
     },
     data: [{name: toPercentage(percentage, percentagePrecision), value: amount.toFixed(precision)}]
-  }
+  };
 }

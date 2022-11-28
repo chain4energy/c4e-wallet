@@ -9,7 +9,7 @@ import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
 import { useUserStore } from "./user.store";
 
-const toast = useToast()
+const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.PROPOSAL_STORE);
 
 interface ProposalsState {
@@ -45,7 +45,7 @@ export const useProposalsStore = defineStore({
   actions: {
 
     async fetchProposals(lockscreen = true){
-      logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult')
+      logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult');
       await apiFactory.proposalsApi().fetchProposals(this.paginationKey, lockscreen)
         .then(async (resp) => {
           if (resp.response.isSuccess() && resp.response.data !== undefined){
@@ -81,7 +81,7 @@ export const useProposalsStore = defineStore({
       lockscreen = true,
       forceRemoteFetch = false
     ){
-      logger.logToConsole(LogLevel.INFO, 'fetchProposalById ')
+      logger.logToConsole(LogLevel.INFO, 'fetchProposalById ');
 
       const remoteFetch = async () => {
         await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then(async (resp) => {
@@ -89,11 +89,11 @@ export const useProposalsStore = defineStore({
             this.proposal = resp.data.proposal;
             const promises = Array<Promise<void>>();
             if (useUserStore().isLoggedIn) {
-              logger.logToConsole(LogLevel.DEBUG, 'fetchProposalById ', String(useUserStore().isLoggedIn))
-              promises.push(this.fetchProposalUserVote(id, useUserStore().getAccount.address))
+              logger.logToConsole(LogLevel.DEBUG, 'fetchProposalById ', String(useUserStore().isLoggedIn));
+              promises.push(this.fetchProposalUserVote(id, useUserStore().getAccount.address));
             }
             this.proposalTally = undefined;
-            logger.logToConsole(LogLevel.DEBUG, 'fetchProposalById isVotingPeriod ', String(resp.data.proposal.isVotingPeriod()))
+            logger.logToConsole(LogLevel.DEBUG, 'fetchProposalById isVotingPeriod ', String(resp.data.proposal.isVotingPeriod()));
             if (resp.data.proposal.isVotingPeriod()) {
               promises.push(this.fetchVotingProposalTallyResult(id, true, lockscreen));
             }
@@ -112,7 +112,7 @@ export const useProposalsStore = defineStore({
             }
           }
         });
-      }
+      };
       if (forceRemoteFetch) {
         return await remoteFetch();
       }
@@ -128,7 +128,7 @@ export const useProposalsStore = defineStore({
         this.proposalTally = undefined;
         if (proposal.isVotingPeriod()) {
           const tally = this.proposalsTally.get(proposal.proposalId);
-          logger.logToConsole(LogLevel.INFO, 'tally ' + tally?.yes)
+          logger.logToConsole(LogLevel.INFO, 'tally ' + tally?.yes);
 
           if (!tally) {
             promises.push(this.fetchVotingProposalTallyResult(id, true, lockscreen));
@@ -149,15 +149,15 @@ export const useProposalsStore = defineStore({
     },
 
     async fetchVotingProposalTallyResult(id: number, storeSingle: boolean, lockscreen = true) {
-      logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult')
+      logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult');
       await apiFactory.proposalsApi().fetchVotingProposalTallyResult(id, lockscreen).then((resp) => {
         if (resp.isSuccess() && resp.data !== undefined){
           if (storeSingle) {
             this.proposalTally = resp.data;
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.yes))
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.abstain))
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.no))
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.noWithVeto))
+            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.yes));
+            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.abstain));
+            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.no));
+            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.noWithVeto));
 
 
           } else {
@@ -172,7 +172,7 @@ export const useProposalsStore = defineStore({
     },
 
     async fetchProposalUserVote(id: number, voter: string, lockscreen = true) {
-      logger.logToConsole(LogLevel.INFO, 'fetchProposalUserVote')
+      logger.logToConsole(LogLevel.INFO, 'fetchProposalUserVote');
       await apiFactory.proposalsApi().fetchProposalVote(id, voter, lockscreen).then((resp) => {
         if (resp.isSuccess() && resp.data !== undefined){
           this.userVote = resp.data;
@@ -208,8 +208,8 @@ export const useProposalsStore = defineStore({
     },
     clearProposals() {
       this.proposals = Array<Proposal>();
-      this.proposalById= new Map<number, number>(),
-      this.proposalsTally = new Map<number, ProposalTallyResult>(),
+      this.proposalById= new Map<number, number>();
+      this.proposalsTally = new Map<number, ProposalTallyResult>();
       this.numberOfActiveProposals = 0;
       this.proposal = undefined;
       this.paginationKey = null;
@@ -255,7 +255,7 @@ export const useProposalsStore = defineStore({
       return (proposalId: number) => {
         const index = this.proposalById.get(proposalId);
         return index !== undefined ? this.proposals[index] : undefined;
-      }
+      };
     },
     getProposalTally(): (proposal?: Proposal) => ProposalTallyResult {
       return (proposal?: Proposal) => {
@@ -267,7 +267,7 @@ export const useProposalsStore = defineStore({
           return tally;
         }
         return proposal.finalTallyResult;
-      }
+      };
 
     },
     getSelectedProposalTally(): ProposalTallyResult {

@@ -72,7 +72,7 @@ import { ConnectionType } from "@/api/wallet.connecton.api";
 import { computed, PropType } from "vue";
 import { Validator } from "@/models/store/validator";
 import { useToast } from "vue-toastification";
-import Icon from "@/components/features/IconComponent"
+import Icon from "@/components/features/IconComponent";
 import dataService from '@/services/data.service';
 import { useConfigurationStore } from '@/store/configuration.store';
 import {useBlockStore} from "@/store/block.store";
@@ -88,11 +88,11 @@ const props = defineProps({
 
 const logo = computed(() => {
   switch(props.logoutType){
-    case ConnectionType.Keplr: return '/keplrIcon.jpg'
-    case ConnectionType.Address: return '/globe.svg'
-    default : return 'Logout'
+    case ConnectionType.Keplr: return '/keplrIcon.jpg';
+    case ConnectionType.Address: return '/globe.svg';
+    default : return 'Logout';
   }
-})
+});
 
 const showKeplrLogo = computed(() => {
   if(props.logoutType == ConnectionType.Keplr) {
@@ -113,19 +113,19 @@ const onChange = (event: any) => {
 const configMap = computed(() => {return useConfigurationStore().getConfigList;});
 const curentNetwork = computed(() => {
   return useConfigurationStore().getConfigName;
-})
+});
 
-const latestBlock = computed(() => useBlockStore().getLatestBlock)
+const latestBlock = computed(() => useBlockStore().getLatestBlock);
 
 function logout(){
   dataService.onLogOut();
   // useUserStore().logOut()
-  emit('close')
+  emit('close');
 }
 
 function copyTxt(){
   navigator.clipboard.writeText(useUserStore().getAccount.address);
-  useToast().success(i18n.global.t('COPY.ADDRESS'))
+  useToast().success(i18n.global.t('COPY.ADDRESS'));
 }
 
 </script>

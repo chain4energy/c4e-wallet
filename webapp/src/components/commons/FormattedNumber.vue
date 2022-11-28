@@ -10,7 +10,7 @@ const props = defineProps<{
   amount: bigint | number | BigDecimal,
   precision?: number,
   reduceBigNumber?: boolean,
-}>()
+}>();
 
 function transformToExpView() {
   if (typeof props.amount === 'number' && isNaN(props.amount)) {

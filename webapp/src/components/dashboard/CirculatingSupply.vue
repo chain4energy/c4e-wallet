@@ -12,7 +12,7 @@
 import {useTokensStore} from "@/store/tokens.store";
 import { computed } from "vue";
 import CoinAmount from "../commons/CoinAmount.vue";
-const supply = computed(() => useTokensStore().getCirculatingSupply)
+const supply = computed(() => useTokensStore().getCirculatingSupply);
 
 </script>
 

@@ -1,7 +1,6 @@
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { RequestResponse } from "@/models/request-response";
 import BaseApi from "@/api/base.api";
-import { useConfigurationStore } from "@/store/configuration.store";
 import { ErrorData } from "@/api/base.api";
 import { BlockResponse } from "@/models/blockchain/block";
 import { mapBlock } from "@/models/mapper/block.mapper";

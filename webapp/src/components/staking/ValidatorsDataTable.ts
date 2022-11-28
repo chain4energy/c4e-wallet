@@ -1,7 +1,6 @@
 import { UnbondingDelegationEntry } from "@/models/store/staking";
 import { Validator } from "@/models/store/validator";
 import { useUserStore } from "@/store/user.store";
-import { useValidatorsStore } from "@/store/validators.store";
 
 export enum ValidatorsDataTableType {
   VALIDATORS = 'validators',
@@ -27,15 +26,15 @@ export class ValidatorUnstaking {
 }
 
 export function getUnstakings(validators: Validator[]) {
-  const validatorUnstakings = new Array<ValidatorUnstaking>()
+  const validatorUnstakings = new Array<ValidatorUnstaking>();
   const undelegations = useUserStore().getUndelegations.undelegations;
   validators.forEach((v) => {
     if (undelegations.has(v.operatorAddress)) {
       const undel = undelegations.get(v.operatorAddress);
       undel?.entries.forEach((e) => {
         validatorUnstakings.push(new ValidatorUnstaking(v, e));
-      })
+      });
     }
-  })
+  });
   return validatorUnstakings;
 }

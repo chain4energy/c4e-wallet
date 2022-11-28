@@ -107,12 +107,12 @@ export class Configuration implements JsonConfiguration {
       this.strategicPoolAddress = configuration.strategicPoolAddress;
       this.airdropPoolAddress = configuration.airdropPoolAddress;
       this.chainId = configuration.chainId;
-      this.networkName = configuration.networkName,
-      this.keplrNetworkName = configuration.keplrNetworkName,
+      this.networkName = configuration.networkName;
+      this.keplrNetworkName = configuration.keplrNetworkName;
       this.operationGas = new Gas(configuration.operationGas);
       const viewDenoms = Array<ViewDenom>();
       if (configuration.viewDenoms) {
-        configuration.viewDenoms.forEach(d => {viewDenoms.push(new ViewDenom(d))})
+        configuration.viewDenoms.forEach(d => {viewDenoms.push(new ViewDenom(d));});
       }
       this.viewDenoms = viewDenoms;
       this.keplrGasPriceSteps = new KeplrGasPriceSteps(configuration.keplrGasPriceSteps);
@@ -211,7 +211,7 @@ export class Configuration implements JsonConfiguration {
   }
 
   private getViewDenomConfig(origDenom: string): ViewDenom | undefined {
-    return this.viewDenoms.find(d => {return d.denom === origDenom});
+    return this.viewDenoms.find(d => {return d.denom === origDenom;});
   }
 
   private bigIntToFixed(num: bigint, precision: number): string {

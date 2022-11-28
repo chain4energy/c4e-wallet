@@ -48,8 +48,8 @@ import {useConfigurationStore} from "@/store/configuration.store";
 import {computed} from "vue";
 
 const configConfigured = computed(() => {
-  return useConfigurationStore().getConfigName
-})
+  return useConfigurationStore().getConfigName;
+});
 
 </script>
 

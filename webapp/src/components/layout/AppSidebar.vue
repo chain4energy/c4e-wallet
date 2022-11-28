@@ -31,7 +31,7 @@ import { SideBarIconType } from "@/services/permissions/sidebar.config";
 import GovernanceIcon from "../commons/GovernanceIcon.vue";
 
 const permissionsService = new PermissionsService();
-const router = useRouter()
+const router = useRouter();
 const menu = computed(() => {
   return permissionsService.createSideBar();
 });
@@ -40,7 +40,7 @@ const menu = computed(() => {
 const selected = computed(()=> {
   let current = menu.value.find(element => element.href == router.currentRoute.value.path);
     return current?.id;
-})
+});
 
 
 function showSidebar() {

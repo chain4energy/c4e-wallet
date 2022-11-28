@@ -9,7 +9,7 @@ import { Validator, ValidatorStatus } from "@/models/store/validator";
 
 const props = defineProps<{
   validator: Validator
-}>()
+}>();
 
 </script>
 

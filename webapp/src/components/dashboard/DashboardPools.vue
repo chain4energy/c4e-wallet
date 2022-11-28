@@ -84,7 +84,7 @@ const remainingTokens = computed(() => {
 
 const option = computed(() => {
   return createDashboardPoolsChartData(remainingTokens.value, communityPool.value, strategicReversePool.value, airdropPool.value);
-})
+});
 
 </script>
 

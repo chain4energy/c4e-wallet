@@ -1,7 +1,7 @@
   <template>
   <div class="proposal-container" v-on:click="showDetailsClick">
     <div class="tooltip-chart" :style="'top:' + tooltipPosY + 'px; left:'+ tooltipPosX + 'px; border-color:'+tooltipBorderColor" v-if="showChartTooltip">
-      <span>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS." + tooltipOption) }}</span> 
+      <span>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS." + tooltipOption) }}</span>
       <span><b>{{tooltipValue}}</b></span>
     </div>
 
@@ -28,7 +28,7 @@
         </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
       </div>
     </div>
-      
+
     <div class="middle">
       <div>
         <h5 class="fw-bold">{{ proposal.content.title }}</h5>
@@ -123,7 +123,7 @@ import { createProposalListChartData } from '@/charts/governance';
 import { useProposalsStore } from '@/store/proposals.store';
 import CoinAmount from '../commons/CoinAmount.vue';
 import PercentsView from "@/components/commons/PercentsView";
-import DateCommon from "@/components/commons/DateCommon.vue"
+import DateCommon from "@/components/commons/DateCommon.vue";
 import { useConfigurationStore } from '@/store/configuration.store';
 
 use([
@@ -156,7 +156,7 @@ const tooltipValue = ref('');
 const showChartTooltip = ref(false);
 const tooltipPosX = ref(0);
 const tooltipPosY = ref(0);
-const tooltipBorderColor = ref('')
+const tooltipBorderColor = ref('');
 
 const showTooltip = (option, value) => {
   if(option == 'YES') {
@@ -174,7 +174,7 @@ const showTooltip = (option, value) => {
   tooltipOption.value = option;
   tooltipValue.value = value;
   showChartTooltip.value = true;
-}
+};
 
 const updateTooltipPosition = (e) => {
   let x = e.clientX;
@@ -182,7 +182,7 @@ const updateTooltipPosition = (e) => {
 
   tooltipPosX.value = x;
   tooltipPosY.value = y - 80;
-}
+};
 
 function hideTooltip(){
     showChartTooltip.value = false;
@@ -221,7 +221,7 @@ const noWithVeto = computed(() => {
 });
 
 const sumOfVotes = computed(() => {
-  const val = useProposalsStore().getProposalTally(props.proposal).total
+  const val = useProposalsStore().getProposalTally(props.proposal).total;
   return val > 0n ? val : -1n;
 });
 
@@ -250,7 +250,7 @@ const option = computed(() => {
     },
     sumOfVotes.value
   );
-})
+});
 
 
 </script>
@@ -408,7 +408,7 @@ const option = computed(() => {
   position: fixed;
   display: flex;
 }
-  
+
 .yes {
   background: $primary-green-color;
 }

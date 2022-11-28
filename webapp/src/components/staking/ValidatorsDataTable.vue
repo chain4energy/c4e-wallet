@@ -96,8 +96,8 @@
         <Column v-if="isLoggedIn && isValidatorsTable()">
           <template #body="{data}">
             <span style="cursor: pointer" @click="onRowExpand(data)" v-if="isValidatorRowExpandable(data)">
-              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress != expandedRow[0]?.operatorAddress" name="ChevronRight" />
-              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress == expandedRow[0]?.operatorAddress" name="ChevronDown" />
+              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress !== expandedRow[0]?.operatorAddress" name="ChevronRight" />
+              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress === expandedRow[0]?.operatorAddress" name="ChevronDown" />
             </span>
           </template>
         </Column>
@@ -120,7 +120,7 @@
         </div>
         <div v-if="expandedData.data.undelegatingEntries && expandedData.data.undelegatingEntries.length > 0">
           <div style="max-width: 500px;">
-            <DataTableWrapper 
+            <DataTableWrapper
               :useExternalGlobalFilter="false"
               :eager-loading-config="createValidatorUndelegationEntriesEagerLoadingConfig(expandedData.data.undelegatingEntries)"
               :paginator="false">
@@ -151,17 +151,17 @@
 
 import DataTableWrapper from "@/components/commons/DataTableWrapper.vue";
 import {computed, ref} from "vue";
-import {Validator, ValidatorStatus} from "@/models/store/validator";
+import {Validator } from "@/models/store/validator";
 import {useUserStore} from "@/store/user.store";
 import StakingPopup from "@/components/staking/StakingPopup.vue";
 import {FilterMatchMode, FilterOperator} from "primevue/api";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
 import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
-import { getUnstakings, ValidatorsDataTableType, ValidatorUnstaking } from "./ValidatorsDataTable";
-import { RedelegationDirection } from "./StakingRedelegate";
+import { getUnstakings, ValidatorsDataTableType, ValidatorUnstaking } from "@/components/staking/ValidatorsDataTable.ts";
+import { RedelegationDirection } from "@/components/staking/StakingRedelegate.ts";
 import CoinAmount from "../commons/CoinAmount.vue";
-import PercentsView from "@/components/commons/PercentsView"
+import PercentsView from "@/components/commons/PercentsView";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import ValidatorStatusBadge from "./ValidatorStatusBadge.vue";
 import { UnbondingDelegationEntry } from "@/models/store/staking";
@@ -175,7 +175,7 @@ function getRedelegationDirection() {
 }
 
 const popupOpened = ref(false);
-const currentValidator = ref({})
+const currentValidator = ref({});
 
 const props = defineProps<{
   type: ValidatorsDataTableType,
@@ -222,7 +222,7 @@ function createEagerLoadingConfig(): EagerLoadingConfig<Validator | ValidatorUns
 }
 
 function onRowExpand(data: Validator) {
-  expandedRow.value = (expandedRow.value[0] === data) ? [] : [data]
+  expandedRow.value = (expandedRow.value[0] === data) ? [] : [data];
 }
 
 function onRowClick(event: any) {
@@ -265,7 +265,7 @@ const filters = ref({
 @import '../../styles/variables.scss';
 
 .flex-container-details {
-  display: flex; 
+  display: flex;
   flex-direction: row;
 
   .item {
@@ -413,11 +413,11 @@ const filters = ref({
     }
 
     .p-datatable .p-datatable-header {
-      margin-bottom: 0px;
+      margin-bottom: 0;
     }
 
     .p-datatable-wrapper {
-      margin-top: 0px !important;
+      margin-top: 0 !important;
       transform: none !important;
     }
   }

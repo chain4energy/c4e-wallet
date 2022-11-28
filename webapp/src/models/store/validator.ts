@@ -47,7 +47,7 @@ export class Validator implements ValidatorBase {
   }
 
   public get votingPowerViewPercentage(): number | bigint | BigDecimal {
-    return this.votingPower
+    return this.votingPower;
   }
 
   public get delegatedAmount(): bigint {

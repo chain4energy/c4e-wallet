@@ -39,8 +39,8 @@ import InputText from "primevue/inputtext";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Image from 'primevue/image';
-import AutoComplete from "primevue/autocomplete"
-import Dropdown from "primevue/dropdown"
+import AutoComplete from "primevue/autocomplete";
+import Dropdown from "primevue/dropdown";
 
 import piniaPersist from 'pinia-plugin-persist';
 //https://www.npmjs.com/package/vue-debounce
@@ -49,7 +49,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 import IconComponent from "@/components/features/IconComponent.vue";
 import ECharts from 'vue-echarts';
-import {useConfigurationStore} from "@/store/configuration.store";
 import Tooltip from 'primevue/tooltip';
 
 // Lucide Icons

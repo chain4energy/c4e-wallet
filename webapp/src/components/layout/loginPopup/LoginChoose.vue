@@ -24,8 +24,6 @@
 <script setup lang="ts">
 import KeplrLogo from '@/components/commons/KeplrLogo.vue';
 import LoginEmail from '@/components/layout/loginPopup/LoginAddress.vue';
-import LoginKeplr from '@/components/layout/loginPopup/LogoutConfirm.vue';
-import { useUserStore } from "@/store/user.store";
 
 function isMobile() {
    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {

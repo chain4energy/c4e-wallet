@@ -1,6 +1,6 @@
 <script lang="ts">
 import Dropdown from 'primevue/dropdown/Dropdown.vue';
-import { defineComponent } from 'vue'
+import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'block-hiding-dropdown',
   extends: Dropdown,
@@ -18,6 +18,6 @@ export default defineComponent({
       }
     }
   }
-})
+});
 
 </script>

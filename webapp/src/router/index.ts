@@ -7,7 +7,7 @@ import StakingView from '../views/StakingView.vue';
 import GovernanceView from '../views/GovernanceView.vue';
 import GovernanceDetailsView from '../views/GovernanceDetailsView.vue';
 import ValidatorsView from '../views/ValidatorsView.vue';
-import ProposalsList from '@/components/governance/ProposalsList.vue'
+import ProposalsList from '@/components/governance/ProposalsList.vue';
 import stakingRoutes from "@/router/stakingRoutes";
 import { useUserStore } from "@/store/user.store";
 

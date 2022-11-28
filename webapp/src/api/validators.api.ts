@@ -1,7 +1,6 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {RequestResponse} from "@/models/request-response";
 import BaseApi from "@/api/base.api";
-import {useConfigurationStore} from "@/store/configuration.store";
 import { ErrorData } from "@/api/base.api";
 import { ValidatorsResponse } from "@/models/blockchain/validator";
 import { Validator } from "@/models/store/validator";
@@ -9,7 +8,7 @@ import { mapAndAddValidators, mapValidators, sortAndRankValidators } from "@/mod
 import queries from "./queries";
 import { BlockchainApiErrorData } from "@/models/blockchain/common";
 import { StakingParamsResponse } from "@/models/blockchain/stakingParams";
-import { mapParameter, mapParams } from "@/models/mapper/params.mapper";
+import { mapParameter } from "@/models/mapper/params.mapper";
 import { Params } from "@/models/store/params";
 
 

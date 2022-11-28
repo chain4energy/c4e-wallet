@@ -18,7 +18,7 @@ import LoadingScreen from '@/components/LoadingScreen.vue';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import AppSidebar from '@/components/layout/AppSidebar.vue';
 
-import {inject, onBeforeMount, onMounted } from "vue";
+import {inject, onMounted } from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
 import {createRouterBeforeEach} from '@/router/before_each';
 
@@ -28,19 +28,16 @@ import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import dataService from './services/data.service';
 import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
-import { changeTitle } from './utils/title-changer';
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 dataService.onAppStart();
 
 onMounted(() => {
   createRouterBeforeEach(logger);
-  // changeTitle();
 });
 
 window.onload = async () =>{
   dataService.onWindowLoad();
-  // useUserStore().reconnect();
 };
 </script>
 

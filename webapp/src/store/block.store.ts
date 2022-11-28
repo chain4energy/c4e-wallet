@@ -64,7 +64,7 @@ export const useBlockStore = defineStore( 'block', {
     getAverageBlockTimeView(): (precision?: number) => string {
       return (precision = 2) => {
         return this.averageBlockTime.toFixed(precision);
-      }
+      };
     },
     getLatestBlock(): Block{
       return this.latestBlock;

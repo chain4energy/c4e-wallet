@@ -131,7 +131,6 @@
 <script setup lang="ts">
 import LangSwitch from '@/components/lang/LangSwitch.vue';
 import BreadcrumbsComponent from '../features/BreadcrumbsComponent.vue';
-import AutoLogOut from "@/components/fetures/AutoLogOut.vue";
 import  UserData from "@/components/userData/UserData.vue";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import LogoutKeplr from "@/components/layout/loginPopup/LogoutConfirm.vue";
@@ -145,6 +144,7 @@ import { computed, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
 import {PermissionsService} from "@/services/permissions/permissions.service";
 import KeplrLogo from '../commons/KeplrLogo.vue';
+import * as GovernanceIcon from "@/components/commons/GovernanceIcon.vue";
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
@@ -158,7 +158,7 @@ const toggleDropdown = () => {
 const configMap = computed(() => {return useConfigurationStore().getConfigList;});
 const curentNetwork = computed(() => {
   return useConfigurationStore().getConfigName;
-})
+});
 
 const onChange = (event: any) => {
   useConfigurationStore().setNetwork(event.target.value);
@@ -174,10 +174,9 @@ const menu = computed(() => {
 const selected = computed(()=> {
   let current = menu.value.find(element => element.href == router.currentRoute.value.path);
     return current?.id;
-})
+});
 
 const currentRouteName = computed(() => {
-  console.log(router.currentRoute.value);
   return router.currentRoute.value.name;
 });
 function openAccInfo(){
@@ -185,37 +184,9 @@ function openAccInfo(){
 }
 function logout(){
 
-
-
 const latestBlock = computed(() => useBlockStore().getLatestBlock);
-
-  useUserStore().logOut()
-  // switch (useUserStore().getConnectionType){
-  //   case 1: logoutPopupStatus.value = 1;
-  //     break;
-  //   case 0: logoutPopupStatus.value = 2;
-  //     break
-  //   default: logoutPopupStatus.value = 0;
-  //     break
-  // }
+  useUserStore().logOut();
 }
-// const keystoreChangeListener = () => {
-//       useUserStore().connectKeplr()
-//     }
-// function logIn(){
-//   useUserStore().connectKeplr().then(() => {
-//     window.addEventListener('keplr_keystorechange', keystoreChangeListener);
-//   })
-// }
-// function logOut(){
-//   useUserStore().logOut()
-//   window.removeEventListener('keplr_keystorechange', keystoreChangeListener)
-// }
-//
-// onUnmounted(()=>{
-//   window.removeEventListener('keplr_keystorechange', keystoreChangeListener)
-// })
-
 </script>
 
 <style scoped lang="scss">

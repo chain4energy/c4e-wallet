@@ -14,7 +14,6 @@ import {findByDenomAndMapDecCoin, mapCoin} from "@/models/mapper/common.mapper";
 import queries from "./queries";
 import {formatString} from "@/utils/string-formatter";
 import {BlockchainApiErrorData} from "@/models/blockchain/common";
-import {HasuraErrorData} from "@/models/hasura/error";
 import { Vestings } from "@/models/blockchain/c4e.vesting";
 
 export class TokensApi extends BaseApi {
@@ -60,9 +59,9 @@ export class TokensApi extends BaseApi {
   public async fetchVestingLockedNotDelegated(lockscreen: boolean): Promise<RequestResponse<bigint, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: Vestings | undefined) => {
       if (bcData && bcData.vesting_all_amount && bcData.delegated_vesting_amount) {
-        return BigInt(bcData.vesting_all_amount) - BigInt(bcData.delegated_vesting_amount)
+        return BigInt(bcData.vesting_all_amount) - BigInt(bcData.delegated_vesting_amount);
       }
-      return 0n
+      return 0n;
     };
     return  await this.axiosGetBlockchainApiCall(this.VESTINGS_SUM_URL,
       mapData, lockscreen, null, 'fetchVestingLockedNotDelegated - ');

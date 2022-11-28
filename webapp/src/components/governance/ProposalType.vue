@@ -8,7 +8,7 @@ import i18n from "@/plugins/i18n";
 
 const props = defineProps<{
   proposal?: Proposal
-}>()
+}>();
 
 function getProposalInfo() {
   switch(props.proposal?.content?.type) {
@@ -28,7 +28,7 @@ function getProposalInfo() {
       return i18n.global.t('GOVERNANCE_VIEW.PROPOSAL_TYPE.CANCEL_SOFTWARE_UPGRADE_PROPOSAL');
     }
     case '/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal': {
-      return i18n.global.t('GOVERNANCE_VIEW.PROPOSAL_TYPE.SOFTWARE_UPGRADE_PROPOSAL');    
+      return i18n.global.t('GOVERNANCE_VIEW.PROPOSAL_TYPE.SOFTWARE_UPGRADE_PROPOSAL');
     }
     default: {
       return props.proposal?.content?.type;

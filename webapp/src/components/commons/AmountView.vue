@@ -28,8 +28,7 @@
 
 <script setup lang="ts">
 import { BigDecimal } from "@/models/store/big.decimal";
-import { useConfigurationStore } from "@/store/configuration.store";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { Coin, DecCoin } from "@/models/store/common";
 import CoinAmount from "./CoinAmount.vue";
 import { useUserStore } from "@/store/user.store";
@@ -104,7 +103,7 @@ const locked = computed(()=> useUserStore().getVestingLockAmount);
   flex-direction: column;
   z-index: 2;
   align-items: flex-start;
-  
+
   .header {
     font-size: 0.8em;
     color: gray
@@ -165,7 +164,7 @@ const locked = computed(()=> useUserStore().getVestingLockAmount);
   }
 
   .vesting-first {
-    padding: 2em 0;  
+    padding: 2em 0;
   }
 
   .vesting-flag {

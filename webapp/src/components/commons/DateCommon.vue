@@ -11,7 +11,7 @@ const props = defineProps<{
 
 const trueDate = computed(()=> {
   let date = new Date(props.date);
-  return date.toLocaleDateString() + ', ' + date.toLocaleTimeString()
+  return date.toLocaleDateString() + ', ' + date.toLocaleTimeString();
 });
 </script>
 
