@@ -1,5 +1,6 @@
 export enum PagesEnum{
   DASHBOARD,
   STAKING,
-  GOVERNANCE
+  GOVERNANCE,
+  AirDrop,
 }
