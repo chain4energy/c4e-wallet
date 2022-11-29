@@ -13,10 +13,12 @@ module.exports = defineConfig({
     port: 9000,
     proxy: {
       '/api/': {
-        target: 'http://10.0.14.76'
+        target: 'http://10.0.14.76',
+        changeOrigin: true,
       },
       '/app': {
-        target: 'http://localhost:3090'
+        target: 'http://localhost:3090',
+        changeOrigin: true,
       }
     }
   },
@@ -48,4 +50,4 @@ module.exports = defineConfig({
       enableBridge: false
     }
   }
-})
+});
