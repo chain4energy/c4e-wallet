@@ -17,7 +17,7 @@ export default {
     PROPOSAL_TALLY_URL: '/cosmos/gov/v1beta1/proposals/{id}/tally',
     INFLATION_URL: '/c4e/minter/inflation',
     STAKING_PARAMS_URL: '/cosmos/staking/v1beta1/params',
-    VESTINGS_SUM_URL: '/c4e/vesting/vestings'
+    VESTINGS_SUM_URL: '/c4e/vesting/summary'
 
   },
   hasura: {
