@@ -33,11 +33,9 @@ export const useValidatorsStore = defineStore({
           if (resp.isSuccess() && resp.data !== undefined){
             this.validators = resp.data.validators;
             this.numberOfActiveValidators = resp.data.numberOfActive;
-            this.validators.forEach((v) => {
-              if (v.description.identity) {
-                fetchPicture(v);
-              }
-            });
+            for ( let i = 0; i < this.validators.length; i++){
+              setTimeout(() =>{fetchPicture(this.validators[i]);},i * 50);
+            }
           } else {
             const message = 'Error fetching validators data';
             logger.logToConsole(LogLevel.ERROR, message);
@@ -111,8 +109,10 @@ export const useValidatorsStore = defineStore({
 });
 
 async function fetchPicture(validator: Validator) {
-  const resp = await apiFactory.keybaseApi().fetchPictureAddress(validator.description.identity, false);
-  if (resp.isSuccess() && resp.data !== undefined){
-    validator.description.pictureUrl = resp.data;
+  if(validator.description.identity){
+    const resp = await apiFactory.keybaseApi().fetchPictureAddress(validator.description.identity, false);
+    if (resp.isSuccess() && resp.data !== undefined){
+      validator.description.pictureUrl = resp.data;
+    }
   }
 }
