@@ -30,6 +30,16 @@ export default {
       'proposal_vote(where: {proposal_id: {_eq: {proposalId}}, voter_address: {_eq: "{voter}"}}) {' +
         'option' +
       '}' +
+    '}',
+    VALIDATOR_DESCRIPTION: 'query MyQuery {' +
+      'validator {' +
+        'validator_infos {' +
+          'operator_address' +
+        '}' +
+        'validator_descriptions { ' +
+          'avatar_url' +
+        '}' +
+      '}' +
     '}'
   },
   keybase: {

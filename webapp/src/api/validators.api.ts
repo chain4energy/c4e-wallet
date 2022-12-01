@@ -11,6 +11,10 @@ import { BlockchainApiErrorData } from "@/models/blockchain/common";
 import { StakingParamsResponse } from "@/models/blockchain/stakingParams";
 import { mapParameter, mapParams } from "@/models/mapper/params.mapper";
 import { Params } from "@/models/store/params";
+import {HasuraErrorData} from "@/models/hasura/error";
+import {ValidatorDescriptionResponse} from "@/models/hasura/validatorDescriptionResponse";
+import {ProposalVoteResponse} from "@/models/hasura/proposal.vote";
+import {mapProposalVoteResponse} from "@/models/mapper/proposals.mapper";
 
 
 export class ValidatorsApi extends BaseApi {
@@ -26,6 +30,7 @@ export class ValidatorsApi extends BaseApi {
     const mapData = (bcData: ValidatorsResponse | undefined) => {return mapValidators(bcData?.validators);};
     const mapAndAddData = (data: { validators: Validator[], numberOfActive: number}, bcData: ValidatorsResponse | undefined) => {return mapAndAddValidators(data.validators, bcData?.validators, data.numberOfActive);};
 
+
     const result = await this.axiosGetAllBlockchainApiCallPaginated(this.VALIDATORS_URL,
             mapData, mapAndAddData, lockscreen, null, 'fetchAllValidators - ');
     if (result.data !== undefined) {
@@ -40,5 +45,19 @@ export class ValidatorsApi extends BaseApi {
     const result = await this.axiosGetBlockchainApiCall(this.STACKING_PARAMS_URL,
       mapData, lockscreen, null, 'fetchParameters -');
     return result;
+  }
+
+  public async fetchValidatorsLogo(lockscreen: boolean): Promise<RequestResponse<Map<string,string>, ErrorData<HasuraErrorData>>>{
+    const mapValidatorDescription = (hasuraData: ValidatorDescriptionResponse | undefined) => {
+      if (hasuraData === undefined) {
+        throw new Error('ValidatorDescription is undefined');
+      }
+      const retValue = new Map<string, string>();
+      hasuraData.data.validator.forEach(object => {
+         retValue.set(object.validator_infos[0].operator_address, object.validator_descriptions[0].avatar_url);
+      });
+      return retValue;
+    };
+    return this.axiosHasuraCall(queries.hasura.VALIDATOR_DESCRIPTION, mapValidatorDescription, lockscreen, null,'fetchValidatorsLogo - ');
   }
 }
