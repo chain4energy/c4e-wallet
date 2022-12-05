@@ -179,13 +179,18 @@ async function submit(){
       grid-area: 1 / 1 / 1 / 4;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(calc(100%/ 4), 1fr));
-      align-items: baseline;
+      align-items: center;
+      p{
+        margin: 0;
+      }
     }
     &-keplr{
       grid-area: 1 / 4/ 1 / 4;
       display: flex;
       align-items: center;
-      justify-items: center;
+      p{
+        margin-bottom: 0;
+      }
     }
   }
   &__text{
@@ -193,6 +198,7 @@ async function submit(){
   }
   &__field{
     grid-area: 1 / 2/ 1 / 4;
+
   }
   &__btn{
     grid-area: 1 / 4/ 1 / 4;
@@ -201,6 +207,9 @@ async function submit(){
   &__congrats{
     margin-top: 30px;
     padding: 20px
+  }
+  p{
+    margin: 0;
   }
 }
 
