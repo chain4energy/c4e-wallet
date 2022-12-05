@@ -6,3 +6,7 @@ export interface Pagination {
  export interface PaginatedResponse {
   pagination: Pagination
  }
+
+export interface EmpryResponse {
+  data: any;
+}

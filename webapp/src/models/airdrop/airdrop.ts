@@ -1,4 +1,9 @@
-interface airDrop {
+export interface AirDropRes{
+  data: airDrop
+  error: any
+}
+
+export interface airDrop {
   atom_staked_balance: string,
   atom_address: string,
   c4e_address: string,

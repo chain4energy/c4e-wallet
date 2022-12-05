@@ -159,6 +159,51 @@ export default abstract class BaseApi extends LoggedService {
       errorDataToInfo
     );
   }
+  protected async axiosAirdropCall<T, H extends KeybaseResponse>(
+    url: string,
+    mapData: (hasureData: H | undefined) => T,
+    lockScreen: boolean,
+    localSpinner: LocalSpinner | null,
+    logPrefix: string,
+    skipErrorToast = false
+  ): Promise<RequestResponse<T, ErrorData<KeybaseErrorData>>>
+  {
+    const config = {
+      method: 'GET',
+      url: process.env.VUE_APP_AIRDROP + url,
+    };
+
+    const errorDataToInfo = (data: KeybaseErrorData) => {
+      let message = '';
+      if (data.status) {
+        message += '\r\n\tcode: ' + data.status.code;
+        message += '\r\n\tname: ' + data.status.name;
+        message += '\r\n\tdesc: ' + data.status.desc;
+      }
+      return message;
+    };
+
+    const isResponseError = (response: RequestResponse<H, ErrorData<KeybaseErrorData>>) => {return response.data?.status.code !== 0;};
+
+    const messages = {
+      errorResponseName: 'KeybaseError',
+      errorResponseMassage: 'Keybase error received',
+      errorResponseToast: 'Hasura Error: ',
+      mappingErrorMassage: 'Keybase mapping error: ',
+    };
+
+    return this.axiosWith200ErrorCall<T, H, KeybaseErrorData>(
+      config,
+      mapData,
+      lockScreen,
+      localSpinner,
+      logPrefix,
+      isResponseError,
+      skipErrorToast,
+      messages,
+      errorDataToInfo
+    );
+  }
 
   protected async axiosHasuraCall<T, H>(
     query: string,
@@ -211,7 +256,6 @@ export default abstract class BaseApi extends LoggedService {
       errorDataToInfo
     );
   }
-
   protected async axiosGetBlockchainApiPaginatedCall<T, BC extends PaginatedResponse>(
     url: string,
     pagination: BlockchainPagination | null,
@@ -250,6 +294,23 @@ export default abstract class BaseApi extends LoggedService {
     const func = (): Promise<RequestResponse<BC, ErrorData<BlockchainApiErrorData>>> => { return this.axiosBlockchainApiCall({
       method: 'GET',
       url: useConfigurationStore().config.bcApiURL + url
+    }, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);};
+    return this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError, skipErrorToast);
+  }
+
+  protected async axiosAirDropCall<T, BC>(
+    url: string,
+    mapData: (bcData: BC | undefined) => T,
+    lockScreen: boolean,
+    localSpinner: LocalSpinner | null,
+    logPrefix = '',
+    displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean,
+    handleError?: (errorResponse: RequestResponse<BC, ErrorData<BlockchainApiErrorData>>) => RequestResponse<T, ErrorData<BlockchainApiErrorData>>,
+    skipErrorToast = false): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
+  {
+    const func = (): Promise<RequestResponse<BC, ErrorData<BlockchainApiErrorData>>> => { return this.axiosBlockchainApiCall({
+      method: 'GET',
+      url: process.env.VUE_APP_AIRDROP + url+ '.json'
     }, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);};
     return this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError, skipErrorToast);
   }
@@ -323,6 +384,25 @@ export default abstract class BaseApi extends LoggedService {
     displayAsError?: ((error: ErrorData<BlockchainApiErrorData>) => boolean),
     skipErrorToast = false
     ): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
+  {
+    return await this.axiosCall<T, BlockchainApiErrorData>(
+      config,
+      lockScreen,
+      localSpinner,
+      skipErrorToast,
+      logPrefix,
+      displayAsError,
+      (data: BlockchainApiErrorData) => { return '\r\n\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')'; }
+    );
+  }
+  private async axiosAirDropAPICall<T>(
+    config: AxiosRequestConfig,
+    lockScreen: boolean,
+    localSpinner: LocalSpinner | null,
+    logPrefix = '',
+    displayAsError?: ((error: ErrorData<BlockchainApiErrorData>) => boolean),
+    skipErrorToast = false
+  ): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
   {
     return await this.axiosCall<T, BlockchainApiErrorData>(
       config,

@@ -1,6 +1,6 @@
-import {DecCoin} from "@/models/store/common";
+import {Coin, DecCoin} from "@/models/store/common";
 
-export class Airdrop{
+export class AirdropStore{
   atom_staked_balance: string;
   atom_address: string;
   c4e_address: string;
