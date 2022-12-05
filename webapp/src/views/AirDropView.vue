@@ -40,6 +40,45 @@
         </div>
       </div>
     </TabPanel>
+<!--    <TabPanel style="width: 100%">-->
+<!--      <template #header>-->
+<!--        <div>Next Air Drop</div>-->
+<!--      </template>-->
+<!--      <div class="airDrop__login">-->
+<!--        <h3>To see airdrops please provide</h3>-->
+<!--        <div class="airDrop__login-address">-->
+<!--          <Form @submit="submit" :validation-schema="amountSchema" v-slot="{ errors }" class="airDrop__login-form">-->
+<!--            <p class="airDrop__text"> Cosmos or C4E Address :</p>-->
+<!--            <div class="field airDrop__field">-->
+<!--              <Field v-model="address" name="address" placeholder=" " type="text" class="form-control" style="width: 100%;" :class="{ 'is-invalid': errors.address }"></Field>-->
+<!--              <span>{{$t('CONNECT.ADDRESS_HELP')}}</span>-->
+<!--              <div class="invalid-feedback">-->
+<!--                {{ errors.address ? errors.address : "" }}-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <Button class="airDrop__btn" :label="$t('COMMON.CONNECT')" type="submit"></Button>-->
+<!--          </Form>-->
+<!--          <div class="airDrop__login-keplr">-->
+<!--            <p>or</p>-->
+<!--            <Button @click="dataService.onKeplrLogIn()">-->
+<!--              <KeplrLogo/> {{ $t('CONNECT.CONNECT' )}}-->
+<!--            </Button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div v-if="airdropExist && fetched">-->
+<!--        <div class="airDrop__congrats">-->
+<!--          <h4>Congratulations your account</h4> <p>{{airDrop1.c4e_address}}</p> can receive-->
+<!--          <CoinAmount :amount="airDrop1.total_amount" :precision="2" :show-denom="true" :reduce-big-number="true"/>-->
+<!--        </div>-->
+<!--        <Button :disabled="true" :label="'claim'"></Button>-->
+<!--      </div>-->
+<!--      <div v-else-if="!airdropExist && fetched">-->
+<!--        <div class="airDrop__congrats">-->
+<!--          <p> There is no airDrop found Try to use another account </p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </TabPanel>-->
   </TabView>
 </div>
 </template>
