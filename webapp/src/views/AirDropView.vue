@@ -35,68 +35,67 @@
           <p style="
             width: 90%;
             text-align: left;
-            ">Total AirDrop allocation
-          </p>
+            ">Total AirDrop allocation</p>
           <div class="airDrop__result">
-            <div>
-              <Image class="navbar-brand" :src="require('@/assets/c4elogo-new.svg')" alt="Image" height="36" />
+            <div class="airDrop__result-item">
+              <div>
+                <Image class="navbar-brand" :src="require('@/assets/c4elogo-new.svg')" alt="Image" height="36" />
+              </div>
+              <CoinAmount
+                :amount="airdropExist ? airDrop1.total_amount : new DecCoin(0, 'c4e')" :precision="2"
+                :show-denom="true"
+                :reduce-big-number="true"
+              />
             </div>
-            <CoinAmount
-              :amount="airdropExist ? airDrop1.total_amount : new DecCoin(0, 'c4e')" :precision="2"
-              :show-denom="true"
-              :reduce-big-number="true"
-            />
+
+          </div>
+          <p style="
+            width: 90%;
+            text-align: left;
+            ">Allocation by network</p>
+          <div class="airDrop__result">
+            <div class="airDrop__result-item">
+              <div>
+                Base Airdrop
+              </div>
+              <CoinAmount
+                :amount="airdropExist ? airDrop1.base_airdrop : new DecCoin(0, 'c4e')" :precision="2"
+                :show-denom="true"
+                :reduce-big-number="true"
+              />
+            </div>
+            <div class="airDrop__result-item">
+              <div>
+                Booster 1
+              </div>
+              <CoinAmount
+                :amount="airdropExist ? airDrop1.booster_1_airdrop : new DecCoin(0, 'c4e')" :precision="2"
+                :show-denom="true"
+                :reduce-big-number="true"
+              />
+            </div>
+            <div class="airDrop__result-item">
+              <div>
+                Booster 2
+              </div>
+              <CoinAmount
+                :amount="airdropExist ? airDrop1.booster_2_airdrop : new DecCoin(0, 'c4e')" :precision="2"
+                :show-denom="true"
+                :reduce-big-number="true"
+              />
+            </div>
+            <div class="airDrop__result-item">
+              <div>
+                Gleam airdrop
+              </div>
+              <CoinAmount
+                :amount="airdropExist ? airDrop1.gleam_airdrop : new DecCoin(0, 'c4e')" :precision="2"
+                :show-denom="true"
+                :reduce-big-number="true"
+              />
+            </div>
           </div>
         </div>
-
-<!--        <Form ref="formCoins" @submit="encodeAddress(c4eAddress || cosmAddress)" v-slot="{ errors }">-->
-<!--          <div class="field airDrop__field">-->
-<!--            <Field type="text" name="cosmAddress" v-model="c4eAddress" placeholder=" " class="form-control" style="width: 100%;" :class="{ 'is-invalid': errors.cosmAddress }"/>-->
-<!--            <div class="invalid-feedback">-->
-<!--              {{ errors.cosmAddress ? errors.cosmAddress : "" }}-->
-<!--            </div>-->
-<!--            <Field type="text" name="c4eAddress" v-model="cosmAddress" placeholder=" " class="form-control" style="width: 100%;" :class="{ 'is-invalid': errors.c4eAddress }"/>-->
-<!--            <div class="invalid-feedback">-->
-<!--              {{ errors.c4eAddress ? errors.c4eAddress : "" }}-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--        </Form>-->
-
-<!--        <div class="airDrop__login">-->
-<!--          <h3>To see airdrops please provide</h3>-->
-<!--          <div class="airDrop__login-address">-->
-<!--            <Form @submit="submit" :validation-schema="amountSchema" v-slot="{ errors }" class="airDrop__login-form">-->
-<!--              <p class="airDrop__text"> Cosmos or C4E Address :</p>-->
-<!--              <div class="field airDrop__field">-->
-<!--                <Field v-model="address" name="address" placeholder=" " type="text" class="form-control" style="width: 100%;" :class="{ 'is-invalid': errors.address }"></Field>-->
-<!--                <span>{{$t('CONNECT.ADDRESS_HELP')}}</span>-->
-<!--                <div class="invalid-feedback">-->
-<!--                  {{ errors.address ? errors.address : "" }}-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <Button class="airDrop__btn" :label="$t('COMMON.CONNECT')" type="submit"></Button>-->
-<!--            </Form>-->
-<!--            <div class="airDrop__login-keplr">-->
-<!--              <p>or</p>-->
-<!--              <Button @click="dataService.onKeplrLogIn()">-->
-<!--                <KeplrLogo/> {{ $t('CONNECT.CONNECT' )}}-->
-<!--              </Button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div v-if="airdropExist && fetched">-->
-<!--          <div class="airDrop__congrats">-->
-<!--            <h4>Congratulations your account</h4> <p>{{airDrop1.c4e_address}}</p> can receive-->
-<!--            <CoinAmount :amount="airDrop1.total_amount" :precision="2" :show-denom="true" :reduce-big-number="true"/>-->
-<!--          </div>-->
-<!--          <Button :disabled="true" :label="'claim'"></Button>-->
-<!--        </div>-->
-<!--        <div v-else-if="!airdropExist && fetched">-->
-<!--          <div class="airDrop__congrats">-->
-<!--            <p> There is no airDrop found Try to use another account </p>-->
-<!--          </div>-->
-<!--        </div>-->
       </div>
 
     </TabPanel>
@@ -114,38 +113,19 @@
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import {useUserStore} from "@/store/user.store";
-import {computed, onMounted, reactive, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import dataService from "@/services/data.service";
 import KeplrLogo from "@/components/commons/KeplrLogo.vue";
 import {useAirDropStore} from "@/store/airDrop.store";
-import {Coin, DecCoin} from "@/models/store/common";
-import {useConfigurationStore} from "@/store/configuration.store";
+import { DecCoin} from "@/models/store/common";
 import CoinAmount from '@/components/commons/CoinAmount.vue';
 import * as bech32 from "bech32";
-import {object, string} from "yup";
-import i18n from "@/plugins/i18n";
-import * as bench32 from "bech32";
-import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import {Field, Form} from "vee-validate";
 import Button from "primevue/button";
 import ClaimAirdrop from "@/components/airdrop/ClaimAirdrop.vue";
-import {useI18n} from "vue-i18n";
 
-const airDropStore = useAirDropStore()
+const airDropStore = useAirDropStore();
 
-
-// function encodeAddress(address : string | undefined){
-//   let decoded;
-//   if (address != null) {
-//     decoded = bech32.decode(address);
-//   }
-//   if(decoded){
-//     c4eAddress.value =  bech32.encode("c4e", decoded.words);
-//     cosmAddress.value = bech32.encode("cosmos", decoded.words);
-//     return true;
-//   } else return false;
-//
-// }
 const c4eAddress = ref();
 const cosmAddress = ref();
 const address = ref();
@@ -158,25 +138,6 @@ onMounted(() => {
     c4eAddress.value = useUserStore().getAccount.address;
   }
 });
-
-
-
-// function changeValueChain(address: string, chain: string){
-//   const decoded = bech32.decode(address);
-//   if(decoded){
-//     return bech32.encode(chain, decoded.words);
-//   } else {
-//     return '';
-//   }
-// }
-// function formChanged(e){
-//   console.log(e)
-//   if(bech32.decode(c4eAddress.value) || bech32.decode(cosmAddress.value)){
-//     cosmAddress.value = changeValueChain(c4eAddress.value, 'cosmos');
-//     c4eAddress.value = changeValueChain(cosmAddress.value, 'c4e');
-//   }
-//
-// }
 
 
 watch(c4eAddress , (next)=>{
@@ -217,17 +178,13 @@ function submit() {
   }
 }
 
-//
-// const userStore = useUserStore();
-// const airDropStore = useAirDropStore()
-//
 const userLoggedIn = computed(() =>{
   return useUserStore().getAccount.address != '';
 });
 
 watch(userLoggedIn, () => {
   c4eAddress.value = useUserStore().getAccount.address;
-})
+});
 const airdropExist = computed(() => {
   return airDropStore.getAirDropStatus;
 });
@@ -235,49 +192,6 @@ const airdropExist = computed(() => {
 const airDrop1= computed(() =>{
   return airDropStore.getAirDrop;
 });
-//
-// const address = ref(useUserStore().getAccount.address);
-// // const c4eAddress = ref();
-// let errorMessageType = '';
-//
-// // if(useUserStore().getAccount.address != ''){
-// //   useAirDropStore().fetchAirdrop(useUserStore().getAccount.address, true);
-// //   fetched.value=true;
-// // }
-//
-//
-
-
-
-
-// const c4eAddress = ref();
-// const cosmosAddress = ref();
-// const addresses = computed({
-//   get() {
-//     return {
-//       c4e : c4eAddress.value,
-//       cosmos: cosmosAddress.value
-//     }
-//   },
-//   set(newVal){
-//     c4eAddress.value = encodeAddress(address.value);
-//     cosmosAddress.value = encodeAddress(address.value)
-//   }
-// })
-// watch(userLoggedIn, (next, prev)=> {
-//   if(next){
-//     address.value = useUserStore().getAccount.address;
-//     useAirDropStore().fetchAirdrop(userStore.getAccount.address, true);
-//     fetched.value=true;
-//   }
-// });
-//
-// async function submit(address: string){
-//   if(await validateAddress(address)){
-//     encodeAddress(address)
-//   }
-// }
-
 </script>
 
 <style scoped lang="scss">
@@ -286,7 +200,7 @@ const airDrop1= computed(() =>{
   grid-template-columns: repeat(auto-fill, minmax(calc(100%/ 4), 1fr));
   &__container{
     background-color: white;
-    box-shadow: 0px 0px 4px 4px rgb(0 0 0 / 10%);
+    box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -325,13 +239,19 @@ const airDrop1= computed(() =>{
   &__result{
     width: 90%;
     background-color: var(--bs-gray-400) ;
-    box-shadow: 0px 0px 4px 4px rgb(0 0 0 / 10%);
+    box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
     display: flex;
     align-items: center;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
     padding: 0.5em;
     border-radius: 5px;
+    &-item{
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
   }
   &__login{
     display: flex;
