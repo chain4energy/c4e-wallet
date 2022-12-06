@@ -333,6 +333,12 @@
       }
     }
   },
+  "AIRDROP": {
+    "CONNECT": "zaloguj z Keplr",
+    "OR": "lub",
+    "C4E_HELP": "Wprowadź adres C4E",
+    "COSMOS_HELP": "Wprowadź adres cosmos"
+  },
   "COPY": {
     "ADDRESS": "Adres został skopiowany do schowka",
     "TX_HASH": "Hash transakcji skopiowany do schowka"
