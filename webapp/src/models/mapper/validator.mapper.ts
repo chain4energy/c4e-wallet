@@ -1,5 +1,6 @@
 import { Validator as BcValidator,} from "@/models/blockchain/validator";
 import { Validator as StoreValidator, ValidatorCommission, ValidatorDescription, ValidatorStatus} from "@/models/store/validator";
+import {ValidatorDescriptionResponse} from "@/models/hasura/validatorDescriptionResponse";
 
 export function mapValidators(validators: BcValidator[] | undefined): { validators: StoreValidator[], numberOfActive: number}  {
   if (validators === undefined) {
@@ -82,3 +83,29 @@ function mapValidatorStatus(validatorStatus: string | undefined): ValidatorStatu
   }
 }
 
+export function mapValidatorDescription(hasuraData: ValidatorDescriptionResponse | undefined):Map<string, string> {
+  if (hasuraData === undefined) {
+    throw new Error('mapValidatorDescription - ValidatorDescription response is undefined');
+  }
+  if (hasuraData.data === undefined) {
+    throw new Error('mapValidatorDescription - ValidatorDescription.data is undefined');
+  }
+  if (hasuraData.data.validator === undefined) {
+    throw new Error('mapValidatorDescription - ValidatorDescription.data.validator is undefined');
+  }
+  const retValue = new Map<string, string>();
+  hasuraData.data.validator.forEach(object => {
+    if (!object.validator_infos || object.validator_infos.length == 0) {
+      console.warn('mapValidatorDescription - ValidatorDescription.data.validator.validator_infos is undefined:' + JSON.stringify(object));
+    } else if (!object.validator_infos[0].operator_address) {
+      console.warn('mapValidatorDescription - ValidatorDescription.data.validator.validator_infos[0].operator_address is undefined'+ JSON.stringify(object));
+    } else if (!object.validator_descriptions || object.validator_descriptions.length == 0) {
+      console.warn('mapValidatorDescription - ValidatorDescription.data.validator.validator_descriptions is undefined'+ JSON.stringify(object));
+    } else if (!object.validator_descriptions[0].avatar_url) {
+      console.warn('mapValidatorDescription - ValidatorDescription.data.validator.validator_descriptions[0].avatar_url is undefined'+ JSON.stringify(object));
+    } else {
+      retValue.set(object.validator_infos[0].operator_address, object.validator_descriptions[0].avatar_url);
+    }
+  });
+  return retValue;
+}

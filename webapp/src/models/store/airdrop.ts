@@ -25,7 +25,7 @@ export class AirdropStore{
     atom_delegated_outside: number,
     delegated_outside: boolean,
   ) {
-    this.atom_staked_balance = atom_staked_balance
+    this.atom_staked_balance = atom_staked_balance;
     this.atom_address = atom_address;
     this.c4e_address = c4e_address;
     this.base_airdrop = base_airdrop;

@@ -1,15 +1,15 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import { StakingPool } from "@/models/store/tokens";
-import { Coin, DecCoin } from "@/models/store/common";
-import { useConfigurationStore } from "./configuration.store";
-import { useToast } from "vue-toastification";
-import { StoreLogger } from "@/services/logged.service";
-import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
-import { LogLevel } from "@/services/logger/log-level";
+import {StakingPool} from "@/models/store/tokens";
+import {Coin, DecCoin} from "@/models/store/common";
+import {useConfigurationStore} from "./configuration.store";
+import {useToast} from "vue-toastification";
+import {StoreLogger} from "@/services/logged.service";
+import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
+import {LogLevel} from "@/services/logger/log-level";
 import axios from "axios";
 import {AirdropStore} from "@/models/store/airdrop";
-import {airDrop} from "@/models/airdrop/airdrop";
+import {airDrop, ClaimRecord} from "@/models/airdrop/airdrop";
 import {BigDecimal} from "@/models/store/big.decimal"
 
 
@@ -19,22 +19,25 @@ const logger = new StoreLogger(ServiceTypeEnum.AIR_DROP_STORE);
 interface airDropState {
   airDrop1: AirdropStore
   no_Drop: boolean,
+
+  claimRecord: ClaimRecord,
 }
 
-export const useAirDropStore= defineStore({
+export const useAirDropStore = defineStore({
   id: 'airDropStore',
   state: (): airDropState => {
     return {
       airDrop1: Object(AirdropStore),
       no_Drop: Boolean(false),
+      claimRecord: {} as ClaimRecord,
     };
   },
   actions: {
     async fetchAirdrop(address: string, lockscreen = true) {
       this.no_Drop = Boolean(false);
       try {
-        apiFactory.airDropApi().fetchAirdropCosmos(address, true).then((res) => {
-          if(res?.data){
+        apiFactory.airDropApi().fetchAirdropCosmos(address, lockscreen).then((res) => {
+          if (res?.data) {
             this.airDrop1 = new AirdropStore(
               res.data.atom_staked_balance,
               res.data.atom_address,
@@ -50,19 +53,32 @@ export const useAirDropStore= defineStore({
             );
             this.no_Drop = true;
           }
-
         });
-      } catch (err){
+      } catch (err) {
         this.no_Drop = false;
+      }
+    },
+    async fetchAirdropClaimRecord(address: string, lockscreen = true) {
+      try {
+        apiFactory.airDropApi().fetchAirdropClaimRecord(address, lockscreen).then((resp) => {
+          if (resp.data) {
+            this.claimRecord = resp.data;
+          }
+        });
+      } catch (err) {
+        //console.error(err);
       }
     }
   },
   getters: {
-    getAirDropStatus() : boolean{
+    getAirDropStatus(): boolean {
       return this.no_Drop;
     },
-    getAirDrop(): AirdropStore{
+    getAirDrop(): AirdropStore {
       return this.airDrop1;
+    },
+    getAirdropClaimRecord() : ClaimRecord{
+      return this.claimRecord;
     }
   },
 });

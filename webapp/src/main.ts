@@ -50,6 +50,8 @@ import "bootstrap";
 import IconComponent from "@/components/features/IconComponent.vue";
 import ECharts from 'vue-echarts';
 import Tooltip from 'primevue/tooltip';
+import AccordionTab from "primevue/accordiontab";
+import Accordion from "primevue/accordion";
 
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
@@ -82,6 +84,8 @@ app.use(router)
   .component('AutoComplete', AutoComplete)
   .component('Dropdown', Dropdown)
   .component('Image' , Image)
+  .component('Accordion', Accordion)
+  .component('AccordionTab', AccordionTab)
   .component('Icon', IconComponent)
   .component('v-chart', ECharts)
   .directive('debounce', vue3Debounce({lock: true}))
