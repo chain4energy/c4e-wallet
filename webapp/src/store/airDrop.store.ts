@@ -1,26 +1,16 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {StakingPool} from "@/models/store/tokens";
-import {Coin, DecCoin} from "@/models/store/common";
-import {useConfigurationStore} from "./configuration.store";
-import {useToast} from "vue-toastification";
-import {StoreLogger} from "@/services/logged.service";
-import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
-import {LogLevel} from "@/services/logger/log-level";
-import axios from "axios";
-import {AirdropStore} from "@/models/store/airdrop";
-import {airDrop, ClaimRecord} from "@/models/airdrop/airdrop";
-import {BigDecimal} from "@/models/store/big.decimal"
-
-
-const toast = useToast();
-const logger = new StoreLogger(ServiceTypeEnum.AIR_DROP_STORE);
+import { DecCoin} from "@/models/store/common";
+import {AirdropStore, AirdropTotal, AlocationsSt, Campain} from "@/models/store/airdrop";
+import {ClaimRecord} from "@/models/airdrop/airdrop";
+import {BigDecimal} from "@/models/store/big.decimal";
 
 interface airDropState {
   airDrop1: AirdropStore
   no_Drop: boolean,
 
   claimRecord: ClaimRecord,
+  airDropMock: AirdropTotal,
 }
 
 export const useAirDropStore = defineStore({
@@ -30,6 +20,7 @@ export const useAirDropStore = defineStore({
       airDrop1: Object(AirdropStore),
       no_Drop: Boolean(false),
       claimRecord: {} as ClaimRecord,
+      airDropMock: Object(AirdropTotal),
     };
   },
   actions: {
@@ -68,6 +59,26 @@ export const useAirDropStore = defineStore({
       } catch (err) {
         //console.error(err);
       }
+    },
+    async fetchAirdropTotal(address: string, lockscreen = true) {
+      try {
+        apiFactory.airDropApi().fetchAirdropMockData(address, lockscreen).then((resp) => {
+          if (resp.data) {
+            this.airDropMock = Object(AirdropTotal);
+            const campainsList =Array<Campain>();
+            resp.data.campaigns.forEach((element) =>{
+              const campains = Array<AlocationsSt>();
+              element.alocations.forEach((el) => {
+                campains.push(new AlocationsSt(el.name, el.value));
+              });
+              campainsList.push(new Campain(element.name, element.details_url, campains));
+            });
+            this.airDropMock = new AirdropTotal(campainsList);
+          }
+        });
+      } catch (err) {
+        //console.error(err);
+      }
     }
   },
   getters: {
@@ -79,6 +90,9 @@ export const useAirDropStore = defineStore({
     },
     getAirdropClaimRecord() : ClaimRecord{
       return this.claimRecord;
+    },
+    getAirDropTotal(): AirdropTotal{
+      return this.airDropMock;
     }
   },
 });

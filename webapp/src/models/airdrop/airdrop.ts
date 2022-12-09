@@ -1,5 +1,3 @@
-import {Pagination} from "@/models/blockchain/pagination";
-
 export interface AirDropRes {
   data: airDrop,
   error: any
@@ -52,4 +50,20 @@ export interface Campaign {
   lockup_period: string,
   vesting_period: string,
   description: string
+}
+
+
+export interface Campaigns{
+  campaigns: CampaignsDetails[]
+}
+
+export interface CampaignsDetails{
+  name: string,
+  details_url: string,
+  alocations: Alocations[],
+}
+
+export interface Alocations{
+  name: string,
+  value: number
 }

@@ -5,99 +5,7 @@
       <template #header>
         <div>Cosmos Air Drop</div>
       </template>
-      <div class="airDrop">
-        <div class="airDrop__container">
-          <Button v-if="!userLoggedIn" class="airDrop__btn" @click="dataService.onKeplrLogIn()">
-            <KeplrLogo/> {{ $t('AIRDROP.CONNECT' )}}
-          </Button>
-          <hr v-if="!userLoggedIn" :data-after="$t('AIRDROP.OR')"/>
-          <p class="airDrop__text">{{$t('AIRDROP.CONNECT_CHAINS')}}</p>
-          <Form @submit="submit" class="airDrop__form">
-            <div class="field airDrop__field">
-              <Field  v-model="c4eAddress" name="c4eaddress" placeholder=" " type="text" class="form-control" style="width: 100%;" :class="{ 'is-invalid': errorMessageType.c4e }"></Field>
-              <span class="">{{$t('AIRDROP.C4E_HELP')}}</span>
-              <div class="invalid-feedback">
-                {{ errorMessageType.c4e ? errorMessageType.c4e : "" }}
-              </div>
-            </div>
-            <div class="field airDrop__field">
-              <Field v-model="cosmAddress" name="cosmaddress" placeholder=" " type="text" class="form-control airDrop__input" style="width: 100%;" :class="{ 'is-invalid': errorMessageType.cosm }"></Field>
-              <span class="">{{$t('AIRDROP.COSMOS_HELP')}}</span>
-              <div class="invalid-feedback">
-                {{ errorMessageType.cosm ? errorMessageType.cosm : "" }}
-              </div>
-            </div>
-            <div>
-              <Button type="submit" :label="'Submit'"></Button>
-              <Button type="reset" @click="useAirDropStore().$reset()" :label="'Reset'"></Button>
-            </div>
-          </Form>
-          <p style="
-            width: 90%;
-            text-align: left;
-            ">Total AirDrop allocation</p>
-          <div class="airDrop__result">
-            <div class="airDrop__result-item">
-              <div>
-                <Image class="navbar-brand" :src="require('@/assets/c4elogo-new.svg')" alt="Image" height="36" />
-              </div>
-              <CoinAmount
-                :amount="airdropExist ? airDrop1.total_amount : new DecCoin(0, 'c4e')" :precision="2"
-                :show-denom="true"
-                :reduce-big-number="true"
-              />
-            </div>
-
-          </div>
-          <p style="
-            width: 90%;
-            text-align: left;
-            ">Allocation by network</p>
-          <div class="airDrop__result">
-            <div class="airDrop__result-item">
-              <div>
-                Base Airdrop
-              </div>
-              <CoinAmount
-                :amount="airdropExist ? airDrop1.base_airdrop : new DecCoin(0, 'c4e')" :precision="2"
-                :show-denom="true"
-                :reduce-big-number="true"
-              />
-            </div>
-            <div class="airDrop__result-item">
-              <div>
-                Booster 1
-              </div>
-              <CoinAmount
-                :amount="airdropExist ? airDrop1.booster_1_airdrop : new DecCoin(0, 'c4e')" :precision="2"
-                :show-denom="true"
-                :reduce-big-number="true"
-              />
-            </div>
-            <div class="airDrop__result-item">
-              <div>
-                Booster 2
-              </div>
-              <CoinAmount
-                :amount="airdropExist ? airDrop1.booster_2_airdrop : new DecCoin(0, 'c4e')" :precision="2"
-                :show-denom="true"
-                :reduce-big-number="true"
-              />
-            </div>
-            <div class="airDrop__result-item">
-              <div>
-                Gleam airdrop
-              </div>
-              <CoinAmount
-                :amount="airdropExist ? airDrop1.gleam_airdrop : new DecCoin(0, 'c4e')" :precision="2"
-                :show-denom="true"
-                :reduce-big-number="true"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <AirDropTotal/>
     </TabPanel>
     <TabPanel style="width: 100%">
       <template #header>
@@ -112,86 +20,8 @@
 <script setup lang="ts">
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import {useUserStore} from "@/store/user.store";
-import {computed, onMounted, ref, watch} from "vue";
-import dataService from "@/services/data.service";
-import KeplrLogo from "@/components/commons/KeplrLogo.vue";
-import {useAirDropStore} from "@/store/airDrop.store";
-import { DecCoin} from "@/models/store/common";
-import CoinAmount from '@/components/commons/CoinAmount.vue';
-import * as bech32 from "bech32";
-import {Field, Form} from "vee-validate";
-import Button from "primevue/button";
 import ClaimAirdrop from "@/components/airdrop/ClaimAirdrop.vue";
-
-const airDropStore = useAirDropStore();
-
-const c4eAddress = ref();
-const cosmAddress = ref();
-const address = ref();
-let errorMessageType = ref({
-  c4e: '',
-  cosm: ''
-});
-onMounted(() => {
-  if(useUserStore().getAccount.address != ''){
-    c4eAddress.value = useUserStore().getAccount.address;
-  }
-});
-
-
-watch(c4eAddress , (next)=>{
-  try{
-    address.value = bech32.decode(next);
-    fetchVal();
-    errorMessageType.value.c4e = '';
-  } catch (e){
-    errorMessageType.value.c4e = e;
-  }
-
-});
-
-watch(cosmAddress , (next)=>{
-  try{
-    address.value = bech32.decode(next);
-    fetchVal();
-    errorMessageType.value.cosm = '';
-  } catch (e){
-    errorMessageType.value.cosm = e;
-  }
-});
-
-
-function fetchVal(){
-  c4eAddress.value = bech32.encode("c4e", address.value.words);
-  cosmAddress.value = bech32.encode("cosmos", address.value.words);
-}
-
-const fetched = ref(false);
-
-
-function submit() {
-  if(errorMessageType.value.c4e =='' && errorMessageType.value.cosm ==''){
-    useAirDropStore().fetchAirdrop(bech32.encode("c4e", address.value.words)).then(() => {
-      fetched.value = true;
-    });
-  }
-}
-
-const userLoggedIn = computed(() =>{
-  return useUserStore().getAccount.address != '';
-});
-
-watch(userLoggedIn, () => {
-  c4eAddress.value = useUserStore().getAccount.address;
-});
-const airdropExist = computed(() => {
-  return airDropStore.getAirDropStatus;
-});
-
-const airDrop1= computed(() =>{
-  return airDropStore.getAirDrop;
-});
+import AirDropTotal from "@/components/airdrop/AirDropTotal.vue";
 </script>
 
 <style scoped lang="scss">
@@ -204,6 +34,7 @@ const airDrop1= computed(() =>{
     display: flex;
     align-items: center;
     flex-direction: column;
+    justify-content: center;
     padding: 0.5em;
     border-radius: 5px;
     grid-area: 1 / 2/ 1 / 4;
@@ -230,11 +61,20 @@ const airDrop1= computed(() =>{
       padding: 5px 20px
     }
   }
+  &__sections{
+    width: 90%;
+  }
   &__form{
+    display: flex;
     width: 90%;
   }
   &__input{
     margin-top: 30px
+  }
+  &__sectionTitle{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
   &__result{
     width: 90%;
@@ -251,6 +91,22 @@ const airDrop1= computed(() =>{
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
+    }
+
+  }
+  &__total{
+    width: 90%;
+    text-align: left;
+    font-weight: 700;
+    font-size: 31px;
+    line-height: 38px;
+    &-amount{
+      font-weight: 700;
+      font-size: 28px;
+      line-height: 34px;
+    }
+    &-image{
+
     }
   }
   &__login{
@@ -279,7 +135,7 @@ const airDrop1= computed(() =>{
     font-size: 15px;
   }
   &__field{
-    max-width: 100%;
+    display: flex;
     input{
       border-radius: 5px;
     }
@@ -292,7 +148,9 @@ const airDrop1= computed(() =>{
   &__btn{
     width: 90% !important;
     border-radius: 5px !important;
-
+  }
+  &__btn2{
+    border-radius: 5px !important;
   }
   &__congrats{
     margin-top: 30px;

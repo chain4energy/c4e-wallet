@@ -1,5 +1,8 @@
 <template>
-    <span><FormattedNumber :amount="retrieveConvertedAmount()" :precision="precision" :reduceBigNumber="reduceBigNumber" /><span v-if="showDenom">&nbsp;{{ getDenom()}}</span></span>
+    <span>
+      <FormattedNumber :amount="retrieveConvertedAmount()" :precision="precision" :reduceBigNumber="reduceBigNumber" />
+      <span v-if="showDenom">&nbsp;{{ getDenom()}}</span>
+    </span>
 </template>
 
 <script setup lang="ts">

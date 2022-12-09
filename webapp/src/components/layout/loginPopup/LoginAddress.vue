@@ -27,8 +27,8 @@ import { ref } from "vue";
 import { object, string } from "yup";
 import i18n from "@/plugins/i18n";
 import {Field, Form} from "vee-validate";
-import { useConfigurationStore } from '@/store/configuration.store.ts';
-import { YupSequentialStringSchema } from '@/utils/yup-utils.ts';
+import { useConfigurationStore } from '@/store/configuration.store';
+import { YupSequentialStringSchema } from '@/utils/yup-utils';
 
 
 const emit = defineEmits(['close']);

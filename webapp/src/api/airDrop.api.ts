@@ -2,7 +2,7 @@ import BaseApi, {ErrorData} from "@/api/base.api";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {RequestResponse} from "@/models/request-response";
 import {BlockchainApiErrorData} from "@/models/blockchain/common";
-import {airDrop, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
+import {airDrop, Campaigns, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
 import {mapAirDrop} from "@/models/mapper/airDrop.mapper";
 
 export class AirDropApi extends BaseApi {
@@ -16,6 +16,10 @@ export class AirDropApi extends BaseApi {
     };
     return await this.axiosAirDropCall(address,
       mapData, lockscreen, null, 'fetchTotalSupply - ', undefined, undefined, true);
+  }
+
+  public async fetchAirdropMockData(address: string, lockscreen: boolean): Promise<RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>> {
+    return new RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>(undefined, this.airDropMockData);
   }
 
   public async fetchAirdropClaimRecord(address: string, lockscreen: boolean): Promise<RequestResponse<ClaimRecord, ErrorData<BlockchainApiErrorData>>> {
@@ -93,4 +97,47 @@ export class AirDropApi extends BaseApi {
         },
       ]
     }
+  airDropMockData: Campaigns = {
+    campaigns: [
+      {
+        name: "ATOM stakers campaign",
+        details_url: "http://sdfdf.sdf/dsdfs/",
+        alocations: [
+          {
+            name: "Base alloction",
+            value: 107878179
+          },
+          {
+            name: "Governance Booster allocation",
+            value: 10000000
+          },
+          {
+            name: "Decentralization Booster allocation",
+            value: 10000000
+          }
+        ]
+      },
+      {
+        name: "Greendrop compaign",
+        details_url: "http://sdfdf.sdf/dsdfs/",
+        alocations: [
+          {
+            name: "Token allocation",
+            value: 21356534
+          }
+        ]
+      },
+      {
+        name: "Santadrop compaign",
+        details_url: "http://sdfdf.sdf/dsdfs/",
+        alocations: [
+          {
+            name: "Token allocation",
+            value: 21351232
+          },
+        ]
+      }
+
+    ]
+  }
 }

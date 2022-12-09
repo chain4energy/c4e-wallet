@@ -1,4 +1,46 @@
-import {Coin, DecCoin} from "@/models/store/common";
+import { DecCoin} from "@/models/store/common";
+
+export class AirdropTotal{
+  campains: Campain[]
+  constructor(campains: Campain[]) {
+    this.campains = campains;
+  }
+  public getTotal(){
+    const sumArr = Array<number>();
+    this.campains.forEach((el)=> {
+      sumArr.push(el.getTotalForCampaign());
+    });
+    const sum = sumArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    return sum;
+  }
+}
+
+export class Campain{
+  name: string;
+  details_url: string;
+  alocations: AlocationsSt[];
+  constructor(name: string, details_url: string, alocations: AlocationsSt[]) {
+    this.name = name;
+    this.details_url = details_url;
+    this.alocations = alocations;
+  }
+  public getTotalForCampaign(){
+    const sum = Array<number>();
+    this.alocations.forEach((el) => {
+      sum.push(el.value);
+    });
+    return sum.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  }
+}
+
+export class AlocationsSt{
+  name: string;
+  value: number;
+  constructor(name : string, value: number) {
+    this.name = name;
+    this.value = value;
+  }
+}
 
 export class AirdropStore{
   atom_staked_balance: string;
