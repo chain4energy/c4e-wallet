@@ -31,6 +31,8 @@ import Vidle from 'v-idle-3';
 import { LoggerService } from '@/services/logger/logger.service';
 // https://www.primefaces.org/primevue/setup
 import PrimeVue from 'primevue/config';
+import VueSvgInlinePlugin from "vue-svg-inline-plugin";
+import "vue-svg-inline-plugin/src/polyfills";
 
 // https://www.npmjs.com/package/vue-sidebar-menu
 // import VueSidebarMenu from 'vue-sidebar-menu'
@@ -76,6 +78,7 @@ app.use(router)
   // .use(vuetify)
   .use(PrimeVue)
   .use(Vidle)
+  .use(VueSvgInlinePlugin)
   .provide('logger', logger)
   .component('Button', Button)
   .component('InputText', InputText)
