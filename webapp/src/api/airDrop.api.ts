@@ -119,7 +119,7 @@ export class AirDropApi extends BaseApi {
       },
       {
         name: "Greendrop compaign",
-        details_url: "http://sdfdf.sdf/dsdfs/",
+        details_url: "http://sdfdf.sdf/",
         alocations: [
           {
             name: "Token allocation",

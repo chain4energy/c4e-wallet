@@ -7,6 +7,9 @@
     font-size: 1.5em;
     padding: 0.5em;
     border-radius: 5px;
+    @media (max-width: 1024px) {
+        padding: 0;
+    }
 
     svg {
         height: 40px;
@@ -14,10 +17,10 @@
     }
 
     .text {
-        display: flex; 
-        flex-direction: column; 
+        display: flex;
+        flex-direction: column;
         align-items: flex-start;
-        
+
         .label {
             color: grey;
             font-size: 0.6em;
@@ -70,7 +73,7 @@
                 grid-template-columns: 20px 1fr;
                 margin-bottom: 15px;
                 align-items: center;
-    
+
                 svg {
                     height: 15px;
                     width: 15px;
