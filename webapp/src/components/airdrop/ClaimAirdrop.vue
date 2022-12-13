@@ -4,10 +4,15 @@
       <h3>{{campain.campaign.description}}</h3>
       <div class="claimAirDrop__header">
         <h4>My progress</h4>
-        <p>90%</p>
+        <PercentsView v-if="campain?.progress" :amount="campain?.progress ? campain?.progress : 0" :precision="2"/>
       </div>
       <div class="claimAirDrop__percents">
-        <PercentageBar :amount="90" :started="campain.campaign.start_time < new Date(Date.now())"/>
+        <PercentageBar
+          v-bind:key="campain?.progress"
+          :amount="campain?.progress && campain.campaign.start_time < new Date(Date.now()) ?  campain?.progress : 20"
+          :started="campain.campaign.start_time < Date.now()"
+          :ended="campain.campaign.end_time > Date.now()"
+        />
       </div>
       <div class="claimAirDrop__content">
         <div class="claimAirDrop__items">
@@ -19,8 +24,10 @@
           <span>1324234234c4e</span>
         </div>
         <div class="claimAirDrop__items">
-          <span>Time left to claim</span>
-          <CountDownTime :end-time="campain.campaign.end_time"/>
+          <span>{{campain.campaign.start_time < Date.now()? 'Time left to claim' : 'Time to Airdrop'}}</span>
+          <CountDownTime
+            @changedMinutes="campain.progress = timeChanged(campain.campaign.end_time, campain.campaign.start_time)"
+            :end-time="campain.campaign.start_time > Date.now() ? campain.campaign.end_time : campain.campaign.start_time"/>
         </div>
         <div class="claimAirDrop__items">
           <span>Total distribution</span>
@@ -85,18 +92,18 @@
 
 <script setup lang="ts">
 import {useAirDropStore} from "@/store/airDrop.store";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import {useUserStore} from "@/store/user.store";
 import {MissionStatus} from "@/models/airdrop/airdrop";
 import Card from 'primevue/card';
 import PercentageBar from "@/components/commons/PercentageBar.vue";
 import i18n from "@/plugins/i18n";
 import CountDownTime from "@/components/commons/CountDownTime.vue";
+import PercentsView from "@/components/commons/PercentsView.vue";
 
 const currentLang = computed(() => {
   return i18n.global.locale;
-})
-
+});
 
 {
   useAirDropStore().fetchAirdropClaimRecord(useUserStore().getAccount.address, true);
@@ -106,7 +113,11 @@ const airdropClaimRecord = computed(() => {
   return useAirDropStore().getAirdropClaimRecord;
 });
 
-
+function timeChanged(endTime, startTime, value){
+  const startEndDiff = endTime - startTime;
+  const difference = Date.now() - endTime;
+  return Math.abs(100 - ((Math.abs(difference)/Math.abs(startEndDiff)) * 100));
+}
 </script>
 
 <style scoped lang="scss">

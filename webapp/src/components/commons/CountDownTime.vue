@@ -187,11 +187,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 
 const props = defineProps<{
   endTime: Date,
 }>();
+
+const emit = defineEmits(['changedMinutes']);
 
 const showItems = ref({
   year: false,
@@ -255,6 +257,9 @@ function getTime(){
 
 
 getTime();
+onMounted(() => {
+  emit('changedMinutes');
+})
 
 function setDecTime(val: number){
   if(val < 10){
@@ -273,6 +278,11 @@ function setDecYear(val: number){
   }
 }
 
+// watch(time, (next, prev) =>{
+//   if(next.min != prev.min){
+//     emit('changedMinutes');
+//   }
+// });
 </script>
 
 <style scoped lang="scss">

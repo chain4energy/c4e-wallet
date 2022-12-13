@@ -75,6 +75,9 @@ export const useAirDropStore = defineStore({
             });
             this.airDropMock = new AirdropTotal(campainsList);
           }
+          else {
+            this.airDropMock = Object(AirdropTotal);
+          }
         });
       } catch (err) {
         //console.error(err);

@@ -7,12 +7,12 @@
       </template>
       <AirDropTotal/>
     </TabPanel>
-    <TabPanel style="width: 100%">
-      <template #header>
-        <div>Claim Air Drop</div>
-      </template>
-      <ClaimAirdrop/>
-    </TabPanel>
+<!--    <TabPanel style="width: 100%">-->
+<!--      <template #header>-->
+<!--        <div>Claim Air Drop</div>-->
+<!--      </template>-->
+<!--      <ClaimAirdrop/>-->
+<!--    </TabPanel>-->
   </TabView>
 </div>
 </template>

@@ -37,9 +37,9 @@ export class AirDropApi extends BaseApi {
             campaign_id: "campain_id_1",
             description: "GLEAM",
             enabled: true,
-            end_time: new Date("2022-12-17T18:21:58.952129766Z"),
+            end_time: new Date("2022-12-19T15:25:58.952129766Z"),
             lockup_period: "7884000s",
-            start_time: new Date("2022-11-17T18:21:58.952129766Z"),
+            start_time: new Date("2022-11-11T15:28:58.952129766Z"),
             vesting_period: "15768000s"
           },
           missions: [
@@ -69,9 +69,9 @@ export class AirDropApi extends BaseApi {
             campaign_id: "campain_id_2",
             description: "AIRDROP",
             enabled: true,
-            end_time: new Date("2022-12-17T18:21:58.952129766Z"),
+            end_time: new Date("2022-12-12T18:21:58.952129766Z"),
             lockup_period: "7884000s",
-            start_time: new Date("2022-11-17T18:21:58.952129766Z"),
+            start_time: new Date("2022-12-11T18:21:58.952129766Z"),
             vesting_period: "15768000s"
           },
           missions: [

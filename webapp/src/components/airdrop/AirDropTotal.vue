@@ -1,13 +1,15 @@
 <template>
   <div class="airDropTotal">
     <div class="airDropTotal__container">
-      <Button
-        @click="dataService.onKeplrLogIn()"
-        v-if="!userLoggedIn"
-        class="airDropTotal-btn">
-        <KeplrLogo :reverse-colors="true"/>{{$t('AIRDROP.CONNECT' )}}
-      </Button>
-      <hr class="airDropTotal__hr" v-if="!userLoggedIn" :data-after="$t('AIRDROP.OR')"/>
+      <div class="airDropTotal__login">
+        <Button
+          @click="dataService.onKeplrLogIn()"
+          v-if="!userLoggedIn"
+          class="airDropTotal-btn">
+          <KeplrLogo :reverse-colors="true"/>{{$t('AIRDROP.CONNECT' )}}
+        </Button>
+        <hr class="airDropTotal__hr" v-if="!userLoggedIn" :data-after="$t('AIRDROP.OR')"/>
+      </div>
       <div class="airDropTotal__head">
         <Form @submit="submit" class="loginEmail__body airDropTotal__form" :validation-schema="amountSchema" v-slot="{ errors }">
           <div class="field">
@@ -33,8 +35,8 @@
             />
           </div>
         </div>
+        <hr v-if="airDrops?.campains" class="airDropTotal__head-hr"/>
       </div>
-      <hr class="airDropTotal__head-hr"/>
       <div class="airDropTotal__content" v-if="airDrops">
         <div class="airDropTotal__content-items" v-for="campains in airDrops.campains" :key="campains">
           <div class="airDropTotal__content-header">
@@ -49,7 +51,7 @@
           </div>
         </div>
       </div>
-      <hr v-if="airDrops && airDrops.campaigns" class="airDropTotal__head-hr"/>
+      <hr class="airDropTotal__head-hr"/>
       <div class="airDropTotal__footer">
         <p>What's Next? Follow Us for Updates.</p>
         <p>Connect with us to stay up-to-date on mainnet launch and what's next for C4E.</p>
@@ -183,9 +185,9 @@ watch(userLoggedIn, () => {
     box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
     display: flex;
     align-items: center;
+    padding: 1.5em 0;
     flex-direction: column;
     justify-content: center;
-    padding: 1.5em 2.5em;
     border-radius: 5px;
     grid-area: 1 / 2/ 1 / 4;
     color: $header-text-color;
@@ -194,23 +196,29 @@ watch(userLoggedIn, () => {
       grid-area: 1 /1/ 1 / 5;
     }
   }
+  &__login{
+    margin-top:10px;
+    width: 80%;
+    align-items: center;
+  }
   &__hr{
+    margin: 1.2em 0;
     color: $secondary-color;
     font-size: 1.5em;
     align-items: center;
-    width: 90%;
+    width: 100%;
     &::after{
       content: attr(data-after);
       color: $secondary-color;
       position: absolute;
-      margin-top: -23px;
+      margin-top: -16px;
       margin-left: -20px;
       background-color: $main-color;
-      padding: 5px 20px;
+      padding: 0px 10px;
     }
   }
   &__head{
-    width: 100%;
+    width: 80%;
     align-items: center;
     justify-items: center;
     &-btn{
@@ -246,6 +254,7 @@ watch(userLoggedIn, () => {
   }
   &-btn{
     width: 100%;
+    margin: 0 !important;
     border-radius: 5px !important;
     color: $header-text-color !important;
     background-color: $secondary-color !important;
@@ -294,7 +303,7 @@ watch(userLoggedIn, () => {
     }
   }
   &__content {
-    width: 100%;
+    width: 80%;
     &-items {
       display: flex;
       align-items: center;
