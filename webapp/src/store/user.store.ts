@@ -32,6 +32,7 @@ export interface UserState {
 }
 
 const connectionInfoName = 'connectionInfo';
+const accountAddress = 'account';
 
 export const useUserStore = defineStore({
   id: 'userStore',
@@ -286,7 +287,7 @@ export const useUserStore = defineStore({
   persist: {
     enabled: true,
     strategies: [
-      { storage: sessionStorage, paths: [connectionInfoName] },
+      { storage: localStorage, paths: [connectionInfoName, accountAddress] },
     ]
   }
 });
