@@ -45,7 +45,6 @@
               <a :href="validator.description.website">{{validator.description.website}}</a>
             </div>
           </div>-->
-
           <AmountView
             class="validationPopup__amount"
             :coins="amountToPass"
@@ -136,6 +135,7 @@ import C4EIcon from "../commons/C4EIcon.vue";
 import { useValidatorsStore } from "@/store/validators.store";
 import { formatBigNumberLocalized } from "@/utils/locale-number-formatter";
 import PercentsView from "@/components/commons/PercentsView.vue";
+import CoinAmount from "@/components/commons/CoinAmount.vue";
 
 const emit = defineEmits(['close', 'success']);
 
@@ -197,7 +197,7 @@ function lessThanOrEqualTo(value: string | undefined): boolean {
   return checkValue(value, (value:  string) => {
     const factor = useConfigurationStore().config.getViewDenomConversionFactor();
     const lessThan = stakingAction.value === StakingAction.DELEGATE ? useUserStore().getBalance : props.validator.delegatedAmount;
-    return (new BigDecimal(lessThan)).isBiggerThan(new BigDecimal(value).multiply(factor));
+    return (new BigDecimal(lessThan)).isBiggerThanOrEqualTo(new BigDecimal(value).multiply(factor));
   });
 }
 
