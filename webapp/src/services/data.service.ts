@@ -120,7 +120,7 @@ class DataService extends LoggedService {
       if (this.onProposalDetailsError) {
         this.onProposalDetailsError();
       }
-      this.onLogOut();
+      useUserStore().reconnect(this.onLoginSuccess);
 
       useBlockStore().clear();
       useProposalsStore().clear();
