@@ -323,10 +323,6 @@ watch(userLoggedIn, () => {
         margin-top: 10px;
       }
     }
-
-    &-image {
-
-    }
   }
 
   &__content {
@@ -358,12 +354,9 @@ watch(userLoggedIn, () => {
 
     &-details {
       color: $header-text-color;
-    &-details{
-      color:  $header-text-color;
       font-weight: 400;
       font-size: 13px;
       line-height: 16px;
-
     }
   }
   &__text{
