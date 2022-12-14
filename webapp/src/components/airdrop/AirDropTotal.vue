@@ -58,19 +58,19 @@
         <p class="airDropTotal__footer-text">Connect with us to stay up-to-date on mainnet launch and what's next for C4E.</p>
         <div class="airDropTotal__footer-icons">
           <a href="https://t.me/chain4energy" target="_blank" class="airDropTotal__footerIcon">
-            <img v-svg-inline class="icon" src="@/assets/svg/social_media/telegram.svg" alt="example svg image"/>
+            <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/telegram.svg" alt="example svg image"/>
           </a>
           <a href="https://discord.com/invite/chain4energy" target="_blank" class="airDropTotal__footerIcon">
-            <img v-svg-inline class="icon" src="@/assets/svg/social_media/discord.svg" alt="example svg image"/>
+            <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/discord.svg" alt="example svg image"/>
           </a>
           <a href="https://twitter.com/chain4energy" target="_blank" class="airDropTotal__footerIcon">
-            <img v-svg-inline class="icon" src="@/assets/svg/social_media/twitter.svg" alt="example svg image"/>
+            <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/twitter.svg" alt="example svg image"/>
           </a>
           <a href="https://medium.com/chain4-energy" target="_blank" class="airDropTotal__footerIcon">
-            <img v-svg-inline class="icon" src="@/assets/svg/social_media/medium.svg" alt="Medium"/>
+            <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/medium.svg" alt="Medium"/>
           </a>
           <a href="https://c4e.io" target="_blank" class="airDropTotal__footerIcon">
-            <img v-svg-inline class="icon" src="@/assets/svg/social_media/c4e.svg" alt="c4e logo"/>
+            <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/c4e.svg" alt="c4e logo"/>
           </a>
         </div>
       </div>
@@ -191,6 +191,8 @@ watch(userLoggedIn, () => {
 .airDropTotal {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(calc(100% / 4), 1fr));
+  font-family: 'Inter',sans-serif;
+
 
   &__container {
     box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
@@ -327,13 +329,14 @@ watch(userLoggedIn, () => {
 
   &__content {
     width: 80%;
+    margin: 1.5em 0;
 
     &-items {
       display: flex;
       align-items: center;
       flex-direction: column;
       justify-content: space-between;
-      margin-top: 5px;
+      margin-top: 20px;
       color: $header-text-color;
     }
 
@@ -360,8 +363,8 @@ watch(userLoggedIn, () => {
     }
   }
   &__text{
+    margin: 0.4em 0;
     font-style: normal;
-    margin: 0;
     font-weight: 400;
     font-size: 18px;
     line-height: 22px;
@@ -369,15 +372,22 @@ watch(userLoggedIn, () => {
 
   &__footer {
     margin: 15px 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
     &-header{
-      font-weight: 400;
+      font-family: 'Inter',sans-serif;
+      font-style: normal;
+      font-weight: 700;
       font-size: 15px;
       line-height: 18px;
       color: #ffffff;
     }
     &-icons{
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(calc(100%/ 5), 1fr));
+      margin-top: 15px;
+      width: 70%;
+      grid-template-columns: repeat(auto-fit, minmax(calc(100%/ 5), 1fr));
     }
     &-text{
       font-weight: 400;
@@ -388,7 +398,7 @@ watch(userLoggedIn, () => {
   }
   &__footerIcon{
     cursor: pointer;
-    width: 33px;
+    width: 27px;
     height: 25px;
   }
   &__info{
