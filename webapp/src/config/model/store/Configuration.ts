@@ -91,6 +91,7 @@ export class Configuration implements JsonConfiguration {
   explorerTx: string;
   isMainNetwork: boolean;
   testFileName?: string;
+  airdropBaseURL: string;
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -128,6 +129,7 @@ export class Configuration implements JsonConfiguration {
       this.isEmpty = false;
       this.testMode = configuration.testMode ? configuration.testMode : false;
       this.testFileName = configuration.testFileName;
+      this.airdropBaseURL = configuration.airdropBaseURL;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -156,6 +158,7 @@ export class Configuration implements JsonConfiguration {
       this.isMainNetwork = false;
       this.isEmpty = true;
       this.testMode = false;
+      this.airdropBaseURL = '';
     }
   }
 

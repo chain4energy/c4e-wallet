@@ -1,0 +1,34 @@
+{
+  "campaignInfoDetails": [
+    {
+      "name": "ATOM stakers campaign",
+      "subfolder": "stakedrop",
+      "detailsUrl": "https://medium.com/@chain4energy/stake-drop-summary-e328831689b4",
+      "allocationMapping": [
+        {
+          "name": "Base allocation",
+          "mapping": "base"
+        },
+        {
+          "name": "Governance Booster allocation",
+          "mapping": "booster_1"
+        },
+        {
+          "name": "Decentralization Booster allocation",
+          "mapping": "booster_2"
+        }
+      ]
+    },
+    {
+      "name": "Greendrop compaign",
+      "subfolder": "greendrop",
+      "detailsUrl": "https://medium.com/chain4-energy/the-green-airdrop-by-chain4energy-join-our-gleam-campaign-24e59568e22a",
+      "allocationMapping": [
+        {
+          "name": "Token allocation",
+          "mapping": "gleam"
+        }
+      ]
+    }
+  ]
+}

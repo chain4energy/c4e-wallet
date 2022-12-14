@@ -45,5 +45,5 @@ export interface Configuration {
   isMainNetwork: boolean,
   testMode?: boolean,
   testFileName?: string,
-
+  airdropBaseURL: string
 }

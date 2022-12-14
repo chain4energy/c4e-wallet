@@ -52,6 +52,22 @@ export interface Campaign {
   description: string
 }
 
+export interface CampaignsInfo{
+  campaignInfoDetails : CampaignInfoDetails[];
+}
+
+export interface CampaignInfoDetails{
+  name: string,
+  subfolder: string,
+  detailsUrl: string,
+  allocationMapping:AllocationMapping[]
+}
+
+export interface AllocationMapping{
+  name: string,
+  mapping: string
+}
+
 
 export interface Campaigns{
   campaigns: CampaignsDetails[]

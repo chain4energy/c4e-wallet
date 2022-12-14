@@ -1,5 +1,7 @@
-const { defineConfig } = require('@vue/cli-service')
+const { defineConfig } = require('@vue/cli-service');
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const path = require('path');
+
 module.exports = defineConfig({
   pages:{
     index:{
@@ -9,6 +11,9 @@ module.exports = defineConfig({
   },
   transpileDependencies: true,
   devServer: {
+    static :{
+      directory: path.join('./dev/', '/')
+    },
     host: '',
     port: 9000,
     proxy: {
@@ -17,7 +22,7 @@ module.exports = defineConfig({
         changeOrigin: true,
       },
       '/app': {
-        target: 'http://localhost:3090',
+        target: 'http://localhost',
         changeOrigin: true,
       }
     }
