@@ -91,7 +91,6 @@ import {useConfigurationStore} from "@/store/configuration.store";
 import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import {useAirDropStore} from "@/store/airDrop.store";
 import dataService from "@/services/data.service";
-import c4eLogo from '@/assets/svg/social_media/c4e.svg';
 
 const address = ref();
 let errorMessageType = '';
