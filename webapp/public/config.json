@@ -52,7 +52,7 @@
     "stakingDenom": "uc4e",
     "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-    "chainId": "veles-dev-1",
+    "chainId": "veles-dev-test-1",
     "networkName": "Dev(veles-dev-1)",
     "keplrNetworkName": "C4E Veles Dev",
     "operationGas": {
