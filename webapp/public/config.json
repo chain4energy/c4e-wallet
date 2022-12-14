@@ -39,7 +39,8 @@
     "proposalsPageLimit": 50,
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
-    "isMainNetwork": true
+    "isMainNetwork": true,
+    "airdropBaseURL": "https://airdrop.c4e.io/"
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -81,7 +82,8 @@
     "proposalsPageLimit": 50,
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
-    "isMainNetwork": false
+    "isMainNetwork": false,
+    "airdropBaseURL": ""
   },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
@@ -123,7 +125,8 @@
     "proposalsPageLimit": 10,
     "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
     "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
-    "isMainNetwork": false
+    "isMainNetwork": false,
+    "airdropBaseURL": "https://airdrop.c4e.io/"
   },
   "Testnet": {
     "bcApiURL": "https://lcd.chain4energy.org",
@@ -165,7 +168,8 @@
     "proposalsPageLimit": 50,
     "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
     "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
-    "isMainNetwork": false
+    "isMainNetwork": false,
+    "airdropBaseURL": "https://airdrop.c4e.io/"
   },
   "pbtest" :{
     "bcApiURL": "api",
@@ -209,6 +213,7 @@
     "proposalsPageLimit": 10,
     "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
     "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
-    "isMainNetwork": false
+    "isMainNetwork": false,
+    "airdropBaseURL": "https://airdrop.c4e.io/"
   }
 }

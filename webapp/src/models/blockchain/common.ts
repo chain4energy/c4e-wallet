@@ -10,9 +10,10 @@ export interface BlockchainApiErrorData {
 
 }
 
-export interface AirDropErrData {
+export interface AirdropErrData {
   code: number;
   message: string;
   details?: string;
 
 }
+

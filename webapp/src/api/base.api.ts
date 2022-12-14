@@ -8,7 +8,7 @@ import { LocalSpinner } from "@/services/model/localSpinner";
 import { PaginatedResponse } from '@/models/blockchain/pagination';
 import { useConfigurationStore } from '@/store/configuration.store';
 import { KeybaseErrorData, KeybaseResponse } from '@/models/keybase/keybase';
-import { BlockchainApiErrorData } from '@/models/blockchain/common';
+import {AirdropErrData, BlockchainApiErrorData} from '@/models/blockchain/common';
 import { HasuraErrorData } from '@/models/hasura/error';
 
 const toast = useToast();
@@ -159,51 +159,51 @@ export default abstract class BaseApi extends LoggedService {
       errorDataToInfo
     );
   }
-  protected async axiosAirdropCall<T, H extends KeybaseResponse>(
-    url: string,
-    mapData: (hasureData: H | undefined) => T,
-    lockScreen: boolean,
-    localSpinner: LocalSpinner | null,
-    logPrefix: string,
-    skipErrorToast = false
-  ): Promise<RequestResponse<T, ErrorData<KeybaseErrorData>>>
-  {
-    const config = {
-      method: 'GET',
-      url: process.env.VUE_APP_AIRDROP + url,
-    };
-
-    const errorDataToInfo = (data: KeybaseErrorData) => {
-      let message = '';
-      if (data.status) {
-        message += '\r\n\tcode: ' + data.status.code;
-        message += '\r\n\tname: ' + data.status.name;
-        message += '\r\n\tdesc: ' + data.status.desc;
-      }
-      return message;
-    };
-
-    const isResponseError = (response: RequestResponse<H, ErrorData<KeybaseErrorData>>) => {return response.data?.status.code !== 0;};
-
-    const messages = {
-      errorResponseName: 'KeybaseError',
-      errorResponseMassage: 'Keybase error received',
-      errorResponseToast: 'Hasura Error: ',
-      mappingErrorMassage: 'Keybase mapping error: ',
-    };
-
-    return this.axiosWith200ErrorCall<T, H, KeybaseErrorData>(
-      config,
-      mapData,
-      lockScreen,
-      localSpinner,
-      logPrefix,
-      isResponseError,
-      skipErrorToast,
-      messages,
-      errorDataToInfo
-    );
-  }
+  // protected async axiosAirdropCall<T, H extends KeybaseResponse>(
+  //   url: string,
+  //   mapData: (hasureData: H | undefined) => T,
+  //   lockScreen: boolean,
+  //   localSpinner: LocalSpinner | null,
+  //   logPrefix: string,
+  //   skipErrorToast = false
+  // ): Promise<RequestResponse<T, ErrorData<KeybaseErrorData>>>
+  // {
+  //   const config = {
+  //     method: 'GET',
+  //     url: process.env.VUE_APP_AIRDROP + url,
+  //   };
+  //
+  //   const errorDataToInfo = (data: KeybaseErrorData) => {
+  //     let message = '';
+  //     if (data.status) {
+  //       message += '\r\n\tcode: ' + data.status.code;
+  //       message += '\r\n\tname: ' + data.status.name;
+  //       message += '\r\n\tdesc: ' + data.status.desc;
+  //     }
+  //     return message;
+  //   };
+  //
+  //   const isResponseError = (response: RequestResponse<H, ErrorData<KeybaseErrorData>>) => {return response.data?.status.code !== 0;};
+  //
+  //   const messages = {
+  //     errorResponseName: 'KeybaseError',
+  //     errorResponseMassage: 'Keybase error received',
+  //     errorResponseToast: 'Hasura Error: ',
+  //     mappingErrorMassage: 'Keybase mapping error: ',
+  //   };
+  //
+  //   return this.axiosWith200ErrorCall<T, H, KeybaseErrorData>(
+  //     config,
+  //     mapData,
+  //     lockScreen,
+  //     localSpinner,
+  //     logPrefix,
+  //     isResponseError,
+  //     skipErrorToast,
+  //     messages,
+  //     errorDataToInfo
+  //   );
+  // }
 
   protected async axiosHasuraCall<T, H>(
     query: string,
@@ -298,22 +298,22 @@ export default abstract class BaseApi extends LoggedService {
     return this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError, skipErrorToast);
   }
 
-  protected async axiosAirDropCall<T, BC>(
-    url: string,
-    mapData: (bcData: BC | undefined) => T,
-    lockScreen: boolean,
-    localSpinner: LocalSpinner | null,
-    logPrefix = '',
-    displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean,
-    handleError?: (errorResponse: RequestResponse<BC, ErrorData<BlockchainApiErrorData>>) => RequestResponse<T, ErrorData<BlockchainApiErrorData>>,
-    skipErrorToast = false): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
-  {
-    const func = (): Promise<RequestResponse<BC, ErrorData<BlockchainApiErrorData>>> => { return this.axiosBlockchainApiCall({
-      method: 'GET',
-      url: process.env.VUE_APP_AIRDROP + url+ '.json'
-    }, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);};
-    return this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError, skipErrorToast);
-  }
+  // protected async axiosAirDropCall<T, BC>(
+  //   url: string,
+  //   mapData: (bcData: BC | undefined) => T,
+  //   lockScreen: boolean,
+  //   localSpinner: LocalSpinner | null,
+  //   logPrefix = '',
+  //   displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean,
+  //   handleError?: (errorResponse: RequestResponse<BC, ErrorData<BlockchainApiErrorData>>) => RequestResponse<T, ErrorData<BlockchainApiErrorData>>,
+  //   skipErrorToast = false): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
+  // {
+  //   const func = (): Promise<RequestResponse<BC, ErrorData<BlockchainApiErrorData>>> => { return this.axiosBlockchainApiCall({
+  //     method: 'GET',
+  //     url: process.env.VUE_APP_AIRDROP + url+ '.json'
+  //   }, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);};
+  //   return this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError, skipErrorToast);
+  // }
 
   protected async axiosGetAllBlockchainApiCallPaginated<T, BC extends PaginatedResponse>(
     url: string,
@@ -414,6 +414,48 @@ export default abstract class BaseApi extends LoggedService {
       (data: BlockchainApiErrorData) => { return '\r\n\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')'; }
     );
   }
+
+  protected async axiosAirdropCall<T, H>(
+    localUrl: string,
+    mapData: (data: H | undefined) => T,
+    lockScreen: boolean,
+    localSpinner: LocalSpinner | null,
+    logPrefix: string,
+    skipErrorToast = false
+  ): Promise<RequestResponse<T, ErrorData<AirdropErrData>>> {
+    const config = {
+      method: 'GET',
+      url: localUrl,
+    };
+
+    const errorDataToInfo = (data: AirdropErrData) => {
+      return data.message;
+    };
+
+    const isResponseError = (response: RequestResponse<H, ErrorData<AirdropErrData>>) => {
+      return response.error != undefined;
+    };
+
+    const messages = {
+      errorResponseName: 'Airdrop data Error',
+      errorResponseMassage: 'Airdrop data error received',
+      errorResponseToast: 'Airdrop data Error: ',
+      mappingErrorMassage: 'Airdrop data mapping error: ',
+    };
+
+    return this.axiosWith200ErrorCall<T, H, AirdropErrData>(
+      config,
+      mapData,
+      lockScreen,
+      localSpinner,
+      logPrefix,
+      isResponseError,
+      skipErrorToast,
+      messages,
+      errorDataToInfo
+    );
+  }
+
 
   private async axiosGetBlockchainDataPaginatedCall<P extends PaginatedResponse>(
     url: string,

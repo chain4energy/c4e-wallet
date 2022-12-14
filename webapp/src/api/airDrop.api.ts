@@ -1,22 +1,27 @@
 import BaseApi, {ErrorData} from "@/api/base.api";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {RequestResponse} from "@/models/request-response";
-import {BlockchainApiErrorData} from "@/models/blockchain/common";
-import {airDrop, Campaigns, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
+import {BlockchainApiErrorData, AirdropErrData} from "@/models/blockchain/common";
+import {airDrop, Campaigns, CampaignsInfo, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
 import {mapAirDrop} from "@/models/mapper/airDrop.mapper";
+import queries from "@/api/queries";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 export class AirDropApi extends BaseApi {
+
+  private AIRDROP_INFO_URL = queries.airdrop.AIRDROP_INFO;
+
   getServiceType(): ServiceTypeEnum {
     return ServiceTypeEnum.AIR_DROP_API;
   }
 
-  public async fetchAirdropCosmos(address: string, lockscreen: boolean): Promise<RequestResponse<airDrop, ErrorData<BlockchainApiErrorData>>> {
-    const mapData = (bcData: airDrop | undefined) => {
-      return mapAirDrop(bcData);
-    };
-    return await this.axiosAirDropCall(address,
-      mapData, lockscreen, null, 'fetchTotalSupply - ', undefined, undefined, true);
-  }
+  // public async fetchAirdropCosmos(address: string, lockscreen: boolean): Promise<RequestResponse<airDrop, ErrorData<BlockchainApiErrorData>>> {
+  //   const mapData = (bcData: airDrop | undefined) => {
+  //     return mapAirDrop(bcData);
+  //   };
+  //   return await this.axiosAirDropCall(address,
+  //     mapData, lockscreen, null, 'fetchTotalSupply - ', undefined, undefined, true);
+  // }
 
   public async fetchAirdropMockData(address: string, lockscreen: boolean): Promise<RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>> {
     return new RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>(undefined, this.airDropMockData);
@@ -24,6 +29,27 @@ export class AirDropApi extends BaseApi {
 
   public async fetchAirdropClaimRecord(address: string, lockscreen: boolean): Promise<RequestResponse<ClaimRecord, ErrorData<BlockchainApiErrorData>>> {
     return new RequestResponse<ClaimRecord, ErrorData<BlockchainApiErrorData>>(undefined, this.mockdata);
+  }
+
+  public async fetchAirdropsInfo(lockscreen: boolean): Promise<RequestResponse<CampaignsInfo, ErrorData<AirdropErrData>>> {
+    const mapData = (bcData: CampaignsInfo | undefined) => {
+      if (bcData === undefined) {
+        throw new Error('mapAirdropsInfo - airDrop absent');
+      }
+      return bcData;
+    };
+    return await this.axiosAirdropCall(useConfigurationStore().config.airdropBaseURL + this.AIRDROP_INFO_URL, mapData, lockscreen, null, 'fetchAirdropsInfo - ', false);
+  }
+
+  public async fetchAirdrop(address: string, airdropLocation: string, lockscreen: boolean): Promise<RequestResponse<any, ErrorData<AirdropErrData>>> {
+    const mapData = (bcData: any | undefined) => {
+      if (bcData === undefined) {
+        throw new Error('mapAirdrop - airDrop absent');
+      }
+      return bcData;
+    };
+    const localUrl = useConfigurationStore().config.airdropBaseURL + airdropLocation + "/" + address + '.json';
+    return await this.axiosAirdropCall(localUrl, mapData, lockscreen, null, 'fetchAirdrop - ', true);
   }
 
   mockdata: ClaimRecord =
