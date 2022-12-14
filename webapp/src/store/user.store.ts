@@ -1,21 +1,21 @@
-import { defineStore } from "pinia";
-import { Account, AccountType } from "@/models/store/account";
+import {defineStore} from "pinia";
+import {Account, AccountType} from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
-import { ConnectionInfo, ConnectionError, ConnectionType } from "@/api/wallet.connecton.api";
-import { useToast } from "vue-toastification";
-import { RequestResponse } from '@/models/request-response';
-import { useConfigurationStore } from "./configuration.store";
-import { Delegations, UnbondingDelegations } from "@/models/store/staking";
-import { Rewards } from "@/models/store/distribution";
-import { TxBroadcastError, TxData } from "@/api/tx.broadcast.base.api";
-import { StoreLogger } from "@/services/logged.service";
-import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
-import { LogLevel } from '@/services/logger/log-level';
-import { BigDecimal } from "@/models/store/big.decimal";
-import { useBlockStore } from "./block.store";
+import {ConnectionError, ConnectionInfo, ConnectionType} from "@/api/wallet.connecton.api";
+import {useToast} from "vue-toastification";
+import {RequestResponse} from '@/models/request-response';
+import {useConfigurationStore} from "./configuration.store";
+import {Delegations, UnbondingDelegations} from "@/models/store/staking";
+import {Rewards} from "@/models/store/distribution";
+import {TxBroadcastError, TxData} from "@/api/tx.broadcast.base.api";
+import {StoreLogger} from "@/services/logged.service";
+import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
+import {LogLevel} from '@/services/logger/log-level';
+import {BigDecimal} from "@/models/store/big.decimal";
+import {useBlockStore} from "./block.store";
 import i18n from "@/plugins/i18n";
-import { useProposalsStore } from "./proposals.store";
-import { VoteOption } from "@/models/store/proposal";
+import {useProposalsStore} from "./proposals.store";
+import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
 
 const toast = useToast();
@@ -32,10 +32,11 @@ export interface UserState {
 }
 
 const connectionInfoName = 'connectionInfo';
-const accountAddress = 'account';
+
 
 export const useUserStore = defineStore({
   id: 'userStore',
+
   state: (): UserState => {
     return {
       [connectionInfoName]: new ConnectionInfo(),
@@ -287,7 +288,7 @@ export const useUserStore = defineStore({
   persist: {
     enabled: true,
     strategies: [
-      { storage: localStorage, paths: [connectionInfoName, accountAddress] },
+      { storage: sessionStorage, paths: [connectionInfoName] },
     ]
   }
 });

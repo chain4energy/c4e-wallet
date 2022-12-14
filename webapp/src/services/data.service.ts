@@ -1,14 +1,14 @@
-import { useBlockStore } from "@/store/block.store";
-import { useConfigurationStore } from "@/store/configuration.store";
-import { useProposalsStore } from "@/store/proposals.store";
-import { useSplashStore } from "@/store/splash.store";
-import { useTokensStore } from "@/store/tokens.store";
-import { useUserStore } from "@/store/user.store";
-import { useValidatorsStore } from "@/store/validators.store";
-import { LoggedService } from "./logged.service";
-import { LogLevel } from "./logger/log-level";
-import { ServiceTypeEnum } from "./logger/service-type.enum";
-import { ConnectionInfo } from "@/api/wallet.connecton.api";
+import {useBlockStore} from "@/store/block.store";
+import {useConfigurationStore} from "@/store/configuration.store";
+import {useProposalsStore} from "@/store/proposals.store";
+import {useSplashStore} from "@/store/splash.store";
+import {useTokensStore} from "@/store/tokens.store";
+import {useUserStore} from "@/store/user.store";
+import {useValidatorsStore} from "@/store/validators.store";
+import {LoggedService} from "./logged.service";
+import {LogLevel} from "./logger/log-level";
+import {ServiceTypeEnum} from "./logger/service-type.enum";
+import {ConnectionInfo, ConnectionType} from "@/api/wallet.connecton.api";
 
 const keplrKeyStoreChange = 'keplr_keystorechange';
 

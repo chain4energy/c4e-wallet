@@ -185,7 +185,7 @@ function openAccInfo(){
 function logout(){
 
 const latestBlock = computed(() => useBlockStore().getLatestBlock);
-  useUserStore().logOut();
+useUserStore().logOut();
 }
 </script>
 

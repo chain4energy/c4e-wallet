@@ -45,7 +45,7 @@
           </div>
           <div class="airDropTotal__info">
             <div class="airDropTotal__content-content" v-for="allocations in campains.alocations" :key="allocations">
-              <p>{{allocations.name}}</p>
+              <p class="airDropTotal__text">{{allocations.name}}</p>
               <CoinAmount :amount="allocations.value" :precision="2" :show-denom="true"></CoinAmount>
             </div>
           </div>
@@ -53,8 +53,8 @@
       </div>
       <hr class="airDropTotal__head-hr"/>
       <div class="airDropTotal__footer">
-        <p>What's Next? Follow Us for Updates.</p>
-        <p>Connect with us to stay up-to-date on mainnet launch and what's next for C4E.</p>
+        <h5 class="airDropTotal__footer-header">What's Next? Follow Us for Updates.</h5>
+        <p class="airDropTotal__footer-text">Connect with us to stay up-to-date on mainnet launch and what's next for C4E.</p>
         <div class="airDropTotal__footer-icons">
           <a href="https://t.me/chain4energy" target="_blank" class="airDropTotal__footerIcon">
             <img v-svg-inline class="icon" src="@/assets/svg/social_media/telegram.svg" alt="example svg image" />
@@ -317,21 +317,46 @@ watch(userLoggedIn, () => {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      align-items: center;
     }
     &-content{
       width: 100%;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
     &-details{
       color:  $header-text-color;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 16px;
+
     }
+  }
+  &__text{
+    font-style: normal;
+    margin: 0;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
   }
   &__footer{
     margin: 15px 0;
+    &-header{
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 18px;
+      color: #ffffff;
+    }
     &-icons{
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(calc(100%/ 5), 1fr));
+    }
+    &-text{
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 18px;
+      color: #ffffff;
     }
   }
   &__footerIcon{
