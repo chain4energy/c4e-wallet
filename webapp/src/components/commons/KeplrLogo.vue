@@ -1,10 +1,10 @@
 <template>
-  <span :class="props.reverseColors ?'keplr-logoReversed' :'keplr-logo'">K</span>
+  <span :class="props?.reverseColors ?'keplr-logoReversed' :'keplr-logo'">K</span>
 </template>
 
 <script setup lang="ts">
 const props = defineProps<{
-  reverseColors: false,
+  reverseColors?: false,
 }>();
 
 </script>

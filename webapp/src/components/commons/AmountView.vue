@@ -42,10 +42,10 @@ const props = defineProps<{
       showDenom: boolean,
     }
   ]
-  precision: number,
+  precision?: number,
   reduceBigNumber: boolean,
-  showDenom: boolean,
-  showVesting: boolean
+  showDenom?: boolean,
+  showVesting?: boolean
 }>();
 
 const locked = computed(()=> useUserStore().getVestingLockAmount);

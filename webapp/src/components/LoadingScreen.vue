@@ -3,8 +3,8 @@
   <!--  <BlockUI id="blokUi" :blocked="splashStore.splashOn" :fullScreen="true">-->
 <!--    <div v-if="splashStore.splashOn" class="lds-hourglass"/>-->
   <div>
-    <loading v-model:active="splashStore.splashOn" ><C4ESpinner class="c4e-icon" size="120"/></loading>
-    
+    <loading v-model:active="splashStore.splashOn" ><C4ESpinner class="c4e-icon" :size="120"/></loading>
+
 <!--    <loading v-model:active="ttt"/>-->
   </div>
 </template>

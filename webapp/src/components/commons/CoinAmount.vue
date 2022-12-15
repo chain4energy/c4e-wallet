@@ -12,7 +12,7 @@ import { Coin, DecCoin } from "@/models/store/common";
 import FormattedNumber from "./FormattedNumber.vue";
 
 const props = defineProps<{
-  amount: bigint | number | BigDecimal | Coin | DecCoin,
+  amount:  number | bigint | BigDecimal | Coin | DecCoin,
   precision?: number,
   reduceBigNumber?: boolean,
   showDenom?: boolean,

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h4 v-if="isLoggedIn" class="m-0">{{ $t("STAKING_VIEW.USER_DELEGATIONS") }}</h4>
-    <ValidatorsDataTable v-if="isLoggedIn" :validators="useValidatorsStore().getUserDelgationsValidators" :type="ValidatorsDataTableType.DELEGATIONS"/>
+    <h4 v-if="isLoggedIn && useUserStore().hasDelegations" class="m-0">{{ $t("STAKING_VIEW.USER_DELEGATIONS") }}</h4>
+    <ValidatorsDataTable v-if="isLoggedIn && useUserStore().hasDelegations" :validators="useValidatorsStore().getUserDelgationsValidators" :type="ValidatorsDataTableType.DELEGATIONS"/>
     <h4 v-if="isLoggedIn && useUserStore().hasUndelegations" class="m-0">{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</h4>
     <ValidatorsDataTable v-if="isLoggedIn && useUserStore().hasUndelegations" :validators="useValidatorsStore().getUserUndelgationsValidators" :type="ValidatorsDataTableType.UNDELEGATIONS"/>
     <h4 class="m-0">{{ $t("STAKING_VIEW.VALIDATORS") }}</h4>

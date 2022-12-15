@@ -2,7 +2,12 @@
 <div class="userdata">
   <div class="userdata__accountData">
     <div class="userdata__accountData-base" >
-      <AmountView :coins="representData" :showVesting="vestingStatus">
+      <AmountView
+        :coins="representData"
+        :showVesting="vestingStatus"
+        :reduceBigNumber="true"
+        :precision="2"
+      >
         <template v-slot:logo-front>
           <C4EIcon icon="c4e-circle" :size="30"/>
         </template>

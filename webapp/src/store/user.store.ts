@@ -283,6 +283,9 @@ export const useUserStore = defineStore({
     },
     hasUndelegations(): boolean {
       return this.undelegations.hasUnbondingDelegations();
+    },
+    hasDelegations(): boolean {
+      return this.delegations.hasDelegations();
     }
   },
   persist: {

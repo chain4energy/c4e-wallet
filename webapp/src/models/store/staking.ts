@@ -20,8 +20,10 @@ export class Delegations {
 
   public getAmountByValidator(validatorAddress: string): bigint {
     const amount = this.delegations.get(validatorAddress)?.amount;
-    console.log(this.delegations)
     return amount === undefined ? 0n : amount;
+  }
+  public hasDelegations():boolean{
+    return this.delegations.size > 0;
   }
 
 }
