@@ -336,7 +336,7 @@ watch(userLoggedIn, () => {
       align-items: center;
       flex-direction: column;
       justify-content: space-between;
-      margin-top: 20px;
+      margin-top: 25px;
       color: $header-text-color;
     }
 
@@ -379,7 +379,7 @@ watch(userLoggedIn, () => {
       font-family: 'Inter',sans-serif;
       font-style: normal;
       font-weight: 700;
-      font-size: 15px;
+      font-size: 18px;
       line-height: 18px;
       color: #ffffff;
     }
@@ -398,8 +398,8 @@ watch(userLoggedIn, () => {
   }
   &__footerIcon{
     cursor: pointer;
-    width: 27px;
-    height: 25px;
+    //width: 27px;
+    height: 40px;
   }
   &__info{
     background-color: $main-lighter-color;

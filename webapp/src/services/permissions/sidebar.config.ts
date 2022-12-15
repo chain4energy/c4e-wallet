@@ -48,7 +48,7 @@ export class SidebarConfig{
     const retVal = new SidebarElement();
     retVal.id = 3;
     retVal.href = '/airDrop';
-    retVal.title = 'air drop';
+    retVal.title = 'Airdrop';
     retVal.icon = new SidebarIcon('Award');
     return retVal;
   }
