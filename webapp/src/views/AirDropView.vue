@@ -3,7 +3,7 @@
   <TabView class="airDrop__tabview">
     <TabPanel >
       <template #header>
-        <div>Cosmos Air Drop</div>
+        <div>All Airdrops</div>
       </template>
       <AirDropTotal/>
     </TabPanel>
