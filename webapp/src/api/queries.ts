@@ -15,9 +15,9 @@ export default {
     UNSTAKED_AMOUNT_URL: '/cosmos/staking/v1beta1/delegators/{address}/unbonding_delegations',
     REWARDS_URL: '/cosmos/distribution/v1beta1/delegators/{address}/rewards',
     PROPOSAL_TALLY_URL: '/cosmos/gov/v1beta1/proposals/{id}/tally',
-    INFLATION_URL: '/c4e/minter/inflation',
+    INFLATION_URL: '/c4e/minter/v1beta1/inflation',
     STAKING_PARAMS_URL: '/cosmos/staking/v1beta1/params',
-    VESTINGS_SUM_URL: '/c4e/vesting/summary'
+    VESTINGS_SUM_URL: '/c4e/vesting/v1beta1/summary'
 
   },
   hasura: {
