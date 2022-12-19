@@ -1,5 +1,5 @@
 <template>
-  <div @mouseenter="selectionView = true" @mouseover="selectionView = true" @mouseleave="selectionView =false" class="currentBlockchain">
+  <div @mouseover="selectionView = true" @mouseleave="selectionView =false" class="currentBlockchain">
     <div class="currentBlockchain__icon" >
       <svg width="49" height="44" viewBox="0 0 49 44" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle opacity="0.2" cx="25" cy="22" r="12" fill="#81CF1F">

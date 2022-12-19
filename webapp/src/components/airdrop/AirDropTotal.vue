@@ -12,7 +12,7 @@
         <hr class="airDropTotal__hr" v-if="!userLoggedIn" :data-after="$t('AIRDROP.OR')"/>
       </div>
       <div class="airDropTotal__head">
-        <Form @submit="submit" class="loginEmail__body airDropTotal__form" :validation-schema="amountSchema" v-slot="{ errors }">
+        <Form v-if="!userLoggedIn" @submit="submit" class="loginEmail__body airDropTotal__form" :validation-schema="amountSchema" v-slot="{ errors }">
           <div class="field">
             <Field v-model="address" name="address" placeholder=" " type="text" class=" form-control airDropTotal__field " :class="{ 'is-invalid': errors.address }"></Field>
             <span>{{ $t('AIRDROP.C4E_HELP') }}</span>
@@ -353,6 +353,11 @@ watch(userLoggedIn, () => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      text-align: initial;
+      @media (max-width: 600px) {
+        flex-direction: column;
+        text-align: center;
+      }
     }
 
     &-details {
@@ -371,6 +376,7 @@ watch(userLoggedIn, () => {
   }
 
   &__footer {
+    width: 90%;
     margin: 15px 0;
     display: flex;
     align-items: center;
@@ -387,7 +393,10 @@ watch(userLoggedIn, () => {
       display: grid;
       margin-top: 15px;
       width: 70%;
-      grid-template-columns: repeat(auto-fit, minmax(calc(100%/ 5), 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(calc(100%/ 5), 2fr));
+      @media (max-width: 500px) {
+        width: 100%
+      }
     }
     &-text{
       font-weight: 400;

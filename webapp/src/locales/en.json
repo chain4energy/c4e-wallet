@@ -350,7 +350,7 @@
     "CONNECT": "Connect with Keplr",
     "OR": "or",
     "CONNECT_CHAINS": "Connect with COSM/C4E account",
-    "C4E_HELP": "Import C4E address",
+    "C4E_HELP": "Import C4E or Cosmos address ",
     "COSMOS_HELP": "Import COSMOS address"
   },
   "COPY": {

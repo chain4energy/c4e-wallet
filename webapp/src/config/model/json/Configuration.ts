@@ -1,3 +1,5 @@
+
+
 export interface Gas {
   vote: number,
   delegate: number,
@@ -16,6 +18,27 @@ export interface ViewDenom {
   denom: string,
   viewDenom: string,
   coinDecimals: number,
+}
+
+export interface JsonQueries {
+  STAKING_POOL_URL: string;
+  TOTAL_SUPPLY_URL: string;
+  COMMUNITY_POOL_URL: string;
+  PROPOSALS_URL: string;
+  PROPOSALS_BY_ID_URL: string;
+  TALLYING_URL: string;
+  DEPOSIT_URL: string;
+  LATEST_BLOCK_URL: string;
+  VALIDATORS_URL: string;
+  ACCOUNT_URL: string;
+  BALANCE_URL: string;
+  STAKED_AMOUNT_URL: string;
+  UNSTAKED_AMOUNT_URL: string;
+  REWARDS_URL: string;
+  PROPOSAL_TALLY_URL: string;
+  INFLATION_URL: string;
+  STAKING_PARAMS_URL: string;
+  VESTINGS_SUM_URL: string;
 }
 
 export interface Configuration {
@@ -40,6 +63,7 @@ export interface Configuration {
   validatorsDataRefreshTimeout: number,
   accountDataRefreshTimeout: number,
   proposalsPageLimit: number,
+  queries: JsonQueries;
   explorerAccount: string,
   explorerTx: string,
   isMainNetwork: boolean,

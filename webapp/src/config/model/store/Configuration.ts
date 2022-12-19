@@ -1,5 +1,11 @@
 import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
-import { Gas as JsonGas, ViewDenom as JsonViewDenom, Configuration as JsonConfiguration, KeplrGasPriceSteps as JsonKeplrGasPriceSteps } from "../json/Configuration";
+import {
+  Gas as JsonGas,
+  ViewDenom as JsonViewDenom,
+  Configuration as JsonConfiguration,
+  KeplrGasPriceSteps as JsonKeplrGasPriceSteps,
+  JsonQueries
+} from "../json/Configuration";
 export class Gas implements JsonGas {
   vote: number;
   delegate: number;
@@ -63,6 +69,71 @@ export class KeplrGasPriceSteps implements JsonKeplrGasPriceSteps{
   }
 }
 
+export class Queries implements JsonQueries{
+  STAKING_POOL_URL: string;
+  TOTAL_SUPPLY_URL: string;
+  COMMUNITY_POOL_URL: string;
+  PROPOSALS_URL: string;
+  PROPOSALS_BY_ID_URL: string;
+  TALLYING_URL: string;
+  DEPOSIT_URL: string;
+  LATEST_BLOCK_URL: string;
+  VALIDATORS_URL: string;
+  ACCOUNT_URL: string;
+  BALANCE_URL: string;
+  STAKED_AMOUNT_URL: string;
+  UNSTAKED_AMOUNT_URL: string;
+  REWARDS_URL: string;
+  PROPOSAL_TALLY_URL: string;
+  INFLATION_URL: string;
+  STAKING_PARAMS_URL: string;
+  VESTINGS_SUM_URL: string;
+  constructor (
+    queries : JsonQueries | undefined
+  ){
+    if(queries){
+      this.STAKING_POOL_URL = queries.STAKING_POOL_URL;
+      this.TOTAL_SUPPLY_URL = queries.TOTAL_SUPPLY_URL;
+      this.COMMUNITY_POOL_URL = queries.COMMUNITY_POOL_URL;
+      this.PROPOSALS_URL = queries.PROPOSALS_URL;
+      this.PROPOSALS_BY_ID_URL = queries.PROPOSALS_BY_ID_URL;
+      this.TALLYING_URL = queries.TALLYING_URL;
+      this.DEPOSIT_URL = queries.DEPOSIT_URL;
+      this.LATEST_BLOCK_URL = queries.LATEST_BLOCK_URL;
+      this.VALIDATORS_URL = queries.VALIDATORS_URL;
+      this.ACCOUNT_URL = queries.ACCOUNT_URL;
+      this.BALANCE_URL = queries.BALANCE_URL;
+      this.STAKED_AMOUNT_URL = queries.STAKED_AMOUNT_URL;
+      this.UNSTAKED_AMOUNT_URL = queries.UNSTAKED_AMOUNT_URL;
+      this.REWARDS_URL = queries.REWARDS_URL;
+      this.PROPOSAL_TALLY_URL = queries.PROPOSAL_TALLY_URL;
+      this.INFLATION_URL =queries.INFLATION_URL;
+      this.STAKING_PARAMS_URL = queries.STAKING_PARAMS_URL;
+      this.VESTINGS_SUM_URL = queries.VESTINGS_SUM_URL;
+    } else {
+      this.STAKING_POOL_URL = '';
+      this.TOTAL_SUPPLY_URL = '';
+      this.COMMUNITY_POOL_URL = '';
+      this.PROPOSALS_URL = '';
+      this.PROPOSALS_BY_ID_URL = '';
+      this.TALLYING_URL = '';
+      this.DEPOSIT_URL = '';
+      this.LATEST_BLOCK_URL = '';
+      this.VALIDATORS_URL = '';
+      this.ACCOUNT_URL = '';
+      this.BALANCE_URL = '';
+      this.STAKED_AMOUNT_URL = '';
+      this.UNSTAKED_AMOUNT_URL = '';
+      this.REWARDS_URL = '';
+      this.PROPOSAL_TALLY_URL = '';
+      this.INFLATION_URL = '';
+      this.STAKING_PARAMS_URL = '';
+      this.VESTINGS_SUM_URL = '';
+    }
+
+  }
+}
+
 export class Configuration implements JsonConfiguration {
   bcApiURL: string;
   bcRpcURL: string;
@@ -87,6 +158,7 @@ export class Configuration implements JsonConfiguration {
   validatorsDataRefreshTimeout: number;
   accountDataRefreshTimeout: number;
   proposalsPageLimit: number;
+  queries: Queries;
   explorerAccount: string;
   explorerTx: string;
   isMainNetwork: boolean;
@@ -123,6 +195,7 @@ export class Configuration implements JsonConfiguration {
       this.validatorsDataRefreshTimeout = configuration.validatorsDataRefreshTimeout;
       this.accountDataRefreshTimeout = configuration.accountDataRefreshTimeout;
       this.proposalsPageLimit = configuration.proposalsPageLimit;
+      this.queries = new Queries(configuration.queries);
       this.explorerAccount = configuration.explorerAccount;
       this.explorerTx = configuration.explorerTx;
       this.isMainNetwork = configuration.isMainNetwork;
@@ -153,6 +226,7 @@ export class Configuration implements JsonConfiguration {
       this.validatorsDataRefreshTimeout = 60000;
       this.accountDataRefreshTimeout = 60000;
       this.proposalsPageLimit = 10;
+      this.queries = new Queries(undefined);
       this.explorerAccount = '';
       this.explorerTx = '';
       this.isMainNetwork = false;
