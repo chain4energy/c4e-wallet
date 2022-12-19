@@ -4,15 +4,15 @@
       <div class="airDropTotal__login">
         <Button
           @click="dataService.onKeplrLogIn()"
-          v-if="!userLoggedIn"
+          v-if="!userLoggedIn  && !isMobile"
           class="airDropTotal-btn">
           <KeplrLogo :reverse-colors="true"/>
           {{ $t('AIRDROP.CONNECT') }}
         </Button>
-        <hr class="airDropTotal__hr" v-if="!userLoggedIn" :data-after="$t('AIRDROP.OR')"/>
+        <hr class="airDropTotal__hr" v-if="!userLoggedIn  && !isMobile" :data-after="$t('AIRDROP.OR')"/>
       </div>
       <div class="airDropTotal__head">
-        <Form @submit="submit" class="loginEmail__body airDropTotal__form" :validation-schema="amountSchema" v-slot="{ errors }">
+        <Form v-if="!userLoggedIn" @submit="submit" class="loginEmail__body airDropTotal__form" :validation-schema="amountSchema" v-slot="{ errors }">
           <div class="field">
             <Field v-model="address" name="address" placeholder=" " type="text" class=" form-control airDropTotal__field " :class="{ 'is-invalid': errors.address }"></Field>
             <span>{{ $t('AIRDROP.C4E_HELP') }}</span>
@@ -20,10 +20,10 @@
               {{ errors.address ? errors.address : "" }}
             </div>
           </div>
-          <Button type="submit" class="airDropTotal__head-btn">{{ $t('COMMON.CONNECT') }}</Button>
+          <Button type="submit" class="airDropTotal__head-btn">{{ $t('AIRDROP.CHECK') }}</Button>
         </Form>
         <div class="airDropTotal__totalData">
-          <h4>Total Fairdrop allocation</h4>
+          <h4>Total Fairdrop Allocation</h4>
           <div class="airDropTotal__totalData-item">
             <div class="airDropTotal__totalData-image">
               <Image class="navbar-brand" :src="require('@/assets/c4elogo-new.svg')" alt="Image" height="58"/>
@@ -93,12 +93,17 @@ import {useConfigurationStore} from "@/store/configuration.store";
 import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import {useAirDropStore} from "@/store/airDrop.store";
 import dataService from "@/services/data.service";
+import deviceType from "@/utils/mobileCheck";
 
 const address = ref<string>();
 let errorMessageType = '';
 
 const userLoggedIn = computed(() => {
   return useUserStore().getAccount.address != '';
+});
+
+const isMobile = computed(() => {
+  return deviceType;
 });
 
 const airDrops = computed(() => {
@@ -353,6 +358,7 @@ watch(userLoggedIn, () => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      text-align: left;
     }
 
     &-details {
@@ -372,6 +378,7 @@ watch(userLoggedIn, () => {
 
   &__footer {
     margin: 15px 0;
+    width: 90%;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -388,6 +395,9 @@ watch(userLoggedIn, () => {
       margin-top: 15px;
       width: 70%;
       grid-template-columns: repeat(auto-fit, minmax(calc(100%/ 5), 1fr));
+      @media (max-width: 500px) {
+        width: 100%;
+      }
     }
     &-text{
       font-weight: 400;
