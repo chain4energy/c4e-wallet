@@ -1,21 +1,22 @@
-import { BigDecimal } from "@/models/store/big.decimal";
+import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import i18n from "@/plugins/i18n";
 import { formatBigNumberLocalized } from "@/utils/locale-number-formatter";
 
-const communityPoolColor = '#fff1a9';
-const strategicReversePoolColor = '#72bf44';
-const airdropPoolColor = '#26697f';
+const communityPoolColor = '#72BF44';
+const strategicReversePoolColor = '#27697F';
+const airdropPoolColor = '#FFF1A9';
 
 const bondedColor = '#26697f';
 const unBoundedColor = '#fff1a9';
 const unBoundingColor = '#72bf44';
 const remainingTokensColor = '#E4E4E4';
 
-export function createDashboardPoolsChartData(remainingTokens: number | BigDecimal, communityPool: number | BigDecimal, strategicReversePool: number | BigDecimal, airdropPool: number | BigDecimal, precision = 4) {
+export function createDashboardPoolsChartData(remainingTokens: number | BigDecimal, communityPool: number | BigDecimal, strategicReversePool: number | BigDecimal, airdropPool: number | BigDecimal, totalSupply: number | BigDecimal, precision = 4) {
   const formatter = function (params: any) {
+    const sum = (params.value / Number(totalSupply)) * 100;
     return `
       <b>${params.data.name}</b></br>
-      <b>${formatBigNumberLocalized(params.value)}</b>`;
+      <b>${formatBigNumberLocalized(params.value)}(${sum.toFixed(2)}%)</b>`;
   };
   return createDashboardPoolsSingleChartData(
     formatter,
