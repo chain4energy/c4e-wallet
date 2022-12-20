@@ -16,7 +16,7 @@ export function createDashboardPoolsChartData(remainingTokens: number | BigDecim
     const sum = (params.value / Number(totalSupply)) * 100;
     return `
       <b>${params.data.name}</b></br>
-      <b>${formatBigNumberLocalized(params.value)}(${sum.toFixed(2)}%)</b>`;
+      <b>${formatBigNumberLocalized(params.value)} (${sum.toFixed(2)}%)</b>`;
   };
   return createDashboardPoolsSingleChartData(
     formatter,
