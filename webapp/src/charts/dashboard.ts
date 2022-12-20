@@ -108,9 +108,10 @@ function createDashboardPoolsChartSeriesData(value: number | BigDecimal, name: s
 
 export function createTokenomicsChartData(bounded: number | BigDecimal, unBounded: number | BigDecimal, unBounding: number | BigDecimal, total: number | BigDecimal, precision = 4) {
   const formatter = function (params: any) {
+    const sum = (params.value / Number(total)) * 100;
     return `
       <b>${params.data.name}</b></br>
-      <b>${formatBigNumberLocalized(params.value)}</b>`;
+      <b>${formatBigNumberLocalized(params.value)} (${sum.toFixed(2)}%)</b>`;
   };
 
   return createTokenomicsSingleChartData(
