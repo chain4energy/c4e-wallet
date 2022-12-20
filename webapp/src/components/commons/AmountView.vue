@@ -12,7 +12,7 @@
         <div class="vesting-flag">Vesting</div>
         <div class="userdata-option vesting-first" v-if="useUserStore().isContinuousVestingAccount">
               <span class="header">{{ $t('USER_DATA.LOCKED') }}</span>
-              <CoinAmount :amount="locked" :show-denom="true"/>
+              <CoinAmount :key="locked" :amount="locked" :show-denom="true"/>
           </div>
           <div class="userdata-option vesting" v-if="useUserStore().isContinuousVestingAccount">
               <span class="header">{{ $t('USER_DATA.VESTING_END') }}</span>
@@ -28,11 +28,13 @@
 
 <script setup lang="ts">
 import { BigDecimal } from "@/models/store/big.decimal";
-import { computed } from "vue";
+import {computed, onMounted} from "vue";
 import { Coin, DecCoin } from "@/models/store/common";
 import CoinAmount from "./CoinAmount.vue";
 import { useUserStore } from "@/store/user.store";
 import DateCommon from "@/components/commons/DateCommon.vue";
+import dataService from "@/services/data.service";
+import {useBlockStore} from "@/store/block.store";
 
 const props = defineProps<{
   coins:[
@@ -48,7 +50,13 @@ const props = defineProps<{
   showVesting?: boolean
 }>();
 
-const locked = computed(()=> useUserStore().getVestingLockAmount);
+const locked = computed(()=> {
+  return useUserStore().getVestingLockAmount;
+});
+
+onMounted(() =>{
+  useBlockStore().fetchLatestBlock(false);
+})
 
 
 </script>
