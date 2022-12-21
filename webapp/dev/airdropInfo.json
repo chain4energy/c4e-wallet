@@ -4,6 +4,7 @@
       "name": "ATOM Stakers Campaign",
       "subfolder": "stakedrop",
       "detailsUrl": "https://medium.com/@chain4energy/stake-drop-summary-e328831689b4",
+      "hideIfAbsent": false,
       "allocationMapping": [
         {
           "name": "Base Allocation",
@@ -23,10 +24,39 @@
       "name": "Green Drop Campaign",
       "subfolder": "greendrop",
       "detailsUrl": "https://medium.com/chain4-energy/the-green-airdrop-by-chain4energy-join-our-gleam-campaign-24e59568e22a",
+      "hideIfAbsent": false,
       "allocationMapping": [
         {
           "name": "Token Allocation",
           "mapping": "gleam"
+        }
+      ]
+    },
+    {
+      "name": "Santa Drop Campaign",
+      "subfolder": "santadrop",
+      "detailsUrl": "https://gleam.io/Qqiwq/c4e-santa-drop",
+      "hideIfAbsent": false,
+      "allocationMapping": [
+        {
+          "name": "Token Allocation",
+          "mapping": "santadrop"
+        }
+      ]
+    },
+    {
+      "name": "Team Drop Campaign",
+      "subfolder": "teamdrop",
+      "detailsUrl": "",
+      "hideIfAbsent": true,
+      "allocationMapping": [
+        {
+          "name": "Token Base Allocation",
+          "mapping": "team-base"
+        },
+        {
+          "name": "Token Quarterly For 3 Years Allocation",
+          "mapping": "team-quarterly-for-3-years"
         }
       ]
     }
