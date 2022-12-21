@@ -40,15 +40,17 @@
         <hr v-if="airDrops?.campains" class="airDropTotal__head-hr"/>
       </div>
       <div class="airDropTotal__content" v-if="airDrops">
-        <div class="airDropTotal__content-items" v-for="campains in airDrops.campains" :key="campains">
-          <div class="airDropTotal__content-header">
-            <h5>{{ campains.name }}</h5>
-            <a class="airDropTotal__content-details" :href="campains.details_url" target="_blank">details</a>
-          </div>
-          <div class="airDropTotal__info">
-            <div class="airDropTotal__content-content" v-for="allocations in campains.alocations" :key="allocations">
-              <p class="airDropTotal__text">{{allocations.name}}</p>
-              <CoinAmount :amount="allocations.value" :precision="2" :show-denom="true" :show-tooltip="true"></CoinAmount>
+        <div  v-for="campaign in airDrops.campains" :key="campaign">
+          <div class="airDropTotal__content-items" v-if="!campaign.hideCampaign()">
+            <div class="airDropTotal__content-header">
+              <h5>{{ campaign.name }}</h5>
+              <a class="airDropTotal__content-details" :href="campaign.details_url" target="_blank">details</a>
+            </div>
+            <div class="airDropTotal__info">
+              <div class="airDropTotal__content-content" v-for="allocations in campaign.allocations" :key="allocations">
+                <p class="airDropTotal__text">{{ allocations.name }}</p>
+                <CoinAmount :amount="allocations.value" :precision="2" :show-denom="true" :show-tooltip="true"></CoinAmount>
+              </div>
             </div>
           </div>
         </div>
@@ -197,7 +199,7 @@ watch(userLoggedIn, () => {
 .airDropTotal {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(calc(100% / 4), 1fr));
-  font-family: 'Inter',sans-serif;
+  font-family: 'Inter', sans-serif;
 
 
   &__container {
@@ -369,7 +371,8 @@ watch(userLoggedIn, () => {
       line-height: 16px;
     }
   }
-  &__text{
+
+  &__text {
     margin: 0.4em 0;
     font-style: normal;
     font-weight: 400;
@@ -383,36 +386,41 @@ watch(userLoggedIn, () => {
     display: flex;
     align-items: center;
     flex-direction: column;
-    &-header{
-      font-family: 'Inter',sans-serif;
+
+    &-header {
+      font-family: 'Inter', sans-serif;
       font-style: normal;
       font-weight: 700;
       font-size: 18px;
       line-height: 18px;
       color: #ffffff;
     }
-    &-icons{
+
+    &-icons {
       display: grid;
       margin-top: 15px;
       width: 70%;
-      grid-template-columns: repeat(auto-fit, minmax(calc(100%/ 5), 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(calc(100% / 5), 1fr));
       @media (max-width: 500px) {
         width: 100%;
       }
     }
-    &-text{
+
+    &-text {
       font-weight: 400;
       font-size: 15px;
       line-height: 18px;
       color: #ffffff;
     }
   }
-  &__footerIcon{
+
+  &__footerIcon {
     cursor: pointer;
     //width: 27px;
     height: 40px;
   }
-  &__info{
+
+  &__info {
     background-color: $main-lighter-color;
     box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
     display: flex;
@@ -423,7 +431,8 @@ watch(userLoggedIn, () => {
     padding: 0.9em;
     border-radius: 5px;
   }
-  &__field{
+
+  &__field {
     border-radius: 5px;
   }
 

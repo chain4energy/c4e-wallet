@@ -115,10 +115,11 @@ export const useAirDropStore = defineStore({
               }
               allocations.push(new AlocationsSt(allocation.name, mappedValue));
             });
-            campaignsList.push(new Campain(campaign.name, campaign.detailsUrl, allocations));
+            campaignsList.push(new Campain(campaign.name, campaign.detailsUrl, !responseList[i].isSuccess(), campaign.hideIfAbsent, allocations));
             console.log("campaign:" + JSON.stringify(campaign));
           }
           //update data in store
+          console.log("campaignsList:" + JSON.stringify(campaignsList));
           this.airDropMock = new AirdropTotal(campaignsList);
         }
       } catch (err) {
