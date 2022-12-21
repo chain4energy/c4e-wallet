@@ -284,7 +284,8 @@
     "UNSTAKING": "Odblokowywanie",
     "CLAIM_REWARDS": "Odbierz nagrody",
     "LOCKED": "Zablokowane",
-    "VESTING_END": "Data uwolnienia"
+    "VESTING_END": "Data uwolnienia",
+    "CLAIM_HEADER": "Oczekująca nagroda"
   },
   "COMMON": {
     "CLOSE": "Zamkij",

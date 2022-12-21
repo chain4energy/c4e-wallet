@@ -28,8 +28,8 @@
 
   <div class="userdata__rewards">
     <div class="userdata__rewardAmount">
-      <Icon name="Gift" class="gift-color"></Icon>
-      <CoinAmount :amount="useUserStore().getTotalRewards" :show-denom="true"/>
+      <p class="userdata__claimText">{{ $t('USER_DATA.CLAIM_HEADER') }}</p>
+      <CoinAmount class="userdata__claimAmount" :amount="useUserStore().getTotalRewards" :show-denom="true"/>
     </div>
     <Button class="outlined-secondary" @click="claimRewards">{{ $t('USER_DATA.CLAIM_REWARDS') }}</Button>
 
@@ -149,6 +149,13 @@ const representData = computed(()=> {
       // text-align: left;
     }
   }
+  &__claimText{
+    font-size: 0.6em;
+    color: white;
+  }
+  &__claimAmount{
+    text-align: left;
+  }
   &__amounts{
     text-align: center;
     width: 100%;
@@ -161,7 +168,7 @@ const representData = computed(()=> {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 25px;
+    padding: 20px 20px;
     width: 30%;
     height: 80px;
     border-radius: 0 6px 6px 0;
@@ -169,6 +176,7 @@ const representData = computed(()=> {
   }
   &__rewardAmount{
     display: flex;
+    flex-direction: column;
     font-weight: 700;
     font-size: 18px;
     line-height: 27px;

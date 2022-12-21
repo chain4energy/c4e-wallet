@@ -296,7 +296,8 @@
     "UNSTAKING": "Unstaking",
     "CLAIM_REWARDS": "Claim rewards",
     "LOCKED": "Locked",
-    "VESTING_END": "Vesting end"
+    "VESTING_END": "Vesting end",
+    "CLAIM_HEADER": "Pending Staking Reward"
   },
   "COMMON": {
     "CLOSE": "Close",
