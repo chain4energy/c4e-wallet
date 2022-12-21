@@ -33,6 +33,7 @@
               :amount="airDrops?.campains ? airDrops.getTotal() : 0" :precision="2"
               :show-denom="true"
               :reduce-big-number="true"
+              :show-tooltip="true"
             />
           </div>
         </div>
@@ -47,7 +48,7 @@
           <div class="airDropTotal__info">
             <div class="airDropTotal__content-content" v-for="allocations in campains.alocations" :key="allocations">
               <p class="airDropTotal__text">{{allocations.name}}</p>
-              <CoinAmount :amount="allocations.value" :precision="2" :show-denom="true"></CoinAmount>
+              <CoinAmount :amount="allocations.value" :precision="2" :show-denom="true" :show-tooltip="true"></CoinAmount>
             </div>
           </div>
         </div>
@@ -55,7 +56,7 @@
       <hr class="airDropTotal__head-hr"/>
       <div class="airDropTotal__footer">
         <h5 class="airDropTotal__footer-header">What's Next? Follow Us for Updates.</h5>
-        <p class="airDropTotal__footer-text">Connect with us to stay up-to-date on mainnet launch and what's next for C4E.</p>
+        <p class="airDropTotal__footer-text">Connect with us to stay up-to-date on airdrop distribution and what's next for C4E.</p>
         <div class="airDropTotal__footer-icons">
           <a href="https://t.me/chain4energy" target="_blank" class="airDropTotal__footerIcon">
             <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/telegram.svg" alt="example svg image"/>

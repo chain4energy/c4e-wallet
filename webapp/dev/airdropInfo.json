@@ -29,6 +29,17 @@
           "mapping": "gleam"
         }
       ]
+    },
+    {
+      "name": "Santa Drop Campaign",
+      "subfolder": "santadrop",
+      "detailsUrl": "https://gleam.io/Qqiwq/c4e-santa-drop",
+      "allocationMapping": [
+        {
+          "name": "Token Allocation",
+          "mapping": "santadrop"
+        }
+      ]
     }
   ]
 }

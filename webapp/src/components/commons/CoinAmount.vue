@@ -1,5 +1,5 @@
 <template>
-    <span>
+    <span v-tooltip="{ value: retrieveConvertedAmount() + ' ' + getDenom(), disabled:!props.showTooltip, class:'coin-amount-tooltip'}">
       <FormattedNumber :amount="retrieveConvertedAmount()" :precision="precision" :reduceBigNumber="reduceBigNumber" />
       <span v-if="showDenom">&nbsp;{{ getDenom()}}</span>
     </span>
@@ -11,12 +11,13 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { Coin, DecCoin } from "@/models/store/common";
 import FormattedNumber from "./FormattedNumber.vue";
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   amount: bigint | number | BigDecimal | Coin | DecCoin,
   precision?: number,
   reduceBigNumber?: boolean,
   showDenom?: boolean,
-}>();
+  showTooltip: boolean
+}>(),{showTooltip: false});
 
 function getDenom(): string {
   if (props.amount instanceof Coin || props.amount instanceof DecCoin) {
@@ -53,4 +54,7 @@ function retrieveConvertedAmount(): number | BigDecimal {
 span {
   font-weight: bold;
 }
+
+
+
 </style>
