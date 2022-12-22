@@ -70,6 +70,7 @@ const strategicReversePool = computed(() => {
   return useConfigurationStore().config.getConvertedAmount(tokensStore.getStrategicReversePool.amount);
 });
 
+
 const airdropPool = computed(() => {
   return useConfigurationStore().config.getConvertedAmount(tokensStore.getAirdropPool.amount);
 });
