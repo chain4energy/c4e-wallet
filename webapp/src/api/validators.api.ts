@@ -49,8 +49,8 @@ export class ValidatorsApi extends BaseApi {
   }
 
   public async fetchValidatorsLogo(lockscreen: boolean): Promise<RequestResponse<Map<string, string>, ErrorData<HasuraErrorData>>> {
-    const mapData = (hasureData: ValidatorDescriptionResponse | undefined) => {
-      return mapValidatorDescription(hasureData);
+    const mapData = (hasuraData: ValidatorDescriptionResponse | undefined) => {
+      return mapValidatorDescription(hasuraData);
     };
     return this.axiosHasuraCall(queries.hasura.VALIDATOR_DESCRIPTION, mapData, lockscreen, null, 'fetchValidatorsLogo - ');
   }
