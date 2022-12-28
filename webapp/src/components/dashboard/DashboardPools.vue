@@ -29,12 +29,14 @@
         </div>
     </div>
     </div>
-      <ShadowedSvgChart id="poolschartdiv">
+    <div style=" height: 100%; width:100% ;max-width:350px;margin-left: auto;
+    margin-right: auto " ref="poolsRef">
+      <ShadowedSvgChart id="poolschartdiv" >
         <v-chart :option="option" autoresize />
-          <C4EIcon icon="c4e-circle" class="inside" size="80"/>
+        <C4EIcon icon="c4e-circle" class="inside" :size="poolsRef.clientWidth/3"/>
       </ShadowedSvgChart>
+    </div>
   </div>
-
 </template>
 
 <script setup lang="ts">
@@ -42,7 +44,7 @@ import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { SVGRenderer } from "echarts/renderers";
-import { computed } from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import Icon from "../features/IconComponent.vue";
 import {useTokensStore} from "@/store/tokens.store";
@@ -51,7 +53,6 @@ import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 import C4EIcon from "../commons/C4EIcon.vue";
 import CoinAmount from "../commons/CoinAmount.vue";
 import { useConfigurationStore } from "@/store/configuration.store";
-
 use([
   SVGRenderer,
   PieChart,
@@ -61,7 +62,7 @@ use([
 ]);
 
 const tokensStore = useTokensStore();
-
+const poolsRef = ref(0);
 const communityPool = computed(() => {
   return useConfigurationStore().config.getConvertedAmount(tokensStore.getCommunityPool.amount);
 });
@@ -86,11 +87,13 @@ const option = computed(() => {
   return createDashboardPoolsChartData(remainingTokens.value, communityPool.value, strategicReversePool.value, airdropPool.value, totalSupply.value);
 });
 
+
 </script>
 
 <style scoped lang="scss">
 #poolschartdiv {
   width: 100%;
+  height: 100%;
   // margin-bottom: -30px;
   // margin-left: -10px;
   // background: transparent url("@/assets/logo.png") no-repeat center ;
@@ -115,6 +118,7 @@ position: relative;
 @media screen and (max-width: 1150px) {
   #poolschartdiv {
     height: 350px;
+    width: 100%;
     align-self: center;
 
     .inside{
