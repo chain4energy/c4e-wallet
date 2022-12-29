@@ -14,7 +14,7 @@
     </div>
     <transition name="slide-fade">
       <select @click="selectionView2 = true" @focusout="selectionView2=false" v-if="selectionView || selectionView2" class="currentBlockchain__selector" @change="onChange($event)">
-        <option v-for="[key, items] in configMap" :key="key" :value="key" :selected= "curentNetwork === items.networkName">{{ items.networkName }}</option>
+        <option @click="selectionView2 = false" v-for="[key, items] in configMap" :key="key" :value="key" :selected= "curentNetwork === items.networkName">{{ items.networkName }}</option>
       </select>
     </transition>
   </div>
@@ -23,7 +23,7 @@
 <script setup lang="ts">
 
 import {useConfigurationStore} from "@/store/configuration.store";
-import {computed, ref} from "vue";
+import {computed, nextTick, ref} from "vue";
 import {useBlockStore} from "@/store/block.store";
 import { changeTitle } from "@/utils/title-changer";
 
@@ -37,8 +37,17 @@ const curentNetwork = computed(() => {
 const onChange = (event: any) => {
   useConfigurationStore().setNetwork(event.target.value);
   changeTitle();
+  nextTick(() => {
+    resetAfterChange();
+  });
+
 };
 const latestBlock = computed(() => useBlockStore().getLatestBlock);
+
+function resetAfterChange(){
+  selectionView2.value = false;
+  selectionView.value = false;
+}
 </script>
 
 <style scoped lang="scss">
