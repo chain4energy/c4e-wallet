@@ -13,7 +13,7 @@
 
     </div>
     <transition name="slide-fade">
-      <select v-if="selectionView" class="currentBlockchain__selector" @change="onChange($event)">
+      <select @click="selectionView2 = true" @focusout="selectionView2=false" v-if="selectionView || selectionView2" class="currentBlockchain__selector" @change="onChange($event)">
         <option v-for="[key, items] in configMap" :key="key" :value="key" :selected= "curentNetwork === items.networkName">{{ items.networkName }}</option>
       </select>
     </transition>
@@ -28,6 +28,7 @@ import {useBlockStore} from "@/store/block.store";
 import { changeTitle } from "@/utils/title-changer";
 
 const selectionView = ref(false);
+const selectionView2 = ref(false);
 const configMap = computed(() => {return useConfigurationStore().getConfigList;});
 const curentNetwork = computed(() => {
   return useConfigurationStore().getConfigName;
