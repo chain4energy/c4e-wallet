@@ -59,6 +59,18 @@
           "mapping": "team-quarterly-for-3-years"
         }
       ]
+    },
+    {
+      "name": "AMA Drop Campaign",
+      "subfolder": "amadrop",
+      "detailsUrl": "",
+      "hideIfAbsent": true,
+      "allocationMapping": [
+        {
+          "name": "AMA Allocation",
+          "mapping": "ama-base"
+        }
+      ]
     }
   ]
 }
