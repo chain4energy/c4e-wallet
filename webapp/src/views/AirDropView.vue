@@ -3,7 +3,7 @@
   <TabView class="airDrop__tabview">
     <TabPanel >
       <template #header>
-        <div>All Airdrops</div>
+        <div>Check Allocation</div>
       </template>
       <AirDropTotal/>
     </TabPanel>

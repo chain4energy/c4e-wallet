@@ -294,9 +294,10 @@
     "AVAILABLE": "Available",
     "STAKED": "Staked",
     "UNSTAKING": "Unstaking",
-    "CLAIM_REWARDS": "Claim rewards",
+    "CLAIM_REWARDS": "Claim Rewards",
     "LOCKED": "Locked",
-    "VESTING_END": "Vesting end"
+    "VESTING_END": "Vesting end",
+    "CLAIM_HEADER": "Pending Staking Reward"
   },
   "COMMON": {
     "CLOSE": "Close",
@@ -350,8 +351,9 @@
     "CONNECT": "Connect with Keplr",
     "OR": "or",
     "CONNECT_CHAINS": "Connect with COSM/C4E account",
-    "C4E_HELP": "Import C4E or Cosmos address ",
-    "COSMOS_HELP": "Import COSMOS address"
+    "C4E_HELP": "Provide C4E or COSMOS address",
+    "COSMOS_HELP": "Import COSMOS address",
+    "CHECK": "Check"
   },
   "COPY": {
     "ADDRESS": "Address has been copied to clipboard",

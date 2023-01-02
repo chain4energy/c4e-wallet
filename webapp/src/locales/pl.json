@@ -284,7 +284,8 @@
     "UNSTAKING": "Odblokowywanie",
     "CLAIM_REWARDS": "Odbierz nagrody",
     "LOCKED": "Zablokowane",
-    "VESTING_END": "Data uwolnienia"
+    "VESTING_END": "Data uwolnienia",
+    "CLAIM_HEADER": "Oczekująca nagroda"
   },
   "COMMON": {
     "CLOSE": "Zamkij",
@@ -337,8 +338,9 @@
   "AIRDROP": {
     "CONNECT": "zaloguj z Keplr",
     "OR": "lub",
-    "C4E_HELP": "Wprowadź adres C4E",
-    "COSMOS_HELP": "Wprowadź adres cosmos"
+    "C4E_HELP": "Wprowadź adres C4E lub COSMOS",
+    "COSMOS_HELP": "Wprowadź adres cosmos",
+    "CHECK": "Check"
   },
   "COPY": {
     "ADDRESS": "Adres został skopiowany do schowka",

@@ -89,6 +89,20 @@
   max-width: 100vw !important;
 }
 
+.coin-amount-tooltip .p-tooltip {
+
+}
+
+.coin-amount-tooltip .p-tooltip-text {
+  border-style: solid;
+  border-width: thin;
+  border-color: $secondary-color;
+}
+
+.coin-amount-tooltip .p-tooltip-arrow {
+  border-right-color: $secondary-color !important;
+}
+
 @media (max-width: 550px) {
   .field {
     span {

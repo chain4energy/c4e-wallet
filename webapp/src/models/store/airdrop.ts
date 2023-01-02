@@ -18,18 +18,27 @@ export class AirdropTotal{
 export class Campain{
   name: string;
   details_url: string;
-  alocations: AlocationsSt[];
-  constructor(name: string, details_url: string, alocations: AlocationsSt[]) {
+
+  is_absent: boolean;
+  hide_if_absent: boolean;
+  allocations: AlocationsSt[];
+  constructor(name: string, details_url: string, is_absent:boolean, hide_if_absent:boolean, allocations: AlocationsSt[]) {
     this.name = name;
     this.details_url = details_url;
-    this.alocations = alocations;
+    this.is_absent = is_absent;
+    this.hide_if_absent = hide_if_absent;
+    this.allocations = allocations;
   }
   public getTotalForCampaign(){
     const sum = Array<number>();
-    this.alocations.forEach((el) => {
+    this.allocations.forEach((el) => {
       sum.push(el.value);
     });
     return sum.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  }
+
+  public hideCampaign():boolean{
+    return this.is_absent && this.hide_if_absent;
   }
 }
 

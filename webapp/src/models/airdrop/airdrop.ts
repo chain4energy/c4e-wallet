@@ -60,6 +60,8 @@ export interface CampaignInfoDetails{
   name: string,
   subfolder: string,
   detailsUrl: string,
+
+  hideIfAbsent:boolean,
   allocationMapping:AllocationMapping[]
 }
 

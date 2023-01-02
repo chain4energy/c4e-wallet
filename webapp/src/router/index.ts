@@ -9,7 +9,7 @@ import GovernanceDetailsView from '../views/GovernanceDetailsView.vue';
 import ValidatorsView from '../views/ValidatorsView.vue';
 import ProposalsList from '@/components/governance/ProposalsList.vue';
 import stakingRoutes from "@/router/stakingRoutes";
-import AirDropView from "@/views/AirDropView.vue"
+import AirDropView from "@/views/AirDropView.vue";
 import { useUserStore } from "@/store/user.store";
 
 
@@ -48,7 +48,7 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path:'/airDrop',
+    path:'/airdrop',
     name: 'airdrop',
     component: AirDropView,
   },
