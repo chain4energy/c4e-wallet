@@ -144,13 +144,14 @@ function createTokenomicsSingleChartData(formatter: any, data: { value: number |
         option: {
           series: [
             {
-              width: '130%',
-              height: '130%',
+              // width: '130%',
+              // height: '130%',
+              top: "0%",
               startAngle: 180,
               endAngle: 360,
               type: 'pie',
-              radius: ['50%', '85%'],
-              center: ['50%', '55%'],
+              radius: ['85%', '165%'],
+              center: ['50%', '100%'],
               right: 'center',
               avoidLabelOverlap: true,
               label: {
@@ -160,6 +161,7 @@ function createTokenomicsSingleChartData(formatter: any, data: { value: number |
                 position: 'center'
               },
               emphasis: {
+                scale: true,
                 label: {
                   show: false,
                   fontSize: '30',
@@ -185,12 +187,13 @@ function createTokenomicsSingleChartData(formatter: any, data: { value: number |
     // },
     series: [
       {
-        width: '130%',
-        height: '130%',
+        // width: '130%',
+        // height: '130%',
+        top: "0%",
         startAngle: 180,
         endAngle: 360,
         type: 'pie',
-        radius: ['50%', '85%'],
+        radius: ['85%', '165%'],
         center: ['40%', '55%'],
         avoidLabelOverlap: true,
         label: {

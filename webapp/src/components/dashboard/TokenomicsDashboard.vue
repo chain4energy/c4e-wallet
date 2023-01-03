@@ -44,9 +44,16 @@
         </div>
       </div>
     </div>
-      <ShadowedSvgChart id="tokenchartdiv">
-        <v-chart :option="option" autoresize/>
-      </ShadowedSvgChart>
+     <div style="width:100%; ">
+       <div style="height:80%;margin-left: auto; margin-right:auto">
+         <ShadowedSvgChart id="tokenchartdiv">
+           <v-chart :option="option" autoresize/>
+         </ShadowedSvgChart>
+       </div>
+       <div style="height:20% !important">
+       </div>
+     </div>
+
 
   </div>
 </template>
@@ -121,15 +128,15 @@ const option = computed(() => {
   width: 100%;
   height: 100%;
   overflow: visible;
-  margin-right: 70px;
-  margin-left: -50px;
+  //margin-right: 70px;
+  //margin-left: -50px;
 
     // margin-left: -300px;
 }
 
 @media screen and (max-width: 1150px) {
   #tokenchartdiv {
-    height: 350px;
+    height: 200px;
     align-self: center;
     margin-right: 0;
     margin-left: 0;
