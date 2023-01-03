@@ -6,6 +6,7 @@
     <router-link to="/terms_conditions"><span>Terms & Conditions</span></router-link>
     <router-link to="/privacy_policy"><span>Privacy Policy</span></router-link>
     <span class="right">c4e</span>
+    <div class="hide">{{version}}</div>
   </div>
 </template>
 
@@ -14,6 +15,7 @@ import {useConfigurationStore} from "@/store/configuration.store";
 import {onBeforeMount} from "vue";
 import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
 
+const version = process.env.VUE_APP_VERSION;
 onBeforeMount(() => {
   console.log(useConfigurationStore().config.airdropPoolAddress);
 });
@@ -41,9 +43,26 @@ onBeforeMount(() => {
       text-decoration: underline;
     }
   }
+  .hide {
+    display: none;
+  }
   .right {
     float: right;
     padding-right: 20px;
+
+    &:hover {
+      & + .hide {
+        width: 200px;
+        height: 40px;
+        position:absolute;
+        bottom:40px;
+        right:10px;
+        display:block;
+        background-color: white;
+      }
+    }
   }
 }
 </style>
+
+

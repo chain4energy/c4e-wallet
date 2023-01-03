@@ -4,14 +4,19 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
-    "build": "vue-cli-service build",
+    "build": "npm run versioner-dev && vue-cli-service build --mode development",
+    "build-preproduction": "npm run versioner-preprod && vue-cli-service build --mode preproduction",
+    "build-production": "npm run versioner-prod && vue-cli-service build --mode production",
     "build-dev": "vue-cli-service build --mode development",
     "production": "vue-cli-service serve --mode production",
     "test:unit": "vue-cli-service test:unit",
     "test:unit:coverage": "vue-cli-service test:unit --coverage",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
-    "proxy": "node proxy.js"
+    "proxy": "node proxy.js",
+    "versioner-dev": "cd ./scripts && python3 versioner.py dev",
+    "versioner-preprod": "cd ./scripts && python3 versioner.py preprod",
+    "versioner-prod": "cd ./scripts && python3 versioner.py prod"
   },
   "dependencies": {
     "@cosmjs/stargate": "^0.28.7",

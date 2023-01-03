@@ -9,36 +9,17 @@ import { createSingleBalanceResponseData } from '../utils/account.blockchain.dat
 import { BigDecimal } from '@/models/store/big.decimal';
 import {
   createDelegatorDelegationsResponseData,
-  createDelegatorUnbondingDelegationsResponseData
+  createDelegatorUnbondingDelegationsResponseData,
+  defaultDelegatorDelegationsBalances,
+  defaultDelegatorDelegationsValidators,
+  defaultDelegatorUnbondingDelegationsEntriesAmounts,
+  defaultDelegatorUnbondingDelegationsValidators
 } from "../utils/staking.blockchain.data.util";
 
 jest.mock("axios");
 const mockedAxios = mockAxios();
 const address = 'c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55';
-export const defaultDelegatorDelegationsValidators = [
-  'c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a',
-  'c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5',
-  'c4evaloper1r2ennr6ywv567lks3q5gujt4def726fep2hpa8',
-  'c4evaloper19473sdmlkkvcdh6z3tqedtqsdqj4jjv782dku2',
-  'c4evaloper1tavkv9fpqwmw2v9drsm7s3yk7xlll9q8n7e6yl',
-  'c4evaloper1e0ddzmhw2ze2glszkgjk6tfvcfzv68cmrg7euh',
-];
-export const defaultDelegatorDelegationsBalances = [
-  '100011000000',
-  '98012949002',
-  '100013000000',
-  '100014000000',
-  '100015000000',
-  '100016000000',
-];
-export const defaultDelegatorUnbondingDelegationsValidators = [
-  'c4evaloper1psaq0n2lzh84lzgh39kghuy0n256xltlg6yh4a',
-  'c4evaloper1zwl9pd5mmn23mze2686494w9c2fyymxaqrhhl5'
-];
-export const defaultDelegatorUnbondingDelegationsEntriesAmounts = [
-  ['30000000', '40000000'],
-  ['10000000'],
-];
+
 describe('tokens store tests', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
