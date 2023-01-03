@@ -53,3 +53,51 @@ export function createVestingsLocked(vestingAllAmount: string, delegatedVestingA
     delegated_vesting_amount: delegatedVestingAmount
   }
 }
+
+export const defaultDistributionParams = [
+  {name: 'inflation_and_fee_distributor', burn_share: 0.1, shares:[0.05, 0.35]}
+];
+
+export function createDistributorParamsResponseData(distributionParams = defaultDistributionParams) {
+  const distributionParamsArray:any = [];
+
+  for (let i = 0; i < distributionParams.length; i++) {
+    distributionParamsArray.push(
+      {
+        name: distributionParams[i].name,
+        sources: [
+          {
+            id: "c4e_distributor",
+            type: "MAIN"
+          }
+        ],
+        destinations: {
+          primary_share: {
+            id: "validators_rewards_collector",
+            type: "MODULE_ACCOUNT"
+          },
+          burn_share: distributionParams[i].burn_share,
+          shares: []
+        }
+      },
+    );
+    for (let j = 0; j < distributionParams[i].shares.length; j++) {
+
+      distributionParamsArray[i].destinations.shares.push(
+        {
+          name: "development_fund",
+          share:distributionParams[i].shares[j],
+          destination: {
+            id: "c4e10ep2sxpf2kj6j26w7f4uuafedkuf9sf9xqq3sl",
+            type: "BASE_ACCOUNT"
+          }
+        },
+      );
+    }
+  }
+  return {
+    params: {
+      sub_distributors: distributionParamsArray
+    }
+  };
+}

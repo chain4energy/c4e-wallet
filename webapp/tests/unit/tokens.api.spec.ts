@@ -2,7 +2,14 @@ import { setActivePinia, createPinia } from 'pinia'
 import apiFactory from "@/api/factory.api";
 import { mockAxios } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
-import { createCommunityPoolResponseData, createStakingPoolResponseData, createSupplyResponseData, createVestingsLocked, expectStakingPool } from '../utils/tokens.blockchain.data.util';
+import {
+  createCommunityPoolResponseData,
+  createDistributorParamsResponseData,
+  createStakingPoolResponseData,
+  createSupplyResponseData,
+  createVestingsLocked, defaultDistributionParams,
+  expectStakingPool
+} from '../utils/tokens.blockchain.data.util';
 import { axiosErrorMessagePrefix, defaultAxiosErrorName, createErrorResponse, defaultErrorName, defaultDenom, expectCoin, expectDecCoin } from '../utils/common.blockchain.data.util';
 import { BigDecimal } from '@/models/store/big.decimal';
 
@@ -55,7 +62,7 @@ describe('tokens api tests', () => {
 
   });
 
-  it('gets staking pool - bad data', async () => { 
+  it('gets staking pool - bad data', async () => {
     const stakingPool = {
       data: {}
     };
@@ -103,7 +110,7 @@ describe('tokens api tests', () => {
 
   });
 
-  it('gets total supply - bad data', async () => { 
+  it('gets total supply - bad data', async () => {
     const supply = {
       data: {}
     };
@@ -168,7 +175,7 @@ describe('tokens api tests', () => {
 
   });
 
-  it('gets total supply - bad data', async () => { 
+  it('gets total supply - bad data', async () => {
     const communityPool = {
       data: {}
     };
@@ -215,7 +222,7 @@ describe('tokens api tests', () => {
 
   });
 
-  it('gets vestings locked - bad data', async () => { 
+  it('gets vestings locked - bad data', async () => {
     const supply = {
       data: {}
     };
@@ -227,6 +234,29 @@ describe('tokens api tests', () => {
     expect(result.error).toBeUndefined()
 
     expect(result.data).toBe(0n)
+  });
+
+  it('gets sharesParam', async () => {
+    const distributionParams = {
+      data: createDistributorParamsResponseData()
+    };
+    let resSum = 0;
+    let burn_share = 0;
+    defaultDistributionParams.forEach(param => {
+      if(param.name == 'inflation_and_fee_distributor') {
+        burn_share = param.burn_share;
+        param.shares.forEach(share => resSum += share);
+      }
+    });
+
+    mockedAxios.request.mockResolvedValue(distributionParams);
+    const result = await api.fetchShareParameter(false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+
+    expect(result.data).toBe(1 - resSum - burn_share);
+
   });
 });
 
