@@ -22,6 +22,7 @@ interface TokensState {
   airdropPool: Coin
   inflation: number,
   lockedVesting: bigint,
+  shareParameter: number;
 }
 
 export const useTokensStore = defineStore({
@@ -37,6 +38,7 @@ export const useTokensStore = defineStore({
       airdropPool: emptyCoin,
       inflation: Number.NaN,
       lockedVesting: BigInt(0),
+      shareParameter: Number.NaN
     };
   },
   actions: {
@@ -132,6 +134,17 @@ export const useTokensStore = defineStore({
         }
       });
     },
+    async fetchDistributorParams(lockscreen = true) {
+      await apiFactory.tokensApi().fetchShareParameter(lockscreen).then(response => {
+        if (response.isSuccess() && response.data !== undefined) {
+          this.shareParameter = response.data;
+        } else {
+          const message = 'Error fetching distributorParams data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
+        }
+      });
+    },
     async fetchInflation(lockscreen = true) {
       await apiFactory.tokensApi().fetchInflation(lockscreen).then(response => {
         if (response.isSuccess() && response.data !== undefined) {
@@ -216,7 +229,7 @@ export const useTokensStore = defineStore({
       if (this.getStakingPool.bondedTokens === 0n) {
         return Number.POSITIVE_INFINITY;
       }
-      return new BigDecimal(this.inflation).multiply(this.totalSupply.amount).divide(this.getStakingPool.bondedTokens);
+      return new BigDecimal(this.inflation).multiply(this.totalSupply.amount).divide(this.getStakingPool.bondedTokens).multiply(this.shareParameter);
     },
     getBoundedPercentage(): BigDecimal {
       if (this.totalSupply.amount === 0n) {

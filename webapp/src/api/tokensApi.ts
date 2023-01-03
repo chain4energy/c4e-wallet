@@ -15,6 +15,8 @@ import queries from "./queries";
 import {formatString} from "@/utils/string-formatter";
 import {BlockchainApiErrorData} from "@/models/blockchain/common";
 import { Vestings } from "@/models/blockchain/c4e.vesting";
+import {DistributorParamsResponse} from "@/models/blockchain/distributorParams";
+import {mapDistributorParameters} from "@/models/mapper/distributor.parameters.mapper";
 
 export class TokensApi extends BaseApi {
 
@@ -26,6 +28,7 @@ export class TokensApi extends BaseApi {
   private TOTAL_SUPPLY_URL = queries.blockchain.TOTAL_SUPPLY_URL;
   private COMMUNITY_POOL_URL = queries.blockchain.COMMUNITY_POOL_URL;
   private VESTINGS_SUM_URL = queries.blockchain.VESTINGS_SUM_URL;
+  private DISTRIBUTOR_PARAMS_URL = queries.blockchain.DISTRIBUTOR_PARAMS_URL;
 
   public async fetchStakingPool(lockscreen: boolean): Promise<RequestResponse<StakingPool, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: StakingPoolResponse | undefined) => { return mapStakingPool(bcData?.pool); };
@@ -65,5 +68,10 @@ export class TokensApi extends BaseApi {
     };
     return  await this.axiosGetBlockchainApiCall(this.VESTINGS_SUM_URL,
       mapData, lockscreen, null, 'fetchVestingLockedNotDelegated - ');
+  }
+  public async fetchShareParameter(lockscreen: boolean): Promise<RequestResponse<number, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: DistributorParamsResponse | undefined) => {return mapDistributorParameters(bcData?.params);};
+    return  await this.axiosGetBlockchainApiCall(this.DISTRIBUTOR_PARAMS_URL,
+      mapData, lockscreen, null, 'fetchDistributorParams - ');
   }
 }
