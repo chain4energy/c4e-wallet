@@ -5,7 +5,7 @@ import sys;
 from datetime import datetime
 
 
-def versionize(fileName, newFileName, version):
+def versionize(fileName, newFileName, fieldName, version):
     if not os.path.exists(newFileName):
         new_env = open(newFileName, 'x')
         new_env.close()
@@ -13,9 +13,9 @@ def versionize(fileName, newFileName, version):
     file = open(fileName, 'r+')
     lines = file.readlines()
     for line in lines:
-        if "VUE_APP_VERSION" not in line:
+        if fieldName not in line:
             env_temp.write(line)
-    env_temp.write('VUE_APP_VERSION=' + version + "\n")
+    env_temp.write(fieldName + '=' + version + "\n")
     file.close()
     env_temp.close()
     os.remove(fileName)
@@ -28,16 +28,19 @@ current_date = now.strftime("%d-%m-%Y")
 current_time = now.strftime("%H:%M:%S")
 packageJSON = open('package.json')
 data = json.load(packageJSON)
-currentVersion = data['version'] + '/' + current_date + '/' + current_time
+timestamp = current_date + '/' + current_time
 
 if sys.argv[1] == 'prod':
-    versionize('.env.production', 'temp.env', currentVersion)
+    versionize('.env.production', 'temp.env', 'VUE_APP_VERSION', data['version'] )
+    versionize('.env.production', 'temp.env', 'VUE_APP_COMPILATION_TIMESTAMP', timestamp)
     print('Changed version on production')
 elif sys.argv[1] == 'preprod':
-    versionize('.env.preproduction', 'temp.env', currentVersion)
+    versionize('.env.preproduction', 'temp.env', 'VUE_APP_VERSION', data['version'] )
+    versionize('.env.preproduction', 'temp.env', 'VUE_APP_COMPILATION_TIMESTAMP', timestamp)
     print('Changed version on preproduction')
 elif sys.argv[1] == 'dev':
-    versionize('.env.development', 'temp.env', currentVersion)
+    versionize('.env.development', 'temp.env', 'VUE_APP_VERSION', data['version'] )
+    versionize('.env.development', 'temp.env', 'VUE_APP_COMPILATION_TIMESTAMP', timestamp)
     print('Changed version on development')
 else:
     print('Invalid arguments')
