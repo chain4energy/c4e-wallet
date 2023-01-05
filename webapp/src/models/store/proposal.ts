@@ -67,13 +67,16 @@ export class ProposalContent {
   type: string;
   title: string;
   description: string;
-  // changes: Array<ProposalsChanges>
+  changes: Array<ProposalsChanges> | undefined;
+  plan: ProposalsPlan | undefined;
 
-  constructor(type: string, title: string, description: string/*, changes: Array<ProposalsChanges>*/) {
+
+  constructor(type: string, title: string, description: string, changes: Array<ProposalsChanges> | undefined, plan: ProposalsPlan | undefined) {
     this.type = type;
     this.title = title;
     this.description = description;
-    // this.changes= changes;
+    this.changes= changes;
+    this.plan = plan;
   }
 }
 export class ProposalsChanges{
@@ -84,6 +87,22 @@ export class ProposalsChanges{
     this.key=key;
     this.subspace=subspace;
     this.value = value;
+  }
+}
+export class ProposalsPlan {
+  height: string;
+  info: string;
+  name: string;
+  time: string;
+  upgradedClientState: string;
+
+
+  constructor(height: string, info: string, name: string, time: string, upgradedClient: string) {
+    this.height = height;
+    this.info = info;
+    this.name = name;
+    this.time = time;
+    this.upgradedClientState = upgradedClient;
   }
 }
 export class ProposalsValue{

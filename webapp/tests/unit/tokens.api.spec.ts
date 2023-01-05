@@ -236,7 +236,7 @@ describe('tokens api tests', () => {
     expect(result.data).toBe(0n)
   });
 
-  it('gets sharesParam', async () => {
+  it('gets sharesParam - exists', async () => {
     const distributionParams = {
       data: createDistributorParamsResponseData()
     };
@@ -256,6 +256,18 @@ describe('tokens api tests', () => {
     expect(result.error).toBeUndefined();
 
     expect(result.data).toBe(1 - resSum - burn_share);
+
+  });
+
+  it('gets sharesParam - bad data', async () => {
+    const distributionParams = {
+      data: {}
+    };
+
+    mockedAxios.request.mockResolvedValue(distributionParams);
+    const result = await api.fetchShareParameter(false);
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
 
   });
 });

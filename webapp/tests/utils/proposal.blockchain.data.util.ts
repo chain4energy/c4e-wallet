@@ -91,7 +91,8 @@ export function createProposal(status = "PROPOSAL_STATUS_PASSED"){
             mindeposit: 'some data',
           }
         },
-      ]
+      ],
+      plan: undefined
     },
     status: status,
     final_tally_result: {
@@ -152,7 +153,8 @@ export function createProposals(
               mindeposit: 'some data',
             }
           }
-        ]
+        ],
+        plan: undefined
 
       },
       status: proposalsParameters[i].status,

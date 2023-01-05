@@ -255,5 +255,68 @@
     "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
     "isMainNetwork": false,
     "airdropBaseURL": "https://airdrop.c4e.io/"
+  },
+  "local":{
+    "bcApiURL": "http://0.0.0.0:1317",
+    "bcRpcURL": "https://rpc-dev.c4e.io",
+    "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
+    "keybaseURL": "https://keybase.io",
+    "stakingPageURL": "https://wallet.c4e.io/staking",
+    "addressPrefix": "c4e",
+    "stakingDenom": "uc4e",
+    "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+    "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+    "chainId": "veles-dev-test-1",
+    "networkName": "Local",
+    "keplrNetworkName": "C4E Veles Dev",
+    "queries": {
+      "STAKING_POOL_URL": "/cosmos/staking/v1beta1/pool",
+      "TOTAL_SUPPLY_URL": "/cosmos/bank/v1beta1/supply/{denom}",
+      "COMMUNITY_POOL_URL": "/cosmos/distribution/v1beta1/community_pool",
+      "PROPOSALS_URL": "/cosmos/gov/v1beta1/proposals",
+      "PROPOSALS_BY_ID_URL": "/cosmos/gov/v1beta1/proposals/{id}",
+      "TALLYING_URL": "/cosmos/gov/v1beta1/params/tallying",
+      "DEPOSIT_URL": "/cosmos/gov/v1beta1/params/deposit",
+      "LATEST_BLOCK_URL": "/cosmos/base/tendermint/v1beta1/blocks/latest",
+      "VALIDATORS_URL": "/cosmos/staking/v1beta1/validators",
+      "ACCOUNT_URL": "/cosmos/auth/v1beta1/accounts/{address}",
+      "BALANCE_URL": "/cosmos/bank/v1beta1/balances/{address}/by_denom?denom={denom}",
+      "STAKED_AMOUNT_URL": "/cosmos/staking/v1beta1/delegations/{address}",
+      "UNSTAKED_AMOUNT_URL": "/cosmos/staking/v1beta1/delegators/{address}/unbonding_delegations",
+      "REWARDS_URL": "/cosmos/distribution/v1beta1/delegators/{address}/rewards",
+      "PROPOSAL_TALLY_URL": "/cosmos/gov/v1beta1/proposals/{id}/tally",
+      "INFLATION_URL": "/c4e/minter/v1beta1/inflation",
+      "STAKING_PARAMS_URL": "/cosmos/staking/v1beta1/params",
+      "VESTINGS_SUM_URL": "/c4e/vesting/v1beta1/summary"
+    },
+    "operationGas": {
+      "vote": 250000,
+      "delegate": 250000,
+      "undelegate": 250000,
+      "redelegate": 250000,
+      "claimRewards": 250000
+    },
+    "viewDenoms": [
+      {
+        "denom": "uc4e",
+        "viewDenom": "C4E",
+        "coinDecimals": 6
+      }
+    ],
+    "keplrGasPriceSteps": {
+      "low": 0.01,
+      "average": 0.025,
+      "high": 0.03
+    },
+    "minPeriodBetweenDataRefresh": 1000,
+    "blockDataRefreshTimeout": 30000,
+    "dashboardDataRefreshTimeout": 300000,
+    "validatorsDataRefreshTimeout":600000,
+    "accountDataRefreshTimeout": 90000,
+    "proposalsPageLimit": 50,
+    "explorerAccount": "https://explorer.c4e.io/accounts/",
+    "explorerTx": "https://explorer.c4e.io/transactions/",
+    "isMainNetwork": false,
+    "airdropBaseURL": ""
   }
 }

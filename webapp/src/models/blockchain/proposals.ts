@@ -13,7 +13,8 @@ export interface Proposal {
     "@type": string,
     title: string,
     description: string,
-    // changes: Array<ProposalChanges>
+    changes: Array<ProposalChanges>,
+    plan: ProposalPlan | undefined
   },
   status: string,
   final_tally_result: Tally,
@@ -23,7 +24,13 @@ export interface Proposal {
   voting_start_time: string,
   voting_end_time: string,
 }
-
+export interface ProposalPlan {
+  height: string,
+  info: string,
+  name: string,
+  time: string,
+  upgraded_client_state: string
+}
 export interface ProposalChanges{
   value: ProposalsValue;
   key: string;
