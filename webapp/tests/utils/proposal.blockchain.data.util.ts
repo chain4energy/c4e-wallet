@@ -80,7 +80,7 @@ export function createProposal(status = "PROPOSAL_STATUS_PASSED"){
   const proposal = {
     proposal_id: "2",
     content: {
-      "@type": 'some data',
+      "@type": '/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal',
       title: 'some data',
       description: 'some data',
       changes:[
@@ -92,7 +92,9 @@ export function createProposal(status = "PROPOSAL_STATUS_PASSED"){
           }
         },
       ],
-      plan: undefined
+      plan: undefined,
+      recipient: undefined,
+      amount: undefined
     },
     status: status,
     final_tally_result: {
@@ -154,7 +156,9 @@ export function createProposals(
             }
           }
         ],
-        plan: undefined
+        plan: undefined,
+        recipient: undefined,
+        amount: undefined
 
       },
       status: proposalsParameters[i].status,

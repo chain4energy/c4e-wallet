@@ -1,15 +1,15 @@
 <template>
   <div v-if="proposalPlan">
     <div class="info">
-      <span>Height</span>
+      <span>{{ $t("GOVERNANCE_VIEW.HEIGHT") }}</span>
       <span>{{proposalPlan.height}}</span>
-      <span>Info</span>
-      <span>{{proposalPlan.info}}</span>
-      <span>Name</span>
+      <span>{{ $t("GOVERNANCE_VIEW.INFO") }}</span>
+      <span v-html="getLink(proposalPlan.info)"></span>
+      <span>{{ $t("GOVERNANCE_VIEW.NAME") }}</span>
       <span>{{proposalPlan.name}}</span>
-      <span>Time</span>
+      <span>{{ $t("GOVERNANCE_VIEW.TIME") }}</span>
       <span>{{proposalPlan.time}}</span>
-      <span>Upgraded client state</span>
+      <span>{{ $t("GOVERNANCE_VIEW.UPGRADED_CLIENT_STATE") }}</span>
       <span>{{ proposalPlan.upgradedClientState }}</span>
     </div>
   </div>
@@ -19,10 +19,14 @@
 <script setup lang="ts">
 
 import {ProposalsPlan} from "@/models/store/proposal";
+
 const props = defineProps<{
   proposalPlan?: ProposalsPlan
 }>();
 
+const getLink = (info: string) => {
+  return info.replace(/##(.+?)##/g, (_, link) => `<a href="${link}">${link}</a>`);
+};
 </script>
 
 <style scoped lang="scss">

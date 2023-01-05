@@ -14,7 +14,9 @@ export interface Proposal {
     title: string,
     description: string,
     changes: Array<ProposalChanges>,
-    plan: ProposalPlan | undefined
+    plan: ProposalPlan | undefined,
+    amount: Array<ProposalAmount> | undefined,
+    recipient: string | undefined
   },
   status: string,
   final_tally_result: Tally,
@@ -23,6 +25,11 @@ export interface Proposal {
   total_deposit:Array<Coin>
   voting_start_time: string,
   voting_end_time: string,
+}
+
+export interface ProposalAmount {
+  denom: string,
+  amount: string
 }
 export interface ProposalPlan {
   height: string,

@@ -68,7 +68,16 @@
       "TEXT_PROPOSAL": "Wniosek tekstowy",
       "CANCEL_SOFTWARE_UPGRADE_PROPOSAL": "Wniosek o anulowanie aktualizacji oprogramowania",
       "SOFTWARE_UPGRADE_PROPOSAL": "Wniosek o aktualizację oprogramowania"
-    }
+    },
+    "DETAILS": "Szczegóły",
+    "HEIGHT": "Wysokość",
+    "INFO": "Informacje",
+    "NAME": "Nazwa",
+    "TIME": "Czas",
+    "UPGRADED_CLIENT_STATE": "Upgraded client state",
+    "RECIPIENT": "Odbiorca",
+    "KEY": "Klucz",
+    "SUBSPACE": "Podprzestrzeń"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Oddelegowane tokeny",

@@ -8,7 +8,7 @@ import {
   ProposalTallyResult,
   ProposalStatus,
   TallyParams,
-  VoteOption, ProposalsPlan,
+  VoteOption, ProposalsPlan, ProposalsAmount, ProposalType,
 } from "@/models/store/proposal";
 import { Coin } from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
@@ -86,7 +86,16 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
     proposalPlan = new ProposalsPlan(plan.height, plan.info, plan.name, plan.time, plan.upgraded_client_state);
   }
 
-  const content = new ProposalContent(proposal.content["@type"], proposal.content.title, proposal.content.description, changes, proposalPlan);
+  let amount = undefined;
+  if(proposal.content.amount) {
+    amount = proposal.content.amount.map((el)=> {
+      return new ProposalsAmount(
+        el.denom, Number(el.amount)
+      );
+    });
+  }
+
+  const content = new ProposalContent( proposal.content["@type"] as ProposalType, proposal.content.title, proposal.content.description, changes, proposalPlan, proposal.content.recipient, amount);
   const finalTallyResult = mapProposalTallyResult(proposal.final_tally_result);
   const totalDeposit = proposal.total_deposit.map((el)=> {
     return mapCoin(el, el.denom);

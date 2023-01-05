@@ -2,9 +2,9 @@
   <div v-if="proposalChanges">
     <div  v-for="change in proposalChanges" :key="change" class="box">
       <div style="margin-top: 20px;" class="info">
-        <span>Key:</span>
+        <span>{{$t('GOVERNANCE_VIEW.KEY')}}:</span>
         <span>{{change.key}}</span>
-        <span>Subspace:</span>
+        <span>{{$t('GOVERNANCE_VIEW.SUBSPACE')}}:</span>
         <span>{{change.subspace}}</span>
       </div>
       <div class="json">
