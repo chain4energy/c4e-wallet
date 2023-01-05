@@ -8,16 +8,43 @@
 <script setup lang="ts">
 import { BigDecimal } from "@/models/store/big.decimal";
 import { useConfigurationStore } from "@/store/configuration.store";
-import { Coin, DecCoin } from "@/models/store/common";
+import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 import FormattedNumber from "./FormattedNumber.vue";
 
-const props = withDefaults(defineProps<{
-  amount: bigint | number | BigDecimal | Coin | DecCoin,
-  precision?: number,
-  reduceBigNumber?: boolean,
-  showDenom?: boolean,
-  showTooltip: boolean
-}>(),{showTooltip: false});
+import {PropType} from "vue";
+
+// const props = withDefaults(defineProps<{
+//   amount:  bigint | number | BigDecimal | Coin | DecCoin,
+//   precision?: number,
+//   reduceBigNumber?: boolean,
+//   showDenom?: boolean,
+//   showTooltip?: boolean
+// }>(),{showTooltip: false});
+
+
+const props =  defineProps({
+  amount: {
+    type:  [BigIntWrapper, Number, BigDecimal, Coin, DecCoin] as PropType<BigIntWrapper | number | BigDecimal | Coin | DecCoin>,
+    required: true,
+  },
+  precision: {
+    type : Number,
+    required: false
+  },
+  reduceBigNumber: {
+    type : Boolean,
+    required: false
+  },
+  showDenom: {
+    type : Boolean,
+    required: false
+  },
+  showTooltip: {
+    type : Boolean,
+    required: false,
+    default: false
+  },
+});
 
 function getDenom(): string {
   if (props.amount instanceof Coin || props.amount instanceof DecCoin) {
@@ -28,9 +55,12 @@ function getDenom(): string {
 }
 
 function retrieveConvertedAmount(): number | BigDecimal {
-  if (props.amount instanceof Coin || props.amount instanceof DecCoin) {
+  if (props.amount instanceof Coin || props.amount instanceof DecCoin ) {
     return useConfigurationStore().config.getConvertedAmount(props.amount.amount, props.amount.denom);
-  } else {
+  } else if(props.amount instanceof BigIntWrapper){
+    return useConfigurationStore().config.getConvertedAmount(props.amount.value);
+  }
+  else {
     return useConfigurationStore().config.getConvertedAmount(props.amount);
   }
 }

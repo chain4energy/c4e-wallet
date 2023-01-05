@@ -4,13 +4,32 @@
 
 <script setup lang="ts">
 import { BigDecimal } from "@/models/store/big.decimal";
+import { PropType } from "vue";
 import { formatBigNumberLocalized, reduceBigNumberLocalized } from "@/utils/locale-number-formatter";
 
-const props = defineProps<{
-  amount: bigint | number | BigDecimal,
-  precision?: number,
-  reduceBigNumber?: boolean,
-}>();
+// const props = defineProps<{
+//   amount: bigint | number | BigDecimal ,
+// //   amount: [Object, Number, BigDecimal] as PropType<bigint | number | BigDecimal>,
+//   precision?: number,
+//   reduceBigNumber?: boolean,
+// }>();
+
+// whatever: BigInt as unknown as PropType<bigint>,
+
+const props =  defineProps({
+  amount: {
+    type:  [Object , Number, BigDecimal] as PropType<bigint | number | BigDecimal>,
+    required: true
+  },
+  precision: {
+    type : Number,
+    required: false
+  } ,
+  reduceBigNumber: {
+    type : Boolean,
+    required: false
+  },
+});
 
 function transformToExpView() {
   if (typeof props.amount === 'number' && isNaN(props.amount)) {

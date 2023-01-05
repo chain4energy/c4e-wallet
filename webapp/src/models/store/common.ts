@@ -22,6 +22,14 @@ export class DecCoin {
 
 }
 
+export class BigIntWrapper {
+  value : BigInt;
+
+  constructor(value: BigInt) {
+    this.value = value;
+  }
+}
+
 export function toPercentage(num: BigDecimal | number, precision = 4): string {
   if (typeof num === 'number') {
     if (isNaN(num)) {

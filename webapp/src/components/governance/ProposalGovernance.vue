@@ -67,7 +67,8 @@
             <div>
               <b><PercentsView :amount="yesPercentage" :precision="2"/></b>
             </div>
-            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).yes" :reduce-big-number="true" :precision="2"/>)
+<!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).yes" :reduce-big-number="true" :precision="2"/>)-->
+            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).yes)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
         <div style="display: flex; align-items: center">
@@ -77,7 +78,8 @@
             <div>
               <b><PercentsView :amount="abstainPercentage" :precision="2"/></b>
             </div>
-            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).abstain" :reduce-big-number="true" :precision="2"/>)
+<!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).abstain" :reduce-big-number="true" :precision="2"/>)-->
+            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).abstain)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
         <div style="display: flex; align-items: center">
@@ -87,7 +89,8 @@
             <div>
               <b><PercentsView :amount=" noPercentage" :precision="2"/></b>
             </div>
-            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).no" :reduce-big-number="true" :precision="2"/>)
+<!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).no" :reduce-big-number="true" :precision="2"/>)-->
+            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).no)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
         <div style="display: flex; align-items: center">
@@ -97,7 +100,8 @@
             <div>
               <b><PercentsView :amount="noWithVetoPercentage" :precision="2"/></b>
             </div>
-            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).noWithVeto" :reduce-big-number="true" :precision="2"/>)
+<!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).noWithVeto" :reduce-big-number="true" :precision="2"/>)-->
+            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).noWithVeto)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
       </div>
@@ -125,6 +129,7 @@ import CoinAmount from '../commons/CoinAmount.vue';
 import PercentsView from "@/components/commons/PercentsView";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import { useConfigurationStore } from '@/store/configuration.store';
+import {BigIntWrapper} from "@/models/store/common";
 
 use([
   SVGRenderer,

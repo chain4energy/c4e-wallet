@@ -4,7 +4,8 @@
 
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL_VOTED") }} / {{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
       <span>
-        <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/> /
+<!--        <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/> /-->
+        <CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.total)" :reduce-big-number="true" :precision="2"/> /
         <CoinAmount :amount="tokensStore.totalSupply" :reduce-big-number="true" :precision="2"/>
       </span>
     </div>
@@ -23,7 +24,8 @@
           <div style="font-weight: bold">
             <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getYesPercentage()" :precision="2"></PercentsView>
           </div>
-          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)
+<!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)-->
+          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.yes)" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -33,7 +35,8 @@
         <div style="font-weight: bold">
           <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getAbstainPercentage()" :precision="2"></PercentsView>
         </div>
-        (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)
+<!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)-->
+          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.abstain)" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -43,7 +46,8 @@
         <div style="font-weight: bold">
           <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoPercentage()" :precision="2"></PercentsView>
         </div>
-        (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)
+<!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)-->
+          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.no)" :reduce-big-number="true" :precision="2"/>)
       </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -53,8 +57,9 @@
         <div style="font-weight: bold">
           <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentage()" :precision="2"></PercentsView>
         </div>
-        (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)
-      </div>
+<!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)-->
+          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.noWithVeto)" :reduce-big-number="true" :precision="2"/>)
+        </div>
       </div>
     </div>
     <div class="bottom">
@@ -92,6 +97,7 @@ import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView.vue";
 import GovernanceIcon from "../commons/GovernanceIcon.vue";
 import {useTokensStore} from "@/store/tokens.store";
+import {BigIntWrapper} from "@/models/store/common";
 
 use([
   SVGRenderer,

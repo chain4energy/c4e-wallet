@@ -26,7 +26,7 @@ export type C4EIconType = 'c4e-circle' | 'c4e-circle-no-dots' | 'c4e-4-only';
 
 const props = defineProps<{
  icon: C4EIconType,
- size: string,
+ size: string | number,
 }>();
 
 </script>

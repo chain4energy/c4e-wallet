@@ -245,7 +245,6 @@ export class Configuration implements JsonConfiguration {
   }
 
   public getConvertedDenom(origDenom = this.stakingDenom): string {
-    console.log(origDenom);
     const viewDenomConf = this.getViewDenomConfig(origDenom);
     if (viewDenomConf) {
       return viewDenomConf.viewDenom;

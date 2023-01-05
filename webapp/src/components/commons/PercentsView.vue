@@ -5,13 +5,18 @@
 <script setup lang="ts">
 
 import { BigDecimal } from "@/models/store/big.decimal";
-import { computed } from "vue";
+import {computed, PropType} from "vue";
 import FormattedNumber from "./FormattedNumber.vue";
 
-const props = defineProps<{
-  amount: bigint | number | BigDecimal ,
-  precision: number
-}>();
+// const props = defineProps<{
+//   amount: bigint | number | BigDecimal ,
+//   precision: number
+// }>();
+
+const props =  defineProps({
+  amount: [Object, Number, BigDecimal] as PropType<bigint | number | BigDecimal>,
+  precision: Number
+});
 
 const amount = computed(() => {
   if (typeof props.amount === 'number') {

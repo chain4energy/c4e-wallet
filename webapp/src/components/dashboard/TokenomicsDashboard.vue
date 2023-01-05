@@ -7,11 +7,13 @@
           <div class="dot" style="background: #27697F"> </div>
           <div> {{ $t("DASHBOARD_VIEW.BOUNDED") }}</div>
           <Icon name="ArrowRight" />
-          <CoinAmount :amount="tokensStore.getTotalBonded" :show-denom="true" style="font-weight: bold"/>
-<!--
-          <div >
-            {{ bounded }}
-          </div> -->
+<!--          <CoinAmount :amount="tokensStore.getTotalBonded" :show-denom="true" style="font-weight: bold"/>-->
+          <CoinAmount :amount="new BigIntWrapper(tokensStore.getTotalBonded)" :show-denom="true" style="font-weight: bold"/>
+
+          <!--
+                    <div >
+                      {{ bounded }}
+                    </div> -->
           <div class="dot"></div>
           <div>
             <PercentsView :amount="boundedPercentage" :precision="2"></PercentsView>
@@ -21,7 +23,8 @@
           <div class="dot" style="background: #FDDB2A"></div>
           <div> {{ $t("DASHBOARD_VIEW.UNBOUNDED") }}</div>
           <Icon name="ArrowRight" />
-          <CoinAmount :amount="tokensStore.getTotalUnbonded" :show-denom="true" style="font-weight: bold"/>
+<!--          <CoinAmount :amount="tokensStore.getTotalUnbonded" :show-denom="true" style="font-weight: bold"/>-->
+          <CoinAmount :amount="new BigIntWrapper(tokensStore.getTotalUnbonded)" :show-denom="true" style="font-weight: bold"/>
 
           <!-- <div style="font-weight: bold">{{unBounded }}
           </div> -->
@@ -34,7 +37,8 @@
           <div class="dot" style="background: #72bf44"></div>
           <div> {{ $t("DASHBOARD_VIEW.UNBOUNDING") }}</div>
           <Icon name="ArrowRight" />
-          <CoinAmount :amount="tokensStore.getTotalUnbonding" :show-denom="true" style="font-weight: bold"/>
+<!--          <CoinAmount :amount="tokensStore.getTotalUnbonding" :show-denom="true" style="font-weight: bold"/>-->
+          <CoinAmount :amount="new BigIntWrapper(tokensStore.getTotalUnbonding)" :show-denom="true" style="font-weight: bold"/>
           <div class="dot"></div>
           <div>
             <PercentsView :amount="unboundingPercentage" :precision="2"></PercentsView>
@@ -73,6 +77,7 @@ import CoinAmount from "../commons/CoinAmount.vue";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { BigDecimal } from "@/models/store/big.decimal";
 import PercentsView from "@/components/commons/PercentsView.vue";
+import {BigIntWrapper} from "@/models/store/common";
 
 use([
   SVGRenderer,
