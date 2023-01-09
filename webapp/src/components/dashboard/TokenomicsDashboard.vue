@@ -48,14 +48,14 @@
         </div>
       </div>
     </div>
+
      <div style="width:100%; ">
-       <div style="height:80%;margin-left: auto; margin-right:auto">
+       <div style="height:80%;margin-left: auto;max-width:1050px; margin-right:auto">
          <ShadowedSvgChart id="tokenchartdiv">
            <v-chart :option="option" autoresize/>
          </ShadowedSvgChart>
        </div>
-       <div style="height:20% !important">
-       </div>
+       <div style="height: 20% !important;"></div>
      </div>
 
 
