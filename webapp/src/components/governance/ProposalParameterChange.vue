@@ -8,6 +8,7 @@
         <span>{{change.subspace}}</span>
       </div>
       <div class="json">
+        <span style="color: gray">Value:</span>
         <vue-json-pretty :data="JSON.parse(change.value)" />
       </div>
     </div>
@@ -39,7 +40,7 @@ const props = defineProps<{
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
-
+      border-right: 1px solid #cbcbcb;
 
       span {
         text-overflow: ellipsis;
@@ -53,18 +54,21 @@ const props = defineProps<{
 
     }
     .json {
+      margin-top: 20px;
       margin-left: 50px;
     }
   }
 
 @media screen and (max-width: 900px) {
-  .description__box {
+  .box {
     grid-template-columns: 1fr;
     .info {
-      margin-bottom: 30px;
+      margin-bottom: 15px;
+      border-right: none;
     }
     .json {
       margin-left: 0px;
+      margin-top: 0px;
     }
   }
 }
