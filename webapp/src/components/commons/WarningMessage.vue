@@ -3,10 +3,10 @@
       <Icon name="AlertTriangle"/>
     <div class="warning-container">
       <h3>{{$t(header, headerVariables)}}</h3>
-      <span v-if="textTypeData.type === TextType.STRING">
+      <span v-if="textTypeData.type === TextType.STRING" class="warning-text">
         {{$t(texts, textsVariables)}}
       </span>
-      <ul style="margin-bottom: 0 !important" v-else-if="textTypeData.type === TextType.ARRAY">
+      <ul class="warning-text" style="margin-bottom: 0 !important" v-else-if="textTypeData.type === TextType.ARRAY">
         <li v-for="index in textTypeData.amount" :key="index">
           {{$t(`${texts}[${index - 1}]`, textsVariables)}}
         </li>
@@ -71,7 +71,9 @@ function getTextsLength(key: string): {type: TextType | undefined, amount: numbe
   flex-direction: column;
   text-align: left;
 }
-
+.warning-text{
+  color: black;
+}
 .warning{
   display: grid;
   grid-template-columns: 1fr 7fr;
@@ -84,6 +86,9 @@ function getTextsLength(key: string): {type: TextType | undefined, amount: numbe
   align-items: center;
   justify-items: center;
   margin: 10px 0;
+  border: rgba(185, 185, 185, 0.91);
+  border-style: solid;
+  border-width: thin;
 
   svg {
     height: 40px;

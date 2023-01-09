@@ -73,7 +73,10 @@ const proposalsStore = useProposalsStore();
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');
 };
-const voted = computed(() => {return useProposalsStore().userVote;});
+
+const voted = computed(() => {
+  return useProposalsStore().userVote;
+});
 
 </script>
 

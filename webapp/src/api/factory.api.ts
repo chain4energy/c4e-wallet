@@ -144,17 +144,17 @@ async function testModeAxios<T = any, R = AxiosResponse<T, any>, D = any>(config
 
 }
 
-const skipPropertiesList = new Set([
-  'constructor',
-  '__defineGetter__',
-  '__defineSetter__',
-  'hasOwnProperty',
-  '__lookupGetter__',
-  '__lookupSetter__',
-  'isPrototypeOf',
-  'propertyIsEnumerable',
-  'toString',
-  'valueOf',
-  '__proto__',
-  'toLocaleString',
-]);
+// const skipPropertiesList = new Set([
+//   'constructor',
+//   '__defineGetter__',
+//   '__defineSetter__',
+//   'hasOwnProperty',
+//   '__lookupGetter__',
+//   '__lookupSetter__',
+//   'isPrototypeOf',
+//   'propertyIsEnumerable',
+//   'toString',
+//   'valueOf',
+//   '__proto__',
+//   'toLocaleString',
+// ]);

@@ -1,120 +1,123 @@
 <template>
 
 
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark background">
-      <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
-      <LogoutKeplr v-if="logoutPopupStatus === true" :logout-type="useUserStore().getConnectionType" @close="logoutPopupStatus = false"></LogoutKeplr>
-    <div class="navbar-container">
+  <!-- <nav class="navbar navbar-expand-lg navbar-dark background">
+    <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
+    <LogoutKeplr v-if="logoutPopupStatus === true" :logout-type="useUserStore().getConnectionType" @close="logoutPopupStatus = false"></LogoutKeplr>
+  <div class="navbar-container">
 
-      <div class="container-fluid d-flex justify-content-between">
-        <span class="d-flex" style="align-items: center">
-        <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
-        </span>
+    <div class="container-fluid d-flex justify-content-between">
+      <span class="d-flex" style="align-items: center">
+      <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
+      </span>
 
-          <div class="navbar-nav" style="align-items: center">
+        <div class="navbar-nav" style="align-items: center">
 
-            <div @click="openAccInfo"  class="acc-address" v-if="useUserStore().isLoggedIn">
-              <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
-              <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
-              <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName}}: </span>
-              {{ useUserStore().getAccount.address.slice(0, 8)}}...{{useUserStore().getAccount.address.slice(-6) }}
-            </div>
-
-            <LangSwitch class="nav-link mx-1"/>
-
-            <Button v-if="!useUserStore().isLoggedIn" class="secondary" @click="loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
-
-            <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
-
-
-          </div>
-        </div>
-
-      <div class="bottom-container">
-        <h2>{{$t("SECTION_TITLES." + currentRouteName?.toUpperCase())}}</h2>
-          <breadcrumbs-component />
-      </div>
-      <UserData v-if="useUserStore().isLoggedIn"/>
-      </div>
-    </nav> -->
-
-    <nav class="navbar navbar-expand-lg navbar-dark background">
-      <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
-      <LogoutKeplr v-if="logoutPopupStatus === true" :logout-type="useUserStore().getConnectionType" @close="logoutPopupStatus = false"></LogoutKeplr>
-    <div class="navbar-container">
-
-      <div class="container-fluid d-flex justify-content-between">
-        <span class="d-flex" style="align-items: center">
-        <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
-        <div class="bottom-container">
-        <h2>{{$t("SECTION_TITLES." + currentRouteName?.toUpperCase())}}</h2>
-          <breadcrumbs-component />
-        </div>
-        </span>
-
-          <div class="navbar-nav menu" style="align-items: center">
-
-            <div @click="openAccInfo"  class="acc-address" v-if="useUserStore().isLoggedIn">
-              <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
-              <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
-              <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName}}: </span>
-              {{ useUserStore().getAccount.address.slice(0, 8)}}...{{useUserStore().getAccount.address.slice(-6) }}
-            </div>
-
-            <LangSwitch class="nav-link mx-1"/>
-
-            <Button v-if="!useUserStore().isLoggedIn" class="secondary" @click="loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
-
-            <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
-
-
-          </div>
-          <div class="navbar-nav mobile" @click="toggleDropdown" style="align-items: center">
-            <Icon name="Menu" />
-          </div>
-        </div>
-
-
-      <UserData v-if="useUserStore().isLoggedIn"/>
-      </div>
-      <div class="mobile-menu" :class="dropdown ? 'mobile-menu-open' : ''">
-        <div class="header">
-          <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" />
-          <div @click="toggleDropdown">
-            <Icon name="X" />
-          </div>
-        </div>
-        <!-- <div class="divider"></div> -->
-        <div @click="openAccInfo"  class="acc-address" v-if="useUserStore().isLoggedIn">
-          <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
-          <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
-          <span style="display: flex; flex-direction: column">
+          <div @click="openAccInfo"  class="acc-address" v-if="useUserStore().isLoggedIn">
+            <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
+            <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
             <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName}}: </span>
             {{ useUserStore().getAccount.address.slice(0, 8)}}...{{useUserStore().getAccount.address.slice(-6) }}
+          </div>
+
+          <LangSwitch class="nav-link mx-1"/>
+
+          <Button v-if="!useUserStore().isLoggedIn" class="secondary" @click="loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
+
+          <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
+
+
+        </div>
+      </div>
+
+    <div class="bottom-container">
+      <h2>{{$t("SECTION_TITLES." + currentRouteName?.toUpperCase())}}</h2>
+        <breadcrumbs-component />
+    </div>
+    <UserData v-if="useUserStore().isLoggedIn"/>
+    </div>
+  </nav> -->
+
+  <nav class="navbar navbar-expand-lg navbar-dark background">
+    <LoginPopUp v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
+    <LogoutKeplr v-if="logoutPopupStatus === true" :logout-type="useUserStore().getConnectionType" @close="logoutPopupStatus = false"></LogoutKeplr>
+    <div class="navbar-container">
+
+      <div class="container-fluid d-flex justify-content-between">
+        <span class="d-flex" style="align-items: center">
+        <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36"/>
+        <div class="bottom-container">
+        <h2>{{ $t("SECTION_TITLES." + currentRouteName?.toUpperCase()) }}</h2>
+          <breadcrumbs-component/>
+        </div>
+        </span>
+
+        <div class="navbar-nav menu" style="align-items: center">
+
+          <div @click="openAccInfo" class="acc-address" v-if="useUserStore().isLoggedIn">
+            <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
+            <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
+            <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName }}: </span>
+            {{ useUserStore().getAccount.address.slice(0, 8) }}...{{ useUserStore().getAccount.address.slice(-6) }}
+          </div>
+
+          <LangSwitch class="nav-link mx-1"/>
+
+          <Button v-if="!useUserStore().isLoggedIn" class="secondary" @click="loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
+
+          <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
+
+
+        </div>
+        <div class="navbar-nav mobile" @click="toggleDropdown" style="align-items: center">
+          <Icon name="Menu"/>
+        </div>
+      </div>
+
+
+      <UserData v-if="useUserStore().isLoggedIn"/>
+    </div>
+    <div class="mobile-menu" :class="dropdown ? 'mobile-menu-open' : ''">
+      <div class="header">
+        <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36"/>
+        <div @click="toggleDropdown">
+          <Icon name="X"/>
+        </div>
+      </div>
+      <!-- <div class="divider"></div> -->
+      <div @click="openAccInfo" class="acc-address" v-if="useUserStore().isLoggedIn">
+        <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
+        <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
+        <span style="display: flex; flex-direction: column">
+            <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName }}: </span>
+            {{ useUserStore().getAccount.address.slice(0, 8) }}...{{ useUserStore().getAccount.address.slice(-6) }}
             <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout(); toggleDropdown()">{{ $t('COMMON.DISCONNECT') }}</Button>
           </span>
-        </div>
-        <Button style="width: 90%" v-if="!useUserStore().isLoggedIn" class="secondary" @click="toggleDropdown(); loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
-        <span style="display: flex;width: 100%;align-items: center;justify-content: space-around; margin: 10px 0;">
+      </div>
+      <Button style="width: 90%" v-if="!useUserStore().isLoggedIn" class="secondary" @click="toggleDropdown(); loginPopupStatus =! loginPopupStatus">{{
+          $t('COMMON.CONNECT')
+        }}
+      </Button>
+      <span style="display: flex;width: 100%;align-items: center;justify-content: space-around; margin: 10px 0;">
           <span>Connected to:</span>
           <span>
             <span class="net-changer">
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle opacity="0.2" cx="13" cy="13" r="6" fill="#088201">
-                  <animate attributeName="r" values="6;9;6" dur="2s" repeatCount="indefinite" />
+                  <animate attributeName="r" values="6;9;6" dur="2s" repeatCount="indefinite"/>
                 </circle>
                 <circle cx="13" cy="13" r="3" fill="#088201">
-                  <animate attributeName="r" values="1;4;1" dur="2s" repeatCount="indefinite" />
+                  <animate attributeName="r" values="1;4;1" dur="2s" repeatCount="indefinite"/>
                 </circle>
               </svg>
               <select class="currentBlockchain__selector" @change="onChange($event)">
-                <option v-for="[key, item] in configMap" :key="key" :value="key" :selected= "curentNetwork === item.networkName">{{ item.networkName }}</option>
+                <option v-for="[key, item] in configMap" :key="key" :value="key" :selected="curentNetwork === item.networkName">{{ item.networkName }}</option>
               </select>
             </span>
           </span>
         </span>
-        <div class="section-header">Navigation</div>
-          <router-link :to="menuItem.href" v-for="(menuItem,index) of menu" :key="index" @click="toggleDropdown">
+      <div class="section-header">Navigation</div>
+      <router-link :to="menuItem.href" v-for="(menuItem,index) of menu" :key="index" @click="toggleDropdown">
             <span class="sidebar-element">
               <span class="icon" :class="{ 'active': index === selected }">
                 <Icon v-if="menuItem.icon.type === SideBarIconType.LUCIDE" :name="menuItem.icon.element"/>
@@ -122,26 +125,25 @@
               </span>
               <span class="title">{{ menuItem.title }}</span>
             </span>
-          </router-link>
-      </div>
-    </nav>
+      </router-link>
+    </div>
+  </nav>
 
 </template>
 
 <script setup lang="ts">
 import LangSwitch from '@/components/lang/LangSwitch.vue';
 import BreadcrumbsComponent from '../features/BreadcrumbsComponent.vue';
-import  UserData from "@/components/userData/UserData.vue";
+import UserData from "@/components/userData/UserData.vue";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import LogoutKeplr from "@/components/layout/loginPopup/LogoutConfirm.vue";
-import { SideBarIconType } from "@/services/permissions/sidebar.config";
-import { useConfigurationStore } from '@/store/configuration.store';
-import {useBlockStore} from "@/store/block.store";
-import { changeTitle } from "@/utils/title-changer";
-import { useRouter } from 'vue-router';
+import {SideBarIconType} from "@/services/permissions/sidebar.config";
+import {useConfigurationStore} from '@/store/configuration.store';
+import {changeTitle} from "@/utils/title-changer";
+import {useRouter} from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
-import { computed, ref } from "vue";
-import { useUserStore } from "@/store/user.store";
+import {computed, ref} from "vue";
+import {useUserStore} from "@/store/user.store";
 import {PermissionsService} from "@/services/permissions/permissions.service";
 import KeplrLogo from '../commons/KeplrLogo.vue';
 import * as GovernanceIcon from "@/components/commons/GovernanceIcon.vue";
@@ -155,7 +157,9 @@ const dropdown = ref(false);
 const toggleDropdown = () => {
   dropdown.value = !dropdown.value;
 };
-const configMap = computed(() => {return useConfigurationStore().getConfigList;});
+const configMap = computed(() => {
+  return useConfigurationStore().getConfigList;
+});
 const curentNetwork = computed(() => {
   return useConfigurationStore().getConfigName;
 });
@@ -171,22 +175,24 @@ const menu = computed(() => {
 });
 
 
-const selected = computed(()=> {
+const selected = computed(() => {
   let current = menu.value.find(element => element.href == router.currentRoute.value.path);
-    return current?.id;
+  return current?.id;
 });
 
 const currentRouteName = computed(() => {
   return router.currentRoute.value.name;
 });
-function openAccInfo(){
+
+function openAccInfo() {
   logoutPopupStatus.value = !logoutPopupStatus.value;
 }
-function logout(){
 
-const latestBlock = computed(() => useBlockStore().getLatestBlock);
-useUserStore().logOut();
+function logout() {
+  // const latestBlock = computed(() => useBlockStore().getLatestBlock);
+  useUserStore().logOut();
 }
+
 </script>
 
 <style scoped lang="scss">
@@ -213,13 +219,15 @@ useUserStore().logOut();
   padding: 0.5em 0;
   width: 100vw;
 }
+
 .divider {
-  background: rgba(0,0,0,.1);
+  background: rgba(0, 0, 0, .1);
   width: 300%;
   height: 1px;
   transform: translateX(-50%);
   margin: 0.5em 0;
 }
+
 .mobile-menu {
   width: 100vw;
   box-sizing: border-box;
@@ -255,7 +263,7 @@ useUserStore().logOut();
   .acc-address {
     display: flex;
     align-items: center;
-  padding: 0.5em 2em;
+    padding: 0.5em 2em;
     justify-content: space-evenly;
 
     .lucide-globe-icon {
@@ -279,6 +287,7 @@ useUserStore().logOut();
         height: 30px;
       }
     }
+
     .active {
       box-shadow: none !important;
     }
@@ -290,14 +299,15 @@ a {
   padding: .5em 2em;
 
   &:hover {
-      background: rgba(0,0,0,.1);
-      color: $primary-green-color;
-    }
+    background: rgba(0, 0, 0, .1);
+    color: $primary-green-color;
+  }
 }
 
 nav a.router-link-exact-active {
   color: $primary-green-color !important;
 }
+
 .mobile-menu-open {
   left: 0;
 }
@@ -331,7 +341,7 @@ nav a.router-link-exact-active {
 
 .keplr-logo {
   padding: 0px 5px;
-  background-color: rgba(255,255,255);
+  background-color: rgba(255, 255, 255);
 }
 
 @media screen and (max-width: 700px) {
@@ -343,17 +353,19 @@ nav a.router-link-exact-active {
     display: flex;
   }
 }
-.navbar-brand:hover{
+
+.navbar-brand:hover {
   cursor: pointer;
 }
 
 .navbar-dark .navbar-nav .nav-link {
-  color: rgba(255,255,255,.8) !important;
+  color: rgba(255, 255, 255, .8) !important;
 }
 
 .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
   color: var(--secondary-color) !important;
 }
+
 // .userdata {
 //   position: absolute;
 //   bottom: 0;

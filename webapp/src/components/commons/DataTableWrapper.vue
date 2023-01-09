@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 
-import {PropType, ref, useSlots, watch} from "vue";
+import {ref, useSlots, watch} from "vue";
 import {DataTableFilterMeta, DataTableFilterMetaData, DataTablePageEvent, DataTableSortEvent} from "primevue/datatable";
 import {PagingModel} from "@/services/model/paging.model";
 import {useGlobalFilterStore} from "@/store/global-filter.store";

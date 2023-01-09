@@ -114,10 +114,8 @@
 </template>
 
 <script setup lang="ts">
-import moment from 'moment';
 import {computed, ref} from "vue";
 import {BarChart} from "echarts/charts";
-import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import {SVGRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent, GridComponent} from "echarts/components";

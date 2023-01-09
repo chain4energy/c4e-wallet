@@ -44,7 +44,7 @@ import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { SVGRenderer } from "echarts/renderers";
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, ref} from "vue";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import Icon from "../features/IconComponent.vue";
 import {useTokensStore} from "@/store/tokens.store";

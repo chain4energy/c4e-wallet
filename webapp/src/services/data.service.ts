@@ -8,7 +8,7 @@ import {useValidatorsStore} from "@/store/validators.store";
 import {LoggedService} from "./logged.service";
 import {LogLevel} from "./logger/log-level";
 import {ServiceTypeEnum} from "./logger/service-type.enum";
-import {ConnectionInfo, ConnectionType} from "@/api/wallet.connecton.api";
+import {ConnectionInfo} from "@/api/wallet.connecton.api";
 
 const keplrKeyStoreChange = 'keplr_keystorechange';
 

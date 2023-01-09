@@ -3,8 +3,6 @@ import { mapCoin } from "@/models/mapper/common.mapper";
 import {
   Proposal as StoreProposal,
   ProposalContent,
-  ProposalsChanges,
-  ProposalsValue,
   ProposalTallyResult,
   ProposalStatus,
   TallyParams,

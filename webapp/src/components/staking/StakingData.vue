@@ -43,10 +43,9 @@ import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import ValidatorsDataTable from "@/components/staking/ValidatorsDataTable.vue";
 import ValidatorsStatusLabel from "../commons/ValidatorsStatusLabel.vue";
-import DelegationsTable from "./DelegationsTable.vue";
 import { ValidatorsDataTableType } from "@/components/staking/ValidatorsDataTable.ts";
 
-const validatorsStore = useValidatorsStore();
+// const validatorsStore = useValidatorsStore();
 const userStore = useUserStore();
 
 const isLoggedIn = computed(() => userStore.isLoggedIn);

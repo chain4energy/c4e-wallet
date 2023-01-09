@@ -20,7 +20,6 @@
 <script setup lang="ts">
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import ClaimAirdrop from "@/components/airdrop/ClaimAirdrop.vue";
 import AirDropTotal from "@/components/airdrop/AirDropTotal.vue";
 </script>
 

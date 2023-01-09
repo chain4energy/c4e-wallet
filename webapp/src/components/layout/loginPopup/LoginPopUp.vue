@@ -17,11 +17,8 @@
 <script setup lang="ts">
 import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue';
 
-import { onUnmounted, ref, shallowRef } from "vue";
-import { useUserStore } from "@/store/user.store";
-import { useToast } from "vue-toastification";
+import { onUnmounted, shallowRef } from "vue";
 import dataService from '@/services/data.service';
-
 
 document.body.style.overflow = "hidden";
 onUnmounted(() => {

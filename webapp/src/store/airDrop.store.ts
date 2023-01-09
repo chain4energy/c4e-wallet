@@ -1,9 +1,7 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {DecCoin} from "@/models/store/common";
 import {AirdropStore, AirdropTotal, AlocationsSt, Campain} from "@/models/store/airdrop";
-import {CampaignsInfo, ClaimRecord} from "@/models/airdrop/airdrop";
-import {BigDecimal} from "@/models/store/big.decimal";
+import {ClaimRecord} from "@/models/airdrop/airdrop";
 import {RequestResponse} from "@/models/request-response";
 import {ErrorData} from "@/api/base.api";
 import {AirdropErrData} from "@/models/blockchain/common";

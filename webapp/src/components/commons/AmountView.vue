@@ -33,7 +33,6 @@ import { Coin, DecCoin } from "@/models/store/common";
 import CoinAmount from "./CoinAmount.vue";
 import { useUserStore } from "@/store/user.store";
 import DateCommon from "@/components/commons/DateCommon.vue";
-import dataService from "@/services/data.service";
 import {useBlockStore} from "@/store/block.store";
 
 const props = defineProps<{
@@ -56,7 +55,7 @@ const locked = computed(()=> {
 
 onMounted(() =>{
   useBlockStore().fetchLatestBlock(false);
-})
+});
 
 
 </script>

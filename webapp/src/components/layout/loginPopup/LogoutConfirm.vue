@@ -66,11 +66,9 @@
 
 <script setup lang="ts">
 import KeplrLogo from '@/components/commons/KeplrLogo.vue';
-import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue';
 import { useUserStore } from "@/store/user.store";
 import { ConnectionType } from "@/api/wallet.connecton.api";
-import { computed, PropType } from "vue";
-import { Validator } from "@/models/store/validator";
+import { computed } from "vue";
 import { useToast } from "vue-toastification";
 import Icon from "@/components/features/IconComponent";
 import dataService from '@/services/data.service';

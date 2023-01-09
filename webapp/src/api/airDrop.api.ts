@@ -2,8 +2,7 @@ import BaseApi, {ErrorData} from "@/api/base.api";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {RequestResponse} from "@/models/request-response";
 import {BlockchainApiErrorData, AirdropErrData} from "@/models/blockchain/common";
-import {airDrop, Campaigns, CampaignsInfo, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
-import {mapAirDrop} from "@/models/mapper/airDrop.mapper";
+import {Campaigns, CampaignsInfo, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
 import queries from "@/api/queries";
 import {useConfigurationStore} from "@/store/configuration.store";
 
@@ -14,14 +13,6 @@ export class AirDropApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
     return ServiceTypeEnum.AIR_DROP_API;
   }
-
-  // public async fetchAirdropCosmos(address: string, lockscreen: boolean): Promise<RequestResponse<airDrop, ErrorData<BlockchainApiErrorData>>> {
-  //   const mapData = (bcData: airDrop | undefined) => {
-  //     return mapAirDrop(bcData);
-  //   };
-  //   return await this.axiosAirDropCall(address,
-  //     mapData, lockscreen, null, 'fetchTotalSupply - ', undefined, undefined, true);
-  // }
 
   public async fetchAirdropMockData(address: string, lockscreen: boolean): Promise<RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>> {
     return new RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>(undefined, this.airDropMockData);

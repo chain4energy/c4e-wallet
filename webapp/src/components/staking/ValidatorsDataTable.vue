@@ -1,6 +1,6 @@
 <template>
   <span>
-    <StakingPopup v-if="!isUndelegationsTable() && popupOpened" :validator="currentValidator" @success="trsansactionSuccess" @close="checkBTN" :redelegation-direction="getRedelegationDirection()"/>
+    <StakingPopup v-if="!isUndelegationsTable() && popupOpened" :validator="currentValidator" @success="transactionSuccess" @close="checkBTN" :redelegation-direction="getRedelegationDirection()"/>
     <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick" :paginator="false">
       <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>
       <template #header>
@@ -186,7 +186,7 @@ const userStore = useUserStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<Validator>());
 
-async function trsansactionSuccess(arg: string) {
+async function transactionSuccess(arg: string) {
   popupOpened.value = !popupOpened.value;
 }
 

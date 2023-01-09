@@ -135,7 +135,6 @@ import C4EIcon from "../commons/C4EIcon.vue";
 import { useValidatorsStore } from "@/store/validators.store";
 import { formatBigNumberLocalized } from "@/utils/locale-number-formatter";
 import PercentsView from "@/components/commons/PercentsView.vue";
-import CoinAmount from "@/components/commons/CoinAmount.vue";
 
 const emit = defineEmits(['close', 'success']);
 
@@ -299,9 +298,9 @@ const timeToComplete = computed(() => {
   return useValidatorsStore().getParamsUnbondingTime;
 });
 
-function getWarningParams() {
-  return {timeToComplete: useValidatorsStore().getParamsUnbondingTime};
-}
+// function getWarningParams() {
+//   return {timeToComplete: useValidatorsStore().getParamsUnbondingTime};
+// }
 </script>
 
 <style scoped lang="scss">

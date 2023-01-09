@@ -23,10 +23,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 import Icon from "../features/IconComponent.vue";
 import {PermissionsService} from "@/services/permissions/permissions.service";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { SideBarIconType } from "@/services/permissions/sidebar.config";
 import GovernanceIcon from "../commons/GovernanceIcon.vue";
 

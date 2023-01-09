@@ -8,7 +8,6 @@ import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
 import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
-import {useUserStore} from "@/store/user.store";
 import {Delegations, UnbondingDelegations} from "@/models/store/staking";
 
 const toast = useToast();
