@@ -77,7 +77,8 @@
     "UPGRADED_CLIENT_STATE": "Upgraded client state",
     "RECIPIENT": "Odbiorca",
     "KEY": "Klucz",
-    "SUBSPACE": "Podprzestrzeń"
+    "SUBSPACE": "Podprzestrzeń",
+    "AMOUNT": "Ilość"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Oddelegowane tokeny",

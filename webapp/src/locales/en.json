@@ -77,7 +77,8 @@
     "UPGRADED_CLIENT_STATE": "Upgraded client state",
     "RECIPIENT": "Recipient",
     "KEY": "Key",
-    "SUBSPACE": "Subspace"
+    "SUBSPACE": "Subspace",
+    "AMOUNT": "Amount"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Bonded tokens",

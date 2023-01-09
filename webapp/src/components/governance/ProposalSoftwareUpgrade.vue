@@ -25,7 +25,7 @@ const props = defineProps<{
 }>();
 
 const getLink = (info: string) => {
-  return info.replace(/##(.+?)##/g, (_, link) => `<a href="${link}">${link}</a>`);
+  return info.replace(/##(.+?)##/g, (_, link) => `<a href="${link}" target="_blank">${link}</a>`);
 };
 </script>
 

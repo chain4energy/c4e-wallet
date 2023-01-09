@@ -1,9 +1,10 @@
 <template>
   <div v-if="proposalContent" class="info">
-    <span>{{$t('GOVERNANCE_VIEW.RECIPIENT')}}</span>
+    <span>{{$t('GOVERNANCE_VIEW.RECIPIENT')}}:</span>
     <span>{{proposalContent.recipient}}</span>
+    <span>{{$t('GOVERNANCE_VIEW.AMOUNT')}}:</span>
     <div v-for="amount in proposalContent.amount" :key="amount">
-      {{amount.amount}} {{amount.denom}}
+      {{amount.amount}} {{amount.denom}} <br>
     </div>
   </div>
 
