@@ -5,14 +5,14 @@
       <div class="userdata-container" :class="useUserStore().isContinuousVestingAccount ? '' : 'width-95'">
         <div class="userdata-option" v-for="(items, index) in props.coins" :key="index">
           <span class="header" v-if="items.header">{{items.header}}</span>
-          <CoinAmount :amount="items.amount" :precision="precision" :show-denom="items.showDenom || showDenom" :reduce-big-number="reduceBigNumber"/>
+          <CoinAmount :amount="convertAmount(items.amount)" :precision="precision" :show-denom="items.showDenom || showDenom" :reduce-big-number="reduceBigNumber"/>
         </div>
       </div>
       <span class="vesting-container" v-if="useUserStore().isContinuousVestingAccount && showVesting">
         <div class="vesting-flag">Vesting</div>
         <div class="userdata-option vesting-first" v-if="useUserStore().isContinuousVestingAccount">
               <span class="header">{{ $t('USER_DATA.LOCKED') }}</span>
-              <CoinAmount :key="locked" :amount="locked" :show-denom="true"/>
+              <CoinAmount :key="locked" :amount="new BigIntWrapper(locked)" :show-denom="true"/>
           </div>
           <div class="userdata-option vesting" v-if="useUserStore().isContinuousVestingAccount">
               <span class="header">{{ $t('USER_DATA.VESTING_END') }}</span>
@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import { BigDecimal } from "@/models/store/big.decimal";
 import {computed, onMounted} from "vue";
-import { Coin, DecCoin } from "@/models/store/common";
+import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 import CoinAmount from "./CoinAmount.vue";
 import { useUserStore } from "@/store/user.store";
 import DateCommon from "@/components/commons/DateCommon.vue";
@@ -52,6 +52,14 @@ const props = defineProps<{
 const locked = computed(()=> {
   return useUserStore().getVestingLockAmount;
 });
+
+function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
+  if( typeof amount === 'bigint'){
+    return new BigIntWrapper(amount);
+  } else {
+    return amount;
+  }
+}
 
 onMounted(() =>{
   useBlockStore().fetchLatestBlock(false);

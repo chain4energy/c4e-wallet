@@ -98,6 +98,9 @@ class BigDecimalImpl implements BigDecimal {
     } if (typeof value === 'bigint') {
       return value * SHIFT;
     } else {
+      if(String(value).startsWith('NaN')){
+        return 0n;
+      }
       const [ints, decis] = String(value).split('.').concat('');
       return BigInt(ints + decis.padEnd(DECIMALS, '0')
         .slice(0, DECIMALS))

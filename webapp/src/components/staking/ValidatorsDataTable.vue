@@ -65,7 +65,7 @@
         </Column>
         <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.STAKE`)" :sortable="true" sortField="delegatedAmount">
           <template #body="{data}">
-            <CoinAmount :amount="data.delegatedAmount" :show-denom="true"/>
+            <CoinAmount :amount="new BigIntWrapper(data.delegatedAmount)" :show-denom="true"/>
           </template>
         </Column>
         <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.REWARDS`)" :sortable="true" sortField="rewardsAmountSort">
@@ -107,11 +107,11 @@
         <div class="flex-container-details">
           <div class="item">
             <div>{{ $t(`STAKING_VIEW.TABLE.STAKE`) }}</div>
-            <CoinAmount :amount="expandedData.data.delegatedAmount" :show-denom="true"/>
+            <CoinAmount :amount="new BigIntWrapper(expandedData.data.delegatedAmount)" :show-denom="true"/>
           </div>
           <div class="item">
             <div>{{ $t(`STAKING_VIEW.TABLE.UNSTAKING`) }}</div>
-            <CoinAmount :amount="expandedData.data.undelegatingAmount" :show-denom="true"/>
+            <CoinAmount :amount="new BigIntWrapper(expandedData.data.undelegatingAmount)" :show-denom="true"/>
           </div>
           <div class="item">
             <div>{{ $t(`STAKING_VIEW.TABLE.REWARDS`) }}</div>
@@ -165,6 +165,7 @@ import PercentsView from "@/components/commons/PercentsView";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import ValidatorStatusBadge from "./ValidatorStatusBadge.vue";
 import { UnbondingDelegationEntry } from "@/models/store/staking";
+import {BigIntWrapper} from "@/models/store/common";
 
 function getRedelegationDirection() {
   if (isValidatorsTable()) {
