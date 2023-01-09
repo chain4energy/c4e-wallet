@@ -6,7 +6,7 @@ import {
   ProposalTallyResult,
   ProposalStatus,
   TallyParams,
-  VoteOption, ProposalsPlan, ProposalsAmount, ProposalType,
+  VoteOption, ProposalsPlan, ProposalsAmount, ProposalType, ProposalsChanges,
 } from "@/models/store/proposal";
 import { Coin } from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
