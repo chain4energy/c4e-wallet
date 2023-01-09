@@ -16,6 +16,9 @@
     <div class="description">
       <ProposalDescription :proposal="proposal"></ProposalDescription>
     </div>
+      <div class="description">
+        <ProposalAdditionalContent :proposal="proposal"></ProposalAdditionalContent>
+    </div>
 </span>
 
 </template>
@@ -30,6 +33,7 @@ import dataService from "@/services/data.service";
 import router from "@/router";
 import { useProposalsStore } from "@/store/proposals.store";
 import Icon from "@/components/features/IconComponent.vue";
+import ProposalAdditionalContent from "@/components/governance/ProposalAdditionalContent.vue";
 
 const route = useRoute();
 

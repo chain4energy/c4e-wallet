@@ -68,7 +68,17 @@
       "TEXT_PROPOSAL": "Text Proposal",
       "CANCEL_SOFTWARE_UPGRADE_PROPOSAL": "Cancel Software Upgrade Proposal",
       "SOFTWARE_UPGRADE_PROPOSAL": "Software Upgrade Proposal"
-    }
+    },
+    "DETAILS": "Details",
+    "HEIGHT": "Height",
+    "INFO": "Info",
+    "NAME": "Name",
+    "TIME": "Time",
+    "UPGRADED_CLIENT_STATE": "Upgraded client state",
+    "RECIPIENT": "Recipient",
+    "KEY": "Key",
+    "SUBSPACE": "Subspace",
+    "AMOUNT": "Amount"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Bonded tokens",
