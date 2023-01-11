@@ -31,7 +31,7 @@
               texts="STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.TEXTS"
               :texts-variables="{timeToComplete: timeToComplete}"/>
 
-      <Form @submit="action" :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body">
+      <VeeForm @submit="action" :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body" as="form">
 
         <div class="validationPopup__body">
           <h3>{{ $t('STAKING_VIEW.STAKING_POPUP.HEADER') }}</h3>
@@ -76,25 +76,45 @@
 
           <div class="validationPopup__description">
             <div class="field">
-              <Field v-model="amount" name="amount" placeholder=" " type="text" class="form-control" style="width: 100%;" :class="{ 'is-invalid': errors.amount }" :disabled="!canModify"></Field>
+              <Field
+                v-model="amount"
+                name="amount"
+                placeholder=" "
+                type="text"
+                class="form-control"
+                style="width: 100%;" :class="{ 'is-invalid': errors.amount }"
+                :disabled="!canModify"></Field>
               <span>{{$t('COMMON.INPUT.AMOUNT')}}</span>
+              <div class="validationPopup__btn">
+                <button
+                  type="button"
+                  :disabled="!canModify"
+                  @click="transferAllAmount"
+                >Max</button>
+                <p>C4E</p>
+              </div>
+
+<!--              <p style="text-align: left">-->
+<!--                commission ~ {{commissionForOperation.toFixed(2)}} c4e-->
+<!--              </p>-->
               <div class="invalid-feedback">
-                {{ errors.amount ? errors.amount : "" }}
+                {{ errors.redelegateValidator ? errors.redelegateValidator : "" }}
               </div>
             </div>
           </div>
         </div>
+
         <div class="validationPopup__btnHolder" v-if="canModify" >
           <div class="validationPopup__btns" >
-            <Button v-if="stakingAction === StakingAction.DELEGATE" type="submit">
+            <Button class="validationPopup__button" v-if="stakingAction === StakingAction.DELEGATE" type="submit">
               <StakeManagementIcon icon="delegate"/>
               {{$t('STAKING_VIEW.STAKING_POPUP.DELEGATE')}}
             </Button>
-            <Button v-if="stakingAction === StakingAction.UNDELEGATE" type="submit">
+            <Button class="validationPopup__button" v-if="stakingAction === StakingAction.UNDELEGATE" type="submit">
               <StakeManagementIcon icon="undelegate"/>
               {{$t('STAKING_VIEW.STAKING_POPUP.UNDELEGATE')}}
             </Button>
-            <Button v-if="stakingAction === StakingAction.REDELEGATE" type="submit">
+            <Button class="validationPopup__button" v-if="stakingAction === StakingAction.REDELEGATE" type="submit">
               <StakeManagementIcon icon="redelegate"/>
               {{$t('STAKING_VIEW.STAKING_POPUP.REDELEGATE')}}
             </Button>
@@ -106,7 +126,7 @@
           <KeplrLogo/> {{ $t('CONNECT.CONNECT' )}}
           </Button>
         </div>
-      </Form>
+      </VeeForm>
     </div>
   </div>
 </template>
@@ -121,7 +141,7 @@ import { BigDecimal } from "@/models/store/big.decimal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import i18n from "@/plugins/i18n";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
-import {Field, Form} from "vee-validate";
+import {Form as VeeForm, Field, ErrorMessage} from "vee-validate";
 import { YupSequentialStringSchema } from "@/utils/yup-utils";
 import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
 import KeplrLogo from "../commons/KeplrLogo.vue";
@@ -157,6 +177,10 @@ const canModify = computed<boolean>(() => {
   });
 
 const amount = ref('');
+const amountWithCommission =ref();
+const commissionForOperation = computed(() => {
+  return (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) || 0;
+});
 
 
 setLocale({
@@ -177,6 +201,47 @@ const baseSchema = object().shape({
     ])
 });
 
+function transferAllAmount(){
+  const commission = getPercents(props.validator.commission.rate);
+  if(commission){
+    switch(stakingAction.value) {
+      case StakingAction.DELEGATE:
+        amount.value = String(
+          Number(useConfigurationStore().config.getConvertedAmount(useUserStore().getBalance))
+        );
+        amountWithCommission.value = (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) + Number(amount.value);
+        break;
+      case StakingAction.UNDELEGATE:
+        amount.value = String(
+          Number(props.validator.undelegatingAmount)
+        );
+        amountWithCommission.value = (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) + Number(amount.value);
+        break;
+      case StakingAction.REDELEGATE:
+        amount.value = String(
+          Number(props.validator.delegatedAmount)
+        );
+        amountWithCommission.value = (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) + Number(amount.value);
+        break;
+    }
+  } else {
+    console.log(1);
+  }
+
+}
+function getPercents(amount : bigint | number | BigDecimal){
+
+    if (typeof amount === 'number') {
+      if (isNaN(amount)) {
+        return Number.NaN;
+      }
+      return amount * 100;
+    } else if (typeof amount === 'bigint') {
+      return amount * 100n;
+    } else {
+      return amount.multiply(100);
+    }
+}
 function checkValue(value: string | undefined, check: (value:  string) => boolean): boolean {
   if (!value) {
     return false;
@@ -304,6 +369,7 @@ const timeToComplete = computed(() => {
 </script>
 
 <style scoped lang="scss">
+@import '@/styles/variables.scss';
 
 .validationPopup{
   position: fixed;
@@ -318,7 +384,7 @@ const timeToComplete = computed(() => {
   width: 100vw;
   height: 100vh;
 
-  button{
+  .button{
     margin-left: 10px;
     border: 1px solid #72BF44;
     border-radius: 24px;
@@ -396,6 +462,43 @@ const timeToComplete = computed(() => {
       align-items: flex-start;
 
     }
+  }
+  &__btn{
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    max-height: 100%;
+    align-items: baseline;
+    text-align: center;
+    top: 0;
+    bottom: 0;
+    right: 5%;
+    button{
+      background-color: #72BF44;
+      color: white;
+      border: 0;
+      width: 58px;
+      -webkit-appearance: none;
+      margin-right: 10px;
+      border-radius: 10px;
+      padding: 5px;
+      &:hover{
+        background-color: #72BF44;
+        color: #FFFFFF;
+      }
+    }
+    //display: flex;
+    //float: right;
+    //right: 2px;
+    //margin: 0 !important;
+    //top: 0;
+    //align-items: center;
+    //justify-items: center;
+    //justify-content: center;
+    //max-height: 95%;
+    //border-radius: 13px !important;
+    //background-color: $main-lighter-color;
   }
   &__descriptionIcon{
     width: 50px;
