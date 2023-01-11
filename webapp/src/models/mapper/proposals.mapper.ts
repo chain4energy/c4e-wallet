@@ -6,7 +6,7 @@ import {
   ProposalTallyResult,
   ProposalStatus,
   TallyParams,
-  VoteOption,
+  VoteOption, ProposalsPlan, ProposalsAmount, ProposalType, ProposalsChanges,
 } from "@/models/store/proposal";
 import { Coin } from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
@@ -70,13 +70,30 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
   }
 
   const status = mapProposalStatus(proposal.status);
-  // const changes = proposal.content.changes.map((el)=> {
-  //   return new ProposalsChanges(
-  //     el.subspace, el.key, el.value
-  //   );
-  // })
+  let changes = undefined;
+  if(proposal.content.changes) {
+     changes = proposal.content.changes.map((el)=> {
+      return new ProposalsChanges(
+        el.subspace, el.key, el.value
+      );
+    });
+  }
+  let proposalPlan = undefined;
+  const plan = proposal.content.plan;
+  if(plan) {
+    proposalPlan = new ProposalsPlan(plan.height, plan.info, plan.name, plan.time, plan.upgraded_client_state);
+  }
 
-  const content = new ProposalContent(proposal.content["@type"], proposal.content.title, proposal.content.description/*, changes*/);
+  let amount = undefined;
+  if(proposal.content.amount) {
+    amount = proposal.content.amount.map((el)=> {
+      return new ProposalsAmount(
+        el.denom, Number(el.amount)
+      );
+    });
+  }
+
+  const content = new ProposalContent( proposal.content["@type"] as ProposalType, proposal.content.title, proposal.content.description, changes, proposalPlan, proposal.content.recipient, amount);
   const finalTallyResult = mapProposalTallyResult(proposal.final_tally_result);
   const totalDeposit = proposal.total_deposit.map((el)=> {
     return mapCoin(el, el.denom);

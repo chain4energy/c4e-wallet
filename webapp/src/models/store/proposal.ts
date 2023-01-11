@@ -64,17 +64,41 @@ export class Proposal {
   }
 }
 export class ProposalContent {
-  type: string;
+  type: ProposalType;
   title: string;
   description: string;
-  // changes: Array<ProposalsChanges>
+  changes: Array<ProposalsChanges> | undefined;
+  plan: ProposalsPlan | undefined;
+  recipient: string | undefined;
+  amount: Array<ProposalsAmount> | undefined;
 
-  constructor(type: string, title: string, description: string/*, changes: Array<ProposalsChanges>*/) {
+
+  constructor(type: ProposalType, title: string, description: string, changes: Array<ProposalsChanges> | undefined, plan: ProposalsPlan | undefined, recipient: string | undefined, amount: Array<ProposalsAmount> | undefined) {
     this.type = type;
     this.title = title;
     this.description = description;
-    // this.changes= changes;
+    this.changes= changes;
+    this.plan = plan;
+    this.recipient = recipient;
+    this.amount = amount;
   }
+}
+
+export class ProposalsAmount {
+  denom: string;
+  amount: number;
+
+  constructor(denom: string, amount: number) {
+    this.denom = denom;
+    this.amount = amount;
+  }
+}
+export enum ProposalType {
+  SOFTWARE_UPGRADE='/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal',
+  TEXT = '/cosmos.gov.v1beta1.TextProposal',
+  COMMUNITY_POOL_SPEND='/cosmos.distribution.v1beta1.CommunityPoolSpendProposal',
+  CANCEL_SOFTWARE_UPGRADE ='/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal',
+  PARAMETER_CHANGE = '/cosmos.params.v1beta1.ParameterChangeProposal'
 }
 export class ProposalsChanges{
   subspace: string;
@@ -84,6 +108,22 @@ export class ProposalsChanges{
     this.key=key;
     this.subspace=subspace;
     this.value = value;
+  }
+}
+export class ProposalsPlan {
+  height: string;
+  info: string;
+  name: string;
+  time: string;
+  upgradedClientState: string;
+
+
+  constructor(height: string, info: string, name: string, time: string, upgradedClient: string) {
+    this.height = height;
+    this.info = info;
+    this.name = name;
+    this.time = time;
+    this.upgradedClientState = upgradedClient;
   }
 }
 export class ProposalsValue{

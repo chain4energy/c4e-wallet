@@ -154,6 +154,7 @@ export const useProposalsStore = defineStore({
         if (resp.isSuccess() && resp.data !== undefined){
           if (storeSingle) {
             this.proposalTally = resp.data;
+            this.proposalsTally.set(id, resp.data);
             logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.yes));
             logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.abstain));
             logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(this.proposalTally.no));
