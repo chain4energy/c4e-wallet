@@ -258,7 +258,7 @@
   },
   "local":{
     "bcApiURL": "http://0.0.0.0:1317",
-    "bcRpcURL": "https://rpc-dev.c4e.io",
+    "bcRpcURL": "http://0.0.0.0:26657",
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
@@ -266,7 +266,7 @@
     "stakingDenom": "uc4e",
     "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-    "chainId": "veles-dev-test-1",
+    "chainId": "c4echain",
     "networkName": "Local",
     "keplrNetworkName": "C4E Veles Dev",
     "queries": {
