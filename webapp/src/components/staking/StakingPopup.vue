@@ -18,7 +18,7 @@
             <a :href="validator.description.website" target="_blank">{{ $t('STAKING_VIEW.STAKING_POPUP.WEBSITE') }}</a>
           </div>
         </div>
-        <Button icon="pi pi-times" style="width: 5px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
+        <Button icon="pi pi-times" style="width: 10px; margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
       </div>
         <WarningMessage v-if="stakingAction === StakingAction.DELEGATE"
               header="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.HEADER"
@@ -132,28 +132,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from "vue";
+import {computed, onUnmounted, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
-import { Validator } from "@/models/store/validator";
-import { object, setLocale, string} from "yup";
+import {Validator} from "@/models/store/validator";
+import {object, setLocale, string} from "yup";
 import dataService from '@/services/data.service';
-import { BigDecimal } from "@/models/store/big.decimal";
-import { useConfigurationStore } from "@/store/configuration.store";
+import {BigDecimal} from "@/models/store/big.decimal";
+import {useConfigurationStore} from "@/store/configuration.store";
 import i18n from "@/plugins/i18n";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
-import {Form as VeeForm, Field, ErrorMessage} from "vee-validate";
-import { YupSequentialStringSchema } from "@/utils/yup-utils";
+import {Form as VeeForm, Field} from "vee-validate";
+import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
 import KeplrLogo from "../commons/KeplrLogo.vue";
 import StakingActionVue from "./StakingAction.vue";
-import { StakingAction } from "@/components/staking/StakingAction.ts";
+import {StakingAction} from "@/components/staking/StakingAction.ts";
 import StakingRedelegate from "./StakingRedelegate.vue";
-import { RedelegationDirection } from "@/components/staking/StakingRedelegate.ts";
+import {RedelegationDirection} from "@/components/staking/StakingRedelegate.ts";
 import WarningMessage from "@/components/commons/WarningMessage.vue";
 import AmountView from "@/components/commons/AmountView.vue";
 import C4EIcon from "../commons/C4EIcon.vue";
-import { useValidatorsStore } from "@/store/validators.store";
-import { formatBigNumberLocalized } from "@/utils/locale-number-formatter";
+import {useValidatorsStore} from "@/store/validators.store";
+import {formatBigNumberLocalized} from "@/utils/locale-number-formatter";
 import PercentsView from "@/components/commons/PercentsView.vue";
 
 const emit = defineEmits(['close', 'success']);
@@ -177,10 +177,10 @@ const canModify = computed<boolean>(() => {
   });
 
 const amount = ref('');
-const amountWithCommission =ref();
-const commissionForOperation = computed(() => {
-  return (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) || 0;
-});
+// const amountWithCommission =ref();
+// const commissionForOperation = computed(() => {
+//   return (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) || 0;
+// });
 
 
 setLocale({
@@ -209,19 +209,20 @@ function transferAllAmount(){
         amount.value = String(
           Number(useConfigurationStore().config.getConvertedAmount(useUserStore().getBalance))
         );
-        amountWithCommission.value = (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) + Number(amount.value);
         break;
       case StakingAction.UNDELEGATE:
         amount.value = String(
-          Number(props.validator.undelegatingAmount)
+          Number(useConfigurationStore().config.getConvertedAmount(props.validator.undelegatingAmount))
         );
-        amountWithCommission.value = (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) + Number(amount.value);
         break;
       case StakingAction.REDELEGATE:
-        amount.value = String(
-          Number(props.validator.delegatedAmount)
-        );
-        amountWithCommission.value = (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) + Number(amount.value);
+        if(props.redelegationDirection === RedelegationDirection.FROM && redelegateValidator.value){
+          amount.value = String(useConfigurationStore().config.getConvertedAmount(redelegateValidator.value?.delegatedAmount));
+        } else if(props.redelegationDirection === RedelegationDirection.TO) {
+          amount.value = String(useConfigurationStore().config.getConvertedAmount(props.validator.delegatedAmount));
+        } else {
+          amount.value = '0';
+        }
         break;
     }
   } else {
@@ -488,17 +489,6 @@ const timeToComplete = computed(() => {
         color: #FFFFFF;
       }
     }
-    //display: flex;
-    //float: right;
-    //right: 2px;
-    //margin: 0 !important;
-    //top: 0;
-    //align-items: center;
-    //justify-items: center;
-    //justify-content: center;
-    //max-height: 95%;
-    //border-radius: 13px !important;
-    //background-color: $main-lighter-color;
   }
   &__descriptionIcon{
     width: 50px;
