@@ -1,22 +1,48 @@
 <template>
   <div class="loginChoose__holder">
     <div class="top-bar">
-      <h2>Welcome</h2>
+      <h2 style="font-weight: bold">Welcome</h2>
       <Button icon="pi pi-times" style="margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
     </div>
 
 
     <p>The world’s first blockchain network based on green energy production</p>
     <div class="loginChoose__body">
-      <Button @click="$emit('typeChange', LoginEmail)">
-      <Icon style="margin-right: 10px;" name="Globe"></Icon>
-        {{ $t('CONNECT.CONNECT_ADDRESS') }}
-      </Button>
-      <Button @click="$emit('keplr')" v-if="!isMobile()">
-        <KeplrLogo/>
-        {{ $t('CONNECT.CONNECT_KEPLR') }}
+      <div class="box" @click="$emit('typeChange', LoginEmail)">
+        <div class="iconContainer">
+          <Icon class="icon" name="Globe"></Icon>
+        </div>
+        <span>{{ $t('CONNECT.CONNECT_ADDRESS') }}</span>
+        <div style="margin-left:auto" class="nextStep">
+          <div class="iconContainer" style="background-color: #72bf44">
+            <Icon style="color:white" class="icon" name="ArrowRightCircle"></Icon>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 10px" class="box" @click="$emit('keplr')" v-if="!isMobile()">
+        <div style="margin-left: 25px; margin-right: 20px; ">
+          <img style="height:50px;;padding-top: 6px;" src="@/assets/keplrIcon2.png">
+        </div>
+        <span>{{ $t('CONNECT.CONNECT_KEPLR') }}</span>
+        <div style="margin-left:auto" class="nextStep">
+          <div class="iconContainer" style="background-color: #72bf44">
+            <Icon style="color:white" class="icon" name="ArrowRightCircle"></Icon>
+          </div>
+        </div>
+      </div>
+<!--      <div class="keplr" @click="$emit('keplr')" v-if="!isMobile()">-->
+<!--        <KeplrLogo/>-->
+<!--        <span>{{ $t('CONNECT.CONNECT_KEPLR') }}</span>-->
+<!--      </div>-->
+<!--      <Button @click="$emit('typeChange', LoginEmail)">-->
+<!--      <Icon style="margin-right: 10px;" name="Globe"></Icon>-->
+<!--        {{ $t('CONNECT.CONNECT_ADDRESS') }}-->
+<!--      </Button>-->
+<!--      <Button @click="$emit('keplr')" v-if="!isMobile()">-->
+<!--        <KeplrLogo/>-->
+<!--        {{ $t('CONNECT.CONNECT_KEPLR') }}-->
 
-      </Button>
+<!--      </Button>-->
     </div>
   </div>
 </template>
@@ -101,6 +127,32 @@ function isMobile() {
     button {
       width: 100%;
       height: 60px;
+    }
+
+    .box {
+      width: 100%; height: 80px;
+      box-shadow: 0px 0px 24px 0px rgba(196, 203, 212, 1);
+      border-radius: 10px 10px 10px 10px;
+      display: flex;
+      align-items: center;
+      .iconContainer {
+        box-shadow: 0px 0px 24px 0px rgba(196, 203, 212, 1);
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        margin-left: 25px;
+        margin-right: 20px;
+        .icon {
+          margin-left: 0;
+          margin-right:0;
+        }
+      }
+    }
+    .box:hover {
+      opacity: 0.6;
+      cursor: pointer;
     }
   }
   &__description{

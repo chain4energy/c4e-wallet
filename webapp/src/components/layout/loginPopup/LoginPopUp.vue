@@ -73,7 +73,7 @@ function keplrConnect(){
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-evenly;
-    width: 800px;
+    width: 650px;
     min-height: 292px;
     background-color: #FFFFFF;
     padding: 30px 20px;
