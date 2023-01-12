@@ -212,7 +212,7 @@ function transferAllAmount(){
         break;
       case StakingAction.UNDELEGATE:
         amount.value = String(
-          Number(useConfigurationStore().config.getConvertedAmount(props.validator.undelegatingAmount))
+          Number(useConfigurationStore().config.getConvertedAmount(props.validator.delegatedAmount))
         );
         break;
       case StakingAction.REDELEGATE:
@@ -261,9 +261,20 @@ function moreThan(value: string | undefined): boolean {
 function lessThanOrEqualTo(value: string | undefined): boolean {
   return checkValue(value, (value:  string) => {
     const factor = useConfigurationStore().config.getViewDenomConversionFactor();
-    const lessThan = stakingAction.value === StakingAction.DELEGATE ? useUserStore().getBalance : props.validator.delegatedAmount;
+    let lessThan;
+    switch (stakingAction.value){
+      case StakingAction.DELEGATE: lessThan = useUserStore().getBalance;
+      break;
+      case StakingAction.UNDELEGATE: lessThan = props.validator.delegatedAmount;
+      break;
+      case StakingAction.REDELEGATE: props.redelegationDirection === RedelegationDirection.FROM ?
+        lessThan = redelegateValidator.value?.delegatedAmount : lessThan = props.validator.delegatedAmount;
+      console.log(props.redelegationDirection);
+      break;
+    }
     return (new BigDecimal(lessThan)).isBiggerThanOrEqualTo(new BigDecimal(value).multiply(factor));
   });
+
 }
 
 function maxAmountMessageData(): string {
