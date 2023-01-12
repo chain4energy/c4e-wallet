@@ -4,58 +4,95 @@
     <div class="loginPopup__holder">
       <div class="loginChoose__holder">
         <div class="top-bar">
-          <h2>Wallet</h2>
+          <h2 style="font-weight:bold ">Wallet</h2>
           <Button icon="pi pi-times" style="margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
 
         </div>
         <div class="loginChoose__body">
           <div class="loginChoose__description">
-            <div style="display: flex; align-items: center; justify-content: space-evenly; flex-direction: column;">
-              <div style="display: flex">
-                  <span v-if="showKeplrLogo">
-                    <KeplrLogo style="display: flex; background-color: #002C50; color: white; font-size: 2em; padding: 0 10px" />
-                  </span>
-                <div class="loginChoose__descriptionIcon" v-if="!showKeplrLogo">
-                  <img  :src="logo">
-                </div>
-                <div class="loginPopup__addressHolder">
-                  <p>{{useUserStore().getAccount.address}}</p>
-                  <Icon name="Copy" @click="copyTxt">{{$t('COPY.ADDRESS')}}</Icon>
-                </div>
+            <div class="container" style="width: 100%; height: 100px;box-shadow: 0px 0px 24px 0px rgba(196, 203, 212, 1); border-radius: 20px 20px 20px 20px;">
+              <div class="logo">
+                <img style="padding-top: 6px" src="@/assets/keplrIcon.jpg">
               </div>
-                <span style="display: flex;width: 100%;align-items: center;justify-content: space-between;">
-                  <span>Connected to:</span>
-                  <span>
-                    <span class="net-changer">
-                      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle opacity="0.2" cx="13" cy="13" r="6" fill="#088201">
-                          <animate attributeName="r" values="6;9;6" dur="2s" repeatCount="indefinite" />
-                        </circle>
-                        <circle cx="13" cy="13" r="3" fill="#088201">
-                          <animate attributeName="r" values="1;4;1" dur="2s" repeatCount="indefinite" />
-                        </circle>
-                      </svg>
-                      <select class="currentBlockchain__selector" @change="onChange($event)">
-                        <option v-for="[key, item] in configMap" :key="key" :value="key" :selected= "curentNetwork === item.networkName">{{ item.networkName }}</option>
-                      </select>
-                    </span>
-                  </span>
-
-                </span>
-               <a :href="`${useConfigurationStore().config.explorerAccount}${useUserStore().getAccount.address}`"
-                target="_blank" class="loginPopup__disconnect p-button">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>
-               <Button class="loginPopup__disconnect" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
-
-              <!--<div class="loginPopup__data" style="display: flex; flex-direction: column; justify-items: left">
-                <p>{{ useUserStore().getAccount.address.slice(0, 13)}}...{{useUserStore().getAccount.address.slice(-6)}}</p>
-                <div>
-                  <Button @click="copyTxt" style="width: 30%">copy</Button>
-                  <a :href="`https://explorer-testnet.chain4energy.org/accounts/${useUserStore().getAccount.address}`"
-                     target="_blank">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>
-                </div>
-
-              </div>-->
+              <div class="address">
+                {{addDotsInsideTooLongString(useUserStore().getAccount.address, 35)}}
+              </div>
+              <div class="copy">
+                <span @click="copyTxt">copy</span>&nbsp;&nbsp;&nbsp;
+                <a :href="`${useConfigurationStore().config.explorerAccount}${useUserStore().getAccount.address}`"
+                   target="_blank">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>
+              </div>
+              <div class="disconnect">
+                <Button class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
+              </div>
             </div>
+            <div style="width: 100%; padding-top:40px">
+              <span style="display: flex;width: 100%;align-items: center;justify-content: space-between;">
+                <span>Connected to:</span>
+                <span>
+                  <span class="net-changer">
+                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle opacity="0.2" cx="13" cy="13" r="6" fill="#088201">
+                        <animate attributeName="r" values="6;9;6" dur="2s" repeatCount="indefinite" />
+                      </circle>
+                      <circle cx="13" cy="13" r="3" fill="#088201">
+                        <animate attributeName="r" values="1;4;1" dur="2s" repeatCount="indefinite" />
+                      </circle>
+                    </svg>
+                    <select class="currentBlockchain__selector" @change="onChange($event)">
+                      <option v-for="[key, item] in configMap" :key="key" :value="key" :selected= "curentNetwork === item.networkName">{{ item.networkName }}</option>
+                    </select>
+                  </span>
+                </span>
+              </span>
+            </div>
+
+<!--            <div style="display: flex; align-items: center; justify-content: space-evenly; flex-direction: column;">-->
+<!--              <div style="display: flex">-->
+<!--                  <span v-if="showKeplrLogo">-->
+<!--                    <KeplrLogo style="display: flex; background-color: #002C50; color: white; font-size: 2em; padding: 0 10px" />-->
+<!--                  </span>-->
+<!--                <div class="loginChoose__descriptionIcon" v-if="!showKeplrLogo">-->
+<!--                  <img  :src="logo">-->
+<!--                </div>-->
+<!--                <div class="loginPopup__addressHolder">-->
+<!--                  <p>{{useUserStore().getAccount.address}}</p>-->
+<!--                  <Icon name="Copy" @click="copyTxt">{{$t('COPY.ADDRESS')}}</Icon>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--                <span style="display: flex;width: 100%;align-items: center;justify-content: space-between;">-->
+<!--                  <span>Connected to:</span>-->
+<!--                  <span>-->
+<!--                    <span class="net-changer">-->
+<!--                      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--                        <circle opacity="0.2" cx="13" cy="13" r="6" fill="#088201">-->
+<!--                          <animate attributeName="r" values="6;9;6" dur="2s" repeatCount="indefinite" />-->
+<!--                        </circle>-->
+<!--                        <circle cx="13" cy="13" r="3" fill="#088201">-->
+<!--                          <animate attributeName="r" values="1;4;1" dur="2s" repeatCount="indefinite" />-->
+<!--                        </circle>-->
+<!--                      </svg>-->
+<!--                      <select class="currentBlockchain__selector" @change="onChange($event)">-->
+<!--                        <option v-for="[key, item] in configMap" :key="key" :value="key" :selected= "curentNetwork === item.networkName">{{ item.networkName }}</option>-->
+<!--                      </select>-->
+<!--                    </span>-->
+<!--                  </span>-->
+
+<!--                </span>-->
+<!--               <a :href="`${useConfigurationStore().config.explorerAccount}${useUserStore().getAccount.address}`"-->
+<!--                target="_blank" class="loginPopup__disconnect p-button">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>-->
+<!--               <Button class="loginPopup__disconnect" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>-->
+
+<!--              &lt;!&ndash;<div class="loginPopup__data" style="display: flex; flex-direction: column; justify-items: left">-->
+<!--                <p>{{ useUserStore().getAccount.address.slice(0, 13)}}...{{useUserStore().getAccount.address.slice(-6)}}</p>-->
+<!--                <div>-->
+<!--                  <Button @click="copyTxt" style="width: 30%">copy</Button>-->
+<!--                  <a :href="`https://explorer-testnet.chain4energy.org/accounts/${useUserStore().getAccount.address}`"-->
+<!--                     target="_blank">{{ $t('CONNECT.VIEW_EXPLORER')}}</a>-->
+<!--                </div>-->
+
+<!--              </div>&ndash;&gt;-->
+<!--            </div>-->
           </div>
 
         </div>
@@ -65,16 +102,14 @@
 </template>
 
 <script setup lang="ts">
-import KeplrLogo from '@/components/commons/KeplrLogo.vue';
-import { useUserStore } from "@/store/user.store";
-import { ConnectionType } from "@/api/wallet.connecton.api";
-import { computed } from "vue";
-import { useToast } from "vue-toastification";
-import Icon from "@/components/features/IconComponent";
+import {useUserStore} from "@/store/user.store";
+import {ConnectionType} from "@/api/wallet.connecton.api";
+import {computed} from "vue";
+import {useToast} from "vue-toastification";
 import dataService from '@/services/data.service';
-import { useConfigurationStore } from '@/store/configuration.store';
+import {useConfigurationStore} from '@/store/configuration.store';
 import {useBlockStore} from "@/store/block.store";
-import { changeTitle } from "@/utils/title-changer";
+import {changeTitle} from "@/utils/title-changer";
 import i18n from "@/plugins/i18n";
 
 const props = defineProps({
@@ -126,6 +161,13 @@ function copyTxt(){
   useToast().success(i18n.global.t('COPY.ADDRESS'));
 }
 
+const addDotsInsideTooLongString = (text: string, maxLength: number): string => {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength - 3) + "..." + text.substring(text.length - 2);
+  }
+  return text;
+};
+
 </script>
 
 <style scoped lang="scss">
@@ -145,7 +187,9 @@ function copyTxt(){
 
 .top-bar {
   display: flex;
-  width: 100%;
+  width: 90%;
+  margin-right: auto;
+  margin-left:auto;
   justify-content: space-between;
   align-items: center;
 }
@@ -192,10 +236,10 @@ function copyTxt(){
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-evenly;
-    width: 800px;
+    width: 650px;
     min-height: 292px;
     background-color: #FFFFFF;
-    padding: 46px 20px 30px 20px;
+    padding: 26px 20px 0px 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
     border-radius: 8px;
   }
@@ -290,15 +334,71 @@ function copyTxt(){
     border-radius: 8px;
     padding: 22px;
     border: 2px solid transparent;
-    &:hover{
-      border: 2px solid rgba(0, 0, 0, 0.11);
-    }
 
     &-info{
       display: flex;
       flex-direction: column;
       align-items: flex-start;
 
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: 1fr 1fr;
+      grid-auto-flow: column;
+      .logo {
+        grid-column: 1;
+        grid-row: 1 / 3;
+      }
+      .address {
+        grid-column: 2/6;
+        grid-row: 1 / 2;
+        overflow: auto;
+        display: grid;
+        align-content: end;
+        padding-bottom: 10px;
+        text-align: left;
+      }
+      .copy {
+        grid-column: 2/6;
+        grid-row: 2 / 3;
+        text-align: left;
+        span {
+          color: #0A6BDD;
+        }
+        span:hover {
+          opacity: 0.6;
+          cursor: pointer;
+        }
+        a {
+          text-decoration: none;
+          font-weight: normal;
+          color: #0A6BDD;
+        }
+        a:hover {
+          opacity: 0.6;
+        }
+      }
+      .disconnect {
+        grid-column: 6/8;
+        grid-row: 1 / 3;
+        margin-top: auto;
+        margin-bottom: auto;
+        &__button{
+          margin-left: 10px;
+          border: 1px solid #72BF44;
+          border-radius: 24px;
+          background-color: #81CF1F !important;
+          color: red;
+          padding:11px 24px 13px 24px;
+          text-decoration: none;
+          width: 100% !important;
+          &:hover{
+            background-color: #72BF44;
+            color: #FFFFFF;
+          }
+        }
+      }
     }
   }
   &__descriptionIcon{
