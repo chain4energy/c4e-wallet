@@ -152,6 +152,7 @@ export class Configuration implements JsonConfiguration {
   isEmpty: boolean;
   testMode: boolean;
   keplrGasPriceSteps: KeplrGasPriceSteps;
+  reservedCoinsAmount: number;
   minPeriodBetweenDataRefresh: number;
   blockDataRefreshTimeout: number;
   dashboardDataRefreshTimeout: number;
@@ -189,6 +190,7 @@ export class Configuration implements JsonConfiguration {
       }
       this.viewDenoms = viewDenoms;
       this.keplrGasPriceSteps = new KeplrGasPriceSteps(configuration.keplrGasPriceSteps);
+      this.reservedCoinsAmount = configuration.reservedCoinsAmount;
       this.minPeriodBetweenDataRefresh = configuration.minPeriodBetweenDataRefresh;
       this.blockDataRefreshTimeout = configuration.blockDataRefreshTimeout;
       this.dashboardDataRefreshTimeout = configuration.dashboardDataRefreshTimeout;
@@ -220,6 +222,7 @@ export class Configuration implements JsonConfiguration {
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
       this.keplrGasPriceSteps = new KeplrGasPriceSteps(undefined);
+      this.reservedCoinsAmount = 0;
       this.minPeriodBetweenDataRefresh = 60000;
       this.blockDataRefreshTimeout = 60000;
       this.dashboardDataRefreshTimeout = 60000;
@@ -258,6 +261,13 @@ export class Configuration implements JsonConfiguration {
       return viewDenomConf.conversionFactor;
     }
     return 1;
+  }
+
+  public getGasPrise() {
+    return this.keplrGasPriceSteps.average;
+  }
+  public getReservedCoinsAmount(){
+    return this.reservedCoinsAmount
   }
 
   public getConvertedAmount(origAmount: bigint | number | BigDecimal, origDenom = this.stakingDenom): number | BigDecimal {

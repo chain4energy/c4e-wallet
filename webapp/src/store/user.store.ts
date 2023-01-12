@@ -17,6 +17,7 @@ import i18n from "@/plugins/i18n";
 import {useProposalsStore} from "./proposals.store";
 import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
+import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -156,6 +157,12 @@ export const useUserStore = defineStore({
 
         }
       });
+    },
+    async simulateDelegation(validator: string, amount: string){
+      const connectionInfo = this.connectionInfo;
+      const response = await apiFactory.accountApi().simulate(connectionInfo, validator, amount);
+      console.log(response)
+      return response;
     },
     async redelegate(validatorSrc: string, validatorDst: string, amount: string) {
       const connectionInfo = this.connectionInfo;

@@ -36,6 +36,7 @@ import { EncodeObject } from "@cosmjs/proto-signing";
 import { BigDecimal } from "@/models/store/big.decimal";
 import { VoteOption } from "@/models/store/proposal";
 import { BlockchainApiErrorData } from "@/models/blockchain/common";
+import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
 
 
 
@@ -119,12 +120,57 @@ export class AccountApi extends TxBroadcastBaseApi {
         return [{ typeUrl: typeUrl, value: MsgDelegate.fromPartial(val) }];
       }
     };
-
-
     const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
+  public async simulate(connection: ConnectionInfo, validator: string, amount: string){
+    const config = useConfigurationStore().config;
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.staking.v1beta1.MsgDelegate';
+      const val = {
+        delegatorAddress: connection.account,
+        validatorAddress: validator,
+        amount: {
+          denom: config.stakingDenom,
+          amount: bcAmount,
+        }
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }];
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgDelegate.fromPartial(val) }];
+      }
+    };
 
+
+    const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
+    return await this.simulateDelegation(connection, getMessages, fee, '', true, null);
+  }
+  // public async simulateDelegation(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  //   const config = useConfigurationStore().config;
+  //   const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
+  //   const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+  //     const typeUrl = '/cosmos.staking.v1beta1.MsgDelegate';
+  //     const val = {
+  //       delegatorAddress: connection.account,
+  //       validatorAddress: validator,
+  //       amount: {
+  //         denom: config.stakingDenom,
+  //         amount: bcAmount,
+  //       }
+  //     };
+  //     if (isLedger) {
+  //       return [{ typeUrl: typeUrl, value: val }];
+  //     } else {
+  //       return [{ typeUrl: typeUrl, value: MsgDelegate.fromPartial(val) }];
+  //     }
+  //   };
+  //
+  //
+  //   const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
+  //   return await this.simulateTransaction(connection, getMessages, fee, '', true, null);
+  // }
   public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
     this.logToConsole(LogLevel.DEBUG, 'undelegate');

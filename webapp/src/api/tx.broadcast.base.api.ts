@@ -120,6 +120,68 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       }
     }
   }
+  protected async simulateDelegation(
+    connection: ConnectionInfo,
+    getMessages: (isLedger: boolean) => readonly EncodeObject[] | TxBroadcastError,
+    fee: StdFee | "auto" | number,
+    memo: string,
+    lockScreen: boolean, localSpinner: LocalSpinner | null,
+    skipErrorToast = false
+  ){
+    this.logToConsole(LogLevel.DEBUG, 'signAndBroadcast');
+    let clientToDisconnect: SigningStargateClient | undefined;
+    const { client, isLedger } = await this.createClient(connection.connectionType);
+    const messages = getMessages(isLedger);
+    if (messages instanceof TxBroadcastError) {
+      return new RequestResponse<TxData, TxBroadcastError>(messages);
+    }
+    const response = await client.simulate(connection.account, messages, memo);
+    return response;
+  }
+  // protected async simulateTransaction(
+  //   connection: ConnectionInfo,
+  //   getMessages: (isLedger: boolean) => readonly EncodeObject[] | TxBroadcastError,
+  //   fee: StdFee | "auto" | number,
+  //   memo: string,
+  //   lockScreen: boolean, localSpinner: LocalSpinner | null,
+  //   skipErrorToast = false
+  // ): Promise<any>{
+  //   this.logToConsole(LogLevel.DEBUG, 'TransactionSimulation');
+  //   let clientToDisconnect: SigningStargateClient | undefined;
+  //   try {
+  //     if (!connection.modifiable) {
+  //       return this.createTxErrorResponseWithToast(
+  //         new TxBroadcastError('Cannot broadcast transaction with: ' + connection.connectionType + ' signer'),
+  //         'Transaction Broadcast error',
+  //         !skipErrorToast
+  //       );
+  //     }
+  //     const { client, isLedger } = await this.createClient(connection.connectionType);
+  //     clientToDisconnect = client;
+  //     if (client === undefined) {
+  //       return this.createTxErrorResponseWithToast(
+  //         new TxBroadcastError('Cannot get signing client'),
+  //         'Transaction Broadcast error',
+  //         !skipErrorToast
+  //       );
+  //     }
+  //     const messages = getMessages(isLedger);
+  //     if (messages instanceof TxBroadcastError) {
+  //       return new RequestResponse<TxData, TxBroadcastError>(messages);
+  //     }
+  //     const response = await client.simulate(connection.account, messages, memo);
+  //     this.logToConsole(LogLevel.INFO, 'Client Response', this.stringify(response));
+  //     return new RequestResponse<TxData, TxBroadcastError>(undefined, response);
+  //   } catch (err) {
+  //     this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
+  //     const error = err as Error;
+  //     return this.createTxErrorResponseWithToast(
+  //       new TxBroadcastError(error.message),
+  //       'Transaction Broadcast error',
+  //       !skipErrorToast
+  //     );
+  //   }
+  // }
 
   private async createClient(connectionType: ConnectionType): Promise<{ client: SigningStargateClient, isLedger: boolean }> {
     const { signer, isLedger } = await this.getOfflineSigner(connectionType);

@@ -100,7 +100,16 @@
               <div class="invalid-feedback">
                 {{ errors.amount ? errors.amount : "" }}
               </div>
+              <transition name="slide-fade">
+                <div v-if="amountWithCommission !== 0" class="validationPopup__reservationReq">
+                  <input type="checkbox" v-model="reserveCoins"/>
+                  <p>Reserve {{amountWithCommission}} C4E for future transactions</p>
+                </div>
+              </transition>
+
+
             </div>
+
           </div>
         </div>
 
@@ -132,7 +141,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onUnmounted, ref} from "vue";
+import {computed, onUnmounted, ref, watch} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {Validator} from "@/models/store/validator";
 import {object, setLocale, string} from "yup";
@@ -168,7 +177,8 @@ onUnmounted(() => {
   document.body.style.overflow = "auto";
 });
 
-
+const fee = ref(0)
+const reserveCoins = ref(true);
 const redelegateValidator = ref<Validator>();
 const stakingAction = ref<StakingAction>(StakingAction.DELEGATE);
 
@@ -177,7 +187,7 @@ const canModify = computed<boolean>(() => {
   });
 
 const amount = ref('');
-// const amountWithCommission =ref();
+const amountWithCommission =ref(0);
 // const commissionForOperation = computed(() => {
 //   return (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) || 0;
 // });
@@ -209,6 +219,7 @@ function transferAllAmount(){
         amount.value = String(
           Number(useConfigurationStore().config.getConvertedAmount(useUserStore().getBalance))
         );
+        simulateDelegation();
         break;
       case StakingAction.UNDELEGATE:
         amount.value = String(
@@ -269,7 +280,6 @@ function lessThanOrEqualTo(value: string | undefined): boolean {
       break;
       case StakingAction.REDELEGATE: props.redelegationDirection === RedelegationDirection.FROM ?
         lessThan = redelegateValidator.value?.delegatedAmount : lessThan = props.validator.delegatedAmount;
-      console.log(props.redelegationDirection);
       break;
     }
     return (new BigDecimal(lessThan)).isBiggerThanOrEqualTo(new BigDecimal(value).multiply(factor));
@@ -325,6 +335,40 @@ async function delegate() {
       emit('success');
     });
   } // TODO else
+}
+
+async function simulateDelegation() {
+  const dst = getValidatorDst();
+  if (dst) {
+    await useUserStore().simulateDelegation(dst, amount.value).then((res) => {
+      fee.value = Number(res) * useConfigurationStore().config.getGasPrise();
+      amountWithCommission.value = useConfigurationStore().config.getConvertedAmount(
+        (useConfigurationStore().config.getReservedCoinsAmount() + (Number(res) * useConfigurationStore().config.getGasPrise()))).toFixed(6);
+      if(reserveCoins.value){
+        reserveCoinsForFee(amountWithCommission.value, true);
+      }
+    });
+  } else {
+    amountWithCommission.value = 0;
+  }
+}
+watch(reserveCoins, (next, prev) =>{
+  if(next){
+    reserveCoinsForFee(amountWithCommission.value, next);
+  } else {
+    transferAllAmount();
+  }
+});
+
+// watch(amount, (next, prev) =>{
+//   if (next != useConfigurationStore().config.getConvertedAmount(useUserStore().getBalance) ||
+//     next != Number(Number(useConfigurationStore().config.getConvertedAmount(useUserStore().getBalance)) - amountWithCommission.value).toFixed(6)) {
+//     amountWithCommission.value = 0;
+//   }
+// });
+function reserveCoinsForFee(reserved: number, increase: boolean){
+  const reserve = Number(Number(amount.value) - reserved).toFixed(6);
+  amount.value = reserve;
 }
 
 async function undelegate() {
@@ -501,6 +545,14 @@ const timeToComplete = computed(() => {
       }
     }
   }
+  &__reservationReq{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    p{
+      margin: 0 5px;
+    }
+  }
   &__descriptionIcon{
     width: 50px;
     height: 50px;
@@ -652,5 +704,12 @@ const timeToComplete = computed(() => {
   background-image: url('@/assets/err.png');
   background-repeat: no-repeat;
 }
-
+.slide-fade-enter-active {
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  animation: appear .3s;
+}
+.slide-fade-leave-active {
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  animation: appear .3s reverse;
+}
 </style>

@@ -57,6 +57,7 @@ export interface Configuration {
   operationGas: Gas,
   viewDenoms: ViewDenom[],
   keplrGasPriceSteps: KeplrGasPriceSteps;
+  reservedCoinsAmount: number,
   minPeriodBetweenDataRefresh: number,
   blockDataRefreshTimeout: number,
   dashboardDataRefreshTimeout: number,
