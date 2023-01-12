@@ -31,7 +31,7 @@
               texts="STAKING_VIEW.STAKING_POPUP.WARNINGS.UNDELEGATIONS.TEXTS"
               :texts-variables="{timeToComplete: timeToComplete}"/>
 
-      <VeeForm @submit="action" :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body" as="form">
+      <Form @submit="action" :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body" as="form">
 
         <div class="validationPopup__body">
           <h3>{{ $t('STAKING_VIEW.STAKING_POPUP.HEADER') }}</h3>
@@ -98,7 +98,7 @@
 <!--                commission ~ {{commissionForOperation.toFixed(2)}} c4e-->
 <!--              </p>-->
               <div class="invalid-feedback">
-                {{ errors.redelegateValidator ? errors.redelegateValidator : "" }}
+                {{ errors.amount ? errors.amount : "" }}
               </div>
             </div>
           </div>
@@ -126,7 +126,7 @@
           <KeplrLogo/> {{ $t('CONNECT.CONNECT' )}}
           </Button>
         </div>
-      </VeeForm>
+      </Form>
     </div>
   </div>
 </template>
@@ -141,7 +141,7 @@ import {BigDecimal} from "@/models/store/big.decimal";
 import {useConfigurationStore} from "@/store/configuration.store";
 import i18n from "@/plugins/i18n";
 import ValidatorLogo from "../commons/ValidatorLogo.vue";
-import {Form as VeeForm, Field} from "vee-validate";
+import {Form, Field} from "vee-validate";
 import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
 import KeplrLogo from "../commons/KeplrLogo.vue";
