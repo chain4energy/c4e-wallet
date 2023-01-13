@@ -251,11 +251,11 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(delegations);
-    const result = await api.fetchDelegations(address, false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
-    expectDelegatorDelegations(result.data)
+    const result = await api.fetchDelegations(address, false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+    expectDelegatorDelegations(result.data);
     // expect(result.data?.delegations.size).toBe(defaultDelegatorDelegationsValidators.length);
     // expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount());
     // defaultDelegatorDelegationsValidators.forEach(validatorAddress => {
@@ -315,12 +315,12 @@ describe('account api tests', () => {
     mockedAxios.request.mockResolvedValueOnce(delegations1);
     mockedAxios.request.mockResolvedValueOnce(delegations2);
 
-    const result = await api.fetchDelegations(address, false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
+    const result = await api.fetchDelegations(address, false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
 
-    expectDelegatorDelegations(result.data, validatorsAll, balancesAll)
+    expectDelegatorDelegations(result.data, validatorsAll, balancesAll);
     // expect(result.data?.delegations.size).toBe(validatorsAll.length);
     // expect(result.data?.totalDelegated).toBe(findDelegatorDelegationTotalAmount(balancesAll));
     // validatorsAll.forEach(validatorAddress => {
@@ -466,11 +466,10 @@ describe('account api tests', () => {
     mockedAxios.request.mockResolvedValueOnce(undelegations1);
     mockedAxios.request.mockResolvedValueOnce(undelegations2);
 
-    const result = await api.fetchUnbondingDelegations(address, false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
-
+    const result = await api.fetchUnbondingDelegations(address, false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
     expectDelegatorUnbondingDelegations(result.data, validatorsAll, entiresAll);
 
 
@@ -500,7 +499,7 @@ describe('account api tests', () => {
     const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchUnbondingDelegations(address, false)
+    const result = await api.fetchUnbondingDelegations(address, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -539,7 +538,7 @@ describe('account api tests', () => {
     mockedAxios.request.mockResolvedValueOnce(delegations1);
     mockedAxios.request.mockRejectedValue(error);
 
-    const result = await api.fetchUnbondingDelegations(address, false)
+    const result = await api.fetchUnbondingDelegations(address, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -555,10 +554,10 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValueOnce(rewards);
-    const result = await api.fetchRewards(address, true)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
+    const result = await api.fetchRewards(address, true);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
     expectRewards(result.data);
   });
 
@@ -569,10 +568,10 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValueOnce(rewards);
-    const result = await api.fetchRewards(address, true)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
+    const result = await api.fetchRewards(address, true);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
     expect(result.data?.rewards.size).toBe(0);
     expect(result.data?.totalRewards).toStrictEqual(new BigDecimal(0));
   });
@@ -589,7 +588,7 @@ describe('account api tests', () => {
     const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchRewards(address, false)
+    const result = await api.fetchRewards(address, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -600,42 +599,42 @@ describe('account api tests', () => {
   });
 
   it('delegates using keplr', async () => {
-    const amount = '12345'
+    const amount = 12345;
     const action = () => {return api.delegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);}
-    const signingMessage = await keplrTxSuccess(action)
+    const signingMessage = await keplrTxSuccess(action);
     expectMsgDelegate(signingMessage, amount);
   });
 
   it('delegates using keplr with error', async () => {
-    const amount = '12345'
+    const amount = 12345;
     const action = () => {return api.delegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);}
     const signingMessage = await keplrTxError(action)
     expectMsgDelegate(signingMessage, amount);
   });
 
   it('undelegates using keplr', async () => {
-    const amount = '12345'
+    const amount = 12345;
     const action = () => {return api.undelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);}
     const signingMessage = await keplrTxSuccess(action)
     expectMsgUndelegate(signingMessage, amount);
   });
 
   it('undelegates using keplr with error', async () => {
-    const amount = '12345'
+    const amount = 12345;
     const action = () => {return api.undelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);}
     const signingMessage = await keplrTxError(action)
     expectMsgUndelegate(signingMessage, amount);
   });
 
   it('redelegates using keplr', async () => {
-    const amount = '12345'
+    const amount = 12345;
     const action = () => {return api.redelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, secondValidatorAddress, amount);}
     const signingMessage = await keplrTxSuccess(action)
     expectMsgBeginRedelegate(signingMessage, amount);
   });
 
   it('redelegates using keplr with error', async () => {
-    const amount = '12345'
+    const amount = 12345;
     const action = () => {return api.redelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, secondValidatorAddress, amount);}
     const signingMessage = await keplrTxError(action)
     expectMsgBeginRedelegate(signingMessage, amount);
@@ -643,7 +642,7 @@ describe('account api tests', () => {
 
   it('votes using keplr', async () => {
     const proposalId = 342;
-    const option = VoteOption.Abstain
+    const option = VoteOption.Abstain;
     const action = () => {return api.vote(new ConnectionInfo(address, true, ConnectionType.Keplr), option, proposalId);}
     const signingMessage = await keplrTxSuccess(action)
     expectMsgVote(signingMessage, option, proposalId);
@@ -651,25 +650,19 @@ describe('account api tests', () => {
 
   it('votes using keplr with error', async () => {
     const proposalId = 213;
-    const option = VoteOption.Yes
+    const option = VoteOption.Yes;
     const action = () => {return api.vote(new ConnectionInfo(address, true, ConnectionType.Keplr), option, proposalId);}
     const signingMessage = await keplrTxError(action)
     expectMsgVote(signingMessage, option, proposalId);
   });
 
   it('claims rewards using keplr', async () => {
-    const amount = '12345'
-    const proposalId = 342;
-    const option = 123
     const action = () => {return api.claimRewards(new ConnectionInfo(address, true, ConnectionType.Keplr), defaultRewardsValidators.values());}
     const signingMessage = await keplrTxSuccess(action)
     expectMsgWithdrawDelegatorReward(signingMessage, defaultRewardsValidators);
   });
 
   it('claims rewards using keplr with error', async () => {
-    const amount = '12345'
-    const proposalId = 213;
-    const option = 12
     const action = () => {return api.claimRewards(new ConnectionInfo(address, true, ConnectionType.Keplr), defaultRewardsValidators.values());}
     const signingMessage = await keplrTxError(action)
     expectMsgWithdrawDelegatorReward(signingMessage, defaultRewardsValidators);
@@ -717,31 +710,31 @@ describe('account api tests', () => {
 });
 
 async function delegateNoSigner(connectionType: ConnectionType) {
-  const amount = '12345'
+  const amount = 12345;
   const action = () => {return api.delegate(new ConnectionInfo(address, true, connectionType), validatorAddress, amount);}
-  await txNoSigner(connectionType, action)
+  await txNoSigner(connectionType, action);
 }
 
 async function undelegateNoSigner(connectionType: ConnectionType) {
-  const amount = '12345'
+  const amount = 12345;
   const action = () => {return api.undelegate(new ConnectionInfo(address, true, connectionType), validatorAddress, amount);}
-  await txNoSigner(connectionType, action)
+  await txNoSigner(connectionType, action);
 }
 
 async function redelegateNoSigner(connectionType: ConnectionType) {
-  const amount = '12345'
+  const amount = 12345;
   const action = () => {return api.redelegate(new ConnectionInfo(address, true, connectionType), validatorAddress, secondValidatorAddress, amount);}
-  await txNoSigner(connectionType, action)
+  await txNoSigner(connectionType, action);
 }
 
 async function claimRewardsNoSigner(connectionType: ConnectionType) {
   const action = () => {return api.claimRewards(new ConnectionInfo(address, true, connectionType), defaultRewardsValidators.values());}
-  await txNoSigner(connectionType, action)
+  await txNoSigner(connectionType, action);
 }
 
 async function voteNoSigner(connectionType: ConnectionType) {
   const action = () => {return api.vote(new ConnectionInfo(address, true, connectionType), 1, 1);}
-  await txNoSigner(connectionType, action)
+  await txNoSigner(connectionType, action);
 }
 
 async function txNoSigner(connectionType: ConnectionType, action: () => Promise<RequestResponse<TxData, TxBroadcastError>>) {
@@ -751,7 +744,7 @@ async function txNoSigner(connectionType: ConnectionType, action: () => Promise<
   let signAndBroadcasExecutionsCounter = 0;
   const signAndBroadcastMock = async (signerAddress: string, messages: readonly EncodeObject[], fee: StdFee | "auto" | number, memo?: string): Promise<DeliverTxResponse> => {
     signAndBroadcasExecutionsCounter++;
-    return txSuccessResponse
+    return txSuccessResponse;
   };
   mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
@@ -773,7 +766,7 @@ async function keplrTest(action: () => Promise<RequestResponse<TxData, TxBroadca
     messages: undefined as readonly EncodeObject[] | undefined,
     fee: undefined as StdFee | "auto" | number | undefined,
     memo: undefined as string | undefined
-  }
+  };
 
   let signAndBroadcasExecutionsCounter = 0;
   const signAndBroadcastMock = async (signerAddress: string, messages: readonly EncodeObject[], fee: StdFee | "auto" | number, memo?: string): Promise<DeliverTxResponse> => {
@@ -782,7 +775,7 @@ async function keplrTest(action: () => Promise<RequestResponse<TxData, TxBroadca
     signingMessage.fee = fee;
     signingMessage.memo = memo;
     signAndBroadcasExecutionsCounter++;
-    return txResponse
+    return txResponse;
   };
   mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
@@ -829,15 +822,15 @@ function expectMsgDelegate(signingMessage: {
   messages: readonly EncodeObject[] | undefined,
   fee: StdFee | "auto" | number | undefined,
   memo: string | undefined
-}, amount: string) {
+}, amount: number) {
   expectMessage<MsgDelegate>(signingMessage, gas.delegate, msgDelegateTypeUrl, [
-    { 
-      amount: { 
-        amount: amount,
-        denom: defaultDenom 
-      }, 
+    {
+      amount: {
+        amount: String(amount),
+        denom: defaultDenom
+      },
       delegatorAddress: address,
-      validatorAddress: validatorAddress 
+      validatorAddress: validatorAddress
     }
   ])
 }
@@ -847,15 +840,15 @@ function expectMsgUndelegate(signingMessage: {
   messages: readonly EncodeObject[] | undefined,
   fee: StdFee | "auto" | number | undefined,
   memo: string | undefined
-}, amount: string) {
+}, amount: number) {
   expectMessage<MsgUndelegate>(signingMessage, gas.undelegate, msgUndelegateTypeUrl, [
-    { 
-      amount: { 
-        amount: amount,
-        denom: defaultDenom 
-      }, 
+    {
+      amount: {
+        amount: String(amount),
+        denom: defaultDenom
+      },
       delegatorAddress: address,
-      validatorAddress: validatorAddress 
+      validatorAddress: validatorAddress
     }
   ])
 }
@@ -865,13 +858,13 @@ function expectMsgBeginRedelegate(signingMessage: {
   messages: readonly EncodeObject[] | undefined,
   fee: StdFee | "auto" | number | undefined,
   memo: string | undefined
-}, amount: string) {
+}, amount: number) {
   expectMessage<MsgBeginRedelegate>(signingMessage, gas.redelegate, msgBeginRedelegateTypeUrl, [
-    { 
-      amount: { 
-        amount: amount,
-        denom: defaultDenom 
-      }, 
+    {
+      amount: {
+        amount: String(amount),
+        denom: defaultDenom
+      },
       delegatorAddress: address,
       validatorSrcAddress: validatorAddress,
       validatorDstAddress: secondValidatorAddress
@@ -886,7 +879,7 @@ function expectMsgVote(signingMessage: {
   memo: string | undefined
 }, option: VoteOption, proposalId: number) {
   expectMessage<MsgVote>(signingMessage, gas.vote, msgVoteTypeUrl, [
-    { 
+    {
       option: option.valueOf(),
       proposalId: Long.fromNumber(proposalId),
       voter: address
@@ -901,7 +894,7 @@ function expectMsgWithdrawDelegatorReward(signingMessage: {
   memo: string | undefined
 }, validators: string[]) {
   const messages = new Array<MsgWithdrawDelegatorReward>()
-  validators.forEach(v => messages.push({ 
+  validators.forEach(v => messages.push({
     delegatorAddress: address,
     validatorAddress: v
   }))

@@ -101,7 +101,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     return  await this.axiosGetBlockchainApiCall(formatString(this.REWARDS_URL, {address: address}),
       mapData, lockscreen, null, 'fetchRewards - ');
   }
-  public async delegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  public async delegate(connection: ConnectionInfo, validator: string, amount: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
     const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
     const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
@@ -123,7 +123,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
-  public async simulate(connection: ConnectionInfo, validator: string, amount: string){
+  public async simulate(connection: ConnectionInfo, validator: string, amount: number){
     const config = useConfigurationStore().config;
     const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
     const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
@@ -171,7 +171,7 @@ export class AccountApi extends TxBroadcastBaseApi {
   //   const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
   //   return await this.simulateTransaction(connection, getMessages, fee, '', true, null);
   // }
-  public async undelegate(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  public async undelegate(connection: ConnectionInfo, validator: string, amount: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
     this.logToConsole(LogLevel.DEBUG, 'undelegate');
     const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
@@ -197,7 +197,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 
-  public async redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  public async redelegate(connection: ConnectionInfo, validatorSrc: string, validatorDst: string, amount: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
     const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
 

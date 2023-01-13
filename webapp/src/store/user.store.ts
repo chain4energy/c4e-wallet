@@ -141,7 +141,7 @@ export const useUserStore = defineStore({
       }
     },
 
-    async delegate(validator: string, amount: string) {
+    async delegate(validator: string, amount: number) {
       const connectionInfo = this.connectionInfo;
       await apiFactory.accountApi().delegate(connectionInfo, validator, amount).then(async (resp) => {
         if (resp.isError()) {
@@ -158,13 +158,13 @@ export const useUserStore = defineStore({
         }
       });
     },
-    async simulateDelegation(validator: string, amount: string){
+    async simulateDelegation(validator: string, amount: number){
       const connectionInfo = this.connectionInfo;
       const response = await apiFactory.accountApi().simulate(connectionInfo, validator, amount);
-      console.log(response)
+      console.log(response);
       return response;
     },
-    async redelegate(validatorSrc: string, validatorDst: string, amount: string) {
+    async redelegate(validatorSrc: string, validatorDst: string, amount: number) {
       const connectionInfo = this.connectionInfo;
       await apiFactory.accountApi().redelegate(connectionInfo, validatorSrc, validatorDst, amount).then(async (resp) => {
         if (resp.isError()) {
@@ -180,7 +180,7 @@ export const useUserStore = defineStore({
         }
       });
     },
-    async undelegate(validator: string, amount: string) {
+    async undelegate(validator: string, amount: number) {
       const connectionInfo = this.connectionInfo;
       await apiFactory.accountApi().undelegate(connectionInfo, validator, amount).then(async (resp) => {
         if (resp.isError()) {

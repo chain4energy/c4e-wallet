@@ -267,7 +267,7 @@ export class Configuration implements JsonConfiguration {
     return this.keplrGasPriceSteps.average;
   }
   public getReservedCoinsAmount(){
-    return this.reservedCoinsAmount
+    return this.reservedCoinsAmount;
   }
 
   public getConvertedAmount(origAmount: bigint | number | BigDecimal, origDenom = this.stakingDenom): number | BigDecimal {

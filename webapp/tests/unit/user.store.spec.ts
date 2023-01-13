@@ -27,7 +27,7 @@ const { mockedOfflineSigner, mockedSigningStargateClient } = mockKeplr();
 const denom = defaultDenom;
 const address = 'c4e13zg4u07ymq83uq73t2cq3dj54jj37zzgqfwjpg';
 const accountData: AccountData  = {
-  address: address, 
+  address: address,
   algo: "secp256k1",
   pubkey: new Uint8Array([12,34]),
 }
@@ -119,7 +119,7 @@ describe('user store tests', () => {
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
-  
+
     mockedAxios.request.mockResolvedValueOnce(account);
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
@@ -145,7 +145,7 @@ describe('user store tests', () => {
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
-  
+
     mockedAxios.request.mockResolvedValueOnce(account);
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
@@ -175,13 +175,13 @@ describe('user store tests', () => {
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
-  
+
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
     mockedAxios.request.mockResolvedValueOnce(undelegations);
 
-    await userStore.delegate('validator', '12321');
+    await userStore.delegate('validator', 12321);
 
     expectConnectionType(ConnectionType.Keplr);
     expect(userStore.getConnectionType).toBe(ConnectionType.Keplr);
@@ -215,13 +215,13 @@ describe('user store tests', () => {
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
-  
+
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
     mockedAxios.request.mockResolvedValueOnce(undelegations);
 
-    await userStore.delegate('validator', '12321');
+    await userStore.delegate('validator', 12321);
 
     expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr)
 
@@ -243,13 +243,13 @@ describe('user store tests', () => {
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
-  
+
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
     mockedAxios.request.mockResolvedValueOnce(undelegations);
 
-    await userStore.redelegate('validator1', 'validator2', '12321');
+    await userStore.redelegate('validator1', 'validator2', 12321);
 
     expectConnectionType(ConnectionType.Keplr);
     expect(userStore.getConnectionType).toBe(ConnectionType.Keplr);
@@ -283,13 +283,13 @@ describe('user store tests', () => {
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
-  
+
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
     mockedAxios.request.mockResolvedValueOnce(undelegations);
 
-    await userStore.redelegate('validator', 'validator2', '12321');
+    await userStore.redelegate('validator', 'validator2', 12321);
 
     expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr)
 
@@ -311,13 +311,13 @@ describe('user store tests', () => {
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
-  
+
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
     mockedAxios.request.mockResolvedValueOnce(undelegations);
 
-    await userStore.undelegate('validator1', '12321');
+    await userStore.undelegate('validator1', 12321);
 
     expectConnectionType(ConnectionType.Keplr);
     expect(userStore.getConnectionType).toBe(ConnectionType.Keplr);
@@ -351,15 +351,15 @@ describe('user store tests', () => {
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
-  
+
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
     mockedAxios.request.mockResolvedValueOnce(undelegations);
 
-    await userStore.undelegate('validator', '12321');
+    await userStore.undelegate('validator', 12321);
 
-    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr)
+    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr);
 
   });
 
@@ -381,7 +381,7 @@ describe('user store tests', () => {
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
-  
+
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
@@ -425,7 +425,7 @@ describe('user store tests', () => {
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
-  
+
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
@@ -451,7 +451,7 @@ describe('user store tests', () => {
 
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.ContinuousVestingAccount, address, vestingData);
-    
+
     userStore.calculateVestingLocked(new Date(startTime-1000000));
     expect(userStore.getVestingLockAmount).toBe(amount);
 
@@ -489,7 +489,7 @@ describe('user store tests', () => {
 
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.BaseAccount, address, vestingData);
-    
+
     userStore.calculateVestingLocked(new Date(startTime-1000000));
     expect(userStore.getVestingLockAmount).toBe(0n);
 

@@ -128,7 +128,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     lockScreen: boolean, localSpinner: LocalSpinner | null,
     skipErrorToast = false
   ){
-    this.logToConsole(LogLevel.DEBUG, 'signAndBroadcast');
+    this.logToConsole(LogLevel.DEBUG, 'simulateDelegation');
     let clientToDisconnect: SigningStargateClient | undefined;
     const { client, isLedger } = await this.createClient(connection.connectionType);
     const messages = getMessages(isLedger);
