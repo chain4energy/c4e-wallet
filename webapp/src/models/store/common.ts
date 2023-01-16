@@ -23,9 +23,9 @@ export class DecCoin {
 }
 
 export class BigIntWrapper {
-  value : BigInt;
+  value : bigint;
 
-  constructor(value: BigInt) {
+  constructor(value: bigint) {
     this.value = value;
   }
 }

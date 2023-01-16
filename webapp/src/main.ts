@@ -27,7 +27,7 @@ import 'vue-toastification/dist/index.css';
 // import vuetify from './plugins/vuetify';
 import i18n from '@/plugins/i18n';
 // https://github.com/eladcandroid/v-idle-3
-import Vidle from 'v-idle-3';
+// import Vidle from 'v-idle-3';
 import { LoggerService } from '@/services/logger/logger.service';
 // https://www.primefaces.org/primevue/setup
 import PrimeVue from 'primevue/config';
@@ -55,6 +55,7 @@ import ECharts from 'vue-echarts';
 import Tooltip from 'primevue/tooltip';
 import AccordionTab from "primevue/accordiontab";
 import Accordion from "primevue/accordion";
+// import {createI18n} from "vue-i18n";
 
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
@@ -71,6 +72,9 @@ const app = createApp(App);
 const pinia = createPinia();
 pinia.use(piniaPersist);
 const logger = new LoggerService();
+// const i18n = createI18n({
+//   legacy: false
+// });
 
 app.use(router)
   .use(pinia)
@@ -78,7 +82,7 @@ app.use(router)
   .use(Toast, toastOptions)
   // .use(vuetify)
   .use(PrimeVue)
-  .use(Vidle)
+  // .use(Vidle)
   .use(VueSvgInlinePlugin)
   .provide('logger', logger)
   .component('Button', Button)

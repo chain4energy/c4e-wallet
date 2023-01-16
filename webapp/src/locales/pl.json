@@ -253,6 +253,10 @@
       "DELEGATE": "Oddeleguj",
       "UNDELEGATE": "Wycofaj delegację",
       "REDELEGATE": "Zmień delegację",
+      "DELEGATED": "Oddelegowane",
+      "UNDELEGATED": "W trakcie wycofywania",
+      "REDELEGATED": "Redelegowane",
+      "AVAILABLE_TO_DELEGATE": "Available to delegate",
       "WEBSITE": "Website",
       "COMMISSION": "Commission",
       "AMOUNT": {
@@ -280,12 +284,15 @@
       },
       "VALIDATOR_NOT_DEFINED": "this field is required",
       "INPUT": {
-        "REDELEGATE_VALIDATOR": "Redelegate to"
+        "REDELEGATE_VALIDATOR": "Redelegate to",
+        "REDELEGATE_FROM_VALIDATOR": "Redelegate from"
       }
     },
     "VALIDATORS": "Walidatory",
     "NO_VALIDATORS": "nie znaleziono walidatorów",
-    "VALIDATORS_LOADING" : "Ładowanie danych walidatorów. Proszę czekać."
+    "VALIDATORS_LOADING" : "Ładowanie danych walidatorów. Proszę czekać.",
+    "USER_DELEGATIONS": "Your delegations",
+    "USER_UNDELEGATIONS": "Your undelegations"
   },
   "USER_DATA": {
     "TOTAL": "Całkowity",

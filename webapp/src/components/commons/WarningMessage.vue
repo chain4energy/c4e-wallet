@@ -35,7 +35,8 @@ enum TextType {
 
 function getTextsLength(key: string): {type: TextType | undefined, amount: number } {
   const split = key.split('.');
-  let result: any = i18n.global.getLocaleMessage(i18n.global.locale);
+  // console.log("locale:" + JSON.stringify(i18n.global.locale.value));
+  let result: any = i18n.global.getLocaleMessage(i18n.global.locale.value);
   split.forEach((s) => {
     result = result[s];
     if (!result) {
