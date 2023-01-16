@@ -99,7 +99,7 @@
               <transition name="slide-fade">
                 <div v-if="showReserveCheckbox" class="validationPopup__reservationReq">
                   <input type="checkbox" v-model="reserveCoins"/>
-                  <p>Reserve {{ reservedCoins }} C4E for future transactions</p>
+                  <p>Reserve {{ fee + reservedCoins }} C4E for future transactions</p>
                 </div>
               </transition>
 
@@ -183,11 +183,12 @@ const canModify = computed<boolean>(() => {
 });
 
 const amount = ref(0);
+const usedGas = ref (0);
 const amountWithCommission = ref(0);
 const showReserveCheckbox = ref(false);
 const reservedCoins = useConfigurationStore().config.getConvertedAmount(useConfigurationStore().config.getReservedCoinsAmount());
 const freeMultiplier = 1.2;
-const usedGas = ref (0);
+
 // const commissionForOperation = computed(() => {
 //   return (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) || 0;
 // });
@@ -332,13 +333,19 @@ function getValidatorSrc(isRedelegate = false) {
 
 async function delegate() {
   const dst = getValidatorDst();
-  if (dst) {
+  if (dst && usedGas.value !== 0 ) {
+    await useUserStore().delegate(dst, amount.value, Math.ceil(usedGas.value))
+      .then((resp) => {
+        console.log(resp);
+        emit('success');
+      });
+  } else if(dst && usedGas.value === 0){
     await useUserStore().delegate(dst, amount.value)
       .then((resp) => {
         console.log(resp);
         emit('success');
       });
-  } // TODO else
+  }
 }
 
 async function simulateDelegation(){
@@ -381,12 +388,6 @@ watch(stakingAction, (next, prev) => {
   showReserveCheckbox.value = false;
 });
 
-// watch(amount, (next, prev) =>{
-//   if (next != useConfigurationStore().config.getConvertedAmount(useUserStore().getBalance) ||
-//     next != Number(Number(useConfigurationStore().config.getConvertedAmount(useUserStore().getBalance)) - amountWithCommission.value).toFixed(6)) {
-//     amountWithCommission.value = 0;
-//   }
-// });
 function reserveCoinsForFee(reserved: number, increase: boolean) {
   const reserve = Number(Number(Number(amount.value) - reserved).toFixed(6));
   amount.value = reserve;

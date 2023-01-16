@@ -127,17 +127,30 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     memo: string,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
     skipErrorToast = false
-  ){
-    this.logToConsole(LogLevel.DEBUG, 'simulateDelegation');
-    let clientToDisconnect: SigningStargateClient | undefined;
-    const { client, isLedger } = await this.createClient(connection.connectionType);
-    const messages = getMessages(isLedger);
-    if (messages instanceof TxBroadcastError) {
-      return new RequestResponse<TxData, TxBroadcastError>(messages);
+  ) {
+    try {
+      this.logToConsole(LogLevel.DEBUG, 'simulateDelegation');
+      this.before(lockScreen, localSpinner);
+      const {client, isLedger} = await this.createClient(connection.connectionType);
+      const messages = getMessages(isLedger);
+      if (messages instanceof TxBroadcastError) {
+        return new RequestResponse<TxData, TxBroadcastError>(messages);
+      }
+      const response = await client.simulate(connection.account, messages, memo);
+      return response;
+    } catch (err) {
+      this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
+      const error = err as Error;
+      return this.createTxErrorResponseWithToast(
+        new TxBroadcastError(error.message),
+        'Transaction simulation error',
+        !skipErrorToast
+      );
+    } finally {
+      this.after(lockScreen, localSpinner);
     }
-    const response = await client.simulate(connection.account, messages, memo);
-    return response;
   }
+
   // protected async simulateTransaction(
   //   connection: ConnectionInfo,
   //   getMessages: (isLedger: boolean) => readonly EncodeObject[] | TxBroadcastError,

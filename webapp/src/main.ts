@@ -43,6 +43,7 @@ import Column from "primevue/column";
 import Image from 'primevue/image';
 import AutoComplete from "primevue/autocomplete";
 import Dropdown from "primevue/dropdown";
+import Loading from "vue-loading-overlay";
 
 import piniaPersist from 'pinia-plugin-persist';
 //https://www.npmjs.com/package/vue-debounce
@@ -90,6 +91,7 @@ app.use(router)
   .component('Accordion', Accordion)
   .component('AccordionTab', AccordionTab)
   .component('Icon', IconComponent)
+  .component('loading', Loading)
   .component('v-chart', ECharts)
   .directive('debounce', vue3Debounce({lock: true}))
   .directive('tooltip', Tooltip)
