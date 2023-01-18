@@ -5,10 +5,18 @@ import {BlockchainApiErrorData, AirdropErrData} from "@/models/blockchain/common
 import {Campaigns, CampaignsInfo, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
 import queries from "@/api/queries";
 import {useConfigurationStore} from "@/store/configuration.store";
+import {Validator} from "@/models/store/validator";
+import {ValidatorsResponse} from "@/models/blockchain/validator";
+import {mapAndAddValidators, mapValidators, sortAndRankValidators} from "@/models/mapper/validator.mapper";
+import {UserAirdropInfo} from "@/models/blockchain/airdrop";
 
 export class AirDropApi extends BaseApi {
 
   private AIRDROP_INFO_URL = queries.airdrop.AIRDROP_INFO;
+  private USER_AIRDROP_ENTRIES_URL = queries.blockchain.USER_AIRDROP_ENTRIES_URL;
+  private CAMPAIGNS_URL = queries.blockchain.CAMPAIGNS_URL;
+  private MISSIONS_URL = queries.blockchain.MISSIONS_URL;
+
 
   getServiceType(): ServiceTypeEnum {
     return ServiceTypeEnum.AIR_DROP_API;
@@ -42,6 +50,20 @@ export class AirDropApi extends BaseApi {
     const localUrl = useConfigurationStore().config.airdropBaseURL + airdropLocation + "/" + address + '.json';
     return await this.axiosAirdropCall(localUrl, mapData, lockscreen, null, 'fetchAirdrop - ', true);
   }
+
+  public async fetchUserAirdropEntries(lockscreen: boolean): Promise<RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: UserAirdropInfo | undefined) => {
+      if (bcData === undefined) {
+        throw new Error('mapAirdropsInfo - airDrop absent');
+      }
+      return bcData;
+    };
+
+    return await this.axiosGetBlockchainApiCall(this.USER_AIRDROP_ENTRIES_URL,
+      mapData, lockscreen, null, 'fetchUserAirdropEntries - ');
+
+  }
+
 
   mockdata: ClaimRecord =
     {

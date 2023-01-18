@@ -1,14 +1,14 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {AirdropStore, AirdropTotal, AlocationsSt, Campain} from "@/models/store/airdrop";
+import { AirdropTotal, AlocationsSt, CampaignAllocation} from "@/models/store/airdrop";
 import {ClaimRecord} from "@/models/airdrop/airdrop";
 import {RequestResponse} from "@/models/request-response";
 import {ErrorData} from "@/api/base.api";
 import {AirdropErrData} from "@/models/blockchain/common";
 
 interface airDropState {
-  airDrop1: AirdropStore
-  no_Drop: boolean,
+  // airDrop1: AirdropStore
+  // no_Drop: boolean,
 
   claimRecord: ClaimRecord,
   airDropMock: AirdropTotal,
@@ -20,8 +20,8 @@ export const useAirDropStore = defineStore({
   id: 'airDropStore',
   state: (): airDropState => {
     return {
-      airDrop1: Object(AirdropStore),
-      no_Drop: Boolean(false),
+      // airDrop1: Object(AirdropStore),
+      // no_Drop: Boolean(false),
       claimRecord: {} as ClaimRecord,
       airDropMock: Object(AirdropTotal),
     };
@@ -92,7 +92,7 @@ export const useAirDropStore = defineStore({
         const response = await apiFactory.airDropApi().fetchAirdropsInfo(lockscreen);
         console.log(JSON.stringify(response));
         const promises = Array<Promise<RequestResponse<any, ErrorData<AirdropErrData>>>>();
-        const campaignsList = Array<Campain>();
+        const campaignsList = Array<CampaignAllocation>();
         if (response.isSuccess() && response.data?.campaignInfoDetails) {
           const campaignInfoDetails = response.data.campaignInfoDetails;
           //create array with requests for particular airdrop
@@ -113,7 +113,7 @@ export const useAirDropStore = defineStore({
               }
               allocations.push(new AlocationsSt(allocation.name, mappedValue));
             });
-            campaignsList.push(new Campain(campaign.name, campaign.detailsUrl, !responseList[i].isSuccess(), campaign.hideIfAbsent, allocations));
+            campaignsList.push(new CampaignAllocation(campaign.name, campaign.detailsUrl, !responseList[i].isSuccess(), campaign.hideIfAbsent, allocations));
             console.log("campaign:" + JSON.stringify(campaign));
           }
           //update data in store
@@ -126,12 +126,12 @@ export const useAirDropStore = defineStore({
     }
   },
   getters: {
-    getAirDropStatus(): boolean {
-      return this.no_Drop;
-    },
-    getAirDrop(): AirdropStore {
-      return this.airDrop1;
-    },
+    // getAirDropStatus(): boolean {
+    //   return this.no_Drop;
+    // },
+    // getAirDrop(): AirdropStore {
+    //   return this.airDrop1;
+    // },
     getAirdropClaimRecord(): ClaimRecord {
       return this.claimRecord;
     },

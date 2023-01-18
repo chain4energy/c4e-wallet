@@ -18,8 +18,10 @@ export default {
     INFLATION_URL: '/c4e/minter/v1beta1/inflation',
     STAKING_PARAMS_URL: '/cosmos/staking/v1beta1/params',
     VESTINGS_SUM_URL: '/c4e/vesting/v1beta1/summary',
-    DISTRIBUTOR_PARAMS_URL: '/c4e/distributor/v1beta1/params'
-
+    DISTRIBUTOR_PARAMS_URL: '/c4e/distributor/v1beta1/params',
+    USER_AIRDROP_ENTRIES_URL: '/c4e/airdrop/user_airdrop_entries/{address}',
+    CAMPAIGNS_URL: '/c4e/airdrop/campaigns',
+    MISSIONS_URL: '/c4e/airdrop/mission'
   },
   hasura: {
     AVERAGE_BLOCK_TIME_QUERY: 'query AverageBlockTime {' +

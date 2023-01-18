@@ -1,6 +1,12 @@
 import {Coin} from "@/models/blockchain/common";
 import {Pagination} from "@/models/blockchain/pagination";
 
+
+export interface UserAirdropInfo{
+  userAirdropEntries: UserAirdropEntry
+}
+
+
 export interface UserAirdropEntry{
   address: string,
   claim_address: string,

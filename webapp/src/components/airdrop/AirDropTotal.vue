@@ -30,17 +30,17 @@
             </div>
             <CoinAmount
               class="airDropTotal__totalData-amount"
-              :amount="airDrops?.campains ? airDrops.getTotal() : 0" :precision="2"
+              :amount="airDrops?.campaignAllocations ? airDrops.getTotal() : 0" :precision="2"
               :show-denom="true"
               :reduce-big-number="true"
               :show-tooltip="true"
             />
           </div>
         </div>
-        <hr v-if="airDrops?.campains" class="airDropTotal__head-hr"/>
+        <hr v-if="airDrops?.campaignAllocations" class="airDropTotal__head-hr"/>
       </div>
       <div class="airDropTotal__content" v-if="airDrops">
-        <div  v-for="campaign in airDrops.campains" :key="campaign">
+        <div v-for="campaign in airDrops.campaignAllocations" :key="campaign">
           <div class="airDropTotal__content-items" v-if="!campaign.hideCampaign()">
             <div class="airDropTotal__content-header">
               <h5>{{ campaign.name }}</h5>
