@@ -51,6 +51,11 @@ export interface Campaign {
   vesting_period: string,
   description: string
 }
+export enum CampainStatus {
+  Past='Past',
+  Now='Now',
+  Future='Future'
+}
 
 export interface CampaignsInfo{
   campaignInfoDetails : CampaignInfoDetails[];

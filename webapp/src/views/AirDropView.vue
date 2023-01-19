@@ -1,18 +1,18 @@
 <template>
 <div class="tile">
   <TabView class="airDrop__tabview">
-    <TabPanel >
-      <template #header>
-        <div>Check Allocation</div>
-      </template>
-      <AirDropTotal/>
-    </TabPanel>
-<!--    <TabPanel style="width: 100%">-->
+<!--    <TabPanel >-->
 <!--      <template #header>-->
-<!--        <div>Claim Air Drop</div>-->
+<!--        <div>Check Allocation</div>-->
 <!--      </template>-->
-<!--      <ClaimAirdrop/>-->
+<!--      <AirDropTotal/>-->
 <!--    </TabPanel>-->
+    <TabPanel>
+      <template #header>
+        <div>Claim Air Drop</div>
+      </template>
+      <ClaimAirDrop/>
+    </TabPanel>
   </TabView>
 </div>
 </template>
@@ -21,12 +21,14 @@
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import AirDropTotal from "@/components/airdrop/AirDropTotal.vue";
+import ClaimAirDrop from "@/components/airdrop/ClaimAirdrop.vue";
 </script>
 
 <style scoped lang="scss">
 .airDrop{
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(calc(100%/ 4), 1fr));
+
   &__container{
     background-color: white;
     box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
@@ -158,3 +160,4 @@ import AirDropTotal from "@/components/airdrop/AirDropTotal.vue";
 }
 
 </style>
+

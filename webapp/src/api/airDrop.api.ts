@@ -9,6 +9,7 @@ import {Validator} from "@/models/store/validator";
 import {ValidatorsResponse} from "@/models/blockchain/validator";
 import {mapAndAddValidators, mapValidators, sortAndRankValidators} from "@/models/mapper/validator.mapper";
 import {UserAirdropInfo} from "@/models/blockchain/airdrop";
+import {formatString} from "@/utils/string-formatter";
 
 export class AirDropApi extends BaseApi {
 
@@ -76,9 +77,9 @@ export class AirDropApi extends BaseApi {
             campaign_id: "campain_id_1",
             description: "GLEAM",
             enabled: true,
-            end_time: new Date("2022-12-19T15:25:58.952129766Z"),
+            end_time: new Date("2023-01-20T11:45:20"),
             lockup_period: "7884000s",
-            start_time: new Date("2022-11-11T15:28:58.952129766Z"),
+            start_time: new Date("2023-01-01T15:28:58.952129766Z"),
             vesting_period: "15768000s"
           },
           missions: [
@@ -108,9 +109,9 @@ export class AirDropApi extends BaseApi {
             campaign_id: "campain_id_2",
             description: "AIRDROP",
             enabled: true,
-            end_time: new Date("2022-12-12T18:21:58.952129766Z"),
+            end_time: new Date("2023-02-01T18:21:58.952129766Z"),
             lockup_period: "7884000s",
-            start_time: new Date("2022-12-11T18:21:58.952129766Z"),
+            start_time: new Date("2023-01-19T09:54:00.952129766Z"),
             vesting_period: "15768000s"
           },
           missions: [

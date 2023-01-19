@@ -63,6 +63,16 @@ export const useAirDropStore = defineStore({
         //console.error(err);
       }
     },
+
+    async fetchTestAirDropClaiming(){
+      try {
+        apiFactory.airDropApi().fetchUserAirdropEntries(true).then((res)=> {
+          console.log(res);
+        });
+      } catch (err) {
+        //console.error(err);
+      }
+    },
     // async fetchAirdropTotalOld(address: string, lockscreen = true) {
     //   try {
     //     apiFactory.airDropApi().fetchAirdropMockData(address, lockscreen).then((resp) => {
