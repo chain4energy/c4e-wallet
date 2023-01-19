@@ -2,18 +2,18 @@ import {Coin} from "@/models/blockchain/common";
 import {Pagination} from "@/models/blockchain/pagination";
 
 
-export interface UserAirdropInfo{
+export interface UserAirdropInfo {
   userAirdropEntries: UserAirdropEntry
 }
 
 
-export interface UserAirdropEntry{
+export interface UserAirdropEntry {
   address: string,
   claim_address: string,
   airdrop_entries: AirdropEntry[]
 }
 
-export interface AirdropEntry{
+export interface AirdropEntry {
   campaignId: string,
   address: string,
   amount: Coin,
@@ -21,7 +21,7 @@ export interface AirdropEntry{
   claimedMissions: string[]
 }
 
-export interface Campaign{
+export interface Campaign {
   id: string,
   owner: string,
   name: string,
@@ -29,26 +29,27 @@ export interface Campaign{
   enabled: boolean,
   start_time: string,
   end_time: string,
-  lockup_period:string,
-  vesting_period:string
+  lockup_period: string,
+  vesting_period: string
 }
 
-export interface CampaignsInfo{
+export interface CampaignsInfo {
   campaign: Campaign[],
   pagination: Pagination
+
 }
 
-export interface Mission{
+export interface Mission {
   id: string,
   campaign_id: string,
   name: string,
   description: string,
   missionType: MissionType,
-  weight:string
+  weight: number
 }
 
-export interface MissionsInfo{
-  mission:Mission[],
+export interface MissionsInfo {
+  mission: Mission[],
   pagination: Pagination
 }
 
@@ -58,3 +59,4 @@ export enum MissionType {
   VOTE = 'VOTE',
   DELEGATE = 'DELEGATE',
 }
+

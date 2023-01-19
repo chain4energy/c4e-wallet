@@ -1,4 +1,5 @@
-import {Coin, DecCoin} from "@/models/store/common";
+import {Coin} from "@/models/store/common";
+import {MissionType as MissionTypeBc} from "@/models/blockchain/airdrop";
 
 export class AirdropTotal{
   campaignAllocations: CampaignAllocation[]
@@ -65,22 +66,77 @@ export class Campaign{
   "vesting_period": string;
   "amount": Coin;
   "missions": Mission[];
+
+
+  constructor(id: string, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, amount: Coin, missions: Mission[]) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.enabled = enabled;
+    this.start_time = start_time;
+    this.end_time = end_time;
+    this.lockup_period = lockup_period;
+    this.vesting_period = vesting_period;
+    this.amount = amount;
+    this.missions = missions;
+  }
 }
 
 export class Mission {
   "id" : string;
   "name" : string;
   "description" : string;
-  "mission_type" : MissionType;
+  "mission_type" : MissionTypeSt;
 
   "weight": number;
   "completed" : boolean;
   "claimed" : boolean;
-  "claimed_time" : string
+  "claimed_time" : string | undefined
+
+
+  constructor(id: string, name: string, description: string, mission_type: MissionTypeSt, weight: number, completed: boolean, claimed: boolean, claimed_time: string | undefined) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.mission_type = mission_type;
+    this.weight = weight;
+    this.completed = completed;
+    this.claimed = claimed;
+    this.claimed_time = claimed_time;
+  }
 }
 
-export enum MissionType {
-  INITIAL_CLAIM,
-  VOTE
+export enum MissionTypeSt {
+  INITIAL_CLAIM = 'INITIAL_CLAIM',
+  VOTE = 'VOTE',
+  DELEGATE = 'DELEGATE',
+  UNDEFINED = 'UNDEFINED'
+}
 
+export function convertMissionType(missionTypeBc:MissionTypeBc) :MissionTypeSt {
+  if(missionTypeBc) {
+    switch (missionTypeBc) {
+      case MissionTypeBc.DELEGATE:
+        return MissionTypeSt.DELEGATE;
+      case MissionTypeBc.INITIAL_CLAIM:
+        return MissionTypeSt.INITIAL_CLAIM;
+      case MissionTypeBc.VOTE:
+        return MissionTypeSt.VOTE;
+    }
+  } else {
+    console.log("missionTypeBc not defined");
+    return MissionTypeSt.UNDEFINED;
+  }
+}
+
+export function findMission(missions: Mission[], missionId: string) {
+  return missions.find(d => {
+    return d.id == missionId;
+  });
+}
+
+export function findCampaign(campaigns: Campaign[], campaignId: string) {
+  return campaigns.find(d => {
+    return d.id == campaignId;
+  });
 }

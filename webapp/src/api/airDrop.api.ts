@@ -8,7 +8,8 @@ import {useConfigurationStore} from "@/store/configuration.store";
 import {Validator} from "@/models/store/validator";
 import {ValidatorsResponse} from "@/models/blockchain/validator";
 import {mapAndAddValidators, mapValidators, sortAndRankValidators} from "@/models/mapper/validator.mapper";
-import {UserAirdropInfo} from "@/models/blockchain/airdrop";
+import {CampaignsInfo as  CampaignsInfoBc, Mission, MissionsInfo, UserAirdropInfo} from "@/models/blockchain/airdrop";
+import {formatString} from "@/utils/string-formatter";
 
 export class AirDropApi extends BaseApi {
 
@@ -22,9 +23,9 @@ export class AirDropApi extends BaseApi {
     return ServiceTypeEnum.AIR_DROP_API;
   }
 
-  public async fetchAirdropMockData(address: string, lockscreen: boolean): Promise<RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>> {
-    return new RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>(undefined, this.airDropMockData);
-  }
+  // public async fetchAirdropMockData(address: string, lockscreen: boolean): Promise<RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>> {
+  //   return new RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>(undefined, this.airDropMockData);
+  // }
 
   public async fetchAirdropClaimRecord(address: string, lockscreen: boolean): Promise<RequestResponse<ClaimRecord, ErrorData<BlockchainApiErrorData>>> {
     return new RequestResponse<ClaimRecord, ErrorData<BlockchainApiErrorData>>(undefined, this.mockdata);
@@ -51,16 +52,42 @@ export class AirDropApi extends BaseApi {
     return await this.axiosAirdropCall(localUrl, mapData, lockscreen, null, 'fetchAirdrop - ', true);
   }
 
-  public async fetchUserAirdropEntries(lockscreen: boolean): Promise<RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>> {
+  public async fetchUserAirdropEntries(address: string, lockscreen: boolean): Promise<RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: UserAirdropInfo | undefined) => {
       if (bcData === undefined) {
-        throw new Error('mapAirdropsInfo - airDrop absent');
+        throw new Error('fetchUserAirdropEntries - data absent');
       }
       return bcData;
     };
 
-    return await this.axiosGetBlockchainApiCall(this.USER_AIRDROP_ENTRIES_URL,
+    return await this.axiosGetBlockchainApiCall(formatString(this.USER_AIRDROP_ENTRIES_URL, {address: address}),
       mapData, lockscreen, null, 'fetchUserAirdropEntries - ');
+
+  }
+
+  public async fetchCampaigns(lockscreen: boolean): Promise<RequestResponse<CampaignsInfoBc, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: CampaignsInfoBc | undefined) => {
+      if (bcData === undefined) {
+        throw new Error('fetchCampaigns - data absent');
+      }
+      return bcData;
+    };
+
+    return await this.axiosGetBlockchainApiCall(this.CAMPAIGNS_URL,
+      mapData, lockscreen, null, 'fetchCampaigns - ');
+
+  }
+
+  public async fetchMissions(lockscreen: boolean): Promise<RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: MissionsInfo | undefined) => {
+      if (bcData === undefined) {
+        throw new Error('fetchMissions - data absent');
+      }
+      return bcData;
+    };
+
+    return await this.axiosGetBlockchainApiCall(this.MISSIONS_URL,
+      mapData, lockscreen, null, 'fetchMissions - ');
 
   }
 
@@ -136,47 +163,47 @@ export class AirDropApi extends BaseApi {
         },
       ]
     }
-  airDropMockData: Campaigns = {
-    campaigns: [
-      {
-        name: "ATOM stakers campaign",
-        details_url: "http://sdfdf.sdf/dsdfs/",
-        alocations: [
-          {
-            name: "Base alloction",
-            value: 107878179
-          },
-          {
-            name: "Governance Booster allocation",
-            value: 10000000
-          },
-          {
-            name: "Decentralization Booster allocation",
-            value: 10000000
-          }
-        ]
-      },
-      {
-        name: "Greendrop compaign",
-        details_url: "http://sdfdf.sdf/",
-        alocations: [
-          {
-            name: "Token allocation",
-            value: 21356534
-          }
-        ]
-      },
-      {
-        name: "Santadrop compaign",
-        details_url: "http://sdfdf.sdf/dsdfs/",
-        alocations: [
-          {
-            name: "Token allocation",
-            value: 21351232
-          },
-        ]
-      }
-
-    ]
-  }
+  // airDropMockData: Campaigns = {
+  //   campaigns: [
+  //     {
+  //       name: "ATOM stakers campaign",
+  //       details_url: "http://sdfdf.sdf/dsdfs/",
+  //       alocations: [
+  //         {
+  //           name: "Base alloction",
+  //           value: 107878179
+  //         },
+  //         {
+  //           name: "Governance Booster allocation",
+  //           value: 10000000
+  //         },
+  //         {
+  //           name: "Decentralization Booster allocation",
+  //           value: 10000000
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       name: "Greendrop compaign",
+  //       details_url: "http://sdfdf.sdf/",
+  //       alocations: [
+  //         {
+  //           name: "Token allocation",
+  //           value: 21356534
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       name: "Santadrop compaign",
+  //       details_url: "http://sdfdf.sdf/dsdfs/",
+  //       alocations: [
+  //         {
+  //           name: "Token allocation",
+  //           value: 21351232
+  //         },
+  //       ]
+  //     }
+  //
+  //   ]
+  // }
 }
