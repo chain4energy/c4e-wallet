@@ -8,7 +8,7 @@
 import {onMounted, ref,  nextTick } from "vue";
 import {CampainStatus} from "@/models/airdrop/airdrop";
 const props = defineProps<{
-  amount?: number,
+  amount: number,
   status: CampainStatus;
   timeToPass? : string;
 }>();
@@ -25,9 +25,11 @@ function initCanvas() {
 }
 
 function onResize() {
-  canva.value.width = canva.value.offsetWidth;
-  canva.value.height = percentage.value.offsetHeight;
-  changeStatus();
+  if(canva.value?.offsetWidth){
+    canva.value.width = canva.value.offsetWidth;
+    canva.value.height = percentage.value.offsetHeight;
+    changeStatus();
+  }
 }
 function changeStatus(){
   let text;
