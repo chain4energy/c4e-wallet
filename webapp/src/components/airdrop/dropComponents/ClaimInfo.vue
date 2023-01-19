@@ -18,6 +18,7 @@ const props = defineProps<{
   padding: 3.5px 13px;
   box-shadow: 0px 0px 2px 2px #02447A;
   border-radius: 2px;
+  width: 150px;
   &__slot{
     margin: 0;
   }

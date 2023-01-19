@@ -167,7 +167,7 @@ setInterval(() => {
   }
   &__data{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     grid-column-gap: 9px;
     grid-row-gap: 9px;
     max-width: 100%;

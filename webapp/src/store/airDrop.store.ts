@@ -74,7 +74,7 @@ export const useAirDropStore = defineStore({
 
     async fetchTestAirDropClaiming(){
       try {
-        apiFactory.airDropApi().fetchUserAirdropEntries(true).then((res)=> {
+        apiFactory.airDropApi().fetchUserAirdropEntries('',true).then((res)=> {
           console.log(res);
         });
       } catch (err) {
