@@ -261,8 +261,8 @@
     "airdropBaseURL": "https://airdrop.c4e.io/"
   },
   "local":{
-    "bcApiURL": "http://0.0.0.0:1317",
-    "bcRpcURL": "http://0.0.0.0:26657",
+    "bcApiURL": "http://localhost:1317",
+    "bcRpcURL": "http://localhost:26657",
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
@@ -291,8 +291,12 @@
       "PROPOSAL_TALLY_URL": "/cosmos/gov/v1beta1/proposals/{id}/tally",
       "INFLATION_URL": "/c4e/minter/v1beta1/inflation",
       "STAKING_PARAMS_URL": "/cosmos/staking/v1beta1/params",
-      "VESTINGS_SUM_URL": "/c4e/vesting/v1beta1/summary"
-    },
+      "VESTINGS_SUM_URL": "/c4e/vesting/v1beta1/summary",
+      "DISTRIBUTOR_PARAMS_URL": "/c4e/distributor/v1beta1/params",
+      "USER_AIRDROP_ENTRIES_URL": "/c4e/airdrop/v1beta1/user_airdrop_entries/{address}",
+      "CAMPAIGNS_URL": "/c4e/airdrop/v1beta1/campaigns",
+      "MISSIONS_URL": "/c4e/airdrop/v1beta1/mission"
+    },  
     "operationGas": {
       "vote": 250000,
       "delegate": 250000,

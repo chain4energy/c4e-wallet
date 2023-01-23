@@ -50,7 +50,7 @@
             </ClaimInfo>
           </div>
           <div class="claimAirDrop__body">
-            <button @click="setActiveCampain(campaignRecord)" class="claimAirDrop__showBtn">{{activeCampain === campaignRecord? 'Hide missions' : 'Show Missions'}}</button>
+            <button @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn">{{activeCampain === campaignRecord? 'Hide missions' : 'Show Missions'}}</button>
             <div v-if="activeCampain === campaignRecord" class="claimAirDrop__missions">
               <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
                 <div class="claimAirDrop__leftCol">
@@ -89,9 +89,9 @@ import {MissionType} from "@/models/blockchain/airdrop";
 
 const percentsBar = ref();
 
-const currentLang = computed(() => {
-  return i18n.global.locale;
-});
+// const currentLang = computed(() => {
+//   return i18n.global.locale;
+// });
 
 {
   useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true);

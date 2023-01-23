@@ -20,14 +20,11 @@ export class AirDropApi extends BaseApi {
   private CAMPAIGNS_URL = queries.blockchain.CAMPAIGNS_URL;
   private MISSIONS_URL = queries.blockchain.MISSIONS_URL;
 
+  private useMockData = true;
 
   getServiceType(): ServiceTypeEnum {
     return ServiceTypeEnum.AIR_DROP_API;
   }
-
-  // public async fetchAirdropMockData(address: string, lockscreen: boolean): Promise<RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>> {
-  //   return new RequestResponse<Campaigns, ErrorData<BlockchainApiErrorData>>(undefined, this.airDropMockData);
-  // }
 
   public async fetchAirdropClaimRecord(address: string, lockscreen: boolean): Promise<RequestResponse<ClaimRecord, ErrorData<BlockchainApiErrorData>>> {
     return new RequestResponse<ClaimRecord, ErrorData<BlockchainApiErrorData>>(undefined, this.mockdata);
@@ -54,46 +51,49 @@ export class AirDropApi extends BaseApi {
     return await this.axiosAirdropCall(localUrl, mapData, lockscreen, null, 'fetchAirdrop - ', true);
   }
 
-  public async fetchFakeUserAirdropEntries(address: string, lockscreen: boolean):Promise<RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>>{
-    return new RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>(undefined, this.UserAirdropEntriesMockData);
-  }
-
   public async fetchUserAirdropEntries(address: string, lockscreen: boolean): Promise<RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: UserAirdropInfo | undefined) => {
       if (bcData === undefined) {
         throw new Error('fetchUserAirdropEntries - data absent');
       }
-      return bcData;
+      if(this.useMockData) {
+        return this.UserAirdropEntriesMockData;
+      }else{
+        return bcData;
+      }
     };
 
     return await this.axiosGetBlockchainApiCall(formatString(this.USER_AIRDROP_ENTRIES_URL, {address: address}),
       mapData, lockscreen, null, 'fetchUserAirdropEntries - ');
 
   }
-  public async fetchFakeCampains(lockscreen: boolean): Promise<RequestResponse<CampaignsInfoBc, ErrorData<BlockchainApiErrorData>>>{
-    return new RequestResponse<CampaignsInfoBc, ErrorData<BlockchainApiErrorData>>(undefined, this.campainMockData);
-  }
+
   public async fetchCampaigns(lockscreen: boolean): Promise<RequestResponse<CampaignsInfoBc, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: CampaignsInfoBc | undefined) => {
       if (bcData === undefined) {
         throw new Error('fetchCampaigns - data absent');
       }
-      return this.campainMockData;
+      if(this.useMockData) {
+        return this.campainMockData;
+      }else{
+        return bcData;
+      }
     };
 
     return await this.axiosGetBlockchainApiCall(this.CAMPAIGNS_URL,
       mapData, lockscreen, null, 'fetchCampaigns - ');
 
   }
-  public async fetchFakeMissions(lockscreen: boolean): Promise<RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>>{
-    return new RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>(undefined, this.missionsMockData);
-  }
   public async fetchMissions(lockscreen: boolean): Promise<RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: MissionsInfo | undefined) => {
       if (bcData === undefined) {
         throw new Error('fetchMissions - data absent');
       }
-      return bcData;
+      if(this.useMockData) {
+        return this.missionsMockData;
+      }else{
+        return bcData;
+      }
     };
 
     return await this.axiosGetBlockchainApiCall(this.MISSIONS_URL,
@@ -112,7 +112,8 @@ export class AirDropApi extends BaseApi {
         start_time: "2023-01-01T15:28:58.952129766Z",
         end_time: "2023-02-03T15:28:58.952129766Z",
         lockup_period: "7884000s",
-        vesting_period: "15768000s"
+        vesting_period: "15768000s",
+        denom: "uc4e"
       },
       {
         id: "2",
@@ -123,7 +124,8 @@ export class AirDropApi extends BaseApi {
         start_time: "2023-02-03T15:28:58.952129766Z",
         end_time: "2023-04-03T15:28:58.952129766Z",
         lockup_period: "7884000s",
-        vesting_period: "15768000s"
+        vesting_period: "15768000s",
+        denom: "uc4e"
       },
       {
         id: "3",
@@ -134,7 +136,8 @@ export class AirDropApi extends BaseApi {
         start_time: "2023-01-01T15:28:58.952129766Z",
         end_time: "2023-01-02T15:28:58.952129766Z",
         lockup_period: "7884000s",
-        vesting_period: "15768000s"
+        vesting_period: "15768000s",
+        denom: "uc4e"
       },
     ],
     pagination: {
@@ -182,12 +185,9 @@ export class AirDropApi extends BaseApi {
       claim_address: '1230781203',
       airdrop_entries: [
         {
-          campaignId: "1",
+          campaign_id: "1",
           address: "some",
-          amount: {
-            amount: "180000000",
-            denom: "uc4e"
-          },
+          amount: 180000000,
           completedMissions: [],
           claimedMissions: []
         }

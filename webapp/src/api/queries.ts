@@ -19,9 +19,9 @@ export default {
     STAKING_PARAMS_URL: '/cosmos/staking/v1beta1/params',
     VESTINGS_SUM_URL: '/c4e/vesting/v1beta1/summary',
     DISTRIBUTOR_PARAMS_URL: '/c4e/distributor/v1beta1/params',
-    USER_AIRDROP_ENTRIES_URL: '/c4e/airdrop/user_airdrop_entries/{address}',
-    CAMPAIGNS_URL: '/c4e/airdrop/campaigns',
-    MISSIONS_URL: '/c4e/airdrop/mission'
+    USER_AIRDROP_ENTRIES_URL: '/c4e/airdrop/v1beta1/user_airdrop_entries/{address}',
+    CAMPAIGNS_URL: '/c4e/airdrop/v1beta1/campaigns',
+    MISSIONS_URL: '/c4e/airdrop/v1beta1/mission'
   },
   hasura: {
     AVERAGE_BLOCK_TIME_QUERY: 'query AverageBlockTime {' +

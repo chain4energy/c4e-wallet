@@ -14,19 +14,20 @@ export interface UserAirdropEntry {
 }
 
 export interface AirdropEntry {
-  campaignId: string,
+  campaign_id: string,
   address: string,
-  amount: Coin,
+  amount: number,
   completedMissions: string[],
   claimedMissions: string[]
 }
 
-export interface Campaign {
+export interface CampaignBc {
   id: string,
   owner: string,
   name: string,
   description: string,
   enabled: boolean,
+  denom: string,
   start_time: string,
   end_time: string,
   lockup_period: string,
@@ -34,12 +35,12 @@ export interface Campaign {
 }
 
 export interface CampaignsInfo {
-  campaign: Campaign[],
+  campaign: CampaignBc[],
   pagination: Pagination
 
 }
 
-export interface Mission {
+export interface MissionBc {
   id: string,
   campaign_id: string,
   name: string,
@@ -49,7 +50,7 @@ export interface Mission {
 }
 
 export interface MissionsInfo {
-  mission: Mission[],
+  mission: MissionBc[],
   pagination: Pagination
 }
 
