@@ -1,6 +1,8 @@
 {
   "TITLE": "Chain4Energy {'|'} C4E wallet{addInfo}",
   "CONNECT" : {
+    "WELCOME": "Welcome",
+    "WELCOME_MESSAGE": "To the blockchain securing the decentralized energy market",
     "CONNECT": "Connect",
     "CONNECT_ADDRESS": "Connect with address",
     "CONNECT_KEPLR": "Connect with Keplr wallet",

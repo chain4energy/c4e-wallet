@@ -1,6 +1,8 @@
 {
   "TITLE": "Chain4Energy {'|'} Portfel C4E{addInfo}",
   "CONNECT" : {
+    "WELCOME": "Witamy",
+    "WELCOME_MESSAGE": "W sieci blockchain zabezpieczającej zdecentralizowany rynek energii",
     "CONNECT": "zaloguj",
     "CONNECT_ADDRESS": "Zaloguj się z adresem",
     "CONNECT_KEPLR": "Zaloguj się z Keplrem",

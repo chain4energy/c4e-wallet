@@ -1,12 +1,12 @@
 <template>
   <div class="loginChoose__holder">
     <div class="top-bar">
-      <h2 style="font-weight: bold">Welcome</h2>
+      <h2 style="font-weight: bold">{{ $t('CONNECT.WELCOME') }}</h2>
       <Button icon="pi pi-times" style="margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
     </div>
 
 
-    <p>The world’s first blockchain network based on green energy production</p>
+    <p>{{ $t('CONNECT.WELCOME_MESSAGE') }}</p>
     <div class="loginChoose__body">
       <div class="box" @click="$emit('typeChange', LoginEmail)">
         <div class="iconContainer">
