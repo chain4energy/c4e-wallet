@@ -144,3 +144,17 @@ export function findCampaign(campaigns: Campaign[], campaignId: string): Campaig
     return d.id == campaignId;
   });
 }
+export class FairdropPollUsage {
+  total:Coin;
+  claimed:Coin;
+  activeCampaigns:Coin;
+  toClaim:Coin;
+
+
+  constructor(total: Coin, claimed: Coin, activeCampaigns: Coin, toClaim: Coin) {
+    this.total = total;
+    this.claimed = claimed;
+    this.activeCampaigns = activeCampaigns;
+    this.toClaim = toClaim;
+  }
+}

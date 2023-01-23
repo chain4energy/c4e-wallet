@@ -1,15 +1,17 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {AirdropTotal, AlocationsSt, Campaign, CampaignAllocation, convertMissionType, findCampaign, findMission, Mission} from "@/models/store/airdrop";
+import {AirdropTotal, AlocationsSt, Campaign, CampaignAllocation, convertMissionType, FairdropPollUsage, findCampaign, findMission, Mission} from "@/models/store/airdrop";
 import {ClaimRecord} from "@/models/airdrop/airdrop";
 import {RequestResponse} from "@/models/request-response";
 import {ErrorData} from "@/api/base.api";
-import {AirdropErrData} from "@/models/blockchain/common";
+import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common";
 import {LogLevel} from "@/services/logger/log-level";
-import {AirdropEntry, CampaignBc, CampaignsInfo, MissionBc, MissionsInfo, UserAirdropInfo} from "@/models/blockchain/airdrop";
+import {AirdropDistributions, AirdropEntry, CampaignBc, CampaignsInfo, MissionBc, MissionsInfo, UserAirdropInfo} from "@/models/blockchain/airdrop";
 import {StoreLogger} from "@/services/logged.service";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {Coin} from "@/models/store/common";
+import {ConnectionInfo} from "@/api/wallet.connecton.api";
+import {UserState} from "@/store/user.store";
 
 const logger = new StoreLogger(ServiceTypeEnum.AIR_DROP_STORE);
 
@@ -21,7 +23,8 @@ interface airDropState {
   airDropMock: AirdropTotal,
   campaigns: Campaign[],
 
-  campaignsInfoLcd:CampaignsInfo;
+  fairdropPollUsage: FairdropPollUsage,
+  // campaignsInfoLcd: CampaignsInfo;
 
 }
 
@@ -34,7 +37,8 @@ export const useAirDropStore = defineStore({
       claimRecord: {} as ClaimRecord,
       airDropMock: Object(AirdropTotal),
       campaigns: Array<Campaign>(),
-      campaignsInfoLcd: {} as CampaignsInfo,
+      fairdropPollUsage: new FairdropPollUsage(new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"))
+      // campaignsInfoLcd: {} as CampaignsInfo,
     };
   },
   actions: {
@@ -148,13 +152,14 @@ export const useAirDropStore = defineStore({
     async fetchCampaigns(address: string, lockscreen = true) {
       logger.logToConsole(LogLevel.INFO, "fetchCampaigns:", address);
       let userAirdropInfoLcd = {} as UserAirdropInfo;
-      // let campaignsInfoLcd = {} as CampaignsInfo;
+      let campaignsInfoLcd = {} as CampaignsInfo;
       let missionsLcd = {} as MissionsInfo;
       const result = Array<Campaign>();
       await Promise.all([
         apiFactory.airDropApi().fetchCampaigns(lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
-            this.campaignsInfoLcd = response.data;
+            campaignsInfoLcd = response.data;
+            this.fetchFairdropPoolUsage(campaignsInfoLcd.campaign.map((c: CampaignBc) => c.id), lockscreen);
           } else {
             const message = 'Error fetching campaigns data';
             logger.logToConsole(LogLevel.ERROR, message);
@@ -181,14 +186,14 @@ export const useAirDropStore = defineStore({
         })
       ]);
 
-      this.campaignsInfoLcd?.campaign.forEach((entry:CampaignBc) => {
+      campaignsInfoLcd?.campaign.forEach((entry: CampaignBc) => {
         const campaign = new Campaign(entry.id, entry.name, entry.description, entry.enabled, entry.start_time, entry.end_time, entry.lockup_period,
           entry.vesting_period, entry.denom
         );
         result.push(campaign);
       });
 
-      missionsLcd?.mission.forEach((entry:MissionBc) => {
+      missionsLcd?.mission.forEach((entry: MissionBc) => {
         const campaign = findCampaign(result, entry.campaign_id);
         if (campaign) {
           campaign.missions.push(new Mission(entry.id, entry.name, entry.description, convertMissionType(entry.missionType), entry.weight, false, false, undefined));
@@ -197,11 +202,11 @@ export const useAirDropStore = defineStore({
         }
       });
 
-      userAirdropInfoLcd?.userAirdropEntries.airdrop_entries.forEach((entry:AirdropEntry) => {
+      userAirdropInfoLcd?.userAirdropEntries.airdrop_entries.forEach((entry: AirdropEntry) => {
         const campaign = findCampaign(result, entry.campaign_id);
         if (campaign) {
           campaign.amount.amount = BigInt(entry.amount);
-          entry.claimedMissions.forEach((missionId:string) => {
+          entry.claimedMissions.forEach((missionId: string) => {
             const claimedMission = findMission(campaign.missions, missionId);
             if (claimedMission) {
               claimedMission.claimed = true;
@@ -209,7 +214,7 @@ export const useAirDropStore = defineStore({
               logger.logToConsole(LogLevel.ERROR, "claimedMission not found id:" + missionId);
             }
           });
-          entry.completedMissions.forEach((missionId:string) => {
+          entry.completedMissions.forEach((missionId: string) => {
             const completedMission = findMission(campaign.missions, missionId);
             if (completedMission) {
               completedMission.completed = true;
@@ -225,7 +230,40 @@ export const useAirDropStore = defineStore({
 
       logger.logToConsole(LogLevel.DEBUG, JSON.stringify(result, (key, value) => typeof value === 'bigint' ? value.toString() : value, 2));
       this.campaigns = result;
-    }
+    },
+    async fetchFairdropPoolUsage(campaingIds: string[], lockscreen = true) {
+      const distributions = new Coin(BigInt(0), "uc4e");
+      const claimsLeft = new Coin(BigInt(0), "uc4e");
+      const promises = Array<Promise<void>>();
+      campaingIds.forEach((id: string) => {
+        promises.push(apiFactory.airDropApi().fetchAirdropDistributions(id, lockscreen).then(response => {
+          if (response.isSuccess() && response.data !== undefined) {
+            distributions.add(new Coin(BigInt(response.data.amount.amount), response.data.amount.denom));
+          } else {
+            const message = 'Error fetchAirdropDistributions';
+            logger.logToConsole(LogLevel.ERROR, message);
+            // toast.error(message);
+          }
+        }));
+        promises.push(apiFactory.airDropApi().fetchAirdropClaimsLeft(id, lockscreen).then(response => {
+          if (response.isSuccess() && response.data !== undefined) {
+            claimsLeft.add(new Coin(BigInt(response.data.amount.amount), response.data.amount.denom));
+          } else {
+            const message = 'Error fetchAirdropClaimsLeft';
+            logger.logToConsole(LogLevel.ERROR, message);
+            // toast.error(message);
+          }
+        }));
+      });
+      await Promise.all(promises);
+      this.fairdropPollUsage.total.amount = BigInt(20000000);
+      this.fairdropPollUsage.activeCampaigns = distributions;
+      this.fairdropPollUsage.toClaim = claimsLeft;
+      this.fairdropPollUsage.claimed = new Coin(distributions.amount-claimsLeft.amount,distributions.denom );
+
+
+    },
+
   },
   getters: {
     // getAirDropStatus(): boolean {
@@ -242,6 +280,10 @@ export const useAirDropStore = defineStore({
     },
     getCampaigns(): Campaign[] {
       return this.campaigns;
+    },
+    getFairdropPoolUsage(): FairdropPollUsage {
+      return this.fairdropPollUsage;
     }
   },
 });
+

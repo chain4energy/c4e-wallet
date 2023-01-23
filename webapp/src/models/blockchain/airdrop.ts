@@ -61,3 +61,11 @@ export enum MissionType {
   DELEGATE = 'DELEGATE',
 }
 
+export interface AirdropClaimsLeft{
+  amount: Coin
+}
+
+export interface AirdropDistributions{
+  amount: Coin
+}
+

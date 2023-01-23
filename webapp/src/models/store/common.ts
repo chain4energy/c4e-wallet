@@ -9,6 +9,11 @@ export class Coin {
     this.denom = denom;
   }
 
+  add(coin:Coin):Coin{
+    this.amount += coin.amount;
+    return this;
+  }
+
 }
 
 export class DecCoin {

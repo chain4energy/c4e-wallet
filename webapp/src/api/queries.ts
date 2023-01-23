@@ -21,7 +21,9 @@ export default {
     DISTRIBUTOR_PARAMS_URL: '/c4e/distributor/v1beta1/params',
     USER_AIRDROP_ENTRIES_URL: '/c4e/airdrop/v1beta1/user_airdrop_entries/{address}',
     CAMPAIGNS_URL: '/c4e/airdrop/v1beta1/campaigns',
-    MISSIONS_URL: '/c4e/airdrop/v1beta1/mission'
+    MISSIONS_URL: '/c4e/airdrop/v1beta1/mission',
+    AIRDROP_DISTRIBUTIONS: '/c4e/airdrop/v1beta1/airdrop_distributions/{campaign_id}',
+    AIRDROP_CLAIMS_LEFT: '/c4e/airdrop/v1beta1/airdrop_claims_left/{campaign_id}',
   },
   hasura: {
     AVERAGE_BLOCK_TIME_QUERY: 'query AverageBlockTime {' +
