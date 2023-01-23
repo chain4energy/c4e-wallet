@@ -22,13 +22,13 @@
       <div class="claimAirDrop__total" v-for="campaignRecord in airdropClaimRecord" :key="campaignRecord.id">
         <div class="claimAirDrop__container">
           <h4 class="claimAirDrop__header">{{campaignRecord.description}}</h4>
-          <PercentageBar
-            ref="percentsBar"
-            :key="updateComponent"
-            :amount="calculateProgress(campaignRecord.start_time, campaignRecord.end_time)"
-            :status="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time)"
-            :time-to-pass="calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)"
-          />
+<!--          <PercentageBar-->
+<!--            ref="percentsBar"-->
+<!--            :key="updateComponent"-->
+<!--            :amount="calculateProgress(campaignRecord.start_time, campaignRecord.end_time)"-->
+<!--            :status="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time)"-->
+<!--            :time-to-pass="calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)"-->
+<!--          />-->
           <div class="claimAirDrop__data">
             <ClaimInfo header="Claimed">
               <div class="claimAirDrop__data-text">
@@ -97,7 +97,7 @@ const percentsBar = ref();
   useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true);
 }
 const activeCampain = ref();
-function setActiveCampain(campain: Campaign){
+function setActiveCampaign(campain: Campaign){
   if(campain !== activeCampain.value){
     activeCampain.value = campain;
   } else {
@@ -110,7 +110,6 @@ function calculateMissions(campaign : Campaign){
   campaign.missions.forEach((el) => {
     if(el.claimed){
       total += el.weight;
-      console.log(total);
     }
   });
   return new Coin(total, campaign.amount.denom);
@@ -120,7 +119,6 @@ function getAmountOfClaimedMissions(campaign : Campaign){
   campaign.missions.forEach((el) => {
     if(el.claimed){
       total++;
-      console.log(total);
     }
   });
   return total;
