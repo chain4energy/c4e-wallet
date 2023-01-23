@@ -151,7 +151,7 @@ function calculateProgress(startTime: Date, endTime: Date){
     return Math.abs(100 - ((Math.abs(difference)/Math.abs(startEndDiff)) * 100));
   }
   else if(new Date(startTime).getTime() > Date.now()){
-    return undefined;
+    return null;
   }
 }
 const childComponentRef = ref(null);

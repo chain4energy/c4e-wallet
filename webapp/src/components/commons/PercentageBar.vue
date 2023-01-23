@@ -8,7 +8,7 @@
 import {onMounted, ref,  nextTick } from "vue";
 import {CampainStatus} from "@/models/airdrop/airdrop";
 const props = defineProps<{
-  amount: number,
+  amount: number | null,
   status: CampainStatus;
   timeToPass? : string;
 }>();

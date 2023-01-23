@@ -5,12 +5,7 @@ import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common
 import {CampaignsInfo, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
 import queries from "@/api/queries";
 import {useConfigurationStore} from "@/store/configuration.store";
-import {
-  CampaignsInfo as CampaignsInfoBc,
-  MissionsInfo,
-  MissionType,
-  UserAirdropInfo
-} from "@/models/blockchain/airdrop";
+import {CampaignsInfo as CampaignsInfoBc, MissionsInfo, MissionType, UserAirdropInfo} from "@/models/blockchain/airdrop";
 import {formatString} from "@/utils/string-formatter";
 
 export class AirDropApi extends BaseApi {
@@ -56,15 +51,21 @@ export class AirDropApi extends BaseApi {
       if (bcData === undefined) {
         throw new Error('fetchUserAirdropEntries - data absent');
       }
-      if(this.useMockData) {
-        return this.UserAirdropEntriesMockData;
-      }else{
-        return bcData;
-      }
+      return bcData;
     };
 
-    return await this.axiosGetBlockchainApiCall(formatString(this.USER_AIRDROP_ENTRIES_URL, {address: address}),
-      mapData, lockscreen, null, 'fetchUserAirdropEntries - ');
+    if (this.useMockData) {
+      try {
+        this.before(lockscreen, null);
+        await new Promise(r => setTimeout(r, 300));
+        return new RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>(undefined, this.UserAirdropEntriesMockData);
+      } finally {
+        this.after(lockscreen, null);
+      }
+    } else {
+      return await this.axiosGetBlockchainApiCall(formatString(this.USER_AIRDROP_ENTRIES_URL, {address: address}),
+        mapData, lockscreen, null, 'fetchUserAirdropEntries - ');
+    }
 
   }
 
@@ -73,31 +74,44 @@ export class AirDropApi extends BaseApi {
       if (bcData === undefined) {
         throw new Error('fetchCampaigns - data absent');
       }
-      if(this.useMockData) {
-        return this.campainMockData;
-      }else{
-        return bcData;
-      }
+      return bcData;
     };
 
-    return await this.axiosGetBlockchainApiCall(this.CAMPAIGNS_URL,
-      mapData, lockscreen, null, 'fetchCampaigns - ');
+    if (this.useMockData) {
+      try {
+        this.before(lockscreen, null);
+        await new Promise(r => setTimeout(r, 300));
+        return new RequestResponse<CampaignsInfoBc, ErrorData<BlockchainApiErrorData>>(undefined, this.campainMockData);
+      } finally {
+        this.after(lockscreen, null);
+      }
+    } else {
+      return await this.axiosGetBlockchainApiCall(this.CAMPAIGNS_URL,
+        mapData, lockscreen, null, 'fetchCampaigns - ');
+    }
 
   }
+
   public async fetchMissions(lockscreen: boolean): Promise<RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: MissionsInfo | undefined) => {
       if (bcData === undefined) {
         throw new Error('fetchMissions - data absent');
       }
-      if(this.useMockData) {
-        return this.missionsMockData;
-      }else{
-        return bcData;
-      }
+      return bcData;
     };
 
-    return await this.axiosGetBlockchainApiCall(this.MISSIONS_URL,
-      mapData, lockscreen, null, 'fetchMissions - ');
+    if (this.useMockData) {
+      try {
+        this.before(lockscreen, null);
+        await new Promise(r => setTimeout(r, 300));
+        return new RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>(undefined, this.missionsMockData);
+      } finally {
+        this.after(lockscreen, null);
+      }
+    } else {
+      return await this.axiosGetBlockchainApiCall(this.MISSIONS_URL,
+        mapData, lockscreen, null, 'fetchMissions - ');
+    }
 
   }
 
@@ -179,7 +193,7 @@ export class AirDropApi extends BaseApi {
     }
   }
 
-  UserAirdropEntriesMockData :UserAirdropInfo = {
+  UserAirdropEntriesMockData: UserAirdropInfo = {
     userAirdropEntries: {
       address: 'some',
       claim_address: '1230781203',

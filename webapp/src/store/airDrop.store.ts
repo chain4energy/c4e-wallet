@@ -153,7 +153,7 @@ export const useAirDropStore = defineStore({
       const result = Array<Campaign>();
       await Promise.all([
         await apiFactory.airDropApi().fetchCampaigns(lockscreen).then(response => {
-          if (response.data !== undefined) {
+          if (response.isSuccess() && response.data !== undefined) {
             this.campaignsInfoLcd = response.data;
           } else {
             const message = 'Error fetching campaigns data';
@@ -162,7 +162,7 @@ export const useAirDropStore = defineStore({
           }
         }),
         await apiFactory.airDropApi().fetchMissions(lockscreen).then(response => {
-          if (response.data !== undefined) {
+          if (response.isSuccess() && response.data !== undefined) {
             missionsLcd = response.data;
           } else {
             const message = 'Error fetching missions data';
