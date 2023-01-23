@@ -152,7 +152,7 @@ export const useAirDropStore = defineStore({
       let missionsLcd = {} as MissionsInfo;
       const result = Array<Campaign>();
       await Promise.all([
-        await apiFactory.airDropApi().fetchCampaigns(lockscreen).then(response => {
+        apiFactory.airDropApi().fetchCampaigns(lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
             this.campaignsInfoLcd = response.data;
           } else {
@@ -161,7 +161,7 @@ export const useAirDropStore = defineStore({
             // toast.error(message);
           }
         }),
-        await apiFactory.airDropApi().fetchMissions(lockscreen).then(response => {
+        apiFactory.airDropApi().fetchMissions(lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
             missionsLcd = response.data;
           } else {
@@ -170,7 +170,7 @@ export const useAirDropStore = defineStore({
             // toast.error(message);
           }
         }),
-        await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(response => {
+        apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
             userAirdropInfoLcd = response.data;
           } else {
