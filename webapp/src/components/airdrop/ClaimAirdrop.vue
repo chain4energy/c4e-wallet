@@ -22,13 +22,13 @@
       <div class="claimAirDrop__total" v-for="campaignRecord in airdropClaimRecord" :key="campaignRecord.id">
         <div class="claimAirDrop__container">
           <h4 class="claimAirDrop__header">{{campaignRecord.description}}</h4>
-<!--          <PercentageBar-->
-<!--            ref="percentsBar"-->
-<!--            :key="updateComponent"-->
-<!--            :amount="calculateProgress(campaignRecord.start_time, campaignRecord.end_time)"-->
-<!--            :status="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time)"-->
-<!--            :time-to-pass="calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)"-->
-<!--          />-->
+          <PercentageBar
+            ref="percentsBar"
+            :key="updateComponent"
+            :amount="calculateProgress(campaignRecord.start_time, campaignRecord.end_time)"
+            :status="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time)"
+            :time-to-pass="calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)"
+          />
           <div class="claimAirDrop__data">
             <ClaimInfo header="Claimed">
               <div class="claimAirDrop__data-text">
@@ -217,11 +217,17 @@ function getTextForMissionsBtn(type: MissionType){
   }
   &__data{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     grid-column-gap: 9px;
     grid-row-gap: 9px;
-    max-width: 100%;
+    max-width: 714px;
     margin-bottom: 18px;
+    @media (max-width: 1010px) {
+      max-width: 500px;
+    }
+    @media (max-width: 520px) {
+      max-width: 100%;
+    }
     &-text{
       margin: 0;
     }

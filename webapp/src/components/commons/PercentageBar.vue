@@ -39,12 +39,12 @@ function changeStatus(){
   switch (props.status){
     case CampainStatus.Future: text = 'Waiting to start campaign';
       backgroundColor = '#9A9B9C';
-      ctx.value.roundRect(0, 0, canva.value.width, canva.value.height, 5);
+      ctx.value.rect(0, 0, canva.value.width, canva.value.height);
       progress = false;
       break;
     case CampainStatus.Past:
       text = 'The campaign has past';
-      ctx.value.roundRect(0, 0, canva.value.width, canva.value.height, 5);
+      ctx.value.rect(0, 0, canva.value.width, canva.value.height);
       backgroundColor = '#9A9B9C';
       progress = false;
       break;
@@ -52,7 +52,7 @@ function changeStatus(){
       backgroundColor = changeProgress();
       text = `${props.timeToPass}`;
       progress = true;
-      ctx.value.roundRect(0, 0, (canva.value.width /100) * props.amount , canva.value.height, 5);
+      ctx.value.rect(0, 0, (canva.value.width /100) * props.amount , canva.value.height);
       break;
     default: text = '';
       break;
