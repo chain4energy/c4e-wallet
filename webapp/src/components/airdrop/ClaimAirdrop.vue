@@ -19,28 +19,34 @@
           </div>
         </div>
       </div>
-      <div class="claimAirDrop__total" v-for="campaignRecord in airdropClaimRecord.campaign_records" :key="campaignRecord.campaign.campaign_id">
+      <div class="claimAirDrop__total" v-for="campaignRecord in airdropClaimRecord" :key="campaignRecord.id">
         <div class="claimAirDrop__container">
-          <h4 class="claimAirDrop__header">{{campaignRecord.campaign.description}}</h4>
+          <h4 class="claimAirDrop__header">{{campaignRecord.description}}</h4>
           <PercentageBar
             ref="percentsBar"
             :key="updateComponent"
-            :amount="calculateProgress(campaignRecord.campaign.start_time, campaignRecord.campaign.end_time)"
-            :status="checkCampaignStatus(campaignRecord.campaign.start_time, campaignRecord.campaign.end_time)"
-            :time-to-pass="calculateTimeToPAss(campaignRecord.campaign.start_time, campaignRecord.campaign.end_time)"
+            :amount="calculateProgress(campaignRecord.start_time, campaignRecord.end_time)"
+            :status="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time)"
+            :time-to-pass="calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)"
           />
           <div class="claimAirDrop__data">
             <ClaimInfo header="Claimed">
-              <p class="claimAirDrop__data-text">0/34.99 C4E</p>
+              <div class="claimAirDrop__data-text">
+                <CoinAmount :amount="calculateMissions(campaignRecord)" :show-denom="false" :precision="2"></CoinAmount>
+                /
+                <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
+              </div>
             </ClaimInfo>
             <ClaimInfo header="Mission Complitted">
-              <p class="claimAirDrop__data-text">0/3</p>
+              <p class="claimAirDrop__data-text">{{getAmountOfClaimedMissions(campaignRecord)}}/{{campaignRecord.missions.length}}</p>
             </ClaimInfo>
             <ClaimInfo header="Time to start claiming">
-              <p class="claimAirDrop__data-text">{{calculateTimeToPAss(campaignRecord.campaign.start_time, campaignRecord.campaign.end_time)}}</p>
+              <p class="claimAirDrop__data-text">{{calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)}}</p>
             </ClaimInfo>
             <ClaimInfo header="Total Distribution">
-              <p class="claimAirDrop__data-text">9,000,000 C4E</p>
+              <div class="claimAirDrop__data-text">
+                <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
+              </div>
             </ClaimInfo>
           </div>
           <div class="claimAirDrop__body">
@@ -48,11 +54,17 @@
             <div v-if="activeCampain === campaignRecord" class="claimAirDrop__missions">
               <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
                 <div class="claimAirDrop__leftCol">
-                  <div class="claimAirDrop__smallTxt">{{`Mission# ${id+1}`}}</div>
+                  <div class="claimAirDrop__smallTxt">{{`Mission# ${missions.mission_id}`}}</div>
                   <div>{{missions.description}}</div>
                 </div>
                 <div>
-                  <Button :disabled="missions.status !== MissionStatus.INITIAL && checkCampaignStatus(campaignRecord.campaign.start_time, campaignRecord.campaign.end_time) !== CampainStatus.Now" class="p-button p-component secondary claimAirDrop__btn" :label="'Stake'"></Button>
+                  <Button :disabled="
+                  missions.mission_type !== MissionStatus.INITIAL
+                  && checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Now"
+                          class="p-button p-component secondary claimAirDrop__btn"
+                          :label="getTextForMissionsBtn(missions.mission_type)">
+
+                  </Button>
                 </div>
               </div>
             </div>
@@ -64,15 +76,16 @@
 
 <script setup lang="ts">
 import {useAirDropStore} from "@/store/airDrop.store";
-import {computed, nextTick, ref} from "vue";
+import {computed, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
-import {CampaignRecord, CampainStatus} from "@/models/airdrop/airdrop";
+import {CampaignRecord, CampainStatus, MissionStatus} from "@/models/airdrop/airdrop";
+import {Campaign} from "@/models/store/airdrop";
 import PercentageBar from "@/components/commons/PercentageBar.vue";
 import i18n from "@/plugins/i18n";
 import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
-import {MissionStatus} from '@/models/airdrop/airdrop';
-import CountDownTime from "@/components/commons/CountDownTime.vue";
-import {emitted} from "@vue/test-utils/dist/emit";
+import CoinAmount from '@/components/commons/CoinAmount.vue';
+import {Coin} from "@/models/store/common";
+import {MissionType} from "@/models/blockchain/airdrop";
 
 const percentsBar = ref();
 
@@ -81,24 +94,50 @@ const currentLang = computed(() => {
 });
 
 {
-  useAirDropStore().fetchAirdropClaimRecord(useUserStore().getAccount.address, true);
+  useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true);
 }
 const activeCampain = ref();
-function setActiveCampain(campain: CampaignRecord){
+function setActiveCampain(campain: Campaign){
   if(campain !== activeCampain.value){
     activeCampain.value = campain;
   } else {
     activeCampain.value = undefined;
   }
 }
+
+function calculateMissions(campaign : Campaign){
+  let total = 0;
+  campaign.missions.forEach((el) => {
+    if(el.claimed){
+      total += el.weight;
+      console.log(total);
+    }
+  });
+  return new Coin(total, campaign.amount.denom);
+}
+function getAmountOfClaimedMissions(campaign : Campaign){
+  let total = 0;
+  campaign.missions.forEach((el) => {
+    if(el.claimed){
+      total++;
+      console.log(total);
+    }
+  });
+  return total;
+}
+
 const airdropClaimRecord = computed(() => {
-  return useAirDropStore().getAirdropClaimRecord;
+  return useAirDropStore().getCampaigns;
 });
 
+function getClaimedWeight(campain: CampaignRecord){
+  return 2000000;
+}
+
 function checkCampaignStatus(startTime: Date, endTime: Date) {
-  if(startTime.getTime() < new Date(Date.now()).getTime() && endTime.getTime()> new Date(Date.now()).getTime()){
+  if(new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime()> new Date(Date.now()).getTime()){
     return CampainStatus.Now;
-  }else if(startTime.getTime() > new Date(Date.now()).getTime()){
+  }else if(new Date(startTime).getTime() > new Date(Date.now()).getTime()){
     return CampainStatus.Future;
   } else {
     return CampainStatus.Past;
@@ -106,21 +145,21 @@ function checkCampaignStatus(startTime: Date, endTime: Date) {
 }
 
 function calculateProgress(startTime: Date, endTime: Date){
-  if(startTime.getTime() < Date.now() && endTime.getTime()> Date.now()){
-    const startEndDiff = endTime.getTime() - startTime.getTime();
-    const difference = Date.now() - endTime.getTime();
+  if(new Date(startTime).getTime() < Date.now() && new Date(endTime).getTime()> Date.now()){
+    const startEndDiff = new Date(endTime).getTime() - new Date(startTime).getTime();
+    const difference = Date.now() - new Date(endTime).getTime();
     return Math.abs(100 - ((Math.abs(difference)/Math.abs(startEndDiff)) * 100));
   }
-  else if(startTime.getTime() > Date.now()){
+  else if(new Date(startTime).getTime() > Date.now()){
     return undefined;
   }
 }
 const childComponentRef = ref(null);
 const updateComponent = ref(false);
 function calculateTimeToPAss(startDate: Date, endDate: Date){
-  if(startDate.getTime() < new Date(Date.now()).getTime() && endDate.getTime()> new Date(Date.now()).getTime()){
+  if(new Date(startDate).getTime() < new Date(Date.now()).getTime() && new Date(endDate).getTime()> new Date(Date.now()).getTime()){
     const now = new Date(Date.now());
-    const diference = endDate.getTime() - now.getTime();
+    const diference = new Date(endDate).getTime() - now.getTime();
     const days = Math.floor(diference / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diference % (1000 * 60 * 60)) / (1000 * 60));
@@ -134,6 +173,19 @@ const emit = defineEmits(['timeChanged'])
 setInterval(() => {
     updateComponent.value = !updateComponent.value;
 },1000);
+
+function getTextForMissionsBtn(type: MissionType){
+  let text;
+  switch (type){
+    case MissionType.INITIAL_CLAIM: text = 'Claim';
+    break;
+    case MissionType.DELEGATE: text = 'Delegate';
+    break;
+    case MissionType.VOTE: text = 'Vote';
+    break;
+  }
+  return text;
+}
 </script>
 
 <style scoped lang="scss">

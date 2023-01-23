@@ -56,16 +56,16 @@ export class AlocationsSt{
 }
 
 export class Campaign{
-  "id" : string;
-  "name" : string;
-  "description" : string;
-  "enabled": boolean;
-  "start_time": string;
-  "end_time": string;
-  "lockup_period": string;
-  "vesting_period": string;
-  "amount": Coin;
-  "missions": Mission[];
+  id : string;
+  name : string;
+  description : string;
+  enabled: boolean;
+  start_time: string;
+  end_time: string;
+  lockup_period: string;
+  vesting_period: string;
+  amount: Coin;
+  missions: Mission[];
 
 
   constructor(id: string, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, amount: Coin, missions: Mission[]) {
@@ -83,15 +83,15 @@ export class Campaign{
 }
 
 export class Mission {
-  "id" : string;
-  "name" : string;
-  "description" : string;
-  "mission_type" : MissionTypeSt;
+  id : string;
+  name : string;
+  description : string;
+  mission_type : MissionTypeSt;
 
-  "weight": number;
-  "completed" : boolean;
-  "claimed" : boolean;
-  "claimed_time" : string | undefined
+  weight: number;
+  completed : boolean;
+  claimed : boolean;
+  claimed_time : string | undefined
 
 
   constructor(id: string, name: string, description: string, mission_type: MissionTypeSt, weight: number, completed: boolean, claimed: boolean, claimed_time: string | undefined) {

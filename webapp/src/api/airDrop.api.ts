@@ -1,14 +1,16 @@
 import BaseApi, {ErrorData} from "@/api/base.api";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {RequestResponse} from "@/models/request-response";
-import {BlockchainApiErrorData, AirdropErrData} from "@/models/blockchain/common";
-import {Campaigns, CampaignsInfo, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
+import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common";
+import {CampaignsInfo, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
 import queries from "@/api/queries";
 import {useConfigurationStore} from "@/store/configuration.store";
-import {Validator} from "@/models/store/validator";
-import {ValidatorsResponse} from "@/models/blockchain/validator";
-import {mapAndAddValidators, mapValidators, sortAndRankValidators} from "@/models/mapper/validator.mapper";
-import {CampaignsInfo as  CampaignsInfoBc, Mission, MissionsInfo, UserAirdropInfo} from "@/models/blockchain/airdrop";
+import {
+  CampaignsInfo as CampaignsInfoBc,
+  MissionsInfo,
+  MissionType,
+  UserAirdropInfo
+} from "@/models/blockchain/airdrop";
 import {formatString} from "@/utils/string-formatter";
 
 export class AirDropApi extends BaseApi {
@@ -52,6 +54,10 @@ export class AirDropApi extends BaseApi {
     return await this.axiosAirdropCall(localUrl, mapData, lockscreen, null, 'fetchAirdrop - ', true);
   }
 
+  public async fetchFakeUserAirdropEntries(address: string, lockscreen: boolean):Promise<RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>>{
+    return new RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>(undefined, this.UserAirdropEntriesMockData);
+  }
+
   public async fetchUserAirdropEntries(address: string, lockscreen: boolean): Promise<RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: UserAirdropInfo | undefined) => {
       if (bcData === undefined) {
@@ -64,20 +70,24 @@ export class AirDropApi extends BaseApi {
       mapData, lockscreen, null, 'fetchUserAirdropEntries - ');
 
   }
-
+  public async fetchFakeCampains(lockscreen: boolean): Promise<RequestResponse<CampaignsInfoBc, ErrorData<BlockchainApiErrorData>>>{
+    return new RequestResponse<CampaignsInfoBc, ErrorData<BlockchainApiErrorData>>(undefined, this.campainMockData);
+  }
   public async fetchCampaigns(lockscreen: boolean): Promise<RequestResponse<CampaignsInfoBc, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: CampaignsInfoBc | undefined) => {
       if (bcData === undefined) {
         throw new Error('fetchCampaigns - data absent');
       }
-      return bcData;
+      return this.campainMockData;
     };
 
     return await this.axiosGetBlockchainApiCall(this.CAMPAIGNS_URL,
       mapData, lockscreen, null, 'fetchCampaigns - ');
 
   }
-
+  public async fetchFakeMissions(lockscreen: boolean): Promise<RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>>{
+    return new RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>(undefined, this.missionsMockData);
+  }
   public async fetchMissions(lockscreen: boolean): Promise<RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: MissionsInfo | undefined) => {
       if (bcData === undefined) {
@@ -91,7 +101,99 @@ export class AirDropApi extends BaseApi {
 
   }
 
+  campainMockData: CampaignsInfoBc = {
+    campaign: [
+      {
+        id: "1",
+        owner: "",
+        name: "test1",
+        description: "Campaign test1",
+        enabled: true,
+        start_time: "2023-01-01T15:28:58.952129766Z",
+        end_time: "2023-02-03T15:28:58.952129766Z",
+        lockup_period: "7884000s",
+        vesting_period: "15768000s"
+      },
+      {
+        id: "2",
+        owner: "",
+        name: "test2",
+        description: "Campaign test2",
+        enabled: false,
+        start_time: "2023-02-03T15:28:58.952129766Z",
+        end_time: "2023-04-03T15:28:58.952129766Z",
+        lockup_period: "7884000s",
+        vesting_period: "15768000s"
+      },
+      {
+        id: "3",
+        owner: "",
+        name: "test3",
+        description: "Campaign test3",
+        enabled: false,
+        start_time: "2023-01-01T15:28:58.952129766Z",
+        end_time: "2023-01-02T15:28:58.952129766Z",
+        lockup_period: "7884000s",
+        vesting_period: "15768000s"
+      },
+    ],
+    pagination: {
+      next_key: "1",
+      total: "3",
+    }
+  };
 
+  missionsMockData: MissionsInfo = {
+    mission: [
+      {
+        id: "1",
+        campaign_id: "1",
+        name: "test",
+        description: "description for first mission",
+        missionType: MissionType.INITIAL_CLAIM,
+        weight: 60000000
+      },
+      {
+        id: "2",
+        campaign_id: "1",
+        name: "test",
+        description: "description for second mission",
+        missionType: MissionType.VOTE,
+        weight: 60000000
+      },
+      {
+        id: "3",
+        campaign_id: "2",
+        name: "test",
+        description: "description for first mission",
+        missionType: MissionType.VOTE,
+        weight: 60000000
+      }
+    ],
+    pagination: {
+      next_key: "1",
+      total: "6",
+    }
+  }
+
+  UserAirdropEntriesMockData :UserAirdropInfo = {
+    userAirdropEntries: {
+      address: 'some',
+      claim_address: '1230781203',
+      airdrop_entries: [
+        {
+          campaignId: "1",
+          address: "some",
+          amount: {
+            amount: "180000000",
+            denom: "uc4e"
+          },
+          completedMissions: [],
+          claimedMissions: []
+        }
+      ]
+    }
+  }
   mockdata: ClaimRecord =
     {
       address: "c4e1yyjfd5cj5nd0jrlvrhc5p3mnkcn8v9q8fdd9gs",

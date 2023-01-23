@@ -148,8 +148,8 @@ export const useAirDropStore = defineStore({
       let missions = {} as MissionsInfo;
       const result = Array<Campaign>();
       await Promise.all([
-        await apiFactory.airDropApi().fetchCampaigns(lockscreen).then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
+        await apiFactory.airDropApi().fetchFakeCampains(lockscreen).then(response => {
+          if (response.data !== undefined) {
             campaignsInfo = response.data;
           } else {
             const message = 'Error fetching campaigns data';
@@ -157,8 +157,8 @@ export const useAirDropStore = defineStore({
             // toast.error(message);
           }
         }),
-        await apiFactory.airDropApi().fetchMissions(lockscreen).then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
+        await apiFactory.airDropApi().fetchFakeMissions(lockscreen).then(response => {
+          if (response.data !== undefined) {
             missions = response.data;
           } else {
             const message = 'Error fetching missions data';
@@ -166,7 +166,7 @@ export const useAirDropStore = defineStore({
             // toast.error(message);
           }
         }),
-        await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(response => {
+        await apiFactory.airDropApi().fetchFakeUserAirdropEntries(address, lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
             userAirdropInfo = response.data;
           } else {
