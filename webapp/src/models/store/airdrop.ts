@@ -1,5 +1,6 @@
 import {Coin} from "@/models/store/common";
 import {MissionType as MissionTypeBc} from "@/models/blockchain/airdrop";
+import {BigDecimal} from "@/models/store/big.decimal";
 
 export class AirdropTotal {
   campaignAllocations: CampaignAllocation[]
@@ -149,12 +150,16 @@ export class FairdropPollUsage {
   claimed:Coin;
   activeCampaigns:Coin;
   toClaim:Coin;
+  claimedPercentage:BigDecimal;
+  toClaimePercentage:BigDecimal;
 
 
-  constructor(total: Coin, claimed: Coin, activeCampaigns: Coin, toClaim: Coin) {
+  constructor(total: Coin, claimed: Coin, activeCampaigns: Coin, toClaim: Coin, claimedPercentage:BigDecimal,   toClaimePercentage:BigDecimal) {
     this.total = total;
     this.claimed = claimed;
     this.activeCampaigns = activeCampaigns;
     this.toClaim = toClaim;
+    this.claimedPercentage = claimedPercentage;
+    this.toClaimePercentage = toClaimePercentage;
   }
 }

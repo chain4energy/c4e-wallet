@@ -4,21 +4,17 @@
         <div class="claimAirDrop__container">
           <h4 class="claimAirDrop__header">Total</h4>
           <div class="claimAirDrop__data">
-            <ClaimInfo header="Total">
-              <CoinAmount :amount="fairdropPoolUsage.total" :show-denom="true" :precision="2"></CoinAmount>
-<!--              <p class="claimAirDrop__data-text">20,000,000 C4E</p>-->
-            </ClaimInfo>
-            <ClaimInfo header="Total claimed (45%)">
-              <CoinAmount :amount="fairdropPoolUsage.claimed" :show-denom="true" :precision="2"></CoinAmount>
-<!--              <p class="claimAirDrop__data-text">8,254,200 C4E</p>-->
+            <ClaimInfo header="header" >
+              <CoinAmount :amount="fairdropPoolUsage.total" :show-denom="true" :precision="2"/>
+           </ClaimInfo>
+            <ClaimInfo header="Total claimed" :percentage-vale="fairdropPoolUsage.claimedPercentage">
+              <CoinAmount :amount="fairdropPoolUsage.claimed" :show-denom="true" :precision="2"/>
             </ClaimInfo>
             <ClaimInfo header="Active campaigns">
-              <CoinAmount :amount="fairdropPoolUsage.activeCampaigns" :show-denom="true" :precision="2"></CoinAmount>
-<!--              <p class="claimAirDrop__data-text">10,000,000 C4E</p>-->
+              <CoinAmount :amount="fairdropPoolUsage.activeCampaigns" :show-denom="true" :precision="2"/>
             </ClaimInfo>
-            <ClaimInfo header="To claim (5%)">
-              <CoinAmount :amount="fairdropPoolUsage.toClaim" :show-denom="true" :precision="2"></CoinAmount>
-<!--              <p class="claimAirDrop__data-text">542,220 C4E</p>-->
+            <ClaimInfo header="To claim" :percentage-vale="fairdropPoolUsage.toClaimePercentage">
+              <CoinAmount :amount="fairdropPoolUsage.toClaim" :show-denom="true" :precision="2"/>
             </ClaimInfo>
           </div>
         </div>
@@ -90,6 +86,8 @@ import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
 import CoinAmount from '@/components/commons/CoinAmount.vue';
 import {Coin} from "@/models/store/common";
 import {MissionType} from "@/models/blockchain/airdrop";
+import PercentsView from "@/components/commons/PercentsView.vue";
+import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 
 const percentsBar = ref();
 
@@ -103,7 +101,8 @@ const percentsBar = ref();
 
 const fairdropPoolUsage = computed(()=>{
   return useAirDropStore().getFairdropPoolUsage;
-})
+});
+
 const activeCampain = ref();
 function setActiveCampaign(campain: Campaign){
   if(campain !== activeCampain.value){

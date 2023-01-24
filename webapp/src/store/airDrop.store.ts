@@ -12,6 +12,7 @@ import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {Coin} from "@/models/store/common";
 import {ConnectionInfo} from "@/api/wallet.connecton.api";
 import {UserState} from "@/store/user.store";
+import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 
 const logger = new StoreLogger(ServiceTypeEnum.AIR_DROP_STORE);
 
@@ -37,7 +38,9 @@ export const useAirDropStore = defineStore({
       claimRecord: {} as ClaimRecord,
       airDropMock: Object(AirdropTotal),
       campaigns: Array<Campaign>(),
-      fairdropPollUsage: new FairdropPollUsage(new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"))
+      fairdropPollUsage: new FairdropPollUsage(new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
+        new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
+        new BigDecimal(0), new BigDecimal(0) )
       // campaignsInfoLcd: {} as CampaignsInfo,
     };
   },
@@ -256,11 +259,12 @@ export const useAirDropStore = defineStore({
         }));
       });
       await Promise.all(promises);
-      this.fairdropPollUsage.total.amount = BigInt(20000000);
-      this.fairdropPollUsage.activeCampaigns = distributions;
-      this.fairdropPollUsage.toClaim = claimsLeft;
-      this.fairdropPollUsage.claimed = new Coin(distributions.amount-claimsLeft.amount,distributions.denom );
-
+      this.fairdropPollUsage = new FairdropPollUsage( new Coin(BigInt(20000000),"C4E"),
+        new Coin(distributions.amount-claimsLeft.amount,distributions.denom ),
+        distributions,
+        claimsLeft,
+        getPercentage( this.fairdropPollUsage.total.amount, this.fairdropPollUsage.claimed.amount),
+        getPercentage( distributions.amount, claimsLeft.amount));
 
     },
 
@@ -286,4 +290,11 @@ export const useAirDropStore = defineStore({
     }
   },
 });
+
+function getPercentage(divider:bigint, divisor:bigint): BigDecimal{
+  if (divisor <= 0n) {
+    return new BigDecimal(0);
+  }
+  return divideBigInts(divider, divisor);
+}
 

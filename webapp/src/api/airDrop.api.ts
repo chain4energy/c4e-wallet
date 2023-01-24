@@ -5,7 +5,7 @@ import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common
 import {CampaignsInfo, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
 import queries from "@/api/queries";
 import {useConfigurationStore} from "@/store/configuration.store";
-import {CampaignsInfo as CampaignsInfoBc, MissionsInfo, MissionType, UserAirdropInfo} from "@/models/blockchain/airdrop";
+import {AirdropClaimsLeft, AirdropDistributions, CampaignsInfo as CampaignsInfoBc, MissionsInfo, MissionType, UserAirdropInfo} from "@/models/blockchain/airdrop";
 import {formatString} from "@/utils/string-formatter";
 
 export class AirDropApi extends BaseApi {
@@ -14,8 +14,10 @@ export class AirDropApi extends BaseApi {
   private USER_AIRDROP_ENTRIES_URL = queries.blockchain.USER_AIRDROP_ENTRIES_URL;
   private CAMPAIGNS_URL = queries.blockchain.CAMPAIGNS_URL;
   private MISSIONS_URL = queries.blockchain.MISSIONS_URL;
+  private AIRDROP_DISTRIBUTIONS = queries.blockchain.AIRDROP_DISTRIBUTIONS;
+  private AIRDROP_CLAIMS_LEFT = queries.blockchain.AIRDROP_CLAIMS_LEFT
 
-  private useMockData = true;
+  private useMockData = false;
 
   getServiceType(): ServiceTypeEnum {
     return ServiceTypeEnum.AIR_DROP_API;
@@ -89,7 +91,6 @@ export class AirDropApi extends BaseApi {
       return await this.axiosGetBlockchainApiCall(this.CAMPAIGNS_URL,
         mapData, lockscreen, null, 'fetchCampaigns - ');
     }
-
   }
 
   public async fetchMissions(lockscreen: boolean): Promise<RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>> {
@@ -115,6 +116,27 @@ export class AirDropApi extends BaseApi {
 
   }
 
+  public async fetchAirdropDistributions(campaignId:string, lockscreen: boolean): Promise<RequestResponse<AirdropDistributions, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: AirdropDistributions | undefined) => {
+      if (bcData === undefined) {
+        throw new Error('fetchAirdropDistributions - data absent');
+      }
+      return bcData;
+    };
+    return await this.axiosGetBlockchainApiCall(formatString(this.AIRDROP_DISTRIBUTIONS, {campaign_id: campaignId}),
+      mapData, lockscreen, null, 'fetchAirdropDistributions - ');
+  }
+
+  public async fetchAirdropClaimsLeft(campaignId:string, lockscreen: boolean): Promise<RequestResponse<AirdropClaimsLeft, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: AirdropClaimsLeft | undefined) => {
+      if (bcData === undefined) {
+        throw new Error('fetchAirdropClaimsLeft - data absent');
+      }
+      return bcData;
+    };
+    return await this.axiosGetBlockchainApiCall(formatString(this.AIRDROP_CLAIMS_LEFT, {campaign_id: campaignId}),
+      mapData, lockscreen, null, 'fetchAirdropClaimsLeft - ');
+  }
   campainMockData: CampaignsInfoBc = {
     campaign: [
       {
