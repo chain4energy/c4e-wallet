@@ -359,6 +359,9 @@
     "COSMOS_HELP": "Wprowadź adres cosmos",
     "CHECK": "Check"
   },
+  "CLAIM_AIRDROP": {
+    "PROGRESS":"Odliczanie kampanii"
+  },
   "COPY": {
     "ADDRESS": "Adres został skopiowany do schowka",
     "TX_HASH": "Hash transakcji skopiowany do schowka"

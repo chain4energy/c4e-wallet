@@ -21,7 +21,11 @@
       </div>
       <div class="claimAirDrop__total" v-for="campaignRecord in airdropClaimRecord" :key="campaignRecord.id">
         <div class="claimAirDrop__container">
-          <h4 class="claimAirDrop__header">{{campaignRecord.description}}</h4>
+          <h4 class="claimAirDrop__header">{{campaignRecord.name}}</h4>
+          <div class="claimAirDrop__progressHeader">
+            <h5 >{{$t('CLAIM_AIRDROP.PROGRESS')}}</h5>
+          </div>
+
           <PercentageBar
             ref="percentsBar"
             :key="updateComponent"
@@ -50,7 +54,7 @@
             </ClaimInfo>
           </div>
           <div class="claimAirDrop__body">
-            <button @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn">{{activeCampain === campaignRecord? 'Hide missions' : 'Show Missions'}}</button>
+            <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn">{{activeCampain === campaignRecord? 'Hide missions' : 'Show Missions'}}</button>
             <div v-if="activeCampain === campaignRecord" class="claimAirDrop__missions">
               <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
                 <div class="claimAirDrop__leftCol">
@@ -247,6 +251,11 @@ function getTextForMissionsBtn(type: MissionType){
     font-weight: 700;
     font-size: 20px;
     line-height: 24px;
+  }
+  &__progressHeader{
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
   }
   &__body{
     width: 100%;

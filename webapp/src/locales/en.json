@@ -365,6 +365,9 @@
     "COSMOS_HELP": "Import COSMOS address",
     "CHECK": "Check"
   },
+  "CLAIM_AIRDROP": {
+    "PROGRESS":"Campaign countdown"
+  },
   "COPY": {
     "ADDRESS": "Address has been copied to clipboard",
     "TX_HASH": "TX hash has been copied to clipboard"
