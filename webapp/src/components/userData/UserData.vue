@@ -12,7 +12,7 @@
           <C4EIcon icon="c4e-circle" :size="30"/>
         </template>
       </AmountView>
-      <!-- <div class="vesting">
+      <div class="vesting">
         <div class="userdata__accountData-vesting-first" v-if="useUserStore().isContinuousVestingAccount">
           <div>
             <p>{{ $t('USER_DATA.LOCKED') }}</p>
@@ -26,7 +26,7 @@
           </div>
         </div>
         <div class="userdata__amounts_last" v-if="!useUserStore().isContinuousVestingAccount"></div>
-      </div> -->
+      </div>
   </div>
 
   </div>
@@ -50,6 +50,7 @@ import C4EIcon from "../commons/C4EIcon.vue";
 import AmountView from "@/components/commons/AmountView.vue";
 import i18n from "@/plugins/i18n";
 import CoinAmount from "../commons/CoinAmount.vue";
+import DateCommon from "@/components/commons/DateCommon.vue"
 
 function claimRewards(){
   useUserStore().claimRewards();

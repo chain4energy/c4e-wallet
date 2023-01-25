@@ -1,6 +1,7 @@
 <template>
   <div class="page-container">
     <loading-screen/>
+    <AppDisclaimer v-if="disclaimerOpen" @close="closeDisclaimer"/>
     <app-header/>
     <div class="main-container">
       <div class="content">
@@ -17,8 +18,9 @@
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import AppSidebar from '@/components/layout/AppSidebar.vue';
+import AppDisclaimer from '@/components/layout/AppDisclaimer.vue';
 
-import {inject, onMounted } from "vue";
+import {inject, onMounted, ref} from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
 import {createRouterBeforeEach} from '@/router/before_each';
 
@@ -31,14 +33,20 @@ import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 dataService.onAppStart();
+const disclaimerOpen = ref();
 
 onMounted(() => {
   createRouterBeforeEach(logger);
+  disclaimerOpen.value = !localStorage.getItem('disclaimer');
 });
 
 window.onload = async () =>{
   dataService.onWindowLoad();
 };
+
+function closeDisclaimer(){
+  disclaimerOpen.value = false;
+}
 </script>
 
 <style lang="scss">
