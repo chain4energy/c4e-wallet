@@ -84,20 +84,20 @@ function changeProgress(){
   let background;
   if(props.amount <= 10){
     background = ctx.value.createLinearGradient(0, 0, canva.value.width, 0);
-    background.addColorStop(0, '#861010');
-    background.addColorStop(0.2, "#FFF1A9");
+    background.addColorStop(0, '#ec0a1f');
+    background.addColorStop(1, "#d95e00");
   } else if (props.amount <= 40 && props.amount > 10){
     background = ctx.value.createLinearGradient(0, 0, canva.value.width, 0);
-    background.addColorStop(1, "#FFF1A9");
-    background.addColorStop(0, "#FDDB2A");
+    background.addColorStop(0, "#d95e00");
+    background.addColorStop(1, "#bd8800");
   } else if (props.amount <= 70 && props.amount > 40){
     background = ctx.value.createLinearGradient(0, 0, canva.value.width, 0);
-    background.addColorStop(1, "#FDDB2A");
-    background.addColorStop(0, "#72bf44");
+    background.addColorStop(0, "#bd8800");
+    background.addColorStop(1, "#9aa700");
   }else if (props.amount > 70){
     background = ctx.value.createLinearGradient(0, 0, canva.value.width, 0);
+    background.addColorStop(0, "#9aa700");
     background.addColorStop(1, "#72bf44");
-    background.addColorStop(0, "#66ab3d");
   }
   return background;
 }
