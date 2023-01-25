@@ -65,7 +65,7 @@
                   <Button :disabled="
                   missions.mission_type !== MissionStatus.INITIAL
                   && checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Now"
-                          class="p-button p-component secondary claimAirDrop__btn"
+                          class="p-button p-component secondary claimAirDrop__missions-btn"
                           :label="getTextForMissionsBtn(missions.mission_type)">
 
                   </Button>
@@ -159,7 +159,7 @@ function calculateProgress(startTime: Date, endTime: Date){
     const difference = Date.now() - new Date(endTime).getTime();
     return Math.abs(100 - ((Math.abs(difference)/Math.abs(startEndDiff)) * 100));
   }
-  else if(new Date(startTime).getTime() > Date.now()){
+  else{
     return null;
   }
 }
@@ -203,9 +203,11 @@ function getTextForMissionsBtn(type: MissionType){
   font-family: 'Inter', sans-serif;
   &__total{
     margin-bottom: 10px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(calc(100% / 8), 1fr));
-    grid-area: 1/2/7/6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    //grid-template-columns: repeat(auto-fill, minmax(calc(100% / 8), 1fr));
+    //grid-area: 1/2/7/6;
     @media (max-width: 1024px) {
       grid-area: 1 /1/ 1 / 5;
     }
@@ -222,6 +224,7 @@ function getTextForMissionsBtn(type: MissionType){
     color: $header-text-color;
     background-color: $main-color;
     width:100%;
+    max-width: 700px;
     @media (max-width: 1200px) {
       grid-area: 1 /1/ 1 / 9;
     }
@@ -283,9 +286,28 @@ function getTextForMissionsBtn(type: MissionType){
       width: 100%;
       background-color: #013C6C;
       padding: 3.5px 13px;
-      box-shadow: 0px 0px 2px 2px #02447A;
+      box-shadow: 0 0 2px 2px #02447A;
       border-radius: 2px;
       margin-bottom: 10px;
+    }
+    &-btn {
+      width: 100%;
+      min-width: 107px;
+      margin: 0 !important;
+      border-radius: 5px !important;
+      color: $header-text-color !important;
+      background-color: $secondary-color !important;
+      border-color: $secondary-color !important;
+
+      &:not(.p-button-icon-only):not(.secondary):not(.outlined):not(.outlined-secondary):not(.preview):not(.delete) {
+        background-color: $secondary-color !important;
+        color: $header-text-color !important;
+        border-color: $secondary-color !important;
+
+        &:hover {
+          background-color: $secondary-color !important;
+        }
+      }
     }
   }
   &__percents{
