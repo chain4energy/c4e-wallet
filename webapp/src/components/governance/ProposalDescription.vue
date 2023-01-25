@@ -2,13 +2,14 @@
   <div v-if="proposal" class="description">
     <h2>{{ $t("GOVERNANCE_VIEW.DESCRIPTION") }}</h2>
     <div style="margin-top: 20px;">
-      {{ proposal.content.description }}
+      <VueMarkdown :source="proposal.content.description.replace(new RegExp('\\\\n','g'),'\n')"/>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 
 import {Proposal} from "@/models/store/proposal";
+import VueMarkdown from 'vue-markdown-render';
 
 const props = defineProps<{
   proposal?: Proposal
