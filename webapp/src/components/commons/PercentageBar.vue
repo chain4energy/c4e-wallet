@@ -57,20 +57,20 @@ function changeStatus(){
     default: text = '';
       break;
   }
-
-  ctx.value.font = "15px sans-serif";
+  const fontsize = 12;
+  ctx.value.font = `${fontsize}px sans-serif`;
   const textWidth = ctx.value.measureText(text ).width;
   const widthOfBar = ((canva.value.width /100) * props.amount) - textWidth/2;
   if(progress && widthOfBar > textWidth){
     ctx.value.fillStyle = fontStyle;
-    ctx.value.fillText(text,  textWidth/2, canva.value.height/2 + (15/2));
+    ctx.value.fillText(text,  textWidth/2, canva.value.height/2 + (fontsize/3));
   } else if(progress && widthOfBar < textWidth) {
     fontStyle = '#000000';
     ctx.value.fillStyle = fontStyle;
-    ctx.value.fillText(text,  textWidth/2, canva.value.height/2 + (15/2));
+    ctx.value.fillText(text,  textWidth/2, canva.value.height/2 + (fontsize/3));
   } else {
     ctx.value.fillStyle = fontStyle;
-    ctx.value.fillText(text, (canva.value.width/2) - textWidth/2, canva.value.height/2 + (15/2));
+    ctx.value.fillText(text, (canva.value.width/2) - textWidth/2, canva.value.height/2 + (fontsize/3));
   }
 
 
@@ -112,14 +112,14 @@ onMounted(() => {
 
 .percentageBar {
   width: 100%;
-  height: 25px;
+  height: 14px;
   margin: 0 0 15px 0;
 
   canvas{
     border-radius: 3px;
     background-color: #ffffff;
     width: 100%;
-    height: 25px;
+    height: 14px;
   }
   &__status{
     z-index: 2;

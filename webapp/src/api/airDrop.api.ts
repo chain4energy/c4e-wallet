@@ -145,7 +145,7 @@ export class AirDropApi extends BaseApi {
         name: "test1",
         description: "Campaign test1",
         enabled: true,
-        start_time: "2023-01-25T10:48:58.952129766Z",
+        start_time: "2023-01-20T10:48:58.952129766Z",
         end_time: "2023-01-26T12:50:58.952129766Z",
         lockup_period: "7884000s",
         vesting_period: "15768000s",
