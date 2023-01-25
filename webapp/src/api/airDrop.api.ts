@@ -207,7 +207,15 @@ export class AirDropApi extends BaseApi {
         description: "description for first mission",
         missionType: MissionType.VOTE,
         weight: 60000000
-      }
+      },
+      {
+        id: "1",
+        campaign_id: "1",
+        name: "test",
+        description: "description for second mission",
+        missionType: MissionType.DELEGATE,
+        weight: 60000000
+      },
     ],
     pagination: {
       next_key: "1",

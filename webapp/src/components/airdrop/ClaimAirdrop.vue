@@ -66,7 +66,9 @@
                   missions.mission_type !== MissionStatus.INITIAL
                   && checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Now"
                           class="p-button p-component secondary claimAirDrop__missions-btn"
-                          :label="getTextForMissionsBtn(missions.mission_type)">
+                          :label="getTextForMissionsBtn(missions.mission_type)"
+                          @click="redirectMission(missions.mission_type)"
+                  >
 
                   </Button>
                 </div>
@@ -92,6 +94,7 @@ import {Coin} from "@/models/store/common";
 import {MissionType} from "@/models/blockchain/airdrop";
 import PercentsView from "@/components/commons/PercentsView.vue";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
+import router from "@/router";
 
 const percentsBar = ref();
 
@@ -195,6 +198,17 @@ function getTextForMissionsBtn(type: MissionType){
   }
   return text;
 }
+
+function redirectMission(type: MissionType){
+  switch (type){
+    case MissionType.INITIAL_CLAIM: console.log('Claiming Initiated');
+      break;
+    case MissionType.DELEGATE: router.push('staking');
+      break;
+    case MissionType.VOTE: router.push('governance');
+      break;
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -293,7 +307,8 @@ function getTextForMissionsBtn(type: MissionType){
     &-btn {
       width: 100%;
       min-width: 107px;
-      margin: 0 !important;
+      max-height: 42px !important;
+      margin: 8px !important;
       border-radius: 5px !important;
       color: $header-text-color !important;
       background-color: $secondary-color !important;
