@@ -21,7 +21,7 @@
           <label class="appDisclaimer__label" for="understood">I have read and understood</label>
           <div style="color: red">{{ errors.understood ? errors.understood : "" }}</div>
         </div>
-        <Button type="submit" label="Submit"></Button>
+        <Button :disabled="!understood" type="submit" label="Submit"></Button>
       </Form>
   </div>
 </div>
