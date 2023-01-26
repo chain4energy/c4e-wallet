@@ -4,7 +4,9 @@
       <span>{{ $t("GOVERNANCE_VIEW.HEIGHT") }}</span>
       <span>{{proposalPlan.height}}</span>
       <span>{{ $t("GOVERNANCE_VIEW.INFO") }}</span>
-      <span v-html="getLink(proposalPlan.info)"></span>
+      <span>
+        <MarkdownRender :source="proposalPlan.info"/>
+      </span>
       <span>{{ $t("GOVERNANCE_VIEW.NAME") }}</span>
       <span>{{proposalPlan.name}}</span>
       <span>{{ $t("GOVERNANCE_VIEW.TIME") }}</span>
@@ -19,6 +21,7 @@
 <script setup lang="ts">
 
 import {ProposalsPlan} from "@/models/store/proposal";
+import MarkdownRender from "@/components/commons/MarkdownRender.vue";
 
 const props = defineProps<{
   proposalPlan?: ProposalsPlan

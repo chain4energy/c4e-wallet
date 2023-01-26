@@ -117,7 +117,10 @@ const props = defineProps<{
 const icons  = new Map<string, string>([
   [ProposalStatus.PASSED, 'CheckSquare'],
   [ProposalStatus.REJECTED, 'XCircle'],
-  [ProposalStatus.VOTING_PERIOD, '']
+  [ProposalStatus.VOTING_PERIOD, ''],
+  [ProposalStatus.UNSPECIFIED, ''],
+  [ProposalStatus.DEPOSIT_PERIOD, ''],
+  [ProposalStatus.FAILED, ''],
 ]);
 
 const sumOfVotes = computed(() => {
