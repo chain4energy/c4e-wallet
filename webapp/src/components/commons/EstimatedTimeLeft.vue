@@ -1,12 +1,16 @@
 <template>
   <div>
-    Days:{{ daysLeft }} Hours:{{ hoursLeft }} Minutes:{{ minutesLeft }} Seconds:{{ secondsLeft }}
+    {{ $t("GOVERNANCE_VIEW.TIME_LEFT.DAYS") }}:{{ daysLeft }}
+    {{ $t("GOVERNANCE_VIEW.TIME_LEFT.HOURS") }}:{{ padStartZero(hoursLeft, 2) }}
+    {{ $t("GOVERNANCE_VIEW.TIME_LEFT.MINUTES") }}:{{ padStartZero(minutesLeft, 2) }}
+    {{ $t("GOVERNANCE_VIEW.TIME_LEFT.SECONDS") }}:{{ padStartZero(secondsLeft, 2) }}
   </div>
 </template>
 
 <script setup lang="ts">
 import {useBlockStore} from "@/store/block.store";
 import {onUnmounted, ref} from "vue";
+import {padStartZero} from "@/utils/number-formatter";
 
 const props = defineProps<{
   height: number
@@ -63,13 +67,6 @@ onUnmounted(() => {
     clearInterval(timeHandler);
   }
 });
-
-// const secondsLeft = computed(() => {
-//   if (props.proposalPlan?.height) {
-//     return Number(props.proposalPlan?.height) - useBlockStore().getLatestBlock.height < 0;
-//   }
-//   return false;
-// });
 
 </script>
 

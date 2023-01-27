@@ -65,6 +65,7 @@ export interface Configuration {
   accountDataRefreshTimeout: number,
   proposalsPageLimit: number,
   queries: JsonQueries;
+  explorerUrl: string,
   explorerAccount: string,
   explorerTx: string,
   isMainNetwork: boolean,

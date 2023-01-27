@@ -73,7 +73,16 @@
     },
     "DETAILS": "Szczegóły",
     "HEIGHT": "Wysokość",
-    "ESTIMATED_TIME_LEFT": "szacowany pozostały czas",
+    "ESTIMATED_TIME_LEFT": "Czacowany pozostały czas",
+    "ESTIMATED_DATE": "Czacowana data",
+    "LOCAL_TIME": "czas lokalny",
+    "UPDATED_IN_BLOCK": "Zaktualizowane w bloku",
+    "TIME_LEFT": {
+      "DAYS": "Dni",
+      "HOURS": "Godziny",
+      "MINUTES": "Minuty",
+      "SECONDS": "Sekundy"
+    },
     "INFO": "Informacje",
     "NAME": "Nazwa",
     "TIME": "Czas",

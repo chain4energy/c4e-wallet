@@ -160,6 +160,7 @@ export class Configuration implements JsonConfiguration {
   accountDataRefreshTimeout: number;
   proposalsPageLimit: number;
   queries: Queries;
+  explorerUrl: string;
   explorerAccount: string;
   explorerTx: string;
   isMainNetwork: boolean;
@@ -198,6 +199,7 @@ export class Configuration implements JsonConfiguration {
       this.accountDataRefreshTimeout = configuration.accountDataRefreshTimeout;
       this.proposalsPageLimit = configuration.proposalsPageLimit;
       this.queries = new Queries(configuration.queries);
+      this.explorerUrl = configuration.explorerUrl;
       this.explorerAccount = configuration.explorerAccount;
       this.explorerTx = configuration.explorerTx;
       this.isMainNetwork = configuration.isMainNetwork;
@@ -230,6 +232,7 @@ export class Configuration implements JsonConfiguration {
       this.accountDataRefreshTimeout = 60000;
       this.proposalsPageLimit = 10;
       this.queries = new Queries(undefined);
+      this.explorerUrl = '';
       this.explorerAccount = '';
       this.explorerTx = '';
       this.isMainNetwork = false;

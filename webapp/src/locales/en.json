@@ -74,6 +74,15 @@
     "DETAILS": "Details",
     "HEIGHT": "Height",
     "ESTIMATED_TIME_LEFT": "Estimated time left",
+    "ESTIMATED_DATE": "Estimated date",
+    "LOCAL_TIME": "local time",
+    "UPDATED_IN_BLOCK": "Updated in block",
+    "TIME_LEFT": {
+      "DAYS": "Days",
+      "HOURS": "Hours",
+      "MINUTES": "Minutes",
+      "SECONDS": "Seconds"
+    },
     "INFO": "Info",
     "NAME": "Name",
     "TIME": "Time",
