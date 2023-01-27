@@ -8,15 +8,16 @@
       <span>{{ $t("GOVERNANCE_VIEW.NAME") }}</span>
       <span>{{ proposalPlan.name }}</span>
       <template v-if="!alreadyDone">
-        <span>{{ $t("GOVERNANCE_VIEW.ESTIMATED_TIME_LEFT") }}</span>
-        <span><EstimatedTimeLeft :height="Number(props.proposalPlan.height)"/></span>
-        <span>{{ $t("GOVERNANCE_VIEW.ESTIMATED_DATE") }}</span>
-        <span><EstimatedUpgradeDate :height="Number(props.proposalPlan.height)"/></span>
+        <div style="color:gray">{{ $t("GOVERNANCE_VIEW.ESTIMATED_TIME_LEFT") }}</div>
+        <div><EstimatedTimeLeft :height="Number(props.proposalPlan.height)"/></div>
+        <div style="color:gray">{{ $t("GOVERNANCE_VIEW.ESTIMATED_DATE") }}</div>
+        <div><EstimatedUpgradeDate :height="Number(props.proposalPlan.height)"/></div>
       </template>
       <template v-else>
         <span>{{ $t("GOVERNANCE_VIEW.UPDATED_IN_BLOCK") }}</span>
         <span v-html="getLink(useConfigurationStore().config.explorerUrl + '/blocks/' + props.proposalPlan.height)"/>
       </template>
+
     </div>
   </div>
 
@@ -51,14 +52,15 @@ const getLink = (link: string) => {
 <style scoped lang="scss">
 .info {
   display: grid;
-  grid-template-rows: 40px;
+  grid-auto-rows: minmax(33px, auto);
   grid-template-columns: 1fr 1fr;
-  line-height: 1.8rem;
-  box-sizing: border-box;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-
+  //line-height: 1.8rem;
+  //box-sizing: border-box;
+  //text-overflow: ellipsis;
+  //overflow: hidden;
+  //white-space: nowrap;
+  word-wrap: break-word;
+  word-break: break-all;
 
   span {
     text-overflow: ellipsis;
