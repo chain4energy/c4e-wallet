@@ -6,7 +6,7 @@
     <router-link to="/terms_conditions"><span>Terms & Conditions</span></router-link>
     <router-link to="/privacy_policy"><span>Privacy Policy</span></router-link>
     <span class="right">c4e</span>
-    <div class="hide">{{ app_version + "-" + blockchain_version + "/" + compilation_timestamp}}</div>
+    <div class="hide">{{ app_version + "/" + compilation_timestamp}}</div>
   </div>
 </template>
 
@@ -15,7 +15,7 @@ import {useConfigurationStore} from "@/store/configuration.store";
 import {onBeforeMount} from "vue";
 
 const app_version = process.env.VUE_APP_VERSION;
-const blockchain_version = process.env.VUE_APP_BLOCKCHAIN_VERSION;
+// const blockchain_version = process.env.VUE_APP_BLOCKCHAIN_VERSION;
 const compilation_timestamp = process.env.VUE_APP_COMPILATION_TIMESTAMP;
 onBeforeMount(() => {
   console.log(useConfigurationStore().config.airdropPoolAddress);

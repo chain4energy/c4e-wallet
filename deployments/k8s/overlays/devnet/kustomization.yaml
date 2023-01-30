@@ -1,0 +1,11 @@
+bases:
+  - ../../base
+resources:
+  - nginx-config.yaml
+namespace: dev
+images:
+  - name: c4e-web-app
+    newName: g99vzm03.gra7.container-registry.ovh.net/c4e-chain/c4e-web-app
+    newTag: devnet-IMAGE_TAG
+patchesStrategicMerge:
+  - ovh-regcred.yaml

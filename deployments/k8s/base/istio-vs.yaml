@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: c4e-web-app
+spec:
+  hosts:
+    - wallet-dev.c4e.io
+  gateways:
+    - explorer/public-gateway
+  http:
+    - route:
+        - destination:
+            host: c4e-web-app.dev.svc.cluster.local
+            port:
+              number: 80

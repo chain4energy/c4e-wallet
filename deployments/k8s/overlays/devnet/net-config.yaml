@@ -1,0 +1,144 @@
+apiVersion: v1
+data:
+  config.json: |-
+    {
+    "Devnet": {
+      "bcApiURL": "https://lcd-dev.c4e.io",
+      "bcRpcURL": "https://rpc-dev.c4e.io",
+      "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
+      "keybaseURL": "https://keybase.io",
+      "stakingPageURL": "https://wallet-dev.c4e.io/staking",
+      "addressPrefix": "c4e",
+      "stakingDenom": "uc4e",
+      "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+      "chainId": "veles-dev-test-1",
+      "networkName": "Devnet(veles-dev-test-1)",
+      "keplrNetworkName": "Chain4Energy Devnet",
+      "operationGas": {
+        "vote": 72000,
+        "delegate": 300000,
+        "undelegate": 220000,
+        "redelegate": 310000,
+        "claimRewards": 400000
+      },
+      "viewDenoms": [
+        {
+          "denom": "uc4e",
+          "viewDenom": "C4E",
+          "coinDecimals": 6
+        }
+      ],
+      "keplrGasPriceSteps": {
+        "low": 0.01,
+        "average": 0.025,
+        "high": 0.03
+      },
+     "reservedCoinsAmount": 250000,
+      "minPeriodBetweenDataRefresh": 1000,
+      "blockDataRefreshTimeout": 30000,
+      "dashboardDataRefreshTimeout": 300000,
+      "validatorsDataRefreshTimeout":600000,
+      "accountDataRefreshTimeout": 90000,
+      "proposalsPageLimit": 50,
+      "explorerUrl": "https://explorer-dev.c4e.io",
+      "explorerAccount": "https://explorer-dev.c4e.io/accounts/",
+      "explorerTx": "https://explorer-dev.c4e.io/transactions/",
+      "isMainNetwork": true,
+      "airdropBaseURL": "https://airdrop.c4e.io/"
+    },
+      "Mainnet": {
+        "bcApiURL": "https://lcd.c4e.io",
+        "bcRpcURL": "https://rpc.c4e.io",
+        "hasuraURL": "https://hasura.c4e.io/v1/graphql",
+        "keybaseURL": "https://keybase.io",
+        "stakingPageURL": "https://wallet.c4e.io/staking",
+        "addressPrefix": "c4e",
+        "stakingDenom": "uc4e",
+        "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+        "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+        "chainId": "perun-1",
+        "networkName": "Mainnet(perun-1)",
+        "keplrNetworkName": "Chain4Energy",
+        "operationGas": {
+          "vote": 72000,
+          "delegate": 300000,
+          "undelegate": 220000,
+          "redelegate": 310000,
+          "claimRewards": 400000
+        },
+        "viewDenoms": [
+          {
+            "denom": "uc4e",
+            "viewDenom": "C4E",
+            "coinDecimals": 6
+          }
+        ],
+        "keplrGasPriceSteps": {
+          "low": 0.01,
+          "average": 0.025,
+          "high": 0.03
+        },
+        "reservedCoinsAmount": 250000,
+        "minPeriodBetweenDataRefresh": 1000,
+        "blockDataRefreshTimeout": 30000,
+        "dashboardDataRefreshTimeout": 300000,
+        "validatorsDataRefreshTimeout":600000,
+        "accountDataRefreshTimeout": 90000,
+        "proposalsPageLimit": 50,
+        "explorerUrl": "https://explorer.c4e.io",
+        "explorerAccount": "https://explorer.c4e.io/accounts/",
+        "explorerTx": "https://explorer.c4e.io/transactions/",
+        "isMainNetwork": false,
+        "airdropBaseURL": "https://airdrop.c4e.io/"
+      },
+      "Testnet": {
+        "bcApiURL": "https://lcd-testnet.c4e.io",
+        "bcRpcURL": "https://lcd-testnet.c4e.io",
+        "hasuraURL": "https://hasura-testnet.c4e.io/v1/graphql",
+        "keybaseURL": "https://keybase.io",
+        "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
+        "addressPrefix": "c4e",
+        "stakingDenom": "uc4e",
+        "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+        "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+        "chainId": "veles-1",
+        "networkName": "Testnet(veles-1)",
+        "keplrNetworkName": "Chain4Energy Testnet",
+        "operationGas": {
+          "vote": 72000,
+          "delegate": 300000,
+          "undelegate": 220000,
+          "redelegate": 310000,
+          "claimRewards": 400000
+        },
+        "viewDenoms": [
+          {
+            "denom": "uc4e",
+            "viewDenom": "C4E",
+            "coinDecimals": 6
+          }
+        ],
+        "keplrGasPriceSteps": {
+          "low": 0.01,
+          "average": 0.025,
+          "high": 0.03
+        },
+        "reservedCoinsAmount": 250000,
+        "minPeriodBetweenDataRefresh": 1000,
+        "blockDataRefreshTimeout": 30000,
+        "dashboardDataRefreshTimeout": 300000,
+        "validatorsDataRefreshTimeout":600000,
+        "accountDataRefreshTimeout": 90000,
+        "proposalsPageLimit": 50,
+        "explorerUrl": "https://explorer-testnet.c4e.io",
+        "explorerAccount": "https://explorer-testnet.c4e.io/accounts/",
+        "explorerTx": "https://explorer-testnet.c4e.io/transactions/",
+        "isMainNetwork": false,
+        "airdropBaseURL": "https://airdrop.c4e.io/"
+      }
+
+    }
+kind: ConfigMap
+metadata:
+  name: net-config
