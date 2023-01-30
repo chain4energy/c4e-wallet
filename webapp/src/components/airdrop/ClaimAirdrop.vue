@@ -62,12 +62,11 @@
                   <div>{{missions.description}}</div>
                 </div>
                 <div>
-                  <Button :disabled="
-                  missions.mission_type !== MissionStatus.INITIAL
-                  && checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Now"
+                  <Button
+                    :disabled="!isDisabled(campaignRecord, missions)"
                           class="p-button p-component secondary claimAirDrop__missions-btn"
-                          :label="getTextForMissionsBtn(missions.mission_type)"
-                          @click="redirectMission(missions.mission_type)"
+                          :label="getTextForMissionsBtn(missions, missions.mission_type)"
+                          @click="redirectMission(campaignRecord, missions, missions.mission_type)"
                   >
 
                   </Button>
@@ -84,16 +83,13 @@
 import {useAirDropStore} from "@/store/airDrop.store";
 import {computed, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
-import {CampaignRecord, CampainStatus, MissionStatus} from "@/models/airdrop/airdrop";
-import {Campaign} from "@/models/store/airdrop";
+import {CampaignRecord, CampainStatus} from "@/models/airdrop/airdrop";
+import {Campaign, Mission, MissionTypeSt} from "@/models/store/airdrop";
 import PercentageBar from "@/components/commons/PercentageBar.vue";
-import i18n from "@/plugins/i18n";
 import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
 import CoinAmount from '@/components/commons/CoinAmount.vue';
 import {Coin} from "@/models/store/common";
 import {MissionType} from "@/models/blockchain/airdrop";
-import PercentsView from "@/components/commons/PercentsView.vue";
-import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import router from "@/router";
 
 const percentsBar = ref();
@@ -186,7 +182,7 @@ setInterval(() => {
     updateComponent.value = !updateComponent.value;
 },1000);
 
-function getTextForMissionsBtn(type: MissionType){
+function getTextForMissionsBtn(mission: Mission, type: MissionType){
   let text;
   switch (type){
     case MissionType.INITIAL_CLAIM: text = 'Claim';
@@ -196,18 +192,56 @@ function getTextForMissionsBtn(type: MissionType){
     case MissionType.VOTE: text = 'Vote';
     break;
   }
+  if(mission.completed && !mission.claimed){
+    text = 'Claim';
+  }
   return text;
 }
 
-function redirectMission(type: MissionType){
-  switch (type){
-    case MissionType.INITIAL_CLAIM: console.log('Claiming Initiated');
-      break;
-    case MissionType.DELEGATE: router.push('staking');
-      break;
-    case MissionType.VOTE: router.push('governance');
-      break;
+function redirectMission(campaign: Campaign, mission : Mission, type: MissionType){
+
+  if(mission.mission_type === MissionTypeSt.INITIAL_CLAIM){
+    claimInitialAirdrop(Number(campaign.id));
+  } else {
+    if(mission.completed && !mission.claimed){
+      claimOtherAirdrop(campaign.id, mission.id)
+    } else {
+      switch (type){
+        case MissionType.DELEGATE: router.push('staking');
+          break;
+        case MissionType.VOTE: router.push('governance');
+          break;
+      }
+    }
   }
+}
+
+function claimInitialAirdrop(id: number){
+  useAirDropStore().claimInitialAirdrop(id);
+}
+
+function claimOtherAirdrop(campaignId: number, missionId: number){
+  useAirDropStore().claimOtherAirdrop(campaignId, missionId);
+}
+
+
+
+function isDisabled(campaignRec: Campaign, mission: Mission) {
+  if(checkCampaignStatus(new Date(campaignRec.start_time), new Date(campaignRec.end_time)) !== CampainStatus.Now){
+    return false;
+  } else if(!isInitialMissionClaimed(campaignRec) && mission.mission_type !== MissionTypeSt.INITIAL_CLAIM){
+    return false;
+  } else if(mission.claimed){
+    return false;
+  }
+  return true;
+}
+
+function isInitialMissionClaimed(campaign: Campaign) {
+  const initialMission = campaign.missions.find((mission)=> {
+    return mission.mission_type === 'INITIAL_CLAIM';
+  });
+  return initialMission?.claimed;
 }
 </script>
 

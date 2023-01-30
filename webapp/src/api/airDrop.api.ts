@@ -7,6 +7,18 @@ import queries from "@/api/queries";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {AirdropClaimsLeft, AirdropDistributions, CampaignsInfo as CampaignsInfoBc, MissionsInfo, MissionType, UserAirdropInfo} from "@/models/blockchain/airdrop";
 import {formatString} from "@/utils/string-formatter";
+import {TxBroadcastError, TxData} from "@/api/tx.broadcast.base.api";
+import {EncodeObject} from "@cosmjs/proto-signing";
+import {
+  MsgBeginRedelegate,
+  MsgDelegate,
+  MsgUndelegate,
+} from "cosmjs-types/cosmos/staking/v1beta1/tx";
+import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
+
+import {
+  MsgWithdrawDelegatorReward
+} from "cosmjs-types/cosmos/distribution/v1beta1/tx";
 
 export class AirDropApi extends BaseApi {
 
@@ -137,6 +149,7 @@ export class AirDropApi extends BaseApi {
     return await this.axiosGetBlockchainApiCall(formatString(this.AIRDROP_CLAIMS_LEFT, {campaign_id: campaignId}),
       mapData, lockscreen, null, 'fetchAirdropClaimsLeft - ');
   }
+
   campainMockData: CampaignsInfoBc = {
     campaign: [
       {
@@ -146,7 +159,7 @@ export class AirDropApi extends BaseApi {
         description: "Campaign test1",
         enabled: true,
         start_time: "2023-01-20T10:48:58.952129766Z",
-        end_time: "2023-01-26T12:50:58.952129766Z",
+        end_time: "2023-01-31T12:50:58.952129766Z",
         lockup_period: "7884000s",
         vesting_period: "15768000s",
         denom: "uc4e"
@@ -157,7 +170,7 @@ export class AirDropApi extends BaseApi {
         name: "test2",
         description: "Campaign test2",
         enabled: false,
-        start_time: "2023-02-03T15:28:58.952129766Z",
+        start_time: "2023-01-03T15:28:58.952129766Z",
         end_time: "2023-04-03T15:28:58.952129766Z",
         lockup_period: "7884000s",
         vesting_period: "15768000s",
@@ -185,7 +198,7 @@ export class AirDropApi extends BaseApi {
   missionsMockData: MissionsInfo = {
     mission: [
       {
-        id: "1",
+        id: "0",
         campaign_id: "1",
         name: "test",
         description: "description for first mission",
@@ -193,27 +206,35 @@ export class AirDropApi extends BaseApi {
         weight: 60000000
       },
       {
-        id: "2",
-        campaign_id: "1",
-        name: "test",
-        description: "description for second mission",
-        missionType: MissionType.VOTE,
-        weight: 60000000
-      },
-      {
-        id: "3",
-        campaign_id: "2",
-        name: "test",
-        description: "description for first mission",
-        missionType: MissionType.VOTE,
-        weight: 60000000
-      },
-      {
         id: "1",
         campaign_id: "1",
         name: "test",
         description: "description for second mission",
+        missionType: MissionType.VOTE,
+        weight: 60000000
+      },
+      {
+        id: "2",
+        campaign_id: "1",
+        name: "test",
+        description: "description for second mission",
         missionType: MissionType.DELEGATE,
+        weight: 60000000
+      },
+      {
+        id: "0",
+        campaign_id: "2",
+        name: "test",
+        description: "description for first mission",
+        missionType: MissionType.INITIAL_CLAIM,
+        weight: 60000000
+      },
+      {
+        id: "1",
+        campaign_id: "2",
+        name: "test",
+        description: "description for first mission",
+        missionType: MissionType.VOTE,
         weight: 60000000
       },
     ],
@@ -230,6 +251,13 @@ export class AirDropApi extends BaseApi {
       airdrop_entries: [
         {
           campaign_id: "1",
+          address: "some",
+          amount: 180000000,
+          completedMissions: ['1'],
+          claimedMissions: ['0']
+        },
+        {
+          campaign_id: "2",
           address: "some",
           amount: 180000000,
           completedMissions: [],

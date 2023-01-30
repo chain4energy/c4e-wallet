@@ -60,7 +60,7 @@ export class AlocationsSt {
 }
 
 export class Campaign{
-  id : string;
+  id : number;
   name : string;
   description : string;
   enabled: boolean;
@@ -72,7 +72,7 @@ export class Campaign{
   missions: Mission[];
 
 
-  constructor(id: string, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, denom: string) {
+  constructor(id: number, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, denom: string) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -140,7 +140,7 @@ export function findMission(missions: Mission[], missionId: string): Mission | u
   });
 }
 
-export function findCampaign(campaigns: Campaign[], campaignId: string): Campaign | undefined {
+export function findCampaign(campaigns: Campaign[], campaignId: number): Campaign | undefined {
   return campaigns.find(d => {
     return d.id == campaignId;
   });

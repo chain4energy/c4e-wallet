@@ -11,8 +11,9 @@ import {StoreLogger} from "@/services/logged.service";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {Coin} from "@/models/store/common";
 import {ConnectionInfo} from "@/api/wallet.connecton.api";
-import {UserState} from "@/store/user.store";
+import {UserState, useUserStore} from "@/store/user.store";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 const logger = new StoreLogger(ServiceTypeEnum.AIR_DROP_STORE);
 
@@ -25,6 +26,7 @@ interface airDropState {
   campaigns: Campaign[],
 
   fairdropPollUsage: FairdropPollUsage,
+  airdropClaimingAddress: string,
   // campaignsInfoLcd: CampaignsInfo;
 
 }
@@ -40,8 +42,9 @@ export const useAirDropStore = defineStore({
       campaigns: Array<Campaign>(),
       fairdropPollUsage: new FairdropPollUsage(new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
         new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
-        new BigDecimal(0), new BigDecimal(0) )
+        new BigDecimal(0), new BigDecimal(0) ),
       // campaignsInfoLcd: {} as CampaignsInfo,
+      airdropClaimingAddress: '',
     };
   },
   actions: {
@@ -114,6 +117,14 @@ export const useAirDropStore = defineStore({
     //     //console.error(err);
     //   }
     // },
+    async claimInitialAirdrop(campaignid: number){
+      const connectionInfo = useUserStore().connectionInfo;
+       await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignid);
+    },
+    async claimOtherAirdrop(campaignid: number, missionId: number){
+      const connectionInfo = useUserStore().connectionInfo;
+      await apiFactory.accountApi().claimAirDropMissions(connectionInfo, campaignid, missionId);
+    },
     async fetchAirdropTotal(address: string, lockscreen = true) {
       try {
 
@@ -188,16 +199,15 @@ export const useAirDropStore = defineStore({
           }
         })
       ]);
-
       campaignsInfoLcd?.campaign.forEach((entry: CampaignBc) => {
-        const campaign = new Campaign(entry.id, entry.name, entry.description, entry.enabled, entry.start_time, entry.end_time, entry.lockup_period,
+        const campaign = new Campaign(Number(entry.id), entry.name, entry.description, entry.enabled, entry.start_time, entry.end_time, entry.lockup_period,
           entry.vesting_period, entry.denom
         );
         result.push(campaign);
       });
 
       missionsLcd?.mission.forEach((entry: MissionBc) => {
-        const campaign = findCampaign(result, entry.campaign_id);
+        const campaign = findCampaign(result, Number(entry.campaign_id));
         if (campaign) {
           campaign.missions.push(new Mission(entry.id, entry.name, entry.description, convertMissionType(entry.missionType), entry.weight, false, false, undefined));
         } else {
@@ -206,7 +216,7 @@ export const useAirDropStore = defineStore({
       });
 
       userAirdropInfoLcd?.userAirdropEntries.airdrop_entries.forEach((entry: AirdropEntry) => {
-        const campaign = findCampaign(result, entry.campaign_id);
+        const campaign = findCampaign(result, Number(entry.campaign_id));
         if (campaign) {
           campaign.amount.amount = BigInt(entry.amount);
           entry.claimedMissions.forEach((missionId: string) => {
@@ -265,7 +275,6 @@ export const useAirDropStore = defineStore({
         claimsLeft,
         getPercentage( this.fairdropPollUsage.total.amount, this.fairdropPollUsage.claimed.amount),
         getPercentage( distributions.amount, claimsLeft.amount));
-
     },
 
   },
