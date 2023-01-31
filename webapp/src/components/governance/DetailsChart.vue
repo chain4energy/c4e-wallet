@@ -6,7 +6,7 @@
       <span>
 <!--        <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/> /-->
         <CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.total)" :reduce-big-number="true" :precision="2"/> /
-        <CoinAmount :amount="tokensStore.totalSupply" :reduce-big-number="true" :precision="2"/>
+        <CoinAmount :amount="tokensStore.getTotalBonded" :reduce-big-number="true" :precision="2"/>
       </span>
     </div>
     <ShadowedSvgChart id="voteschartdiv" class="chartdiv">
