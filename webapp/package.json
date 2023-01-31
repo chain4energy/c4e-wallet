@@ -1,13 +1,13 @@
 {
   "name": "c4ewallet",
-  "version": "1.0.2-beta.8",
+  "version": "IMAGE_TAG",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
-    "build": "npm run versioner-dev && vue-cli-service build --mode development",
-    "build-preproduction": "npm run versioner-preprod && vue-cli-service build --mode preproduction",
-    "build-production": "npm run versioner-prod && vue-cli-service build --mode production",
-    "build-dev": "npm run versioner-dev && vue-cli-service build --mode development",
+    "build": "npm run vue-cli-service build --mode development",
+    "build-preproduction": "npm run vue-cli-service build --mode preproduction",
+    "build-production": "npm run vue-cli-service build --mode production",
+    "build-dev": "npm run vue-cli-service build --mode development",
     "production": "vue-cli-service serve --mode production",
     "test:unit": "vue-cli-service test:unit",
     "test:unit:coverage": "vue-cli-service test:unit --coverage",

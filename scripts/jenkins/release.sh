@@ -80,7 +80,7 @@ replace_old_tag_with_new_tag () {
   new_tag=$1
   current_date=$(date '+%Y-%m-%d %H:%M:%S')
 
-  DEFAULT_FILES_TO_REPLACE_OLD_TAG_INFO=( "./deployments/k8s/overlays/$2/*" "./scripts/jenkins/build_image.sh" "./webapp/.env.*" )
+  DEFAULT_FILES_TO_REPLACE_OLD_TAG_INFO=( "./deployments/k8s/overlays/$2/*" "./scripts/jenkins/build_image.sh" "./webapp/.env.*" "./webapp/package.json" )
 
   for i in "${DEFAULT_FILES_TO_REPLACE_OLD_TAG_INFO[@]}"
   do
