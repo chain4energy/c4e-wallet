@@ -188,7 +188,7 @@ function getProposalStatus(): ProposalStatus{
 }
 
 .chart-container {
-  height: 560px;
+  height: 620px;
   width: 100%;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   border-radius: 10px;
