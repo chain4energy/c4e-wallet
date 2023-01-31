@@ -31,7 +31,7 @@ spec:
       volumes:
         - name: np-config
           configMap:
-            name: np-config
+            name: nginx-config
         - name: config-volume
           configMap:
             name: net-config
