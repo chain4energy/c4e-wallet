@@ -91,7 +91,8 @@
     "RECIPIENT": "Odbiorca",
     "KEY": "Klucz",
     "SUBSPACE": "Podprzestrzeń",
-    "AMOUNT": "Ilość"
+    "AMOUNT": "Ilość",
+    "VOTING_DETAILS": "Szczegóły głosowania"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Oddelegowane tokeny",

@@ -91,7 +91,8 @@
     "RECIPIENT": "Recipient",
     "KEY": "Key",
     "SUBSPACE": "Subspace",
-    "AMOUNT": "Amount"
+    "AMOUNT": "Amount",
+    "VOTING_DETAILS": "Voting details"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Bonded tokens",

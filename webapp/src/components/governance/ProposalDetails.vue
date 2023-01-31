@@ -45,6 +45,9 @@
         <span>
           <PercentsView :amount="proposalsStore.getTallyParams.vetoThreshold" :precision="2"/>
         </span>
+      <span>{{ $t("GOVERNANCE_VIEW.VOTING_DETAILS") }}:</span>
+      <span><a href='https://explorer.c4e.io/proposals/{{ proposal.proposalId }}' target="_blank">https://explorer.c4e.io/proposals/{{ proposal.proposalId }}</a></span>
+
     </div>
   </div>
 </template>
