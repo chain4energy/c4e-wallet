@@ -29,5 +29,5 @@ esac
 
 # Build docker image
 #cd deployments/docker >> /dev/null && docker build --network=host --no-cache -t $registry/c4e-chain/c4e-web-app:$env-$IMAGE_VERSION . >> /dev/null && cd - >> /dev/null
-cd deployments/docker >> /dev/null && docker build --network=host -t $registry/c4e-chain/c4e-web-app:$env-$IMAGE_VERSION ../../ && cd - >> /dev/null
+cd deployments/docker >> /dev/null && docker build --network=host -t $registry/c4e-chain/c4e-web-app:$env-$IMAGE_VERSION ../../  >> /dev/null && cd - >> /dev/null
 echo $registry/c4e-chain/c4e-web-app:$env-$IMAGE_VERSION
