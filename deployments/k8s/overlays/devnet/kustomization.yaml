@@ -2,6 +2,8 @@ bases:
   - ../../base
 resources:
   - nginx-config.yaml
+  - net-config.yaml
+  - istio-vs.yaml
 namespace: dev
 images:
   - name: c4e-web-app

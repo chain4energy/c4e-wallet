@@ -2,6 +2,8 @@ bases:
   - ../../base
 resources:
   - nginx-config.yaml
+  - net-config.yaml
+  - istio-vs.yaml
 namespace: testnet
 images:
   - name: c4e-web-app
@@ -9,3 +11,24 @@ images:
     newTag: testnet-IMAGE_TAG
 patchesStrategicMerge:
   - ovh-regcred.yaml
+patches:
+  - target:
+      kind: Deployment
+      name: .*
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: c4e-web-app-testnet
+      - op: replace
+        path: /metadata/name/labels/app
+        value: c4e-web-app-testnet
+  - target:
+      kind: Service
+      name: .*
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: c4e-web-app-testnet
+      - op: replace
+        path: /metadata/name/labels/app
+        value: c4e-web-app-testnet

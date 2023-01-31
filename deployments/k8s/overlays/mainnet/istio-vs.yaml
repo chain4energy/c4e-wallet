@@ -4,12 +4,12 @@ metadata:
   name: c4e-web-app
 spec:
   hosts:
-    - wallet-dev.c4e.io
+    - wallet.c4e.io
   gateways:
     - explorer/public-gateway
   http:
     - route:
         - destination:
-            host: c4e-web-app.dev.svc.cluster.local
+            host: c4e-web-app.mainnet.svc.cluster.local
             port:
               number: 80

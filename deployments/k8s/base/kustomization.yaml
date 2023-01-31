@@ -1,4 +1,3 @@
 resources:
   - deployment.yaml
-  - istio-vs.yaml
   - service.yaml
