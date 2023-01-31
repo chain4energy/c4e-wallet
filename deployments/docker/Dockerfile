@@ -1,4 +1,6 @@
 FROM node:16.15.0 as build-stage
+RUN apt update && apt install tzdata -y
+ENV TZ="Europe/Warsaw"
 WORKDIR /webapp
 COPY ../../webapp/package*.json ./
 RUN npm install
