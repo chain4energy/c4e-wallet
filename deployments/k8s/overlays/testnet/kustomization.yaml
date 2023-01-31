@@ -19,16 +19,10 @@ patches:
       - op: replace
         path: /metadata/name
         value: c4e-web-app-testnet
-      - op: replace
-        path: /metadata/name/labels/app
-        value: c4e-web-app-testnet
   - target:
       kind: Service
       name: .*
     patch: |-
       - op: replace
         path: /metadata/name
-        value: c4e-web-app-testnet
-      - op: replace
-        path: /metadata/name/labels/app
         value: c4e-web-app-testnet
