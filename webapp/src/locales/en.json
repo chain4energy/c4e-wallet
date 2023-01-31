@@ -38,6 +38,7 @@
     "PROPOSAL_STATUS_VOTING_PERIOD": "Voting",
     "PROPOSAL_STATUS_DEPOSIT_PERIOD": "Deposit",
     "PROPOSAL_STATUS_FAILED": "Failed",
+    "CURRENT_TURNOUT": "Current turnout",
     "VOTING_OPTIONS": {
       "YES": "Yes",
       "NO": "No",

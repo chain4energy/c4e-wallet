@@ -8,7 +8,17 @@
         <CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.total)" :reduce-big-number="true" :precision="2"/> /
         <CoinAmount :amount="tokensStore.getTotalBonded" :reduce-big-number="true" :precision="2"/>
       </span>
+
     </div>
+    <div class="top">
+      <span>
+        {{ $t("GOVERNANCE_VIEW.CURRENT_TURNOUT") }}
+      </span>
+      <span>
+        {{calculatePercents(Number(useProposalsStore().getSelectedProposalTally.total), Number(tokensStore.getTotalBonded), 2)}}%
+      </span>
+    </div>
+
     <ShadowedSvgChart id="voteschartdiv" class="chartdiv">
         <v-chart :option="option" autoresize />
         <div class="inside">
@@ -155,6 +165,11 @@ const option = computed(() => {
 function getProposalTitle() {
   const result = useProposalsStore().getProposal?.content.title;
   return result ? result : '';
+}
+
+function calculatePercents(a, b, precision){
+  const result= (a/b) *100
+  return result.toFixed(precision);
 }
 
 function getProposalStatus(): ProposalStatus{
