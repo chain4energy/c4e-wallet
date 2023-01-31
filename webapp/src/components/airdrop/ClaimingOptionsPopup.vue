@@ -2,19 +2,21 @@
   <div class="claimingOptionsPopup">
     <div class="claimingOptionsPopup__background" @click="$emit('close')"></div>
     <div class="claimingOptionsPopup__holder">
-      <Form @submit="claim" :validation-schema="addressSchema" v-slot="{ errors }" class="loginEmail__body">
-        <div class="loginEmail__description">
-          <div class="field">
-            <Field v-model="address" name="address" placeholder=" " type="text" class="form-control" style="width: 100%;" :class="{ 'is-invalid': errors.address }"></Field>
-            <span>{{$t('CONNECT.ADDRESS_HELP')}}</span>
-            <div class="invalid-feedback">
-              {{ errors.address ? errors.address : "" }}
+      <h3>Type an account to claim mission reward</h3>
+      <div class="claimingOptionsPopup__content">
+        <Form @submit="claim" :validation-schema="addressSchema" v-slot="{ errors }" class="loginEmail__body">
+          <div class="loginEmail__description">
+            <div class="field">
+              <Field v-model="address" name="address" placeholder=" " type="text" class="form-control" style="width: 100%;" :class="{ 'is-invalid': errors.address }"></Field>
+              <span>{{$t('CONNECT.ADDRESS_HELP')}}</span>
+              <div class="invalid-feedback">
+                {{ errors.address ? errors.address : "" }}
+              </div>
+              <Button type="submit">{{ $t('COMMON.CLAIM')}}</Button>
             </div>
-            <Button type="submit">{{ $t('COMMON.CLAIM')}}</Button>
           </div>
-        </div>
-      </Form>
-      {{props.campaignId}}{{props.missionId}}{{props.initialClaim}}
+        </Form>
+      </div>
     </div>
   </div>
 </template>
@@ -92,15 +94,21 @@ const addressSchema = object().shape({
 })
 
 function claim(){
-  console.log(1)
+  if(props.initialClaim){
+    claimInitialAirdrop(props.campaignId);
+  }else {
+    claimOtherAirdrop(props.campaignId, props.missionId);
+  }
 }
 
 function claimInitialAirdrop(id: number){
   useAirDropStore().claimInitialAirdrop(id);
+  emit('close');
 }
 
 function claimOtherAirdrop(campaignId: number, missionId: number){
   useAirDropStore().claimOtherAirdrop(campaignId, missionId);
+  emit('close');
 }
 </script>
 
@@ -129,7 +137,7 @@ function claimOtherAirdrop(campaignId: number, missionId: number){
   &__holder{
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-evenly;
     width: 650px;
     min-height: 292px;
@@ -137,6 +145,9 @@ function claimOtherAirdrop(campaignId: number, missionId: number){
     padding: 30px 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
     border-radius: 8px;
+  }
+  &__content{
+    width: 100%;
   }
 }
 </style>

@@ -318,6 +318,7 @@
     "DESCRIPTION": "Description",
     "THE": "The",
     "RETURN": "Return",
+    "CLAIM": "Claim",
     "INPUT": {
       "AMOUNT": "amount",
       "ADDRESS": "address"
