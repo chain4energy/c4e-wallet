@@ -125,10 +125,10 @@ release () {
     printf "New tag value: $NEW_TAG\n"
 
     printf "Create new local tag: $NEW_TAG\n"
-#    create_git_tag "$NEW_TAG"
+    create_git_tag "$NEW_TAG"
 
     printf "Push local tag: $NEW_TAG to git repository\n"
-#    push_git_tag "$NEW_TAG"
+    push_git_tag "$NEW_TAG"
 
     printf "Replace all IMAGE_TAG occurrences in files $DEFAULT_FILES_TO_REPLACE_OLD_TAG_INFO\n"
     new_tag_no_v=$(echo $NEW_TAG | cut -dv -f2)
