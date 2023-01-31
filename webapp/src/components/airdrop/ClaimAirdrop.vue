@@ -1,5 +1,10 @@
 <template>
     <div class="claimAirDrop">
+      <ClaimingOptionsPopup
+        :initial-claim="currentClaimIsInitial"
+        :campaign-id="selectedCampaignId"
+        :mission-id="selectedMissionId"
+        v-if="claimingProcessStarted" @close="claimingProcessStarted = false"/>
       <div class="claimAirDrop__total">
         <div class="claimAirDrop__container">
           <h4 class="claimAirDrop__header">Total</h4>
@@ -91,12 +96,15 @@ import CoinAmount from '@/components/commons/CoinAmount.vue';
 import {Coin} from "@/models/store/common";
 import {MissionType} from "@/models/blockchain/airdrop";
 import router from "@/router";
+import ClaimingOptionsPopup from "@/components/airdrop/ClaimingOptionsPopup.vue";
 
 const percentsBar = ref();
 
 // const currentLang = computed(() => {
 //   return i18n.global.locale;
 // });
+
+const claimingProcessStarted = ref();
 
 {
   useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true);
@@ -198,13 +206,23 @@ function getTextForMissionsBtn(mission: Mission, type: MissionType){
   return text;
 }
 
+const selectedMissionId = ref();
+const selectedCampaignId = ref();
+const currentClaimIsInitial = ref();
+
 function redirectMission(campaign: Campaign, mission : Mission, type: MissionType){
+  selectedCampaignId.value = campaign.id;
+  selectedMissionId.value = mission.id;
 
   if(mission.mission_type === MissionTypeSt.INITIAL_CLAIM){
-    claimInitialAirdrop(Number(campaign.id));
+    claimingProcessStarted.value=true;
+    currentClaimIsInitial.value = true;
+    // claimInitialAirdrop(Number(campaign.id));
   } else {
+    currentClaimIsInitial.value = false;
     if(mission.completed && !mission.claimed){
-      claimOtherAirdrop(campaign.id, mission.id)
+      claimingProcessStarted.value=true;
+      //claimOtherAirdrop(campaign.id, mission.id)
     } else {
       switch (type){
         case MissionType.DELEGATE: router.push('staking');

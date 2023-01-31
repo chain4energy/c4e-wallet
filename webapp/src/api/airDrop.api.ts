@@ -159,7 +159,7 @@ export class AirDropApi extends BaseApi {
         description: "Campaign test1",
         enabled: true,
         start_time: "2023-01-20T10:48:58.952129766Z",
-        end_time: "2023-01-31T12:50:58.952129766Z",
+        end_time: "2023-02-31T12:50:58.952129766Z",
         lockup_period: "7884000s",
         vesting_period: "15768000s",
         denom: "uc4e"
@@ -253,7 +253,7 @@ export class AirDropApi extends BaseApi {
           campaign_id: "1",
           address: "some",
           amount: 180000000,
-          completedMissions: ['1'],
+          completedMissions: ['0','1'],
           claimedMissions: ['0']
         },
         {
