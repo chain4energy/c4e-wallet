@@ -173,6 +173,7 @@ export const useAirDropStore = defineStore({
         apiFactory.airDropApi().fetchCampaigns(lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
             campaignsInfoLcd = response.data;
+            console.log( '------------------------------------------------------', campaignsInfoLcd )
             this.fetchFairdropPoolUsage(campaignsInfoLcd.campaign.map((c: CampaignBc) => c.id), lockscreen);
           } else {
             const message = 'Error fetching campaigns data';
@@ -218,7 +219,13 @@ export const useAirDropStore = defineStore({
       userAirdropInfoLcd?.userAirdropEntries.airdrop_entries.forEach((entry: AirdropEntry) => {
         const campaign = findCampaign(result, Number(entry.campaign_id));
         if (campaign) {
-          campaign.amount.amount = BigInt(entry.amount);
+          console.log(campaign);
+          console.log(entry)
+          const totalAmount = new Coin(BigInt(0), "uc4e");
+          entry.airdrop_coins.forEach((el) => {
+            totalAmount.add(new Coin(BigInt(el.amount), el.denom))
+          });
+          campaign.amount = totalAmount;
           entry.claimedMissions.forEach((missionId: string) => {
             const claimedMission = findMission(campaign.missions, missionId);
             if (claimedMission) {
@@ -251,7 +258,9 @@ export const useAirDropStore = defineStore({
       campaingIds.forEach((id: string) => {
         promises.push(apiFactory.airDropApi().fetchAirdropDistributions(id, lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
-            distributions.add(new Coin(BigInt(response.data.amount.amount), response.data.amount.denom));
+            response.data.airdrop_coins.forEach((el) => {
+              distributions.add(new Coin(BigInt(el.amount), el.denom));
+            });
           } else {
             const message = 'Error fetchAirdropDistributions';
             logger.logToConsole(LogLevel.ERROR, message);
@@ -260,7 +269,9 @@ export const useAirDropStore = defineStore({
         }));
         promises.push(apiFactory.airDropApi().fetchAirdropClaimsLeft(id, lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
-            claimsLeft.add(new Coin(BigInt(response.data.amount.amount), response.data.amount.denom));
+            response.data.airdrop_coins.forEach((el) => {
+              claimsLeft.add(new Coin(BigInt(el.amount), el.denom));
+            });
           } else {
             const message = 'Error fetchAirdropClaimsLeft';
             logger.logToConsole(LogLevel.ERROR, message);

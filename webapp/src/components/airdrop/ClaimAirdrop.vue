@@ -1,5 +1,5 @@
 <template>
-    <div class="claimAirDrop">
+    <div class="claimAirDrop" v-if="isLoggedIn && address">
       <ClaimingOptionsPopup
         :initial-claim="currentClaimIsInitial"
         :campaign-id="selectedCampaignId"
@@ -86,7 +86,7 @@
 
 <script setup lang="ts">
 import {useAirDropStore} from "@/store/airDrop.store";
-import {computed, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {CampaignRecord, CampainStatus} from "@/models/airdrop/airdrop";
 import {Campaign, Mission, MissionTypeSt} from "@/models/store/airdrop";
@@ -105,11 +105,25 @@ const percentsBar = ref();
 // });
 
 const claimingProcessStarted = ref();
+const isLoggedIn = computed(() =>{
+  return useUserStore().isLoggedIn;
+});
+const address = computed(() => {
+  return useUserStore().getAccount.address
+});
 
-{
-  useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true);
-}
-
+// onMounted(() => {
+//   useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true).then((res) => {
+//     if(!res){
+//       useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true)
+//     }
+//   });
+// });
+watch(isLoggedIn, (next, prev)=>{
+  if(next){
+    useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true);
+  }
+});
 const fairdropPoolUsage = computed(()=>{
   return useAirDropStore().getFairdropPoolUsage;
 });

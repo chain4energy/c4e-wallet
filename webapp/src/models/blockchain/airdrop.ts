@@ -16,6 +16,7 @@ export interface UserAirdropEntry {
 export interface AirdropEntry {
   campaign_id: string,
   address: string,
+  airdrop_coins:Coin[],
   amount: number,
   completedMissions: string[],
   claimedMissions: string[]
@@ -62,10 +63,10 @@ export enum MissionType {
 }
 
 export interface AirdropClaimsLeft{
-  amount: Coin
+  airdrop_coins: Coin[]
 }
 
 export interface AirdropDistributions{
-  amount: Coin
+  airdrop_coins: Coin[]
 }
 

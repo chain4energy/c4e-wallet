@@ -68,18 +68,8 @@ export class AirDropApi extends BaseApi {
       return bcData;
     };
 
-    if (this.useMockData) {
-      try {
-        this.before(lockscreen, null);
-        await new Promise(r => setTimeout(r, 300));
-        return new RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>(undefined, this.UserAirdropEntriesMockData);
-      } finally {
-        this.after(lockscreen, null);
-      }
-    } else {
-      return await this.axiosGetBlockchainApiCall(formatString(this.USER_AIRDROP_ENTRIES_URL, {address: address}),
-        mapData, lockscreen, null, 'fetchUserAirdropEntries - ');
-    }
+    return await this.axiosGetBlockchainApiCall(formatString(this.USER_AIRDROP_ENTRIES_URL, {address: address}),
+      mapData, lockscreen, null, 'fetchUserAirdropEntries - ');
 
   }
 
@@ -90,19 +80,8 @@ export class AirDropApi extends BaseApi {
       }
       return bcData;
     };
-
-    if (this.useMockData) {
-      try {
-        this.before(lockscreen, null);
-        await new Promise(r => setTimeout(r, 300));
-        return new RequestResponse<CampaignsInfoBc, ErrorData<BlockchainApiErrorData>>(undefined, this.campainMockData);
-      } finally {
-        this.after(lockscreen, null);
-      }
-    } else {
       return await this.axiosGetBlockchainApiCall(this.CAMPAIGNS_URL,
         mapData, lockscreen, null, 'fetchCampaigns - ');
-    }
   }
 
   public async fetchMissions(lockscreen: boolean): Promise<RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>> {
@@ -113,18 +92,8 @@ export class AirDropApi extends BaseApi {
       return bcData;
     };
 
-    if (this.useMockData) {
-      try {
-        this.before(lockscreen, null);
-        await new Promise(r => setTimeout(r, 300));
-        return new RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>(undefined, this.missionsMockData);
-      } finally {
-        this.after(lockscreen, null);
-      }
-    } else {
-      return await this.axiosGetBlockchainApiCall(this.MISSIONS_URL,
-        mapData, lockscreen, null, 'fetchMissions - ');
-    }
+    return await this.axiosGetBlockchainApiCall(this.MISSIONS_URL,
+      mapData, lockscreen, null, 'fetchMissions - ');
 
   }
 
@@ -243,29 +212,30 @@ export class AirDropApi extends BaseApi {
       total: "6",
     }
   }
-
-  UserAirdropEntriesMockData: UserAirdropInfo = {
-    userAirdropEntries: {
-      address: 'some',
-      claim_address: '1230781203',
-      airdrop_entries: [
-        {
-          campaign_id: "1",
-          address: "some",
-          amount: 180000000,
-          completedMissions: ['0','1'],
-          claimedMissions: ['0']
-        },
-        {
-          campaign_id: "2",
-          address: "some",
-          amount: 180000000,
-          completedMissions: [],
-          claimedMissions: []
-        }
-      ]
-    }
-  }
+  //
+  // UserAirdropEntriesMockData: UserAirdropInfo = {
+  //   userAirdropEntries: {
+  //     address: 'some',
+  //     claim_address: '1230781203',
+  //     airdrop_entries: [
+  //       {
+  //         campaign_id: "1",
+  //         address: "some",
+  //
+  //         amount: 180000000,
+  //         completedMissions: ['0','1'],
+  //         claimedMissions: ['0']
+  //       },
+  //       {
+  //         campaign_id: "2",
+  //         address: "some",
+  //         amount: 180000000,
+  //         completedMissions: [],
+  //         claimedMissions: []
+  //       }
+  //     ]
+  //   }
+  // }
   mockdata: ClaimRecord =
     {
       address: "c4e1yyjfd5cj5nd0jrlvrhc5p3mnkcn8v9q8fdd9gs",
