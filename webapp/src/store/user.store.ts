@@ -143,7 +143,6 @@ export const useUserStore = defineStore({
 
     async delegate(validator: string, amount: number, fee?: number | undefined) {
       const connectionInfo = this.connectionInfo;
-      console.log(fee)
       await apiFactory.accountApi().delegate(connectionInfo, validator, amount, fee).then(async (resp) => {
         if (resp.isError()) {
           await onTxDeliveryFailure(connectionInfo, this, resp, 'Delegation of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + validator + ' failed');

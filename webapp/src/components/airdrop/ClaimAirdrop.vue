@@ -1,5 +1,10 @@
 <template>
     <div class="claimAirDrop">
+      <ClaimingOptionsPopup
+        :initial-claim="currentClaimIsInitial"
+        :campaign-id="selectedCampaignId"
+        :mission-id="selectedMissionId"
+        v-if="claimingProcessStarted" @close="claimingProcessStarted = false"/>
       <div class="claimAirDrop__total">
         <div class="claimAirDrop__container">
           <h4 class="claimAirDrop__header">Total</h4>
@@ -62,11 +67,12 @@
                   <div>{{missions.description}}</div>
                 </div>
                 <div>
-                  <Button :disabled="
-                  missions.mission_type !== MissionStatus.INITIAL
-                  && checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Now"
+                  <Button
+                    :disabled="!isDisabled(campaignRecord, missions)"
                           class="p-button p-component secondary claimAirDrop__missions-btn"
-                          :label="getTextForMissionsBtn(missions.mission_type)">
+                          :label="getTextForMissionsBtn(missions, missions.mission_type)"
+                          @click="redirectMission(campaignRecord, missions, missions.mission_type)"
+                  >
 
                   </Button>
                 </div>
@@ -82,22 +88,23 @@
 import {useAirDropStore} from "@/store/airDrop.store";
 import {computed, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
-import {CampaignRecord, CampainStatus, MissionStatus} from "@/models/airdrop/airdrop";
-import {Campaign} from "@/models/store/airdrop";
+import {CampaignRecord, CampainStatus} from "@/models/airdrop/airdrop";
+import {Campaign, Mission, MissionTypeSt} from "@/models/store/airdrop";
 import PercentageBar from "@/components/commons/PercentageBar.vue";
-import i18n from "@/plugins/i18n";
 import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
 import CoinAmount from '@/components/commons/CoinAmount.vue';
 import {Coin} from "@/models/store/common";
 import {MissionType} from "@/models/blockchain/airdrop";
-import PercentsView from "@/components/commons/PercentsView.vue";
-import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
+import router from "@/router";
+import ClaimingOptionsPopup from "@/components/airdrop/ClaimingOptionsPopup.vue";
 
 const percentsBar = ref();
 
 // const currentLang = computed(() => {
 //   return i18n.global.locale;
 // });
+
+const claimingProcessStarted = ref();
 
 {
   useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true);
@@ -183,7 +190,7 @@ setInterval(() => {
     updateComponent.value = !updateComponent.value;
 },1000);
 
-function getTextForMissionsBtn(type: MissionType){
+function getTextForMissionsBtn(mission: Mission, type: MissionType){
   let text;
   switch (type){
     case MissionType.INITIAL_CLAIM: text = 'Claim';
@@ -193,7 +200,66 @@ function getTextForMissionsBtn(type: MissionType){
     case MissionType.VOTE: text = 'Vote';
     break;
   }
+  if(mission.completed && !mission.claimed){
+    text = 'Claim';
+  }
   return text;
+}
+
+const selectedMissionId = ref();
+const selectedCampaignId = ref();
+const currentClaimIsInitial = ref();
+
+function redirectMission(campaign: Campaign, mission : Mission, type: MissionType){
+  selectedCampaignId.value = campaign.id;
+  selectedMissionId.value = mission.id;
+
+  if(mission.mission_type === MissionTypeSt.INITIAL_CLAIM){
+    claimingProcessStarted.value=true;
+    currentClaimIsInitial.value = true;
+    // claimInitialAirdrop(Number(campaign.id));
+  } else {
+    currentClaimIsInitial.value = false;
+    if(mission.completed && !mission.claimed){
+      claimingProcessStarted.value=true;
+      //claimOtherAirdrop(campaign.id, mission.id)
+    } else {
+      switch (type){
+        case MissionType.DELEGATE: router.push('staking');
+          break;
+        case MissionType.VOTE: router.push('governance');
+          break;
+      }
+    }
+  }
+}
+
+function claimInitialAirdrop(id: number){
+  useAirDropStore().claimInitialAirdrop(id);
+}
+
+function claimOtherAirdrop(campaignId: number, missionId: number){
+  useAirDropStore().claimOtherAirdrop(campaignId, missionId);
+}
+
+
+
+function isDisabled(campaignRec: Campaign, mission: Mission) {
+  if(checkCampaignStatus(new Date(campaignRec.start_time), new Date(campaignRec.end_time)) !== CampainStatus.Now){
+    return false;
+  } else if(!isInitialMissionClaimed(campaignRec) && mission.mission_type !== MissionTypeSt.INITIAL_CLAIM){
+    return false;
+  } else if(mission.claimed){
+    return false;
+  }
+  return true;
+}
+
+function isInitialMissionClaimed(campaign: Campaign) {
+  const initialMission = campaign.missions.find((mission)=> {
+    return mission.mission_type === 'INITIAL_CLAIM';
+  });
+  return initialMission?.claimed;
 }
 </script>
 
@@ -293,7 +359,8 @@ function getTextForMissionsBtn(type: MissionType){
     &-btn {
       width: 100%;
       min-width: 107px;
-      margin: 0 !important;
+      max-height: 42px !important;
+      margin: 8px !important;
       border-radius: 5px !important;
       color: $header-text-color !important;
       background-color: $secondary-color !important;

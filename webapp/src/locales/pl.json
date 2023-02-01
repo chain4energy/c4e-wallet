@@ -313,6 +313,7 @@
     "DESCRIPTION": "Opis",
     "THE": "The",
     "RETURN": "Wróć",
+    "CLAIM": "Odbierz",
     "INPUT": {
       "AMOUNT": "ilość",
       "ADDRESS": "adres"
