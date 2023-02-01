@@ -63,6 +63,7 @@ import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import ProposalType from "./ProposalType.vue";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 const props = defineProps<{
   proposal?: Proposal
@@ -73,7 +74,7 @@ onMounted(() => {
 });
 
 const proposalsStore = useProposalsStore();
-const url = "https://explorer.c4e.io/proposals/"+props.proposal?.proposalId;
+const url = useConfigurationStore().config.explorerUrl+"/"+props.proposal?.proposalId;
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');
 };
