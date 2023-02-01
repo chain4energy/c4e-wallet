@@ -1,12 +1,12 @@
 <template>
 <div class="tile">
   <TabView class="airDrop__tabview">
-<!--    <TabPanel >-->
-<!--      <template #header>-->
-<!--        <div>Check Allocation</div>-->
-<!--      </template>-->
-<!--      <AirDropTotal/>-->
-<!--    </TabPanel>-->
+    <TabPanel >
+      <template #header>
+        <div>Check Allocation</div>
+      </template>
+      <AirDropTotal/>
+    </TabPanel>
     <TabPanel>
       <template #header>
         <div>Claim Air Drop</div>

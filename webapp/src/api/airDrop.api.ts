@@ -17,7 +17,7 @@ export class AirDropApi extends BaseApi {
   private AIRDROP_DISTRIBUTIONS = queries.blockchain.AIRDROP_DISTRIBUTIONS;
   private AIRDROP_CLAIMS_LEFT = queries.blockchain.AIRDROP_CLAIMS_LEFT
 
-  private useMockData = true;
+  private useMockData = false;
 
   getServiceType(): ServiceTypeEnum {
     return ServiceTypeEnum.AIR_DROP_API;
