@@ -45,8 +45,8 @@
         <span>
           <PercentsView :amount="proposalsStore.getTallyParams.vetoThreshold" :precision="2"/>
         </span>
-      <span>{{ $t("GOVERNANCE_VIEW.VOTING_DETAILS") }}:</span>
-      <span><a href='https://explorer.c4e.io/proposals/{{ proposal.proposalId }}' target="_blank">https://explorer.c4e.io/proposals/{{ proposal.proposalId }}</a></span>
+      <span>{{ $t("GOVERNANCE_VIEW.VIEW_IN_EXPLORER") }}:</span>
+      <span><a v-bind:href="url" target="_blank">{{url}}</a></span>
 
     </div>
   </div>
@@ -73,6 +73,7 @@ onMounted(() => {
 });
 
 const proposalsStore = useProposalsStore();
+const url = "https://explorer.c4e.io/proposals/"+props.proposal?.proposalId;
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');
 };

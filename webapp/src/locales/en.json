@@ -92,7 +92,7 @@
     "KEY": "Key",
     "SUBSPACE": "Subspace",
     "AMOUNT": "Amount",
-    "VOTING_DETAILS": "Voting details"
+    "VIEW_IN_EXPLORER": "View in explorer"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Bonded tokens",

@@ -92,7 +92,7 @@
     "KEY": "Klucz",
     "SUBSPACE": "Podprzestrzeń",
     "AMOUNT": "Ilość",
-    "VOTING_DETAILS": "Szczegóły głosowania"
+    "VIEW_IN_EXPLORER": "Zobacz w eksploratorze"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Oddelegowane tokeny",
