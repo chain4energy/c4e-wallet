@@ -1,7 +1,7 @@
 <template>
   <div class="progress-bar">
 
-    <span v-bind:class="{'fill': fillBar, 'clear': !fillBar}" class="progress-bar-fill" style="width: 0">a</span>
+    <span :style="{'transition-duration': loadingTime + 's'}" v-bind:class="{'fill': fillBar, 'clear': !fillBar}" class="progress-bar-fill" style="width: 0">a</span>
   </div>
 </template>
 

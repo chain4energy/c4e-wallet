@@ -26,7 +26,7 @@
           {{ $t("GOVERNANCE_VIEW."+getProposalStatus())}}
         </div>
     </ShadowedSvgChart>
-    <ProgressBarComponent ref="childRef" @refresh="updateVotes" :loading-time="5" style="width: 100%"></ProgressBarComponent>
+    <ProgressBarComponent ref="childRef" @refresh="updateVotes" :loading-time="10" style="width: 100%"></ProgressBarComponent>
     <div class="voting-result">
       <div style="display: flex; align-items: center">
         <div class="dot yes"></div>
