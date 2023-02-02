@@ -5,10 +5,14 @@ import { StdFee } from "@cosmjs/amino";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { LocalSpinner } from "@/services/model/localSpinner";
 import { LogLevel } from '@/services/logger/log-level';
-import { SigningStargateClient, isDeliverTxFailure, DeliverTxResponse } from "@cosmjs/stargate";
+import {SigningStargateClient, isDeliverTxFailure, DeliverTxResponse, defaultRegistryTypes} from "@cosmjs/stargate";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { RequestResponse } from '@/models/request-response';
 import TxToast from "@/components/commons/TxToast.vue";
+import {Registry} from "@cosmjs/proto-signing";
+import {MsgInitialClaim} from "@/api/customEvents/tx";
+import {ZIndexUtils} from "primevue/utils";
+import get = ZIndexUtils.get;
 
 const toast = useToast();
 
@@ -95,6 +99,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       if (messages instanceof TxBroadcastError) {
         return new RequestResponse<TxData, TxBroadcastError>(messages);
       }
+      console.log(messages)
       const response = await client.signAndBroadcast(connection.account, messages, fee, memo);
       this.logToConsole(LogLevel.INFO, 'Client Response', this.stringify(response));
       if (isDeliverTxFailure(response)) {
@@ -198,14 +203,20 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
 
   private async createClient(connectionType: ConnectionType): Promise<{ client: SigningStargateClient, isLedger: boolean }> {
     const { signer, isLedger } = await this.getOfflineSigner(connectionType);
+
     if (signer == undefined) {
       throw new Error('Cannot get signer');
     }
+    const myRegistry = new Registry(defaultRegistryTypes);
+    const MsgInitialClaimTypeUrl = "/chain4energy.c4echain.cfeairdrop.MsgInitialClaim";
+    myRegistry.register(MsgInitialClaimTypeUrl, MsgInitialClaim);
     const rpc = useConfigurationStore().config.bcRpcURL;
     const client = await SigningStargateClient.connectWithSigner(
       rpc,
       signer,
+      {registry: myRegistry}
     );
+    console.log(client)
     return { client: client, isLedger: isLedger };
   }
 

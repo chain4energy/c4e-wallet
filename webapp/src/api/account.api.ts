@@ -281,7 +281,7 @@ export class AccountApi extends TxBroadcastBaseApi {
   }
   public async claimInitialAirDrop(connection: ConnectionInfo, campaignId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
-
+    alert(campaignId)
     const getMessages = (): readonly EncodeObject[] => {
       const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgInitialClaim';
       const val = {
@@ -291,7 +291,6 @@ export class AccountApi extends TxBroadcastBaseApi {
       };
       return [{ typeUrl: typeUrl, value: val }];
     };
-
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
