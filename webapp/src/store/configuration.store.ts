@@ -8,6 +8,7 @@ interface ConfigurationState {
   config: Configuration
   configName: string
   configList: Map<string, Configuration>,
+  initialized: boolean
 }
 
 const defaultConfigName = '';
@@ -19,6 +20,7 @@ export const useConfigurationStore = defineStore({
       config: new Configuration(),
       configName: defaultConfigName,
       configList: new Map<string, Configuration>(),
+      initialized: false
     };
   },
   actions: {
@@ -87,6 +89,7 @@ export const useConfigurationStore = defineStore({
       } else {
         dataService.onConfigurationChange();
       }
+      this.initialized = true;
       return this.config;
     },
     setNetwork(key: string){
@@ -98,7 +101,7 @@ export const useConfigurationStore = defineStore({
         apiFactory.runNormalMode();
       }
       dataService.onConfigurationChange();
-    },
+    }
   },
   getters: {
     getConfigName(): string {
@@ -109,6 +112,9 @@ export const useConfigurationStore = defineStore({
     },
     getConfig(): Configuration {
       return new Configuration(this.config);
+    },
+    getInitialized(): boolean {
+      return this.initialized;
     }
   },
   persist: {

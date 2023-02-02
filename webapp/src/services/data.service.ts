@@ -57,9 +57,10 @@ class DataService extends LoggedService {
     );
   }
 
-  private onInit() {
+  private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');
     const lockScreen = true;
+    await this.waitTillCondition(() => useConfigurationStore().getInitialized);
     Promise.all([
       useBlockStore().fetchLatestBlock(lockScreen),
       useBlockStore().fetchAverageBlockTime(lockScreen),
@@ -85,7 +86,11 @@ class DataService extends LoggedService {
 
     });
   }
-
+  async waitTillCondition(condition: () => boolean) {
+    while (!condition()) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
   public onWindowLoad() {
     this.logToConsole(LogLevel.DEBUG, 'onWindowLoad');
     useUserStore().reconnect(this.onLoginSuccess);

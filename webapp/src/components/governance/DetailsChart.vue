@@ -143,8 +143,9 @@ const sumOfVotes = computed(() => {
 });
 
 const updateVotes = async () => {
-  if(props.proposal?.proposalId)
+  if(props.proposal?.proposalId) {
     await useProposalsStore().fetchVotingProposalTallyResult(props.proposal?.proposalId, true, false);
+  }
   childRef.value?.startFillingBar();
 };
 
