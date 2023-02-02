@@ -1,6 +1,7 @@
 import {Coin} from "@/models/store/common";
 import {MissionType as MissionTypeBc} from "@/models/blockchain/airdrop";
 import {BigDecimal} from "@/models/store/big.decimal";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 export class AirdropTotal {
   campaignAllocations: CampaignAllocation[]
@@ -68,11 +69,13 @@ export class Campaign{
   end_time: string;
   lockup_period: string;
   vesting_period: string;
+  feegrant_amount: string;
+  initial_claim_free_amount: string;
   amount: Coin;
   missions: Mission[];
 
 
-  constructor(id: number, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, denom: string) {
+  constructor(id: number, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, feegrant_amount: string, initial_claim_free_amount:string) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -81,8 +84,9 @@ export class Campaign{
     this.end_time = end_time;
     this.lockup_period = lockup_period;
     this.vesting_period = vesting_period;
-    // this.denom = denom;
-    this.amount = new Coin(BigInt(0), denom);
+    this.feegrant_amount = feegrant_amount;
+    this.initial_claim_free_amount = initial_claim_free_amount;
+    this.amount = new Coin(BigInt(0), getDefaultDenom());
     this.missions = new Array<Mission>();
   }
 }
@@ -154,12 +158,16 @@ export class FairdropPollUsage {
   toClaimePercentage:BigDecimal;
 
 
-  constructor(total: Coin, claimed: Coin, activeCampaigns: Coin, toClaim: Coin, claimedPercentage:BigDecimal,   toClaimePercentage:BigDecimal) {
+  constructor(total: Coin, claimed: Coin, activeCampaigns: Coin, toClaim: Coin, claimedPercentage:BigDecimal,   toClaimPercentage:BigDecimal) {
     this.total = total;
     this.claimed = claimed;
     this.activeCampaigns = activeCampaigns;
     this.toClaim = toClaim;
     this.claimedPercentage = claimedPercentage;
-    this.toClaimePercentage = toClaimePercentage;
+    this.toClaimePercentage = toClaimPercentage;
   }
+}
+
+function getDefaultDenom():string{
+  return useConfigurationStore().config.airdropDefaultDenom;
 }

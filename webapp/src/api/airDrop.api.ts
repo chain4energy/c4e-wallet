@@ -131,7 +131,9 @@ export class AirDropApi extends BaseApi {
         end_time: "2023-02-31T12:50:58.952129766Z",
         lockup_period: "7884000s",
         vesting_period: "15768000s",
-        denom: "uc4e"
+        feegrant_amount: "10",
+        initial_claim_free_amount: "10"
+        // denom: "uc4e"
       },
       {
         id: "2",
@@ -143,7 +145,9 @@ export class AirDropApi extends BaseApi {
         end_time: "2023-04-03T15:28:58.952129766Z",
         lockup_period: "7884000s",
         vesting_period: "15768000s",
-        denom: "uc4e"
+        feegrant_amount: "10",
+        initial_claim_free_amount: "10"
+        // denom: "uc4e"
       },
       {
         id: "3",
@@ -155,7 +159,9 @@ export class AirDropApi extends BaseApi {
         end_time: "2023-01-02T15:28:58.952129766Z",
         lockup_period: "7884000s",
         vesting_period: "15768000s",
-        denom: "uc4e"
+        feegrant_amount: "10",
+        initial_claim_free_amount: "10"
+        // denom: "uc4e"
       },
     ],
     pagination: {

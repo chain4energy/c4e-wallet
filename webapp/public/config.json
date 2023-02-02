@@ -61,7 +61,8 @@
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
     "isMainNetwork": true,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "airdropDefaultDenom": "uc4e"
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -125,7 +126,8 @@
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": ""
+    "airdropBaseURL": "",
+    "airdropDefaultDenom": "uc4e"
   },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
@@ -169,7 +171,8 @@
     "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
     "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "airdropDefaultDenom": "uc4e"
   },
   "Testnet": {
     "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -213,7 +216,8 @@
     "explorerAccount": "https://explorer-testnet.c4e.io/accounts/",
     "explorerTx": "https://explorer-testnet.c4e.io/transactions/",
     "isMainNetwork": true,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "airdropDefaultDenom": "uc4e"
   },
   "pbtest" :{
     "bcApiURL": "api",
@@ -258,7 +262,8 @@
     "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
     "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "airdropDefaultDenom": "uc4e"
   },
   "local":{
     "bcApiURL": "http://localhost:1317",
@@ -327,6 +332,7 @@
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": ""
+    "airdropBaseURL": "",
+    "airdropDefaultDenom": "uc4e"
   }
 }
