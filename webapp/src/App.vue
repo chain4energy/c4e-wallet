@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <loading-screen/>
-    <AppDisclaimer v-if="disclaimerOpen" @close="closeDisclaimer"/>
+<!--    <AppDisclaimer v-if="disclaimerOpen" @close="closeDisclaimer"/>-->
     <app-header/>
     <div class="main-container">
       <div class="content">
