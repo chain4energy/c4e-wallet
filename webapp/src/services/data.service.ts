@@ -19,7 +19,6 @@ class DataService extends LoggedService {
   private dashboardTimeout = 3000;
   private validatorsTimeout = 10000;
   private accountTimeout = 10000;
-
   private lastBlockTimeout = 0;
   private lastDashboardTimeout = 0;
   private lastValidatorsTimeout = 0;

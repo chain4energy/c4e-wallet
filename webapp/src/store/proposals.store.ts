@@ -272,14 +272,14 @@ export const useProposalsStore = defineStore({
 
     },
     getSelectedProposalTally(): ProposalTallyResult {
-    if (!this.proposal) {
-      return new ProposalTallyResult(0n, 0n, 0n, 0n);
-    }
-    const tally = this.proposalTally;
-    if (tally) {
-      return tally;
-    }
-    return this.proposal.finalTallyResult;
+      if (!this.proposal) {
+        return new ProposalTallyResult(0n, 0n, 0n, 0n);
+      }
+      const tally = this.proposalTally;
+      if (tally) {
+        return tally;
+      }
+      return this.proposal.finalTallyResult;
   }
 
   },
