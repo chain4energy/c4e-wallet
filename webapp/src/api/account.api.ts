@@ -281,12 +281,12 @@ export class AccountApi extends TxBroadcastBaseApi {
   }
   public async claimInitialAirDrop(connection: ConnectionInfo, campaignId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
-    alert(campaignId)
+
     const getMessages = (): readonly EncodeObject[] => {
       const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgInitialClaim';
       const val = {
         claimer: connection.account,
-        campaign_id: campaignId,
+        campaignId: campaignId,
         addressToClaim: '', //TODO Create optional UI
       };
       return [{ typeUrl: typeUrl, value: val }];

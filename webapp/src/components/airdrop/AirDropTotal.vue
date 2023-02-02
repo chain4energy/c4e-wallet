@@ -118,7 +118,6 @@ const totalSum = computed(() => {
 });
 
 async function validateAddress(address: string | undefined) {
-  console.log('validateAddress: ' + address);
   if (!address) {
     errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.EMPTY');
     return false;
@@ -126,7 +125,6 @@ async function validateAddress(address: string | undefined) {
   try {
     const words = bench32.decode(address);
     if (words?.prefix !== useConfigurationStore().config.addressPrefix && words?.prefix !== 'cosm') {
-      console.log('validateAddress: ' + address);
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.NOT_THIS_NETWORK', {prefix: `${useConfigurationStore().config.addressPrefix} or cosm`});
     }
     return true;

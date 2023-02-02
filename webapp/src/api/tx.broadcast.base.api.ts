@@ -94,12 +94,10 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           !skipErrorToast
         );
       }
-
       const messages = getMessages(isLedger);
       if (messages instanceof TxBroadcastError) {
         return new RequestResponse<TxData, TxBroadcastError>(messages);
       }
-      console.log(messages)
       const response = await client.signAndBroadcast(connection.account, messages, fee, memo);
       this.logToConsole(LogLevel.INFO, 'Client Response', this.stringify(response));
       if (isDeliverTxFailure(response)) {
@@ -216,7 +214,6 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       signer,
       {registry: myRegistry}
     );
-    console.log(client)
     return { client: client, isLedger: isLedger };
   }
 

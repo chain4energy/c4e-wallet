@@ -45,7 +45,6 @@ const emit = defineEmits(['close', 'typeChange']);
 let errorMessageType = '';
 
 async function validateAddress(address: string | undefined){
-  console.log('validateAddress: ' + address);
   if (!address) {
     errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.EMPTY');
     return false;
@@ -63,7 +62,6 @@ async function validateAddress(address: string | undefined){
 }
 
 function onWrongAddress(address: string, err: string) {
-  console.log(err.slice(7));
   switch (err.slice(7)){
     case address + ' too short' || 'Data too short':
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.TOO_SHORT');
