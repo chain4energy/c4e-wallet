@@ -12,7 +12,8 @@
 <script setup lang="ts">
 import {useSplashStore} from '@/store/splash.store';
 import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
+// import 'vue-loading-overlay/dist/vue-loading.css';
+import 'vue-loading-overlay/dist/css/index.css';
 import C4ESpinner from './commons/C4ESpinner.vue';
 
 const splashStore = useSplashStore();

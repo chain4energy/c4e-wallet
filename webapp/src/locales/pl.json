@@ -327,6 +327,7 @@
     "DESCRIPTION": "Opis",
     "THE": "The",
     "RETURN": "Wróć",
+    "CLAIM": "Odbierz",
     "INPUT": {
       "AMOUNT": "ilość",
       "ADDRESS": "adres"
@@ -373,9 +374,10 @@
     "COSMOS_HELP": "Wprowadź adres cosmos",
     "CHECK": "Check"
   },
+  "CLAIM_AIRDROP": {
+    "PROGRESS":"Odliczanie kampanii"
+  },
   "DISCLAIMER": "The information provided on this website; web applications; mobile applications does not constitute investment advice, financial advice, trading advice, or any other sort of advice and you should not treat any of the content as such. Crescent Foundation Limited(”Crescent Foundation”) does not recommend that any cryptocurrency should be bought, sold, or held by you. Do conduct your own due diligence and consult your financial advisor before making any investment decisions. </br> Crescent Foundation will strive to ensure accuracy of information listed on this website; web applications; mobile applications although it will not hold any responsibility for any missing or wrong information. Crescent Foundation provides all information *as is.* You understand that you are using any and all information available here at your own risk.<br/>The appearance of third party advertisements and hyperlinks on this website; web applications; mobile applications does not constitute an endorsement, guarantee, warranty, or recommendation by Crescent Foundation. Do conduct your own due diligence before deciding to use any third party services.<br/>Before using our service, you should review the relevant <a href='https://docs.c4e.io/' target='_blank'>documentation</a> to make sure you understand how the service works.",
-
-
   "COPY": {
     "ADDRESS": "Adres został skopiowany do schowka",
     "TX_HASH": "Hash transakcji skopiowany do schowka"

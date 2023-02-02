@@ -62,7 +62,8 @@
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
     "isMainNetwork": true,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "airdropDefaultDenom": "uc4e"
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -127,7 +128,8 @@
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": ""
+    "airdropBaseURL": "",
+    "airdropDefaultDenom": "uc4e"
   },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
@@ -172,7 +174,8 @@
     "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
     "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "airdropDefaultDenom": "uc4e"
   },
   "Testnet": {
     "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -217,7 +220,8 @@
     "explorerAccount": "https://explorer-testnet.c4e.io/accounts/",
     "explorerTx": "https://explorer-testnet.c4e.io/transactions/",
     "isMainNetwork": true,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "airdropDefaultDenom": "uc4e"
   },
   "pbtest" :{
     "bcApiURL": "api",
@@ -263,11 +267,12 @@
     "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
     "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "airdropDefaultDenom": "uc4e"
   },
   "local":{
-    "bcApiURL": "http://0.0.0.0:1317",
-    "bcRpcURL": "http://0.0.0.0:26657",
+    "bcApiURL": "http://localhost:1317",
+    "bcRpcURL": "http://localhost:26657",
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
@@ -296,7 +301,13 @@
       "PROPOSAL_TALLY_URL": "/cosmos/gov/v1beta1/proposals/{id}/tally",
       "INFLATION_URL": "/c4e/minter/v1beta1/inflation",
       "STAKING_PARAMS_URL": "/cosmos/staking/v1beta1/params",
-      "VESTINGS_SUM_URL": "/c4e/vesting/v1beta1/summary"
+      "VESTINGS_SUM_URL": "/c4e/vesting/v1beta1/summary",
+      "DISTRIBUTOR_PARAMS_URL": "/c4e/distributor/v1beta1/params",
+      "USER_AIRDROP_ENTRIES_URL": "/c4e/airdrop/v1beta1/user_airdrop_entries/{address}",
+      "CAMPAIGNS_URL": "/c4e/airdrop/v1beta1/campaigns",
+      "MISSIONS_URL": "/c4e/airdrop/v1beta1/mission",
+      "AIRDROP_DISTRIBUTIONS": "/c4e/airdrop/v1beta1/airdrop_distributions/{campaign_id}",
+      "AIRDROP_CLAIMS_LEFT": "/c4e/airdrop/v1beta1/airdrop_claims_left/{campaign_id}"
     },
     "operationGas": {
       "vote": 250000,
@@ -327,6 +338,7 @@
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": ""
+    "airdropBaseURL": "",
+    "airdropDefaultDenom": "uc4e"
   }
 }

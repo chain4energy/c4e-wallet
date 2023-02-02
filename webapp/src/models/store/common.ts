@@ -9,6 +9,15 @@ export class Coin {
     this.denom = denom;
   }
 
+  add(coin:Coin):Coin{
+    if(this.denom === coin.denom) {
+      this.amount += coin.amount;
+    } else {
+      console.error("Cannot add coins with different denom");
+    }
+    return this;
+  }
+
 }
 
 export class DecCoin {
