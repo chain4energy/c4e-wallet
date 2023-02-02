@@ -10,7 +10,11 @@ export class Coin {
   }
 
   add(coin:Coin):Coin{
-    this.amount += coin.amount;
+    if(this.denom === coin.denom) {
+      this.amount += coin.amount;
+    } else {
+      console.error("Cannot add coins with different denom");
+    }
     return this;
   }
 

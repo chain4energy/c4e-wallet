@@ -231,7 +231,7 @@ function redirectMission(campaign: Campaign, mission : Mission, type: MissionTyp
   if(mission.mission_type === MissionTypeSt.INITIAL_CLAIM){
     claimingProcessStarted.value=true;
     currentClaimIsInitial.value = true;
-    // claimInitialAirdrop(Number(campaign.id));
+    claimInitialAirdrop(Number(campaign.id));
   } else {
     currentClaimIsInitial.value = false;
     if(mission.completed && !mission.claimed){

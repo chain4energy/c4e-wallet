@@ -4,46 +4,37 @@ import {AirdropTotal, AlocationsSt, Campaign, CampaignAllocation, convertMission
 import {ClaimRecord} from "@/models/airdrop/airdrop";
 import {RequestResponse} from "@/models/request-response";
 import {ErrorData} from "@/api/base.api";
-import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common";
+import {AirdropErrData} from "@/models/blockchain/common";
 import {LogLevel} from "@/services/logger/log-level";
-import {AirdropDistributions, AirdropEntry, CampaignBc, CampaignsInfo, MissionBc, MissionsInfo, UserAirdropInfo} from "@/models/blockchain/airdrop";
+import {AirdropEntry, CampaignBc, CampaignsInfo, MissionBc, MissionsInfo, UserAirdropInfo} from "@/models/blockchain/airdrop";
 import {StoreLogger} from "@/services/logged.service";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {Coin} from "@/models/store/common";
-import {ConnectionInfo} from "@/api/wallet.connecton.api";
-import {UserState, useUserStore} from "@/store/user.store";
+import {useUserStore} from "@/store/user.store";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import {useConfigurationStore} from "@/store/configuration.store";
+import {getDenomFromArray} from "@/utils/coins-utils";
 
 const logger = new StoreLogger(ServiceTypeEnum.AIR_DROP_STORE);
 
 interface airDropState {
-  // airDrop1: AirdropStore
-  // no_Drop: boolean,
-
   claimRecord: ClaimRecord,
   airDropMock: AirdropTotal,
   campaigns: Campaign[],
-
   fairdropPollUsage: FairdropPollUsage,
   airdropClaimingAddress: string,
-  // campaignsInfoLcd: CampaignsInfo;
-
 }
 
 export const useAirDropStore = defineStore({
   id: 'airDropStore',
   state: (): airDropState => {
     return {
-      // airDrop1: Object(AirdropStore),
-      // no_Drop: Boolean(false),
       claimRecord: {} as ClaimRecord,
       airDropMock: Object(AirdropTotal),
       campaigns: Array<Campaign>(),
       fairdropPollUsage: new FairdropPollUsage(new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
         new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
-        new BigDecimal(0), new BigDecimal(0) ),
-      // campaignsInfoLcd: {} as CampaignsInfo,
+        new BigDecimal(0), new BigDecimal(0)),
       airdropClaimingAddress: '',
     };
   },
@@ -117,11 +108,12 @@ export const useAirDropStore = defineStore({
     //     //console.error(err);
     //   }
     // },
-    async claimInitialAirdrop(campaignid: number){
+    async claimInitialAirdrop(campaignid: number) {
       const connectionInfo = useUserStore().connectionInfo;
-       await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignid);
+      await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignid);
+      await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignid);
     },
-    async claimOtherAirdrop(campaignid: number, missionId: number){
+    async claimOtherAirdrop(campaignid: number, missionId: number) {
       const connectionInfo = useUserStore().connectionInfo;
       await apiFactory.accountApi().claimAirDropMissions(connectionInfo, campaignid, missionId);
     },
@@ -173,7 +165,7 @@ export const useAirDropStore = defineStore({
         apiFactory.airDropApi().fetchCampaigns(lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
             campaignsInfoLcd = response.data;
-            console.log( '------------------------------------------------------', campaignsInfoLcd )
+            console.log('------------------------------------------------------', campaignsInfoLcd);
             this.fetchFairdropPoolUsage(campaignsInfoLcd.campaign.map((c: CampaignBc) => c.id), lockscreen);
           } else {
             const message = 'Error fetching campaigns data';
@@ -202,7 +194,7 @@ export const useAirDropStore = defineStore({
       ]);
       campaignsInfoLcd?.campaign.forEach((entry: CampaignBc) => {
         const campaign = new Campaign(Number(entry.id), entry.name, entry.description, entry.enabled, entry.start_time, entry.end_time, entry.lockup_period,
-          entry.vesting_period, entry.denom
+          entry.vesting_period, entry.feegrant_amount, entry.initial_claim_free_amount
         );
         result.push(campaign);
       });
@@ -220,12 +212,11 @@ export const useAirDropStore = defineStore({
         const campaign = findCampaign(result, Number(entry.campaign_id));
         if (campaign) {
           console.log(campaign);
-          console.log(entry)
-          const totalAmount = new Coin(BigInt(0), "uc4e");
-          entry.airdrop_coins.forEach((el) => {
-            totalAmount.add(new Coin(BigInt(el.amount), el.denom))
-          });
-          campaign.amount = totalAmount;
+          console.log("entry:", entry);
+          // const totalAmount = new Coin(BigInt(0), "uc4e");
+          // totalAmount.add(getDenomFromArray(entry.airdrop_coins, useConfigurationStore().config.airdropDefaultDenom));
+          // campaign.amount = totalAmount;
+          campaign.amount = getDenomFromArray(entry.airdrop_coins, useConfigurationStore().config.airdropDefaultDenom);
           entry.claimedMissions.forEach((missionId: string) => {
             const claimedMission = findMission(campaign.missions, missionId);
             if (claimedMission) {
@@ -258,9 +249,7 @@ export const useAirDropStore = defineStore({
       campaingIds.forEach((id: string) => {
         promises.push(apiFactory.airDropApi().fetchAirdropDistributions(id, lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
-            response.data.airdrop_coins.forEach((el) => {
-              distributions.add(new Coin(BigInt(el.amount), el.denom));
-            });
+            distributions.add(getDenomFromArray(response.data.airdrop_coins, useConfigurationStore().config.airdropDefaultDenom));
           } else {
             const message = 'Error fetchAirdropDistributions';
             logger.logToConsole(LogLevel.ERROR, message);
@@ -269,9 +258,7 @@ export const useAirDropStore = defineStore({
         }));
         promises.push(apiFactory.airDropApi().fetchAirdropClaimsLeft(id, lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
-            response.data.airdrop_coins.forEach((el) => {
-              claimsLeft.add(new Coin(BigInt(el.amount), el.denom));
-            });
+            claimsLeft.add(getDenomFromArray(response.data.airdrop_coins, useConfigurationStore().config.airdropDefaultDenom));
           } else {
             const message = 'Error fetchAirdropClaimsLeft';
             logger.logToConsole(LogLevel.ERROR, message);
@@ -280,22 +267,16 @@ export const useAirDropStore = defineStore({
         }));
       });
       await Promise.all(promises);
-      this.fairdropPollUsage = new FairdropPollUsage( new Coin(BigInt(20000000),"C4E"),
-        new Coin(distributions.amount-claimsLeft.amount,distributions.denom ),
+      this.fairdropPollUsage = new FairdropPollUsage(new Coin(BigInt(20000000), "C4E"),
+        new Coin(distributions.amount - claimsLeft.amount, distributions.denom),
         distributions,
         claimsLeft,
-        getPercentage( this.fairdropPollUsage.total.amount, this.fairdropPollUsage.claimed.amount),
-        getPercentage( distributions.amount, claimsLeft.amount));
+        getPercentage(this.fairdropPollUsage.total.amount, this.fairdropPollUsage.claimed.amount),
+        getPercentage(distributions.amount, claimsLeft.amount));
     },
 
   },
   getters: {
-    // getAirDropStatus(): boolean {
-    //   return this.no_Drop;
-    // },
-    // getAirDrop(): AirdropStore {
-    //   return this.airDrop1;
-    // },
     getAirdropClaimRecord(): ClaimRecord {
       return this.claimRecord;
     },
@@ -311,7 +292,7 @@ export const useAirDropStore = defineStore({
   },
 });
 
-function getPercentage(divider:bigint, divisor:bigint): BigDecimal{
+function getPercentage(divider: bigint, divisor: bigint): BigDecimal {
   if (divisor <= 0n) {
     return new BigDecimal(0);
   }

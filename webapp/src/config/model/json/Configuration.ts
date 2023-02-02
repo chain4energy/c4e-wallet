@@ -71,4 +71,5 @@ export interface Configuration {
   testMode?: boolean,
   testFileName?: string,
   airdropBaseURL: string
+  airdropDefaultDenom: string
 }
