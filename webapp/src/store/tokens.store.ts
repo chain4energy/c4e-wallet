@@ -18,6 +18,7 @@ interface TokensState {
   totalSupply: Coin
   communityPool: DecCoin
   strategicReversePool: Coin
+  strategicReversePoolUnbonded: Coin,
   airdropPool: Coin
   inflation: number,
   lockedVesting: bigint,
@@ -34,6 +35,7 @@ export const useTokensStore = defineStore({
       totalSupply: emptyCoin,
       communityPool: new DecCoin(new BigDecimal(0), denom),
       strategicReversePool: emptyCoin,
+      strategicReversePoolUnbonded: emptyCoin,
       airdropPool: emptyCoin,
       inflation: Number.NaN,
       lockedVesting: BigInt(0),
@@ -119,6 +121,7 @@ export const useTokensStore = defineStore({
         }),
       ]);
       this.strategicReversePool= new Coin((delegations.totalDelegated + unbondingDelegations.totalUndelegating + unbonded.amount), denom );
+      this.strategicReversePoolUnbonded = new Coin(unbonded.amount, denom);
     },
     async fetchAirdropPool(lockscreen = true) {
       const denom = useConfigurationStore().config.stakingDenom;
@@ -196,7 +199,7 @@ export const useTokensStore = defineStore({
     },
     getCirculatingSupply(): DecCoin {
       const amount =  this.getTotalUnbonded
-                    - this.strategicReversePool.amount
+                    - this.strategicReversePoolUnbonded.amount
                     - this.getAirdropPool.amount
                     - this.getLockedVesting;
       const amountDec = new BigDecimal(amount).subtract(this.communityPool.amount);
