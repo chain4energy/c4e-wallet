@@ -19,7 +19,6 @@ class DataService extends LoggedService {
   private dashboardTimeout = 3000;
   private validatorsTimeout = 10000;
   private accountTimeout = 10000;
-
   private lastBlockTimeout = 0;
   private lastDashboardTimeout = 0;
   private lastValidatorsTimeout = 0;
@@ -58,9 +57,10 @@ class DataService extends LoggedService {
     );
   }
 
-  private onInit() {
+  private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');
     const lockScreen = true;
+    await this.waitTillCondition(() => useConfigurationStore().getInitialized);
     Promise.all([
       useBlockStore().fetchLatestBlock(lockScreen),
       useBlockStore().fetchAverageBlockTime(lockScreen),
@@ -86,7 +86,11 @@ class DataService extends LoggedService {
 
     });
   }
-
+  async waitTillCondition(condition: () => boolean) {
+    while (!condition()) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
   public onWindowLoad() {
     this.logToConsole(LogLevel.DEBUG, 'onWindowLoad');
     useUserStore().reconnect(this.onLoginSuccess);

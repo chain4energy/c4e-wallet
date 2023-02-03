@@ -62,7 +62,8 @@
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
     "isMainNetwork": true,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "proposalVotingRefreshTimeout": 30000
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -127,7 +128,8 @@
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": ""
+    "airdropBaseURL": "",
+    "proposalVotingRefreshTimeout": 30000
   },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
@@ -172,7 +174,8 @@
     "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
     "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "proposalVotingRefreshTimeout": 30000
   },
   "Testnet": {
     "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -217,7 +220,8 @@
     "explorerAccount": "https://explorer-testnet.c4e.io/accounts/",
     "explorerTx": "https://explorer-testnet.c4e.io/transactions/",
     "isMainNetwork": true,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "proposalVotingRefreshTimeout": 30000
   },
   "pbtest" :{
     "bcApiURL": "api",
@@ -263,7 +267,8 @@
     "explorerAccount": "https://explorer-testnet.chain4energy.org/accounts/",
     "explorerTx": "https://explorer-testnet.chain4energy.org/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": "https://airdrop.c4e.io/"
+    "airdropBaseURL": "https://airdrop.c4e.io/",
+    "proposalVotingRefreshTimeout": 30000
   },
   "local":{
     "bcApiURL": "http://0.0.0.0:1317",
@@ -327,6 +332,7 @@
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
     "isMainNetwork": false,
-    "airdropBaseURL": ""
+    "airdropBaseURL": "",
+    "proposalVotingRefreshTimeout": 30000
   }
 }

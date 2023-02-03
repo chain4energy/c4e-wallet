@@ -26,6 +26,7 @@
           {{ $t("GOVERNANCE_VIEW."+getProposalStatus())}}
         </div>
     </ShadowedSvgChart>
+    <ProgressBarComponent ref="childRef" @refresh="updateVotes" :loading-time="useConfigurationStore().getConfig.proposalVotingRefreshTimeout" style="width: 100%"></ProgressBarComponent>
     <div class="voting-result">
       <div style="display: flex; align-items: center">
         <div class="dot yes"></div>
@@ -89,7 +90,7 @@
 
 <script setup lang="ts">
 
-import {computed} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {PieChart} from "echarts/charts";
 import VChart from "vue-echarts";
 import {use} from "echarts/core";
@@ -108,6 +109,7 @@ import PercentsView from "@/components/commons/PercentsView.vue";
 import GovernanceIcon from "../commons/GovernanceIcon.vue";
 import {useTokensStore} from "@/store/tokens.store";
 import {BigIntWrapper} from "@/models/store/common";
+import ProgressBarComponent from "@/components/features/ProgressBarComponent.vue";
 
 use([
   SVGRenderer,
@@ -120,6 +122,7 @@ use([
 
 const tokensStore = useTokensStore();
 
+const childRef = ref<InstanceType<typeof ProgressBarComponent>>();
 const props = defineProps<{
   proposal?: Proposal
 }>();
@@ -133,11 +136,18 @@ const icons  = new Map<string, string>([
   [ProposalStatus.FAILED, ''],
 ]);
 
+
 const sumOfVotes = computed(() => {
   const val = useProposalsStore().getSelectedProposalTally.total;
   return (val && val > 0) ? val : -1n;
 });
 
+const updateVotes = async () => {
+  if(props.proposal?.proposalId) {
+    await useProposalsStore().fetchVotingProposalTallyResult(props.proposal?.proposalId, true, false);
+  }
+  childRef.value?.startFillingBar();
+};
 
 const yes = computed(() => {
   return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.yes);
@@ -203,7 +213,7 @@ function getProposalStatus(): ProposalStatus{
   }
   .chartdiv {
     width: 100%;
-    height: 70%;
+    height: 65%;
     position: relative;
     .inside{
       width: 50%;
@@ -255,4 +265,6 @@ function getProposalStatus(): ProposalStatus{
 .gov-icon {
   padding-right: 0.5rem;
 }
+
 </style>
+

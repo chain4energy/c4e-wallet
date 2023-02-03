@@ -92,7 +92,8 @@
     "KEY": "Klucz",
     "SUBSPACE": "Podprzestrzeń",
     "AMOUNT": "Ilość",
-    "VIEW_IN_EXPLORER": "Zobacz w eksploratorze"
+    "VIEW_IN_EXPLORER": "Zobacz w eksploratorze",
+    "AUTOMATIC_REFRESH": "Automatyczne odświeżanie"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Oddelegowane tokeny",
