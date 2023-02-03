@@ -1,7 +1,7 @@
 <template>
   <div class="refresh">{{$t("GOVERNANCE_VIEW.AUTOMATIC_REFRESH")}}</div>
   <div class="progress-bar">
-    <span :style="{'transition-duration': loadingTime + 's'}" v-bind:class="{'fill': fillBar, 'clear': !fillBar}" class="progress-bar-fill" style="width: 0">a</span>
+    <span :style="{'transition-duration': loadingTime + 'ms'}" v-bind:class="{'fill': fillBar, 'clear': !fillBar}" class="progress-bar-fill" style="width: 0">a</span>
   </div>
 </template>
 
@@ -28,7 +28,7 @@ const startFillingBar = () => {
   setTimeout(() => {
     fillBar.value = false;
     emit('refresh');
-  }, props.loadingTime * 1000);
+  }, props.loadingTime);
 };
 defineExpose({startFillingBar});
 </script>
