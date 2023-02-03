@@ -45,7 +45,8 @@ data:
       "explorerAccount": "https://explorer-dev.c4e.io/accounts/",
       "explorerTx": "https://explorer-dev.c4e.io/transactions/",
       "isMainNetwork": true,
-      "airdropBaseURL": "https://airdrop.c4e.io/"
+      "airdropBaseURL": "https://airdrop.c4e.io/",
+      "proposalVotingRefreshTimeout": "30000"
     },
       "Mainnet": {
         "bcApiURL": "https://lcd.c4e.io",
@@ -90,7 +91,8 @@ data:
         "explorerAccount": "https://explorer.c4e.io/accounts/",
         "explorerTx": "https://explorer.c4e.io/transactions/",
         "isMainNetwork": false,
-        "airdropBaseURL": "https://airdrop.c4e.io/"
+        "airdropBaseURL": "https://airdrop.c4e.io/",
+        "proposalVotingRefreshTimeout": "30000"
       },
       "Testnet": {
         "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -135,7 +137,8 @@ data:
         "explorerAccount": "https://explorer-testnet.c4e.io/accounts/",
         "explorerTx": "https://explorer-testnet.c4e.io/transactions/",
         "isMainNetwork": false,
-        "airdropBaseURL": "https://airdrop.c4e.io/"
+        "airdropBaseURL": "https://airdrop.c4e.io/",
+        "proposalVotingRefreshTimeout": "30000"
       }
 
     }
