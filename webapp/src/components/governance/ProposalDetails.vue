@@ -74,7 +74,7 @@ onMounted(() => {
 });
 
 const proposalsStore = useProposalsStore();
-const url = useConfigurationStore().config.explorerUrl+"/"+props.proposal?.proposalId;
+const url = useConfigurationStore().config.explorerUrl + "/proposals/" + props.proposal?.proposalId;
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');
 };
