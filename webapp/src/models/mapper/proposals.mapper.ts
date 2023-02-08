@@ -1,4 +1,9 @@
-import { GovernanceParameters, Proposal as BcProposal, Tally } from "@/models/blockchain/proposals";
+import {
+  GovernanceParameters,
+  Proposal as BcProposal,
+  ProposalsDetailsTallyResult,
+  Tally
+} from "@/models/blockchain/proposals";
 import { mapCoin } from "@/models/mapper/common.mapper";
 import {
   Proposal as StoreProposal,
@@ -6,11 +11,12 @@ import {
   ProposalTallyResult,
   ProposalStatus,
   TallyParams,
-  VoteOption, ProposalsPlan, ProposalsAmount, ProposalType, ProposalsChanges,
+  VoteOption, ProposalsPlan, ProposalsAmount, ProposalType, ProposalsChanges, ProposalDetailsTally,
 } from "@/models/store/proposal";
 import { Coin } from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ProposalVoteResponse } from "../hasura/proposal.vote";
+import {mapStakingPool} from "@/models/mapper/tokens.mapper";
 
 export function mapProposals(proposals: BcProposal[] | undefined): { proposals: StoreProposal[], numberOfActive: number }  {
   if (proposals === undefined) {
@@ -197,4 +203,21 @@ export function mapProposalVoteResponse(proposalVoteResponse: ProposalVoteRespon
     default:
       throw new Error(`Unsupported vote option: '${proposalVoteResponse.data.proposal_vote[0].option}'`);
   }
+}
+export function mapProposalsDetailsTallyResponse(proposalsDetailsTallyResponse: ProposalsDetailsTallyResult | undefined): ProposalDetailsTally | null {
+  if (proposalsDetailsTallyResponse === undefined) {
+    throw new Error('mapProposalsDetailsTallyResponse - mapProposalsDetailsTallyResponse is undefined');
+  }
+  // console.log("SDFDFSDF")
+  // console.log(proposalsDetailsTallyResponse)
+  // if (proposalsDetailsTallyResponse.data.proposalTallyResult === undefined) {
+  //   throw new Error('mapProposalsDetailsTallyResponse - proposalTallyResult is undefined');
+  // }
+  // if (proposalsDetailsTallyResponse.data.stakingPool === undefined) {
+  //   throw new Error('mapProposalsDetailsTallyResponse - stakingPool is undefined');
+  // }
+  const finalTallyResult = mapProposalTallyResult(proposalsDetailsTallyResponse.data.proposalTallyResult[0]);
+  const stakingPool = mapStakingPool(proposalsDetailsTallyResponse.data.stakingPool[0]);
+
+  return new ProposalDetailsTally(finalTallyResult, stakingPool);
 }

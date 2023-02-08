@@ -2,6 +2,7 @@ import {Coin, findByDenom } from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { BigDecimal, divideBigInts } from "./big.decimal";
 import { VoteOption as CosmVoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
+import {StakingPool} from "@/models/store/tokens";
 
 export enum ProposalStatus {
   PASSED= 'PROPOSAL_STATUS_PASSED' ,
@@ -197,4 +198,14 @@ export class TallyParams {
     this.vetoThreshold = vetoThreshold;
   }
 
+}
+export class ProposalDetailsTally {
+  proposalTally: ProposalTallyResult;
+  stakingPool: StakingPool;
+
+
+  constructor(proposalTally: ProposalTallyResult, stakingPool: StakingPool) {
+    this.proposalTally = proposalTally;
+    this.stakingPool = stakingPool;
+  }
 }

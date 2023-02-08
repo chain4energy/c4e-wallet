@@ -1,12 +1,12 @@
 <template>
   <div v-if="proposal" class="chart-container">
     <div class="top">
-
+      {{props.proposalDetailsTally}}
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL_VOTED") }} / {{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
       <span>
 <!--        <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/> /-->
         <CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.total)" :reduce-big-number="true" :precision="2"/> /
-        <CoinAmount :amount="tokensStore.getTotalBonded" :reduce-big-number="true" :precision="2"/>
+        <CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.stakingPool.bondedTokens)" :reduce-big-number="true" :precision="2"/>
       </span>
 
     </div>
@@ -26,7 +26,7 @@
           {{ $t("GOVERNANCE_VIEW."+getProposalStatus())}}
         </div>
     </ShadowedSvgChart>
-    <ProgressBarComponent ref="childRef" @refresh="updateVotes" :loading-time="useConfigurationStore().getConfig.proposalVotingRefreshTimeout" style="width: 100%"></ProgressBarComponent>
+    <ProgressBarComponent v-if="getProposalStatus()===ProposalStatus.VOTING_PERIOD || getProposalStatus()===ProposalStatus.DEPOSIT_PERIOD" ref="childRef" @refresh="updateVotes" :loading-time="useConfigurationStore().getConfig.proposalVotingRefreshTimeout" style="width: 100%"></ProgressBarComponent>
     <div class="voting-result">
       <div style="display: flex; align-items: center">
         <div class="dot yes"></div>
@@ -90,7 +90,7 @@
 
 <script setup lang="ts">
 
-import {computed, onMounted, ref} from "vue";
+import {computed, onBeforeMount, onMounted, ref} from "vue";
 import {PieChart} from "echarts/charts";
 import VChart from "vue-echarts";
 import {use} from "echarts/core";
@@ -98,7 +98,7 @@ import {SVGRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import VoteModal from "@/components/governance/VoteModal.vue";
 import Icon from "../features/IconComponent.vue";
-import {Proposal} from "@/models/store/proposal";
+import {Proposal, ProposalDetailsTally} from "@/models/store/proposal";
 import {ProposalStatus} from "@/models/store/proposal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { createProposalDetailsChartData } from "@/charts/governance";
@@ -110,6 +110,7 @@ import GovernanceIcon from "../commons/GovernanceIcon.vue";
 import {useTokensStore} from "@/store/tokens.store";
 import {BigIntWrapper} from "@/models/store/common";
 import ProgressBarComponent from "@/components/features/ProgressBarComponent.vue";
+import apiFactory from "@/api/factory.api";
 
 use([
   SVGRenderer,
@@ -122,9 +123,18 @@ use([
 
 const tokensStore = useTokensStore();
 
+onBeforeMount(() => {
+  if(props.proposal?.proposalId) {
+    apiFactory.proposalsApi().fetchProposalsDetailsTally(props.proposal?.proposalId, true).then(res => {
+      console.log(res)
+    })
+  }
+
+});
 const childRef = ref<InstanceType<typeof ProgressBarComponent>>();
 const props = defineProps<{
-  proposal?: Proposal
+  proposal?: Proposal,
+  proposalDetailsTally?: ProposalDetailsTally
 }>();
 
 const icons  = new Map<string, string>([

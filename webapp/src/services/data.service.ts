@@ -146,7 +146,10 @@ class DataService extends LoggedService {
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
     this.onProposalDetailsError = onError;
-    useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
+    useProposalsStore().fetchProposalsDetailsTally(proposeId).then(() => {
+      useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
+    });
+
   }
 
   public onProposalUnselected() {

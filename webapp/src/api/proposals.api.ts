@@ -1,10 +1,24 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import { RequestResponse } from "@/models/request-response";
 import BaseApi, { BlockchainPagination } from "@/api/base.api";
-import {Proposal, ProposalTallyResult, TallyParams, VoteOption } from "@/models/store/proposal";
+import {Proposal, ProposalDetailsTally, ProposalTallyResult, TallyParams, VoteOption} from "@/models/store/proposal";
 import { ErrorData } from "@/api/base.api";
-import { ProposalsResponse, ProposalResponse, GovernanceParameters, TallyResponse } from "@/models/blockchain/proposals";
-import { mapDepositParams, mapProposalByID, mapProposals, mapProposalVoteResponse, mapProposalTallyResult, mapTallyParams } from "@/models/mapper/proposals.mapper";
+import {
+  ProposalsResponse,
+  ProposalResponse,
+  GovernanceParameters,
+  TallyResponse,
+  ProposalsDetailsTallyResult
+} from "@/models/blockchain/proposals";
+import {
+  mapDepositParams,
+  mapProposalByID,
+  mapProposals,
+  mapProposalVoteResponse,
+  mapProposalTallyResult,
+  mapTallyParams,
+  mapProposalsDetailsTallyResponse
+} from "@/models/mapper/proposals.mapper";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { Coin } from "@/models/store/common";
 import queries from "./queries";
@@ -67,9 +81,16 @@ export class ProposalsApi extends BaseApi {
   }
 
   public async fetchProposalVote(id: number, voter: string, lockscreen: boolean): Promise<RequestResponse<VoteOption | null, ErrorData<HasuraErrorData>>> {
-    const mapData = (hasureData: ProposalVoteResponse | undefined) => { 
-        return mapProposalVoteResponse(hasureData); 
+    const mapData = (hasureData: ProposalVoteResponse | undefined) => {
+        return mapProposalVoteResponse(hasureData);
     };
     return this.axiosHasuraCall(formatString(queries.hasura.PROPOSAL_USER_VOTE_QUERY, {proposalId: id, voter: voter}), mapData, lockscreen, null, 'fetchProposalVote - ');
+  }
+
+  public async fetchProposalsDetailsTally(id: number, lockscreen: boolean): Promise<RequestResponse<ProposalDetailsTally | null, ErrorData<HasuraErrorData>>> {
+    const mapData = (hasureData: ProposalsDetailsTallyResult | undefined) => {
+      return mapProposalsDetailsTallyResponse(hasureData);
+    };
+    return this.axiosHasuraCall(formatString(queries.hasura.PROPOSALS_DETAILS_TALLY_QUERY, {proposalId: id}), mapData, lockscreen, null, 'fetchProposalsDetailsTally - ');
   }
 }

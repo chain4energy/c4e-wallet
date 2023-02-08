@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {Proposal, ProposalTallyResult, TallyParams, VoteOption} from "@/models/store/proposal";
+import {Proposal, ProposalDetailsTally, ProposalTallyResult, TallyParams, VoteOption} from "@/models/store/proposal";
 import { useToast} from "vue-toastification";
 import { Coin } from "@/models/store/common";
 import { useConfigurationStore } from "./configuration.store";
@@ -23,6 +23,7 @@ interface ProposalsState {
   tallyParams: TallyParams,
   minDeposit: Coin,
   userVote: VoteOption | null;
+  proposalDetailsTally: ProposalDetailsTally | undefined;
 }
 
 export const useProposalsStore = defineStore({
@@ -39,7 +40,8 @@ export const useProposalsStore = defineStore({
       paginationKey: null,
       tallyParams: new TallyParams(Number.NaN, Number.NaN, Number.NaN),
       minDeposit: new Coin(0n, useConfigurationStore().config.stakingDenom),
-      userVote: null
+      userVote: null,
+      proposalDetailsTally: undefined
     };
   },
   actions: {
@@ -207,6 +209,17 @@ export const useProposalsStore = defineStore({
         }
       });
     },
+    async fetchProposalsDetailsTally(id:number, lockscreen = true) {
+      await apiFactory.proposalsApi().fetchProposalsDetailsTally(id, lockscreen).then(response => {
+        if (response.error == null && response.data != undefined) {
+          this.proposalDetailsTally = response.data;
+        } else {
+          const message = 'Error fetching proposals details tally';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
+        }
+      });
+    },
     clearProposals() {
       this.proposals = Array<Proposal>();
       this.proposalById= new Map<number, number>();
@@ -245,6 +258,9 @@ export const useProposalsStore = defineStore({
     },
     getProposal(): Proposal | undefined {
       return this.proposal;
+    },
+    getProposalDetailsTally(): ProposalDetailsTally | undefined {
+      return this.proposalDetailsTally;
     },
     getTallyParams(): TallyParams {
       return this.tallyParams;

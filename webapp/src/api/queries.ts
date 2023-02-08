@@ -41,7 +41,19 @@ export default {
           'avatar_url' +
         '}' +
       '}' +
-    '}'
+    '}',
+    PROPOSALS_DETAILS_TALLY_QUERY: 'query ProposalDetailsTally {' +
+      'proposalTallyResult: proposal_tally_result(where: {proposal_id: {_eq: {proposalId}}}) {' +
+      '    yes' +
+      '    no' +
+      '    no_with_veto: no_with_veto' +
+      '    abstain' +
+      '  }' +
+      '  stakingPool: proposal_staking_pool_snapshot(where: {proposal_id: {_eq: {proposalId}}}) {' +
+      '    bonded_tokens: bonded_tokens' +
+      '    not_bonded_tokens: not_bonded_tokens' +
+      '  }' +
+      '}'
   },
   keybase: {
     QUERY_URL: '/_/api/1.0/user/user_search.json?q={keybaseHash}&num_wanted=1'
