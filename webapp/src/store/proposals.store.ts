@@ -89,6 +89,9 @@ export const useProposalsStore = defineStore({
         await apiFactory.proposalsApi().fetchProposalById(id, lockscreen).then(async (resp) => {
           if (resp.isSuccess() && resp.data !== undefined){
             this.proposal = resp.data.proposal;
+            if(this.proposals.length<0){
+              this.proposals.push(this.proposal);
+            }
             const promises = Array<Promise<void>>();
             if (useUserStore().isLoggedIn) {
               logger.logToConsole(LogLevel.DEBUG, 'fetchProposalById ', String(useUserStore().isLoggedIn));

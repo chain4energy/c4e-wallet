@@ -73,4 +73,5 @@ export interface Configuration {
   testFileName?: string,
   airdropBaseURL: string;
   proposalVotingRefreshTimeout: number;
+  airdropDefaultDenom: string
 }

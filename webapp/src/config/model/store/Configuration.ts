@@ -167,6 +167,7 @@ export class Configuration implements JsonConfiguration {
   testFileName?: string;
   airdropBaseURL: string;
   proposalVotingRefreshTimeout: number;
+  airdropDefaultDenom: string;
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -208,6 +209,7 @@ export class Configuration implements JsonConfiguration {
       this.testMode = configuration.testMode ? configuration.testMode : false;
       this.testFileName = configuration.testFileName;
       this.airdropBaseURL = configuration.airdropBaseURL;
+      this.airdropDefaultDenom = configuration.airdropDefaultDenom;
       this.proposalVotingRefreshTimeout = configuration.proposalVotingRefreshTimeout;
     } else {
       this.bcApiURL = '';
@@ -241,6 +243,7 @@ export class Configuration implements JsonConfiguration {
       this.isEmpty = true;
       this.testMode = false;
       this.airdropBaseURL = '';
+      this.airdropDefaultDenom = 'uc4e';
       this.proposalVotingRefreshTimeout = 30000;
     }
   }

@@ -333,6 +333,7 @@
     "DESCRIPTION": "Description",
     "THE": "The",
     "RETURN": "Return",
+    "CLAIM": "Claim",
     "INPUT": {
       "AMOUNT": "amount",
       "ADDRESS": "address"
@@ -379,6 +380,9 @@
     "C4E_HELP": "Provide C4E or COSMOS address",
     "COSMOS_HELP": "Import COSMOS address",
     "CHECK": "Check"
+  },
+  "CLAIM_AIRDROP": {
+    "PROGRESS":"Campaign countdown"
   },
   "COPY": {
     "ADDRESS": "Address has been copied to clipboard",
