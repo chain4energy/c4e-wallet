@@ -97,6 +97,7 @@ import {Coin} from "@/models/store/common";
 import {MissionType} from "@/models/blockchain/airdrop";
 import router from "@/router";
 import ClaimingOptionsPopup from "@/components/airdrop/ClaimingOptionsPopup.vue";
+import dataService from "@/services/data.service";
 
 const percentsBar = ref();
 
@@ -122,6 +123,7 @@ const address = computed(() => {
 watch(isLoggedIn, (next, prev)=>{
   if(next){
     useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true);
+    dataService.onClaimAirdrop(useUserStore().getAccount.address);
   }
 });
 const fairdropPoolUsage = computed(()=>{

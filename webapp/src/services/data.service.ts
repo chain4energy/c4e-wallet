@@ -9,6 +9,7 @@ import {LoggedService} from "./logged.service";
 import {LogLevel} from "./logger/log-level";
 import {ServiceTypeEnum} from "./logger/service-type.enum";
 import {ConnectionInfo} from "@/api/wallet.connecton.api";
+import {useAirDropStore} from "@/store/airDrop.store";
 
 const keplrKeyStoreChange = 'keplr_keystorechange';
 
@@ -270,6 +271,20 @@ class DataService extends LoggedService {
   private disableKeplrAccountChangeListener() {
     this.logToConsole(LogLevel.DEBUG, 'disableKeplrAccountChangeListener');
     window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
+  }
+
+  public onClaimAirdrop(address: string) {
+    this.logToConsole(LogLevel.DEBUG, 'onClaimAirdrop');
+    useAirDropStore().fetchCampaigns(address, true);
+  }
+
+  public async onProposalUpdateVotes(proposalId: number) {
+    this.logToConsole(LogLevel.DEBUG, 'onProposalUpdateVotes');
+    await useProposalsStore().fetchVotingProposalTallyResult(proposalId, true, false);
+  }
+  public onClaimRewards() {
+    this.logToConsole(LogLevel.DEBUG, 'onClaimRewards');
+    useUserStore().claimRewards();
   }
 
 }

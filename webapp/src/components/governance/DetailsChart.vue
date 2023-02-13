@@ -111,6 +111,7 @@ import {useTokensStore} from "@/store/tokens.store";
 import {BigIntWrapper} from "@/models/store/common";
 import ProgressBarComponent from "@/components/features/ProgressBarComponent.vue";
 import apiFactory from "@/api/factory.api";
+import dataService from "@/services/data.service";
 
 use([
   SVGRenderer,
@@ -123,14 +124,6 @@ use([
 
 const tokensStore = useTokensStore();
 
-onBeforeMount(() => {
-  if(props.proposal?.proposalId) {
-    apiFactory.proposalsApi().fetchProposalsDetailsTally(props.proposal?.proposalId, true).then(res => {
-      console.log(res)
-    })
-  }
-
-});
 const childRef = ref<InstanceType<typeof ProgressBarComponent>>();
 const props = defineProps<{
   proposal?: Proposal,
@@ -154,7 +147,7 @@ const sumOfVotes = computed(() => {
 
 const updateVotes = async () => {
   if(props.proposal?.proposalId) {
-    await useProposalsStore().fetchVotingProposalTallyResult(props.proposal?.proposalId, true, false);
+    await dataService.onProposalUpdateVotes(props.proposal.proposalId);
   }
   childRef.value?.startFillingBar();
 };
