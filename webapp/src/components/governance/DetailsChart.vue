@@ -33,10 +33,10 @@
         <div class="bar-legend">
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
           <div style="font-weight: bold">
-            <PercentsView :amount="useProposalsStore().getProposalDetailsTally.proposalTally.getYesPercentage()" :precision="2"></PercentsView>
+            <PercentsView :amount="useProposalsStore().getProposalDetailsTally.getYesPercentage()" :precision="2"></PercentsView>
           </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.proposalTally.yes)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.getYes())" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -44,10 +44,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getProposalDetailsTally.proposalTally.getAbstainPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="useProposalsStore().getProposalDetailsTally.getAbstainPercentage()" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.proposalTally.abstain)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.getAbstain())" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -55,10 +55,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getProposalDetailsTally.proposalTally.getNoPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="useProposalsStore().getProposalDetailsTally.getNoPercentage()" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.proposalTally.no)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.getNo())" :reduce-big-number="true" :precision="2"/>)
       </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -66,10 +66,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getProposalDetailsTally.proposalTally.getNoWithVetoPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="useProposalsStore().getProposalDetailsTally.getNoWithVetoPercentage()" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.proposalTally.noWithVeto)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.getNoWithVetoPercentage())" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
     </div>
@@ -141,7 +141,7 @@ const icons  = new Map<string, string>([
 
 
 const sumOfVotes = computed(() => {
-  const val = useProposalsStore().getSelectedProposalTally.total;
+  const val = useProposalsStore().getProposalDetailsTally?.total;
   return (val && val > 0) ? val : -1n;
 });
 
@@ -153,19 +153,35 @@ const updateVotes = async () => {
 };
 
 const yes = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.yes);
+  const res = useProposalsStore().getProposalDetailsTally?.getYes();
+  if(res != undefined) {
+    return useConfigurationStore().config.getConvertedAmount(res);
+  }
+  return 0;
 });
 
 const no = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.no);
+  const res = useProposalsStore().getProposalDetailsTally?.getNo();
+  if(res != undefined) {
+    return useConfigurationStore().config.getConvertedAmount(res);
+  }
+  return 0;
 });
 
 const abstain = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.abstain);
+  const res = useProposalsStore().getProposalDetailsTally?.getAbstain();
+  if(res != undefined) {
+    return useConfigurationStore().config.getConvertedAmount(res);
+  }
+  return 0;
 });
 
 const noWithVeto = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.noWithVeto);
+  const res = useProposalsStore().getProposalDetailsTally?.getNoWithVeto();
+  if(res != undefined) {
+    return useConfigurationStore().config.getConvertedAmount(res);
+  }
+  return 1;
 });
 
 const option = computed(() => {

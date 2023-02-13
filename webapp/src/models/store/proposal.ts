@@ -240,18 +240,18 @@ export class ProposalDetailsTally {
     return divideBigInts(this.proposalTally.noWithVeto, this.total);
   }
 
-  public getAbstain(): BigDecimal{
-    return new BigDecimal(this.total - this.proposalTally.yes - this.proposalTally.no - this.proposalTally.noWithVeto);
+  public getAbstain(): bigint{
+    return this.total - this.proposalTally.yes - this.proposalTally.no - this.proposalTally.noWithVeto;
   }
 
-  public getYes(): BigDecimal{
-    return new BigDecimal(this.proposalTally.yes);
+  public getYes(): bigint{
+    return this.proposalTally.yes;
   }
-  public getNoWithVeto(): BigDecimal{
-    return new BigDecimal(this.proposalTally.noWithVeto);
+  public getNoWithVeto(): bigint{
+    return this.proposalTally.noWithVeto;
   }
-  public getNo(): BigDecimal{
-    return new BigDecimal(this.proposalTally.no);
+  public getNo(): bigint{
+    return this.proposalTally.no;
   }
 }
 
