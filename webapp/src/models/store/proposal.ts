@@ -208,4 +208,35 @@ export class ProposalDetailsTally {
     this.proposalTally = proposalTally;
     this.stakingPool = stakingPool;
   }
+
+  public get total(): bigint {
+    return this.stakingPool.bondedTokens;
+  }
+
+  public getYesPercentage(): BigDecimal {
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.yes, this.total);
+  }
+  public getAbstainPercentage(): BigDecimal{
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.abstain, this.total);
+  }
+
+  public getNoPercentage(): BigDecimal {
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.no, this.total);
+  }
+
+  public getNoWithVetoPercentage(): BigDecimal {
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.noWithVeto, this.total);
+  }
 }

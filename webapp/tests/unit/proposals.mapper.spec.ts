@@ -1,4 +1,4 @@
-import { GovernanceParameters, Tally } from "@/models/blockchain/proposals";
+import {GovernanceParameters, Proposal as BcProposal, Tally} from "@/models/blockchain/proposals";
 import { ProposalVoteResponse } from "@/models/hasura/proposal.vote";
 import { mapDepositParams, mapProposal, mapProposalByID, mapProposals, mapProposalTallyResult, mapProposalVoteResponse, mapTallyParams } from "@/models/mapper/proposals.mapper";
 import { VoteOption } from "@/models/store/proposal";
@@ -35,7 +35,7 @@ describe('tests mapping of proposals related data',  () => {
   });
 
   it('map Proposal', async ()=> {
-    const bcProposal = createProposal();
+    const bcProposal: BcProposal = createProposal();
     const storeProposal = mapProposal(bcProposal);
     expectProposal(storeProposal, bcProposal);
   })

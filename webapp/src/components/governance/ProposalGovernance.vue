@@ -68,7 +68,7 @@
               <b><PercentsView :amount="yesPercentage" :precision="2"/></b>
             </div>
 <!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).yes" :reduce-big-number="true" :precision="2"/>)-->
-            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).yes)" :reduce-big-number="true" :precision="2"/>)
+            (<CoinAmount :amount="new BigIntWrapper(yes)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
         <div style="display: flex; align-items: center">
@@ -79,7 +79,7 @@
               <b><PercentsView :amount="abstainPercentage" :precision="2"/></b>
             </div>
 <!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).abstain" :reduce-big-number="true" :precision="2"/>)-->
-            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).abstain)" :reduce-big-number="true" :precision="2"/>)
+            (<CoinAmount :amount="new BigIntWrapper(abstain)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
         <div style="display: flex; align-items: center">
@@ -90,7 +90,7 @@
               <b><PercentsView :amount=" noPercentage" :precision="2"/></b>
             </div>
 <!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).no" :reduce-big-number="true" :precision="2"/>)-->
-            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).no)" :reduce-big-number="true" :precision="2"/>)
+            (<CoinAmount :amount="new BigIntWrapper(no)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
         <div style="display: flex; align-items: center">
@@ -101,7 +101,7 @@
               <b><PercentsView :amount="noWithVetoPercentage" :precision="2"/></b>
             </div>
 <!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).noWithVeto" :reduce-big-number="true" :precision="2"/>)-->
-            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).noWithVeto)" :reduce-big-number="true" :precision="2"/>)
+            (<CoinAmount :amount="new BigIntWrapper(noWithVeto)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
       </div>
@@ -160,6 +160,7 @@ const showChartTooltip = ref(false);
 const tooltipPosX = ref(0);
 const tooltipPosY = ref(0);
 const tooltipBorderColor = ref('');
+const proposalStore = useProposalsStore();
 
 const showTooltip = (option, value) => {
   if(option == 'YES') {
@@ -192,35 +193,43 @@ function hideTooltip(){
 }
 
 const yesPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getYesPercentage();
+  const yesPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYesPercentage();
+  return yesPercentage!=undefined ? yesPercentage : 0;
 });
 
 const noPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getNoPercentage();
+  const noPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoPercentage();
+  return noPercentage!=undefined ? noPercentage : 0;
 });
 
 const abstainPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getAbstainPercentage();
+  const abstainPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getAbstainPercentage();
+  return abstainPercentage != undefined ? abstainPercentage : 0;
 });
 
 const noWithVetoPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getNoWithVetoPercentage();
+  const noWithVetoPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoWithVetoPercentage();
+  return noWithVetoPercentage != undefined ? noWithVetoPercentage : 0;
 });
 
 const yes = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).yes);
+  const yes = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.proposalTally.yes;
+  return yes != undefined ? yes : 0n;
 });
 
 const no = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).no);
+  const no = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.proposalTally.no;
+  return no!=undefined ? no : 0n;
 });
 
 const abstain = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).abstain);
+  const abstain = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.proposalTally.abstain;
+  return abstain != undefined ? abstain : 0n;
 });
 
 const noWithVeto = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).noWithVeto);
+ const noWithVeto = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.proposalTally.noWithVeto;
+ return noWithVeto!=undefined ? noWithVeto : 0n;
 });
 
 const sumOfVotes = computed(() => {

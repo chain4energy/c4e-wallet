@@ -57,6 +57,20 @@ export default {
       '    bonded_tokens: bonded_tokens' +
       '    not_bonded_tokens: not_bonded_tokens' +
       '  }' +
+      '}',
+    PROPOSALS_DETAILS_TALLY_LIST_QUERY: 'query ProposalDetailsTallyList {' +
+      'proposalTallyResult: proposal_tally_result(where: {proposal_id: {_in: [{proposalsIds}]}}) {' +
+      '    yes' +
+      '    no' +
+      '    no_with_veto: no_with_veto' +
+      '    abstain' +
+      '    proposal_id '+
+      '  }' +
+      '  stakingPool: proposal_staking_pool_snapshot(where: {proposal_id: {_in: [{proposalsIds}]}}) {' +
+      '    bonded_tokens: bonded_tokens' +
+      '    not_bonded_tokens: not_bonded_tokens' +
+      '    proposal_id '+
+      '  }' +
       '}'
   },
   keybase: {

@@ -17,7 +17,7 @@ import {
   mapProposalVoteResponse,
   mapProposalTallyResult,
   mapTallyParams,
-  mapProposalsDetailsTallyResponse
+  mapProposalsDetailsTallyResponse, mapProposalsDetailsTallyListResponse
 } from "@/models/mapper/proposals.mapper";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { Coin } from "@/models/store/common";
@@ -92,5 +92,12 @@ export class ProposalsApi extends BaseApi {
       return mapProposalsDetailsTallyResponse(hasureData);
     };
     return this.axiosHasuraCall(formatString(queries.hasura.PROPOSALS_DETAILS_TALLY_QUERY, {proposalId: id}), mapData, lockscreen, null, 'fetchProposalsDetailsTally - ');
+  }
+
+  public async fetchProposalsDetailsTallyList(ids: number[], lockscreen: boolean): Promise<RequestResponse<Map<number, ProposalDetailsTally> | null, ErrorData<HasuraErrorData>>> {
+    const mapData = (hasureData: ProposalsDetailsTallyResult | undefined) => {
+      return mapProposalsDetailsTallyListResponse(hasureData);
+    };
+    return this.axiosHasuraCall(formatString(queries.hasura.PROPOSALS_DETAILS_TALLY_LIST_QUERY, {proposalsIds: ids}), mapData, lockscreen, null, 'fetchProposalsDetailsTallyList - ');
   }
 }
