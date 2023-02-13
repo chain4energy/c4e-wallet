@@ -223,7 +223,7 @@ export class ProposalDetailsTally {
     if (this.total <= 0n) {
       return new BigDecimal(0);
     }
-    return divideBigInts(this.proposalTally.abstain, this.total);
+    return divideBigInts(this.total - this.proposalTally.yes - this.proposalTally.no - this.proposalTally.noWithVeto, this.total);
   }
 
   public getNoPercentage(): BigDecimal {
@@ -239,4 +239,19 @@ export class ProposalDetailsTally {
     }
     return divideBigInts(this.proposalTally.noWithVeto, this.total);
   }
+
+  public getAbstain(): BigDecimal{
+    return new BigDecimal(this.total - this.proposalTally.yes - this.proposalTally.no - this.proposalTally.noWithVeto);
+  }
+
+  public getYes(): BigDecimal{
+    return new BigDecimal(this.proposalTally.yes);
+  }
+  public getNoWithVeto(): BigDecimal{
+    return new BigDecimal(this.proposalTally.noWithVeto);
+  }
+  public getNo(): BigDecimal{
+    return new BigDecimal(this.proposalTally.no);
+  }
 }
+

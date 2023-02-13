@@ -54,6 +54,8 @@
         <div @mouseover="showTooltip('ABSTAIN', (abstainPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="abstain" :style="'flex-basis:' + abstainPercentage * 100 + '%'"></div>
         <div @mouseover="showTooltip('NO', (noPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no" :style="'flex-basis:' + noPercentage * 100 + '%'"></div>
         <div @mouseover="showTooltip('NO_WITH_VETO', (noWithVetoPercentage).toFixed(2) * 100 + '%')" @mouseout="hideTooltip" class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentage * 100 + '%'"></div>
+        <div @mouseover="showTooltip('THRESHOLD', thresholdPercentage.toFixed(2) + '%')" :style="{'left':thresholdPercentage+'%'}" @mouseout="hideTooltip" class="vl"></div>
+        <div @mouseover="showTooltip('QUORUM', quorumPercentage.toFixed(2)  + '%')" :style="{'left':quorumPercentage+'%'}" @mouseout="hideTooltip" class="vl"></div>
         <!-- <v-chart :option="option" /> -->
       </div>
 
@@ -175,6 +177,12 @@ const showTooltip = (option, value) => {
   if(option == 'NO_WITH_VETO') {
     tooltipBorderColor.value = '#FDDB2A';
   }
+  if(option == 'THRESHOLD') {
+    tooltipBorderColor.value = '#000000';
+  }
+  if(option == 'QUORUM') {
+    tooltipBorderColor.value = '#000000';
+  }
   tooltipOption.value = option;
   tooltipValue.value = value;
   showChartTooltip.value = true;
@@ -191,6 +199,13 @@ const updateTooltipPosition = (e) => {
 function hideTooltip(){
     showChartTooltip.value = false;
 }
+const thresholdPercentage = computed(() => {
+  return useProposalsStore().getTallyParams.threshold * 100;
+});
+
+const quorumPercentage = computed(() => {
+  return useProposalsStore().getTallyParams.quorum * 100;
+});
 
 const yesPercentage = computed(() => {
   const yesPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYesPercentage();
@@ -213,22 +228,22 @@ const noWithVetoPercentage = computed(() => {
 });
 
 const yes = computed(() => {
-  const yes = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.proposalTally.yes;
+  const yes = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYes();
   return yes != undefined ? yes : 0n;
 });
 
 const no = computed(() => {
-  const no = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.proposalTally.no;
+  const no = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNo();
   return no!=undefined ? no : 0n;
 });
 
 const abstain = computed(() => {
-  const abstain = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.proposalTally.abstain;
+  const abstain = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getAbstain();
   return abstain != undefined ? abstain : 0n;
 });
 
 const noWithVeto = computed(() => {
- const noWithVeto = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.proposalTally.noWithVeto;
+ const noWithVeto = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoWithVeto();
  return noWithVeto!=undefined ? noWithVeto : 0n;
 });
 
@@ -401,9 +416,15 @@ const option = computed(() => {
       border-radius: 15px;
       overflow: hidden;
       background: grey;
-
+      position: relative;
       div {
         height: 100%;
+      }
+      .vl {
+        position: absolute;
+        left: 50%;
+        border-left: 3px dotted black;
+        height: 20px;
       }
     }
   }
