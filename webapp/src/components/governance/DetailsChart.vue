@@ -5,8 +5,8 @@
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL_VOTED") }} / {{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
       <span>
 <!--        <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/> /-->
-        <CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.proposalTally.total)" :reduce-big-number="true" :precision="2"/> /
-        <CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.stakingPool.bondedTokens)" :reduce-big-number="true" :precision="2"/>
+        <CoinAmount :amount="useProposalsStore().getProposalDetailsTally?.proposalTally.total!==undefined ? new BigIntWrapper(useProposalsStore().getProposalDetailsTally.proposalTally.total) : 0" :reduce-big-number="true" :precision="2"/> /
+        <CoinAmount :amount="useProposalsStore().getProposalDetailsTally?.stakingPool.bondedTokens !== undefined ? new BigIntWrapper(useProposalsStore().getProposalDetailsTally.stakingPool.bondedTokens) : 0" :reduce-big-number="true" :precision="2"/>
       </span>
 
     </div>
@@ -15,7 +15,7 @@
         {{ $t("GOVERNANCE_VIEW.CURRENT_TURNOUT") }}
       </span>
       <span>
-        {{calculatePercents(Number(useProposalsStore().getProposalDetailsTally.proposalTally.total), Number(useProposalsStore().getProposalDetailsTally.stakingPool.bondedTokens), 2)}}%
+        {{calculatePercents(Number(useProposalsStore().getProposalDetailsTally?.proposalTally.total), Number(useProposalsStore().getProposalDetailsTally?.stakingPool.bondedTokens), 2)}}%
       </span>
     </div>
 
@@ -33,10 +33,10 @@
         <div class="bar-legend">
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
           <div style="font-weight: bold">
-            <PercentsView :amount="useProposalsStore().getProposalDetailsTally.getYesPercentage()" :precision="2"></PercentsView>
+            <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getYesPercentage()" :precision="2"></PercentsView>
           </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.getYes())" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="yes" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -44,10 +44,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getProposalDetailsTally.getAbstainPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getAbstainPercentage()" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.getAbstain())" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="abstain" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -55,10 +55,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getProposalDetailsTally.getNoPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getNoPercentage()" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.getNo())" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="no" :reduce-big-number="true" :precision="2"/>)
       </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -66,10 +66,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getProposalDetailsTally.getNoWithVetoPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getNoWithVetoPercentage()" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalDetailsTally.getNoWithVetoPercentage())" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="noWithVeto" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
     </div>
