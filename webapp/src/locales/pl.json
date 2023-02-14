@@ -113,7 +113,9 @@
     "AVERAGE_BLOCK_TIME": "Średni czas bloku",
     "CIRCULATING_SUPPLY": "Tokeny w obiegu",
     "INFLATION": "Inflacja",
-    "STACKING_APR": "Nagroda za delegację tokenów (APR)"
+    "TARGET_INFLATION": "Docelowa inflacja",
+    "STACKING_APR": "Nagroda za delegację tokenów (APR)",
+    "TARGET_STACKING_APR": "Docelowa nagroda za delegację tokenów (APR)"
   },
   "FAQ_VIEW": {
     "TITLES": {

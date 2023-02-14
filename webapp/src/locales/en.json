@@ -113,7 +113,9 @@
     "AVERAGE_BLOCK_TIME": "Average block time",
     "CIRCULATING_SUPPLY": "Circulating supply",
     "INFLATION": "Inflation",
-    "STACKING_APR": "Staking APR"
+    "TARGET_INFLATION": "Target inflation",
+    "STACKING_APR": "Staking APR",
+    "TARGET_STACKING_APR" : "Target staking APR"
   },
   "FAQ_VIEW": {
     "TITLES": {
