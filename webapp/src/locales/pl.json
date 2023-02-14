@@ -43,7 +43,9 @@
       "YES": "Tak",
       "NO": "Nie",
       "ABSTAIN": "Wstrzymanie",
-      "NO_WITH_VETO": "Nie z Weto"
+      "NO_WITH_VETO": "Nie z Weto",
+      "THRESHOLD": "Próg",
+      "QUORUM": "Kworum"
     },
     "ERRORS": {
       "NO_STAKED": "Your voice will not be counted (only staked amount is counting in vote but you have '0')"

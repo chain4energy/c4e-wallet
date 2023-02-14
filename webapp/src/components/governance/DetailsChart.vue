@@ -26,7 +26,7 @@
           {{ $t("GOVERNANCE_VIEW."+getProposalStatus())}}
         </div>
     </ShadowedSvgChart>
-    <ProgressBarComponent v-if="getProposalStatus()===ProposalStatus.VOTING_PERIOD || getProposalStatus()===ProposalStatus.DEPOSIT_PERIOD" ref="childRef" @refresh="updateVotes" :loading-time="useConfigurationStore().getConfig.proposalVotingRefreshTimeout" style="width: 100%"></ProgressBarComponent>
+    <ProgressBarComponent v-if="getProposalStatus()===ProposalStatus.VOTING_PERIOD" ref="childRef" @refresh="updateVotes" :loading-time="useConfigurationStore().getConfig.proposalVotingRefreshTimeout" style="width: 100%"></ProgressBarComponent>
     <div class="voting-result">
       <div style="display: flex; align-items: center">
         <div class="dot yes"></div>
@@ -155,40 +155,44 @@ const updateVotes = async () => {
 const yes = computed(() => {
   const res = useProposalsStore().getProposalDetailsTally?.getYes();
   if(res != undefined) {
-    return useConfigurationStore().config.getConvertedAmount(res);
+    return res;
   }
-  return 0;
+  return undefined;
 });
 
 const no = computed(() => {
   const res = useProposalsStore().getProposalDetailsTally?.getNo();
   if(res != undefined) {
-    return useConfigurationStore().config.getConvertedAmount(res);
+    return res;
   }
-  return 0;
+  return undefined;
 });
 
 const abstain = computed(() => {
   const res = useProposalsStore().getProposalDetailsTally?.getAbstain();
   if(res != undefined) {
-    return useConfigurationStore().config.getConvertedAmount(res);
+    return res;
   }
-  return 0;
+  return undefined;
 });
 
 const noWithVeto = computed(() => {
   const res = useProposalsStore().getProposalDetailsTally?.getNoWithVeto();
   if(res != undefined) {
-    return useConfigurationStore().config.getConvertedAmount(res);
+    return res;
   }
-  return 1;
+  return undefined;
 });
 
 const option = computed(() => {
-  if (!yes.value || !abstain.value || !no.value || !noWithVeto.value) {
+  if (yes.value==undefined || abstain.value==undefined || no.value==undefined || noWithVeto.value==undefined) {
     return '';
   }
-  return createProposalDetailsChartData(yes.value, abstain.value, no.value, noWithVeto.value, sumOfVotes.value);
+  return createProposalDetailsChartData(useConfigurationStore().config.getConvertedAmount(yes.value),
+    useConfigurationStore().config.getConvertedAmount(abstain.value),
+    useConfigurationStore().config.getConvertedAmount(no.value),
+    useConfigurationStore().config.getConvertedAmount(noWithVeto.value),
+    sumOfVotes.value);
 });
 
 function getProposalTitle() {

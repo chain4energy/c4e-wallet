@@ -49,15 +49,29 @@
       </div>
     </div>
     <div class="bottom" @mousemove="updateTooltipPosition($event)" v-if="proposal.status !== ProposalStatus.DEPOSIT_PERIOD">
-      <div style="height:20px" class="chartdiv">
-        <div @mouseover="showTooltip('YES', (yesPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="yes" :style="'flex-basis:' + yesPercentage * 100 + '%'"></div>
-        <div @mouseover="showTooltip('ABSTAIN', (abstainPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="abstain" :style="'flex-basis:' + abstainPercentage * 100 + '%'"></div>
-        <div @mouseover="showTooltip('NO', (noPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no" :style="'flex-basis:' + noPercentage * 100 + '%'"></div>
-        <div @mouseover="showTooltip('NO_WITH_VETO', (noWithVetoPercentage).toFixed(2) * 100 + '%')" @mouseout="hideTooltip" class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentage * 100 + '%'"></div>
-        <div @mouseover="showTooltip('THRESHOLD', thresholdPercentage.toFixed(2) + '%')" :style="{'left':thresholdPercentage+'%'}" @mouseout="hideTooltip" class="vl"></div>
-        <div @mouseover="showTooltip('QUORUM', quorumPercentage.toFixed(2)  + '%')" :style="{'left':quorumPercentage+'%'}" @mouseout="hideTooltip" class="vl"></div>
-        <!-- <v-chart :option="option" /> -->
+      <div class="chartbox">
+        <div style="height:20px" class="chartdiv">
+          <div @mouseover="showTooltip('YES', (yesPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="yes" :style="'flex-basis:' + yesPercentage * 100 + '%'"></div>
+          <div @mouseover="showTooltip('ABSTAIN', (abstainPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="abstain" :style="'flex-basis:' + abstainPercentage * 100 + '%'"></div>
+          <div @mouseover="showTooltip('NO', (noPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no" :style="'flex-basis:' + noPercentage * 100 + '%'"></div>
+          <div @mouseover="showTooltip('NO_WITH_VETO', (noWithVetoPercentage).toFixed(2) * 100 + '%')" @mouseout="hideTooltip" class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentage * 100 + '%'"></div>
+
+
+
+          <!-- <v-chart :option="option" /> -->
+        </div>
+        <div @mouseover="showTooltip('THRESHOLD', thresholdPercentage.toFixed(2) + '%')" :style="{'left':thresholdPercentage+'%'}" @mouseout="hideTooltip"  class="pin">
+          <div>T</div>
+          <div class="dots"></div>
+          <div class="vl"></div>
+        </div>
+        <div @mouseover="showTooltip('QUORUM', quorumPercentage.toFixed(2)  + '%')" :style="{'left':quorumPercentage+'%'}" @mouseout="hideTooltip" class="pin">
+          <div>Q</div>
+          <div class="dots"></div>
+          <div class="vl"></div>
+        </div>
       </div>
+
 
 
 
@@ -358,8 +372,9 @@ const option = computed(() => {
     }
   }
   .middle {
-    height: 50%;
+    height: 44%;
     padding: 20px 30px;
+
     h5 {
 
 
@@ -409,24 +424,50 @@ const option = computed(() => {
       display: flex;
       justify-content: space-around;
     }
-    .chartdiv {
-      margin: 0 auto 15px auto;
+    .chartbox {
+
+      padding-top: 35px;
       width: 90%;
-      display: flex;
-      border-radius: 15px;
-      overflow: hidden;
-      background: grey;
       position: relative;
-      div {
-        height: 100%;
+      margin: 0 auto 15px auto;
+      .chartdiv {
+
+        width: 100%;
+        display: flex;
+        border-radius: 15px;
+        overflow: hidden;
+        background: grey;
+
+        div {
+          height: 100%;
+        }
       }
-      .vl {
+      .pin {
+        transform: translateX(-50%);
         position: absolute;
         left: 50%;
-        border-left: 3px dotted black;
-        height: 20px;
+        top: 0;
+        height: auto;
+        .vl {
+          width: 2px;
+          background-color: black;
+          margin-left: auto;
+          margin-right: auto;
+          height: 30px;
+        }
+        .dots {
+          width: 7px;
+          height: 7px;
+          margin-left: auto;
+          margin-right: auto;
+          margin-bottom: 0;
+          padding-bottom: 0px;
+          border-radius: 50%;
+          background-color: black;
+        }
       }
     }
+
   }
 }
 
