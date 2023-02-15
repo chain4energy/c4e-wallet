@@ -184,14 +184,23 @@ const noWithVeto = computed(() => {
   return undefined;
 });
 
+const notVoted = computed(() => {
+  const res = useProposalsStore().getProposalDetailsTally?.getNotVoted();
+  if(res != undefined) {
+    return res;
+  }
+  return undefined;
+});
+
 const option = computed(() => {
-  if (yes.value==undefined || abstain.value==undefined || no.value==undefined || noWithVeto.value==undefined) {
+  if (yes.value==undefined || abstain.value==undefined || no.value==undefined || noWithVeto.value==undefined || notVoted.value==undefined) {
     return '';
   }
   return createProposalDetailsChartData(useConfigurationStore().config.getConvertedAmount(yes.value),
     useConfigurationStore().config.getConvertedAmount(abstain.value),
     useConfigurationStore().config.getConvertedAmount(no.value),
     useConfigurationStore().config.getConvertedAmount(noWithVeto.value),
+    useConfigurationStore().config.getConvertedAmount(notVoted.value),
     sumOfVotes.value);
 });
 

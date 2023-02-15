@@ -45,7 +45,8 @@
       "ABSTAIN": "Abstain",
       "NO_WITH_VETO": "No with Veto",
       "THRESHOLD": "Threshold",
-      "QUORUM": "Quorum"
+      "QUORUM": "Quorum",
+      "NOT_VOTED": "Not voted"
     },
     "ERRORS": {
       "NO_STAKED": "Your voice will not be counted (only staked amount is counting in vote but you have '0')"
