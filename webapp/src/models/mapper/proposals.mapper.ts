@@ -17,6 +17,7 @@ import { Coin } from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ProposalVoteResponse } from "../hasura/proposal.vote";
 import {mapStakingPool} from "@/models/mapper/tokens.mapper";
+import {StakingPool as StoreStakingPool} from "@/models/store/tokens";
 
 export function mapProposals(proposals: BcProposal[] | undefined): { proposals: StoreProposal[], numberOfActive: number }  {
   if (proposals === undefined) {
@@ -208,7 +209,6 @@ export function mapProposalsDetailsTallyResponse(proposalsDetailsTallyResponse: 
   if (proposalsDetailsTallyResponse === undefined) {
     throw new Error('mapProposalsDetailsTallyResponse - mapProposalsDetailsTallyResponse is undefined');
   }
-  // console.log("SDFDFSDF")
   // console.log(proposalsDetailsTallyResponse)
   // if (proposalsDetailsTallyResponse.data.proposalTallyResult === undefined) {
   //   throw new Error('mapProposalsDetailsTallyResponse - proposalTallyResult is undefined');
@@ -220,4 +220,39 @@ export function mapProposalsDetailsTallyResponse(proposalsDetailsTallyResponse: 
   const stakingPool = mapStakingPool(proposalsDetailsTallyResponse.data.stakingPool[0]);
 
   return new ProposalDetailsTally(finalTallyResult, stakingPool);
+}
+
+export function mapProposalsDetailsTallyListResponse(proposalsDetailsTallyResponse: ProposalsDetailsTallyResult | undefined): Map<number, ProposalDetailsTally> | null {
+  if (proposalsDetailsTallyResponse === undefined) {
+    throw new Error('mapProposalsDetailsTallyResponse - mapProposalsDetailsTallyResponse is undefined');
+  }
+  // console.log(proposalsDetailsTallyResponse)
+  // if (proposalsDetailsTallyResponse.data.proposalTallyResult === undefined) {
+  //   throw new Error('mapProposalsDetailsTallyResponse - proposalTallyResult is undefined');
+  // }
+  // if (proposalsDetailsTallyResponse.data.stakingPool === undefined) {
+  //   throw new Error('mapProposalsDetailsTallyResponse - stakingPool is undefined');
+  // }
+  const finallTallyMap = new Map<number, ProposalTallyResult>();
+  const stakingPoolMap = new Map<number, StoreStakingPool>();
+  proposalsDetailsTallyResponse.data.proposalTallyResult.forEach(res => {
+    const finalTallyResult = mapProposalTallyResult(res);
+    if (res.proposal_id) {
+      finallTallyMap.set(res.proposal_id, finalTallyResult);
+    }
+  });
+  proposalsDetailsTallyResponse.data.stakingPool.forEach(res => {
+    const stakingPool = mapStakingPool(res);
+    if(res.proposal_id)
+      stakingPoolMap.set(res.proposal_id, stakingPool);
+  });
+  const resultMap = new Map<number, ProposalDetailsTally>();
+
+  finallTallyMap.forEach((value: ProposalTallyResult, key: number) => {
+    const stakingPool = stakingPoolMap.get(key);
+    if(stakingPool)
+      resultMap.set(key, new ProposalDetailsTally(value, stakingPool));
+  });
+
+  return resultMap;
 }

@@ -34,6 +34,7 @@ import CoinAmount from "./CoinAmount.vue";
 import { useUserStore } from "@/store/user.store";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import {useBlockStore} from "@/store/block.store";
+import dataService from "@/services/data.service";
 
 const props = defineProps<{
   coins:[
@@ -62,7 +63,7 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
 }
 
 onMounted(() =>{
-  useBlockStore().fetchLatestBlock(false);
+  dataService.refreshValidators();
 });
 
 

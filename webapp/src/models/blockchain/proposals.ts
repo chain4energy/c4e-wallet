@@ -69,6 +69,7 @@ export interface TallyParams {
 }
 
 export interface Tally {
+  proposal_id?: number,
   yes: string,
   abstain: string,
   no: string,

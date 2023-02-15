@@ -26,8 +26,10 @@ const amount = computed(() => {
     return props.amount * 100;
   } else if (typeof props.amount === 'bigint') {
     return props.amount * 100n;
-  } else {
+  } else if (props.amount){
     return props.amount.multiply(100);
+  } else {
+    return 0;
   }
 });
 </script>
