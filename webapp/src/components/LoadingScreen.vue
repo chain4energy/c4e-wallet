@@ -3,7 +3,7 @@
   <!--  <BlockUI id="blokUi" :blocked="splashStore.splashOn" :fullScreen="true">-->
 <!--    <div v-if="splashStore.splashOn" class="lds-hourglass"/>-->
   <div>
-    <loading v-model:active="splashOn" ><C4ESpinner class="c4e-icon" :size="120"/></loading>
+    <loading v-model:active="splashStore.splashOn" ><C4ESpinner class="c4e-icon" :size="120"/></loading>
 
 <!--    <loading v-model:active="ttt"/>-->
   </div>
@@ -15,20 +15,9 @@ import Loading from 'vue-loading-overlay';
 // import 'vue-loading-overlay/dist/vue-loading.css';
 import 'vue-loading-overlay/dist/css/index.css';
 import C4ESpinner from './commons/C4ESpinner.vue';
-import { ref, watch} from "vue";
-import { debounce } from 'lodash';
 
 const splashStore = useSplashStore();
-// const ttt = true;
-const splashOn = ref(false);
 
-const debouncedWatcher = debounce((newVal) => {
-  splashOn.value = newVal;
-}, 20);
-
-watch(() => splashStore.splashOn, (newVal) => {
-  debouncedWatcher(newVal);
-});
 </script>
 
 <style scoped lang="scss">

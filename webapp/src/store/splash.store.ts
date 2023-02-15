@@ -1,30 +1,27 @@
 import { defineStore } from 'pinia';
+import {debounce} from "lodash";
+import {computed, ref, watch} from "vue";
 
-interface SplashState {
-  splashCounter: number
-}
+export const useSplashStore = defineStore('SplashStore', () => {
+  const splashCounter = ref(0);
+  const splashState = ref(false);
 
-export const useSplashStore = defineStore({
-  id: 'splashStore',
-  state: (): SplashState => {
-    return {
-      splashCounter: 0
-    };
-  },
-  actions: {
-    increment () {
-      this.splashCounter++;
-    },
-    decrement () {
-      this.splashCounter--;
-      if (this.splashCounter < 0) {
-        this.splashCounter = 0;
-      }
-    }
-  },
-  getters: {
-    splashOn (): boolean {
-      return this.splashCounter > 0;
-    }
+  function increment() {
+    splashCounter.value++;
   }
+  function decrement() {
+    splashCounter.value--;
+  }
+  const splashOn = computed(() => splashState.value);
+
+  const checkSplash = computed(() => splashCounter.value > 0);
+
+  const debouncedWatcher = debounce((newVal) => {
+    splashState.value = newVal;
+  }, 20);
+
+  watch(() => checkSplash.value, (newVal) => {
+    debouncedWatcher(newVal);
+  });
+  return {increment, decrement, splashOn, checkSplash, splashCounter};
 });
