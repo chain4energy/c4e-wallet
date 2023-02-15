@@ -304,7 +304,7 @@ const option = computed(() => {
   margin-left: 10px;
 }
 .proposal-container {
-  min-height: 360px;
+  min-height: 390px;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   border-radius: 10px;
   position: relative;

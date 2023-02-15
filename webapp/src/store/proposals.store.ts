@@ -61,7 +61,7 @@ export const useProposalsStore = defineStore({
             this.proposals = this.proposals.concat(resp.response.data.proposals);
             const mappedIndexes = new Map<number, number>();
             const tallys = Array<Promise<void>>();
-            tallys.push(this.fetchProposalsDetailsTallyList(proposalsIds));
+            tallys.push(this.fetchProposalsDetailsTallyList(proposalsIds, lockscreen));
             this.proposals.forEach((el,index) => {
               mappedIndexes.set(el.proposalId,index);
               this.proposalsTally.delete(el.proposalId);
