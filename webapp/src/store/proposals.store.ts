@@ -61,7 +61,7 @@ export const useProposalsStore = defineStore({
             this.proposals = this.proposals.concat(resp.response.data.proposals);
             const mappedIndexes = new Map<number, number>();
             const tallys = Array<Promise<void>>();
-            tallys.push(this.fetchProposalsDetailsTallyList(proposalsIds, lockscreen));
+
             this.proposals.forEach((el,index) => {
               mappedIndexes.set(el.proposalId,index);
               this.proposalsTally.delete(el.proposalId);
@@ -69,7 +69,7 @@ export const useProposalsStore = defineStore({
                 tallys.push(this.fetchVotingProposalTallyResult(el.proposalId, false, lockscreen));
               }
             });
-
+            tallys.push(this.fetchProposalsDetailsTallyList(proposalsIds, lockscreen));
             this.proposalById = mappedIndexes;
             this.numberOfActiveProposals = resp.response.data.numberOfActive;
             this.paginationKey = resp.nextKey;
