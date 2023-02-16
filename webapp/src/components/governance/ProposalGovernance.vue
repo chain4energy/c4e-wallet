@@ -54,13 +54,13 @@
           <div @mouseover="showTooltip('YES', (yesPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="yes" :style="'flex-basis:' + yesPercentage * 100 + '%'"></div>
           <div @mouseover="showTooltip('ABSTAIN', (abstainPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="abstain" :style="'flex-basis:' + abstainPercentage * 100 + '%'"></div>
           <div @mouseover="showTooltip('NO', (noPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no" :style="'flex-basis:' + noPercentage * 100 + '%'"></div>
-          <div @mouseover="showTooltip('NO_WITH_VETO', (noWithVetoPercentage).toFixed(2) * 100 + '%')" @mouseout="hideTooltip" class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentage * 100 + '%'"></div>
-
+          <div @mouseover="showTooltip('NO_WITH_VETO', (noWithVetoPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentage * 100 + '%'"></div>
+          <div @mouseover="showTooltip('NOT_VOTED', (notVotedPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="not-voted" :style="'flex-basis:' + notVotedPercentage * 100 + '%'"></div>
 
 
           <!-- <v-chart :option="option" /> -->
         </div>
-        <div @mouseover="showTooltip('THRESHOLD', thresholdPercentage.toFixed(2) + '%')" :style="{'left':thresholdPercentage+'%'}" @mouseout="hideTooltip"  class="pin">
+        <div @mouseover="showTooltip('THRESHOLD', thresholdPercentage.toFixed(2) + '%')" :style="{'left':thresholdPercentagePosition+'%'}" @mouseout="hideTooltip"  class="pin">
           <div>T</div>
           <div class="dots"></div>
           <div class="vl"></div>
@@ -130,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {BarChart} from "echarts/charts";
 import { use } from "echarts/core";
 import {SVGRenderer} from "echarts/renderers";
@@ -144,6 +144,7 @@ import PercentsView from "@/components/commons/PercentsView";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import { useConfigurationStore } from '@/store/configuration.store';
 import {BigIntWrapper} from "@/models/store/common";
+import {BigDecimal} from "@/models/store/big.decimal";
 
 use([
   SVGRenderer,
@@ -197,6 +198,9 @@ const showTooltip = (option, value) => {
   if(option == 'QUORUM') {
     tooltipBorderColor.value = '#000000';
   }
+  if(option == 'NOT_VOTED') {
+    tooltipBorderColor.value = '#8d8d8d';
+  }
   tooltipOption.value = option;
   tooltipValue.value = value;
   showChartTooltip.value = true;
@@ -217,28 +221,37 @@ const thresholdPercentage = computed(() => {
   return useProposalsStore().getTallyParams.threshold * 100;
 });
 
+const thresholdPercentagePosition = computed(() => {
+  return yesPercentage.value.add(noPercentage.value).subtract(abstainPercentage.value).subtract(noWithVetoPercentage.value).multiply(useProposalsStore().getTallyParams.threshold * 100)
+});
+
 const quorumPercentage = computed(() => {
   return useProposalsStore().getTallyParams.quorum * 100;
 });
 
 const yesPercentage = computed(() => {
   const yesPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYesPercentage();
-  return yesPercentage!=undefined ? yesPercentage : 0;
+  return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
 });
 
 const noPercentage = computed(() => {
   const noPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoPercentage();
-  return noPercentage!=undefined ? noPercentage : 0;
+  return noPercentage!=undefined ? noPercentage : new BigDecimal(0);
 });
 
 const abstainPercentage = computed(() => {
   const abstainPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getAbstainPercentage();
-  return abstainPercentage != undefined ? abstainPercentage : 0;
+  return abstainPercentage != undefined ? abstainPercentage : new BigDecimal(0);
 });
 
 const noWithVetoPercentage = computed(() => {
   const noWithVetoPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoWithVetoPercentage();
-  return noWithVetoPercentage != undefined ? noWithVetoPercentage : 0;
+  return noWithVetoPercentage != undefined ? noWithVetoPercentage : new BigDecimal(0);
+});
+
+const notVotedPercentage = computed(() => {
+  const notVotedPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNotVotedPercentage();
+  return notVotedPercentage != undefined ? notVotedPercentage : new BigDecimal(0);
 });
 
 const yes = computed(() => {
@@ -497,5 +510,9 @@ const option = computed(() => {
 
 .abstain {
   background: #27697f;
+}
+
+.not-voted {
+  background: #8d8d8d;
 }
 </style>
