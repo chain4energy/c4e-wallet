@@ -122,7 +122,7 @@ const representData = computed(()=> {
   }
   &__accountData{
     display: flex;
-    width: 70%;
+    width: 67%;
     z-index: 2;
     align-items: center;
     //padding: 20px 25px;
@@ -176,7 +176,7 @@ const representData = computed(()=> {
     align-items: center;
     justify-content: space-between;
     padding: 20px 20px;
-    width: 30%;
+    width: 33%;
     height: 80px;
     border-radius: 0 6px 6px 0;
     background: #0F3153;
@@ -216,7 +216,7 @@ const representData = computed(()=> {
   color: #0F3153;
 }
 
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: 1420px) {
   .userdata {
     flex-direction: column;
     max-height: 80px;
