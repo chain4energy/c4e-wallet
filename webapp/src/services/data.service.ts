@@ -56,12 +56,22 @@ class DataService extends LoggedService {
         this.accountTimeout = config.accountDataRefreshTimeout;
       }
     );
+    window.addEventListener('focus', () => {
+      this.refreshBlocksData();
+      this.refreshDashboard();
+      this.refreshValidators();
+      this.setIntervals();
+    }, false);
+    window.addEventListener('blur', () => {
+      this.clearIntervals();
+    }, false);
   }
 
   private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');
     const lockScreen = true;
     await this.waitTillCondition(() => useConfigurationStore().getInitialized);
+
     Promise.all([
       useBlockStore().fetchLatestBlock(lockScreen),
       useBlockStore().fetchAverageBlockTime(lockScreen),
@@ -77,15 +87,23 @@ class DataService extends LoggedService {
       useProposalsStore().fetchDepositParams(),
 
     ]).then(() => {
-      const now = new Date().getTime();
-      this.lastBlockTimeout = now;
-      this.lastDashboardTimeout = now;
-      this.lastValidatorsTimeout = now;
-      this.blockIntervalId = window.setInterval(refreshBlocksData, this.blockTimeout);
-      this.dashboardIntervalId = window.setInterval(refreshDashboard, this.dashboardTimeout);
-      this.validatorsIntervalId = window.setInterval(refreshValidators, this.validatorsTimeout);
-
+        this.setIntervals();
     });
+  }
+  public setIntervals() {
+    const now = new Date().getTime();
+    this.lastBlockTimeout = now;
+    this.lastDashboardTimeout = now;
+    this.lastValidatorsTimeout = now;
+    this.blockIntervalId = window.setInterval(refreshBlocksData, this.blockTimeout);
+    this.dashboardIntervalId = window.setInterval(refreshDashboard, this.dashboardTimeout);
+    this.validatorsIntervalId = window.setInterval(refreshValidators, this.validatorsTimeout);
+  }
+
+  public clearIntervals() {
+    window.clearInterval(this.blockIntervalId);
+    window.clearInterval(this.dashboardIntervalId);
+    window.clearInterval(this.validatorsIntervalId);
   }
   async waitTillCondition(condition: () => boolean) {
     while (!condition()) {
@@ -132,9 +150,7 @@ class DataService extends LoggedService {
       useProposalsStore().clear();
       useTokensStore().clear();
       useValidatorsStore().clear();
-      window.clearInterval(this.blockIntervalId);
-      window.clearInterval(this.dashboardIntervalId);
-      window.clearInterval(this.validatorsIntervalId);
+      this.clearIntervals();
       this.onInit();
       if (refreshProposals) {
         useProposalsStore().fetchProposals(true);
