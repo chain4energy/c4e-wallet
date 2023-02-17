@@ -48,6 +48,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Misc Improvements
 
+## [1.1.4](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.4) - 2022-02-17
+
+### Bug fixes
+* Loading spinner debounce
+* Proposal details chart percentage - correction
+* Proposal auto refresh only for active voting
+* Voted total correction (4391)
+
+### Misc Improvements
+* Added total inflation
+* Added total APR
+* Proposal chart shows quorum and threshold
 
 ## [1.1.3](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.3) - 2022-02-03
 
