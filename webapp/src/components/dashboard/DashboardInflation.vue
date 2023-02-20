@@ -1,9 +1,13 @@
 <template>
   <div class="tile">
-    <Icon name="TrendingUp"></Icon>
-    <div class="text left-element">
-      <span class="label">{{ $t('DASHBOARD_VIEW.INFLATION') }}</span>
-      <PercentsView :amount="useTokensStore().inflation" :precision="2"/>
+
+    <div style="display:flex; flex-direction: row" class="text left-element">
+        <Icon name="TrendingUp"></Icon>
+      <div>
+        <span class="label">{{ $t('DASHBOARD_VIEW.INFLATION') }}</span>
+        <PercentsView :amount="useTokensStore().inflation" :precision="2" :remove-dec="false" />
+      </div>
+
     </div>
     <div class="text right-element">
       <span class="label">{{ $t('DASHBOARD_VIEW.TARGET_INFLATION') }}</span>
@@ -20,6 +24,8 @@ import {useConfigurationStore} from "@/store/configuration.store";</script>
 <style scoped lang="scss">
 .left-element {
   padding-right: 20px;
+  width: 50%;
+  box-sizing: border-box;
 }
 
 .right-element {
