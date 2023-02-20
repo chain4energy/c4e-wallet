@@ -89,8 +89,6 @@ export const useUserStore = defineStore({
           toast.error('Connection failed');
           clearStateOnLogout(this);
         } else {
-          console.log('asdashdkjahsdjkhas');
-          console.log(response.data)
           this.connectionInfo = response.data;
           logger.logToConsole(LogLevel.DEBUG, 'Connected: ', JSON.stringify(this.connectionInfo));
 
