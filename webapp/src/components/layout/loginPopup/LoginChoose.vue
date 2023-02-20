@@ -30,6 +30,17 @@
           </div>
         </div>
       </div>
+      <div style="margin-top: 10px" class="box" @click="$emit('cosmostation')" v-if="!isMobile()">
+        <div style="margin-left: 25px; margin-right: 20px; ">
+          <img style="height:50px;;padding-top: 6px;" src="@/assets/cosmostationIcon.png">
+        </div>
+        <span>{{ $t('CONNECT.CONNECT_COSMOSTATION') }}</span>
+        <div style="margin-left:auto" class="nextStep">
+          <div class="iconContainer" style="background-color: #72bf44">
+            <Icon style="color:white" class="icon" name="ArrowRightCircle"></Icon>
+          </div>
+        </div>
+      </div>
 <!--      <div class="keplr" @click="$emit('keplr')" v-if="!isMobile()">-->
 <!--        <KeplrLogo/>-->
 <!--        <span>{{ $t('CONNECT.CONNECT_KEPLR') }}</span>-->

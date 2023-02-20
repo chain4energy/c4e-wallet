@@ -7,6 +7,7 @@
                  @back="loginType = LoginChoose"
                  @typeChange="(comp) => loginType = comp"
                  @close="$emit('close')"
+                 @cosmostation="cosmostationConnect"
                  v-bind:is="loginType">
       </component>
     </transition>
@@ -38,6 +39,9 @@ function keplrConnect(){
   //     return
   //   }
   // });
+}
+function cosmostationConnect() {
+  dataService.onCosmostationLogIn(() => {emit('close');});
 }
 
 </script>

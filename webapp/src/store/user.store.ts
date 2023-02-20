@@ -57,6 +57,8 @@ export const useUserStore = defineStore({
         await this.connectKeplr(onSuccess);
       } else if(this.connectionInfo.connectionType === ConnectionType.Address){
         await this.connectAsAddress(this.connectionInfo.account, onSuccess);
+      } else if(this.connectionInfo.connectionType === ConnectionType.Cosmostation){
+        await this.connectCosmostation(onSuccess);
       }
     },
     async connectKeplr(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
@@ -64,6 +66,12 @@ export const useUserStore = defineStore({
         apiFactory.walletApi().connectKeplr(),
         onSuccess
         );
+    },
+    async connectCosmostation(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
+      await this.connect(
+        apiFactory.walletApi().connectCosmostation(),
+        onSuccess
+      );
     },
     async connectAsAddress(address: string, onSuccess?: (connectionInfo: ConnectionInfo) => void) {
       await this.connect(
@@ -81,6 +89,8 @@ export const useUserStore = defineStore({
           toast.error('Connection failed');
           clearStateOnLogout(this);
         } else {
+          console.log('asdashdkjahsdjkhas');
+          console.log(response.data)
           this.connectionInfo = response.data;
           logger.logToConsole(LogLevel.DEBUG, 'Connected: ', JSON.stringify(this.connectionInfo));
 

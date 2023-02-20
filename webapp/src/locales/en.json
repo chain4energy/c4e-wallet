@@ -6,6 +6,7 @@
     "CONNECT": "Connect",
     "CONNECT_ADDRESS": "Connect with address",
     "CONNECT_KEPLR": "Connect with Keplr wallet",
+    "CONNECT_COSMOSTATION": "Connect with Cosmostation wallet",
     "ADDRESS_HELP": "Explore with any address",
     "VIEW_EXPLORER": "View on explorer",
     "COPY": "Copy",
