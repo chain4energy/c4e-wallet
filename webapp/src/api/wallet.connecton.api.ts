@@ -1,7 +1,7 @@
 import { useSplashStore } from '@/store/splash.store';
 import { useToast } from 'vue-toastification';
 import { LoggedService } from '@/services/logged.service';
-import { ChainInfo } from "@keplr-wallet/types";
+import {ChainInfo, Keplr} from "@keplr-wallet/types";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { RequestResponse } from '@/models/request-response';
@@ -79,7 +79,7 @@ export default class WalletConnectionApi extends LoggedService {
 
   public async connect(connectionType: ConnectionType): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
     useSplashStore().increment();
-    let extension;
+    let extension: Keplr | undefined;
     let connectTypeMessage = '';
     let notInstalledMessage = '';
     if(connectionType == ConnectionType.Keplr) {
@@ -91,6 +91,7 @@ export default class WalletConnectionApi extends LoggedService {
       connectTypeMessage = 'connectCosmostation';
       notInstalledMessage = 'Cosmostation not installed';
     }
+
     try {
       if (extension) {
         const chainInfo = this.createKeplrConfig();
