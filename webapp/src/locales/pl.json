@@ -7,9 +7,9 @@
     "CONNECT_ADDRESS": "Zaloguj się z adresem",
     "CONNECT_KEPLR": "Zaloguj się z Keplrem",
     "ADDRESS_HELP": "Przeglądaj z dowolnym adresem",
-    "VIEW_EXPLORER": "View on explorer",
-    "COPY": "Copy",
-    "COPIED": "Adres został skopiowany do schowka (Correct? )",
+    "VIEW_EXPLORER": "Zobacz w eksploratorze",
+    "COPY": "Kopiuj",
+    "COPIED": "Adres został skopiowany do schowka",
     "ADDRESS_VALIDATION": {
       "EMPTY": "Adres jest wymagany",
       "NOT_THIS_NETWORK": "Adres musi zaczynać się od prefiksu '{prefix}'",
@@ -37,8 +37,8 @@
     "PROPOSAL_STATUS_REJECTED": "Odrzucony",
     "PROPOSAL_STATUS_VOTING_PERIOD": "Okres głosowania",
     "PROPOSAL_STATUS_DEPOSIT_PERIOD": "Okres depozytu",
-    "PROPOSAL_STATUS_FAILED": "Pirażka",
-    "CURRENT_TURNOUT": "Current turnout",
+    "PROPOSAL_STATUS_FAILED": "Porażka",
+    "CURRENT_TURNOUT": "Obecna frekwencja",
     "VOTING_OPTIONS": {
       "YES": "Tak",
       "NO": "Nie",
@@ -49,9 +49,9 @@
       "NOT_VOTED": "Brak głosu"
     },
     "ERRORS": {
-      "NO_STAKED": "Your voice will not be counted (only staked amount is counting in vote but you have '0')"
+      "NO_STAKED": "Twój głos nie zostanie policzony (w głosowaniu liczą się tylko oddelegowane tokeny)"
     },
-    "TOTAL": "Total",
+    "TOTAL": "Całość",
     "TOTAL_VOTED": "Zagłosowało",
     "DESCRIPTION": "Opis",
     "TOTAL_DEPOSIT": "Całkowity depozyt",
@@ -77,8 +77,8 @@
     },
     "DETAILS": "Szczegóły",
     "HEIGHT": "Wysokość",
-    "ESTIMATED_TIME_LEFT": "Czacowany pozostały czas",
-    "ESTIMATED_DATE": "Czacowana data",
+    "ESTIMATED_TIME_LEFT": "Szacowany pozostały czas",
+    "ESTIMATED_DATE": "Szacowana data",
     "LOCAL_TIME": "czas lokalny",
     "UPDATED_IN_BLOCK": "Zaktualizowane w bloku",
     "TIME_LEFT": {
@@ -90,7 +90,7 @@
     "INFO": "Informacje",
     "NAME": "Nazwa",
     "TIME": "Czas",
-    "UPGRADED_CLIENT_STATE": "Upgraded client state",
+    "UPGRADED_CLIENT_STATE": "Zaktualizowany status klienta",
     "RECIPIENT": "Odbiorca",
     "KEY": "Klucz",
     "SUBSPACE": "Podprzestrzeń",
@@ -276,7 +276,7 @@
       "DELEGATED": "Oddelegowane",
       "UNDELEGATED": "W trakcie wycofywania",
       "REDELEGATED": "Redelegowane",
-      "AVAILABLE_TO_DELEGATE": "Available to delegate",
+      "AVAILABLE_TO_DELEGATE": "Możliwe do delegacji",
       "WEBSITE": "Website",
       "COMMISSION": "Commission",
       "AMOUNT": {
