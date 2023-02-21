@@ -4,7 +4,7 @@ import {Cosmos} from "@cosmostation/extension-client";
 export interface CosmostationWindow {
   cosmostation?: {
     version: string;
-    cosmos: Cosmos;
+    // cosmos: Cosmos;
     providers: {
       keplr: Keplr;
     };
