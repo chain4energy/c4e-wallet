@@ -8,7 +8,7 @@
 
     <p>{{ $t('CONNECT.WELCOME_MESSAGE') }}</p>
     <div class="loginChoose__body">
-      <div class="box" @click="$emit('typeChange', LoginEmail)">
+      <div v-if="props.showAddressOption" class="box" @click="$emit('typeChange', LoginEmail)">
         <div class="iconContainer">
           <Icon class="icon" name="Globe"></Icon>
         </div>
@@ -61,7 +61,16 @@
 <script setup lang="ts">
 import KeplrLogo from '@/components/commons/KeplrLogo.vue';
 import LoginEmail from '@/components/layout/loginPopup/LoginAddress.vue';
+import {Validator} from "@/models/store/validator";
+import {RedelegationDirection} from "@/components/staking/StakingRedelegate";
 
+const props = defineProps({
+  showAddressOption: {
+    type: Boolean,
+    default: true,
+    required: false
+  }
+});
 function isMobile() {
    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
      return true;
