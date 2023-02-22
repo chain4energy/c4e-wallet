@@ -79,7 +79,7 @@ describe('user store tests', () => {
   });
 
   it('connects Keplr - base account exists', async () => {
-    testConnectBaseAccountExists(async () => {await useUserStore().connectKeplr();}, ConnectionType.Keplr);
+     testConnectBaseAccountExists(async () => {await useUserStore().connectKeplr();}, ConnectionType.Keplr);
   });
 
   it('connects Keplr - account does not exist', async () => {

@@ -69,11 +69,11 @@ export default class WalletConnectionApi extends LoggedService {
     return new RequestResponse<ConnectionInfo, any>(undefined, connection);
   }
 
-  public async connectKeplr(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
+  public connectKeplr(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
       return this.connect(ConnectionType.Keplr);
   }
 
-  public async connectCosmostation(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
+  public connectCosmostation(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
     return this.connect(ConnectionType.Cosmostation);
   }
 
