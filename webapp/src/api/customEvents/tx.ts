@@ -286,6 +286,69 @@ export const MsgInitialClaim = {
   },
 };
 
+// export const TypeRepeatedContinuousVestingAccount = {
+//   encode(message: Msg, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+//     if (message.claimer !== "") {
+//       writer.uint32(10).string(message.claimer);
+//     }
+//     if (message.campaignId !== 0) {
+//       writer.uint32(16).uint64(message.campaignId);
+//     }
+//     if (message.addressToClaim !== "") {
+//       writer.uint32(34).string(message.addressToClaim);
+//     }
+//     return writer;
+//   },
+//
+//   decode(input: _m0.Reader | Uint8Array, length?: number): MsgInitialClaim {
+//     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+//     let end = length === undefined ? reader.len : reader.pos + length;
+//     const message = createBaseMsgInitialClaim();
+//     while (reader.pos < end) {
+//       const tag = reader.uint32();
+//       switch (tag >>> 3) {
+//         case 1:
+//           message.claimer = reader.string();
+//           break;
+//         case 2:
+//           message.campaignId = longToNumber(reader.uint64() as Long);
+//           break;
+//         case 4:
+//           message.addressToClaim = reader.string();
+//           break;
+//         default:
+//           reader.skipType(tag & 7);
+//           break;
+//       }
+//     }
+//     return message;
+//   },
+//
+//   fromJSON(object: any): MsgInitialClaim {
+//     return {
+//       claimer: isSet(object.claimer) ? String(object.claimer) : "",
+//       campaignId: isSet(object.campaignId) ? Number(object.campaignId) : 0,
+//       addressToClaim: isSet(object.addressToClaim) ? String(object.addressToClaim) : "",
+//     };
+//   },
+//
+//   toJSON(message: MsgInitialClaim): unknown {
+//     const obj: any = {};
+//     message.claimer !== undefined && (obj.claimer = message.claimer);
+//     message.campaignId !== undefined && (obj.campaignId = Math.round(message.campaignId));
+//     message.addressToClaim !== undefined && (obj.addressToClaim = message.addressToClaim);
+//     return obj;
+//   },
+//
+//   fromPartial<I extends Exact<DeepPartial<MsgInitialClaim>, I>>(object: I): MsgInitialClaim {
+//     const message = createBaseMsgInitialClaim();
+//     message.claimer = object.claimer ?? "";
+//     message.campaignId = object.campaignId ?? 0;
+//     message.addressToClaim = object.addressToClaim ?? "";
+//     return message;
+//   },
+// };
+
 function createBaseMsgInitialClaimResponse(): MsgInitialClaimResponse {
   return {};
 }

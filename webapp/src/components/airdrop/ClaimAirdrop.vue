@@ -43,7 +43,7 @@
               <div class="claimAirDrop__data-text">
                 <CoinAmount :amount="calculateMissions(campaignRecord)" :show-denom="false" :precision="2"></CoinAmount>
                 /
-                <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
+                <CoinAmount :amount="campaignRecord.feegrant_amount" :show-denom="true" :precision="2"></CoinAmount>
               </div>
             </ClaimInfo>
             <ClaimInfo header="Mission Complitted">
@@ -54,7 +54,7 @@
             </ClaimInfo>
             <ClaimInfo header="Total Distribution">
               <div class="claimAirDrop__data-text">
-                <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
+                <CoinAmount :amount="campaignRecord.feegrant_amount" :show-denom="true" :precision="2"></CoinAmount>
               </div>
             </ClaimInfo>
           </div>
@@ -144,7 +144,7 @@ function calculateMissions(campaign : Campaign){
       total += el.weight;
     }
   });
-  return new Coin(total, campaign.amount.denom);
+  return new Coin(Number(total), campaign.amount.denom);
 }
 function getAmountOfClaimedMissions(campaign : Campaign){
   let total = 0;
@@ -159,10 +159,6 @@ function getAmountOfClaimedMissions(campaign : Campaign){
 const airdropClaimRecord = computed(() => {
   return useAirDropStore().getCampaigns;
 });
-
-function getClaimedWeight(campain: CampaignRecord){
-  return 2000000;
-}
 
 function checkCampaignStatus(startTime: Date, endTime: Date) {
   if(new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime()> new Date(Date.now()).getTime()){
@@ -224,36 +220,28 @@ const selectedMissionId = ref();
 const selectedCampaignId = ref();
 const currentClaimIsInitial = ref();
 
-function redirectMission(campaign: Campaign, mission : Mission, type: MissionType){
+function redirectMission(campaign: Campaign, mission : Mission, type: MissionType) {
   selectedCampaignId.value = campaign.id;
   selectedMissionId.value = mission.id;
 
-  if(mission.mission_type === MissionTypeSt.INITIAL_CLAIM){
-    claimingProcessStarted.value=true;
+  if (mission.mission_type === MissionTypeSt.INITIAL_CLAIM) {
+    claimingProcessStarted.value = true;
     currentClaimIsInitial.value = true;
-    claimInitialAirdrop(Number(campaign.id));
   } else {
     currentClaimIsInitial.value = false;
-    if(mission.completed && !mission.claimed){
-      claimingProcessStarted.value=true;
-      //claimOtherAirdrop(campaign.id, mission.id)
+    if (mission.completed && !mission.claimed) {
+      claimingProcessStarted.value = true;
     } else {
-      switch (type){
-        case MissionType.DELEGATE: router.push('staking');
+      switch (type) {
+        case MissionType.DELEGATE:
+          router.push('staking');
           break;
-        case MissionType.VOTE: router.push('governance');
+        case MissionType.VOTE:
+          router.push('governance');
           break;
       }
     }
   }
-}
-
-function claimInitialAirdrop(id: number){
-  useAirDropStore().claimInitialAirdrop(id);
-}
-
-function claimOtherAirdrop(campaignId: number, missionId: number){
-  useAirDropStore().claimOtherAirdrop(campaignId, missionId);
 }
 
 

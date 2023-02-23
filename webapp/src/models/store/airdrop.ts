@@ -69,7 +69,7 @@ export class Campaign{
   end_time: string;
   lockup_period: string;
   vesting_period: string;
-  feegrant_amount: string;
+  feegrant_amount: Coin;
   initial_claim_free_amount: string;
   amount: Coin;
   missions: Mission[];
@@ -84,7 +84,7 @@ export class Campaign{
     this.end_time = end_time;
     this.lockup_period = lockup_period;
     this.vesting_period = vesting_period;
-    this.feegrant_amount = feegrant_amount;
+    this.feegrant_amount = new Coin(BigInt(feegrant_amount), getDefaultDenom());
     this.initial_claim_free_amount = initial_claim_free_amount;
     this.amount = new Coin(BigInt(0), getDefaultDenom());
     this.missions = new Array<Mission>();

@@ -10,9 +10,12 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { RequestResponse } from '@/models/request-response';
 import TxToast from "@/components/commons/TxToast.vue";
 import {Registry} from "@cosmjs/proto-signing";
-import {MsgInitialClaim} from "@/api/customEvents/tx";
+import { MsgClaim, MsgInitialClaim } from "@/api/customEvents/tx";
 import {ZIndexUtils} from "primevue/utils";
 import get = ZIndexUtils.get;
+import { RepeatedContinuousVestingAccount } from "@/models/blockchain/account";
+import * as bech32 from "bech32";
+import { customAccountParser } from "@/api/repeatedVestingAcc/custom_account_parser";
 
 const toast = useToast();
 
@@ -76,6 +79,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
   {
     this.logToConsole(LogLevel.DEBUG, 'signAndBroadcast');
     this.before(lockScreen, localSpinner);
+    const myRegistry = new Registry(defaultRegistryTypes);
     let clientToDisconnect: SigningStargateClient | undefined;
     try {
       if (!connection.modifiable) {
@@ -90,7 +94,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       if (client === undefined) {
         return this.createTxErrorResponseWithToast(
           new TxBroadcastError('Cannot get signing client'),
-          'Transaction Broadcast error',
+          'Transaction Broadcast error 2',
           !skipErrorToast
         );
       }
@@ -103,7 +107,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       if (isDeliverTxFailure(response)) {
         return this.createTxErrorResponseWithToast(
           new TxBroadcastError('Deliver tx failure', response),
-          'Transaction Broadcast error',
+          'Transaction Broadcast error 3',
           !skipErrorToast
         );
       }
@@ -113,7 +117,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       const error = err as Error;
       return this.createTxErrorResponseWithToast(
         new TxBroadcastError(error.message),
-        'Transaction Broadcast error',
+        'Transaction Broadcast error 4',
         !skipErrorToast
       );
     } finally {
@@ -207,12 +211,19 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     }
     const myRegistry = new Registry(defaultRegistryTypes);
     const MsgInitialClaimTypeUrl = "/chain4energy.c4echain.cfeairdrop.MsgInitialClaim";
+    const MsgClaimTypeUrl = "/chain4energy.c4echain.cfeairdrop.MsgClaim";
+    //const RepeatedContinuousVestingAccount = "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount";
     myRegistry.register(MsgInitialClaimTypeUrl, MsgInitialClaim);
+    myRegistry.register(MsgClaimTypeUrl, MsgClaim);
+
+    // myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
+    console.log(myRegistry)
+    //myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
     const rpc = useConfigurationStore().config.bcRpcURL;
     const client = await SigningStargateClient.connectWithSigner(
       rpc,
       signer,
-      {registry: myRegistry}
+      {registry: myRegistry,  accountParser: customAccountParser}
     );
     return { client: client, isLedger: isLedger };
   }

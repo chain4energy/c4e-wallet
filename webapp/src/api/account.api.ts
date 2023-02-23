@@ -298,11 +298,11 @@ export class AccountApi extends TxBroadcastBaseApi {
     const config = useConfigurationStore().config;
 
     const getMessages = (): readonly EncodeObject[] => {
-      const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgInitialClaim';
+      const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgClaim';
       const val = {
         claimer: connection.account,
-        campaign_id: campaignId,
-        mission_id: missionId,
+        campaignId: campaignId,
+        missionId: missionId,
       };
       return [{ typeUrl: typeUrl, value: val }];
     };
