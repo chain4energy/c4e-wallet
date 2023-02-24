@@ -122,6 +122,13 @@ class DataService extends LoggedService {
     });
   }
 
+  public onCosmostationLogIn(onSuccess?: () => void) {
+    this.logToConsole(LogLevel.DEBUG, 'onCosmostationLogIn');
+    useUserStore().connectCosmostation((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo, onSuccess);
+    });
+  }
+
   public onAddressLogIn(address: string, onSuccess?: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onAddressLogIn');
     useUserStore().connectAsAddress(address, (connetionInfo: ConnectionInfo) => {this.onLoginSuccess(connetionInfo, onSuccess);});

@@ -1,7 +1,7 @@
 import { useSplashStore } from '@/store/splash.store';
 import { useToast } from 'vue-toastification';
 import { LoggedService } from '@/services/logged.service';
-import { ChainInfo } from "@keplr-wallet/types";
+import {ChainInfo, Keplr} from "@keplr-wallet/types";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { RequestResponse } from '@/models/request-response';
@@ -13,7 +13,8 @@ const toast = useToast();
 export enum ConnectionType {
   Address,
   Keplr,
-  Disconnected
+  Disconnected,
+  Cosmostation
 }
 
 export class ConnectionInfo {
@@ -68,32 +69,52 @@ export default class WalletConnectionApi extends LoggedService {
     return new RequestResponse<ConnectionInfo, any>(undefined, connection);
   }
 
-  public async connectKeplr(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
-    useSplashStore().increment();
-    try {
-      if (window.keplr) {
-        const chainInfo = this.createKeplrConfig();
-        await window.keplr.experimentalSuggestChain(chainInfo);
-        await window.keplr.enable(chainInfo.chainId);
-        const key = await window.keplr.getKey(chainInfo.chainId);
+  public connectKeplr(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
+      return this.connect(ConnectionType.Keplr);
+  }
 
-        const offlineSigner = window.keplr.getOfflineSigner(chainInfo.chainId);
+  public connectCosmostation(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
+    return this.connect(ConnectionType.Cosmostation);
+  }
+
+  public async connect(connectionType: ConnectionType): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
+    useSplashStore().increment();
+    let extension: Keplr | undefined;
+    let connectTypeMessage = '';
+    let notInstalledMessage = '';
+    if(connectionType == ConnectionType.Keplr) {
+      extension = window.keplr;
+      connectTypeMessage = 'connectKeplr';
+      notInstalledMessage = 'Keplr not installed';
+    } else if(connectionType == ConnectionType.Cosmostation){
+      extension = window.cosmostation?.providers.keplr;
+      connectTypeMessage = 'connectCosmostation';
+      notInstalledMessage = 'Cosmostation not installed';
+    }
+
+    try {
+      if (extension) {
+        const chainInfo = this.createKeplrConfig();
+        await extension.experimentalSuggestChain(chainInfo);
+        await extension.enable(chainInfo.chainId);
+        const key = await extension.getKey(chainInfo.chainId);
+        const offlineSigner = extension.getOfflineSigner(chainInfo.chainId);
         const account = await offlineSigner.getAccounts();
+
         const connection: ConnectionInfo = new ConnectionInfo(
           account[0].address,
           true,
-          ConnectionType.Keplr,
+          connectionType,
           key?.name
         );
         return new RequestResponse<ConnectionInfo, any>(undefined, connection);
       } else {
-        this.logToConsole(LogLevel.ERROR, 'connectKeplr: Keplr not installed');
-        const message = 'Keplr not installed';
-        toast.error(message);
-        return new RequestResponse<ConnectionInfo, ConnectionError>(new ConnectionError(message));
+        this.logToConsole(LogLevel.ERROR, connectTypeMessage+': '+notInstalledMessage);
+        toast.error(notInstalledMessage);
+        return new RequestResponse<ConnectionInfo, ConnectionError>(new ConnectionError(notInstalledMessage));
       }
     } catch (error) {
-      this.logToConsole(LogLevel.ERROR, 'connectKeplr: Error', JSON.stringify(error));
+      this.logToConsole(LogLevel.ERROR, connectTypeMessage+': Error', JSON.stringify(error));
       toast.error('Wallet Err: ' + error);
       return new RequestResponse<ConnectionInfo, ConnectionError>(new ConnectionError('' + error));
     } finally {

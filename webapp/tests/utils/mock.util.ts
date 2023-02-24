@@ -21,21 +21,31 @@ export function mockKeplr() {
 
   } as unknown as Keplr;
   const mockedKeplr = mockedKeplrImpl as jest.Mocked<Keplr>;
-  window.keplr = mockedKeplr
-  
+  // window.keplr = mockedKeplr;
+
+  const cosmostationMockImpl = {
+    version: "1",
+    providers:{
+      keplr:mockedKeplr
+    }
+  };
+
+  window.cosmostation = cosmostationMockImpl;
+
   const mockedOfflineSignerImpl = {
     getAccounts: jest.fn(() => { }),
   } as unknown as OfflineAminoSigner & OfflineDirectSigner;
   const mockedOfflineSigner = mockedOfflineSignerImpl as jest.Mocked<OfflineAminoSigner & OfflineDirectSigner>;
   mockedKeplr.getOfflineSigner.mockReturnValue(mockedOfflineSigner)
-  window.keplr = mockedKeplr
-  
+  window.keplr = mockedKeplr;
+  window.cosmostation.providers.keplr = mockedKeplr;
+
   const mockedSigningStargateClientImpl = {
     signAndBroadcast: jest.fn(() => { }),
     disconnect: jest.fn(() => { }),
   } as unknown as SigningStargateClient;
   const mockedSigningStargateClient = mockedSigningStargateClientImpl as jest.Mocked<SigningStargateClient>;
-  
+
   const mockedConnectWithSigner = jest.fn(async (endpoint: string | HttpEndpoint, signer: OfflineSigner, options?: SigningStargateClientOptions): Promise<SigningStargateClient> => { return undefined as unknown as SigningStargateClient })
   mockedConnectWithSigner.mockResolvedValue(mockedSigningStargateClient)
   SigningStargateClient.connectWithSigner = mockedConnectWithSigner as unknown as (endpoint: string | HttpEndpoint, signer: OfflineSigner, options?: SigningStargateClientOptions) => Promise<SigningStargateClient>
