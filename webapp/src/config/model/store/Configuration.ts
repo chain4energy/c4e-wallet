@@ -231,7 +231,7 @@ export class Configuration implements JsonConfiguration {
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
       this.keplrGasPriceSteps = new KeplrGasPriceSteps(undefined);
-      this.reservedCoinsAmount = 0;
+      this.reservedCoinsAmount = 250000;
       this.minPeriodBetweenDataRefresh = 60000;
       this.blockDataRefreshTimeout = 60000;
       this.dashboardDataRefreshTimeout = 60000;
