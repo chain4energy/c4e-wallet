@@ -1,7 +1,7 @@
 export default {
   blockchain: {
     STAKING_POOL_URL: '/cosmos/staking/v1beta1/pool',
-    TOTAL_SUPPLY_URL: '/cosmos/bank/v1beta1/supply/{denom}',
+    TOTAL_SUPPLY_URL: '/cosmos/bank/v1beta1/supply/by_denom?denom={denom}',
     COMMUNITY_POOL_URL: '/cosmos/distribution/v1beta1/community_pool',
     PROPOSALS_URL: '/cosmos/gov/v1beta1/proposals',
     PROPOSALS_BY_ID_URL: '/cosmos/gov/v1beta1/proposals/{id}',
