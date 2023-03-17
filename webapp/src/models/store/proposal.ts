@@ -99,7 +99,8 @@ export enum ProposalType {
   TEXT = '/cosmos.gov.v1beta1.TextProposal',
   COMMUNITY_POOL_SPEND='/cosmos.distribution.v1beta1.CommunityPoolSpendProposal',
   CANCEL_SOFTWARE_UPGRADE ='/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal',
-  PARAMETER_CHANGE = '/cosmos.params.v1beta1.ParameterChangeProposal'
+  PARAMETER_CHANGE = '/cosmos.params.v1beta1.ParameterChangeProposal',
+  LEGACY_CONTENT = '/cosmos.gov.v1.MsgExecLegacyContent'
 }
 export class ProposalsChanges{
   subspace: string;

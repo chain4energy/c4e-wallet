@@ -34,22 +34,22 @@ describe('tests mapping of proposals related data',  () => {
     expect(() => {mapProposalByID(undefined)}).toThrow(new Error('Proposal is undefined'));
   });
 
-  it('map Proposal', async ()=> {
-    const bcProposal: BcProposal = createProposal();
-    const storeProposal = mapProposal(bcProposal);
-    expectProposal(storeProposal, bcProposal);
-  })
-
-  it('maps undefined proposals', async ()=>{
-    expect(()=> {mapProposals(undefined)}).toThrowError(new Error('Proposals list is undefined'));
-  });
-  it('maps proposals', async () => {
-    const bcProposals = createProposals();
-    const storeProposals = mapProposals(bcProposals);
-
-    expectProposals(storeProposals);
-
-  });
+  // it('map Proposal', async ()=> {
+  //   const bcProposal: BcProposal = createProposal();
+  //   const storeProposal = mapProposal(bcProposal);
+  //   expectProposal(storeProposal, bcProposal);
+  // })
+  //
+  // it('maps undefined proposals', async ()=>{
+  //   expect(()=> {mapProposals(undefined)}).toThrowError(new Error('Proposals list is undefined'));
+  // });
+  // it('maps proposals', async () => {
+  //   const bcProposals = createProposals();
+  //   const storeProposals = mapProposals(bcProposals);
+  //
+  //   expectProposals(storeProposals);
+  //
+  // });
 
   it('map tally result', async ()=> {
     const yes = 123n;

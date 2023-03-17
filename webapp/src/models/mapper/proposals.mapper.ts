@@ -76,46 +76,52 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
     throw new Error('proposal is undefined');
   }
 
-  const status = mapProposalStatus(proposal.status);
-  let changes = undefined;
-  if(proposal.content.changes) {
-     changes = proposal.content.changes.map((el)=> {
-      return new ProposalsChanges(
-        el.subspace, el.key, el.value
-      );
+  if(proposal.messages[0]['@type'] === ProposalType.LEGACY_CONTENT) {
+    const status = mapProposalStatus(proposal.status);
+    let changes = undefined;
+    if(proposal.messages[0].content?.changes) {
+      changes = proposal.messages[0]?.content?.changes.map((el)=> {
+        return new ProposalsChanges(
+          el.subspace, el.key, el.value
+        );
+      });
+    }
+    let proposalPlan = undefined;
+    const plan = proposal.messages[0]?.content?.plan;
+    if(plan) {
+      proposalPlan = new ProposalsPlan(plan.height, plan.info, plan.name, plan.time, plan.upgraded_client_state);
+    }
+
+    let amount = undefined;
+    if(proposal.messages[0]?.content?.amount) {
+      amount = proposal.messages[0].content.amount.map((el)=> {
+        return new ProposalsAmount(
+          el.denom, Number(el.amount)
+        );
+      });
+    }
+
+    const content = new ProposalContent( proposal.messages[0]["@type"] as ProposalType, proposal?.messages[0]?.content?.title, proposal.messages[0].content.description, changes, proposalPlan, proposal.messages[0].content.recipient, amount);
+    const finalTallyResult = mapProposalTallyResult(proposal.final_tally_result);
+    const totalDeposit = proposal.total_deposit.map((el)=> {
+      return mapCoin(el, el.denom);
     });
-  }
-  let proposalPlan = undefined;
-  const plan = proposal.content.plan;
-  if(plan) {
-    proposalPlan = new ProposalsPlan(plan.height, plan.info, plan.name, plan.time, plan.upgraded_client_state);
+
+    return new StoreProposal(
+      Number(proposal.proposal_id),
+      content, status,
+      finalTallyResult,
+      new Date(proposal.submit_time),
+      new Date(proposal.deposit_end_time),
+      totalDeposit,
+      new Date(proposal.voting_start_time),
+      new Date(proposal.voting_end_time)
+    );
+  } else {
+    //TODO
   }
 
-  let amount = undefined;
-  if(proposal.content.amount) {
-    amount = proposal.content.amount.map((el)=> {
-      return new ProposalsAmount(
-        el.denom, Number(el.amount)
-      );
-    });
-  }
 
-  const content = new ProposalContent( proposal.content["@type"] as ProposalType, proposal.content.title, proposal.content.description, changes, proposalPlan, proposal.content.recipient, amount);
-  const finalTallyResult = mapProposalTallyResult(proposal.final_tally_result);
-  const totalDeposit = proposal.total_deposit.map((el)=> {
-    return mapCoin(el, el.denom);
-  });
-
-  return new StoreProposal(
-    Number(proposal.proposal_id),
-    content, status,
-    finalTallyResult,
-    new Date(proposal.submit_time),
-    new Date(proposal.deposit_end_time),
-    totalDeposit,
-    new Date(proposal.voting_start_time),
-    new Date(proposal.voting_end_time)
-  );
 }
 function mapProposalStatus(proposalStatus: string | undefined): ProposalStatus  {
   switch (proposalStatus) {
