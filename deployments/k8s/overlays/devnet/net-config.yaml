@@ -100,7 +100,7 @@ data:
       },
       "Testnet": {
         "bcApiURL": "https://lcd-testnet.c4e.io",
-        "bcRpcURL": "https://lcd-testnet.c4e.io",
+        "bcRpcURL": "https://rpc-testnet.c4e.io",
         "hasuraURL": "https://hasura-testnet.c4e.io/v1/graphql",
         "keybaseURL": "https://keybase.io",
         "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
