@@ -9,6 +9,7 @@ import {LoggedService} from "./logged.service";
 import {LogLevel} from "./logger/log-level";
 import {ServiceTypeEnum} from "./logger/service-type.enum";
 import {ConnectionInfo} from "@/api/wallet.connecton.api";
+import {useAirDropStore} from "@/store/airDrop.store";
 
 const keplrKeyStoreChange = 'keplr_keystorechange';
 
@@ -19,7 +20,6 @@ class DataService extends LoggedService {
   private dashboardTimeout = 3000;
   private validatorsTimeout = 10000;
   private accountTimeout = 10000;
-
   private lastBlockTimeout = 0;
   private lastDashboardTimeout = 0;
   private lastValidatorsTimeout = 0;
@@ -56,11 +56,22 @@ class DataService extends LoggedService {
         this.accountTimeout = config.accountDataRefreshTimeout;
       }
     );
+    window.addEventListener('focus', () => {
+      this.refreshBlocksData();
+      this.refreshDashboard();
+      this.refreshValidators();
+      this.setIntervals();
+    }, false);
+    window.addEventListener('blur', () => {
+      this.clearIntervals();
+    }, false);
   }
 
-  private onInit() {
+  private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');
     const lockScreen = true;
+    await this.waitTillCondition(() => useConfigurationStore().getInitialized);
+
     Promise.all([
       useBlockStore().fetchLatestBlock(lockScreen),
       useBlockStore().fetchAverageBlockTime(lockScreen),
@@ -76,17 +87,29 @@ class DataService extends LoggedService {
       useProposalsStore().fetchDepositParams(),
 
     ]).then(() => {
-      const now = new Date().getTime();
-      this.lastBlockTimeout = now;
-      this.lastDashboardTimeout = now;
-      this.lastValidatorsTimeout = now;
-      this.blockIntervalId = window.setInterval(refreshBlocksData, this.blockTimeout);
-      this.dashboardIntervalId = window.setInterval(refreshDashboard, this.dashboardTimeout);
-      this.validatorsIntervalId = window.setInterval(refreshValidators, this.validatorsTimeout);
-
+        this.setIntervals();
     });
   }
+  public setIntervals() {
+    const now = new Date().getTime();
+    this.lastBlockTimeout = now;
+    this.lastDashboardTimeout = now;
+    this.lastValidatorsTimeout = now;
+    this.blockIntervalId = window.setInterval(refreshBlocksData, this.blockTimeout);
+    this.dashboardIntervalId = window.setInterval(refreshDashboard, this.dashboardTimeout);
+    this.validatorsIntervalId = window.setInterval(refreshValidators, this.validatorsTimeout);
+  }
 
+  public clearIntervals() {
+    window.clearInterval(this.blockIntervalId);
+    window.clearInterval(this.dashboardIntervalId);
+    window.clearInterval(this.validatorsIntervalId);
+  }
+  async waitTillCondition(condition: () => boolean) {
+    while (!condition()) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
   public onWindowLoad() {
     this.logToConsole(LogLevel.DEBUG, 'onWindowLoad');
     useUserStore().reconnect(this.onLoginSuccess);
@@ -95,6 +118,13 @@ class DataService extends LoggedService {
   public onKeplrLogIn(onSuccess?: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onKeplrLogIn');
     useUserStore().connectKeplr((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo, onSuccess);
+    });
+  }
+
+  public onCosmostationLogIn(onSuccess?: () => void) {
+    this.logToConsole(LogLevel.DEBUG, 'onCosmostationLogIn');
+    useUserStore().connectCosmostation((connetionInfo: ConnectionInfo) => {
       this.onLoginSuccess(connetionInfo, onSuccess);
     });
   }
@@ -127,9 +157,7 @@ class DataService extends LoggedService {
       useProposalsStore().clear();
       useTokensStore().clear();
       useValidatorsStore().clear();
-      window.clearInterval(this.blockIntervalId);
-      window.clearInterval(this.dashboardIntervalId);
-      window.clearInterval(this.validatorsIntervalId);
+      this.clearIntervals();
       this.onInit();
       if (refreshProposals) {
         useProposalsStore().fetchProposals(true);
@@ -141,7 +169,11 @@ class DataService extends LoggedService {
 
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
-    useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
+    this.onProposalDetailsError = onError;
+    useProposalsStore().fetchProposalsDetailsTally(proposeId).then(() => {
+      useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
+    });
+
   }
 
   public onProposalUnselected() {
@@ -262,6 +294,20 @@ class DataService extends LoggedService {
   private disableKeplrAccountChangeListener() {
     this.logToConsole(LogLevel.DEBUG, 'disableKeplrAccountChangeListener');
     window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
+  }
+
+  public onClaimAirdrop(address: string) {
+    this.logToConsole(LogLevel.DEBUG, 'onClaimAirdrop');
+    useAirDropStore().fetchCampaigns(address, true);
+  }
+
+  public async onProposalUpdateVotes(proposalId: number) {
+    this.logToConsole(LogLevel.DEBUG, 'onProposalUpdateVotes');
+    await useProposalsStore().fetchVotingProposalTallyResult(proposalId, true, false);
+  }
+  public onClaimRewards() {
+    this.logToConsole(LogLevel.DEBUG, 'onClaimRewards');
+    useUserStore().claimRewards();
   }
 
 }

@@ -1,5 +1,5 @@
 <template>
-    <span>{{transformToExpView()}}</span>
+    <span>{{transformToExpView()}} </span>
 </template>
 
 <script setup lang="ts">
@@ -29,6 +29,11 @@ const props =  defineProps({
     type : Boolean,
     required: false
   },
+  removeDec: {
+    type : Boolean,
+    required: false,
+    default: true
+  },
 });
 
 function transformToExpView() {
@@ -38,7 +43,7 @@ function transformToExpView() {
   if (props.reduceBigNumber) {
     return reduceBigNumberLocalized(props.amount, props.precision || 4);
   }
-  return formatBigNumberLocalized(typeof props.amount === 'bigint' ? props.amount.toString() : props.amount.toFixed(props.precision || 4));
+  return formatBigNumberLocalized(typeof props.amount === 'bigint' ? props.amount.toString() : props.amount.toFixed(props.precision || 4), props.removeDec);
 }
 
 

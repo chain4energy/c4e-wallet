@@ -73,7 +73,7 @@ export class AccountApi extends TxBroadcastBaseApi {
   private static isAccountNotFound(status?: number, data?: BlockchainApiErrorData): boolean {
     const code = data?.code;
     const message = data?.message;
-    return status === 404 && code === 5 && message !== undefined && /rpc error: code = NotFound/i.test(message);
+    return status === 404 && code === 5 && message !== undefined && (/rpc error: code = NotFound/i.test(message) || /account.*not found/i.test(message));
   }
 
   public async fetchBalance(address: string, denom: string, lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{
@@ -279,4 +279,37 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
+  public async claimInitialAirDrop(connection: ConnectionInfo, campaignId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
+    const config = useConfigurationStore().config;
+
+    const getMessages = (): readonly EncodeObject[] => {
+      const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgInitialClaim';
+      const val = {
+        claimer: connection.account,
+        campaign_id: campaignId,
+        addressToClaim: '', //TODO Create optional UI
+      };
+      return [{ typeUrl: typeUrl, value: val }];
+    };
+
+    const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+  }
+  public async claimAirDropMissions(connection: ConnectionInfo, campaignId: number, missionId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
+    const config = useConfigurationStore().config;
+
+    const getMessages = (): readonly EncodeObject[] => {
+      const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgInitialClaim';
+      const val = {
+        claimer: connection.account,
+        campaign_id: campaignId,
+        mission_id: missionId,
+      };
+      return [{ typeUrl: typeUrl, value: val }];
+    };
+
+    const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+  }
+
 }

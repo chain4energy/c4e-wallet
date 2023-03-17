@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {Proposal, ProposalTallyResult, TallyParams, VoteOption} from "@/models/store/proposal";
+import {Proposal, ProposalDetailsTally, ProposalTallyResult, TallyParams, VoteOption} from "@/models/store/proposal";
 import { useToast} from "vue-toastification";
 import { Coin } from "@/models/store/common";
 import { useConfigurationStore } from "./configuration.store";
@@ -23,6 +23,8 @@ interface ProposalsState {
   tallyParams: TallyParams,
   minDeposit: Coin,
   userVote: VoteOption | null;
+  proposalDetailsTally: ProposalDetailsTally | undefined;
+  proposalDetailsTallyMap: Map<number,ProposalDetailsTally>;
 }
 
 export const useProposalsStore = defineStore({
@@ -39,7 +41,9 @@ export const useProposalsStore = defineStore({
       paginationKey: null,
       tallyParams: new TallyParams(Number.NaN, Number.NaN, Number.NaN),
       minDeposit: new Coin(0n, useConfigurationStore().config.stakingDenom),
-      userVote: null
+      userVote: null,
+      proposalDetailsTally: undefined,
+      proposalDetailsTallyMap: new Map<number, ProposalDetailsTally>()
     };
   },
   actions: {
@@ -49,10 +53,15 @@ export const useProposalsStore = defineStore({
       await apiFactory.proposalsApi().fetchProposals(this.paginationKey, lockscreen)
         .then(async (resp) => {
           if (resp.response.isSuccess() && resp.response.data !== undefined){
+            const proposalsIds: number[] = [];
+            resp.response.data.proposals.forEach(proposal => {
+              proposalsIds.push(proposal.proposalId);
+            });
+
             this.proposals = this.proposals.concat(resp.response.data.proposals);
             const mappedIndexes = new Map<number, number>();
             const tallys = Array<Promise<void>>();
-
+            tallys.push(this.fetchProposalsDetailsTallyList(proposalsIds, lockscreen));
             this.proposals.forEach((el,index) => {
               mappedIndexes.set(el.proposalId,index);
               this.proposalsTally.delete(el.proposalId);
@@ -210,6 +219,32 @@ export const useProposalsStore = defineStore({
         }
       });
     },
+    async fetchProposalsDetailsTally(id:number, lockscreen = true) {
+      await apiFactory.proposalsApi().fetchProposalsDetailsTally(id, lockscreen).then(response => {
+        if (response.error == null && response.data != undefined) {
+          this.proposalDetailsTally = response.data;
+        } else {
+          const message = 'Error fetching proposals details tally';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
+        }
+      });
+    },
+    async fetchProposalsDetailsTallyList(ids:number[], lockscreen = true) {
+      await apiFactory.proposalsApi().fetchProposalsDetailsTallyList(ids, lockscreen).then(response => {
+        if (response.error == null && response.data != undefined) {
+          if(this.proposalDetailsTallyMap == undefined) {
+            this.proposalDetailsTallyMap = response.data;
+          } else {
+             this.proposalDetailsTallyMap = new Map([...this.proposalDetailsTallyMap, ...response.data])
+          }
+        } else {
+          const message = 'Error fetching proposals details tally list';
+          logger.logToConsole(LogLevel.ERROR, message);
+          toast.error(message);
+        }
+      });
+    },
     clearProposals() {
       this.proposals = Array<Proposal>();
       this.proposalById= new Map<number, number>();
@@ -249,6 +284,9 @@ export const useProposalsStore = defineStore({
     getProposal(): Proposal | undefined {
       return this.proposal;
     },
+    getProposalDetailsTally(): ProposalDetailsTally | undefined {
+      return this.proposalDetailsTally;
+    },
     getTallyParams(): TallyParams {
       return this.tallyParams;
     },
@@ -275,15 +313,20 @@ export const useProposalsStore = defineStore({
 
     },
     getSelectedProposalTally(): ProposalTallyResult {
-    if (!this.proposal) {
-      return new ProposalTallyResult(0n, 0n, 0n, 0n);
-    }
-    const tally = this.proposalTally;
-    if (tally) {
-      return tally;
-    }
-    return this.proposal.finalTallyResult;
-  }
+      if (!this.proposal) {
+        return new ProposalTallyResult(0n, 0n, 0n, 0n);
+      }
+      const tally = this.proposalTally;
+      if (tally) {
+        return tally;
+      }
+      return this.proposal.finalTallyResult;
+    },
+    getProposalDetailsTallyById(): (proposalId: number) => ProposalDetailsTally | undefined {
+      return (proposalId: number) => {
+        return this.proposalDetailsTallyMap.get(proposalId);
+      };
+    },
 
   },
 });

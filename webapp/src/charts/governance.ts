@@ -10,7 +10,7 @@ const noColor = '#e02626';
 const noWithVetoColor = '#FDDB2A';
 const noVotesColor = '#797777';
 
-export function createProposalDetailsChartData(yes: number | BigDecimal, abstain: number | BigDecimal, no: number | BigDecimal, noWithVeto: number | BigDecimal, sum: bigint, precision = 4) {
+export function createProposalDetailsChartData(yes: number | BigDecimal, abstain: number | BigDecimal, no: number | BigDecimal, noWithVeto: number | BigDecimal, notVoted: number | BigDecimal, sum: bigint, precision = 4) {
   if (sum > 0) {
     const formatter = function (params: any) {
       return `
@@ -24,7 +24,8 @@ export function createProposalDetailsChartData(yes: number | BigDecimal, abstain
         {value: yes, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES'), color: yesColor},
         {value: abstain, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN'), color: abstainColor},
         {value: no, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO'), color: '#e02626'},
-        {value: noWithVeto, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO'), color: '#FDDB2A'}
+        {value: noWithVeto, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO'), color: '#FDDB2A'},
+        {value: notVoted, name: i18n.global.t('GOVERNANCE_VIEW.VOTING_OPTIONS.NOT_VOTED'), color: '#8d8d8d'}
       ], precision
     );
   } else {

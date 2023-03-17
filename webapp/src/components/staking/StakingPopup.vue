@@ -1,5 +1,6 @@
 <template>
   <div class="validationPopup">
+    <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
     <div class="validationPopup__background"></div>
     <div class="validationPopup__holder">
       <div class="validationPopup__header">
@@ -126,9 +127,9 @@
         </div>
         <div v-else class="validationPopup__btns">
           {{ $t('ERRORS.CONNECT_WALLET') }}
-          <Button @click="dataService.onKeplrLogIn()">
-            <KeplrLogo/>
-            {{ $t('CONNECT.CONNECT') }}
+          <Button v-if="!useUserStore().isLoggedIn" class="secondary" @click="loginPopupStatus =! loginPopupStatus">{{
+              $t('COMMON.CONNECT')
+            }}
           </Button>
         </div>
       </Form>
@@ -160,14 +161,15 @@ import C4EIcon from "../commons/C4EIcon.vue";
 import {useValidatorsStore} from "@/store/validators.store";
 import {formatBigNumberLocalized} from "@/utils/locale-number-formatter";
 import PercentsView from "@/components/commons/PercentsView.vue";
+import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 
 const emit = defineEmits(['close', 'success']);
 
 const props = defineProps<{
   validator: Validator,
-  redelegationDirection: RedelegationDirection
+  redelegationDirection: RedelegationDirection,
 }>();
-
+const loginPopupStatus = ref(false);
 document.body.style.overflow = "hidden";
 onUnmounted(() => {
   document.body.style.overflow = "auto";

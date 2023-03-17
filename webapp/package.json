@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@cosmjs/stargate": "^0.28.7",
+    "@cosmostation/extension-client": "^0.1.15",
     "@koa/cors": "^4.0.0",
     "@popperjs/core": "^2.11.5",
     "axios": "^0.27.1",
@@ -41,7 +42,7 @@
     "vue-echarts": "^6.0.3",
     "vue-i18n": "^9.1.9",
     "vue-json-pretty": "^2.2.3",
-    "vue-loading-overlay": "5.0",
+    "vue-loading-overlay": "6.0.3",
     "vue-markdown-render": "^2.0.1",
     "vue-router": "^4.0.3",
     "vue-svg-inline-plugin": "^2.2.3",

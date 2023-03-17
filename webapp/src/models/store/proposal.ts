@@ -2,6 +2,7 @@ import {Coin, findByDenom } from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { BigDecimal, divideBigInts } from "./big.decimal";
 import { VoteOption as CosmVoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
+import {StakingPool} from "@/models/store/tokens";
 
 export enum ProposalStatus {
   PASSED= 'PROPOSAL_STATUS_PASSED' ,
@@ -198,3 +199,69 @@ export class TallyParams {
   }
 
 }
+export class ProposalDetailsTally {
+  proposalTally: ProposalTallyResult;
+  stakingPool: StakingPool;
+
+
+  constructor(proposalTally: ProposalTallyResult, stakingPool: StakingPool) {
+    this.proposalTally = proposalTally;
+    this.stakingPool = stakingPool;
+  }
+
+  public get total(): bigint {
+    return this.stakingPool.bondedTokens;
+  }
+
+  public getYesPercentage(): BigDecimal {
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.yes, this.total);
+  }
+  public getAbstainPercentage(): BigDecimal{
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.abstain, this.total);
+  }
+
+  public getNoPercentage(): BigDecimal {
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.no, this.total);
+  }
+
+  public getNoWithVetoPercentage(): BigDecimal {
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.noWithVeto, this.total);
+  }
+
+  public getNotVotedPercentage(): BigDecimal {
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.getNotVoted(), this.total);
+  }
+
+  public getAbstain(): bigint{
+    return this.proposalTally.abstain;
+  }
+
+  public getYes(): bigint{
+    return this.proposalTally.yes;
+  }
+  public getNoWithVeto(): bigint{
+    return this.proposalTally.noWithVeto;
+  }
+  public getNo(): bigint{
+    return this.proposalTally.no;
+  }
+  public getNotVoted(): bigint {
+    return this.total - this.proposalTally.yes - this.proposalTally.no - this.proposalTally.abstain - this.proposalTally.noWithVeto;
+  }
+}
+

@@ -147,6 +147,7 @@ import {useUserStore} from "@/store/user.store";
 import {PermissionsService} from "@/services/permissions/permissions.service";
 import KeplrLogo from '../commons/KeplrLogo.vue';
 import * as GovernanceIcon from "@/components/commons/GovernanceIcon.vue";
+import dataService from "@/services/data.service";
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
@@ -190,7 +191,7 @@ function openAccInfo() {
 
 function logout() {
   // const latestBlock = computed(() => useBlockStore().getLatestBlock);
-  useUserStore().logOut();
+  dataService.onLogOut();
 }
 
 </script>

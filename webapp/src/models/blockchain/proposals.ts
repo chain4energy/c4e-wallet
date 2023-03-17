@@ -1,5 +1,7 @@
 import { PaginatedResponse } from "@/models/blockchain/pagination";
 import { Coin } from "./common";
+import {StakingPool} from "@/models/store/tokens";
+import {StakingPool as BcStakingPool} from "@/models/blockchain/tokens";
 
 export interface ProposalsResponse extends PaginatedResponse {
   proposals: Proposal[]
@@ -67,6 +69,7 @@ export interface TallyParams {
 }
 
 export interface Tally {
+  proposal_id?: number,
   yes: string,
   abstain: string,
   no: string,
@@ -76,3 +79,10 @@ export interface TallyResponse {
   tally: Tally
 }
 
+export interface ProposalsDetailsTallyResult {
+  data: {
+    proposalTallyResult: Tally[],
+    stakingPool: BcStakingPool[]
+  }
+
+}

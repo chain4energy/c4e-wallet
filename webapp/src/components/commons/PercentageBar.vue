@@ -1,99 +1,130 @@
 <template>
   <div ref="percentage" class="percentageBar">
-    <canvas></canvas>
+    <canvas class="percentageBar__canvas" ref="canva"></canvas>
   </div>
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
-
+import {onMounted, ref,  nextTick } from "vue";
+import {CampainStatus} from "@/models/airdrop/airdrop";
 const props = defineProps<{
-  amount: number,
-  started: boolean,
-  ended: boolean,
+  amount: number | null,
+  status: CampainStatus;
+  timeToPass? : string;
 }>();
 
 const percentage = ref();
+const canva =ref();
+const ctx = ref();
 
-function initPercents() {
-  const canvas = percentage.value.children[0];
-  let width = percentage.value.offsetWidth;
-  let height = percentage.value.offsetHeight;
-  const amount = props.amount;
-  const ctx = canvas.getContext("2d");
+function initCanvas() {
+  ctx.value = canva.value.getContext("2d");
+  onResize();
+  changeStatus();
+  new ResizeObserver(onResize).observe(percentage.value);
+}
 
-
-  function outputsize() {
-    width = percentage.value.offsetWidth;
-    height = percentage.value.offsetHeight;
-    canvas.width = width;
-    canvas.height = height;
-    ctx.fillStyle = '#000000';
-
-
-    if (amount < 10 && props.started) {
-      ctx.font = "15px sans-serif";
-      ctx.fillText(`Progress ${amount.toFixed(2)}`, 20, 15);
-      ctx.globalCompositeOperation='destination-over';
-      let grd = ctx.createLinearGradient(0, 0, width, 0);
-      grd.addColorStop(0, '#861010');
-      grd.addColorStop(0.2, "#FFF1A9");
-      ctx.fillStyle = grd;
-    } else if (amount >= 10 && amount < 50 && props.started) {
-      ctx.font = "15px sans-serif";
-      ctx.fillText(`Progress ${amount.toFixed(2)}`, 20, 15);
-      ctx.globalCompositeOperation='destination-over';
-      let grd = ctx.createLinearGradient(0, 0, width, 0);
-      grd.addColorStop(1, "#FFF1A9");
-      grd.addColorStop(0, "#FDDB2A");
-      ctx.fillStyle = grd;
-    } else if (amount >= 50 && amount < 80 && props.started) {
-      ctx.font = "15px sans-serif";
-      ctx.fillText(`Progress ${amount.toFixed(2)}`, 20, 15);
-      ctx.globalCompositeOperation='destination-over';
-      let grd = ctx.createLinearGradient(0, 0, width, 0);
-      grd.addColorStop(1, "#FDDB2A");
-      grd.addColorStop(0, "#72bf44");
-      ctx.fillStyle = grd;
-    } else if (amount >= 80 && props.started) {
-      ctx.font = "15px sans-serif";
-      ctx.fillText(`Progress ${amount.toFixed(2)}`, 20, 15);
-      ctx.globalCompositeOperation='destination-over';
-      let grd = ctx.createLinearGradient(0, 0, width, 0);
-      grd.addColorStop(1, "#72bf44");
-      grd.addColorStop(0, "#2AFD88");
-      ctx.fillStyle = grd;
-    } else if(!props.started){
-      ctx.font = "15px sans-serif";
-      ctx.fillText(`Waiting to start campaign`, 20, 15);
-      ctx.globalCompositeOperation='destination-over';
-      ctx.fillStyle = '#9A9B9C';
-    }
-    ctx.roundRect(0, 0, (amount / 100) * width, 20, 5);
-    ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.strokeStyle='#9A9B9C';
-    ctx.roundRect(0, 0,  width, 20, 5);
-    ctx.stroke();
-    ctx.fill();
+function onResize() {
+  if(canva.value?.offsetWidth){
+    canva.value.width = canva.value.offsetWidth;
+    canva.value.height = percentage.value.offsetHeight;
+    changeStatus();
   }
-  ctx.globalCompositeOperation='destination-over';
-  ctx.beginPath();
-  ctx.roundRect(0, 0, (amount / 100) * width, height, 40);
-  ctx.fill();
-  new ResizeObserver(outputsize).observe(percentage.value);
+}
+function changeStatus(){
+  let text;
+  let fontStyle = '#ffffff';
+  let backgroundColor;
+  let progress;
+  switch (props.status){
+    case CampainStatus.Future: text = 'Waiting to start campaign';
+      backgroundColor = '#9A9B9C';
+      ctx.value.rect(0, 0, canva.value.width, canva.value.height);
+      progress = false;
+      break;
+    case CampainStatus.Past:
+      text = 'The campaign has past';
+      ctx.value.rect(0, 0, canva.value.width, canva.value.height);
+      backgroundColor = '#9A9B9C';
+      progress = false;
+      break;
+    case CampainStatus.Now: text = props.amount;
+      backgroundColor = changeProgress();
+      text = `${props.timeToPass}`;
+      progress = true;
+      ctx.value.rect(0, 0, (canva.value.width /100) * props.amount , canva.value.height);
+      break;
+    default: text = '';
+      break;
+  }
+  const fontsize = 12;
+  ctx.value.font = `${fontsize}px sans-serif`;
+  const textWidth = ctx.value.measureText(text ).width;
+  const widthOfBar = ((canva.value.width /100) * props.amount) - textWidth/2;
+  if(progress && widthOfBar > textWidth){
+    ctx.value.fillStyle = fontStyle;
+    ctx.value.fillText(text,  textWidth/2, canva.value.height/2 + (fontsize/3));
+  } else if(progress && widthOfBar < textWidth) {
+    fontStyle = '#000000';
+    ctx.value.fillStyle = fontStyle;
+    ctx.value.fillText(text,  textWidth/2, canva.value.height/2 + (fontsize/3));
+  } else {
+    ctx.value.fillStyle = fontStyle;
+    ctx.value.fillText(text, (canva.value.width/2) - textWidth/2, canva.value.height/2 + (fontsize/3));
+  }
+
+
+
+  ctx.value.globalCompositeOperation='destination-over';
+  ctx.value.fillStyle = backgroundColor;
+  ctx.value.fill();
+}
+
+function changeProgress(){
+  let background;
+  if(props.amount <= 10){
+    background = ctx.value.createLinearGradient(0, 0, canva.value.width, 0);
+    background.addColorStop(0, '#ec0a1f');
+    background.addColorStop(1, "#d95e00");
+  } else if (props.amount <= 40 && props.amount > 10){
+    background = ctx.value.createLinearGradient(0, 0, canva.value.width, 0);
+    background.addColorStop(0, "#d95e00");
+    background.addColorStop(1, "#bd8800");
+  } else if (props.amount <= 70 && props.amount > 40){
+    background = ctx.value.createLinearGradient(0, 0, canva.value.width, 0);
+    background.addColorStop(0, "#bd8800");
+    background.addColorStop(1, "#9aa700");
+  }else if (props.amount > 70){
+    background = ctx.value.createLinearGradient(0, 0, canva.value.width, 0);
+    background.addColorStop(0, "#9aa700");
+    background.addColorStop(1, "#72bf44");
+  }
+  return background;
 }
 
 onMounted(() => {
-  initPercents();
+  initCanvas();
 });
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 .percentageBar {
   width: 100%;
-  height: 25px;
+  height: 14px;
+  margin: 0 0 15px 0;
+
+  canvas{
+    border-radius: 3px;
+    background-color: #ffffff;
+    width: 100%;
+    height: 14px;
+  }
+  &__status{
+    z-index: 2;
+    color: white;
+    top: 0;
+  }
 }
 </style>

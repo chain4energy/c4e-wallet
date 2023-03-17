@@ -1,13 +1,18 @@
-import { DecCoin} from "@/models/store/common";
+import {Coin} from "@/models/store/common";
+import {MissionType as MissionTypeBc} from "@/models/blockchain/airdrop";
+import {BigDecimal} from "@/models/store/big.decimal";
+import {useConfigurationStore} from "@/store/configuration.store";
 
-export class AirdropTotal{
-  campains: Campain[]
-  constructor(campains: Campain[]) {
-    this.campains = campains;
+export class AirdropTotal {
+  campaignAllocations: CampaignAllocation[]
+
+  constructor(campaignAllocations: CampaignAllocation[]) {
+    this.campaignAllocations = campaignAllocations;
   }
-  public getTotal(){
+
+  public getTotal() {
     const sumArr = Array<number>();
-    this.campains.forEach((el)=> {
+    this.campaignAllocations.forEach((el) => {
       sumArr.push(el.getTotalForCampaign());
     });
     const sum = sumArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -15,21 +20,24 @@ export class AirdropTotal{
   }
 }
 
-export class Campain{
+
+export class CampaignAllocation {
   name: string;
   details_url: string;
 
   is_absent: boolean;
   hide_if_absent: boolean;
   allocations: AlocationsSt[];
-  constructor(name: string, details_url: string, is_absent:boolean, hide_if_absent:boolean, allocations: AlocationsSt[]) {
+
+  constructor(name: string, details_url: string, is_absent: boolean, hide_if_absent: boolean, allocations: AlocationsSt[]) {
     this.name = name;
     this.details_url = details_url;
     this.is_absent = is_absent;
     this.hide_if_absent = hide_if_absent;
     this.allocations = allocations;
   }
-  public getTotalForCampaign(){
+
+  public getTotalForCampaign() {
     const sum = Array<number>();
     this.allocations.forEach((el) => {
       sum.push(el.value);
@@ -37,55 +45,129 @@ export class Campain{
     return sum.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   }
 
-  public hideCampaign():boolean{
+  public hideCampaign(): boolean {
     return this.is_absent && this.hide_if_absent;
   }
 }
 
-export class AlocationsSt{
+export class AlocationsSt {
   name: string;
   value: number;
-  constructor(name : string, value: number) {
+
+  constructor(name: string, value: number) {
     this.name = name;
     this.value = value;
   }
 }
 
-export class AirdropStore{
-  atom_staked_balance: string;
-  atom_address: string;
-  c4e_address: string;
-  base_airdrop: number;
-  booster_1_airdrop: number;
-  booster_2_airdrop: number;
-  gleam_airdrop: number;
-  total_amount: DecCoin;
-  voted_on_proposal: boolean;
-  atom_delegated_outside: number;
-  delegated_outside: boolean;
-  constructor(
-    atom_staked_balance: string,
-    atom_address: string,
-    c4e_address: string,
-    base_airdrop: number,
-    booster_1_airdrop: number,
-    booster_2_airdrop: number,
-    gleam_airdrop: number,
-    total_amount: DecCoin,
-    voted_on_proposal: boolean,
-    atom_delegated_outside: number,
-    delegated_outside: boolean,
-  ) {
-    this.atom_staked_balance = atom_staked_balance;
-    this.atom_address = atom_address;
-    this.c4e_address = c4e_address;
-    this.base_airdrop = base_airdrop;
-    this.booster_1_airdrop = booster_1_airdrop;
-    this.booster_2_airdrop = booster_2_airdrop;
-    this.gleam_airdrop = gleam_airdrop;
-    this.total_amount = total_amount;
-    this.voted_on_proposal = voted_on_proposal;
-    this.atom_delegated_outside = atom_delegated_outside;
-    this.delegated_outside = delegated_outside;
+export class Campaign{
+  id : number;
+  name : string;
+  description : string;
+  enabled: boolean;
+  start_time: string;
+  end_time: string;
+  lockup_period: string;
+  vesting_period: string;
+  feegrant_amount: string;
+  initial_claim_free_amount: string;
+  amount: Coin;
+  missions: Mission[];
+
+
+  constructor(id: number, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, feegrant_amount: string, initial_claim_free_amount:string) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.enabled = enabled;
+    this.start_time = start_time;
+    this.end_time = end_time;
+    this.lockup_period = lockup_period;
+    this.vesting_period = vesting_period;
+    this.feegrant_amount = feegrant_amount;
+    this.initial_claim_free_amount = initial_claim_free_amount;
+    this.amount = new Coin(BigInt(0), getDefaultDenom());
+    this.missions = new Array<Mission>();
   }
+}
+
+export class Mission {
+  id : string;
+  name : string;
+  description : string;
+  mission_type : MissionTypeSt;
+
+  weight: number;
+  completed : boolean;
+  claimed : boolean;
+  claimed_time : string | undefined
+
+
+  constructor(id: string, name: string, description: string, mission_type: MissionTypeSt, weight: number, completed: boolean, claimed: boolean, claimed_time: string | undefined) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.mission_type = mission_type;
+    this.weight = weight;
+    this.completed = completed;
+    this.claimed = claimed;
+    this.claimed_time = claimed_time;
+  }
+}
+
+export enum MissionTypeSt {
+  INITIAL_CLAIM = 'INITIAL_CLAIM',
+  VOTE = 'VOTE',
+  DELEGATE = 'DELEGATE',
+  UNDEFINED = 'UNDEFINED'
+}
+
+export function convertMissionType(missionTypeBc: MissionTypeBc): MissionTypeSt {
+  if (missionTypeBc) {
+    switch (missionTypeBc) {
+      case MissionTypeBc.DELEGATE:
+        return MissionTypeSt.DELEGATE;
+      case MissionTypeBc.INITIAL_CLAIM:
+        return MissionTypeSt.INITIAL_CLAIM;
+      case MissionTypeBc.VOTE:
+        return MissionTypeSt.VOTE;
+    }
+  } else {
+    console.log("missionTypeBc not defined");
+    return MissionTypeSt.UNDEFINED;
+  }
+}
+
+export function findMission(missions: Mission[], missionId: string): Mission | undefined {
+  return missions.find(d => {
+    return d.id == missionId;
+  });
+}
+
+export function findCampaign(campaigns: Campaign[], campaignId: number): Campaign | undefined {
+  return campaigns.find(d => {
+    return d.id == campaignId;
+  });
+}
+export class FairdropPollUsage {
+  total:Coin;
+  claimed:Coin;
+  activeCampaigns:Coin;
+  toClaim:Coin;
+  claimedPercentage:BigDecimal;
+  toClaimePercentage:BigDecimal;
+
+
+  constructor(total: Coin, claimed: Coin, activeCampaigns: Coin, toClaim: Coin, claimedPercentage:BigDecimal,   toClaimPercentage:BigDecimal) {
+    this.total = total;
+    this.claimed = claimed;
+    this.activeCampaigns = activeCampaigns;
+    this.toClaim = toClaim;
+    this.claimedPercentage = claimedPercentage;
+    this.toClaimePercentage = toClaimPercentage;
+  }
+}
+
+function getDefaultDenom():string{
+  return useConfigurationStore().config.airdropDefaultDenom;
 }

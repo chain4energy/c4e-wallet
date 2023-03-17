@@ -11,6 +11,7 @@ module.exports = defineConfig({
   },
   transpileDependencies: true,
   devServer: {
+    allowedHosts: "all",
     static :{
       directory: path.join('./dev/', '/')
     },

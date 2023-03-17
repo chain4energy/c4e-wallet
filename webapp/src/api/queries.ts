@@ -1,7 +1,7 @@
 export default {
   blockchain: {
     STAKING_POOL_URL: '/cosmos/staking/v1beta1/pool',
-    TOTAL_SUPPLY_URL: '/cosmos/bank/v1beta1/supply/{denom}',
+    TOTAL_SUPPLY_URL: '/cosmos/bank/v1beta1/supply/by_denom?denom={denom}',
     COMMUNITY_POOL_URL: '/cosmos/distribution/v1beta1/community_pool',
     PROPOSALS_URL: '/cosmos/gov/v1beta1/proposals',
     PROPOSALS_BY_ID_URL: '/cosmos/gov/v1beta1/proposals/{id}',
@@ -18,8 +18,12 @@ export default {
     INFLATION_URL: '/c4e/minter/v1beta1/inflation',
     STAKING_PARAMS_URL: '/cosmos/staking/v1beta1/params',
     VESTINGS_SUM_URL: '/c4e/vesting/v1beta1/summary',
-    DISTRIBUTOR_PARAMS_URL: '/c4e/distributor/v1beta1/params'
-
+    DISTRIBUTOR_PARAMS_URL: '/c4e/distributor/v1beta1/params',
+    USER_AIRDROP_ENTRIES_URL: '/c4e/airdrop/v1beta1/user_airdrop_entries/{address}',
+    CAMPAIGNS_URL: '/c4e/airdrop/v1beta1/campaigns',
+    MISSIONS_URL: '/c4e/airdrop/v1beta1/mission',
+    AIRDROP_DISTRIBUTIONS: '/c4e/airdrop/v1beta1/airdrop_distributions/{campaign_id}',
+    AIRDROP_CLAIMS_LEFT: '/c4e/airdrop/v1beta1/airdrop_claims_left/{campaign_id}',
   },
   hasura: {
     AVERAGE_BLOCK_TIME_QUERY: 'query AverageBlockTime {' +
@@ -41,7 +45,33 @@ export default {
           'avatar_url' +
         '}' +
       '}' +
-    '}'
+    '}',
+    PROPOSALS_DETAILS_TALLY_QUERY: 'query ProposalDetailsTally {' +
+      'proposalTallyResult: proposal_tally_result(where: {proposal_id: {_eq: {proposalId}}}) {' +
+      '    yes' +
+      '    no' +
+      '    no_with_veto: no_with_veto' +
+      '    abstain' +
+      '  }' +
+      '  stakingPool: proposal_staking_pool_snapshot(where: {proposal_id: {_eq: {proposalId}}}) {' +
+      '    bonded_tokens: bonded_tokens' +
+      '    not_bonded_tokens: not_bonded_tokens' +
+      '  }' +
+      '}',
+    PROPOSALS_DETAILS_TALLY_LIST_QUERY: 'query ProposalDetailsTallyList {' +
+      'proposalTallyResult: proposal_tally_result(where: {proposal_id: {_in: [{proposalsIds}]}}) {' +
+      '    yes' +
+      '    no' +
+      '    no_with_veto: no_with_veto' +
+      '    abstain' +
+      '    proposal_id '+
+      '  }' +
+      '  stakingPool: proposal_staking_pool_snapshot(where: {proposal_id: {_in: [{proposalsIds}]}}) {' +
+      '    bonded_tokens: bonded_tokens' +
+      '    not_bonded_tokens: not_bonded_tokens' +
+      '    proposal_id '+
+      '  }' +
+      '}'
   },
   keybase: {
     QUERY_URL: '/_/api/1.0/user/user_search.json?q={keybaseHash}&num_wanted=1'

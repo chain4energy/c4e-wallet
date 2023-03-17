@@ -9,6 +9,7 @@ import { SigningStargateClient, isDeliverTxFailure, DeliverTxResponse } from "@c
 import { useConfigurationStore } from "@/store/configuration.store";
 import { RequestResponse } from '@/models/request-response';
 import TxToast from "@/components/commons/TxToast.vue";
+import {Keplr} from "@keplr-wallet/types";
 
 const toast = useToast();
 
@@ -212,18 +213,25 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
   private async getOfflineSigner(connectionType: ConnectionType) {
     switch(connectionType) {
       case ConnectionType.Keplr: {
-        if(window.keplr) {
-          const chainId = useConfigurationStore().config.chainId;
-          const isLedger = (await window.keplr?.getKey(chainId)).isNanoLedger;
-          const offlineSigner = isLedger ? window.keplr.getOfflineSignerOnlyAmino(chainId) : window.keplr.getOfflineSigner(chainId);
-          return {signer: offlineSigner, isLedger: isLedger};
-        }
-        throw new Error('Keplr not installed');
+        return this.getOfflineSignerExtensionBased(window.keplr, 'Keplr not installed');
+      }
+      case ConnectionType.Cosmostation: {
+        return this.getOfflineSignerExtensionBased(window.cosmostation?.providers.keplr, 'Cosmostation not installed');
       }
       default: {
         throw new Error('No signer for connnection type: ' + connectionType);
       }
     }
+  }
+
+  private async getOfflineSignerExtensionBased(extension: Keplr | undefined, errorMessage: string) {
+    if(extension) {
+      const chainId = useConfigurationStore().config.chainId;
+      const isLedger = (await extension?.getKey(chainId)).isNanoLedger;
+      const offlineSigner = isLedger ? extension.getOfflineSignerOnlyAmino(chainId) : extension.getOfflineSigner(chainId);
+      return {signer: offlineSigner, isLedger: isLedger};
+    }
+    throw new Error(errorMessage);
   }
 
   private createTxErrorResponseWithToast(errorData: TxBroadcastError,toastMessageBeginning: string | undefined, showErrorToast: boolean): RequestResponse<TxData, TxBroadcastError> {

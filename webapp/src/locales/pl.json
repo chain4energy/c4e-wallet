@@ -6,6 +6,7 @@
     "CONNECT": "zaloguj",
     "CONNECT_ADDRESS": "Zaloguj się z adresem",
     "CONNECT_KEPLR": "Zaloguj się z Keplrem",
+    "CONNECT_COSMOSTATION": "Zaloguj się z Cosmostation",
     "ADDRESS_HELP": "Przeglądaj z dowolnym adresem",
     "VIEW_EXPLORER": "View on explorer",
     "COPY": "Copy",
@@ -43,7 +44,10 @@
       "YES": "Tak",
       "NO": "Nie",
       "ABSTAIN": "Wstrzymanie",
-      "NO_WITH_VETO": "Nie z Weto"
+      "NO_WITH_VETO": "Nie z Weto",
+      "THRESHOLD": "Próg",
+      "QUORUM": "Kworum",
+      "NOT_VOTED": "Brak głosu"
     },
     "ERRORS": {
       "NO_STAKED": "Your voice will not be counted (only staked amount is counting in vote but you have '0')"
@@ -92,7 +96,8 @@
     "KEY": "Klucz",
     "SUBSPACE": "Podprzestrzeń",
     "AMOUNT": "Ilość",
-    "VIEW_IN_EXPLORER": "Zobacz w eksploratorze"
+    "VIEW_IN_EXPLORER": "Zobacz w eksploratorze",
+    "AUTOMATIC_REFRESH": "Automatyczne odświeżanie"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Oddelegowane tokeny",
@@ -112,7 +117,9 @@
     "AVERAGE_BLOCK_TIME": "Średni czas bloku",
     "CIRCULATING_SUPPLY": "Tokeny w obiegu",
     "INFLATION": "Inflacja",
-    "STACKING_APR": "Nagroda za delegację tokenów (APR)"
+    "TARGET_INFLATION": "Docelowa inflacja",
+    "STACKING_APR": "Nagroda za delegację tokenów (APR)",
+    "TARGET_STACKING_APR": "Docelowa nagroda za delegację tokenów (APR)"
   },
   "FAQ_VIEW": {
     "TITLES": {
@@ -313,7 +320,7 @@
     "AVAILABLE": "Do dyspozycji",
     "STAKED": "Oddelegowane",
     "UNSTAKING": "Odblokowywanie",
-    "CLAIM_REWARDS": "Odbierz nagrody",
+    "CLAIM_REWARDS": "Odbierz",
     "LOCKED": "Zablokowane",
     "VESTING_END": "Data uwolnienia",
     "CLAIM_HEADER": "Oczekująca nagroda"
@@ -327,6 +334,7 @@
     "DESCRIPTION": "Opis",
     "THE": "The",
     "RETURN": "Wróć",
+    "CLAIM": "Odbierz",
     "INPUT": {
       "AMOUNT": "ilość",
       "ADDRESS": "adres"
@@ -373,9 +381,10 @@
     "COSMOS_HELP": "Wprowadź adres cosmos",
     "CHECK": "Check"
   },
+  "CLAIM_AIRDROP": {
+    "PROGRESS":"Odliczanie kampanii"
+  },
   "DISCLAIMER": "The information provided on this website; web applications; mobile applications does not constitute investment advice, financial advice, trading advice, or any other sort of advice and you should not treat any of the content as such. Crescent Foundation Limited(”Crescent Foundation”) does not recommend that any cryptocurrency should be bought, sold, or held by you. Do conduct your own due diligence and consult your financial advisor before making any investment decisions. </br> Crescent Foundation will strive to ensure accuracy of information listed on this website; web applications; mobile applications although it will not hold any responsibility for any missing or wrong information. Crescent Foundation provides all information *as is.* You understand that you are using any and all information available here at your own risk.<br/>The appearance of third party advertisements and hyperlinks on this website; web applications; mobile applications does not constitute an endorsement, guarantee, warranty, or recommendation by Crescent Foundation. Do conduct your own due diligence before deciding to use any third party services.<br/>Before using our service, you should review the relevant <a href='https://docs.c4e.io/' target='_blank'>documentation</a> to make sure you understand how the service works.",
-
-
   "COPY": {
     "ADDRESS": "Adres został skopiowany do schowka",
     "TX_HASH": "Hash transakcji skopiowany do schowka"

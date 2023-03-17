@@ -102,8 +102,7 @@ class BigDecimalImpl implements BigDecimal {
         return 0n;
       }
       const [ints, decis] = String(value).split('.').concat('');
-      return BigInt(ints + decis.padEnd(DECIMALS, '0')
-        .slice(0, DECIMALS))
+      return BigInt(ints + decis.padEnd(DECIMALS, '0').slice(0, DECIMALS))
         + BigInt(ROUNDED && decis[DECIMALS] >= '5');
     }
   }

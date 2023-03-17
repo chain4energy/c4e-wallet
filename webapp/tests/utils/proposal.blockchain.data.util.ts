@@ -1,6 +1,15 @@
-import { Proposal, ProposalStatus, ProposalTallyResult, TallyParams } from "@/models/store/proposal";
+import {
+  Proposal,
+  ProposalDetailsTally,
+  ProposalStatus,
+  ProposalTallyResult,
+  TallyParams
+} from "@/models/store/proposal";
 import { Validator } from "@/models/store/validator";
 import { BigDecimal } from "../../src/models/store/big.decimal";
+import {StakingPool} from "@/models/store/tokens";
+import {Tally} from "@/models/blockchain/proposals";
+import {StakingPool as BcStakingPool} from "@/models/blockchain/tokens";
 export const defaultProposals = [
   '1',
   '3',
@@ -316,4 +325,19 @@ export function createNoProposalUserVoteResponse() {
 
 export function createVetoProposalUserVoteResponse() {
   return createProposalUserVoteResponse("VOTE_OPTION_NO_WITH_VETO");
+}
+export function createProposalDetailsTally(details: {id: number, yes: bigint, no: bigint, abstain: bigint, noWithVeto: bigint, bondedTokens: bigint, notBondedTokens: bigint}[]) {
+  const proposalTallyResultList: Tally[] = [];
+  const stakingPoolList: BcStakingPool[] = [];
+
+  details.forEach((detail) => {
+    const stakingPool: BcStakingPool = {bonded_tokens: detail.bondedTokens.toString(), not_bonded_tokens:detail.notBondedTokens.toString(), proposal_id: detail.id} as BcStakingPool;
+    const tallyResult: Tally = {proposal_id: detail.id, no: detail.no.toString(), abstain: detail.abstain.toString(), yes: detail.yes.toString(), no_with_veto: detail.noWithVeto.toString()} as Tally;
+
+    proposalTallyResultList.push(tallyResult);
+    stakingPoolList.push(stakingPool);
+  });
+
+
+  return {proposalTallyResult: proposalTallyResultList, stakingPool: stakingPoolList};
 }

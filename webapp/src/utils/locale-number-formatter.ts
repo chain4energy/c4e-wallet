@@ -1,8 +1,8 @@
 import { BigDecimal } from "@/models/store/big.decimal";
 import i18n from "@/plugins/i18n";
 
-export function formatBigNumberLocalized(amount: string) {
-  return formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), amount);
+export function formatBigNumberLocalized(amount: string, removeDec = true) {
+  return formatBigNumber(i18n.global.t('NUMBER_FORMAT_LOCALE'), amount, removeDec);
 }
 
 export function reduceBigNumberLocalized(number: bigint | number | BigDecimal, precision: number): string {
@@ -10,7 +10,7 @@ export function reduceBigNumberLocalized(number: bigint | number | BigDecimal, p
 
 }
 
-export function formatBigNumber(locale: string, amount: string) {
+export function formatBigNumber(locale: string, amount: string, removeDec = true) {
   let decSeparator: string;
   let thousendsSeparator: string;
   switch(locale) {
@@ -37,7 +37,12 @@ export function formatBigNumber(locale: string, amount: string) {
     formated = longEnough ? thousendsSeparator + intPart.slice(-3) + formated : intPart + formated;
     intPart = intPart.slice(0, -3);
   }
-  const decis = intAndDec[1] ? intAndDec[1].replace(/\.?0+$/, "") : '';
+  let decis = '';
+  if(removeDec) {
+     decis = intAndDec[1] ? intAndDec[1].replace(/\.?0+$/, "") : '';
+  } else {
+    decis = intAndDec[1];
+  }
   return intAndDec[1] != undefined && decis.length > 0 ? formated += decSeparator + intAndDec[1] : formated;
 }
 

@@ -5,18 +5,18 @@
       <div class="userdata-container" :class="useUserStore().isContinuousVestingAccount ? '' : 'width-95'">
         <div class="userdata-option" v-for="(items, index) in props.coins" :key="index">
           <span class="header" v-if="items.header">{{items.header}}</span>
-          <CoinAmount :amount="convertAmount(items.amount)" :precision="precision" :show-denom="items.showDenom || showDenom" :reduce-big-number="reduceBigNumber"/>
+          <CoinAmount :amount="convertAmount(items.amount)" :precision="precision" :show-denom="items.showDenom || showDenom" :show-tooltip="true" :reduce-big-number="reduceBigNumber"/>
         </div>
       </div>
       <span class="vesting-container" v-if="useUserStore().isContinuousVestingAccount && showVesting">
         <div class="vesting-flag">Vesting</div>
         <div class="userdata-option vesting-first" v-if="useUserStore().isContinuousVestingAccount">
               <span class="header">{{ $t('USER_DATA.LOCKED') }}</span>
-              <CoinAmount :key="locked" :amount="new BigIntWrapper(locked)" :show-denom="true"/>
+              <CoinAmount :key="locked" :amount="convertAmount(locked)" :precision="precision" :reduce-big-number="reduceBigNumber" :show-tooltip="true" :show-denom="true"/>
           </div>
           <div class="userdata-option vesting" v-if="useUserStore().isContinuousVestingAccount">
               <span class="header">{{ $t('USER_DATA.VESTING_END') }}</span>
-              <b><DateCommon :date="useUserStore().getAccount.continuousVestingData?.endTime"/></b>
+              <b><DateCommon :date="useUserStore().getAccount.continuousVestingData?.endTime" :show-time="false" :showTooltip="true" /></b>
           </div>
           <div class="userdata-option vesting" v-if="!useUserStore().isContinuousVestingAccount"></div>
 
@@ -34,6 +34,7 @@ import CoinAmount from "./CoinAmount.vue";
 import { useUserStore } from "@/store/user.store";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import {useBlockStore} from "@/store/block.store";
+import dataService from "@/services/data.service";
 
 const props = defineProps<{
   coins:[
@@ -62,7 +63,7 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
 }
 
 onMounted(() =>{
-  useBlockStore().fetchLatestBlock(false);
+  dataService.refreshValidators();
 });
 
 

@@ -71,5 +71,8 @@ export interface Configuration {
   isMainNetwork: boolean,
   testMode?: boolean,
   testFileName?: string,
-  airdropBaseURL: string
+  airdropBaseURL: string;
+  proposalVotingRefreshTimeout: number;
+  airdropDefaultDenom: string;
+  targetInflationAprMultiplier: number
 }

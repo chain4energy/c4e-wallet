@@ -9,7 +9,7 @@
           <ProposalDetails :proposal="proposal"></ProposalDetails>
         </div>
         <div class="chart">
-          <DetailsChart :proposal="proposal"></DetailsChart>
+          <DetailsChart :proposal-detail-tally="proposalDetailsTally" :proposal="proposal"></DetailsChart>
         </div>
       </template>
     </div>
@@ -55,6 +55,10 @@ onUnmounted(() => {
 
 const proposal = computed(()=> {
   return useProposalsStore().getProposal;
+});
+
+const proposalDetailsTally = computed(()=> {
+  return useProposalsStore().getProposalDetailsTally;
 });
 const everythingIsReady = ref(false);
 

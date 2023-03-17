@@ -1,12 +1,12 @@
 <template>
   <div v-if="proposal" class="chart-container">
     <div class="top">
-
+      {{props.proposalDetailsTally}}
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL_VOTED") }} / {{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
       <span>
 <!--        <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/> /-->
-        <CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.total)" :reduce-big-number="true" :precision="2"/> /
-        <CoinAmount :amount="tokensStore.getTotalBonded" :reduce-big-number="true" :precision="2"/>
+        <CoinAmount :amount="useProposalsStore().getProposalDetailsTally?.proposalTally.total!==undefined ? new BigIntWrapper(useProposalsStore().getProposalDetailsTally.proposalTally.total) : 0" :reduce-big-number="true" :precision="2"/> /
+        <CoinAmount :amount="useProposalsStore().getProposalDetailsTally?.stakingPool.bondedTokens !== undefined ? new BigIntWrapper(useProposalsStore().getProposalDetailsTally.stakingPool.bondedTokens) : 0" :reduce-big-number="true" :precision="2"/>
       </span>
 
     </div>
@@ -15,7 +15,7 @@
         {{ $t("GOVERNANCE_VIEW.CURRENT_TURNOUT") }}
       </span>
       <span>
-        {{calculatePercents(Number(useProposalsStore().getSelectedProposalTally.total), Number(tokensStore.getTotalBonded), 2)}}%
+        {{calculatePercents(Number(useProposalsStore().getProposalDetailsTally?.proposalTally.total), Number(useProposalsStore().getProposalDetailsTally?.stakingPool.bondedTokens), 2)}}%
       </span>
     </div>
 
@@ -26,16 +26,17 @@
           {{ $t("GOVERNANCE_VIEW."+getProposalStatus())}}
         </div>
     </ShadowedSvgChart>
+    <ProgressBarComponent v-if="getProposalStatus()===ProposalStatus.VOTING_PERIOD" ref="childRef" @refresh="updateVotes" :loading-time="useConfigurationStore().getConfig.proposalVotingRefreshTimeout" style="width: 100%"></ProgressBarComponent>
     <div class="voting-result">
       <div style="display: flex; align-items: center">
         <div class="dot yes"></div>
         <div class="bar-legend">
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
           <div style="font-weight: bold">
-            <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getYesPercentage()" :precision="2"></PercentsView>
+            <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getYesPercentage()" :precision="2"></PercentsView>
           </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.yes)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="yes" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -43,10 +44,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getAbstainPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getAbstainPercentage()" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.abstain)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="abstain" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -54,10 +55,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getNoPercentage()" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.no)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="no" :reduce-big-number="true" :precision="2"/>)
       </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -65,10 +66,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getNoWithVetoPercentage()" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.noWithVeto)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="noWithVeto" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
     </div>
@@ -89,7 +90,7 @@
 
 <script setup lang="ts">
 
-import {computed} from "vue";
+import {computed, onBeforeMount, onMounted, ref} from "vue";
 import {PieChart} from "echarts/charts";
 import VChart from "vue-echarts";
 import {use} from "echarts/core";
@@ -97,7 +98,7 @@ import {SVGRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import VoteModal from "@/components/governance/VoteModal.vue";
 import Icon from "../features/IconComponent.vue";
-import {Proposal} from "@/models/store/proposal";
+import {Proposal, ProposalDetailsTally} from "@/models/store/proposal";
 import {ProposalStatus} from "@/models/store/proposal";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { createProposalDetailsChartData } from "@/charts/governance";
@@ -108,6 +109,9 @@ import PercentsView from "@/components/commons/PercentsView.vue";
 import GovernanceIcon from "../commons/GovernanceIcon.vue";
 import {useTokensStore} from "@/store/tokens.store";
 import {BigIntWrapper} from "@/models/store/common";
+import ProgressBarComponent from "@/components/features/ProgressBarComponent.vue";
+import apiFactory from "@/api/factory.api";
+import dataService from "@/services/data.service";
 
 use([
   SVGRenderer,
@@ -120,8 +124,10 @@ use([
 
 const tokensStore = useTokensStore();
 
+const childRef = ref<InstanceType<typeof ProgressBarComponent>>();
 const props = defineProps<{
-  proposal?: Proposal
+  proposal?: Proposal,
+  proposalDetailsTally?: ProposalDetailsTally
 }>();
 
 const icons  = new Map<string, string>([
@@ -133,33 +139,69 @@ const icons  = new Map<string, string>([
   [ProposalStatus.FAILED, ''],
 ]);
 
+
 const sumOfVotes = computed(() => {
-  const val = useProposalsStore().getSelectedProposalTally.total;
+  const val = useProposalsStore().getProposalDetailsTally?.total;
   return (val && val > 0) ? val : -1n;
 });
 
+const updateVotes = async () => {
+  if(props.proposal?.proposalId) {
+    await dataService.onProposalUpdateVotes(props.proposal.proposalId);
+  }
+  childRef.value?.startFillingBar();
+};
 
 const yes = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.yes);
+  const res = useProposalsStore().getProposalDetailsTally?.getYes();
+  if(res != undefined) {
+    return res;
+  }
+  return undefined;
 });
 
 const no = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.no);
+  const res = useProposalsStore().getProposalDetailsTally?.getNo();
+  if(res != undefined) {
+    return res;
+  }
+  return undefined;
 });
 
 const abstain = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.abstain);
+  const res = useProposalsStore().getProposalDetailsTally?.getAbstain();
+  if(res != undefined) {
+    return res;
+  }
+  return undefined;
 });
 
 const noWithVeto = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.noWithVeto);
+  const res = useProposalsStore().getProposalDetailsTally?.getNoWithVeto();
+  if(res != undefined) {
+    return res;
+  }
+  return undefined;
+});
+
+const notVoted = computed(() => {
+  const res = useProposalsStore().getProposalDetailsTally?.getNotVoted();
+  if(res != undefined) {
+    return res;
+  }
+  return undefined;
 });
 
 const option = computed(() => {
-  if (!yes.value || !abstain.value || !no.value || !noWithVeto.value) {
+  if (yes.value==undefined || abstain.value==undefined || no.value==undefined || noWithVeto.value==undefined || notVoted.value==undefined) {
     return '';
   }
-  return createProposalDetailsChartData(yes.value, abstain.value, no.value, noWithVeto.value, sumOfVotes.value);
+  return createProposalDetailsChartData(useConfigurationStore().config.getConvertedAmount(yes.value),
+    useConfigurationStore().config.getConvertedAmount(abstain.value),
+    useConfigurationStore().config.getConvertedAmount(no.value),
+    useConfigurationStore().config.getConvertedAmount(noWithVeto.value),
+    useConfigurationStore().config.getConvertedAmount(notVoted.value),
+    sumOfVotes.value);
 });
 
 function getProposalTitle() {
@@ -203,7 +245,7 @@ function getProposalStatus(): ProposalStatus{
   }
   .chartdiv {
     width: 100%;
-    height: 70%;
+    height: 65%;
     position: relative;
     .inside{
       width: 50%;
@@ -255,4 +297,6 @@ function getProposalStatus(): ProposalStatus{
 .gov-icon {
   padding-right: 0.5rem;
 }
+
 </style>
+

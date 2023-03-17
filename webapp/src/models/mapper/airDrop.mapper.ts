@@ -5,5 +5,4 @@ export function mapAirDrop(airDrop: airDrop| undefined): airDrop  {
     throw new Error('mapAirDrop - airDrop absent');
   }
   return airDrop;
-
 }
