@@ -68,9 +68,9 @@ describe('tests mapping of proposals related data',  () => {
 
   it('map tally result - no yes', async ()=> {
     const brokenTally = {
-      abstain: '12334',
-      no: '43850834075',
-      no_with_veto: '19283012073',
+      abstain_count: '12334',
+      no_count: '43850834075',
+      no_with_veto_count: '19283012073',
     } as Tally
     expect(()=> {mapProposalTallyResult(brokenTally)}).toThrowError(new Error('mapProposalTallyResult - some of tally votes is undefined'));
 
@@ -78,9 +78,9 @@ describe('tests mapping of proposals related data',  () => {
 
   it('map tally result - no abstain', async ()=> {
     const brokenTally = {
-      yes: '123',
-      no: '43850834075',
-      no_with_veto: '19283012073',
+      yes_count: '123',
+      no_count: '43850834075',
+      no_with_veto_count: '19283012073',
     } as Tally
     expect(()=> {mapProposalTallyResult(brokenTally)}).toThrowError(new Error('mapProposalTallyResult - some of tally votes is undefined'));
 
@@ -88,9 +88,9 @@ describe('tests mapping of proposals related data',  () => {
 
   it('map tally result - no no', async ()=> {
     const brokenTally = {
-      yes: '123',
-      abstain: '12334',
-      no_with_veto: '19283012073',
+      yes_count: '123',
+      abstain_count: '12334',
+      no_with_veto_count: '19283012073',
     } as Tally
     expect(()=> {mapProposalTallyResult(brokenTally)}).toThrowError(new Error('mapProposalTallyResult - some of tally votes is undefined'));
 
@@ -98,9 +98,9 @@ describe('tests mapping of proposals related data',  () => {
 
   it('map tally result - no no_with_veto', async ()=> {
     const brokenTally = {
-      yes: '123',
-      abstain: '12334',
-      no: '43850834075',
+      yes_count: '123',
+      abstain_count: '12334',
+      no_count: '43850834075',
     } as Tally
     expect(()=> {mapProposalTallyResult(brokenTally)}).toThrowError(new Error('mapProposalTallyResult - some of tally votes is undefined'));
 

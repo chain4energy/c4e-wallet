@@ -10,7 +10,7 @@ export interface ProposalResponse{
   proposal : Proposal,
 }
 export interface Proposal {
-  proposal_id: string,
+  id: string,
   // content: {
   //   "@type": string,
   //   title: string,
@@ -28,6 +28,7 @@ export interface Proposal {
   total_deposit:Array<Coin>
   voting_start_time: string,
   voting_end_time: string,
+  metadata: string
 }
 
 export interface ProposalAmount {
@@ -71,10 +72,10 @@ export interface TallyParams {
 
 export interface Tally {
   proposal_id?: number,
-  yes: string,
-  abstain: string,
-  no: string,
-  no_with_veto: string,
+  yes_count: string,
+  abstain_count: string,
+  no_count: string,
+  no_with_veto_count: string,
 }
 export interface TallyResponse {
   tally: Tally

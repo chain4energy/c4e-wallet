@@ -31,7 +31,7 @@
 
     <div class="middle">
       <div>
-        <h5 class="fw-bold">{{ proposal.content.title }}</h5>
+        <h5 class="fw-bold">{{ getTitle() }}</h5>
       </div>
       <div class="voting-date">
         <div class="start-date">
@@ -136,7 +136,7 @@ import { use } from "echarts/core";
 import {SVGRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent, GridComponent} from "echarts/components";
 import {useRouter} from "vue-router";
-import {Proposal, ProposalStatus} from "@/models/store/proposal";
+import {Proposal, ProposalStatus, ProposalType} from "@/models/store/proposal";
 import { createProposalListChartData } from '@/charts/governance';
 import { useProposalsStore } from '@/store/proposals.store';
 import CoinAmount from '../commons/CoinAmount.vue';
@@ -158,7 +158,6 @@ use([
 const props = defineProps<{
   proposal: Proposal
 }>();
-
 
 const router = useRouter();
 
@@ -306,7 +305,17 @@ const option = computed(() => {
   );
 });
 
-
+const getTitle = () => {
+  if(props.proposal?.content?.title) {
+    return props.proposal?.content?.title;
+  } else if(props.proposal && props.proposal?.metaData) {
+    try {
+      return JSON.parse(props.proposal.metaData).description;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">

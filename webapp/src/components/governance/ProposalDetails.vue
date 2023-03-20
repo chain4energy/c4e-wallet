@@ -1,7 +1,7 @@
 <template>
   <div v-if="proposal" class="details-container">
     <div class="id"><h3>#{{ proposal.proposalId }}</h3> </div>
-    <h4 style="padding-left:20px">{{ proposal.content.title }}</h4>
+    <h4 style="padding-left:20px">{{ proposal?.content?.title }}</h4>
     <div v-if="voted === VoteOption.Yes" class="vote user-vote-yes">
       {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES') }}</b>
     </div>

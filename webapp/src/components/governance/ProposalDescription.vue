@@ -2,7 +2,7 @@
   <div v-if="proposal" class="description">
     <h2>{{ $t("GOVERNANCE_VIEW.DESCRIPTION") }}</h2>
     <div style="margin-top: 20px;">
-      <MarkdownRender :source="proposal.content.description"/>
+      <MarkdownRender :source="getDescription()"/>
     </div>
   </div>
 </template>
@@ -14,6 +14,21 @@ import MarkdownRender from "@/components/commons/MarkdownRender.vue";
 const props = defineProps<{
   proposal?: Proposal
 }>();
+
+const getDescription = () => {
+  if(props.proposal?.content?.description)
+    return props.proposal.content.description;
+  else if(props.proposal?.metaData)
+    try {
+      return JSON.parse(props.proposal.metaData).description;
+    } catch(e) {
+      console.log(e);
+    } finally {
+      // eslint-disable-next-line no-unsafe-finally
+      return '';
+    }
+
+};
 
 </script>
 

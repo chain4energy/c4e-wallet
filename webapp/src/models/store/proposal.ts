@@ -22,7 +22,7 @@ export enum VoteOption {
 
 export class Proposal {
   proposalId: number;
-  content: ProposalContent;
+  content: ProposalContent | undefined;
   status: ProposalStatus;
   finalTallyResult: ProposalTallyResult;
   submitTime: Date;
@@ -30,9 +30,12 @@ export class Proposal {
   totalDeposit: Array<Coin>;
   votingStartTime: Date;
   votingEndTime :Date;
+  messages: ProposalMessage | undefined;
+  type: ProposalType;
+  metaData: string;
   constructor (
     proposalId: number,
-    content: ProposalContent,
+    content: ProposalContent | undefined,
     status: ProposalStatus,
     finalTallyResult: ProposalTallyResult,
     submitTime: Date,
@@ -40,6 +43,9 @@ export class Proposal {
     totalDeposit: Array<Coin>,
     votingStartTime: Date,
     votingEndTime: Date,
+    messages: ProposalMessage | undefined,
+    type: ProposalType,
+    metadata: string
   ) {
     this.proposalId = proposalId;
     this.content = content;
@@ -50,6 +56,9 @@ export class Proposal {
     this.totalDeposit = totalDeposit;
     this.votingStartTime = votingStartTime;
     this.votingEndTime = votingEndTime;
+    this.messages = messages;
+    this.type = type;
+    this.metaData = metadata;
   }
 
   public isDepositPeriod() {
@@ -82,6 +91,85 @@ export class ProposalContent {
     this.plan = plan;
     this.recipient = recipient;
     this.amount = amount;
+  }
+}
+
+export class ProposalMessage {
+  type: string;
+  authority: string;
+  sub_distributor_name: string;
+  destination_name: string;
+  burnShare: string;
+  share: string;
+  subDistributors: SubDistributor[] | undefined;
+  subDistributor: SubDistributor | undefined;
+  startTime: string;
+  minters: Minter[] | undefined;
+
+  constructor(type: string, authority: string, sub_distributor_name: string, destination_name: string, burnShare: string, share: string, sub_distributors: SubDistributor[] | undefined, sub_distributor: SubDistributor | undefined, start_time: string, minters: Minter[] | undefined) {
+    this.type = type;
+    this.authority = authority;
+    this.sub_distributor_name = sub_distributor_name;
+    this.destination_name = destination_name;
+    this.burnShare = burnShare;
+    this.share = share;
+    this.subDistributors = sub_distributors;
+    this.subDistributor = sub_distributor;
+    this.startTime = start_time;
+    this.minters = minters;
+  }
+}
+export class SubDistributor {
+  name: string;
+  sources: Account[];
+  destinations: Destinations;
+
+  constructor(name: string, sources: Account[], destinations: Destinations) {
+    this.name = name;
+    this.sources = sources;
+    this.destinations = destinations;
+  }
+}
+export class Account {
+  id: string;
+  type: string;
+
+  constructor(id: string, type: string) {
+    this.id = id;
+    this.type = type;
+  }
+}
+export class Destinations {
+  burnShare: string;
+  primaryShare: Account;
+  shares: DestinationShare[];
+
+  constructor(burn_share: string, primary_share: Account, shares: DestinationShare[]) {
+    this.burnShare = burn_share;
+    this.primaryShare = primary_share;
+    this.shares = shares;
+  }
+}
+export class DestinationShare {
+  name: string;
+  share: string;
+  destination: Account;
+
+  constructor(name: string, share: string, destination: Account) {
+    this.name = name;
+    this.share = share;
+    this.destination = destination;
+  }
+}
+export class Minter {
+  sequenceId: number;
+  endTime: string | undefined;
+  config: any | undefined;
+
+  constructor(sequence_id: number, end_time: string | undefined, config: any) {
+    this.sequenceId = sequence_id;
+    this.endTime = end_time;
+    this.config = config;
   }
 }
 

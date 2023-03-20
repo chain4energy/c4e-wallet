@@ -48,10 +48,10 @@ export default {
     '}',
     PROPOSALS_DETAILS_TALLY_QUERY: 'query ProposalDetailsTally {' +
       'proposalTallyResult: proposal_tally_result(where: {proposal_id: {_eq: {proposalId}}}) {' +
-      '    yes' +
-      '    no' +
-      '    no_with_veto: no_with_veto' +
-      '    abstain' +
+      '    yes_count: yes' +
+      '    no_count: no' +
+      '    no_with_veto_count: no_with_veto' +
+      '    abstain_count: abstain' +
       '  }' +
       '  stakingPool: proposal_staking_pool_snapshot(where: {proposal_id: {_eq: {proposalId}}}) {' +
       '    bonded_tokens: bonded_tokens' +
@@ -60,10 +60,10 @@ export default {
       '}',
     PROPOSALS_DETAILS_TALLY_LIST_QUERY: 'query ProposalDetailsTallyList {' +
       'proposalTallyResult: proposal_tally_result(where: {proposal_id: {_in: [{proposalsIds}]}}) {' +
-      '    yes' +
-      '    no' +
-      '    no_with_veto: no_with_veto' +
-      '    abstain' +
+      '    yes_count: yes' +
+      '    no_count: no' +
+      '    no_with_veto_count: no_with_veto' +
+      '    abstain_count: abstain' +
       '    proposal_id '+
       '  }' +
       '  stakingPool: proposal_staking_pool_snapshot(where: {proposal_id: {_in: [{proposalsIds}]}}) {' +

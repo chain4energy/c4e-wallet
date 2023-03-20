@@ -50,9 +50,9 @@ export function createProposalResponseData(status = "PROPOSAL_STATUS_PASSED"){
 export function expectProposal(actualProposal: Proposal, expectedBcProposal: any) {
   expect(actualProposal).not.toBeUndefined();
   expect(actualProposal.proposalId).toBe(Number(expectedBcProposal.proposal_id));
-  expect(actualProposal.content.type).toBe(expectedBcProposal.content["@type"]);
-  expect(actualProposal.content.title).toBe(expectedBcProposal.content.title);
-  expect(actualProposal.content.description).toBe(expectedBcProposal.content.description);
+  expect(actualProposal?.content?.type).toBe(expectedBcProposal.content["@type"]);
+  expect(actualProposal?.content?.title).toBe(expectedBcProposal.content.title);
+  expect(actualProposal?.content?.description).toBe(expectedBcProposal.content.description);
   // expect(actualProposal.content.changes).toEqual(expectedBcProposal.content.changes);
   expect(actualProposal.status).toBe(expectedBcProposal.status);
   expect(actualProposal.finalTallyResult.yes).toBe(BigInt(expectedBcProposal.final_tally_result.yes));
@@ -218,10 +218,10 @@ export function createProposalTallyResult(
   noWithVeto: string,
 ) {
   return {
-    yes: yes,
-    abstain: abstain,
-    no: no,
-    no_with_veto: noWithVeto,
+    yes_count: yes,
+    abstain_count: abstain,
+    no_count: no,
+    no_with_veto_count: noWithVeto,
   }
 }
 
@@ -332,7 +332,7 @@ export function createProposalDetailsTally(details: {id: number, yes: bigint, no
 
   details.forEach((detail) => {
     const stakingPool: BcStakingPool = {bonded_tokens: detail.bondedTokens.toString(), not_bonded_tokens:detail.notBondedTokens.toString(), proposal_id: detail.id} as BcStakingPool;
-    const tallyResult: Tally = {proposal_id: detail.id, no: detail.no.toString(), abstain: detail.abstain.toString(), yes: detail.yes.toString(), no_with_veto: detail.noWithVeto.toString()} as Tally;
+    const tallyResult: Tally = {proposal_id: detail.id, no_count: detail.no.toString(), abstain_count: detail.abstain.toString(), yes_count: detail.yes.toString(), no_with_veto_count: detail.noWithVeto.toString()} as Tally;
 
     proposalTallyResultList.push(tallyResult);
     stakingPoolList.push(stakingPool);
