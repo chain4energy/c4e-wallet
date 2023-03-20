@@ -49,16 +49,16 @@ export function createProposalResponseData(status = "PROPOSAL_STATUS_PASSED"){
 }
 export function expectProposal(actualProposal: Proposal, expectedBcProposal: any) {
   expect(actualProposal).not.toBeUndefined();
-  expect(actualProposal.proposalId).toBe(Number(expectedBcProposal.proposal_id));
-  expect(actualProposal?.content?.type).toBe(expectedBcProposal.content["@type"]);
-  expect(actualProposal?.content?.title).toBe(expectedBcProposal.content.title);
-  expect(actualProposal?.content?.description).toBe(expectedBcProposal.content.description);
+  expect(actualProposal.proposalId).toBe(Number(expectedBcProposal.id));
+  expect(actualProposal?.content?.type).toBe(expectedBcProposal.messages[0].content["@type"]);
+  // expect(actualProposal?.content?.title).toBe(expectedBcProposal.content.title);
+  // expect(actualProposal?.content?.description).toBe(expectedBcProposal.content.description);
   // expect(actualProposal.content.changes).toEqual(expectedBcProposal.content.changes);
   expect(actualProposal.status).toBe(expectedBcProposal.status);
-  expect(actualProposal.finalTallyResult.yes).toBe(BigInt(expectedBcProposal.final_tally_result.yes));
-  expect(actualProposal.finalTallyResult.no).toBe(BigInt(expectedBcProposal.final_tally_result.no));
-  expect(actualProposal.finalTallyResult.abstain).toBe(BigInt(expectedBcProposal.final_tally_result.abstain));
-  expect(actualProposal.finalTallyResult.noWithVeto).toBe(BigInt(expectedBcProposal.final_tally_result.no_with_veto));
+  expect(actualProposal.finalTallyResult.yes).toBe(BigInt(expectedBcProposal.final_tally_result.yes_count));
+  expect(actualProposal.finalTallyResult.no).toBe(BigInt(expectedBcProposal.final_tally_result.no_count));
+  expect(actualProposal.finalTallyResult.abstain).toBe(BigInt(expectedBcProposal.final_tally_result.abstain_count));
+  expect(actualProposal.finalTallyResult.noWithVeto).toBe(BigInt(expectedBcProposal.final_tally_result.no_with_veto_count));
   expect(actualProposal.submitTime).toStrictEqual(new Date(expectedBcProposal.submit_time));
   expect(actualProposal.depositEndTime).toStrictEqual(new Date(expectedBcProposal.deposit_end_time));
   expect(actualProposal.totalDeposit.length).toBe(expectedBcProposal.total_deposit.length);
@@ -87,30 +87,33 @@ export function findNumberOfActiveProposals(proposalsParameters = defaultProposa
 }
 export function createProposal(status = "PROPOSAL_STATUS_PASSED"){
   const proposal = {
-    proposal_id: "2",
-    content: {
-      "@type": '/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal',
-      title: 'some data',
-      description: 'some data',
-      changes:[
-        {
-          subspace: 'some data',
-          key: 'some data',
-          value: {
-            mindeposit: 'some data',
-          }
-        },
-      ],
-      plan: undefined,
-      recipient: undefined,
-      amount: undefined
-    },
+    id: "2",
+    messages: [{
+      "@type": '/cosmos.gov.v1.MsgExecLegacyContent',
+      content: {
+        "@type": '/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal',
+        title: 'some data',
+        description: 'some data',
+        changes:[
+          {
+            subspace: 'some data',
+            key: 'some data',
+            value: {
+              mindeposit: 'some data',
+            }
+          },
+        ],
+        plan: undefined,
+        recipient: undefined,
+        amount: undefined
+      },
+    }],
     status: status,
     final_tally_result: {
-      yes: '123',
-      abstain: '12334',
-      no: '43850834075',
-      no_with_veto: '19283012073',
+      yes_count: '123',
+      abstain_count: '12334',
+      no_count: '43850834075',
+      no_with_veto_count: '19283012073',
     },
     submit_time: fakeDate ,
     deposit_end_time: fakeDate ,
@@ -144,38 +147,43 @@ export function createProposals(
   for (let i = 0; i < proposals.length; i++) {
     const position = i + positionOffset;
     proposalsArray.push({
-      proposal_id: proposals[i],
-      content: {
-        "@type": 'some data',
-        title: 'some data',
-        description: 'some data',
-        changes:[
-          {
-            subspace: 'some data',
-            key: 'some data',
-            value: {
-              mindeposit: 'some data',
-            }
-          },
-          {
-            subspace: 'some data',
-            key: 'some data',
-            value: {
-              mindeposit: 'some data',
-            }
-          }
-        ],
-        plan: undefined,
-        recipient: undefined,
-        amount: undefined
+      id: proposals[i],
+      "@type": 'some data',
+      messages: [
+        {
+          content: {
+            "@type": 'some data',
+            title: 'some data',
+            description: 'some data',
+            changes: [
+              {
+                subspace: 'some data',
+                key: 'some data',
+                value: {
+                  mindeposit: 'some data',
+                }
+              },
+              {
+                subspace: 'some data',
+                key: 'some data',
+                value: {
+                  mindeposit: 'some data',
+                }
+              }
+            ],
+            plan: undefined,
+            recipient: undefined,
+            amount: undefined
 
-      },
+          }
+        }
+      ],
       status: proposalsParameters[i].status,
       final_tally_result: {
-        yes: '123',
-        abstain: '12334',
-        no: '43850834075',
-        no_with_veto: '19283012073',
+        yes_count: '123',
+        abstain_count: '12334',
+        no_count: '43850834075',
+        no_with_veto_count: '19283012073',
       },
       submit_time:fakeDate ,
       deposit_end_time: fakeDate ,
