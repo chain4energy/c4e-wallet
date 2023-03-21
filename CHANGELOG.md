@@ -48,6 +48,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Misc Improvements
 
+## [1.1.5](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.5) - 2022-03-03
+
+### Bug fixes
+* fix mainnet config - reservedCoinsAmount set to 250000
+
 ## [1.1.4](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.4) - 2022-02-17
 
 ### Bug fixes

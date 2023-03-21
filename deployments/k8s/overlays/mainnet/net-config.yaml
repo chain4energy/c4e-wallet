@@ -34,6 +34,7 @@ data:
            "average": 0.025,
            "high": 0.03
          },
+         "reservedCoinsAmount": 250000,
          "minPeriodBetweenDataRefresh": 1000,
          "blockDataRefreshTimeout": 30000,
          "dashboardDataRefreshTimeout": 300000,
@@ -81,6 +82,7 @@ data:
            "average": 0.025,
            "high": 0.03
          },
+         "reservedCoinsAmount": 250000,
          "minPeriodBetweenDataRefresh": 1000,
          "blockDataRefreshTimeout": 30000,
          "dashboardDataRefreshTimeout": 300000,
