@@ -9,7 +9,7 @@
     </TabPanel>
     <TabPanel>
       <template #header>
-        <div>Claim Air Drop</div>
+        <div>Claim Airdrop</div>
       </template>
       <ClaimAirDrop/>
     </TabPanel>
