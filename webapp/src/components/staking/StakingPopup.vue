@@ -363,6 +363,7 @@ async function simulateDelegation(){
       if(reserveCoins.value){
         amount.value -= Number(reservedCoins);
       }
+      amount.value = Math.floor(amount.value * 1000000)/1000000;
       // fee.value = Number(res) * useConfigurationStore().config.getGasPrise();
       // amountWithCommission.value = useConfigurationStore().config.getConvertedAmount(
       //   (useConfigurationStore().config.getReservedCoinsAmount() + (Number(res) * useConfigurationStore().config.getGasPrise()))).toFixed(6);
