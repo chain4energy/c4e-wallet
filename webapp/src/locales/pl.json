@@ -101,7 +101,7 @@
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Oddelegowane tokeny",
-    "VALIDATORS": "Walidatory",
+    "VALIDATORS": "Walidatorzy",
     "LATEST_BLOCK": "Ostatni blok",
     "TOTAL_SUPPLY": "Całkowita podaż",
     "MAX_SUPPLY": "Maksymalna podaż",
@@ -309,7 +309,7 @@
         "REDELEGATE_FROM_VALIDATOR": "Redelegate from"
       }
     },
-    "VALIDATORS": "Walidatory",
+    "VALIDATORS": "Walidatorzy",
     "NO_VALIDATORS": "nie znaleziono walidatorów",
     "VALIDATORS_LOADING" : "Ładowanie danych walidatorów. Proszę czekać.",
     "USER_DELEGATIONS": "Your delegations",
@@ -379,7 +379,12 @@
     "OR": "lub",
     "C4E_HELP": "Wprowadź adres C4E lub COSMOS",
     "COSMOS_HELP": "Wprowadź adres cosmos",
-    "CHECK": "Check"
+    "CHECK": "Sprawdź",
+    "CHECK_ALLOCATION": "Sprawdź Alokację",
+    "CLAIM_AIRDROP": "Odbierz Airdrop",
+    "FAIRDROP_ALLOCATION": "Całkowita alokacja Fairdrop",
+    "FOOTER_HEADER": "Co dalej? Obserwuj nas, aby być na bieżąco z aktualizacjami.",
+    "FOOTER_TEXT": "Połącz się z nami, aby być na bieżąco z airdropem i nowościami w C4E."
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Odliczanie kampanii"
@@ -389,5 +394,10 @@
     "ADDRESS": "Adres został skopiowany do schowka",
     "TX_HASH": "Hash transakcji skopiowany do schowka"
   },
-  "NUMBER_FORMAT_LOCALE": "pl-PL"
+  "NUMBER_FORMAT_LOCALE": "pl-PL",
+  "FOOTER": {
+    "HELP": "Pomoc",
+    "TERMS": "Zasady i warunki",
+    "PRIVACY": "Polityka prywatności"
+  }
 }

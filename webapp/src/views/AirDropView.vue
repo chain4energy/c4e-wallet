@@ -3,13 +3,13 @@
   <TabView class="airDrop__tabview">
     <TabPanel >
       <template #header>
-        <div>Check Allocation</div>
+        <div>{{$t('AIRDROP.CHECK_ALLOCATION')}}</div>
       </template>
       <AirDropTotal/>
     </TabPanel>
     <TabPanel>
       <template #header>
-        <div>Claim Airdrop</div>
+        <div>{{$t('AIRDROP.CLAIM_AIRDROP')}}</div>
       </template>
       <ClaimAirDrop/>
     </TabPanel>
