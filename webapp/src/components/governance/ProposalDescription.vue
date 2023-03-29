@@ -23,8 +23,6 @@ const getDescription = () => {
       return JSON.parse(props.proposal.metaData).description;
     } catch(e) {
       console.log(e);
-    } finally {
-      // eslint-disable-next-line no-unsafe-finally
       return '';
     }
 
