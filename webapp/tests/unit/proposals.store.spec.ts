@@ -357,7 +357,7 @@ describe('proposals store tests', () => {
     mockedAxios.request.mockResolvedValueOnce(vote);
 
     await proposalsStore.fetchProposalById(Number(defaultProposals[5]), undefined, undefined, false, true);
-
+    console.log(useProposalsStore().proposal)
 
     expect(proposalsStore.proposals.length).toBe(0);
 

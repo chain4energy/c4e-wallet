@@ -10,16 +10,17 @@ export interface ProposalResponse{
   proposal : Proposal,
 }
 export interface Proposal {
-  proposal_id: string,
-  content: {
-    "@type": string,
-    title: string,
-    description: string,
-    changes: Array<ProposalChanges>,
-    plan: ProposalPlan | undefined,
-    amount: Array<ProposalAmount> | undefined,
-    recipient: string | undefined
-  },
+  id: string,
+  // content: {
+  //   "@type": string,
+  //   title: string,
+  //   description: string,
+  //   changes: Array<ProposalChanges>,
+  //   plan: ProposalPlan | undefined,
+  //   amount: Array<ProposalAmount> | undefined,
+  //   recipient: string | undefined
+  // },
+  messages: Message[],
   status: string,
   final_tally_result: Tally,
   submit_time: string,
@@ -27,6 +28,7 @@ export interface Proposal {
   total_deposit:Array<Coin>
   voting_start_time: string,
   voting_end_time: string,
+  metadata: string
 }
 
 export interface ProposalAmount {
@@ -70,10 +72,10 @@ export interface TallyParams {
 
 export interface Tally {
   proposal_id?: number,
-  yes: string,
-  abstain: string,
-  no: string,
-  no_with_veto: string,
+  yes_count: string,
+  abstain_count: string,
+  no_count: string,
+  no_with_veto_count: string,
 }
 export interface TallyResponse {
   tally: Tally
@@ -85,4 +87,51 @@ export interface ProposalsDetailsTallyResult {
     stakingPool: BcStakingPool[]
   }
 
+}
+
+export interface Message {
+  "@type": string,
+  content: {
+    "@type": string,
+    title: string,
+    description: string,
+    changes: Array<ProposalChanges>,
+    plan: ProposalPlan | undefined,
+    amount: Array<ProposalAmount> | undefined,
+    recipient: string | undefined
+  },
+  authority: string,
+  sub_distributor_name: string,
+  destination_name: string,
+  burnShare: string,
+  share: string,
+  sub_distributors: SubDistributor[],
+  sub_distributor: SubDistributor | undefined,
+  start_time: string,
+  minters: Minter[]
+
+}
+export interface SubDistributor {
+  name: string,
+  sources: Account[],
+  destinations: Destinations
+}
+export interface Account {
+  id: string,
+  type: string
+}
+export interface Destinations {
+  burn_share: string,
+  primary_share: Account,
+  shares: DestinationShare[]
+}
+export interface DestinationShare {
+  name: string,
+  share: string,
+  destination: Account
+}
+export interface Minter {
+  sequence_id: number;
+  end_time: string | undefined;
+  config: any | undefined;
 }

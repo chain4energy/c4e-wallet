@@ -1,5 +1,5 @@
 <template>
-  <div v-if="proposal" class="chart-container">
+  <div  v-if="proposal && option !== false" class="chart-container">
     <div class="top">
       {{props.proposalDetailsTally}}
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL_VOTED") }} / {{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
@@ -90,7 +90,7 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeMount, onMounted, ref} from "vue";
+import {computed, onBeforeMount, ref} from "vue";
 import {PieChart} from "echarts/charts";
 import VChart from "vue-echarts";
 import {use} from "echarts/core";
@@ -98,11 +98,10 @@ import {SVGRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import VoteModal from "@/components/governance/VoteModal.vue";
 import Icon from "../features/IconComponent.vue";
-import {Proposal, ProposalDetailsTally} from "@/models/store/proposal";
-import {ProposalStatus} from "@/models/store/proposal";
-import { useConfigurationStore } from "@/store/configuration.store";
-import { createProposalDetailsChartData } from "@/charts/governance";
-import { useProposalsStore } from "@/store/proposals.store";
+import {Proposal, ProposalDetailsTally, ProposalStatus} from "@/models/store/proposal";
+import {useConfigurationStore} from "@/store/configuration.store";
+import {createProposalDetailsChartData} from "@/charts/governance";
+import {useProposalsStore} from "@/store/proposals.store";
 import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView.vue";
@@ -110,7 +109,6 @@ import GovernanceIcon from "../commons/GovernanceIcon.vue";
 import {useTokensStore} from "@/store/tokens.store";
 import {BigIntWrapper} from "@/models/store/common";
 import ProgressBarComponent from "@/components/features/ProgressBarComponent.vue";
-import apiFactory from "@/api/factory.api";
 import dataService from "@/services/data.service";
 
 use([
@@ -123,6 +121,12 @@ use([
 
 
 const tokensStore = useTokensStore();
+
+onBeforeMount(async () => {
+  if (props.proposal?.status && props.proposal.status !== ProposalStatus.VOTING_PERIOD) {
+    await dataService.onProposalUpdateVotes(props.proposal.proposalId);
+  }
+});
 
 const childRef = ref<InstanceType<typeof ProgressBarComponent>>();
 const props = defineProps<{
@@ -139,7 +143,7 @@ const icons  = new Map<string, string>([
   [ProposalStatus.FAILED, ''],
 ]);
 
-
+const proposalsStore = useProposalsStore();
 const sumOfVotes = computed(() => {
   const val = useProposalsStore().getProposalDetailsTally?.total;
   return (val && val > 0) ? val : -1n;
@@ -153,7 +157,8 @@ const updateVotes = async () => {
 };
 
 const yes = computed(() => {
-  const res = useProposalsStore().getProposalDetailsTally?.getYes();
+  const res = props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.yes : proposalsStore.getProposalDetailsTally?.getYes();
   if(res != undefined) {
     return res;
   }
@@ -161,7 +166,8 @@ const yes = computed(() => {
 });
 
 const no = computed(() => {
-  const res = useProposalsStore().getProposalDetailsTally?.getNo();
+  const res = props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.no : proposalsStore.getProposalDetailsTally?.getNo();
   if(res != undefined) {
     return res;
   }
@@ -169,7 +175,8 @@ const no = computed(() => {
 });
 
 const abstain = computed(() => {
-  const res = useProposalsStore().getProposalDetailsTally?.getAbstain();
+  const res = props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.abstain : proposalsStore.getProposalDetailsTally?.getAbstain();
   if(res != undefined) {
     return res;
   }
@@ -177,7 +184,8 @@ const abstain = computed(() => {
 });
 
 const noWithVeto = computed(() => {
-  const res = useProposalsStore().getProposalDetailsTally?.getNoWithVeto();
+  const res = props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.noWithVeto : proposalsStore.getProposalDetailsTally?.getNoWithVeto();
   if(res != undefined) {
     return res;
   }
@@ -185,7 +193,9 @@ const noWithVeto = computed(() => {
 });
 
 const notVoted = computed(() => {
-  const res = useProposalsStore().getProposalDetailsTally?.getNotVoted();
+  const total = proposalsStore.proposalTally?.total != undefined ? proposalsStore.proposalTally.total : 0n;
+  const res = props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    useTokensStore().getStakingPool.bondedTokens - total : proposalsStore.getProposalDetailsTally?.getNotVoted();
   if(res != undefined) {
     return res;
   }
@@ -194,8 +204,9 @@ const notVoted = computed(() => {
 
 const option = computed(() => {
   if (yes.value==undefined || abstain.value==undefined || no.value==undefined || noWithVeto.value==undefined || notVoted.value==undefined) {
-    return '';
+    return false;
   }
+
   return createProposalDetailsChartData(useConfigurationStore().config.getConvertedAmount(yes.value),
     useConfigurationStore().config.getConvertedAmount(abstain.value),
     useConfigurationStore().config.getConvertedAmount(no.value),
@@ -205,7 +216,7 @@ const option = computed(() => {
 });
 
 function getProposalTitle() {
-  const result = useProposalsStore().getProposal?.content.title;
+  const result = useProposalsStore().getProposal?.content?.title;
   return result ? result : '';
 }
 
