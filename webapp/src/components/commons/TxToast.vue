@@ -7,31 +7,31 @@
         <a v-if="tx?.transactionHash !== undefined" class="link" :href="useConfigurationStore().config.explorerTx + tx.transactionHash"
                target="_blank" >{{ i18n.global.t('CONNECT.VIEW_EXPLORER')}}<Icon class="toast-icon" name="ExternalLink"/></a>
     </div>
-    <div class="t-body">
-      <div v-if="tx !== undefined && !isSuccess() && tx.rawLog">{{tx.rawLog}}</div>
-      <div v-if="errorMessage !== undefined && !isSuccess()">{{errorMessage}}</div>
-      
-      <table v-if="tx !== undefined" class="t-table">
-        <tr v-if="!isSuccess()">
-          <td>{{i18n.global.t("TOAST.ERROR.TX_DELIVERY.CODE")}}</td>
-          <td class="t-value">{{tx.code}}</td>
-        </tr>
-        <tr>
-          <td>{{i18n.global.t("TOAST.SUCCESS.TX_DELIVERY.HASH")}}</td>
-          <td class="t-value t-value-copy" @click="copyTxHash">
-            {{ tx.transactionHash.slice(0, 6)}}...{{tx.transactionHash.slice(-6) }}<Icon class="toast-icon" name="Copy"/>
-          </td>
-        </tr>
-        <tr>
-          <td>{{i18n.global.t("TOAST.SUCCESS.TX_DELIVERY.GAS_USED")}}</td>
-          <td class="t-value">{{ tx.gasUsed }}</td>
-        </tr>
-         <tr>
-          <td>{{i18n.global.t("TOAST.SUCCESS.TX_DELIVERY.HEIGHT")}}</td>
-          <td class="t-value">{{ tx.height }}</td>
-        </tr>
-      </table>
-    </div>
+<!--    <div class="t-body">-->
+<!--      <div v-if="tx !== undefined && !isSuccess() && tx.rawLog">{{tx.rawLog}}</div>-->
+<!--      <div v-if="errorMessage !== undefined && !isSuccess()">{{errorMessage}}</div>-->
+
+<!--      <table v-if="tx !== undefined" class="t-table">-->
+<!--        <tr v-if="!isSuccess()">-->
+<!--          <td>{{i18n.global.t("TOAST.ERROR.TX_DELIVERY.CODE")}}</td>-->
+<!--          <td class="t-value">{{tx.code}}</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--          <td>{{i18n.global.t("TOAST.SUCCESS.TX_DELIVERY.HASH")}}</td>-->
+<!--          <td class="t-value t-value-copy" @click="copyTxHash">-->
+<!--            {{ tx.transactionHash.slice(0, 6)}}...{{tx.transactionHash.slice(-6) }}<Icon class="toast-icon" name="Copy"/>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--          <td>{{i18n.global.t("TOAST.SUCCESS.TX_DELIVERY.GAS_USED")}}</td>-->
+<!--          <td class="t-value">{{ tx.gasUsed }}</td>-->
+<!--        </tr>-->
+<!--         <tr>-->
+<!--          <td>{{i18n.global.t("TOAST.SUCCESS.TX_DELIVERY.HEIGHT")}}</td>-->
+<!--          <td class="t-value">{{ tx.height }}</td>-->
+<!--        </tr>-->
+<!--      </table>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -76,7 +76,7 @@ function copyTxHash(){
   word-break: break-word;
 }
 .t-header {
-  font-size: 2em;
+  font-size: 1.5em;
 
 }
 .t-body {

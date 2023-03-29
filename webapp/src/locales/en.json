@@ -366,7 +366,7 @@
       "ADDRESS_CONNECTED": "Address: '{address}' Connected",
       "ADDRESS_DISCONNECTED": "Address: '{address}' Disconnected",
       "TX_DELIVERY": {
-        "TITLE": "TX delivery: Success!!!",
+        "TITLE": "Transaction Successful",
         "HASH": "Hash",
         "GAS_USED": "Gas Used",
         "HEIGHT": "Height"
@@ -374,7 +374,7 @@
     },
     "ERROR": {
       "TX_DELIVERY": {
-        "TITLE": "TX delivery: Failure!!!",
+        "TITLE": "Transaction Failed",
         "CODE": "Code"
       }
     }
