@@ -377,6 +377,10 @@
         "TITLE": "Transaction Failed",
         "CODE": "Code"
       }
+    },
+    "INTERNET_CONNECTION": {
+      "ONLINE": "Your internet connection was restored.",
+      "OFFLINE": "You are currently offline."
     }
   },
   "AIRDROP": {

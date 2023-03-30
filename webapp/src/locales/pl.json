@@ -372,6 +372,10 @@
         "TITLE": "Błąd transakcji!!!",
         "CODE": "Kod"
       }
+    },
+    "INTERNET_CONNECTION": {
+      "ONLINE": "Przywrócono połączenie z internetem",
+      "OFFLINE": "Jesteś teraz w trybie offline"
     }
   },
   "AIRDROP": {
