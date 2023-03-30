@@ -7,7 +7,9 @@
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "perun-1",
     "networkName": "Mainnet(C4E)",
@@ -75,7 +77,9 @@
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "veles-dev-test-1",
     "networkName": "Dev(veles-dev-1)",
@@ -143,7 +147,9 @@
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1m2z0c7am94zc4te33hnmh54w4zgufft5cgqxu7",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "perun-testnet-1",
     "networkName": "Int-Testnet",
@@ -191,7 +197,9 @@
     "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "veles-1",
     "networkName": "Testnet(veles-1)",
@@ -239,7 +247,9 @@
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "c4e-testnet-0.1.0",
     "networkName": "PB Testnet",
@@ -288,7 +298,9 @@
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "c4echain",
     "networkName": "Local",

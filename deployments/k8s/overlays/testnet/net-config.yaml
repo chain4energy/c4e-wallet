@@ -10,7 +10,9 @@ data:
       "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
       "addressPrefix": "c4e",
       "stakingDenom": "uc4e",
-      "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "strategicPoolAddress": [
+          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+      ],
       "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
       "chainId": "veles-1",
       "networkName": "Testnet(veles-1)",
@@ -58,7 +60,9 @@ data:
         "stakingPageURL": "https://wallet.c4e.io/staking",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
-        "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+        "strategicPoolAddress": [
+          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+        ],
         "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
         "chainId": "perun-1",
         "networkName": "Mainnet(perun-1)",

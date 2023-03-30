@@ -87,41 +87,43 @@ export const useTokensStore = defineStore({
     },
     async fetchStrategicReversePool(lockscreen = true) {
       const denom = useConfigurationStore().config.stakingDenom;
-      const address = useConfigurationStore().config.strategicPoolAddress;
-      let delegations = new Delegations();
-      let unbondingDelegations = new UnbondingDelegations();
-      let unbonded = new Coin(0n, denom);
-      await Promise.all([
-        await apiFactory.accountApi().fetchDelegations(address, lockscreen).then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            delegations = response.data;
-          } else {
-            const message = 'Error fetching strategic reverse pool data';
-            logger.logToConsole(LogLevel.ERROR, message);
-            toast.error(message);
-          }
-        }),
-        await apiFactory.accountApi().fetchUnbondingDelegations(address, lockscreen).then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            unbondingDelegations = response.data;
-          } else {
-            const message = 'Error fetching strategic reverse pool data';
-            logger.logToConsole(LogLevel.ERROR, message);
-            toast.error(message);
-          }
-        }),
-        await apiFactory.accountApi().fetchBalance(address, denom, lockscreen).then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            unbonded = response.data;
-          } else {
-            const message = 'Error fetching strategic reverse pool data';
-            logger.logToConsole(LogLevel.ERROR, message);
-            toast.error(message);
-          }
-        }),
-      ]);
-      this.strategicReversePool= new Coin((delegations.totalDelegated + unbondingDelegations.totalUndelegating + unbonded.amount), denom );
-      this.strategicReversePoolUnbonded = new Coin(unbonded.amount, denom);
+
+      let delegations = 0n;
+      let unbondingDelegations = 0n;
+      let unbonded = 0n;
+      for (const address of useConfigurationStore().config.strategicPoolAddress) {
+        await Promise.all([
+          await apiFactory.accountApi().fetchDelegations(address, lockscreen).then(response => {
+            if (response.isSuccess() && response.data !== undefined) {
+              delegations += response.data.totalDelegated;
+            } else {
+              const message = 'Error fetching strategic reverse pool data';
+              logger.logToConsole(LogLevel.ERROR, message);
+              toast.error(message);
+            }
+          }),
+          await apiFactory.accountApi().fetchUnbondingDelegations(address, lockscreen).then(response => {
+            if (response.isSuccess() && response.data !== undefined) {
+              unbondingDelegations += response.data.totalUndelegating;
+            } else {
+              const message = 'Error fetching strategic reverse pool data';
+              logger.logToConsole(LogLevel.ERROR, message);
+              toast.error(message);
+            }
+          }),
+          await apiFactory.accountApi().fetchBalance(address, denom, lockscreen).then(response => {
+            if (response.isSuccess() && response.data !== undefined) {
+              unbonded += response.data.amount;
+            } else {
+              const message = 'Error fetching strategic reverse pool data';
+              logger.logToConsole(LogLevel.ERROR, message);
+              toast.error(message);
+            }
+          }),
+        ]);
+      }
+      this.strategicReversePool = new Coin((delegations + unbondingDelegations + unbonded), denom );
+      this.strategicReversePoolUnbonded = new Coin(unbonded, denom);
     },
     async fetchAirdropPool(lockscreen = true) {
       const denom = useConfigurationStore().config.stakingDenom;
