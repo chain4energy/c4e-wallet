@@ -39,6 +39,9 @@ export class Validator implements ValidatorBase {
   }
 
   public get votingPower(): BigDecimal {
+    if(this.jailed) {
+      return new BigDecimal(0);
+    }
     const total = useTokensStore().getStakingPool.bondedTokens;
     if(total || total > 0n){
       return divideBigInts(this.tokens, total);
