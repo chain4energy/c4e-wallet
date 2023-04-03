@@ -3,6 +3,8 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { BigDecimal, divideBigInts } from "./big.decimal";
 import { VoteOption as CosmVoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
 import {StakingPool} from "@/models/store/tokens";
+import {useProposalsStore} from "@/store/proposals.store";
+import {useTokensStore} from "@/store/tokens.store";
 
 export enum ProposalStatus {
   PASSED= 'PROPOSAL_STATUS_PASSED' ,
@@ -247,28 +249,28 @@ export class ProposalTallyResult{
     if (this.total <= 0n) {
       return new BigDecimal(0);
     }
-    return divideBigInts(this.yes, this.total);
+    return divideBigInts(this.yes, useTokensStore().getStakingPool.bondedTokens);
   }
 
   public getAbstainPercentage(): BigDecimal{
     if (this.total <= 0n) {
       return new BigDecimal(0);
     }
-    return divideBigInts(this.abstain, this.total);
+    return divideBigInts(this.abstain, useTokensStore().getStakingPool.bondedTokens);
   }
 
   public getNoPercentage(): BigDecimal {
     if (this.total <= 0n) {
       return new BigDecimal(0);
     }
-    return divideBigInts(this.no, this.total);
+    return divideBigInts(this.no, useTokensStore().getStakingPool.bondedTokens);
   }
 
   public getNoWithVetoPercentage(): BigDecimal {
     if (this.total <= 0n) {
       return new BigDecimal(0);
     }
-    return divideBigInts(this.noWithVeto, this.total);
+    return divideBigInts(this.noWithVeto, useTokensStore().getStakingPool.bondedTokens);
   }
 }
 

@@ -5,8 +5,8 @@
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL_VOTED") }} / {{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
       <span>
 <!--        <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/> /-->
-        <CoinAmount :amount="useProposalsStore().getProposalDetailsTally?.proposalTally.total!==undefined ? new BigIntWrapper(useProposalsStore().getProposalDetailsTally.proposalTally.total) : 0" :reduce-big-number="true" :precision="2"/> /
-        <CoinAmount :amount="useProposalsStore().getProposalDetailsTally?.stakingPool.bondedTokens !== undefined ? new BigIntWrapper(useProposalsStore().getProposalDetailsTally.stakingPool.bondedTokens) : 0" :reduce-big-number="true" :precision="2"/>
+        <CoinAmount :amount="totalVotes!==undefined ? new BigIntWrapper(totalVotes) : 0" :reduce-big-number="true" :precision="2"/> /
+        <CoinAmount :amount="bondedTokens !== undefined ? new BigIntWrapper(bondedTokens) : 0" :reduce-big-number="true" :precision="2"/>
       </span>
 
     </div>
@@ -15,7 +15,7 @@
         {{ $t("GOVERNANCE_VIEW.CURRENT_TURNOUT") }}
       </span>
       <span>
-        {{calculatePercents(Number(useProposalsStore().getProposalDetailsTally?.proposalTally.total), Number(useProposalsStore().getProposalDetailsTally?.stakingPool.bondedTokens), 2)}}%
+        {{calculatePercents(Number(totalVotes), Number(bondedTokens), 2)}}%
       </span>
     </div>
 
@@ -26,14 +26,14 @@
           {{ $t("GOVERNANCE_VIEW."+getProposalStatus())}}
         </div>
     </ShadowedSvgChart>
-    <ProgressBarComponent v-if="getProposalStatus()===ProposalStatus.VOTING_PERIOD" ref="childRef" @refresh="updateVotes" :loading-time="useConfigurationStore().getConfig.proposalVotingRefreshTimeout" style="width: 100%"></ProgressBarComponent>
+<!--    <ProgressBarComponent v-if="getProposalStatus()===ProposalStatus.VOTING_PERIOD" ref="childRef" @refresh="updateVotes" :loading-time="useConfigurationStore().getConfig.proposalVotingRefreshTimeout" style="width: 100%"></ProgressBarComponent>-->
     <div class="voting-result">
       <div style="display: flex; align-items: center">
         <div class="dot yes"></div>
         <div class="bar-legend">
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
           <div style="font-weight: bold">
-            <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getYesPercentage()" :precision="2"></PercentsView>
+            <PercentsView :amount="yesPercentage" :precision="2"></PercentsView>
           </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)-->
           (<CoinAmount :amount="yes" :reduce-big-number="true" :precision="2"/>)
@@ -44,7 +44,7 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getAbstainPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="abstainPercentage" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)-->
           (<CoinAmount :amount="abstain" :reduce-big-number="true" :precision="2"/>)
@@ -55,7 +55,7 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getNoPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="noPercentage" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)-->
           (<CoinAmount :amount="no" :reduce-big-number="true" :precision="2"/>)
@@ -66,7 +66,7 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getProposalDetailsTally?.getNoWithVetoPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="noWithVetoPercentage" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)-->
           (<CoinAmount :amount="noWithVeto" :reduce-big-number="true" :precision="2"/>)
@@ -128,6 +128,12 @@ onBeforeMount(async () => {
   }
 });
 
+if(props.proposal?.status === ProposalStatus.VOTING_PERIOD) {
+  setInterval(() => {
+    updateVotes();
+  },useConfigurationStore().getConfig.proposalVotingRefreshTimeout)
+}
+
 const childRef = ref<InstanceType<typeof ProgressBarComponent>>();
 const props = defineProps<{
   proposal?: Proposal,
@@ -151,6 +157,7 @@ const sumOfVotes = computed(() => {
 
 const updateVotes = async () => {
   if(props.proposal?.proposalId) {
+    console.log('refresh')
     await dataService.onProposalUpdateVotes(props.proposal.proposalId);
   }
   childRef.value?.startFillingBar();
@@ -202,6 +209,46 @@ const notVoted = computed(() => {
   return undefined;
 });
 
+const yesPercentage = computed(() => {
+  return props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.getYesPercentage() : useProposalsStore().getProposalDetailsTally?.getYesPercentage();
+});
+
+const noPercentage = computed(() => {
+  return props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.getNoPercentage() : useProposalsStore().getProposalDetailsTally?.getNoPercentage();
+});
+
+const abstainPercentage = computed(() => {
+  return props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.getAbstainPercentage() : useProposalsStore().getProposalDetailsTally?.getAbstainPercentage();
+});
+
+const noWithVetoPercentage = computed(() => {
+  return props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.getNoWithVetoPercentage() : useProposalsStore().getProposalDetailsTally?.getNoWithVetoPercentage();
+});
+
+const totalVotes = computed(() => {
+  let total: bigint | undefined;
+  if(props.proposal?.status == ProposalStatus.VOTING_PERIOD) {
+    total = proposalsStore.proposalTally?.total;
+  } else {
+    total = useProposalsStore().getProposalDetailsTally?.proposalTally.total;
+  }
+  return total;
+});
+
+const bondedTokens = computed(() => {
+  let bonded: bigint | undefined;
+  if(props.proposal?.status == ProposalStatus.VOTING_PERIOD) {
+    bonded = useTokensStore().getStakingPool.bondedTokens;
+  } else {
+    bonded = useProposalsStore().getProposalDetailsTally?.stakingPool.bondedTokens;
+  }
+  return bonded;
+});
+
 const option = computed(() => {
   if (yes.value==undefined || abstain.value==undefined || no.value==undefined || noWithVeto.value==undefined || notVoted.value==undefined) {
     return false;
@@ -221,7 +268,7 @@ function getProposalTitle() {
 }
 
 function calculatePercents(a, b, precision){
-  const result= (a/b) *100
+  const result= (a/b) *100;
   return result.toFixed(precision);
 }
 
