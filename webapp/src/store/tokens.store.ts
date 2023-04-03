@@ -1,14 +1,15 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import { StakingPool } from "@/models/store/tokens";
-import { Coin, DecCoin } from "@/models/store/common";
-import { useConfigurationStore } from "./configuration.store";
-import { useToast } from "vue-toastification";
-import { StoreLogger } from "@/services/logged.service";
-import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
-import { LogLevel } from "@/services/logger/log-level";
-import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
-import {Delegations, UnbondingDelegations} from "@/models/store/staking";
+import {StakingPool} from "@/models/store/tokens";
+import {Coin, DecCoin} from "@/models/store/common";
+import {useConfigurationStore} from "./configuration.store";
+import {useToast} from "vue-toastification";
+import {StoreLogger} from "@/services/logged.service";
+import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
+import {LogLevel} from "@/services/logger/log-level";
+import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
+import {ToastsService} from "@/services/toasts/toasts.service";
+import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
@@ -50,7 +51,7 @@ export const useTokensStore = defineStore({
         } else {
           const message = 'Error fetching staking pool data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.STAKING_POOL, message);
         }
       });
     },
@@ -62,7 +63,7 @@ export const useTokensStore = defineStore({
         } else {
           const message = 'Error fetching total supply data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.TOTAL_SUPPLY, message);
         }
       });
     },
@@ -81,7 +82,7 @@ export const useTokensStore = defineStore({
         } else {
           const message = 'Error fetching community pool data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.COMMUNITY_POOL, message);
         }
       });
     },
@@ -99,7 +100,7 @@ export const useTokensStore = defineStore({
             } else {
               const message = 'Error fetching strategic reverse pool data';
               logger.logToConsole(LogLevel.ERROR, message);
-              toast.error(message);
+              ToastsService.getInstance().errorToast(ToastsTypeEnum.STRATEGIC_REVERSE_POOL, message);
             }
           }),
           await apiFactory.accountApi().fetchUnbondingDelegations(address, lockscreen).then(response => {
@@ -108,7 +109,7 @@ export const useTokensStore = defineStore({
             } else {
               const message = 'Error fetching strategic reverse pool data';
               logger.logToConsole(LogLevel.ERROR, message);
-              toast.error(message);
+              ToastsService.getInstance().errorToast(ToastsTypeEnum.STRATEGIC_REVERSE_POOL, message);
             }
           }),
           await apiFactory.accountApi().fetchBalance(address, denom, lockscreen).then(response => {
@@ -117,7 +118,7 @@ export const useTokensStore = defineStore({
             } else {
               const message = 'Error fetching strategic reverse pool data';
               logger.logToConsole(LogLevel.ERROR, message);
-              toast.error(message);
+              ToastsService.getInstance().errorToast(ToastsTypeEnum.STRATEGIC_REVERSE_POOL, message);
             }
           }),
         ]);
@@ -134,7 +135,7 @@ export const useTokensStore = defineStore({
         } else {
           const message = 'Error fetching airdrop pool data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.AIRDROP_POOL, message);
         }
       });
     },
@@ -145,7 +146,7 @@ export const useTokensStore = defineStore({
         } else {
           const message = 'Error fetching distributorParams data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.DISTRIBUTOR_PARAMS, message);
         }
       });
     },

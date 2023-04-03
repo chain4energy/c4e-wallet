@@ -8,6 +8,8 @@ import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
 import { useUserStore } from "./user.store";
+import {ToastsService} from "@/services/toasts/toasts.service";
+import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.PROPOSAL_STORE);
@@ -79,7 +81,7 @@ export const useProposalsStore = defineStore({
           } else {
             const message = 'Error fetching proposals data';
             logger.logToConsole(LogLevel.ERROR, message);
-            toast.error(message);
+            ToastsService.getInstance().errorToast(ToastsTypeEnum.PROPOSALS, message);
           }
         });
     },
@@ -118,7 +120,7 @@ export const useProposalsStore = defineStore({
           } else {
             const message = 'Error fetching proposal data';
             logger.logToConsole(LogLevel.ERROR, message);
-            toast.error(message);
+            ToastsService.getInstance().errorToast(ToastsTypeEnum.PROPOSAL, message);
             if (onError) {
               onError();
             }
@@ -179,7 +181,7 @@ export const useProposalsStore = defineStore({
         } else {
           const message = 'Error fetching proposal tally data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.PROPOSAL_TALLY_RESULT, message);
         }
       });
     },
@@ -192,7 +194,7 @@ export const useProposalsStore = defineStore({
         } else {
           const message = 'Error fetching proposal user vote';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.PROPOSAL_USER_VOTE, message);
         }
       });
     },
@@ -204,7 +206,7 @@ export const useProposalsStore = defineStore({
        } else {
         const message = 'Error fetching tally params data';
         logger.logToConsole(LogLevel.ERROR, message);
-        toast.error(message);
+         ToastsService.getInstance().errorToast(ToastsTypeEnum.TALLY_PARAMS, message);
         }
       });
     },
@@ -215,7 +217,7 @@ export const useProposalsStore = defineStore({
        } else {
         const message = 'Error fetching deposit params data';
         logger.logToConsole(LogLevel.ERROR, message);
-        toast.error(message);
+         ToastsService.getInstance().errorToast(ToastsTypeEnum.DEPOSIT_PARAMS, message);
         }
       });
     },
@@ -226,7 +228,7 @@ export const useProposalsStore = defineStore({
         } else {
           const message = 'Error fetching proposals details tally';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.PROPOSAL_DETAILS_TALLY, message);
         }
       });
     },
@@ -241,7 +243,7 @@ export const useProposalsStore = defineStore({
         } else {
           const message = 'Error fetching proposals details tally list';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.PROPOSAL_DETAILS_TALLY_LIST, message);
         }
       });
     },
