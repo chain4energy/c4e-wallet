@@ -53,12 +53,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features
 * Cosmostation wallet support
 * Cosmos-sdk version v0.46.10 support
+* Support for new proposals types
 
 ### Bug fixes
 * Wallet details view css corrections 
+* Jailed voting power always 0% 
+* Delegation problem (4671)
 
 ### Misc Improvements
 * Proposals view improvements 
+* Support for no internet access (4261)
+* Toasts styling
 
 ## [1.1.5](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.5) - 2022-03-03
 
