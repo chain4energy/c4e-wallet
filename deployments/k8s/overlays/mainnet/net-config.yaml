@@ -11,7 +11,8 @@ data:
          "addressPrefix": "c4e",
          "stakingDenom": "uc4e",
          "strategicPoolAddress": [
-          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
          ],
          "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
          "chainId": "perun-1",
@@ -61,7 +62,8 @@ data:
          "addressPrefix": "c4e",
          "stakingDenom": "uc4e",
          "strategicPoolAddress": [
-          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+          "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
          ],
          "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
          "chainId": "veles-1",
