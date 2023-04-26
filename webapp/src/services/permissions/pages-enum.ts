@@ -2,5 +2,7 @@ export enum PagesEnum{
   DASHBOARD,
   STAKING,
   GOVERNANCE,
-  AirDrop,
+  AIRDROP,
+  BUYTOKENS,
+  PROFILE
 }

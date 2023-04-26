@@ -359,7 +359,9 @@
     "FAQ": "FAQ",
     "PRIVACY_POLICY": "Privacy policy",
     "TERMS_CONDITIONS": "Terms & conditions",
-    "AIRDROP": "Airdrop"
+    "AIRDROP": "Airdrop",
+    "BUYTOKENS": "Buy tokens",
+    "PROFILE": "Profile"
   },
   "TOAST": {
     "SUCCESS": {

@@ -10,7 +10,9 @@ export class SidebarConfig{
     this.config.set(PagesEnum.DASHBOARD, this.createDashboard());
     this.config.set(PagesEnum.STAKING, this.createStaking());
     this.config.set(PagesEnum.GOVERNANCE, this.createGovernance());
-    this.config.set(PagesEnum.AirDrop, this.createAirDrop());
+    this.config.set(PagesEnum.AIRDROP, this.createAirDrop());
+    this.config.set(PagesEnum.BUYTOKENS, this.createBuyTokens());
+    this.config.set(PagesEnum.PROFILE, this.createProfile());
   }
 
   getConfigForPage(page: PagesEnum): SidebarElement | undefined{
@@ -50,6 +52,24 @@ export class SidebarConfig{
     retVal.href = '/airdrop';
     retVal.title = 'Airdrop';
     retVal.icon = new SidebarIcon('Award');
+    return retVal;
+  }
+
+  private createBuyTokens(): SidebarElement{
+    const retVal = new SidebarElement();
+    retVal.id = 4;
+    retVal.href = '/buyTokens';
+    retVal.title = 'BuyTokens';
+    retVal.icon = new SidebarIcon('ShoppingCart');
+    return retVal;
+  }
+
+  private createProfile(): SidebarElement{
+    const retVal = new SidebarElement();
+    retVal.id = 5;
+    retVal.href = '/profile';
+    retVal.title = 'Profile';
+    retVal.icon = new SidebarIcon('User');
     return retVal;
   }
 
