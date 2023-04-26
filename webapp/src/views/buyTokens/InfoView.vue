@@ -1,12 +1,10 @@
 <template>
   <div class="box-shadow">
-    <PublicSaleInfo>
-    </PublicSaleInfo>
+    <PublicSaleInfo />
     <div>
       info
     </div>
-    <InvestmentCalculator>
-    </InvestmentCalculator>
+    <InvestmentCalculator />
   </div>
 </template>
 
