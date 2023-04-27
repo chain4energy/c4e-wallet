@@ -16,7 +16,7 @@ import {ref} from "vue";
 import RadioButton from 'primevue/radiobutton';
 import {useRouter} from "vue-router";
 
-const selectedType = ref<AccountType>();
+const selectedType = ref<AccountType>(AccountType.EMAIL);
 enum AccountType {
   EMAIL='EMAIL',
   KEPLR='KEPLR',
