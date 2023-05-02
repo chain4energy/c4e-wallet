@@ -124,6 +124,7 @@ const logo = computed(() => {
     case ConnectionType.Keplr: return require('@/assets/keplrIcon2.png');
     case ConnectionType.Address: return '/globe.svg';
     case ConnectionType.Cosmostation: return require('@/assets/cosmostationIcon.png');
+    case ConnectionType.Leap: return require('@/assets/leapIcon.png');
     default : return 'Logout';
   }
 });

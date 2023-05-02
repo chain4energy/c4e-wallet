@@ -14,7 +14,8 @@ export enum ConnectionType {
   Address,
   Keplr,
   Disconnected,
-  Cosmostation
+  Cosmostation,
+  Leap
 }
 
 export class ConnectionInfo {
@@ -77,6 +78,10 @@ export default class WalletConnectionApi extends LoggedService {
     return this.connect(ConnectionType.Cosmostation);
   }
 
+  public connectLeap(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
+    return this.connect(ConnectionType.Leap);
+  }
+
   public async connect(connectionType: ConnectionType): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
     useSplashStore().increment();
     let extension: Keplr | undefined;
@@ -90,6 +95,10 @@ export default class WalletConnectionApi extends LoggedService {
       extension = window.cosmostation?.providers.keplr;
       connectTypeMessage = 'connectCosmostation';
       notInstalledMessage = 'Cosmostation not installed';
+    } else if(connectionType == ConnectionType.Leap) {
+      extension = window.leap;
+      connectTypeMessage = 'connectLeap';
+      notInstalledMessage = 'Leap not installed';
     }
 
     try {
