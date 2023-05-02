@@ -1,10 +1,14 @@
 <template>
-  <div class="box-shadow">
+  <div class="box-shadow" style="max-width: 400px">
     <h4 style="font-weight: 700;">Account type</h4>
     <div style="margin-left: 20px">
-      <div v-for="category in categories" :key="category.name" class="flex align-items-center">
+      <div v-for="category in categories" :key="category.name" class="flex align-items-center mb-1">
         <RadioButton v-model="selectedType" :inputId="category.name" name="pizza" :value="category.name" />
         <label :for="category.name" class="mx-2">{{ category.name }}</label>
+        <div style="margin-right: 40px; margin-left:auto">
+          <TooltipComponent />
+        </div>
+
       </div>
     </div>
     <Button @click="onNext" class="p-button p-component secondary">Sign in</Button>
@@ -15,13 +19,14 @@
 import {ref} from "vue";
 import RadioButton from 'primevue/radiobutton';
 import {useRouter} from "vue-router";
-
-const selectedType = ref<AccountType>(AccountType.EMAIL);
+import TooltipComponent from "@/components/TooltipComponent.vue";
 enum AccountType {
   EMAIL='EMAIL',
   KEPLR='KEPLR',
   METAMASK='METAMASK'
 }
+const selectedType = ref<AccountType>(AccountType.EMAIL);
+
 const categories = ref([
   { name: AccountType.EMAIL},
   { name: AccountType.KEPLR},

@@ -66,7 +66,7 @@ const userLoggedIn = computed(() => {
 
 <style scoped lang="scss">
 .registration-box {
-
+  font-weight: 700;
   &__form {
     display: flex;
 
