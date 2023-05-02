@@ -122,7 +122,6 @@ const address = computed(() => {
 // });
 watch(isLoggedIn, (next, prev)=>{
   if(next){
-    useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true);
     dataService.onClaimAirdrop(useUserStore().getAccount.address);
   }
 });

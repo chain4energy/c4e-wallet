@@ -49,7 +49,7 @@ export interface Configuration {
   stakingPageURL: string,
   addressPrefix: string,
   stakingDenom: string,
-  strategicPoolAddress: string,
+  strategicPoolAddress: string[],
   airdropPoolAddress: string,
   chainId: string,
   networkName: string,

@@ -245,7 +245,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
             errorTitleMessage: errorDataString
           },
         };
-        toast.error(content, {icon: true,});
+        toast.error(content);
       } else {
         const content = {
           component: TxToast,
@@ -255,7 +255,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
             errorMessage: errorData.message
           },
         };
-        toast.error(content, {icon: true,});
+        toast.error(content);
       }
     }
     return new RequestResponse<TxData, TxBroadcastError>(errorData);

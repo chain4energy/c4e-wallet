@@ -7,7 +7,10 @@
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "perun-1",
     "networkName": "Mainnet(C4E)",
@@ -16,8 +19,8 @@
       "STAKING_POOL_URL": "/cosmos/staking/v1beta1/pool",
       "TOTAL_SUPPLY_URL": "/cosmos/bank/v1beta1/supply/by_denom?denom={denom}",
       "COMMUNITY_POOL_URL": "/cosmos/distribution/v1beta1/community_pool",
-      "PROPOSALS_URL": "/cosmos/gov/v1beta1/proposals",
-      "PROPOSALS_BY_ID_URL": "/cosmos/gov/v1beta1/proposals/{id}",
+      "PROPOSALS_URL": "/cosmos/gov/v1/proposals",
+      "PROPOSALS_BY_ID_URL": "/cosmos/gov/v1/proposals/{id}",
       "TALLYING_URL": "/cosmos/gov/v1beta1/params/tallying",
       "DEPOSIT_URL": "/cosmos/gov/v1beta1/params/deposit",
       "LATEST_BLOCK_URL": "/cosmos/base/tendermint/v1beta1/blocks/latest",
@@ -75,7 +78,10 @@
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "veles-dev-test-1",
     "networkName": "Dev(veles-dev-1)",
@@ -84,8 +90,8 @@
       "STAKING_POOL_URL": "/cosmos/staking/v1beta1/pool",
       "TOTAL_SUPPLY_URL": "/cosmos/bank/v1beta1/supply/by_denom?denom={denom}",
       "COMMUNITY_POOL_URL": "/cosmos/distribution/v1beta1/community_pool",
-      "PROPOSALS_URL": "/cosmos/gov/v1beta1/proposals",
-      "PROPOSALS_BY_ID_URL": "/cosmos/gov/v1beta1/proposals/{id}",
+      "PROPOSALS_URL": "/cosmos/gov/v1/proposals",
+      "PROPOSALS_BY_ID_URL": "/cosmos/gov/v1/proposals/{id}",
       "TALLYING_URL": "/cosmos/gov/v1beta1/params/tallying",
       "DEPOSIT_URL": "/cosmos/gov/v1beta1/params/deposit",
       "LATEST_BLOCK_URL": "/cosmos/base/tendermint/v1beta1/blocks/latest",
@@ -143,7 +149,10 @@
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1m2z0c7am94zc4te33hnmh54w4zgufft5cgqxu7",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "perun-testnet-1",
     "networkName": "Int-Testnet",
@@ -191,7 +200,10 @@
     "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "veles-1",
     "networkName": "Testnet(veles-1)",
@@ -239,7 +251,10 @@
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "c4e-testnet-0.1.0",
     "networkName": "PB Testnet",
@@ -288,7 +303,10 @@
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
-    "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+    ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "c4echain",
     "networkName": "Local",
@@ -297,8 +315,8 @@
       "STAKING_POOL_URL": "/cosmos/staking/v1beta1/pool",
       "TOTAL_SUPPLY_URL": "/cosmos/bank/v1beta1/supply/by_denom?denom={denom}",
       "COMMUNITY_POOL_URL": "/cosmos/distribution/v1beta1/community_pool",
-      "PROPOSALS_URL": "/cosmos/gov/v1beta1/proposals",
-      "PROPOSALS_BY_ID_URL": "/cosmos/gov/v1beta1/proposals/{id}",
+      "PROPOSALS_URL": "/cosmos/gov/v1/proposals",
+      "PROPOSALS_BY_ID_URL": "/cosmos/gov/v1/proposals/{id}",
       "TALLYING_URL": "/cosmos/gov/v1beta1/params/tallying",
       "DEPOSIT_URL": "/cosmos/gov/v1beta1/params/deposit",
       "LATEST_BLOCK_URL": "/cosmos/base/tendermint/v1beta1/blocks/latest",

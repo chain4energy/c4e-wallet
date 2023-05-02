@@ -10,7 +10,10 @@ data:
       "stakingPageURL": "https://wallet-dev.c4e.io/staking",
       "addressPrefix": "c4e",
       "stakingDenom": "uc4e",
-      "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "strategicPoolAddress": [
+        "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+        "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+      ],
       "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
       "chainId": "veles-dev-test-1",
       "networkName": "Devnet(veles-dev-test-1)",
@@ -58,7 +61,10 @@ data:
         "stakingPageURL": "https://wallet.c4e.io/staking",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
-        "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+        "strategicPoolAddress": [
+          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+          "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+        ],
         "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
         "chainId": "perun-1",
         "networkName": "Mainnet(perun-1)",
@@ -100,13 +106,16 @@ data:
       },
       "Testnet": {
         "bcApiURL": "https://lcd-testnet.c4e.io",
-        "bcRpcURL": "https://lcd-testnet.c4e.io",
+        "bcRpcURL": "https://rpc-testnet.c4e.io",
         "hasuraURL": "https://hasura-testnet.c4e.io/v1/graphql",
         "keybaseURL": "https://keybase.io",
         "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
-        "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+        "strategicPoolAddress": [
+          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+          "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+        ],
         "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
         "chainId": "veles-1",
         "networkName": "Testnet(veles-1)",

@@ -6,6 +6,8 @@ import { useToast } from "vue-toastification";
 import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
+import {ToastsService} from "@/services/toasts/toasts.service";
+import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.BLOCK_STORE);
@@ -32,7 +34,7 @@ export const useBlockStore = defineStore( 'block', {
         } else {
           const message = 'Error fetching latest block data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.LATEST_BLOCK, message);
         }
 
       });
@@ -44,7 +46,7 @@ export const useBlockStore = defineStore( 'block', {
         } else {
           const message = 'Error fetching avarage block time data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.AVERAGE_BLOCK_TIME, message);
         }
 
       });

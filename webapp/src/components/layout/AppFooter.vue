@@ -2,9 +2,11 @@
 
   <div class="footer">
     <span>FAQ</span>
-    <span>Help</span>
-    <router-link to="/terms_conditions"><span>Terms & Conditions</span></router-link>
-    <router-link to="/privacy_policy"><span>Privacy Policy</span></router-link>
+    <a href="https://docs.c4e.io/usersGuide/walletBasics.html" target="_blank">
+      <span>{{$t('FOOTER.HELP')}}</span>
+    </a>
+    <router-link to="/terms_conditions"><span>{{$t('FOOTER.TERMS')}}</span></router-link>
+    <router-link to="/privacy_policy"><span>{{$t('FOOTER.PRIVACY')}}</span></router-link>
     <span ref="versionSpan" class="right">c4e</span>
     <div ref="versionDiv" v-bind:class="{show: showVersion}" class="hide">{{ app_version + "/" + compilation_timestamp}}</div>
   </div>

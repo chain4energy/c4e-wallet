@@ -8,3 +8,15 @@
         }
     }
 }
+.Vue-Toastification__toast--success {
+    background-color: #002C50;
+    .Vue-Toastification__icon {
+        width: 30px;
+    }
+}
+.Vue-Toastification__toast--error {
+    background-color: #002C50;
+    .Vue-Toastification__icon {
+        width: 25px;
+    }
+}

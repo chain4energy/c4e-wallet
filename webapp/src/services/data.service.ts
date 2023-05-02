@@ -10,7 +10,10 @@ import {LogLevel} from "./logger/log-level";
 import {ServiceTypeEnum} from "./logger/service-type.enum";
 import {ConnectionInfo} from "@/api/wallet.connecton.api";
 import {useAirDropStore} from "@/store/airDrop.store";
-
+import {useToast} from "vue-toastification";
+import WifiIcon from '@/components/features/WifiOnIcon.vue';
+import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
+import {useI18n} from "vue-i18n";
 const keplrKeyStoreChange = 'keplr_keystorechange';
 
 class DataService extends LoggedService {
@@ -33,6 +36,7 @@ class DataService extends LoggedService {
   private onProposalDetailsError?: () => void;
 
   private static instance: DataService;
+  private isOnline = navigator.onLine;
 
   public static getInstance(): DataService {
     if (!DataService.instance) {
@@ -46,6 +50,18 @@ class DataService extends LoggedService {
   }
 
   public async onAppStart() {
+    const i18n = useI18n();
+    window.addEventListener('offline', () => {
+      this.isOnline = navigator.onLine;
+      useToast().error(i18n.t('TOAST.INTERNET_CONNECTION.OFFLINE'), {icon: WifiOffIcon, timeout: false});
+      this.clearIntervals();
+    });
+    window.addEventListener('online', () => {
+      this.isOnline = navigator.onLine;
+      useToast().clear();
+      useToast().error(i18n.t('TOAST.INTERNET_CONNECTION.ONLINE'), {icon: WifiIcon });
+      this.setIntervals();
+    });
     this.logToConsole(LogLevel.DEBUG, 'onAppStart');
     await useConfigurationStore().fetchConfigList().then(() => {
         const config = useConfigurationStore().getConfig;
@@ -57,38 +73,40 @@ class DataService extends LoggedService {
       }
     );
     window.addEventListener('focus', () => {
-      this.refreshBlocksData();
-      this.refreshDashboard();
-      this.refreshValidators();
-      this.setIntervals();
+      if(this.isOnline) {
+        this.refreshBlocksData();
+        this.refreshDashboard();
+        this.refreshValidators();
+        this.setIntervals();
+      }
     }, false);
     window.addEventListener('blur', () => {
       this.clearIntervals();
     }, false);
   }
-
   private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');
     const lockScreen = true;
     await this.waitTillCondition(() => useConfigurationStore().getInitialized);
+    if(this.isOnline) {
+      Promise.all([
+        useBlockStore().fetchLatestBlock(lockScreen),
+        useBlockStore().fetchAverageBlockTime(lockScreen),
+        useTokensStore().fetchPools(lockScreen),
+        useTokensStore().fetchTotalSupply(lockScreen),
+        useTokensStore().fetchStakingPool(lockScreen),
+        useTokensStore().fetchInflation(lockScreen),
+        useTokensStore().fetchLockedVesting(lockScreen),
+        useTokensStore().fetchDistributorParams(lockScreen),
+        useValidatorsStore().fetchValidators(lockScreen),
+        useValidatorsStore().fetchStackingParams(lockScreen),
+        useProposalsStore().fetchTallyParams(),
+        useProposalsStore().fetchDepositParams(),
 
-    Promise.all([
-      useBlockStore().fetchLatestBlock(lockScreen),
-      useBlockStore().fetchAverageBlockTime(lockScreen),
-      useTokensStore().fetchPools(lockScreen),
-      useTokensStore().fetchTotalSupply(lockScreen),
-      useTokensStore().fetchStakingPool(lockScreen),
-      useTokensStore().fetchInflation(lockScreen),
-      useTokensStore().fetchLockedVesting(lockScreen),
-      useTokensStore().fetchDistributorParams(lockScreen),
-      useValidatorsStore().fetchValidators(lockScreen),
-      useValidatorsStore().fetchStackingParams(lockScreen),
-      useProposalsStore().fetchTallyParams(),
-      useProposalsStore().fetchDepositParams(),
-
-    ]).then(() => {
+      ]).then(() => {
         this.setIntervals();
-    });
+      });
+    }
   }
   public setIntervals() {
     const now = new Date().getTime();
@@ -138,7 +156,7 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onLogOut');
     window.clearInterval(this.accountIntervalId);
     this.disableKeplrAccountChangeListener();
-    useValidatorsStore().clear();
+    // useValidatorsStore().clear();
     useProposalsStore().clearUserVote();
     useUserStore().logOut();
   }
@@ -333,4 +351,3 @@ function refreshDashboard() {
 function refreshValidators() {
   DataService.getInstance().refreshValidators();
 }
-

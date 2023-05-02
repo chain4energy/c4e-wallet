@@ -142,7 +142,7 @@ export class Configuration implements JsonConfiguration {
   stakingPageURL: string;
   addressPrefix: string;
   stakingDenom: string;
-  strategicPoolAddress: string;
+  strategicPoolAddress: string[];
   airdropPoolAddress: string;
   chainId: string;
   networkName: string;
@@ -222,7 +222,7 @@ export class Configuration implements JsonConfiguration {
       this.stakingPageURL = '';
       this.addressPrefix = '';
       this.stakingDenom = '';
-      this.strategicPoolAddress = '';
+      this.strategicPoolAddress = [''];
       this.airdropPoolAddress = '';
       this.chainId = '';
       this.networkName = '',
@@ -231,7 +231,7 @@ export class Configuration implements JsonConfiguration {
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
       this.keplrGasPriceSteps = new KeplrGasPriceSteps(undefined);
-      this.reservedCoinsAmount = 0;
+      this.reservedCoinsAmount = 250000;
       this.minPeriodBetweenDataRefresh = 60000;
       this.blockDataRefreshTimeout = 60000;
       this.dashboardDataRefreshTimeout = 60000;

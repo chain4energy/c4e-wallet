@@ -406,7 +406,7 @@ function onTxDeliverySuccess(tx?: TxData) {
         tx: tx
       },
     };
-    toast.success(content, {icon: true,});
+    toast.success(content);
   } else {
     logger.logToConsole(LogLevel.WARNING, `Tx delivered successfully but cannt get TX data`);
     toast.warning(`Tx delivered successfully but cannt get TX data`);
