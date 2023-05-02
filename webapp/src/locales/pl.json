@@ -6,6 +6,7 @@
     "CONNECT": "zaloguj",
     "CONNECT_ADDRESS": "Zaloguj się z adresem",
     "CONNECT_KEPLR": "Zaloguj się z Keplrem",
+    "CONNECT_LEAP": "Zaloguj się z Leap",
     "CONNECT_COSMOSTATION": "Zaloguj się z Cosmostation",
     "ADDRESS_HELP": "Przeglądaj z dowolnym adresem",
     "VIEW_EXPLORER": "View on explorer",

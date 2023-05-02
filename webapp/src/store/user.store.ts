@@ -59,6 +59,8 @@ export const useUserStore = defineStore({
         await this.connectAsAddress(this.connectionInfo.account, onSuccess);
       } else if(this.connectionInfo.connectionType === ConnectionType.Cosmostation){
         await this.connectCosmostation(onSuccess);
+      } else if(this.connectionInfo.connectionType === ConnectionType.Leap){
+        await this.connectLeap(onSuccess);
       }
     },
     async connectKeplr(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
@@ -70,6 +72,12 @@ export const useUserStore = defineStore({
     async connectCosmostation(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
       await this.connect(
         apiFactory.walletApi().connectCosmostation(),
+        onSuccess
+      );
+    },
+    async connectLeap(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
+      await this.connect(
+        apiFactory.walletApi().connectLeap(),
         onSuccess
       );
     },
