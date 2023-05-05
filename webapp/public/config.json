@@ -5,6 +5,7 @@
     "hasuraURL": "https://hasura.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "userServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [
@@ -76,6 +77,7 @@
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "userServiceURL": "http://198.244.154.101:31876",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [
@@ -147,6 +149,7 @@
     "hasuraURL": "http://10.0.7.86:8080/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
+    "userServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [
@@ -198,6 +201,7 @@
     "hasuraURL": "https://hasura-testnet.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
+    "userServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [
@@ -249,6 +253,7 @@
     "hasuraURL": "hasura",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
+    "userServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [
@@ -301,6 +306,7 @@
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "userServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [
