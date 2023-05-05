@@ -81,7 +81,7 @@ export default {
   },
   userService:{
     REFRESH_TOKEN: '/refresh',
-    EMAIL_CREATE_ACCOUNT: '/api/user-service/register',
+    EMAIL_CREATE_ACCOUNT: '/api2/user-service/register',
     AUTHENTICATE_EMAIL: '/api/user-service/auth/password',
     AUTHENTICATE_KEPLR: '/api/user-service/auth/keplr',
     AUTHENTICATE_METAMASK: '/api/user-service/auth/metamask',

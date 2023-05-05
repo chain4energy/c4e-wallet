@@ -18,7 +18,7 @@ export class UserServiceApi extends BaseApi {
   private userServicePostCall<R, T, E>(userServiceUrlPart: string, data: R, lockscreen: boolean): Promise<RequestResponse<T, ErrorData<E>>> {
     return this.axiosCall<T, E>({
         method: 'POST',
-        url: useConfigurationStore().config.userServiceURL + userServiceUrlPart,
+        url: userServiceUrlPart,
         data: data
       },
       lockscreen,
