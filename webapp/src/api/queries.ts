@@ -82,10 +82,10 @@ export default {
   userService:{
     REFRESH_TOKEN: '/refresh',
     EMAIL_CREATE_ACCOUNT: '/api2/user-service/register',
-    AUTHENTICATE_EMAIL: '/api/user-service/auth/password',
-    AUTHENTICATE_KEPLR: '/api/user-service/auth/keplr',
-    AUTHENTICATE_METAMASK: '/api/user-service/auth/metamask',
-    AUTHENTICATE_DOUBLE_WALLET: '/api/user-service/auth/doubleWallet',
+    AUTHENTICATE_EMAIL: '/api2/user-service/auth/password',
+    AUTHENTICATE_KEPLR: '/api2/user-service/auth/keplr',
+    AUTHENTICATE_METAMASK: '/api2/user-service/auth/metamask',
+    AUTHENTICATE_DOUBLE_WALLET: '/api2/user-service/auth/doubleWallet',
     ACTIVATE_ACCOUNT: '/activate/{activationCode}'
   }
 };
