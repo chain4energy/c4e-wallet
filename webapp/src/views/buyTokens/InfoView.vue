@@ -1,9 +1,6 @@
 <template>
-  <div class="box-shadow">
+  <div class="info">
     <PublicSaleInfo />
-    <div>
-      info
-    </div>
     <InvestmentCalculator />
   </div>
 </template>
@@ -15,5 +12,8 @@ import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vu
 </script>
 
 <style scoped>
+.info{
+  padding: 25px 54px;
+}
 
 </style>

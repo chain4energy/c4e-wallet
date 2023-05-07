@@ -1,5 +1,5 @@
 <template>
-  <div class="box-shadow">
+  <div>
     calculator
     <Button class="p-button p-component secondary" @click="router.push({name: 'accountType'})">Buy</Button>
   </div>
