@@ -80,12 +80,13 @@ export default {
     AIRDROP_INFO: 'airdropInfo.json'
   },
   userService:{
-    REFRESH_TOKEN: '/refresh',
-    EMAIL_CREATE_ACCOUNT: '/api2/user-service/register',
-    AUTHENTICATE_EMAIL: '/api2/user-service/auth/password',
-    AUTHENTICATE_KEPLR: '/api2/user-service/auth/keplr',
-    AUTHENTICATE_METAMASK: '/api2/user-service/auth/metamask',
-    AUTHENTICATE_DOUBLE_WALLET: '/api2/user-service/auth/doubleWallet',
-    ACTIVATE_ACCOUNT: '/activate/{activationCode}'
+    REFRESH_TOKEN: '/api/refresh',
+    EMAIL_CREATE_ACCOUNT: '/api/user-service/register',
+    AUTHENTICATE_EMAIL: '/api/user-service/auth/password',
+    AUTHENTICATE_KEPLR: '/api/user-service/auth/keplr',
+    AUTHENTICATE_METAMASK: '/api/user-service/auth/metamask',
+    AUTHENTICATE_DOUBLE_WALLET: '/api/user-service/auth/doubleWallet',
+    INIT_WALLET_AUTH: '/api/user-service/auth//initWalletAuth',
+    ACTIVATE_ACCOUNT: '/api/activate/{activationCode}'
   }
 };

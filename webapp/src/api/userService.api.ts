@@ -1,6 +1,6 @@
 import BaseApi, {ErrorData} from "@/api/base.api";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
-import {EmailAccount} from "@/models/user/emailAccount";
+import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {RequestResponse} from "@/models/request-response";
 import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common";
@@ -9,6 +9,7 @@ import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import queries from "@/api/queries";
 import {CampaignsInfo} from "@/models/airdrop/airdrop";
 import {Jwt} from "@/models/user/jwt";
+import {InitWalletAuthRequest, InitWalletAuthResponse} from "@/models/user/walletAuth";
 
 export class UserServiceApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
@@ -18,7 +19,7 @@ export class UserServiceApi extends BaseApi {
   private userServicePostCall<R, T, E>(userServiceUrlPart: string, data: R, lockscreen: boolean): Promise<RequestResponse<T, ErrorData<E>>> {
     return this.axiosCall<T, E>({
         method: 'POST',
-        url: userServiceUrlPart,
+        url: useConfigurationStore().config.userServiceURL + userServiceUrlPart,
         data: data
       },
       lockscreen,
@@ -28,11 +29,15 @@ export class UserServiceApi extends BaseApi {
     );
   }
 
-  public async createEmailAccount(emailAccount: EmailAccount, lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<UserServiceErrData>>> {
-      return this.userServicePostCall<EmailAccount, AccountInfo, UserServiceErrData>(queries.userService.EMAIL_CREATE_ACCOUNT, emailAccount, lockscreen);
+  public async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<UserServiceErrData>>> {
+      return this.userServicePostCall<PasswordAuthenticateRequest, AccountInfo, UserServiceErrData>(queries.userService.EMAIL_CREATE_ACCOUNT, createAccountRequest, lockscreen);
   }
 
-  public async authEmailAccount(emailAccount: EmailAccount, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
-    return this.userServicePostCall<EmailAccount, Jwt, UserServiceErrData>(queries.userService.EMAIL_CREATE_ACCOUNT, emailAccount, lockscreen);
+  public async authEmailAccount(emailAccount: PasswordAuthenticateRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
+    return this.userServicePostCall<PasswordAuthenticateRequest, Jwt, UserServiceErrData>(queries.userService.EMAIL_CREATE_ACCOUNT, emailAccount, lockscreen);
+  }
+
+  public async authWalletInit(initWalletAuth: InitWalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<InitWalletAuthResponse, ErrorData<UserServiceErrData>>> {
+    return this.userServicePostCall<InitWalletAuthRequest, InitWalletAuthResponse, UserServiceErrData>(queries.userService.INIT_WALLET_AUTH, initWalletAuth, lockscreen);
   }
 }

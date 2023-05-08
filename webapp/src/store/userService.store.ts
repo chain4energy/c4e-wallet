@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {EmailAccount} from "@/models/user/emailAccount";
+import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
 import {clearAuthTokens, setAuthTokens} from "axios-jwt";
 
 interface UserServiceState {
@@ -15,10 +15,10 @@ export const useUserServiceStore = defineStore({
     };
   },
   actions: {
-    async createEmailAccount(emailAccount: EmailAccount, lockscreen = true) {
-      return await apiFactory.userServiceApi().createEmailAccount(emailAccount, lockscreen).then();
+    async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen = true) {
+      return await apiFactory.userServiceApi().createEmailAccount(createAccountRequest, lockscreen).then();
     },
-    async authEmailAccount(emailAccount: EmailAccount, lockscreen = true) {
+    async authEmailAccount(emailAccount: PasswordAuthenticateRequest, lockscreen = true) {
       await apiFactory.userServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
         if (responseDate.isSuccess()) {
           // save tokens to storage
