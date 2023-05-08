@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
 import {clearAuthTokens, setAuthTokens} from "axios-jwt";
-import {InitWalletAuthRequest} from "@/models/user/walletAuth";
+import {InitWalletAuthRequest, InitWalletAuthResponse, WalletAuthRequest} from "@/models/user/walletAuth";
 import {useUserStore} from "@/store/user.store";
 
 interface UserServiceState {
@@ -18,14 +18,36 @@ export const useUserServiceStore = defineStore({
   },
   actions: {
     async authWalletInit(initWalletAuthRequest: InitWalletAuthRequest, lockscreen = true) {
-      return await apiFactory.userServiceApi().authWalletInit(initWalletAuthRequest, lockscreen).then(res => {
+       const initWalletAuthResponse = await apiFactory.userServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
+       if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
+         await apiFactory.accountApi().sign(useUserStore().connectionInfo, initWalletAuthResponse.data.dataToSign).then(signedDataResponse => {
+           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+           // @ts-ignore
+           this.authWalletKeplr({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data.toString()});
+         });
+       }
 
-        const connectionInfo = useUserStore().connectionInfo;
-        apiFactory.accountApi().sign(connectionInfo, res.data?.dataToSign);
-      });
+
     },
     async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen = true) {
       return await apiFactory.userServiceApi().createEmailAccount(createAccountRequest, lockscreen).then();
+    },
+    async authWalletKeplr(walletAuthData: WalletAuthRequest, lockscreen = true) {
+      await apiFactory.userServiceApi().authWalletKeplr(walletAuthData, lockscreen).then(responseDate => {
+        if (responseDate.isSuccess()) {
+          // save tokens to storage
+          if(responseDate.data){
+            setAuthTokens({
+              accessToken: responseDate.data.access_token.id,
+              refreshToken: responseDate.data.refresh_token.id
+            });
+          } else {
+            //TODO: toast - log in error
+          }
+        } else {
+          //TODO: toast - log in error
+        }
+      });
     },
     async authEmailAccount(emailAccount: PasswordAuthenticateRequest, lockscreen = true) {
       await apiFactory.userServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {

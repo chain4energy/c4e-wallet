@@ -18,3 +18,8 @@ export interface AuthWalletRequest {
   processID: string,
   signedData: string
 }
+
+export interface WalletAuthRequest {
+  processID: string,
+  signedData: string
+}

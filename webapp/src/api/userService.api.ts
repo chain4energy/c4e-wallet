@@ -9,7 +9,11 @@ import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import queries from "@/api/queries";
 import {CampaignsInfo} from "@/models/airdrop/airdrop";
 import {Jwt} from "@/models/user/jwt";
-import {InitWalletAuthRequest, InitWalletAuthResponse} from "@/models/user/walletAuth";
+import {
+  InitWalletAuthRequest,
+  InitWalletAuthResponse,
+  WalletAuthRequest
+} from "@/models/user/walletAuth";
 
 export class UserServiceApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
@@ -39,5 +43,8 @@ export class UserServiceApi extends BaseApi {
 
   public async authWalletInit(initWalletAuth: InitWalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<InitWalletAuthResponse, ErrorData<UserServiceErrData>>> {
     return this.userServicePostCall<InitWalletAuthRequest, InitWalletAuthResponse, UserServiceErrData>(queries.userService.INIT_WALLET_AUTH, initWalletAuth, lockscreen);
+  }
+  public async authWalletKeplr(walletAuth: WalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
+    return this.userServicePostCall<WalletAuthRequest, Jwt, UserServiceErrData>(queries.userService.AUTHENTICATE_KEPLR, walletAuth, lockscreen);
   }
 }
