@@ -24,15 +24,18 @@ export class ConnectionInfo {
   readonly account: string;
   readonly modifiable: boolean;
   readonly connectionType: ConnectionType;
+  readonly pubKey?: Uint8Array;
   readonly accountName?: string;
   constructor(
     account = '',
     modifiable = false,
     connectionType = ConnectionType.Disconnected,
+    pubKey?: Uint8Array,
     accountName?: string) {
     this.account = account;
     this.modifiable = modifiable;
     this.connectionType = connectionType;
+    this.pubKey = pubKey;
     this.accountName = accountName;
 
   }
@@ -105,7 +108,8 @@ export default class WalletConnectionApi extends LoggedService {
           account[0].address,
           true,
           connectionType,
-          key?.name
+          account[0].pubkey,
+          key?.name,
         );
         return new RequestResponse<ConnectionInfo, any>(undefined, connection);
       } else {

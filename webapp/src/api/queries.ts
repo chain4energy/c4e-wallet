@@ -86,7 +86,7 @@ export default {
     AUTHENTICATE_KEPLR: '/api/user-service/auth/keplr',
     AUTHENTICATE_METAMASK: '/api/user-service/auth/metamask',
     AUTHENTICATE_DOUBLE_WALLET: '/api/user-service/auth/doubleWallet',
-    INIT_WALLET_AUTH: '/api/user-service/auth//initWalletAuth',
+    INIT_WALLET_AUTH: '/api/user-service/initWalletAuth',
     ACTIVATE_ACCOUNT: '/api/activate/{activationCode}'
   }
 };

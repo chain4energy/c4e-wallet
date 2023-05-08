@@ -2,6 +2,8 @@ import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
 import {clearAuthTokens, setAuthTokens} from "axios-jwt";
+import {InitWalletAuthRequest} from "@/models/user/walletAuth";
+import {useUserStore} from "@/store/user.store";
 
 interface UserServiceState {
   nothing: string//TODO: remove
@@ -15,6 +17,13 @@ export const useUserServiceStore = defineStore({
     };
   },
   actions: {
+    async authWalletInit(initWalletAuthRequest: InitWalletAuthRequest, lockscreen = true) {
+      return await apiFactory.userServiceApi().authWalletInit(initWalletAuthRequest, lockscreen).then(res => {
+
+        const connectionInfo = useUserStore().connectionInfo;
+        apiFactory.accountApi().sign(connectionInfo, res.data?.dataToSign);
+      });
+    },
     async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen = true) {
       return await apiFactory.userServiceApi().createEmailAccount(createAccountRequest, lockscreen).then();
     },

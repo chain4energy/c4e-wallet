@@ -311,5 +311,23 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
+  public async sign(connection: ConnectionInfo, dataToSign: any):Promise<RequestResponse<Uint8Array, TxBroadcastError>> {
 
+    const signDataMsgTypeUrl = '/' + 'main' + '.MsgSignData';
+
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = signDataMsgTypeUrl;
+      const val = {
+        signer: connection.account,
+        data: dataToSign
+      };
+
+      return [{ typeUrl: typeUrl, value: val }];
+
+    };
+    const fee = this.createFee(0, 'uc4e');
+
+
+    return this.signDirect(connection, getMessages, fee, '', true, null);
+  }
 }

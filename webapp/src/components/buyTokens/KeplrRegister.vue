@@ -31,7 +31,7 @@
 
       <div class="flex justify-content-center">
         <Button class="p-button p-component secondary">Cancel</Button>
-        <Button class="p-button p-component secondary">Create account</Button>
+        <Button class="p-button p-component secondary" @click="createAccount">Create account</Button>
       </div>
     </Form>
   </div>
@@ -40,13 +40,15 @@
 <script setup lang="ts">
 
 import {Field, Form} from "vee-validate";
-import {object, string} from "yup";
 import * as Yup from "yup";
+import {object} from "yup";
 import {computed, ref} from "vue";
 import dataService from "@/services/data.service";
 import Button from "primevue/button";
-import KeplrLogo from "@/components/commons/KeplrLogo.vue";
 import {useUserStore} from "@/store/user.store";
+import {useUserServiceStore} from "@/store/userService.store";
+import {WalletType} from "@/utils/wallet-type";
+import {ConnectionType} from "@/api/wallet.connecton.api";
 
 const schema = object().shape({
   email:  Yup.string()
@@ -62,6 +64,13 @@ const onCreateAccount = () => {
 const userLoggedIn = computed(() => {
   return useUserStore().getAccount.address != '';
 });
+
+const createAccount = () => {
+  if(email.value && useUserStore().connectionInfo.connectionType == ConnectionType.Keplr) {
+    useUserServiceStore().authWalletInit( { accountAddress: useUserStore().getAccount.address, walletType: WalletType.KEPLR  });
+  }
+};
+
 </script>
 
 <style scoped lang="scss">
