@@ -41,12 +41,14 @@ export interface JsonQueries {
   VESTINGS_SUM_URL: string;
 }
 
+
 export interface Configuration {
   bcApiURL: string,
   bcRpcURL: string,
   hasuraURL: string,
   keybaseURL: string,
   stakingPageURL: string,
+  userServiceURL: string,
   addressPrefix: string,
   stakingDenom: string,
   strategicPoolAddress: string[],

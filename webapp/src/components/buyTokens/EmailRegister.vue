@@ -28,7 +28,7 @@
 
       <div class="flex justify-content-center">
         <Button class="p-button p-component secondary">Cancel</Button>
-        <Button class="p-button p-component secondary">Create account</Button>
+        <Button class="p-button p-component secondary" @click="createAccount">Create account</Button>
       </div>
     </Form>
   </div>
@@ -41,6 +41,7 @@ import {object, string} from "yup";
 import * as Yup from "yup";
 import {ref} from "vue";
 import Password from "primevue/password";
+import {useUserServiceStore} from "@/store/userService.store";
 
 const schema = object().shape({
   email:  Yup.string()
@@ -54,6 +55,12 @@ const password = ref<string>();
 const onCreateAccount = () => {
   console.log('create account');
 };
+
+function createAccount(){
+  if(email.value && password.value) {
+    useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  });
+  }
+}
 </script>
 
 <style scoped lang="scss">

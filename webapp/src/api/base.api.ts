@@ -67,7 +67,7 @@ export default abstract class BaseApi extends LoggedService {
     this.getAxiosInstance = axiosInstanceProvider;
   }
 
-  private async axiosWith200ErrorCall<T, H, E>(
+  protected async axiosWith200ErrorCall<T, H, E>(
     config: AxiosRequestConfig,
     mapData: (hasureData: H | undefined) => T,
     lockScreen: boolean,
@@ -395,25 +395,25 @@ export default abstract class BaseApi extends LoggedService {
       (data: BlockchainApiErrorData) => { return '\r\n\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')'; }
     );
   }
-  private async axiosAirDropAPICall<T>(
-    config: AxiosRequestConfig,
-    lockScreen: boolean,
-    localSpinner: LocalSpinner | null,
-    logPrefix = '',
-    displayAsError?: ((error: ErrorData<BlockchainApiErrorData>) => boolean),
-    skipErrorToast = false
-  ): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
-  {
-    return await this.axiosCall<T, BlockchainApiErrorData>(
-      config,
-      lockScreen,
-      localSpinner,
-      skipErrorToast,
-      logPrefix,
-      displayAsError,
-      (data: BlockchainApiErrorData) => { return '\r\n\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')'; }
-    );
-  }
+  // private async axiosAirDropAPICall<T>(
+  //   config: AxiosRequestConfig,
+  //   lockScreen: boolean,
+  //   localSpinner: LocalSpinner | null,
+  //   logPrefix = '',
+  //   displayAsError?: ((error: ErrorData<BlockchainApiErrorData>) => boolean),
+  //   skipErrorToast = false
+  // ): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
+  // {
+  //   return await this.axiosCall<T, BlockchainApiErrorData>(
+  //     config,
+  //     lockScreen,
+  //     localSpinner,
+  //     skipErrorToast,
+  //     logPrefix,
+  //     displayAsError,
+  //     (data: BlockchainApiErrorData) => { return '\r\n\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')'; }
+  //   );
+  // }
 
   protected async axiosAirdropCall<T, H>(
     localUrl: string,
@@ -479,10 +479,10 @@ export default abstract class BaseApi extends LoggedService {
     return result;
   }
 
-  private async axiosCall<T, E>(config: AxiosRequestConfig,
+  protected async axiosCall<T, E>(config: AxiosRequestConfig,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
-    skipErrorToast: boolean,
+    skipErrorToast: boolean, //TODO: remove this parameter
     logPrefix: string,
     displayAsError?: (error: ErrorData<E>) => boolean,
     errorDataToInfo?: (data: E) => string): Promise<RequestResponse<T, ErrorData<E>>> {
@@ -510,7 +510,8 @@ export default abstract class BaseApi extends LoggedService {
       this.logToConsole(logLevel, logPrefix + 'Axios Response', this.stringify(err));
       this.logToConsole(logLevel, logPrefix + 'Error data: ' + this.stringify(errorResp));
 
-      return this.createErrorResponseWithToast(errorResp, 'Error sending HTTP request: ', !skipErrorToast && isError);
+      // return this.createErrorResponseWithToast(errorResp, 'Error sending HTTP request: ', !skipErrorToast && isError);
+      return new RequestResponse<T, ErrorData<E>>(errorResp);
     } finally {
       this.after(lockScreen, localSpinner);
     }

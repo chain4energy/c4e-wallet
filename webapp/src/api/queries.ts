@@ -78,5 +78,14 @@ export default {
   },
   airdrop: {
     AIRDROP_INFO: 'airdropInfo.json'
+  },
+  userService:{
+    REFRESH_TOKEN: '/refresh',
+    EMAIL_CREATE_ACCOUNT: '/api2/user-service/register',
+    AUTHENTICATE_EMAIL: '/api2/user-service/auth/password',
+    AUTHENTICATE_KEPLR: '/api2/user-service/auth/keplr',
+    AUTHENTICATE_METAMASK: '/api2/user-service/auth/metamask',
+    AUTHENTICATE_DOUBLE_WALLET: '/api2/user-service/auth/doubleWallet',
+    ACTIVATE_ACCOUNT: '/activate/{activationCode}'
   }
 };

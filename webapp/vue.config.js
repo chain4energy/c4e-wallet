@@ -22,6 +22,11 @@ module.exports = defineConfig({
         target: 'http://10.0.14.76',
         changeOrigin: true,
       },
+      '/api2/': {
+        target: 'http://198.244.154.101:31876',
+        changeOrigin: true,
+        pathRewrite: function (path, req) { return path.replace('/api2', '/api') }
+      },
       '/app': {
         target: 'http://localhost',
         changeOrigin: true,
