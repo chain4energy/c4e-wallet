@@ -1,7 +1,7 @@
 <template>
   <div class="info">
     <PublicSaleInfo />
-    <InvestmentCalculator />
+    <InvestmentCalculator :rate="currency"/>
   </div>
 </template>
 
@@ -9,6 +9,15 @@
 
 import PublicSaleInfo from "@/components/buyTokens/PublicSaleInfo.vue";
 import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vue";
+import { usePublicSalesStore } from "@/store/publicSales.store";
+import { computed } from "vue";
+const publicSalesStore = usePublicSalesStore();
+publicSalesStore.setParts();
+publicSalesStore.setTotal();
+publicSalesStore.setCurrentPrice();
+const currency = computed(() => {
+  return publicSalesStore.getC4eToUSDC;
+});
 </script>
 
 <style scoped>

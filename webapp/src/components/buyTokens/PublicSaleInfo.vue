@@ -34,6 +34,7 @@ import { computed, ref, watch, watchEffect } from "vue";
 import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import AmountView from "@/components/commons/AmountView.vue";
+import CalculatorC4E from "@/components/buyTokens/CalculatorC4E.vue";
 const publicSalesStore = usePublicSalesStore();
 publicSalesStore.setParts();
 publicSalesStore.setTotal();
@@ -116,9 +117,11 @@ function calculateTimeToPAss(startDate: Date, endDate: Date){
     gap: 24px;
   }
   &__infoBlock{
-    padding: 10px;
+    padding: 10px 0 0 5px;
     display:flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     font-family: 'Inter',sans-serif;
     color: white;
     background: #0F3153;
@@ -129,7 +132,7 @@ function calculateTimeToPAss(startDate: Date, endDate: Date){
     font-family: 'Inter',sans-serif;
     font-style: normal;
     font-weight: 400;
-    font-size: 7px;
+    font-size: 12px;
     line-height: 12px;
   }
 }
