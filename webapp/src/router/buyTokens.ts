@@ -4,6 +4,7 @@ import InfoView from "@/views/buyTokens/InfoView.vue";
 import EmailRegistrationvView from "@/views/buyTokens/EmailRegistrationvView.vue";
 import KeplrRegistrationView from "@/views/buyTokens/KeplrRegistrationView.vue";
 import MetamaskRegistrationvView from "@/views/buyTokens/MetamaskRegistrationvView.vue";
+import ActivateView from "@/views/buyTokens/ActivateView.vue";
 
 const buyTokensRoutes = {
   path: '/buyTokens',
@@ -34,6 +35,11 @@ const buyTokensRoutes = {
       path: 'metamaskRegistration',
       name: 'metamaskRegistration',
       component: MetamaskRegistrationvView,
+    },
+    {
+      path: 'activate',
+      name: 'activate',
+      component: ActivateView,
     }
   ]
 };

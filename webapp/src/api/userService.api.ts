@@ -14,6 +14,7 @@ import {
   InitWalletAuthResponse,
   WalletAuthRequest
 } from "@/models/user/walletAuth";
+import {formatString} from "@/utils/string-formatter";
 
 export class UserServiceApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
@@ -25,6 +26,18 @@ export class UserServiceApi extends BaseApi {
         method: 'POST',
         url: useConfigurationStore().config.userServiceURL + userServiceUrlPart,
         data: data
+      },
+      lockscreen,
+      null,
+      true,
+      'createEmailAccount - '
+    );
+  }
+
+  private userServiceGetCall<R, T, E>(userServiceUrlPart: string, lockscreen: boolean): Promise<RequestResponse<T, ErrorData<E>>> {
+    return this.axiosCall<T, E>({
+        method: 'GET',
+        url: useConfigurationStore().config.userServiceURL + userServiceUrlPart
       },
       lockscreen,
       null,
@@ -46,5 +59,9 @@ export class UserServiceApi extends BaseApi {
   }
   public async authWalletKeplr(walletAuth: WalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
     return this.userServicePostCall<WalletAuthRequest, Jwt, UserServiceErrData>(queries.userService.AUTHENTICATE_KEPLR, walletAuth, lockscreen);
+  }
+
+  public async activateEmailAccount(code: string, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
+    return this.userServiceGetCall<PasswordAuthenticateRequest, Jwt, UserServiceErrData>(formatString(queries.userService.ACTIVATE_ACCOUNT, {activationCode: code}), lockscreen);
   }
 }

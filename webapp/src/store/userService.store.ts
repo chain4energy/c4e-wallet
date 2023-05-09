@@ -66,6 +66,23 @@ export const useUserServiceStore = defineStore({
         }
       });
     },
+    async activateEmailAccount(code: string, lockscreen = true) {
+      await apiFactory.userServiceApi().activateEmailAccount(code, lockscreen).then(responseDate => {
+        if (responseDate.isSuccess()) {
+          // save tokens to storage
+          if(responseDate.data){
+            setAuthTokens({
+              accessToken: responseDate.data.access_token.id,
+              refreshToken: responseDate.data.refresh_token.id
+            });
+          } else {
+            //TODO: toast - log in error
+          }
+        } else {
+          //TODO: toast - log in error
+        }
+      });
+    },
     logOutAccount(){
       clearAuthTokens();
     }

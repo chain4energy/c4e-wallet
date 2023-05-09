@@ -25,7 +25,6 @@
         </div>
       </div>
 
-
       <div class="flex justify-content-center">
         <Button class="p-button p-component secondary">Cancel</Button>
         <Button class="p-button p-component secondary" @click="createAccount">Create account</Button>
@@ -42,6 +41,7 @@ import * as Yup from "yup";
 import {ref} from "vue";
 import Password from "primevue/password";
 import {useUserServiceStore} from "@/store/userService.store";
+import OtpComponent from "@/components/buyTokens/OtpComponent.vue";
 
 const schema = object().shape({
   email:  Yup.string()
