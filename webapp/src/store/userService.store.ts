@@ -23,7 +23,7 @@ export const useUserServiceStore = defineStore({
          await apiFactory.accountApi().sign(useUserStore().connectionInfo, initWalletAuthResponse.data.dataToSign).then(signedDataResponse => {
            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
            // @ts-ignore
-           this.authWalletKeplr({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data.toString()});
+           this.authWalletKeplr({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data});
          });
        }
 

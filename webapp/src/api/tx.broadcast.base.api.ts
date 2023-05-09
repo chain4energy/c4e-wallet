@@ -21,6 +21,8 @@ import {Int53} from "@cosmjs/math"
 import {MsgSignData} from "@/types/tx";
 import {TxRaw} from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import {fromBase64} from "@cosmjs/encoding";
+import {DataToSign} from "@/models/user/walletAuth";
+import {_arrayBufferToBase64} from "@/utils/sign";
 
 const toast = useToast();
 
@@ -295,7 +297,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     return new RequestResponse<TxData, TxBroadcastError>(errorData);
   }
 
-  private createTxSignErrorResponseWithToast(errorData: TxBroadcastError,toastMessageBeginning: string | undefined, showErrorToast: boolean): RequestResponse<Uint8Array, TxBroadcastError> {
+  private createTxSignErrorResponseWithToast(errorData: TxBroadcastError,toastMessageBeginning: string | undefined, showErrorToast: boolean): RequestResponse<string, TxBroadcastError> {
     if (showErrorToast) {
       const errorDataString = toastMessageBeginning;
       if (errorData.txData !== undefined) {
@@ -319,16 +321,18 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         toast.error(content);
       }
     }
-    return new RequestResponse<Uint8Array, TxBroadcastError>(errorData);
+    return new RequestResponse<string, TxBroadcastError>(errorData);
   }
+
   protected async signDirect(
     connection: ConnectionInfo,
     getMessages: (isLedger: boolean) => readonly EncodeObject[] | TxBroadcastError,
+    dataToSign: DataToSign,
     fee: StdFee,
     memo: string,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
     skipErrorToast = false
-  ): Promise<RequestResponse<Uint8Array, TxBroadcastError>>
+  ): Promise<RequestResponse<string, TxBroadcastError>>
   {
     this.logToConsole(LogLevel.DEBUG, 'signDirect');
     this.before(lockScreen, localSpinner);
@@ -353,7 +357,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
 
       const messages = getMessages(isLedger);
       if (messages instanceof TxBroadcastError) {
-        return new RequestResponse<Uint8Array, TxBroadcastError>(messages);
+        return new RequestResponse<string, TxBroadcastError>(messages);
       }
 
       if (connection.pubKey === undefined) {
@@ -372,15 +376,21 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           memo: '',
         },
       };
+
+      console.log('asd');
+      console.log(dataToSign);
+      console.log(getMessages)
+      console.log('asd');
+
       const myRegistry = new Registry(defaultRegistryTypes);
-      const signDataMsgTypeUrl = '/' + 'main' + '.MsgSignData';
+      const signDataMsgTypeUrl = '/' + 'sign' + '.MsgSignData';
       myRegistry.register(signDataMsgTypeUrl, MsgSignData);
 
       const txBodyBytes = myRegistry.encode(txBodyEncodeObject);
       const gasLimit = Int53.fromString(fee.gas).toNumber();
-      const sequence = 36;
+      const sequence = dataToSign.sequenceNumber;
       const authInfoBytes = makeAuthInfoBytes([{ pubkey, sequence }], fee.amount, gasLimit);
-      const accountNumber = 2;
+      const accountNumber = dataToSign.accountNumber;
       const signDoc = makeSignDoc(txBodyBytes, authInfoBytes, useConfigurationStore().config.chainId, accountNumber);
       const offlineSigner = await this.getOfflineDirectSigner(connection.connectionType);
 
@@ -392,12 +402,13 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         signatures: [fromBase64(signature.signature)],
       });
       const txBytes = TxRaw.encode(txRaw).finish();
-      console.log("txBytes: " + txBytes)
-      console.log("txBytes size: " + txBytes.length)
-      console.log("txBytes byteLength: " + txBytes.byteLength)
+      console.log("txBytes: " + txBytes);
+      console.log("txBytes size: " + txBytes.length);
+      console.log("txBytes byteLength: " + txBytes.byteLength);
 
+      const b64EncodedTxBytes = _arrayBufferToBase64(txBytes);
 
-      return new RequestResponse<Uint8Array, TxBroadcastError>(undefined, txBytes);
+      return new RequestResponse<string, TxBroadcastError>(undefined, b64EncodedTxBytes);
     } catch (err) {
       this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
       const error = err as Error;
