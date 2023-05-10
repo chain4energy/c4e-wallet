@@ -79,13 +79,14 @@ const toastOptions: PluginOptions = {
 
 };
 
-const app = createApp(App);
+
 const pinia = createPinia();
 pinia.use(piniaPersist);
 const logger = new LoggerService();
 // const i18n = createI18n({
 //   legacy: false
 // });
+const app = createApp(App);
 
 app.use(router)
   .use(pinia)

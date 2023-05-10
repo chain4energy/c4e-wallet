@@ -39,6 +39,12 @@ export interface JsonQueries {
   INFLATION_URL: string;
   STAKING_PARAMS_URL: string;
   VESTINGS_SUM_URL: string;
+  DISTRIBUTOR_PARAMS_URL: string;
+  USER_AIRDROP_ENTRIES_URL: string;
+  CAMPAIGNS_URL: string;
+  MISSIONS_URL: string;
+  AIRDROP_DISTRIBUTIONS: string;
+  AIRDROP_CLAIMS_LEFT: string;
 }
 
 export interface Configuration {

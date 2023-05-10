@@ -154,8 +154,61 @@ data:
         "airdropDefaultDenom": "uc4e",
         "proposalVotingRefreshTimeout": 30000,
         "targetInflationAprMultiplier": 5
+      },
+      "EV-testnet":{
+        "bcApiURL": "https://lcd-ev-testnet.c4e.io",
+        "bcRpcURL": "https://rpc-ev-testnet.c4e.io",
+        "hasuraURL": "https://hasura-ev-testnet.c4e.io/v1/graphql",
+        "keybaseURL": "https://keybase.io",
+        "stakingPageURL": "https://wallet-ev-testnet.c4e.io/staking",
+        "addressPrefix": "c4e",
+        "stakingDenom": "uc4e",
+        "strategicPoolAddress": [
+          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+          "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+        ],
+        "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+        "chainId": "cfe-ev-1",
+        "networkName": "C4E EV Testnet",
+        "keplrNetworkName": "C4E EV Testnet",
+        "queries": {
+          "INFLATION_URL": "/cosmos/mint/v1beta1/inflation"
+        },
+        "operationGas": {
+          "vote": 250000,
+          "delegate": 250000,
+          "undelegate": 250000,
+          "redelegate": 250000,
+          "claimRewards": 250000
+        },
+        "viewDenoms": [
+          {
+            "denom": "uc4e",
+            "viewDenom": "C4E",
+            "coinDecimals": 6
+          }
+        ],
+        "keplrGasPriceSteps": {
+          "low": 0.01,
+          "average": 0.025,
+          "high": 0.03
+        },
+        "reservedCoinsAmount": 250000,
+        "minPeriodBetweenDataRefresh": 1000,
+        "blockDataRefreshTimeout": 30000,
+        "dashboardDataRefreshTimeout": 300000,
+        "validatorsDataRefreshTimeout":600000,
+        "accountDataRefreshTimeout": 90000,
+        "proposalsPageLimit": 50,
+        "explorerUrl": "https://explorer-ev-testnet.c4e.io",
+        "explorerAccount": "https://explorer-ev-testnet.c4e.io/accounts/",
+        "explorerTx": "https://explorer-ev-testnet.c4e.io/transactions/",
+        "isMainNetwork": false,
+        "airdropBaseURL": "",
+        "proposalVotingRefreshTimeout": 30000,
+        "airdropDefaultDenom": "uc4e",
+        "targetInflationAprMultiplier": 5
       }
-
     }
 kind: ConfigMap
 metadata:
