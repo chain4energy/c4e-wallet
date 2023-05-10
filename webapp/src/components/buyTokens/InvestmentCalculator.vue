@@ -17,9 +17,14 @@
           USD
         </div>
       </div>
+      <div class="calculatorC4E__btnSection">
+        <p>Required</p>
+        <p>terms acceptance</p>
+        <p>proof of residence</p>
+        <Button class="p-button p-component secondary" style="width: 141px;" @click="router.push({name: 'accountType'})">Buy</Button>
+      </div>
 
     </div>
-    <Button class="p-button p-component secondary" style="width: 141px;" @click="router.push({name: 'accountType'})">Buy</Button>
   </div>
 </template>
 
@@ -80,10 +85,15 @@ const router = useRouter();
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
   }
   &__inputContainer{
     text-align: start;
     margin-right: 104px;
+  }
+  &__btnSection{
+    display: flex;
+    flex-direction: column;
   }
   &__input{
     padding: 20px 10px;
@@ -101,6 +111,7 @@ const router = useRouter();
     &:hover{
       border: 1px solid #81CF1F;
     }
+
   }
 }
 </style>
