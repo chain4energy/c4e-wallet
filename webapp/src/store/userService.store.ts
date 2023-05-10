@@ -29,8 +29,12 @@ export const useUserServiceStore = defineStore({
 
 
     },
-    async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen = true) {
-      return await apiFactory.userServiceApi().createEmailAccount(createAccountRequest, lockscreen).then();
+    async createEmailAccount(createAccountRequest: CreateAccountRequest, onSuccess: (() => void), lockscreen = true) {
+      return await apiFactory.userServiceApi().createEmailAccount(createAccountRequest, lockscreen).then(res => {
+        if(res.isSuccess()) {
+          onSuccess();
+        }
+      });
     },
     async authWalletKeplr(walletAuthData: WalletAuthRequest, lockscreen = true) {
       await apiFactory.userServiceApi().authWalletKeplr(walletAuthData, lockscreen).then(responseDate => {

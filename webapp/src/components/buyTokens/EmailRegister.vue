@@ -42,6 +42,7 @@ import {ref} from "vue";
 import Password from "primevue/password";
 import {useUserServiceStore} from "@/store/userService.store";
 import OtpComponent from "@/components/buyTokens/OtpComponent.vue";
+import {useRouter} from "vue-router";
 
 const schema = object().shape({
   email:  Yup.string()
@@ -58,9 +59,13 @@ const onCreateAccount = () => {
 
 function createAccount(){
   if(email.value && password.value) {
-    useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  });
+    useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccess);
   }
 }
+const router = useRouter();
+const onSuccess = () => {
+  router.push({name: 'activate'});
+};
 </script>
 
 <style scoped lang="scss">

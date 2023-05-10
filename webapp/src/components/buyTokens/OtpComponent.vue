@@ -9,6 +9,7 @@
       :autofocus="ind === 0"
       :placeholder="ind+1"
       maxlength="1"
+      @paste="handlePaste($event, ind)"
       @keydown="handleKeyDown($event, ind)"
       :class="{bounce: digits[ind] !== null}"
     >
@@ -47,13 +48,7 @@ const isDigitsFull = function () {
   return true;
 };
 const handleKeyDown = function (event: any, index: number) {
-  console.log(event.key);
-  if (event.key !== "Tab" &&
-    event.key !== "ArrowRight" &&
-    event.key !== "ArrowLeft"
-  ) {
-    event.preventDefault();
-  }
+
 
   if (event.key === "Backspace") {
     digits[index] = null;
@@ -73,7 +68,13 @@ const handleKeyDown = function (event: any, index: number) {
     }
   }
 };
+const handlePaste = (event: any, index: number) => {
+  const code: string = event.clipboardData.getData('text');
 
+  for (let i =0; i < props.digitCount; i++) {
+    digits[i] = code.charAt(i);
+  }
+};
 </script>
 
 <style scoped lang="scss">
