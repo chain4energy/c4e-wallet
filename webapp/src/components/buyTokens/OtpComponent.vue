@@ -48,7 +48,13 @@ const isDigitsFull = function () {
   return true;
 };
 const handleKeyDown = function (event: any, index: number) {
-
+  if (event.key !== "Tab" &&
+    event.key !== "ArrowRight" &&
+    event.key !== "ArrowLeft" &&
+    !(event.key == 'v' && event.ctrlKey)
+  ) {
+    event.preventDefault();
+  }
 
   if (event.key === "Backspace") {
     digits[index] = null;
