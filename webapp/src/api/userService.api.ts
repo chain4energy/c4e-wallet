@@ -60,6 +60,9 @@ export class UserServiceApi extends BaseApi {
   public async authWalletKeplr(walletAuth: WalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
     return this.userServicePostCall<WalletAuthRequest, Jwt, UserServiceErrData>(queries.userService.AUTHENTICATE_KEPLR, walletAuth, lockscreen);
   }
+  public async authWalletMetamask(walletAuth: WalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
+    return this.userServicePostCall<WalletAuthRequest, Jwt, UserServiceErrData>(queries.userService.AUTHENTICATE_METAMASK, walletAuth, lockscreen);
+  }
 
   public async activateEmailAccount(code: string, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
     return this.userServiceGetCall<PasswordAuthenticateRequest, Jwt, UserServiceErrData>(formatString(queries.userService.ACTIVATE_ACCOUNT, {activationCode: code}), lockscreen);

@@ -18,6 +18,7 @@ import {useProposalsStore} from "./proposals.store";
 import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
 import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
+import {Signer} from "ethers";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -46,8 +47,7 @@ export const useUserStore = defineStore({
       vestimgAccLocked: 0n,
       rewards: new Rewards(),
       delegations: new Delegations(),
-      undelegations: new UnbondingDelegations(),
-
+      undelegations: new UnbondingDelegations()
     };
   },
   actions: {
@@ -72,6 +72,13 @@ export const useUserStore = defineStore({
         apiFactory.walletApi().connectCosmostation(),
         onSuccess
       );
+    },
+    async connectMetamask(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
+        return apiFactory.walletApi().connectMetamask().then(response => {
+          if(response.isSuccess() && response.data != undefined){
+            return response.data;
+          }
+        });
     },
     async connectAsAddress(address: string, onSuccess?: (connectionInfo: ConnectionInfo) => void) {
       await this.connect(
