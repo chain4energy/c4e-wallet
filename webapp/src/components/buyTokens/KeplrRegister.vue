@@ -66,7 +66,7 @@ const userLoggedIn = computed(() => {
 });
 
 const createAccount = () => {
-  if(email.value && useUserStore().connectionInfo.connectionType == ConnectionType.Keplr) {
+  if(email.value) {
     useUserServiceStore().authWalletInit( { accountAddress: useUserStore().getAccount.address, walletType: WalletType.KEPLR  });
   }
 };

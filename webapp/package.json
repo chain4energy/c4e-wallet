@@ -37,7 +37,7 @@
     "primeicons": "^5.0.0",
     "primevue": "^3.12.6",
     "vee-validate": "^4.5.11",
-    "vue": "^3.2.13",
+    "vue": "^3.2.47",
     "vue-country-flag-next": "^2.3.2",
     "vue-debounce": "^4.0.0",
     "vue-echarts": "^6.0.3",
@@ -48,7 +48,9 @@
     "vue-router": "^4.0.3",
     "vue-svg-inline-plugin": "^2.2.3",
     "vue-toastification": "^2.0.0-rc.5",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "ethers": "^5.7.2",
+    "@keplr-wallet/common": "^0.11.44"
   },
   "devDependencies": {
     "@keplr-wallet/types": "^0.10.5",

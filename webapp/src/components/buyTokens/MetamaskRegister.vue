@@ -31,7 +31,7 @@
 
       <div class="flex justify-content-center">
         <Button class="p-button p-component secondary">Cancel</Button>
-        <Button class="p-button p-component secondary">Create account</Button>
+        <Button class="p-button p-component secondary" @click="onCreateAccount">Create account</Button>
       </div>
     </Form>
   </div>
@@ -46,6 +46,8 @@ import {computed, ref} from "vue";
 import dataService from "@/services/data.service";
 import Button from "primevue/button";
 import {useUserStore} from "@/store/user.store";
+import {useUserServiceStore} from "@/store/userService.store";
+import {WalletType} from "@/utils/wallet-type";
 
 const schema = object().shape({
   email:  Yup.string()
@@ -56,6 +58,14 @@ const email = ref<string>();
 const password = ref<string>();
 const onCreateAccount = () => {
   console.log('create account');
+  useUserStore().connectMetamask().then(async (address) => {
+    if (address) {
+      await useUserServiceStore().authMetamaskWalletInit({
+        accountAddress: address,
+        walletType: WalletType.METAMASK
+      });
+    }
+  });
 };
 
 const userLoggedIn = computed(() => {

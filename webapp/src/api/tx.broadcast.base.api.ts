@@ -23,6 +23,8 @@ import {TxRaw} from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import {fromBase64} from "@cosmjs/encoding";
 import {DataToSign} from "@/models/user/walletAuth";
 import {_arrayBufferToBase64} from "@/utils/sign";
+import {useUserStore} from "@/store/user.store";
+import {ethers} from "ethers";
 
 const toast = useToast();
 
@@ -246,6 +248,12 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     throw new Error(errorMessage);
   }
 
+  private getMetamaskSigner() {
+    const ethereum = window.ethereum;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    return provider.getSigner();
+  }
+
   private async getOfflineDirectSignerExtensionBased(extension: Keplr | undefined, errorMessage: string) {
     if(extension) {
       const chainId = useConfigurationStore().config.chainId;
@@ -377,11 +385,6 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         },
       };
 
-      console.log('asd');
-      console.log(dataToSign);
-      console.log(getMessages)
-      console.log('asd');
-
       const myRegistry = new Registry(defaultRegistryTypes);
       const signDataMsgTypeUrl = '/' + 'sign' + '.MsgSignData';
       myRegistry.register(signDataMsgTypeUrl, MsgSignData);
@@ -409,6 +412,44 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       const b64EncodedTxBytes = _arrayBufferToBase64(txBytes);
 
       return new RequestResponse<string, TxBroadcastError>(undefined, b64EncodedTxBytes);
+    } catch (err) {
+      this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
+      const error = err as Error;
+      return this.createTxSignErrorResponseWithToast(
+        new TxBroadcastError(error.message),
+        'Transaction Broadcast error',
+        !skipErrorToast
+      );
+    } finally {
+      this.after(lockScreen, localSpinner);
+      if (clientToDisconnect !== undefined) {
+        clientToDisconnect.disconnect();
+      }
+    }
+  }
+  protected async signWithMetamask(
+    dataToSign: DataToSign,
+    lockScreen: boolean, localSpinner: LocalSpinner | null,
+    skipErrorToast = false
+  ): Promise<RequestResponse<string, TxBroadcastError>>
+  {
+    this.logToConsole(LogLevel.DEBUG, 'signDirect');
+    this.before(lockScreen, localSpinner);
+    let clientToDisconnect: SigningStargateClient | undefined;
+    try {
+
+      const signer = this.getMetamaskSigner();
+      if (signer === undefined) {
+        return this.createTxSignErrorResponseWithToast(
+          new TxBroadcastError('Cannot get signing client'),
+          'Sign direct error',
+          !skipErrorToast
+        );
+      }
+
+      const signature = await signer.signMessage(dataToSign.randomString);
+
+      return new RequestResponse<string, TxBroadcastError>(undefined, signature);
     } catch (err) {
       this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
       const error = err as Error;

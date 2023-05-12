@@ -6,6 +6,7 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { RequestResponse } from '@/models/request-response';
 import { LogLevel } from '@/services/logger/log-level';
+import {ethers, Signer} from "ethers";
 
 
 const toast = useToast();
@@ -14,7 +15,8 @@ export enum ConnectionType {
   Address,
   Keplr,
   Disconnected,
-  Cosmostation
+  Cosmostation,
+  Metamask
 }
 
 export class ConnectionInfo {
@@ -78,6 +80,27 @@ export default class WalletConnectionApi extends LoggedService {
 
   public connectCosmostation(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
     return this.connect(ConnectionType.Cosmostation);
+  }
+
+  public async connectMetamask(): Promise<RequestResponse<string, ConnectionError>> {
+    const ethereum = window.ethereum;
+    if (typeof window.ethereum !== 'undefined') {
+      console.log('Eth wallet is installed!');
+    }
+    if (ethereum.isMetaMask) {
+      console.log('MetaMask is installed!');
+    }
+
+    const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+    const account = accounts[0];
+    console.log('account is: ' + account);
+
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+
+    const address = await signer.getAddress();
+
+    return new RequestResponse<string, any>(undefined, address);
   }
 
   public async connect(connectionType: ConnectionType): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
