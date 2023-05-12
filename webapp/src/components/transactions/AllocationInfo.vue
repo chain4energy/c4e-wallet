@@ -14,9 +14,9 @@
             :reduce-big-number="false"
             :precision="2"/></th>
       </tr>
-      <tr v-if="transaction.status === transactionStatus.Declared">
+      <tr v-if="transaction.status === transactionStatus.Declared && transaction.reservationEnd">
         <th class="allocationInfo__tableTabs">Remaining reservation time</th>
-        <th class="allocationInfo__tableTabs">00:01:00</th>
+        <th v-bind:key="refreshDate" class="allocationInfo__tableTabs">{{ timeToPass() }}</th>
       </tr>
       <tr>
         <th class="allocationInfo__tableTabs">Payment type</th>
@@ -48,6 +48,9 @@
 <script setup lang="ts">
 import { paymentType, Transactions, transactionStatus } from "@/store/publicSales.store";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
+import {ref} from "vue";
+
+const refreshDate = ref(false)
 
 const props = defineProps<{
   transaction: Transactions
@@ -77,6 +80,19 @@ function getStatusColor(){
 
 function submit(){
   console.log('submit');
+}
+
+function timeToPass(){
+  setInterval(() => {
+    refreshDate.value = !refreshDate.value
+  }, 1000)
+  const now = new Date(Date.now());
+  const diference = props.transaction.reservationEnd.getTime() - now.getTime();
+  const days = Math.floor(diference / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diference % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diference % (1000 * 60)) / 1000);
+  return `${days}D ${hours}H ${minutes}M ${seconds}S`;
 }
 </script>
 

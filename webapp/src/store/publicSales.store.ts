@@ -35,12 +35,21 @@ export class Transactions {
   status: transactionStatus;
   txHash?: string;
   blockchainType?: string;
-  constructor(amount: Coin, paymentType: paymentType, status: transactionStatus, txHash?: string, blockchainType?: string) {
+  reservationEnd?: Date;
+  constructor(
+    amount: Coin,
+    paymentType: paymentType,
+    status: transactionStatus,
+    txHash?: string,
+    blockchainType?: string,
+    reservationEnd? : Date,
+  ) {
     this.amount = amount;
     this.paymentType = paymentType;
     this.status = status;
     this.txHash = txHash;
-    this.blockchainType = blockchainType
+    this.blockchainType = blockchainType;
+    this.reservationEnd = reservationEnd;
   }
 }
 
@@ -92,7 +101,13 @@ export const usePublicSalesStore = defineStore({
           case 'Error': curStatus = transactionStatus.Error;
             break;
         }
-        const transaction = new Transactions(amount, curPaymentType, curStatus, el.txHash, el.blockChainType);
+        let transaction;
+        if(el.reservationEnd){
+          transaction = new Transactions(amount, curPaymentType, curStatus, el.txHash, el.blockChainType, new Date(el.reservationEnd));
+        } else {
+          transaction = new Transactions(amount, curPaymentType, curStatus, el.txHash, el.blockChainType);
+        }
+
         transactions.push(transaction);
       });
       this.transactions = transactions;
@@ -129,6 +144,7 @@ function getFakeTransactionsData() {
       amount: '1000000000',
       paymentType: 'Crypto',
       status: 'Declared',
+      reservationEnd: "2023-05-12T20:45:20",
     },
     {
       amount: '1000000000',
