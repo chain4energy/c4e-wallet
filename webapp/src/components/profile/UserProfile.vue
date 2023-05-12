@@ -5,15 +5,19 @@
         <TabPanel class="userProfile__tabHeader">
           <template #header>Account info</template>
           <AccountInfo/>
+          <div class="userProfile__holder">
+            <InvestmentCalculator :rate="0.1"/>
+          </div>
+          <div v-for="items in transactions" :key="items" class="userProfile__holder">
+            <AllocationInfo :transaction="items"/>
+          </div>
         </TabPanel>
         <TabPanel>
           <template #header>Transactions</template>
         </TabPanel>
       </TabView>
     </div>
-    <div class="userProfile__holder">
-      <InvestmentCalculator :rate="0.1"/>
-    </div>
+
     <div class="userProfile__extra">
       <Button
         class="p-button p-component secondary userProfile__btn"
@@ -28,6 +32,15 @@ import TabPanel from "primevue/tabpanel";
 import AccountInfo from "@/components/transactions/AccountInfo.vue";
 import { useUserStore } from "@/store/user.store";
 import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vue";
+import { usePublicSalesStore } from "@/store/publicSales.store";
+import { computed } from "vue";
+import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
+
+usePublicSalesStore().setTransactions();
+
+const transactions = computed(() => {
+  return usePublicSalesStore().getTransactions;
+});
 
 </script>
 
@@ -61,5 +74,6 @@ import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vu
     min-height: 40px;
     font-family: 'Work Sans',sans-serif;
   }
+
 }
 </style>

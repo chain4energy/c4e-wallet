@@ -49,10 +49,11 @@
 
 import { computed } from "vue";
 import { useUserStore } from "@/store/user.store";
+import { usePublicSalesStore } from "@/store/publicSales.store";
 
 const address = computed(() =>{
   return useUserStore().getAccount.address
-})
+});
 
 
 </script>
