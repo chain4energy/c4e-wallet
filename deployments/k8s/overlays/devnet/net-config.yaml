@@ -33,7 +33,7 @@ data:
         }
       ],
       "keplrGasPriceSteps": {
-        "low": 0.01,
+        "low": 0,
         "average": 0.025,
         "high": 0.03
       },
@@ -135,7 +135,7 @@ data:
           }
         ],
         "keplrGasPriceSteps": {
-          "low": 0.01,
+          "low": 0,
           "average": 0.025,
           "high": 0.03
         },
@@ -189,7 +189,7 @@ data:
           }
         ],
         "keplrGasPriceSteps": {
-          "low": 0.01,
+          "low": 0,
           "average": 0.025,
           "high": 0.03
         },
