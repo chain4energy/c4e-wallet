@@ -21,7 +21,7 @@
         <p>Required</p>
         <p>terms acceptance</p>
         <p>proof of residence</p>
-        <Button class="p-button p-component secondary" style="width: 141px;" @click="router.push({name: 'accountType'})">Buy</Button>
+        <Button class="p-button p-component secondary" style="width: 141px;" @click="onBuy">Buy</Button>
       </div>
 
     </div>
@@ -33,6 +33,7 @@
 import {useRouter} from "vue-router";
 import { reactive, ref, watch } from "vue";
 import {Form, Field} from "vee-validate";
+import {useSaleServiceStore} from "@/store/saleService.store";
 
 const currencyExchangeRate = defineProps<{
   rate: number
@@ -58,6 +59,11 @@ watch(calculator, (next)=>{
 });
 
 const router = useRouter();
+
+const onBuy = () => {
+  console.log(usdc.value);
+  useSaleServiceStore().reserveTokens(usdc.value);
+};
 </script>
 
 <style scoped lang="scss">

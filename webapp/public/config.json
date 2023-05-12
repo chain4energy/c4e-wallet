@@ -6,6 +6,7 @@
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "userServiceURL": "https://wallet.c4e.io/userService",
+    "saleServiceURL": "",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [
@@ -78,6 +79,7 @@
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "userServiceURL": "http://198.244.154.101:31876",
+    "saleServiceURL": "",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [
@@ -150,6 +152,7 @@
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
     "userServiceURL": "https://wallet.c4e.io/userService",
+    "saleServiceURL": "",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [
@@ -202,6 +205,7 @@
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
     "userServiceURL": "https://wallet.c4e.io/userService",
+    "saleServiceURL": "",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [
@@ -254,6 +258,7 @@
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
     "userServiceURL": "https://wallet.c4e.io/userService",
+    "saleServiceURL": "",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [
@@ -307,6 +312,7 @@
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "userServiceURL": "https://wallet.c4e.io/userService",
+    "saleServiceURL": "",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [

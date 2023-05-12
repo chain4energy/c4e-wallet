@@ -11,6 +11,7 @@ import {applyAuthTokenInterceptor, getBrowserLocalStorage, IAuthTokens, TokenRef
 import { useConfigurationStore } from "@/store/configuration.store";
 import queries from "@/api/queries";
 import {UserServiceApi} from "@/api/userService.api";
+import {SaleServiceApi} from "@/api/saleService.api";
 
 let testfileName = '';
 
@@ -30,6 +31,7 @@ class ApiFactory {
   private readonly _keybaseApi = new KeybaseApi(() => this._axios);
   private readonly _airDropApi = new AirDropApi(() => this._axios);
   private readonly _userServiceApi = new UserServiceApi(() => this._axiosJwt);
+  private readonly _saleServiceApi = new SaleServiceApi(() => this._axiosJwt);
 
   private testMode = false;
 
@@ -88,6 +90,9 @@ class ApiFactory {
   }
   public userServiceApi(): UserServiceApi{
     return this._userServiceApi;
+  }
+  public saleServiceApi(): SaleServiceApi {
+    return this._saleServiceApi;
   }
   public setAxiosInstance(axios: AxiosInstance) {
     this._axios = axios;

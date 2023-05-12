@@ -56,6 +56,7 @@ const props = defineProps<{
   transaction: Transactions
 }>();
 
+const emit = defineEmits(['pay']);
 function getPaymentType(){
   switch (props.transaction.paymentType){
     case paymentType.Crypto: return 'Crypto';
@@ -79,6 +80,7 @@ function getStatusColor(){
 }
 
 function submit(){
+  emit('pay');
   console.log('submit');
 }
 

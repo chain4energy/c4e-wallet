@@ -88,5 +88,9 @@ export default {
     AUTHENTICATE_DOUBLE_WALLET: '/api/user-service/auth/doubleWallet',
     INIT_WALLET_AUTH: '/api/user-service/initWalletAuth',
     ACTIVATE_ACCOUNT: '/api/user-service/activate/{activationCode}'
+  },
+  saleService: {
+    RESERVE_TOKENS: '/api/sale-service/reserveTokens',
+    INIT_PAYMENT_SESSION: '/api/sale-service/initPaymentSession'
   }
 };
