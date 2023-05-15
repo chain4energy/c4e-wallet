@@ -15,8 +15,8 @@ data:
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
       ],
       "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-      "chainId": "veles-1",
-      "networkName": "Testnet(veles-1)",
+      "chainId": "babajaga-1",
+      "networkName": "Testnet(babajaga-1)",
       "keplrNetworkName": "Chain4Energy Testnet",
       "operationGas": {
         "vote": 72000,
