@@ -1,11 +1,11 @@
 <template>
   <div class="registration_container">
-    <h3>Email registration</h3>
+    <h3>Email login</h3>
     <div>
       Some information about...
     </div>
     <div>
-      <email-register :is-register="true"/>
+      <email-register  :is-register="false"/>
     </div>
   </div>
 </template>

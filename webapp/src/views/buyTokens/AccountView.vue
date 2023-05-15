@@ -9,7 +9,7 @@
       Sign in
     </div>
     <div class="select_container__type">
-      <AccountTypeSelect></AccountTypeSelect>
+      <AccountTypeSelect :is-register="!checked"></AccountTypeSelect>
     </div>
 
   </div>

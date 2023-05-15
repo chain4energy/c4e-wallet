@@ -27,7 +27,7 @@
 
       <div class="flex justify-content-center">
         <Button class="p-button p-component secondary">Cancel</Button>
-        <Button class="p-button p-component secondary" @click="createAccount">Create account</Button>
+        <Button class="p-button p-component secondary" @click="loginOrRegister">{{isRegister ? 'Create account' : 'Login'}}</Button>
       </div>
     </Form>
   </div>
@@ -44,6 +44,14 @@ import {useUserServiceStore} from "@/store/userService.store";
 import OtpComponent from "@/components/buyTokens/OtpComponent.vue";
 import {useRouter} from "vue-router";
 
+const props = defineProps<{
+  isRegister: {
+    type: boolean,
+    default: true,
+    required: false
+  },
+}>();
+
 const schema = object().shape({
   email:  Yup.string()
     .required( "This field is required"),
@@ -57,11 +65,19 @@ const onCreateAccount = () => {
   console.log('create account');
 };
 
-function createAccount(){
+function loginOrRegister(){
+
   if(email.value && password.value) {
-    useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccess);
+    if(props.isRegister) {
+      useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccess);
+    } else {
+      useUserServiceStore().authEmailAccount({login: email.value, password: password.value}, true);
+    }
+
+
   }
 }
+
 const router = useRouter();
 const onSuccess = () => {
   router.push({name: 'activate'});
