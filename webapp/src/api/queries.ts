@@ -80,7 +80,7 @@ export default {
     AIRDROP_INFO: 'airdropInfo.json'
   },
   userService:{
-    REFRESH_TOKEN: '/api/refresh',
+    REFRESH_TOKEN: '/api/user-service/refresh',
     EMAIL_CREATE_ACCOUNT: '/api/user-service/register',
     AUTHENTICATE_EMAIL: '/api/user-service/auth/password',
     AUTHENTICATE_KEPLR: '/api/user-service/auth/keplr',

@@ -41,14 +41,14 @@ class ApiFactory {
     // Important! Do NOT use the axios instance that you supplied to applyAuthTokenInterceptor (in our case 'axiosInstance')
     // because this will result in an infinite loop when trying to refresh the token.
     // Use the global axios client or a different instance
-    const response = await axios.post(useConfigurationStore().config.userServiceURL + queries.userService.REFRESH_TOKEN, { token: refreshToken });
+    const response = await axios.post(useConfigurationStore().config.userServiceURL + queries.userService.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
 
     // If your backend supports rotating refresh tokens, you may also choose to return an object containing both tokens:
     // return {
     //  accessToken: response.data.access_token,
     //  refreshToken: response.data.refresh_token
     //}
-    return { accessToken:response.data.access_token, refreshToken:response.data.refresh_token };
+    return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
   }
 
   private constructor() {

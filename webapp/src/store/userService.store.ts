@@ -50,8 +50,8 @@ export const useUserServiceStore = defineStore({
           // save tokens to storage
           if(responseDate.data){
             setAuthTokens({
-              accessToken: responseDate.data.access_token.id,
-              refreshToken: responseDate.data.refresh_token.id
+              accessToken: responseDate.data.access_token.token,
+              refreshToken: responseDate.data.refresh_token.token
             });
           } else {
             //TODO: toast - log in error
@@ -67,8 +67,8 @@ export const useUserServiceStore = defineStore({
           // save tokens to storage
           if(responseDate.data){
             setAuthTokens({
-              accessToken: responseDate.data.access_token.id,
-              refreshToken: responseDate.data.refresh_token.id
+              accessToken: responseDate.data.access_token.token,
+              refreshToken: responseDate.data.refresh_token.token
             });
           } else {
             //TODO: toast - log in error
@@ -84,8 +84,8 @@ export const useUserServiceStore = defineStore({
           // save tokens to storage
           if(responseDate.data){
             setAuthTokens({
-              accessToken: responseDate.data.access_token.id,
-              refreshToken: responseDate.data.refresh_token.id
+              accessToken: responseDate.data.access_token.token,
+              refreshToken: responseDate.data.refresh_token.token
             });
           } else {
             //TODO: toast - log in error
@@ -101,8 +101,8 @@ export const useUserServiceStore = defineStore({
           // save tokens to storage
           if(responseDate.data){
             setAuthTokens({
-              accessToken: responseDate.data.access_token.id,
-              refreshToken: responseDate.data.refresh_token.id
+              accessToken: responseDate.data.access_token.token,
+              refreshToken: responseDate.data.refresh_token.token
             });
           } else {
             //TODO: toast - log in error

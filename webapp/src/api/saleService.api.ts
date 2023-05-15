@@ -26,7 +26,7 @@ export class SaleServiceApi extends BaseApi {
       lockscreen,
       null,
       true,
-      'createEmailAccount - '
+      'saleServicePostCall - '
     );
   }
 
