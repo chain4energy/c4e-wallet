@@ -7,7 +7,7 @@ export interface SaleServiceState{
 }
 
 export const useSaleServiceStore = defineStore({
-  id: 'publicSalesStore',
+  id: 'saleServiceStore',
   state: (): SaleServiceState =>{
     return {
       test: ''

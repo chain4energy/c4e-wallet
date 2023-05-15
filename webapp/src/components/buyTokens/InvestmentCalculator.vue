@@ -76,10 +76,10 @@ watch(calculator, (next)=>{
 });
 
 const router = useRouter();
-
+const saleStore = useSaleServiceStore();
 const onBuy = () => {
   console.log(usdc.value);
-  useSaleServiceStore().reserveTokens(usdc.value);
+  saleStore.reserveTokens(usdc.value);
 };
 </script>
 

@@ -80,8 +80,8 @@ function getStatusColor(){
 }
 
 function submit(){
-  emit('pay');
   console.log('submit');
+  emit('pay');
 }
 
 function timeToPass(){
