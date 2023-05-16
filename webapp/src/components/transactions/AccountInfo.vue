@@ -1,55 +1,115 @@
 <template>
   <div class="accountInfo">
-    <div class="accountInfo__head">
-      <p class="accountInfo__headMainTxt">Your account</p>
-      <p class="accountInfo__headTxt">Type: email</p>
-      <p class="accountInfo__headTxt">Email: somebody@test.com</p>
-    </div>
-    <hr class="accountInfo__line"/>
-    <div class="accountInfo__body">
-      <div class="accountInfo__head">
-        <p class="accountInfo__headMainTxt">KYC level</p>
-        <p class="accountInfo__headTxt">None</p>
+    <div class="accountInfo__closedBar" v-if="!open && showClosedTab">
+      <div class="accountInfo__closedItem">
+        <div class="accountInfo__closedHeader">
+          <div class="accountInfo__headMainTxt">Your account</div>
+          <div class="accountInfo__headTxt" style="margin-left: 5px"> (email)</div>
+        </div>
+        <div class="accountInfo__headTxt">Email: somebody@test.com</div>
       </div>
-      <div>
-        <Button
-          class="p-button p-component secondary accountInfo__btn"
-          @click="console.log(111)">Start KYC</Button>
+      <div class="accountInfo__closedItem">
+        <div class="accountInfo__closedHeader">
+          <div class="accountInfo__headMainTxt">KYC level</div>
+        </div>
+        <div class="accountInfo__headTxt">None</div>
       </div>
-    </div>
-    <hr class="accountInfo__line"/>
-    <div class="accountInfo__body">
-      <div class="accountInfo__head">
-        <p class="accountInfo__headMainTxt">Terms acceptance</p>
-        <p class="accountInfo__headTxt">No</p>
+      <div class="accountInfo__closedItem">
+        <div class="accountInfo__closedHeader">
+          <div class="accountInfo__headMainTxt">Terms acceptance</div>
+        </div>
+        <div class="accountInfo__headTxt">No</div>
       </div>
-      <div>
-        <Button
-          class="p-button p-component secondary accountInfo__btn"
-          @click="console.log(111)">Accept</Button>
+      <div class="accountInfo__closedItem">
+        <div class="accountInfo__closedHeader">
+          <div class="accountInfo__headMainTxt">Claimer address</div>
+        </div>
+        <div v-if="address" class="accountInfo__headTxt">{{ address }}</div>
+        <div v-else class="accountInfo__headTxt">No address</div>
       </div>
-    </div>
-    <hr class="accountInfo__line"/>
-    <div class="accountInfo__body">
-      <div class="accountInfo__head">
-        <p class="accountInfo__headMainTxt">Claimer address</p>
-        <p v-if="address" class="accountInfo__headTxt">{{ address }}</p>
-        <p v-else class="accountInfo__headTxt">No address</p>
-      </div>
-      <div>
-        <Button
-          class="p-button p-component secondary accountInfo__btn"
-          @click="console.log(111)">Provide address</Button>
+      <div @click="open = !open" class="accountInfo__closedItem accountInfo__arrow">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.5 11.25L15 18.75L22.5 11.25" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
     </div>
+    <div style="width: 100%; transition: .4s linear ;" v-if="open">
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div class="accountInfo__head">
+          <p class="accountInfo__headMainTxt">Your account</p>
+          <p class="accountInfo__headTxt">Type: email</p>
+          <p class="accountInfo__headTxt">Email: somebody@test.com</p>
+        </div>
+        <div v-if="showClosedTab" @click="open = !open" class="accountInfo__closedItem accountInfo__arrow accountInfo__arrow-rotate" >
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7.5 11.25L15 18.75L22.5 11.25" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <hr class="accountInfo__line"/>
+      <div class="accountInfo__body">
+        <div class="accountInfo__head">
+          <p class="accountInfo__headMainTxt">KYC level</p>
+          <p class="accountInfo__headTxt">None</p>
+        </div>
+        <div>
+          <Button
+            class="p-button p-component secondary accountInfo__btn"
+            @click="console.log(111)">Start KYC</Button>
+        </div>
+      </div>
+      <hr class="accountInfo__line"/>
+      <div class="accountInfo__body">
+        <div class="accountInfo__head">
+          <p class="accountInfo__headMainTxt">Terms acceptance</p>
+          <p class="accountInfo__headTxt">No</p>
+        </div>
+        <div>
+          <Button
+            class="p-button p-component secondary accountInfo__btn"
+            @click="console.log(111)">Accept</Button>
+        </div>
+      </div>
+      <hr class="accountInfo__line"/>
+      <div class="accountInfo__body">
+        <div class="accountInfo__head">
+          <p class="accountInfo__headMainTxt">Claimer address</p>
+          <p v-if="address" class="accountInfo__headTxt">{{ address }}</p>
+          <p v-else class="accountInfo__headTxt">No address</p>
+        </div>
+        <div>
+          <Button
+            class="p-button p-component secondary accountInfo__btn"
+            @click="console.log(111)">Provide address</Button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
 
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
 import { usePublicSalesStore } from "@/store/publicSales.store";
+
+const props = defineProps<{
+  accordion: boolean
+}>();
+
+const showClosedTab = ref(true);
+
+onMounted(() => {
+  if(!props.accordion){
+    open.value = true;
+    showClosedTab.value = false;
+  }
+});
+
+
+const open = ref(false);
 
 const address = computed(() =>{
   return useUserStore().getAccount.address
@@ -72,6 +132,22 @@ const address = computed(() =>{
   line-height: 24px;
   padding: 32px 33px 26px 116px;
   border-radius: 5px;
+  &__closedBar{
+    transition: .4s linear ;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  &__closedItem{
+    display: flex;
+    flex-direction: column;
+  }
+  &__closedHeader{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
   &__head{
     display: flex;
     flex-direction: column;
@@ -108,6 +184,13 @@ const address = computed(() =>{
     width: 161px;
     min-height: 40px;
     font-family: 'Work Sans',sans-serif;
+  }
+  &__arrow{
+    align-items: center;
+    justify-content: center;
+    &-rotate{
+      transform: rotateX(180deg);
+    }
   }
 }
 </style>

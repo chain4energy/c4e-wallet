@@ -4,7 +4,7 @@
       <TabView>
         <TabPanel class="userProfile__tabHeader">
           <template #header>Account info</template>
-          <AccountInfo/>
+          <AccountInfo :accordion="false"/>
           <div class="userProfile__holder">
             <InvestmentCalculator :rate="0.1"/>
           </div>
