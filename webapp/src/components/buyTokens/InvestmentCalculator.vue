@@ -50,6 +50,7 @@ import { reactive, ref, watch } from "vue";
 import {Form, Field} from "vee-validate";
 import {useSaleServiceStore} from "@/store/saleService.store";
 import Dialog from 'primevue/dialog';
+import {useToast} from "vue-toastification";
 
 const currencyExchangeRate = defineProps<{
   rate: number
@@ -75,11 +76,19 @@ watch(calculator, (next)=>{
   }
 });
 
-const router = useRouter();
 const saleStore = useSaleServiceStore();
 const onBuy = () => {
   console.log(usdc.value);
-  saleStore.reserveTokens(usdc.value);
+  saleStore.reserveTokens(usdc.value, onSuccess, onFail);
+};
+
+const toast = useToast();
+
+const onSuccess = () => {
+  toast.success('Tokens reserved successfully');
+};
+const onFail = () => {
+  toast.error('An error occured');
 };
 </script>
 

@@ -48,6 +48,8 @@ import Button from "primevue/button";
 import {useUserStore} from "@/store/user.store";
 import {useUserServiceStore} from "@/store/userService.store";
 import {WalletType} from "@/utils/wallet-type";
+import {useToast} from "vue-toastification";
+import {useRouter} from "vue-router";
 
 const schema = object().shape({
   email:  Yup.string()
@@ -63,9 +65,18 @@ const onCreateAccount = () => {
       await useUserServiceStore().authMetamaskWalletInit({
         accountAddress: address,
         walletType: WalletType.METAMASK
-      });
+      }, onSuccessAuth, onFail);
     }
   });
+};
+const toast = useToast();
+const router = useRouter();
+const onSuccessAuth = () => {
+  toast.success('Successfully logged in');
+  router.push({name: 'publicSaleInfo'});
+};
+const onFail = () => {
+  toast.error('An error occured');
 };
 
 const userLoggedIn = computed(() => {

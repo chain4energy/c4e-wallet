@@ -23,7 +23,7 @@ const route = useRoute();
 const onBackClick = () => {
     switch (route.name){
       case 'accountType': {
-        router.push({name:'airdropInfo'});
+        router.push({name:'publicSaleInfo'});
         break;
       }
       case 'emailRegistration': {

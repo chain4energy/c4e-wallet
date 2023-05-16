@@ -14,9 +14,13 @@ export const useSaleServiceStore = defineStore({
     };
   },
   actions: {
-    reserveTokens(amount: number, lockscreen = true) {
+    reserveTokens(amount: number, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       return factoryApi.saleServiceApi().reserveTokens(amount, lockscreen).then(res => {
-        console.log(res);
+        if(res.isSuccess()) {
+          onSuccess();
+        } else {
+          onFail();
+        }
       });
     },
     initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen = true) {

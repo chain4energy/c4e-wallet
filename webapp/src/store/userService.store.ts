@@ -24,46 +24,68 @@ export const useUserServiceStore = defineStore({
     setIsLoggedIn() {
       this._isLoggedIn = true;
     },
-    async authWalletInit(initWalletAuthRequest: InitWalletAuthRequest, lockscreen = true) {
+    async authWalletInit(initWalletAuthRequest: InitWalletAuthRequest,onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
        const initWalletAuthResponse = await apiFactory.userServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
        if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
          await apiFactory.accountApi().sign(useUserStore().connectionInfo, initWalletAuthResponse.data.dataToSign).then(signedDataResponse => {
            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
            // @ts-ignore
-           this.authWalletKeplr({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data});
+           this.authWalletKeplr({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data}, onSuccess, onFail);
          });
+       } else {
+         onFail();
        }
     },
-    async authMetamaskWalletInit(initWalletAuthRequest: InitWalletAuthRequest, lockscreen = true) {
+    async authMetamaskWalletInit(initWalletAuthRequest: InitWalletAuthRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       const initWalletAuthResponse = await apiFactory.userServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
       if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
         await apiFactory.accountApi().signMetamask(initWalletAuthResponse.data.dataToSign).then(signedDataResponse => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          this.authWalletMetamask({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data});
+          this.authWalletMetamask({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data}, onSuccess, onFail);
         });
+      } else {
+        onFail();
       }
     },
-    async createEmailAccount(createAccountRequest: CreateAccountRequest, onSuccess: (() => void), lockscreen = true) {
+    async createEmailAccount(createAccountRequest: CreateAccountRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       return await apiFactory.userServiceApi().createEmailAccount(createAccountRequest, lockscreen).then(res => {
         if(res.isSuccess()) {
           onSuccess();
+        } else {
+          onFail()
         }
       });
     },
-    async authWalletKeplr(walletAuthData: WalletAuthRequest, lockscreen = true) {
-      await apiFactory.userServiceApi().authWalletKeplr(walletAuthData, lockscreen).then(responseDate => {
-        this.setTokens(responseDate);
+    async authWalletKeplr(walletAuthData: WalletAuthRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true, ) {
+      return await apiFactory.userServiceApi().authWalletKeplr(walletAuthData, lockscreen).then(responseDate => {
+        if(responseDate.isSuccess()) {
+          onSuccess();
+          this.setTokens(responseDate);
+        } else {
+          onFail();
+        }
       });
     },
-    async authWalletMetamask(walletAuthData: WalletAuthRequest, lockscreen = true) {
+    async authWalletMetamask(walletAuthData: WalletAuthRequest,  onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       await apiFactory.userServiceApi().authWalletMetamask(walletAuthData, lockscreen).then(responseDate => {
-        this.setTokens(responseDate);
+        if(responseDate.isSuccess()) {
+          this.setTokens(responseDate);
+          onSuccess();
+        } else {
+          onFail();
+        }
       });
     },
-    async authEmailAccount(emailAccount: PasswordAuthenticateRequest, lockscreen = true) {
+    async authEmailAccount(emailAccount: PasswordAuthenticateRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       await apiFactory.userServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
-        this.setTokens(responseDate);
+        if(responseDate.isSuccess()) {
+          this.setTokens(responseDate);
+          onSuccess();
+        } else {
+          onFail();
+        }
+
       });
     },
     async activateEmailAccount(code: string, lockscreen = true) {

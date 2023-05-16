@@ -43,6 +43,7 @@ import Password from "primevue/password";
 import {useUserServiceStore} from "@/store/userService.store";
 import OtpComponent from "@/components/buyTokens/OtpComponent.vue";
 import {useRouter} from "vue-router";
+import {useToast} from "vue-toastification";
 
 const props = defineProps<{
   isRegister: {
@@ -69,18 +70,25 @@ function loginOrRegister(){
 
   if(email.value && password.value) {
     if(props.isRegister) {
-      useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccess);
+      useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccessEmailSend, onFail);
     } else {
-      useUserServiceStore().authEmailAccount({login: email.value, password: password.value}, true);
+      useUserServiceStore().authEmailAccount({login: email.value, password: password.value}, onSuccessAuth, onFail, true);
     }
-
-
   }
 }
 
 const router = useRouter();
-const onSuccess = () => {
+const toast = useToast();
+const onSuccessEmailSend = () => {
+  toast.success('The message has been sent to the e-mail address provided');
   router.push({name: 'activate'});
+};
+const onSuccessAuth = () => {
+  toast.success('Successfully logged in');
+  router.push({name: 'publicSaleInfo'});
+};
+const onFail = () => {
+  toast.error('An error occured');
 };
 </script>
 

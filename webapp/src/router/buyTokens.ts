@@ -14,7 +14,7 @@ const buyTokensRoutes = {
   children: [
     {
       path: '',
-      name: 'airdropInfo',
+      name: 'publicSaleInfo',
       component: InfoView,
     },
     {

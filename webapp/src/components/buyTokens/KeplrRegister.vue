@@ -49,6 +49,8 @@ import {useUserStore} from "@/store/user.store";
 import {useUserServiceStore} from "@/store/userService.store";
 import {WalletType} from "@/utils/wallet-type";
 import {ConnectionType} from "@/api/wallet.connecton.api";
+import {useToast} from "vue-toastification";
+import {useRouter} from "vue-router";
 
 const schema = object().shape({
   email:  Yup.string()
@@ -67,10 +69,18 @@ const userLoggedIn = computed(() => {
 
 const createAccount = () => {
   if(email.value) {
-    useUserServiceStore().authWalletInit( { accountAddress: useUserStore().getAccount.address, walletType: WalletType.KEPLR  });
+    useUserServiceStore().authWalletInit( { accountAddress: useUserStore().getAccount.address, walletType: WalletType.KEPLR  }, onSuccessAuth, onFail);
   }
 };
-
+const toast = useToast();
+const router = useRouter();
+const onSuccessAuth = () => {
+  toast.success('Successfully logged in');
+  router.push({name: 'publicSaleInfo'});
+};
+const onFail = () => {
+  toast.error('An error occured');
+};
 </script>
 
 <style scoped lang="scss">
