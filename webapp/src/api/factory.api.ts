@@ -97,6 +97,9 @@ class ApiFactory {
   public setAxiosInstance(axios: AxiosInstance) {
     this._axios = axios;
   }
+  public setAxiosJWTInstance(axios: AxiosInstance) {
+    this._axiosJwt = axios;
+  }
 
   public runTestMode(testConfigFileName: string) {
     this.testMode = true;
