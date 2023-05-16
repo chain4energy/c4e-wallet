@@ -90,7 +90,7 @@ export default {
     ACTIVATE_ACCOUNT: '/api/user-service/activate/{activationCode}'
   },
   saleService: {
-    RESERVE_TOKENS: '/api/sale-service/reserveTokens',
-    INIT_PAYMENT_SESSION: '/api/sale-service/initPaymentSession'
+    RESERVE_TOKENS: '/api/sale-service/token/reservation',
+    INIT_PAYMENT_SESSION: '/api/sale-service/payment/initSession'
   }
 };

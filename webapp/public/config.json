@@ -79,7 +79,7 @@
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "userServiceURL": "http://198.244.154.101:31876",
-    "saleServiceURL": "",
+    "saleServiceURL": "http://198.244.154.101:31876",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "strategicPoolAddress": [

@@ -1,5 +1,6 @@
 <template>
   <div class="userProfile">
+
     <div class="userProfile__holder">
       <TabView>
         <TabPanel class="userProfile__tabHeader">
