@@ -51,7 +51,7 @@ export class UserServiceApi extends BaseApi {
   }
 
   public async authEmailAccount(emailAccount: PasswordAuthenticateRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
-    return this.userServicePostCall<PasswordAuthenticateRequest, Jwt, UserServiceErrData>(queries.userService.EMAIL_CREATE_ACCOUNT, emailAccount, lockscreen);
+    return this.userServicePostCall<PasswordAuthenticateRequest, Jwt, UserServiceErrData>(queries.userService.AUTHENTICATE_EMAIL, emailAccount, lockscreen);
   }
 
   public async authWalletInit(initWalletAuth: InitWalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<InitWalletAuthResponse, ErrorData<UserServiceErrData>>> {

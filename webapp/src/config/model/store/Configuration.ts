@@ -141,6 +141,7 @@ export class Configuration implements JsonConfiguration {
   keybaseURL: string;
   stakingPageURL: string;
   userServiceURL: string;
+  saleServiceURL: string;
   addressPrefix: string;
   stakingDenom: string;
   strategicPoolAddress: string[];
@@ -183,6 +184,7 @@ export class Configuration implements JsonConfiguration {
       this.keybaseURL = configuration.keybaseURL;
       this.stakingPageURL = configuration.stakingPageURL;
       this.userServiceURL = configuration.userServiceURL;
+      this.saleServiceURL = configuration.saleServiceURL;
       this.addressPrefix = configuration.addressPrefix;
       this.stakingDenom = configuration.stakingDenom;
       this.strategicPoolAddress = configuration.strategicPoolAddress;
@@ -223,6 +225,7 @@ export class Configuration implements JsonConfiguration {
       this.keybaseURL = '';
       this.stakingPageURL = '';
       this.userServiceURL = '';
+      this.saleServiceURL = ' ';
       this.addressPrefix = '';
       this.stakingDenom = '';
       this.strategicPoolAddress = [''];

@@ -80,7 +80,7 @@ export default {
     AIRDROP_INFO: 'airdropInfo.json'
   },
   userService:{
-    REFRESH_TOKEN: '/api/refresh',
+    REFRESH_TOKEN: '/api/user-service/refresh',
     EMAIL_CREATE_ACCOUNT: '/api/user-service/register',
     AUTHENTICATE_EMAIL: '/api/user-service/auth/password',
     AUTHENTICATE_KEPLR: '/api/user-service/auth/keplr',
@@ -88,5 +88,9 @@ export default {
     AUTHENTICATE_DOUBLE_WALLET: '/api/user-service/auth/doubleWallet',
     INIT_WALLET_AUTH: '/api/user-service/initWalletAuth',
     ACTIVATE_ACCOUNT: '/api/user-service/activate/{activationCode}'
+  },
+  saleService: {
+    RESERVE_TOKENS: '/api/sale-service/reserveTokens',
+    INIT_PAYMENT_SESSION: '/api/sale-service/initPaymentSession'
   }
 };

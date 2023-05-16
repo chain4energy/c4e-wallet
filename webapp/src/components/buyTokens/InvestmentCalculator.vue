@@ -21,10 +21,25 @@
         <p>Required</p>
         <p>terms acceptance</p>
         <p>proof of residence</p>
-        <Button class="p-button p-component secondary" style="width: 141px;" @click="router.push({name: 'accountType'})">Buy</Button>
+        <Button class="p-button p-component secondary" style="width: 141px;" @click="summaryVisible=true">Buy</Button>
       </div>
 
     </div>
+    <Dialog v-model:visible="summaryVisible" closeIcon="false" modal header="Summary" :style="{ width: '95vw', 'max-width': '600px' }">
+      <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;">
+        <div>
+          Amount: {{c4e}} C4E
+        </div>
+        <div>
+          Price: {{usdc}} USD
+        </div>
+        <div style="display: flex">
+          <Button class="p-button p-component secondary" @click="summaryVisible=false">Close</Button>
+          <Button class="p-button p-component secondary" @click="onBuy">Confirm</Button>
+        </div>
+      </div>
+
+    </Dialog>
   </div>
 </template>
 
@@ -33,6 +48,8 @@
 import {useRouter} from "vue-router";
 import { reactive, ref, watch } from "vue";
 import {Form, Field} from "vee-validate";
+import {useSaleServiceStore} from "@/store/saleService.store";
+import Dialog from 'primevue/dialog';
 
 const currencyExchangeRate = defineProps<{
   rate: number
@@ -44,6 +61,7 @@ const calculator = reactive({
 });
 const c4e = ref();
 const usdc = ref();
+const summaryVisible = ref(false);
 
 watch(calculator, (next)=>{
   if(next.c4e != c4e.value){
@@ -58,6 +76,11 @@ watch(calculator, (next)=>{
 });
 
 const router = useRouter();
+const saleStore = useSaleServiceStore();
+const onBuy = () => {
+  console.log(usdc.value);
+  saleStore.reserveTokens(usdc.value);
+};
 </script>
 
 <style scoped lang="scss">

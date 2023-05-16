@@ -11,7 +11,7 @@
 
       </div>
     </div>
-    <Button @click="onNext" class="p-button p-component secondary">Sign in</Button>
+    <Button @click="onNext" class="p-button p-component secondary">{{isRegister ? 'Sign up' : 'Sign in'}}</Button>
   </div>
 </template>
 
@@ -20,6 +20,14 @@ import {ref} from "vue";
 import RadioButton from 'primevue/radiobutton';
 import {useRouter} from "vue-router";
 import TooltipComponent from "@/components/TooltipComponent.vue";
+
+const props = defineProps<{
+  isRegister: {
+    type: boolean,
+    default: true,
+    required: false
+  },
+}>();
 enum AccountType {
   EMAIL='EMAIL',
   KEPLR='KEPLR',
@@ -38,7 +46,10 @@ const router = useRouter();
 const onNext = () => {
   switch (selectedType.value) {
     case AccountType.EMAIL: {
-      router.push({name: 'emailRegistration'});
+      if(props.isRegister)
+        router.push({name: 'emailRegistration'});
+      else
+        router.push({name: 'emailLogin'});
       break;
     }
     case AccountType.KEPLR: {

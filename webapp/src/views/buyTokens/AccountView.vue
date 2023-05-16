@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="select_container">
     <div>
       Chcesz kupić 1000 C4E
     </div>
@@ -8,8 +8,8 @@
       <InputSwitch v-model="checked" />
       Sign in
     </div>
-    <div style="width: 35%">
-      <AccountTypeSelect></AccountTypeSelect>
+    <div class="select_container__type">
+      <AccountTypeSelect :is-register="!checked"></AccountTypeSelect>
     </div>
 
   </div>
@@ -28,4 +28,13 @@ const router = useRouter();
 <style scoped lang="scss">
 
 
+.select_container {
+  height: 100%;
+
+   &__type {
+     width: 35%;
+     margin: 30px auto;
+     padding-bottom: 30px;
+   }
+}
 </style>

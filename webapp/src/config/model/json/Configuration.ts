@@ -49,6 +49,7 @@ export interface Configuration {
   keybaseURL: string,
   stakingPageURL: string,
   userServiceURL: string,
+  saleServiceURL: string,
   addressPrefix: string,
   stakingDenom: string,
   strategicPoolAddress: string[],

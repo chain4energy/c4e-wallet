@@ -9,13 +9,14 @@
             <InvestmentCalculator :rate="0.1"/>
           </div>
           <div v-for="items in transactions" :key="items" class="userProfile__holder">
-            <AllocationInfo :transaction="items"/>
+            <AllocationInfo :transaction="items" @pay="onPay(items)"/>
           </div>
         </TabPanel>
         <TabPanel>
           <template #header>Transactions</template>
         </TabPanel>
       </TabView>
+      <div class="ari10-widget-wrapper" data-widget-id='41875703-9ee2-4729-9d51-e574c61467c3'></div>
     </div>
 
     <div class="userProfile__extra">
@@ -32,9 +33,10 @@ import TabPanel from "primevue/tabpanel";
 import AccountInfo from "@/components/transactions/AccountInfo.vue";
 import { useUserStore } from "@/store/user.store";
 import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vue";
-import { usePublicSalesStore } from "@/store/publicSales.store";
-import { computed } from "vue";
+import {Transactions, usePublicSalesStore} from "@/store/publicSales.store";
+import {computed, ref} from "vue";
 import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
+import {useSaleServiceStore} from "@/store/saleService.store";
 
 usePublicSalesStore().setTransactions();
 
@@ -42,6 +44,19 @@ const transactions = computed(() => {
   return usePublicSalesStore().getTransactions;
 });
 
+const onPay = (transaction: Transactions) => {
+  useSaleServiceStore().initPaymentSession({offeredAmount: Number(transaction.amount.amount), offeredCurrencyCode: '', orderId: 1})
+    .then(transactionId => {
+      if(transactionId)
+        window.dispatchEvent(
+          new CustomEvent('ari10-widget-start-commodities-payment-request', {
+            detail: {
+              transactionId: transactionId,
+            }
+          })
+        );
+    });
+};
 </script>
 
 <style scoped lang="scss">

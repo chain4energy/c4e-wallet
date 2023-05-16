@@ -4,19 +4,26 @@ import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/p
 import {clearAuthTokens, setAuthTokens} from "axios-jwt";
 import {InitWalletAuthRequest, InitWalletAuthResponse, WalletAuthRequest} from "@/models/user/walletAuth";
 import {useUserStore} from "@/store/user.store";
+import {RequestResponse} from "@/models/request-response";
+import {UserServiceErrData} from "@/models/user/userServiceCommons";
+import {ErrorData} from "@/api/base.api";
+import {Jwt} from "@/models/user/jwt";
 
 interface UserServiceState {
-  nothing: string//TODO: remove
+  _isLoggedIn: boolean,
 }
 
 export const useUserServiceStore = defineStore({
   id: 'userServiceStore',
   state: (): UserServiceState => {
     return {
-      nothing: ''
+      _isLoggedIn: false
     };
   },
   actions: {
+    setIsLoggedIn() {
+      this._isLoggedIn = true;
+    },
     async authWalletInit(initWalletAuthRequest: InitWalletAuthRequest, lockscreen = true) {
        const initWalletAuthResponse = await apiFactory.userServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
        if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
@@ -46,75 +53,46 @@ export const useUserServiceStore = defineStore({
     },
     async authWalletKeplr(walletAuthData: WalletAuthRequest, lockscreen = true) {
       await apiFactory.userServiceApi().authWalletKeplr(walletAuthData, lockscreen).then(responseDate => {
-        if (responseDate.isSuccess()) {
-          // save tokens to storage
-          if(responseDate.data){
-            setAuthTokens({
-              accessToken: responseDate.data.access_token.id,
-              refreshToken: responseDate.data.refresh_token.id
-            });
-          } else {
-            //TODO: toast - log in error
-          }
-        } else {
-          //TODO: toast - log in error
-        }
+        this.setTokens(responseDate);
       });
     },
     async authWalletMetamask(walletAuthData: WalletAuthRequest, lockscreen = true) {
       await apiFactory.userServiceApi().authWalletMetamask(walletAuthData, lockscreen).then(responseDate => {
-        if (responseDate.isSuccess()) {
-          // save tokens to storage
-          if(responseDate.data){
-            setAuthTokens({
-              accessToken: responseDate.data.access_token.id,
-              refreshToken: responseDate.data.refresh_token.id
-            });
-          } else {
-            //TODO: toast - log in error
-          }
-        } else {
-          //TODO: toast - log in error
-        }
+        this.setTokens(responseDate);
       });
     },
     async authEmailAccount(emailAccount: PasswordAuthenticateRequest, lockscreen = true) {
       await apiFactory.userServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
-        if (responseDate.isSuccess()) {
-          // save tokens to storage
-          if(responseDate.data){
-            setAuthTokens({
-              accessToken: responseDate.data.access_token.id,
-              refreshToken: responseDate.data.refresh_token.id
-            });
-          } else {
-            //TODO: toast - log in error
-          }
-        } else {
-          //TODO: toast - log in error
-        }
+        this.setTokens(responseDate);
       });
     },
     async activateEmailAccount(code: string, lockscreen = true) {
       await apiFactory.userServiceApi().activateEmailAccount(code, lockscreen).then(responseDate => {
-        if (responseDate.isSuccess()) {
-          // save tokens to storage
-          if(responseDate.data){
-            setAuthTokens({
-              accessToken: responseDate.data.access_token.id,
-              refreshToken: responseDate.data.refresh_token.id
-            });
-          } else {
-            //TODO: toast - log in error
-          }
+        this.setTokens(responseDate);
+      });
+    },
+    setTokens(responseDate: RequestResponse<Jwt, ErrorData<UserServiceErrData>>){
+      if (responseDate.isSuccess()) {
+        // save tokens to storage
+        if(responseDate.data){
+          setAuthTokens({
+            accessToken: responseDate.data.access_token.token,
+            refreshToken: responseDate.data.refresh_token.token
+          });
+          this.setIsLoggedIn();
         } else {
           //TODO: toast - log in error
         }
-      });
+      } else {
+        //TODO: toast - log in error
+      }
     },
     logOutAccount(){
       clearAuthTokens();
     }
   },
-  getters: {}
+  getters: {},
+  persist: {
+    enabled: true
+  }
 });
