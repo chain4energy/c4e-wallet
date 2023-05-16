@@ -9,7 +9,11 @@ import { createAveragetBlockTimeResponseData } from '../utils/average.block.time
 import { createErrorResponse as createHasuraErrorResponse, createHasuraError, defaultHasuraErrorMessage, defaultHasuraErrorName } from '../utils/common.hasura.data.util';
 import { useUserServiceStore } from '@/store/userService.store';
 import { WalletType } from '@/utils/wallet-type';
-import {createAuthWalletInitResponse, createAuthWalletResponse} from "../utils/user.service.data.utill";
+import {
+  createAuthWalletInitResponse,
+  createAuthWalletResponse,
+  createRegisterEmailResponse
+} from "../utils/user.service.data.utill";
 import {useUserStore} from "@/store/user.store";
 
 
@@ -87,7 +91,20 @@ describe('user service api tests', () => {
     expect(result2.error).toBeUndefined();
   });
 
+  it('activate account', async () => {
 
+    const authWalletResponse = {
+      data: createAuthWalletResponse()
+    };
+
+    mockedAxios.request.mockResolvedValue(authWalletResponse);
+
+    const result = await api.activateEmailAccount('testtesttest', false);
+
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+  });
 
 });
 

@@ -80,6 +80,7 @@ const handlePaste = (event: any, index: number) => {
   for (let i =0; i < props.digitCount; i++) {
     digits[i] = code.charAt(i);
   }
+  emit('update:otp', digits.join(''))
 };
 </script>
 

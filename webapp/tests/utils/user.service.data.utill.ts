@@ -25,3 +25,12 @@ export function createAuthWalletResponse() {
     }
   };
 }
+
+export function createRegisterEmailResponse() {
+  return {
+    login: 'test@test.pl',
+    loginId: 1,
+    userId: 1,
+    userIdentityId: 1
+  };
+}
