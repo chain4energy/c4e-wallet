@@ -4,6 +4,7 @@
   <div class="loginPopup__holder">
     <transition v-bind="loginType" name="slide-fade" mode="out-in">
       <component @keplr="keplrConnect"
+                 @leap="leapConnect"
                  @back="loginType = LoginChoose"
                  @typeChange="(comp) => loginType = comp"
                  @close="$emit('close')"
@@ -52,6 +53,10 @@ function keplrConnect(){
 function cosmostationConnect() {
   dataService.onCosmostationLogIn(() => {emit('close');});
 }
+
+const leapConnect = () => {
+  dataService.onLeapLogIn(() => {emit('close');});
+};
 
 </script>
 

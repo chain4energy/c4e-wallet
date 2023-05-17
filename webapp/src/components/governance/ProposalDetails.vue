@@ -1,5 +1,25 @@
 <template>
   <div v-if="proposal" class="details-container">
+    <div v-if="proposal.status == 'PROPOSAL_STATUS_VOTING_PERIOD'" class="voting-status voting">
+      <Icon :name=icons.get(proposal.status)>
+      </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
+    </div>
+    <div v-if="proposal.status == 'PROPOSAL_STATUS_REJECTED'" class="voting-status rejected">
+      <Icon :name=icons.get(proposal.status)>
+      </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
+    </div>
+    <div v-if="proposal.status == 'PROPOSAL_STATUS_PASSED'" class="voting-status accepted">
+      <Icon :name=icons.get(proposal.status)>
+      </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
+    </div>
+    <div v-if="proposal.status == 'PROPOSAL_STATUS_DEPOSIT_PERIOD'" class="voting-status deposit">
+      <Icon :name=icons.get(proposal.status)>
+      </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
+    </div>
+    <div v-if="proposal.status == 'PROPOSAL_STATUS_FAILED'" class="voting-status failed">
+      <Icon :name=icons.get(proposal.status)>
+      </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
+    </div>
     <div class="id"><h3>#{{ proposal.proposalId }}</h3> </div>
     <h4 style="padding-left:20px">{{ proposal?.content?.title }}</h4>
     <div v-if="voted === VoteOption.Yes" class="vote user-vote-yes">
@@ -56,7 +76,7 @@
 
 import moment from "moment";
 import {useProposalsStore} from "@/store/proposals.store";
-import { Proposal } from "@/models/store/proposal";
+import {Proposal, ProposalStatus} from "@/models/store/proposal";
 import { VoteOption } from "@/models/store/proposal";
 import { computed, onMounted } from "vue";
 import CoinAmount from "../commons/CoinAmount.vue";
@@ -82,16 +102,65 @@ const formattedDate = (value: Date) => {
 const voted = computed(() => {
   return useProposalsStore().userVote;
 });
-
+const icons  = new Map<string, string>([
+  [ProposalStatus.PASSED, "CheckSquare"],
+  [ProposalStatus.REJECTED, "XCircle"],
+  [ProposalStatus.DEPOSIT_PERIOD, ""],
+  [ProposalStatus.FAILED, ""],
+  [ProposalStatus.VOTING_PERIOD, ""],
+  [ProposalStatus.UNSPECIFIED, ""]
+]);
 </script>
 
 <style scoped lang="scss">
+@import '../../styles/variables.scss';
 .details-container{
   box-sizing: border-box;
   text-align: left;
   height: 100%;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   border-radius: 10px;
+  .voting-status {
+    float: right;
+    height: 50px;
+    width: 150px;
+    padding: 15px 0px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 0 10px 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      margin-right: 5px;
+    }
+  }
+
+  .voting {
+    background-color: $primary-blue-color;
+    color: white;
+  }
+
+  .accepted {
+    background-color: $primary-green-color;
+    color: $primary-blue-color;
+  }
+
+  .rejected {
+    background-color: $error-red-color;
+    color: white;
+  }
+
+  .failed {
+    background-color: black;
+    color: white;
+  }
+
+  .deposit {
+    background-color: grey;
+    color: rgb(77, 77, 77);
+  }
   .id{
     padding: 15px 20px;
   }

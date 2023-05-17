@@ -233,6 +233,9 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       case ConnectionType.Cosmostation: {
         return this.getOfflineSignerExtensionBased(window.cosmostation?.providers.keplr, 'Cosmostation not installed');
       }
+      case ConnectionType.Leap: {
+        return this.getOfflineSignerExtensionBased(window.leap, 'Leap not installed');
+      }
       default: {
         throw new Error('No signer for connnection type: ' + connectionType);
       }

@@ -6,6 +6,7 @@
     "CONNECT": "Connect",
     "CONNECT_ADDRESS": "Connect with address",
     "CONNECT_KEPLR": "Connect with Keplr wallet",
+    "CONNECT_LEAP": "Connect with Leap wallet",
     "CONNECT_COSMOSTATION": "Connect with Cosmostation wallet",
     "ADDRESS_HELP": "Explore with any address",
     "VIEW_EXPLORER": "View on explorer",
@@ -347,7 +348,7 @@
   },
   "ERRORS": {
     "CONNECT": "You Have to be connected",
-    "CONNECT_WALLET": "You Have to be connected with Keplr or Cosmostation"
+    "CONNECT_WALLET": "You Have to be connected to the wallet"
   },
   "SECTION_TITLES": {
     "STAKING": "Staking",

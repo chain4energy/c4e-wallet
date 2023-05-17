@@ -147,6 +147,13 @@ class DataService extends LoggedService {
     });
   }
 
+  public onLeapLogIn(onSuccess?: () => void) {
+    this.logToConsole(LogLevel.DEBUG, 'onLeapLogIn');
+    useUserStore().connectLeap((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo, onSuccess);
+    });
+  }
+
   public onAddressLogIn(address: string, onSuccess?: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onAddressLogIn');
     useUserStore().connectAsAddress(address, (connetionInfo: ConnectionInfo) => {this.onLoginSuccess(connetionInfo, onSuccess);});
