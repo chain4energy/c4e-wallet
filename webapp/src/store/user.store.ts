@@ -270,7 +270,7 @@ export const useUserStore = defineStore({
       if(this.account.address) {
         await factoryApi.faucetApi().topUpAccount(this.account.address).then(res => {
           if(res.isSuccess()) {
-
+            fetchBalance(this.connectionInfo, this, true);
             successCallback();
           } else {
             failCallback();
