@@ -160,6 +160,7 @@ export class Configuration implements JsonConfiguration {
   airdropBaseURL: string;
   proposalVotingRefreshTimeout: number;
   airdropDefaultDenom: string;
+  faucetURL: string;
 
   targetInflationAprMultiplier: number;
   public static readonly emptyConfiguration = new Configuration();
@@ -206,6 +207,7 @@ export class Configuration implements JsonConfiguration {
       this.airdropDefaultDenom = configuration.airdropDefaultDenom;
       this.proposalVotingRefreshTimeout = configuration.proposalVotingRefreshTimeout;
       this.targetInflationAprMultiplier = configuration.targetInflationAprMultiplier;
+      this.faucetURL = configuration.faucetURL;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -241,6 +243,7 @@ export class Configuration implements JsonConfiguration {
       this.airdropDefaultDenom = 'uc4e';
       this.proposalVotingRefreshTimeout = 30000;
       this.targetInflationAprMultiplier = 1;
+      this.faucetURL = '';
     }
   }
 

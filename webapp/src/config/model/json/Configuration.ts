@@ -80,5 +80,6 @@ export interface Configuration {
   airdropBaseURL: string;
   proposalVotingRefreshTimeout: number;
   airdropDefaultDenom: string;
-  targetInflationAprMultiplier: number
+  targetInflationAprMultiplier: number;
+  faucetURL: string;
 }

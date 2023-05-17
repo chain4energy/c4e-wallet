@@ -18,6 +18,7 @@ import {useProposalsStore} from "./proposals.store";
 import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
 import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
+import factoryApi from "@/api/factory.api";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -257,7 +258,19 @@ export const useUserStore = defineStore({
         toast.success(i18n.global.t('TOAST.SUCCESS.ADDRESS_DISCONNECTED', {address: address}));
       }
       logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.connectionInfo));
-    }
+    },
+    async topUpAccount(successCallback: () => void , failCallback: () => void){
+      if(this.account.address) {
+        await factoryApi.faucetApi().topUpAccount(this.account.address).then(res => {
+          if(res.isSuccess()) {
+
+            successCallback();
+          } else {
+            failCallback();
+          }
+        });
+      }
+    },
   },
   getters: {
     getConnectionType(): ConnectionType {

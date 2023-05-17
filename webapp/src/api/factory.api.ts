@@ -7,6 +7,7 @@ import WalletConnectionApi from "./wallet.connecton.api";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
 import { KeybaseApi } from "./keybase.api";
 import {AirDropApi} from "@/api/airDrop.api";
+import {FaucetApi} from "@/api/faucet.api";
 
 let testfileName = '';
 
@@ -24,7 +25,7 @@ class ApiFactory {
   private readonly _walletApi = new WalletConnectionApi();
   private readonly _keybaseApi = new KeybaseApi(() => this._axios);
   private readonly _airDropApi = new AirDropApi(() => this._axios);
-
+  private readonly _faucetApi = new FaucetApi(() => this._axios)
   private testMode = false;
 
   private constructor() {
@@ -65,7 +66,9 @@ class ApiFactory {
   public setAxiosInstance(axios: AxiosInstance) {
     this._axios = axios;
   }
-
+  public faucetApi(): FaucetApi {
+    return this._faucetApi;
+  }
   public runTestMode(testConfigFileName: string) {
     this.testMode = true;
     testfileName = testConfigFileName;

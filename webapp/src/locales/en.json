@@ -410,5 +410,9 @@
     "HELP": "Help",
     "TERMS": "Terms & Conditions",
     "PRIVACY": "Privacy Policy"
+  },
+  "HEADER": {
+    "TOP_UP_ACCOUNT": "Faucet",
+    "VERSION": "Version"
   }
 }
