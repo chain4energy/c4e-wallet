@@ -406,5 +406,9 @@
     "HELP": "Pomoc",
     "TERMS": "Zasady i warunki",
     "PRIVACY": "Polityka prywatności"
+  },
+  "HEADER": {
+    "TOP_UP_ACCOUNT": "Kranik",
+    "VERSION": "Wersja"
   }
 }

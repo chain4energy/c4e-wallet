@@ -86,6 +86,7 @@ const toast = useToast();
 
 const onSuccess = () => {
   toast.success('Tokens reserved successfully');
+  summaryVisible.value=false;
 };
 const onFail = () => {
   toast.error('An error occured');

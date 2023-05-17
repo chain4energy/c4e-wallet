@@ -12,6 +12,7 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import queries from "@/api/queries";
 import {UserServiceApi} from "@/api/userService.api";
 import {SaleServiceApi} from "@/api/saleService.api";
+import {FaucetApi} from "@/api/faucet.api";
 
 let testfileName = '';
 
@@ -32,6 +33,7 @@ class ApiFactory {
   private readonly _airDropApi = new AirDropApi(() => this._axios);
   private readonly _userServiceApi = new UserServiceApi(() => this._axiosJwt);
   private readonly _saleServiceApi = new SaleServiceApi(() => this._axiosJwt);
+  private readonly _faucetApi = new FaucetApi(() => this._axios)
 
   private testMode = false;
 
@@ -93,6 +95,9 @@ class ApiFactory {
   }
   public saleServiceApi(): SaleServiceApi {
     return this._saleServiceApi;
+  }
+  public faucetApi(): FaucetApi {
+    return this._faucetApi;
   }
   public setAxiosInstance(axios: AxiosInstance) {
     this._axios = axios;
