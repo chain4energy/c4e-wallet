@@ -55,7 +55,8 @@
         <div class="navbar-nav menu" style="align-items: center">
 
           <div @click="openAccInfo" class="acc-address" v-if="useUserStore().isLoggedIn">
-            <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
+            <KeplrLogo :letter="getLetter()" v-if="displayLogo"/>
+
             <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
             <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName }}: </span>
             {{ useUserStore().getAccount.address.slice(0, 8) }}...{{ useUserStore().getAccount.address.slice(-6) }}
@@ -184,6 +185,19 @@ const selected = computed(() => {
 const currentRouteName = computed(() => {
   return router.currentRoute.value.name;
 });
+const displayLogo = () => {
+  return useUserStore().connectionInfo.isKeplr() || useUserStore().connectionInfo.isLeap() || useUserStore().connectionInfo.isCosmostation();
+};
+
+const getLetter = () => {
+  if(useUserStore().connectionInfo.isCosmostation()) {
+    return 'C';
+  } else if(useUserStore().connectionInfo.isKeplr()) {
+    return 'K';
+  } else if(useUserStore().connectionInfo.isLeap()) {
+    return 'L';
+  }
+};
 
 function openAccInfo() {
   logoutPopupStatus.value = !logoutPopupStatus.value;
