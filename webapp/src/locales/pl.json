@@ -366,13 +366,15 @@
         "HASH": "Hash",
         "GAS_USED": "Gaz",
         "HEIGHT": "Blok"
-      }
+      },
+      "TOP_UP": "Doładowano konto"
     },
     "ERROR": {
       "TX_DELIVERY": {
         "TITLE": "Błąd transakcji!!!",
         "CODE": "Kod"
-      }
+      },
+      "TOP_UP": "Nie udało się doładować konta"
     },
     "INTERNET_CONNECTION": {
       "ONLINE": "Przywrócono połączenie z internetem",

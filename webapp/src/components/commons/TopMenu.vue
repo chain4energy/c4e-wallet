@@ -11,7 +11,7 @@
             <span class="text">{{ app_version + "/" + compilation_timestamp}}</span>
           </div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr)"  @click="topup">
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr)"  @click="topup" v-if="!isMainNetwork">
           <div>
             <span class="text">{{ $t('HEADER.TOP_UP_ACCOUNT') }}</span>
           </div>
@@ -27,9 +27,10 @@
 
 import {useToast} from "vue-toastification";
 import Icon from "~/components/features/Icon.vue";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {useUserStore} from "@/store/user.store";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 const dropdown = ref(false);
 const toggleDropdown = () => {
@@ -43,14 +44,17 @@ const i18n = useI18n();
 const toast = useToast();
 const app_version = process.env.VUE_APP_VERSION;
 const compilation_timestamp = process.env.VUE_APP_COMPILATION_TIMESTAMP;
+const isMainNetwork = computed(() => {
+  return useConfigurationStore().config.isMainNetwork;
+});
 function topup() {
     console.log('topup')
     useUserStore().topUpAccount(
         () => {
-            toast.success(i18n.t('TOASTS.SUCCESS.TOP_UP'));
+            toast.success(i18n.t('TOAST.SUCCESS.TOP_UP'));
         },
         () => {
-            toast.error(i18n.t('TOASTS.ERROR.TOP_UP'));
+            toast.error(i18n.t('TOAST.ERROR.TOP_UP'));
         });
 }
 

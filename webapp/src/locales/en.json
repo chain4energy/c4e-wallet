@@ -371,13 +371,15 @@
         "HASH": "Hash",
         "GAS_USED": "Gas Used",
         "HEIGHT": "Height"
-      }
+      },
+      "TOP_UP": "Top up successful"
     },
     "ERROR": {
       "TX_DELIVERY": {
         "TITLE": "Transaction Failed",
         "CODE": "Code"
-      }
+      },
+      "TOP_UP": "Top up error"
     },
     "INTERNET_CONNECTION": {
       "ONLINE": "Your internet connection was restored.",
