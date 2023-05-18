@@ -104,7 +104,7 @@ data:
         "airdropBaseURL": "https://airdrop.c4e.io/",
         "airdropDefaultDenom": "uc4e",
         "proposalVotingRefreshTimeout": 30000,
-        "targetInflationAprMultiplier": 5
+        "targetInflationAprMultiplier": 5,
         "faucetURL": "",
         "faucetAvailable": false
       }
