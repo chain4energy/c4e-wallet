@@ -34,18 +34,21 @@ import TabPanel from "primevue/tabpanel";
 import AccountInfo from "@/components/transactions/AccountInfo.vue";
 import { useUserStore } from "@/store/user.store";
 import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vue";
-import {Transactions, usePublicSalesStore} from "@/store/publicSales.store";
-import {computed, ref} from "vue";
+import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
+import {computed, onBeforeMount, ref} from "vue";
 import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
 import {useSaleServiceStore} from "@/store/saleService.store";
 
-usePublicSalesStore().setTransactions();
+onBeforeMount(() => {
+  usePublicSalesStore().fetchTokenReservations();
+});
+
 
 const transactions = computed(() => {
   return usePublicSalesStore().getTransactions;
 });
 
-const onPay = (transaction: Transactions) => {
+const onPay = (transaction: TokenReservation) => {
   useSaleServiceStore().initPaymentSession({offeredAmount: Number(transaction.amount.amount), offeredCurrencyCode: '', orderId: 1})
     .then(transactionId => {
       if(transactionId)

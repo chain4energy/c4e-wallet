@@ -15,3 +15,18 @@ export interface InitPaymentSessionRequest {
 export interface InitPaymentSessionResponse {
   transactionId: string;
 }
+
+export interface TokenReservationResponse {
+  status: string;
+  amountRequested: number;
+  orderEndTime: string;
+  reservationEndTime: string;
+  transactions: Transaction[]
+}
+
+export interface Transaction {
+  txHash: string;
+  amount: string;
+  errorInfo: string;
+  blockchain: string;
+}

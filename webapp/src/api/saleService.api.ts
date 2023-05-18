@@ -8,7 +8,7 @@ import {
   InitPaymentSessionRequest,
   InitPaymentSessionResponse,
   ReserveTokensRequest,
-  ReserveTokensResponse
+  ReserveTokensResponse, TokenReservationResponse
 } from "@/models/saleServiceCommons";
 
 
@@ -30,12 +30,28 @@ export class SaleServiceApi extends BaseApi {
     );
   }
 
+  private saleServiceGetCall<T, E>(saleServiceUrlPart: string, lockscreen: boolean): Promise<RequestResponse<T, ErrorData<E>>> {
+    return this.axiosCall<T, E>({
+        method: 'GET',
+        url: useConfigurationStore().config.saleServiceURL + saleServiceUrlPart
+      },
+      lockscreen,
+      null,
+      true,
+      'saleServiceGetCall - '
+    );
+  }
+
   public async reserveTokens(amount: number, lockscreen: boolean): Promise<RequestResponse<ReserveTokensResponse, ErrorData<UserServiceErrData>>> {
     return this.saleServicePostCall<ReserveTokensRequest, ReserveTokensResponse, UserServiceErrData>(queries.saleService.RESERVE_TOKENS, {amount: amount}, lockscreen);
   }
 
   public async initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen: boolean): Promise<RequestResponse<InitPaymentSessionResponse, ErrorData<UserServiceErrData>>> {
     return this.saleServicePostCall<InitPaymentSessionRequest, InitPaymentSessionResponse, UserServiceErrData>(queries.saleService.INIT_PAYMENT_SESSION, initPaymentSessionRequest, lockscreen);
+  }
+
+  public async fetchReservationList(lockscreen: boolean): Promise<RequestResponse<TokenReservationResponse[], ErrorData<UserServiceErrData>>> {
+    return this.saleServiceGetCall<TokenReservationResponse[], UserServiceErrData>(queries.saleService.TOKEN_RESERVATION_LIST, lockscreen);
   }
 
 }

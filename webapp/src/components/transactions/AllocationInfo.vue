@@ -46,14 +46,14 @@
 </template>
 
 <script setup lang="ts">
-import { paymentType, Transactions, transactionStatus } from "@/store/publicSales.store";
+import { paymentType, TokenReservation, transactionStatus } from "@/store/publicSales.store";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {ref} from "vue";
 
 const refreshDate = ref(false)
 
 const props = defineProps<{
-  transaction: Transactions
+  transaction: TokenReservation
 }>();
 
 const emit = defineEmits(['pay']);

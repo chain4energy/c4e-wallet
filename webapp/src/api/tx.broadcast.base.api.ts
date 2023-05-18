@@ -395,7 +395,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       const txBodyBytes = myRegistry.encode(txBodyEncodeObject);
       const gasLimit = Int53.fromString(fee.gas).toNumber();
       const sequence = dataToSign.sequenceNumber;
-      const authInfoBytes = makeAuthInfoBytes([{ pubkey, sequence }], fee.amount, gasLimit);
+      const authInfoBytes = makeAuthInfoBytes([{ pubkey, sequence }], fee.amount, gasLimit, undefined, undefined);
       const accountNumber = dataToSign.accountNumber;
       const signDoc = makeSignDoc(txBodyBytes, authInfoBytes, useConfigurationStore().config.chainId, accountNumber);
       const offlineSigner = await this.getOfflineDirectSigner(connection.connectionType);

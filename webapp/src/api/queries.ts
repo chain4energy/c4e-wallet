@@ -91,6 +91,7 @@ export default {
   },
   saleService: {
     RESERVE_TOKENS: '/api/sale-service/token/reservation',
-    INIT_PAYMENT_SESSION: '/api/sale-service/payment/initSession'
+    INIT_PAYMENT_SESSION: '/api/sale-service/payment/initSession',
+    TOKEN_RESERVATION_LIST: '/api/sale-service/token/reservations'
   }
 };

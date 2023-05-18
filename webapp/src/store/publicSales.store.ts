@@ -1,13 +1,15 @@
 import { defineStore } from "pinia";
 import {Coin} from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
+import factoryApi from "@/api/factory.api";
+import {Transaction} from "@/models/saleServiceCommons";
 export interface PublicSalesState{
   total: Coin | undefined,
   parts: parts | undefined,
   startDate: Date | undefined,
   endDate: Date | undefined,
   c4eToUSDC: number | undefined,
-  transactions: Transactions[] | undefined,
+  tokenReservations: TokenReservation[] | undefined,
 }
 export interface parts{
   solved: Coin,
@@ -29,26 +31,23 @@ export enum transactionStatus{
   Error,
 }
 
-export class Transactions {
+export class TokenReservation {
   amount: Coin;
   paymentType: paymentType;
   status: transactionStatus;
-  txHash?: string;
-  blockchainType?: string;
+  transactions: Transaction[];
   reservationEnd?: Date;
   constructor(
     amount: Coin,
     paymentType: paymentType,
     status: transactionStatus,
-    txHash?: string,
-    blockchainType?: string,
+    transactions: Transaction[],
     reservationEnd? : Date,
   ) {
     this.amount = amount;
     this.paymentType = paymentType;
     this.status = status;
-    this.txHash = txHash;
-    this.blockchainType = blockchainType;
+    this.transactions = transactions;
     this.reservationEnd = reservationEnd;
   }
 }
@@ -62,7 +61,7 @@ export const usePublicSalesStore = defineStore({
       startDate: undefined,
       endDate: undefined,
       c4eToUSDC: undefined,
-      transactions: undefined,
+      tokenReservations: undefined,
     };
   },
   actions: {
@@ -79,38 +78,43 @@ export const usePublicSalesStore = defineStore({
         reserved : new Coin(BigInt(45000000000000), denom)
       };
     },
-    setTransactions(){
-      const res = getFakeTransactionsData();
-      const denom = useConfigurationStore().config.stakingDenom;
-      const transactions = Array<Transactions>();
-      res.forEach((el)=>{
-        const amount = new Coin(BigInt(el.amount), denom);
-        let curPaymentType = paymentType.updating;
-        let curStatus = transactionStatus.updating;
-        switch (el.paymentType){
-          case 'Crypto': curPaymentType = paymentType.Crypto;
-          break;
-          case 'StandardCurrency': curPaymentType = paymentType.StandardCurrency;
-          break;
-        }
-        switch (el.status) {
-          case 'Declared': curStatus = transactionStatus.Declared;
-            break;
-          case 'Paid': curStatus = transactionStatus.Paid;
-            break;
-          case 'Error': curStatus = transactionStatus.Error;
-            break;
-        }
-        let transaction;
-        if(el.reservationEnd){
-          transaction = new Transactions(amount, curPaymentType, curStatus, el.txHash, el.blockChainType, new Date(el.reservationEnd));
-        } else {
-          transaction = new Transactions(amount, curPaymentType, curStatus, el.txHash, el.blockChainType);
-        }
+    fetchTokenReservations(lockscreen = true){
+      return factoryApi.saleServiceApi().fetchReservationList(lockscreen).then(res => {
+        if(res.isSuccess() && res.data) {
+          const denom = useConfigurationStore().config.stakingDenom;
+          const transactions = Array<TokenReservation>();
+          res.data.forEach((el)=>{
+            const amount = new Coin(BigInt(el.amountRequested), denom);
+            const curPaymentType = paymentType.Crypto;
+            let curStatus = transactionStatus.updating;
+            // switch (el.paymentType){
+            //   case 'Crypto': curPaymentType = paymentType.Crypto;
+            //     break;
+            //   case 'StandardCurrency': curPaymentType = paymentType.StandardCurrency;
+            //     break;
+            // }
+            switch (el.status) {
+              case 'Declared': curStatus = transactionStatus.Declared;
+                break;
+              case 'Paid': curStatus = transactionStatus.Paid;
+                break;
+              case 'Error': curStatus = transactionStatus.Error;
+                break;
+            }
+            let transaction;
+            if(el.reservationEndTime){
+              transaction = new TokenReservation(amount, curPaymentType, curStatus, el.transactions, new Date(el.reservationEndTime));
+            } else {
+              transaction = new TokenReservation(amount, curPaymentType, curStatus, el.transactions);
+            }
 
-        transactions.push(transaction);
+            transactions.push(transaction);
+          });
+          this.tokenReservations = transactions;
+        }
       });
-      this.transactions = transactions;
+
+
     },
     setCurrentPrice(){
       this.c4eToUSDC = 0.1;
@@ -132,8 +136,8 @@ export const usePublicSalesStore = defineStore({
     getEndDate(): Date | undefined{
       return this.endDate;
     },
-    getTransactions(): Transactions[] | undefined{
-      return this.transactions;
+    getTransactions(): TokenReservation[] | undefined{
+      return this.tokenReservations;
     }
   }
 });

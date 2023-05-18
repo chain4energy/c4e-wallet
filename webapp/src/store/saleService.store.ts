@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
 import factoryApi from "@/api/factory.api";
-import {InitPaymentSessionRequest} from "@/models/saleServiceCommons";
+import {InitPaymentSessionRequest, TokenReservationResponse} from "@/models/saleServiceCommons";
 
 export interface SaleServiceState{
-  test: string
+  test: string;
 }
 
 export const useSaleServiceStore = defineStore({
@@ -28,7 +28,7 @@ export const useSaleServiceStore = defineStore({
         console.log(res);
         return res.data?.transactionId;
       });
-    }
+    },
   },
   getters: {
 

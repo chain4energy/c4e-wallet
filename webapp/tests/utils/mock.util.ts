@@ -3,7 +3,7 @@ import axios from "axios";
 import { Keplr } from "@keplr-wallet/types";
 import { OfflineDirectSigner } from '@cosmjs/proto-signing';
 import { OfflineAminoSigner } from '@cosmjs/amino';
-import { OfflineSigner } from '@cosmjs/launchpad';
+import { OfflineSigner } from '@cosmjs/proto-signing';
 import { SigningStargateClient, DeliverTxResponse, HttpEndpoint, SigningStargateClientOptions } from "@cosmjs/stargate";
 
 export function mockAxios() {
