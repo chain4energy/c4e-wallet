@@ -479,7 +479,7 @@ export default abstract class BaseApi extends LoggedService {
     return result;
   }
 
-  private async axiosCall<T, E>(config: AxiosRequestConfig,
+  protected async axiosCall<T, E>(config: AxiosRequestConfig,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
     skipErrorToast: boolean,

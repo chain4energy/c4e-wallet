@@ -10,6 +10,7 @@
           <span class="icon" :class="{ 'active': index === selected }">
             <Icon v-if="menuItem.icon.type === SideBarIconType.LUCIDE" :name="menuItem.icon.element"/>
             <GovernanceIcon v-else-if="menuItem.icon.type === SideBarIconType.GOV" :icon="menuItem.icon.element"/>
+            <FaucetIcon v-else-if="menuItem.icon.type == SideBarIconType.FAUCET" />
           </span>
           <span class="title">{{ $t('SECTION_TITLES.'+ toUpperCase(menuItem.title)) }}</span>
         </span>
@@ -30,6 +31,7 @@ import { useRouter } from "vue-router";
 import { SideBarIconType } from "@/services/permissions/sidebar.config";
 import GovernanceIcon from "../commons/GovernanceIcon.vue";
 import {toUpperCase} from "uri-js/dist/esnext/util";
+import FaucetIcon from "@/components/commons/FaucetIcon.vue";
 
 const permissionsService = new PermissionsService();
 const router = useRouter();

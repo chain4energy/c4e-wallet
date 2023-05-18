@@ -11,12 +11,12 @@
             <span class="text">{{ app_version + "/" + compilation_timestamp}}</span>
           </div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr)"  @click="topup" v-if="!isMainNetwork">
-          <div>
-            <span class="text">{{ $t('HEADER.TOP_UP_ACCOUNT') }}</span>
-          </div>
-          <div class="center"><img class="" src="@/assets/faucet.svg" alt="Image" style="width: 40px"></div>
-        </div>
+<!--        <div style="display: grid; grid-template-columns: repeat(2, 1fr)"  @click="topup" v-if="!isMainNetwork">-->
+<!--          <div>-->
+<!--            <span class="text">{{ $t('HEADER.TOP_UP_ACCOUNT') }}</span>-->
+<!--          </div>-->
+<!--          <div class="center"><img class="" src="@/assets/faucet.svg" alt="Image" style="width: 40px"></div>-->
+<!--        </div>-->
 
       </div>
         </span>
@@ -47,16 +47,16 @@ const compilation_timestamp = process.env.VUE_APP_COMPILATION_TIMESTAMP;
 const isMainNetwork = computed(() => {
   return useConfigurationStore().config.isMainNetwork;
 });
-function topup() {
-    console.log('topup')
-    useUserStore().topUpAccount(
-        () => {
-            toast.success(i18n.t('TOAST.SUCCESS.TOP_UP'));
-        },
-        () => {
-            toast.error(i18n.t('TOAST.ERROR.TOP_UP'));
-        });
-}
+// function topup() {
+//     console.log('topup')
+//     useUserStore().topUpAccount(
+//         () => {
+//             toast.success(i18n.t('TOAST.SUCCESS.TOP_UP'));
+//         },
+//         () => {
+//             toast.error(i18n.t('TOAST.ERROR.TOP_UP'));
+//         });
+// }
 
 
 </script>

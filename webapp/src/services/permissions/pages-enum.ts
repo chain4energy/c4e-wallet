@@ -3,4 +3,5 @@ export enum PagesEnum{
   STAKING,
   GOVERNANCE,
   AirDrop,
+  FAUCET
 }
