@@ -71,7 +71,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/faucet',
     name: 'faucet',
-    component: FaucetView
+    component: FaucetView,
+    meta: {
+      requiresNotMainNetwork: true
+    }
   }
 ];
 

@@ -1,8 +1,7 @@
 <template>
   <div style="padding: 50px">
-    <h1 style="font-weight: 700;">Ping Testnet Faucet</h1>
+    <h1 style="font-weight: 700;">C4E Faucet</h1>
     <div style="font-size: 1.25rem;">
-      Dear, Cosmonauts!<br>
       Welcome to our testnet! Are you looking for some tokens to start?
     </div>
     <div style="display: flex; justify-content: center; align-items: center; margin-top: 60px">
