@@ -5,14 +5,14 @@ import {useConfigurationStore} from "@/store/configuration.store";
 export class PermissionsService{
 
   sidebarElementOrder(): PagesEnum[]{
-    if(!this.isMainNetwork()) {
+    if(this.faucetAvailable()) {
       return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AirDrop, PagesEnum.FAUCET];
     }
     return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AirDrop];
   }
 
-  isMainNetwork(): boolean {
-    return useConfigurationStore().config.isMainNetwork;
+  faucetAvailable(): boolean {
+    return useConfigurationStore().config.faucetAvailable;
   }
   createSideBar(): SidebarElement[]{
     const sidebarConfig = new SidebarConfig();

@@ -52,7 +52,8 @@ data:
       "airdropDefaultDenom": "uc4e",
       "proposalVotingRefreshTimeout": 30000,
       "targetInflationAprMultiplier": 5,
-      "faucetURL": "https://faucet-testnet.c4e.io/send/{address}"
+      "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
+      "faucetAvailable": true
     },
       "Mainnet": {
         "bcApiURL": "https://lcd.c4e.io",
@@ -104,7 +105,8 @@ data:
         "airdropDefaultDenom": "uc4e",
         "proposalVotingRefreshTimeout": 30000,
         "targetInflationAprMultiplier": 5
-        "faucetURL": ""
+        "faucetURL": "",
+        "faucetAvailable": false
       }
     }
 kind: ConfigMap

@@ -51,7 +51,8 @@
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
-    "faucetURL": ""
+    "faucetURL": "",
+    "faucetAvailable": false
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -105,7 +106,8 @@
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
-    "faucetURL": "https://faucet-dev.c4e.io/send/{address}"
+    "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
+    "faucetAvailable": true
   },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
@@ -157,7 +159,8 @@
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
-    "faucetURL": "https://faucet-testnet.c4e.io/send/{address}"
+    "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
+    "faucetAvailable": true
   },
   "Testnet": {
     "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -209,7 +212,8 @@
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
-    "faucetURL": "https://faucet-testnet.c4e.io/send/{address}"
+    "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
+    "faucetAvailable": true
   },
   "pbtest" :{
     "bcApiURL": "api",
@@ -262,7 +266,8 @@
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
-    "faucetURL": "https://faucet-testnet.c4e.io/send/{address}"
+    "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
+    "faucetAvailable": true
   },
   "local":{
     "bcApiURL": "http://localhost:1317",
@@ -315,7 +320,8 @@
     "airdropDefaultDenom": "uc4e",
     "proposalVotingRefreshTimeout": 30000,
     "targetInflationAprMultiplier": 5,
-    "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}"
+    "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
+    "faucetAvailable": true
   },
   "EV-testnet":{
     "bcApiURL": "https://lcd-ev-testnet.c4e.io",
@@ -370,6 +376,7 @@
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
-    "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}"
+    "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
+    "faucetAvailable": true
   }
 }

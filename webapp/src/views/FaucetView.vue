@@ -24,9 +24,7 @@ import {useConfigurationStore} from "@/store/configuration.store";
 const toast = useToast();
 const i18n = useI18n();
 const address = ref<string>('');
-const isMainNetwork = computed(() => {
-  return useConfigurationStore().config.isMainNetwork;
-});
+
 function topup() {
   console.log('topup')
   useUserStore().topUpAccount(address.value,
