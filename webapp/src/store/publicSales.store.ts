@@ -81,7 +81,7 @@ export const usePublicSalesStore = defineStore({
     fetchTokenReservations(lockscreen = true){
       return factoryApi.saleServiceApi().fetchReservationList(lockscreen).then(res => {
         if(res.isSuccess() && res.data) {
-          const denom = useConfigurationStore().config.stakingDenom;
+          const denom = useConfigurationStore().config.tokenReservationDenom;
           const transactions = Array<TokenReservation>();
           res.data.forEach((el)=>{
             const amount = new Coin(BigInt(el.amountRequested), denom);
@@ -94,11 +94,11 @@ export const usePublicSalesStore = defineStore({
             //     break;
             // }
             switch (el.status) {
-              case 'Declared': curStatus = transactionStatus.Declared;
+              case 'DECLARED': curStatus = transactionStatus.Declared;
                 break;
-              case 'Paid': curStatus = transactionStatus.Paid;
+              case 'PAID': curStatus = transactionStatus.Paid;
                 break;
-              case 'Error': curStatus = transactionStatus.Error;
+              case 'ERROR': curStatus = transactionStatus.Error;
                 break;
             }
             let transaction;

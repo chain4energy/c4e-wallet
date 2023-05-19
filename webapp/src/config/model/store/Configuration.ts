@@ -136,6 +136,7 @@ export class Configuration implements JsonConfiguration {
   saleServiceURL: string;
   addressPrefix: string;
   stakingDenom: string;
+  tokenReservationDenom: string;
   strategicPoolAddress: string[];
   airdropPoolAddress: string;
   chainId: string;
@@ -212,6 +213,7 @@ export class Configuration implements JsonConfiguration {
       this.proposalVotingRefreshTimeout = configuration.proposalVotingRefreshTimeout;
       this.targetInflationAprMultiplier = configuration.targetInflationAprMultiplier;
       this.faucetURL = configuration.faucetURL;
+      this.tokenReservationDenom = configuration.tokenReservationDenom;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -250,6 +252,7 @@ export class Configuration implements JsonConfiguration {
       this.proposalVotingRefreshTimeout = 30000;
       this.targetInflationAprMultiplier = 1;
       this.faucetURL = '';
+      this.tokenReservationDenom = '';
     }
   }
 

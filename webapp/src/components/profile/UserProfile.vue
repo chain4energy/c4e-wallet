@@ -25,6 +25,7 @@
         class="p-button p-component secondary userProfile__btn"
         @click="useUserStore().logOut()">Logout</Button>
     </div>
+    <PayModal v-model:display="showModal" @close="showModal = false" />
   </div>
 </template>
 
@@ -38,28 +39,30 @@ import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import {computed, onBeforeMount, ref} from "vue";
 import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
 import {useSaleServiceStore} from "@/store/saleService.store";
+import PayModal from "@/components/buyTokens/PayModal.vue";
 
 onBeforeMount(() => {
   usePublicSalesStore().fetchTokenReservations();
 });
 
-
+const showModal = ref<boolean>(false);
 const transactions = computed(() => {
   return usePublicSalesStore().getTransactions;
 });
 
 const onPay = (transaction: TokenReservation) => {
-  useSaleServiceStore().initPaymentSession({offeredAmount: Number(transaction.amount.amount), offeredCurrencyCode: '', orderId: 1})
-    .then(transactionId => {
-      if(transactionId)
-        window.dispatchEvent(
-          new CustomEvent('ari10-widget-start-commodities-payment-request', {
-            detail: {
-              transactionId: transactionId,
-            }
-          })
-        );
-    });
+  showModal.value = true;
+  // useSaleServiceStore().initPaymentSession({offeredAmount: Number(transaction.amount.amount), offeredCurrencyCode: '', orderId: 1})
+  //   .then(transactionId => {
+  //     if(transactionId)
+  //       window.dispatchEvent(
+  //         new CustomEvent('ari10-widget-start-commodities-payment-request', {
+  //           detail: {
+  //             transactionId: transactionId,
+  //           }
+  //         })
+  //       );
+  //   });
 };
 </script>
 
