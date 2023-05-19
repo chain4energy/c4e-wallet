@@ -18,8 +18,8 @@
 import {useUserStore} from "@/store/user.store";
 import {useToast} from "vue-toastification";
 import {useI18n} from "vue-i18n";
-import {computed, ref} from "vue";
-import {useConfigurationStore} from "@/store/configuration.store";
+import {ref} from "vue";
+import {FaucetErrorEnum} from "@/models/faucet";
 
 const toast = useToast();
 const i18n = useI18n();
@@ -31,8 +31,13 @@ function topup() {
     () => {
       toast.success(i18n.t('TOAST.SUCCESS.TOP_UP'));
     },
-    () => {
-      toast.error(i18n.t('TOAST.ERROR.TOP_UP'));
+    (errorType: FaucetErrorEnum) => {
+      if(errorType == FaucetErrorEnum.UNKNOWN) {
+        toast.error(i18n.t('TOAST.ERROR.TOP_UP'));
+      } else if(errorType == FaucetErrorEnum.TOO_MANY_REQUESTS) {
+        toast.error(i18n.t('TOAST.ERROR.TOO_MANY_REQUESTS'));
+      }
+
     });
 }
 </script>

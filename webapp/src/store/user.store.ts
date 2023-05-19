@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {Account, AccountType} from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
+import factoryApi from "@/api/factory.api";
 import {ConnectionError, ConnectionInfo, ConnectionType} from "@/api/wallet.connecton.api";
 import {useToast} from "vue-toastification";
 import {RequestResponse} from '@/models/request-response';
@@ -17,8 +18,7 @@ import i18n from "@/plugins/i18n";
 import {useProposalsStore} from "./proposals.store";
 import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
-import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
-import factoryApi from "@/api/factory.api";
+import {FaucetErrorEnum} from "@/models/faucet";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -259,7 +259,7 @@ export const useUserStore = defineStore({
       }
       logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.connectionInfo));
     },
-    async topUpAccount(address: string, successCallback: () => void , failCallback: () => void){
+    async topUpAccount(address: string, successCallback: () => void , failCallback: (errorType: FaucetErrorEnum) => void){
         await factoryApi.faucetApi().topUpAccount(address).then(res => {
           if(res.isSuccess()) {
             if(this.account.address) {
@@ -267,7 +267,11 @@ export const useUserStore = defineStore({
             }
             successCallback();
           } else {
-            failCallback();
+            let errorType: FaucetErrorEnum = FaucetErrorEnum.UNKNOWN;
+            if(res.error?.status == 429) {
+              errorType = FaucetErrorEnum.TOO_MANY_REQUESTS;
+            }
+            failCallback(errorType);
           }
         });
     },
