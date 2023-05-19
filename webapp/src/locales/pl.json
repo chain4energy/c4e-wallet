@@ -375,7 +375,8 @@
         "TITLE": "Błąd transakcji!!!",
         "CODE": "Kod"
       },
-      "TOP_UP": "Nie udało się doładować konta"
+      "TOP_UP": "Nie udało się doładować konta",
+      "TOO_MANY_REQUESTS": "Przekroczono limit doładowań"
     },
     "INTERNET_CONNECTION": {
       "ONLINE": "Przywrócono połączenie z internetem",

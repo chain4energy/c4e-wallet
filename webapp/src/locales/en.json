@@ -380,7 +380,8 @@
         "TITLE": "Transaction Failed",
         "CODE": "Code"
       },
-      "TOP_UP": "Top up error"
+      "TOP_UP": "Top up error",
+      "TOO_MANY_REQUESTS": "Top-up limit exceeded"
     },
     "INTERNET_CONNECTION": {
       "ONLINE": "Your internet connection was restored.",
