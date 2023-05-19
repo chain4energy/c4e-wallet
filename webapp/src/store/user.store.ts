@@ -260,16 +260,16 @@ export const useUserStore = defineStore({
       logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.connectionInfo));
     },
     async topUpAccount(address: string, successCallback: () => void , failCallback: () => void){
-      if(this.account.address) {
         await factoryApi.faucetApi().topUpAccount(address).then(res => {
           if(res.isSuccess()) {
-            fetchBalance(this.connectionInfo, this, true);
+            if(this.account.address) {
+              fetchBalance(this.connectionInfo, this, true);
+            }
             successCallback();
           } else {
             failCallback();
           }
         });
-      }
     },
   },
   getters: {
