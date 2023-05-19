@@ -376,7 +376,7 @@
         "CODE": "Kod"
       },
       "TOP_UP": "Nie udało się doładować konta",
-      "TOO_MANY_REQUESTS": "Przekroczono limit doładowań"
+      "TOO_MANY_REQUESTS": "Przekroczono limit doładowań. Spróbuj ponownie za 24 godziny"
     },
     "INTERNET_CONNECTION": {
       "ONLINE": "Przywrócono połączenie z internetem",
@@ -412,5 +412,11 @@
   "HEADER": {
     "TOP_UP_ACCOUNT": "Kranik",
     "VERSION": "Wersja"
+  },
+  "FAUCET": {
+    "WELCOME": "Witamy w naszej sieci testowej! Szukasz tokenów na start?\nMożesz doładować swoje konto 100 C4E co 24 godziny",
+    "REQUEST_TOKENS": "Doładuj Tokeny",
+    "INPUT_ADDRESS": "Podaj adres na który zostaną doładowane tokeny",
+    "TITLE": "Kranik C4E"
   }
 }

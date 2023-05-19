@@ -381,7 +381,7 @@
         "CODE": "Code"
       },
       "TOP_UP": "Top up error",
-      "TOO_MANY_REQUESTS": "Top-up limit exceeded"
+      "TOO_MANY_REQUESTS": "Top-up limit exceeded. Please come back in 24 hours."
     },
     "INTERNET_CONNECTION": {
       "ONLINE": "Your internet connection was restored.",
@@ -418,5 +418,11 @@
   "HEADER": {
     "TOP_UP_ACCOUNT": "Faucet",
     "VERSION": "Version"
+  },
+  "FAUCET": {
+    "WELCOME": "Welcome to our testnet! Are you looking for some tokens to start?\nYou can top up your account with 100 C4E every 24 hours",
+    "REQUEST_TOKENS": "Request Tokens",
+    "INPUT_ADDRESS": "Input an address to request token",
+    "TITLE": "C4E Faucet"
   }
 }
