@@ -25,7 +25,7 @@
         class="p-button p-component secondary userProfile__btn"
         @click="useUserStore().logOut()">Logout</Button>
     </div>
-    <PayModal v-model:display="showModal" @close="showModal = false" />
+    <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />
   </div>
 </template>
 
@@ -46,11 +46,13 @@ onBeforeMount(() => {
 });
 
 const showModal = ref<boolean>(false);
+const selectedReservation = ref();
 const transactions = computed(() => {
   return usePublicSalesStore().getTransactions;
 });
 
 const onPay = (transaction: TokenReservation) => {
+  selectedReservation.value = transaction;
   showModal.value = true;
   // useSaleServiceStore().initPaymentSession({offeredAmount: Number(transaction.amount.amount), offeredCurrencyCode: '', orderId: 1})
   //   .then(transactionId => {

@@ -84,7 +84,8 @@ export const usePublicSalesStore = defineStore({
           const denom = useConfigurationStore().config.tokenReservationDenom;
           const transactions = Array<TokenReservation>();
           res.data.forEach((el)=>{
-            const amount = new Coin(BigInt(el.amountRequested), denom);
+            const amountRequested = el.amountRequested ? el.amountRequested : 0;
+            const amount = new Coin(BigInt(amountRequested), denom);
             const curPaymentType = paymentType.Crypto;
             let curStatus = transactionStatus.updating;
             // switch (el.paymentType){
