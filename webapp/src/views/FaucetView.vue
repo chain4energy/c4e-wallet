@@ -18,11 +18,18 @@
 import {useUserStore} from "@/store/user.store";
 import {useToast} from "vue-toastification";
 import {useI18n} from "vue-i18n";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {FaucetErrorEnum} from "@/models/faucet";
 
+
+
+onMounted(async () => {
+  address.value=userStore.connectionInfo.account;
+
+});
 const toast = useToast();
 const i18n = useI18n();
+const userStore = useUserStore();
 const address = ref<string>('');
 
 function topup() {
