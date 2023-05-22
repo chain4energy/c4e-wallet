@@ -1,7 +1,6 @@
 import {defineStore} from "pinia";
 import {Account, AccountType} from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
-import factoryApi from "@/api/factory.api";
 import {ConnectionError, ConnectionInfo, ConnectionType} from "@/api/wallet.connecton.api";
 import {useToast} from "vue-toastification";
 import {RequestResponse} from '@/models/request-response';

@@ -96,9 +96,6 @@ class ApiFactory {
   public saleServiceApi(): SaleServiceApi {
     return this._saleServiceApi;
   }
-  public faucetApi(): FaucetApi {
-    return this._faucetApi;
-  }
   public setAxiosInstance(axios: AxiosInstance) {
     this._axios = axios;
   }
