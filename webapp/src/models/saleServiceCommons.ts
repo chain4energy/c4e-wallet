@@ -17,6 +17,7 @@ export interface InitPaymentSessionResponse {
 }
 
 export interface TokenReservationResponse {
+  orderId: number;
   status: string;
   amountRequested: number;
   orderEndTime: string;

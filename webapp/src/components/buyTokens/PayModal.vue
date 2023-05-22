@@ -1,9 +1,9 @@
 <template>
-  <Dialog v-model:visible="show" closeIcon="true" modal header="Payment" :style="{ width: '95vw', 'max-width': '600px' }">
+  <Dialog v-model:visible="show" @update:visible="close" modal header="Payment" :style="{ width: '95vw', 'max-width': '600px' }">
     <div class="step_1" v-if="step == 1">
       <div class="pay_modal_container">
         <div class="box" @click="step=2">ARI10</div>
-        <div class="box">Tx-hash</div>
+        <div class="box" >Tx-hash</div>
       </div>
     </div>
     <div v-if="step==2">
@@ -66,7 +66,8 @@
       </div>
     </div>
     <div class="buttons">
-      <Button class="p-button p-component secondary" @click="close">Close</Button>
+      <Button class="p-button p-component secondary" v-if="step > 1" @click="back">Back</Button>
+      <Button class="p-button p-component secondary" v-if="step > 1" @click="onPay">pay</Button>
     </div>
   </Dialog>
 </template>
@@ -74,18 +75,21 @@
 <script setup lang="ts">
 
 import Dialog from "primevue/dialog";
-import {computed, onBeforeMount, ref} from "vue";
-import {TokenReservation} from "@/store/publicSales.store";
+import {computed, onBeforeMount, ref, watch} from "vue";
+import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import {Currency} from "@/models/currency";
-import {log} from "echarts/types/src/util/log";
+import {useSaleServiceStore} from "@/store/saleService.store";
+import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
 
 const props = defineProps<{
   display: boolean,
   reservation: TokenReservation
 }>();
+
 onBeforeMount(() => {
   calculate();
-})
+});
+
 const emit = defineEmits(['close']);
 const step = ref(1);
 
@@ -99,14 +103,33 @@ const amountTwo = computed(() => {
 const currency_one = ref(Currency.C4E);
 const currency_two = ref(Currency.USD);
 const currencyList = [Currency.USD, Currency.EUR];
-const show = computed(() => {
-  return props.display;
+const show = ref(false);
+watch(() => props.display, (newVal, _) => {
+  show.value = newVal;
 });
 
 const rate = ref(1);
 const close = () => {
   step.value = 1;
   emit('close');
+};
+const back = () => {
+  step.value -=1;
+};
+const onPay = () => {
+  useSaleServiceStore().initPaymentSession({orderId: props.reservation.orderId, offeredCurrencyCode: currency_two.value, offeredAmount: Number((Math.round(amountTwo.value * 100) / 100).toFixed(2))})
+    .then(transactionId => {
+      if(transactionId) {
+        window.dispatchEvent(
+          new CustomEvent('ari10-widget-start-commodities-payment-request', {
+            detail: {
+              transactionId: transactionId,
+            }
+          })
+        );
+        close();
+      }
+    });
 };
 
 const calculate = () => {
@@ -119,9 +142,13 @@ const calculate = () => {
   fetch("https://xqkzzpmim7.eu-west-1.awsapprunner.com/currencies/USDT/calculate", requestOptions)
     .then(response => response.json())
     .then(data => {
-      rate.value = 0.1 * requestedAmount / data.amount;
+      const c4eTOUSDT = usePublicSalesStore().getC4eToUSDC;
+      if(c4eTOUSDT) {
+        rate.value = c4eTOUSDT * requestedAmount / data.amount;
+      }
     });
-}
+};
+
 </script>
 
 <style scoped lang="scss">
@@ -149,7 +176,7 @@ const calculate = () => {
 }
 
 .currency-form {
-  box-shadow: 0px 10px 55px rgba(0, 0, 0, 0.1);
+  //box-shadow: 0px 10px 55px rgba(0, 0, 0, 0.1);
   background: #ffffff;
   border-radius: 20px;
   max-width: 800px;

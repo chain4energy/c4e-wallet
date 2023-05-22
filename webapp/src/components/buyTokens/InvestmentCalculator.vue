@@ -60,7 +60,7 @@ const calculator = reactive({
   c4e: 0,
   usdc: 0,
 });
-const c4e = ref();
+const c4e = ref<number>();
 const usdc = ref();
 const summaryVisible = ref(false);
 
@@ -79,7 +79,8 @@ watch(calculator, (next)=>{
 const saleStore = useSaleServiceStore();
 const onBuy = () => {
   console.log(usdc.value);
-  saleStore.reserveTokens(usdc.value, onSuccess, onFail);
+  if(c4e.value)
+    saleStore.reserveTokens(Number(c4e.value), onSuccess, onFail);
 };
 
 const toast = useToast();

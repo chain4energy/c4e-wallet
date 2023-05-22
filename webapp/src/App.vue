@@ -11,6 +11,7 @@
     <app-footer class="footer"/>
     <CurrentBlockchain></CurrentBlockchain>
     <app-sidebar/>
+    <div class="ari10-widget-wrapper" data-widget-id='41875703-9ee2-4729-9d51-e574c61467c3'></div>
   </div>
 </template>
 

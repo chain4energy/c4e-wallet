@@ -11,13 +11,22 @@ import {Jwt} from "@/models/user/jwt";
 
 interface UserServiceState {
   _isLoggedIn: boolean,
+  loginType: LoginTypeEnum
+}
+
+export enum LoginTypeEnum {
+  EMAIL,
+  KEPLR,
+  METAMASK,
+  NONE
 }
 
 export const useUserServiceStore = defineStore({
   id: 'userServiceStore',
   state: (): UserServiceState => {
     return {
-      _isLoggedIn: false
+      _isLoggedIn: false,
+      loginType: LoginTypeEnum.NONE
     };
   },
   actions: {
@@ -53,7 +62,7 @@ export const useUserServiceStore = defineStore({
         if(res.isSuccess()) {
           onSuccess();
         } else {
-          onFail()
+          onFail();
         }
       });
     },
@@ -62,6 +71,7 @@ export const useUserServiceStore = defineStore({
         if(responseDate.isSuccess()) {
           onSuccess();
           this.setTokens(responseDate);
+          this.loginType = LoginTypeEnum.KEPLR;
         } else {
           onFail();
         }
@@ -71,6 +81,7 @@ export const useUserServiceStore = defineStore({
       await apiFactory.userServiceApi().authWalletMetamask(walletAuthData, lockscreen).then(responseDate => {
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
+          this.loginType = LoginTypeEnum.METAMASK;
           onSuccess();
         } else {
           onFail();
@@ -81,6 +92,7 @@ export const useUserServiceStore = defineStore({
       await apiFactory.userServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
+          this.loginType = LoginTypeEnum.EMAIL;
           onSuccess();
         } else {
           onFail();

@@ -17,7 +17,6 @@
           <template #header>Transactions</template>
         </TabPanel>
       </TabView>
-      <div class="ari10-widget-wrapper" data-widget-id='41875703-9ee2-4729-9d51-e574c61467c3'></div>
     </div>
 
     <div class="userProfile__extra">
@@ -38,7 +37,6 @@ import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vu
 import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import {computed, onBeforeMount, ref} from "vue";
 import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
-import {useSaleServiceStore} from "@/store/saleService.store";
 import PayModal from "@/components/buyTokens/PayModal.vue";
 
 onBeforeMount(() => {

@@ -32,18 +32,21 @@ export enum transactionStatus{
 }
 
 export class TokenReservation {
+  orderId: number;
   amount: Coin;
   paymentType: paymentType;
   status: transactionStatus;
   transactions: Transaction[];
   reservationEnd?: Date;
   constructor(
+    orderId: number,
     amount: Coin,
     paymentType: paymentType,
     status: transactionStatus,
     transactions: Transaction[],
     reservationEnd? : Date,
   ) {
+    this.orderId = orderId;
     this.amount = amount;
     this.paymentType = paymentType;
     this.status = status;
@@ -104,9 +107,9 @@ export const usePublicSalesStore = defineStore({
             }
             let transaction;
             if(el.reservationEndTime){
-              transaction = new TokenReservation(amount, curPaymentType, curStatus, el.transactions, new Date(el.reservationEndTime));
+              transaction = new TokenReservation(el.orderId, amount, curPaymentType, curStatus, el.transactions, new Date(el.reservationEndTime));
             } else {
-              transaction = new TokenReservation(amount, curPaymentType, curStatus, el.transactions);
+              transaction = new TokenReservation(el.orderId, amount, curPaymentType, curStatus, el.transactions);
             }
 
             transactions.push(transaction);
@@ -118,7 +121,7 @@ export const usePublicSalesStore = defineStore({
 
     },
     setCurrentPrice(){
-      this.c4eToUSDC = 0.1;
+      this.c4eToUSDC = 0.18;
     },
   },
   getters:{
