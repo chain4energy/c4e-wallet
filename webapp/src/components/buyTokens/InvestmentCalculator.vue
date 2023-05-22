@@ -21,7 +21,7 @@
         <p>Required</p>
         <p>terms acceptance</p>
         <p>proof of residence</p>
-        <Button class="p-button p-component secondary" style="width: 141px;" @click="summaryVisible=true">Buy</Button>
+        <Button class="p-button p-component secondary" style="width: 141px;" @click="onConfirm">Buy</Button>
       </div>
 
     </div>
@@ -46,11 +46,12 @@
 <script setup lang="ts">
 
 import {useRouter} from "vue-router";
-import { reactive, ref, watch } from "vue";
+import {onBeforeMount, onMounted, reactive, ref, watch} from "vue";
 import {Form, Field} from "vee-validate";
 import {useSaleServiceStore} from "@/store/saleService.store";
 import Dialog from 'primevue/dialog';
 import {useToast} from "vue-toastification";
+import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
 
 const currencyExchangeRate = defineProps<{
   rate: number
@@ -59,6 +60,9 @@ const currencyExchangeRate = defineProps<{
 const calculator = reactive({
   c4e: 0,
   usdc: 0,
+});
+onMounted(() => {
+  calculator.c4e = 1;
 });
 const c4e = ref<number>();
 const usdc = ref();
@@ -91,6 +95,14 @@ const onSuccess = () => {
 };
 const onFail = () => {
   toast.error('An error occured');
+};
+const router = useRouter();
+const onConfirm = () => {
+  if(useUserServiceStore().loginType == LoginTypeEnum.NONE) {
+    router.push({name: 'accountType'});
+  } else {
+    summaryVisible.value=true;
+  }
 };
 </script>
 

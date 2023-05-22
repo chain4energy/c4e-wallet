@@ -3,7 +3,7 @@
     <div class="step_1" v-if="step == 1">
       <div class="pay_modal_container">
         <div class="box" @click="step=2">ARI10</div>
-        <div class="box" >Tx-hash</div>
+        <div class="box" v-if="useUserServiceStore().loginType == LoginTypeEnum.METAMASK" @click="step=3">Tx-hash</div>
       </div>
     </div>
     <div v-if="step==2">
@@ -65,6 +65,9 @@
         </div>
       </div>
     </div>
+    <div v-if="step == 3">
+      Tx-hash View
+    </div>
     <div class="buttons">
       <Button class="p-button p-component secondary" v-if="step > 1" @click="back">Back</Button>
       <Button class="p-button p-component secondary" v-if="step > 1" @click="onPay">pay</Button>
@@ -114,7 +117,7 @@ const close = () => {
   emit('close');
 };
 const back = () => {
-  step.value -=1;
+  step.value = 1;
 };
 const onPay = () => {
   useSaleServiceStore().initPaymentSession({orderId: props.reservation.orderId, offeredCurrencyCode: currency_two.value, offeredAmount: Number((Math.round(amountTwo.value * 100) / 100).toFixed(2))})
@@ -143,7 +146,7 @@ const calculate = () => {
     .then(response => response.json())
     .then(data => {
       const c4eTOUSDT = usePublicSalesStore().getC4eToUSDC;
-      if(c4eTOUSDT) {
+      if(c4eTOUSDT != undefined) {
         rate.value = c4eTOUSDT * requestedAmount / data.amount;
       }
     });
@@ -155,7 +158,8 @@ const calculate = () => {
 
 .pay_modal_container {
   display: flex;
-
+  align-items: center;
+  justify-content: center;
   .box {
     display: flex;
     align-items: center;
