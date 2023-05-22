@@ -8,8 +8,11 @@ data:
       "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
       "keybaseURL": "https://keybase.io",
       "stakingPageURL": "https://wallet-dev.c4e.io/staking",
+      "userServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
+      "saleServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
       "addressPrefix": "c4e",
       "stakingDenom": "uc4e",
+      "tokenReservationDenom": "C4E",
       "strategicPoolAddress": [
         "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
         "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -61,8 +64,11 @@ data:
         "hasuraURL": "https://hasura.c4e.io/v1/graphql",
         "keybaseURL": "https://keybase.io",
         "stakingPageURL": "https://wallet.c4e.io/staking",
+        "userServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
+        "saleServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
+        "tokenReservationDenom": "C4E",
         "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -114,8 +120,11 @@ data:
         "hasuraURL": "https://hasura-testnet.c4e.io/v1/graphql",
         "keybaseURL": "https://keybase.io",
         "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
+        "userServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
+        "saleServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
+        "tokenReservationDenom": "C4E",
         "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -167,8 +176,11 @@ data:
         "hasuraURL": "https://hasura-ev-testnet.c4e.io/v1/graphql",
         "keybaseURL": "https://keybase.io",
         "stakingPageURL": "https://wallet-ev-testnet.c4e.io/staking",
+        "userServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
+        "saleServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
+        "tokenReservationDenom": "C4E",
         "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"

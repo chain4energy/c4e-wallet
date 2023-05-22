@@ -361,7 +361,9 @@
     "PRIVACY_POLICY": "Privacy policy",
     "TERMS_CONDITIONS": "Terms & conditions",
     "AIRDROP": "Airdrop",
-    "FAUCET": "Faucet"
+    "FAUCET": "Faucet",
+    "BUYTOKENS": "Buy tokens",
+    "PROFILE": "Profile"
   },
   "TOAST": {
     "SUCCESS": {

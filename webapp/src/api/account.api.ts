@@ -37,6 +37,8 @@ import { BigDecimal } from "@/models/store/big.decimal";
 import { VoteOption } from "@/models/store/proposal";
 import { BlockchainApiErrorData } from "@/models/blockchain/common";
 import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
+import {DataToSign} from "@/models/user/walletAuth";
+import {MsgSignData} from "@/types/tx";
 
 
 
@@ -311,5 +313,31 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
+  public async sign(connection: ConnectionInfo, dataToSign: DataToSign):Promise<RequestResponse<string, TxBroadcastError>> {
 
+    const signDataMsgTypeUrl = '/' + 'sign' + '.MsgSignData';
+    const utf8Encode = new TextEncoder();
+    const messageToSign = utf8Encode.encode(dataToSign.randomString);
+
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = signDataMsgTypeUrl;
+      const val = {
+        signer: connection.account,
+        data: messageToSign
+      };
+
+      return [{ typeUrl: typeUrl, value: MsgSignData.fromPartial(val) }];
+
+    };
+    const fee = this.createFee(0, 'uc4e');
+
+
+    return this.signDirect(connection, getMessages, dataToSign, fee, '', true, null);
+  }
+  public async signMetamask(dataToSign: DataToSign):Promise<RequestResponse<string, TxBroadcastError>> {
+
+
+
+    return this.signWithMetamask(dataToSign, true, null);
+  }
 }

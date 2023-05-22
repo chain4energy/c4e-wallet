@@ -12,6 +12,12 @@ export function mockAxios() {
   return mockedAxios;
 }
 
+export function mockAxiosJWT() {
+  const mockedAxios = axios as jest.Mocked<typeof axios>;
+  apiFactory.setAxiosJWTInstance(mockedAxios);
+  return mockedAxios;
+}
+
 export function mockKeplr() {
   const mockedKeplrImpl = {
     getOfflineSigner: jest.fn(() => { }),

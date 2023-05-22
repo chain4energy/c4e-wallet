@@ -8,6 +8,8 @@ import GovernanceDetailsView from '../views/GovernanceDetailsView.vue';
 import ProposalsList from '@/components/governance/ProposalsList.vue';
 import stakingRoutes from "@/router/stakingRoutes";
 import AirDropView from "@/views/AirDropView.vue";
+import buyTokensRoutes from "@/router/buyTokens";
+import profileRoutes from "@/router/profile";
 import FaucetView from "@/views/FaucetView.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -75,7 +77,9 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       requiresNotMainNetwork: true
     }
-  }
+  },
+  buyTokensRoutes,
+  profileRoutes
 ];
 
 const router = createRouter({

@@ -132,3 +132,10 @@
     }
   }
 }
+
+.p-inputswitch.p-inputswitch-checked .p-inputswitch-slider {
+  background: $secondary-color !important;
+}
+.p-inputswitch:not(.p-disabled) .p-inputswitch-slider {
+  background: $secondary-color !important;
+}

@@ -132,8 +132,11 @@ export class Configuration implements JsonConfiguration {
   hasuraURL: string;
   keybaseURL: string;
   stakingPageURL: string;
+  userServiceURL: string;
+  saleServiceURL: string;
   addressPrefix: string;
   stakingDenom: string;
+  tokenReservationDenom: string;
   strategicPoolAddress: string[];
   airdropPoolAddress: string;
   chainId: string;
@@ -175,6 +178,8 @@ export class Configuration implements JsonConfiguration {
       this.hasuraURL = configuration.hasuraURL;
       this.keybaseURL = configuration.keybaseURL;
       this.stakingPageURL = configuration.stakingPageURL;
+      this.userServiceURL = configuration.userServiceURL;
+      this.saleServiceURL = configuration.saleServiceURL;
       this.addressPrefix = configuration.addressPrefix;
       this.stakingDenom = configuration.stakingDenom;
       this.strategicPoolAddress = configuration.strategicPoolAddress;
@@ -210,13 +215,15 @@ export class Configuration implements JsonConfiguration {
       this.targetInflationAprMultiplier = configuration.targetInflationAprMultiplier;
       this.faucetURL = configuration.faucetURL;
       this.faucetAvailable = configuration.faucetAvailable;
-
+      this.tokenReservationDenom = configuration.tokenReservationDenom;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
       this.hasuraURL = '';
       this.keybaseURL = '';
       this.stakingPageURL = '';
+      this.userServiceURL = '';
+      this.saleServiceURL = ' ';
       this.addressPrefix = '';
       this.stakingDenom = '';
       this.strategicPoolAddress = [''];
@@ -247,6 +254,7 @@ export class Configuration implements JsonConfiguration {
       this.proposalVotingRefreshTimeout = 30000;
       this.targetInflationAprMultiplier = 1;
       this.faucetURL = '';
+      this.tokenReservationDenom = '';
       this.faucetAvailable = false;
     }
   }

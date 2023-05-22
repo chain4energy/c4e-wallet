@@ -47,12 +47,15 @@ export interface JsonQueries {
   AIRDROP_CLAIMS_LEFT: string;
 }
 
+
 export interface Configuration {
   bcApiURL: string,
   bcRpcURL: string,
   hasuraURL: string,
   keybaseURL: string,
   stakingPageURL: string,
+  userServiceURL: string,
+  saleServiceURL: string,
   addressPrefix: string,
   stakingDenom: string,
   strategicPoolAddress: string[],
@@ -82,5 +85,6 @@ export interface Configuration {
   airdropDefaultDenom: string;
   targetInflationAprMultiplier: number;
   faucetURL: string;
+  tokenReservationDenom: string;
   faucetAvailable: boolean;
 }

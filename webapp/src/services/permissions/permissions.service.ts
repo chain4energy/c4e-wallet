@@ -5,10 +5,7 @@ import {useConfigurationStore} from "@/store/configuration.store";
 export class PermissionsService{
 
   sidebarElementOrder(): PagesEnum[]{
-    if(this.faucetAvailable()) {
-      return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AirDrop, PagesEnum.FAUCET];
-    }
-    return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AirDrop];
+    return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AIRDROP,PagesEnum.FAUCET, PagesEnum.BUYTOKENS, PagesEnum.PROFILE];
   }
 
   faucetAvailable(): boolean {

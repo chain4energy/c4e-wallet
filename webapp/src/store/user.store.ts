@@ -18,6 +18,9 @@ import i18n from "@/plugins/i18n";
 import {useProposalsStore} from "./proposals.store";
 import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
+import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
+import {Signer} from "ethers";
+import factoryApi from "@/api/factory.api";
 import {FaucetErrorEnum} from "@/models/faucet";
 
 const toast = useToast();
@@ -47,8 +50,7 @@ export const useUserStore = defineStore({
       vestimgAccLocked: 0n,
       rewards: new Rewards(),
       delegations: new Delegations(),
-      undelegations: new UnbondingDelegations(),
-
+      undelegations: new UnbondingDelegations()
     };
   },
   actions: {
@@ -81,6 +83,13 @@ export const useUserStore = defineStore({
         apiFactory.walletApi().connectLeap(),
         onSuccess
       );
+    },
+    async connectMetamask(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
+        return apiFactory.walletApi().connectMetamask().then(response => {
+          if(response.isSuccess() && response.data != undefined){
+            return response.data;
+          }
+        });
     },
     async connectAsAddress(address: string, onSuccess?: (connectionInfo: ConnectionInfo) => void) {
       await this.connect(

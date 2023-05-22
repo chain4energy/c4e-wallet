@@ -5,8 +5,11 @@
     "hasuraURL": "https://hasura.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "userServiceURL": "https://wallet.c4e.io/userService",
+    "saleServiceURL": "",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -60,8 +63,11 @@
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "userServiceURL": "http://198.244.154.101:31876",
+    "saleServiceURL": "http://198.244.154.101:31876",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -115,8 +121,11 @@
     "hasuraURL": "http://10.0.7.86:8080/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
+    "userServiceURL": "https://wallet.c4e.io/userService",
+    "saleServiceURL": "",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -168,8 +177,11 @@
     "hasuraURL": "https://hasura-testnet.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
+    "userServiceURL": "https://wallet.c4e.io/userService",
+    "saleServiceURL": "",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -221,8 +233,11 @@
     "hasuraURL": "hasura",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
+    "userServiceURL": "https://wallet.c4e.io/userService",
+    "saleServiceURL": "",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -275,8 +290,11 @@
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "userServiceURL": "https://wallet.c4e.io/userService",
+    "saleServiceURL": "",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -331,6 +349,7 @@
     "stakingPageURL": "https://wallet-ev-testnet.c4e.io/staking",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"

@@ -78,5 +78,20 @@ export default {
   },
   airdrop: {
     AIRDROP_INFO: 'airdropInfo.json'
+  },
+  userService:{
+    REFRESH_TOKEN: '/api/user-service/refresh',
+    EMAIL_CREATE_ACCOUNT: '/api/user-service/register',
+    AUTHENTICATE_EMAIL: '/api/user-service/auth/password',
+    AUTHENTICATE_KEPLR: '/api/user-service/auth/keplr',
+    AUTHENTICATE_METAMASK: '/api/user-service/auth/metamask',
+    AUTHENTICATE_DOUBLE_WALLET: '/api/user-service/auth/doubleWallet',
+    INIT_WALLET_AUTH: '/api/user-service/initWalletAuth',
+    ACTIVATE_ACCOUNT: '/api/user-service/activate/{activationCode}'
+  },
+  saleService: {
+    RESERVE_TOKENS: '/api/sale-service/token/reservation',
+    INIT_PAYMENT_SESSION: '/api/sale-service/payment/initSession',
+    TOKEN_RESERVATION_LIST: '/api/sale-service/token/reservations'
   }
 };
