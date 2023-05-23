@@ -25,7 +25,12 @@ module.exports = defineConfig({
       '/app': {
         target: 'http://localhost',
         changeOrigin: true,
-      }
+      },
+      '/api-devnet/api': {
+        target: 'http://198.244.154.101:31876',
+        changeOrigin: true,
+        pathRewrite: function (path, req) { return path.replace('/api-devnet/api', '/api') }
+      },
     }
   },
   configureWebpack: {

@@ -21,7 +21,18 @@ data:
         # good practice not to use port 80 inside a container
         # because container should run as non root and they can't run under port < 1024
         listen       8080;
-        server_name  localhost;
+        server_name  wallet-dev.c4e.io;
+    
+        location /api-devnet {
+            proxy_pass http://api-gateway-and-composer.publicsale-dev.svc.cluster.local/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host $server_name;
+            proxy_set_header X-Forwarded-Proto https;
+            client_max_body_size 100M;
+        }
+    
         location / {
           root   /usr/share/nginx/html;
           index  index.html;
