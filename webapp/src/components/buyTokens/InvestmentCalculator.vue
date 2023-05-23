@@ -52,6 +52,7 @@ import {useSaleServiceStore} from "@/store/saleService.store";
 import Dialog from 'primevue/dialog';
 import {useToast} from "vue-toastification";
 import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
+import {usePublicSalesStore} from "@/store/publicSales.store";
 
 const currencyExchangeRate = defineProps<{
   rate: number
@@ -90,6 +91,7 @@ const onBuy = () => {
 const toast = useToast();
 
 const onSuccess = () => {
+  usePublicSalesStore().fetchTokenReservations();
   toast.success('Tokens reserved successfully');
   summaryVisible.value=false;
 };
