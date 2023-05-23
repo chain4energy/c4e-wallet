@@ -123,6 +123,7 @@ export const useUserServiceStore = defineStore({
     },
     logOutAccount(){
       clearAuthTokens();
+      this.loginType = LoginTypeEnum.NONE;
     }
   },
   getters: {},

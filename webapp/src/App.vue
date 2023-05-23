@@ -31,11 +31,12 @@ import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import dataService from './services/data.service';
 import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
+import {usePublicSalesStore} from "@/store/publicSales.store";
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 dataService.onAppStart();
 const disclaimerOpen = ref();
-
+usePublicSalesStore().setCurrentPrice();
 onMounted(() => {
   createRouterBeforeEach(logger);
   disclaimerOpen.value = !localStorage.getItem('disclaimer');

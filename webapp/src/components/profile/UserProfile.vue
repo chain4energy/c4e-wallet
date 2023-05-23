@@ -7,7 +7,7 @@
           <template #header>Account info</template>
           <AccountInfo :accordion="false"/>
           <div class="userProfile__holder">
-            <InvestmentCalculator :rate="0.1"/>
+            <InvestmentCalculator :rate="currency"/>
           </div>
           <div v-for="items in transactions" :key="items" class="userProfile__holder">
             <AllocationInfo :transaction="items" @pay="onPay(items)"/>
@@ -22,7 +22,7 @@
     <div class="userProfile__extra">
       <Button
         class="p-button p-component secondary userProfile__btn"
-        @click="useUserStore().logOut()">Logout</Button>
+        @click="useUserServiceStore().logOutAccount()">Logout</Button>
     </div>
     <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />
   </div>
@@ -38,11 +38,14 @@ import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import {computed, onBeforeMount, ref} from "vue";
 import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
 import PayModal from "@/components/buyTokens/PayModal.vue";
+import {useUserServiceStore} from "@/store/userService.store";
 
 onBeforeMount(() => {
   usePublicSalesStore().fetchTokenReservations();
 });
-
+const currency = computed(() => {
+  return usePublicSalesStore().getC4eToUSDC;
+});
 const showModal = ref<boolean>(false);
 const selectedReservation = ref();
 const transactions = computed(() => {
