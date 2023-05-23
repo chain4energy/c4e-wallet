@@ -56,7 +56,7 @@
         <div>
           <Button
             class="p-button p-component secondary accountInfo__btn"
-            @click="console.log(111)">Start KYC</Button>
+            @click="onKycStart">Start KYC</Button>
         </div>
       </div>
       <hr class="accountInfo__line"/>
@@ -94,11 +94,13 @@
 import { computed, onMounted, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
 import { usePublicSalesStore } from "@/store/publicSales.store";
+import {useRouter} from "vue-router";
 
 const props = defineProps<{
   accordion: boolean
 }>();
 
+const router = useRouter();
 const showClosedTab = ref(true);
 
 onMounted(() => {
@@ -115,7 +117,9 @@ const address = computed(() =>{
   return useUserStore().getAccount.address
 });
 
-
+const onKycStart = () => {
+  router.push({name: 'kyc'});
+};
 </script>
 
 <style scoped lang="scss">

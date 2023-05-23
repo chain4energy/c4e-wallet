@@ -15,6 +15,7 @@ import {
   WalletAuthRequest
 } from "@/models/user/walletAuth";
 import {formatString} from "@/utils/string-formatter";
+import {InitSessionResponse} from "@/models/user/kyc";
 
 export class UserServiceApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
@@ -34,7 +35,7 @@ export class UserServiceApi extends BaseApi {
     );
   }
 
-  private userServiceGetCall<R, T, E>(userServiceUrlPart: string, lockscreen: boolean): Promise<RequestResponse<T, ErrorData<E>>> {
+  private userServiceGetCall<T, E>(userServiceUrlPart: string, lockscreen: boolean): Promise<RequestResponse<T, ErrorData<E>>> {
     return this.axiosCall<T, E>({
         method: 'GET',
         url: useConfigurationStore().config.userServiceURL + userServiceUrlPart
@@ -65,6 +66,10 @@ export class UserServiceApi extends BaseApi {
   }
 
   public async activateEmailAccount(code: string, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
-    return this.userServiceGetCall<PasswordAuthenticateRequest, Jwt, UserServiceErrData>(formatString(queries.userService.ACTIVATE_ACCOUNT, {activationCode: code}), lockscreen);
+    return this.userServiceGetCall<Jwt, UserServiceErrData>(formatString(queries.userService.ACTIVATE_ACCOUNT, {activationCode: code}), lockscreen);
+  }
+
+  public async initKycSession(lockscreen: boolean): Promise<RequestResponse<InitSessionResponse, ErrorData<UserServiceErrData>>> {
+    return this.userServiceGetCall<InitSessionResponse, UserServiceErrData>(queries.userService.KYC_INIT_SESSION, lockscreen);
   }
 }

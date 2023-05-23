@@ -11,7 +11,8 @@ import {Jwt} from "@/models/user/jwt";
 
 interface UserServiceState {
   _isLoggedIn: boolean,
-  loginType: LoginTypeEnum
+  loginType: LoginTypeEnum,
+  kycSessionId: string
 }
 
 export enum LoginTypeEnum {
@@ -26,7 +27,8 @@ export const useUserServiceStore = defineStore({
   state: (): UserServiceState => {
     return {
       _isLoggedIn: false,
-      loginType: LoginTypeEnum.NONE
+      loginType: LoginTypeEnum.NONE,
+      kycSessionId: ''
     };
   },
   actions: {
@@ -105,6 +107,15 @@ export const useUserServiceStore = defineStore({
         this.setTokens(responseDate);
       });
     },
+    async initKycSession(lockscreen = true) {
+      await apiFactory.userServiceApi().initKycSession(lockscreen).then(responseDate => {
+        console.log(responseDate);
+        if(responseDate.isSuccess() && responseDate.data) {
+          this.kycSessionId = responseDate.data.session_id;
+        }
+
+      });
+    },
     setTokens(responseDate: RequestResponse<Jwt, ErrorData<UserServiceErrData>>){
       if (responseDate.isSuccess()) {
         // save tokens to storage
@@ -126,7 +137,11 @@ export const useUserServiceStore = defineStore({
       this.loginType = LoginTypeEnum.NONE;
     }
   },
-  getters: {},
+  getters: {
+    getKycSessionId(): string {
+      return this.kycSessionId;
+    }
+  },
   persist: {
     enabled: true
   }

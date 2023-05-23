@@ -87,7 +87,8 @@ export default {
     AUTHENTICATE_METAMASK: '/api/user-service/auth/metamask',
     AUTHENTICATE_DOUBLE_WALLET: '/api/user-service/auth/doubleWallet',
     INIT_WALLET_AUTH: '/api/user-service/initWalletAuth',
-    ACTIVATE_ACCOUNT: '/api/user-service/activate/{activationCode}'
+    ACTIVATE_ACCOUNT: '/api/user-service/activate/{activationCode}',
+    KYC_INIT_SESSION: '/api/user-service/kyc/init'
   },
   saleService: {
     RESERVE_TOKENS: '/api/sale-service/token/reservation',
