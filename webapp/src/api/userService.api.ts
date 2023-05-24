@@ -14,6 +14,7 @@ import {
   InitWalletAuthResponse,
   WalletAuthRequest
 } from "@/models/user/walletAuth";
+import {EmailPairingRequest} from "@/models/user/emailPairing";
 import {formatString} from "@/utils/string-formatter";
 
 export class UserServiceApi extends BaseApi {
@@ -66,5 +67,8 @@ export class UserServiceApi extends BaseApi {
 
   public async activateEmailAccount(code: string, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
     return this.userServiceGetCall<PasswordAuthenticateRequest, Jwt, UserServiceErrData>(formatString(queries.userService.ACTIVATE_ACCOUNT, {activationCode: code}), lockscreen);
+  }
+  public pairEmail(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>>{
+    return this.userServicePostCall<EmailPairingRequest, Jwt, UserServiceErrData>(queries.userService.PAIR_EMAIL, emailPairing, lockscreen);
   }
 }

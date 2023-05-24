@@ -8,10 +8,14 @@ import {RequestResponse} from "@/models/request-response";
 import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
+import axios from "axios";
+import { EmailPairingRequest } from "@/models/user/emailPairing";
 
 interface UserServiceState {
   _isLoggedIn: boolean,
-  loginType: LoginTypeEnum
+  loginType: LoginTypeEnum,
+  paired: boolean,
+  userEmail: string | undefined,
 }
 
 export enum LoginTypeEnum {
@@ -26,7 +30,9 @@ export const useUserServiceStore = defineStore({
   state: (): UserServiceState => {
     return {
       _isLoggedIn: false,
-      loginType: LoginTypeEnum.NONE
+      loginType: LoginTypeEnum.NONE,
+      paired: false,
+      userEmail: undefined
     };
   },
   actions: {
@@ -92,6 +98,7 @@ export const useUserServiceStore = defineStore({
       await apiFactory.userServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
+          this.userEmail = emailAccount.login;
           this.loginType = LoginTypeEnum.EMAIL;
           onSuccess();
         } else {
@@ -121,12 +128,37 @@ export const useUserServiceStore = defineStore({
         //TODO: toast - log in error
       }
     },
+    async provideEmailAddress(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.userServiceApi().pairEmail(emailAccount, lockscreen).then(responseDate => {
+        if(responseDate.isSuccess()) {
+          this.setIsLoggedIn();
+          this.loginType = LoginTypeEnum.EMAIL;
+          this.paired = true;
+          onSuccess();
+        } else {
+          onFail();
+        }
+      });
+    },
     logOutAccount(){
       clearAuthTokens();
       this.loginType = LoginTypeEnum.NONE;
     }
   },
-  getters: {},
+  getters: {
+    isLoggedIn():boolean {
+      return this._isLoggedIn;
+    },
+    getLoginType(): LoginTypeEnum {
+      return this.loginType;
+    },
+    isPaired(): boolean{
+      return this.paired;
+    },
+    getUserEmail(): string| undefined{
+      return this.userEmail;
+    }
+  },
   persist: {
     enabled: true
   }

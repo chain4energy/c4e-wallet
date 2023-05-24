@@ -1,11 +1,11 @@
 <template>
+  <AddressModal style="position: fixed; z-index: 99999" @close="hideAddAddress" @submit="submitEmail" v-if="showAddressAdd" />
   <div class="userProfile">
-
     <div class="userProfile__holder">
       <TabView>
         <TabPanel class="userProfile__tabHeader">
           <template #header>Account info</template>
-          <AccountInfo :accordion="false"/>
+          <AccountInfo :accordion="false" @add-email="showAddressAddModal"/>
           <div class="userProfile__holder">
             <InvestmentCalculator :rate="currency"/>
           </div>
@@ -39,6 +39,9 @@ import {computed, onBeforeMount, ref} from "vue";
 import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
 import PayModal from "@/components/buyTokens/PayModal.vue";
 import {useUserServiceStore} from "@/store/userService.store";
+import AddressModal from "@/components/buyTokens/modals/AddressModal.vue";
+
+const showAddressAdd = ref(false)
 
 onBeforeMount(() => {
   usePublicSalesStore().fetchTokenReservations();
@@ -51,6 +54,18 @@ const selectedReservation = ref();
 const transactions = computed(() => {
   return usePublicSalesStore().getTransactions;
 });
+
+function submitEmail(){
+  hideAddAddress();
+}
+
+function showAddressAddModal(){
+  showAddressAdd.value = true;
+}
+function hideAddAddress(){
+  showAddressAdd.value = false;
+}
+
 
 const onPay = (transaction: TokenReservation) => {
   selectedReservation.value = transaction;
