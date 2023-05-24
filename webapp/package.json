@@ -44,6 +44,7 @@
     "vue-json-pretty": "^2.2.3",
     "vue-loading-overlay": "6.0.3",
     "vue-markdown-render": "^2.0.1",
+    "vue-recaptcha": "^3.0.0-alpha.2",
     "vue-router": "^4.0.3",
     "vue-svg-inline-plugin": "^2.2.3",
     "vue-toastification": "^2.0.0-rc.5",

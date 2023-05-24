@@ -59,6 +59,10 @@ import Accordion from "primevue/accordion";
 import "./styles/toasts.scss";
 import SuccessIcon from "@/components/features/SuccessIcon.vue";
 import ErrorIcon from "@/components/features/ErrorIcon.vue";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { VueRecaptchaPlugin } from 'vue-recaptcha/head'
+
 
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
@@ -96,6 +100,9 @@ app.use(router)
   .use(PrimeVue)
   // .use(Vidle)
   .use(VueSvgInlinePlugin)
+  .use(VueRecaptchaPlugin, {
+    v2SiteKey: '6Lc2fTYmAAAAAEQSYDkeecH1xPPvVD3T1UrBbpac'
+   })
   .provide('logger', logger)
   .component('Button', Button)
   .component('InputText', InputText)
