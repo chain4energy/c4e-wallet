@@ -259,8 +259,8 @@ export const useUserStore = defineStore({
       }
       logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.connectionInfo));
     },
-    async topUpAccount(address: string, successCallback: () => void , failCallback: (errorType: FaucetErrorEnum) => void){
-        await factoryApi.faucetApi().topUpAccount(address).then(res => {
+    async topUpAccount(address: string, recaptchaToken: string, successCallback: () => void , failCallback: (errorType: FaucetErrorEnum) => void){
+        await factoryApi.faucetApi().topUpAccount(address, recaptchaToken).then(res => {
           if(res.isSuccess()) {
             if(this.account.address) {
               fetchBalance(this.connectionInfo, this, true);
