@@ -10,6 +10,7 @@ import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
 import axios from "axios";
 import { EmailPairingRequest } from "@/models/user/emailPairing";
+import {usePublicSalesStore} from "@/store/publicSales.store";
 
 interface UserServiceState {
   _isLoggedIn: boolean,
@@ -104,13 +105,17 @@ export const useUserServiceStore = defineStore({
         } else {
           onFail();
         }
-
       });
     },
-    async activateEmailAccount(code: string, lockscreen = true) {
+    async activateEmailAccount(code: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().activateEmailAccount(code, lockscreen).then(responseDate => {
-        this.setTokens(responseDate);
-        this.loginType = LoginTypeEnum.EMAIL;
+        if(responseDate.isSuccess()) {
+          this.setTokens(responseDate);
+          this.loginType = LoginTypeEnum.EMAIL;
+          onSuccess();
+        } else {
+          onFail();
+        }
       });
     },
     setTokens(responseDate: RequestResponse<Jwt, ErrorData<UserServiceErrData>>){
@@ -143,7 +148,9 @@ export const useUserServiceStore = defineStore({
     },
     logOutAccount(){
       clearAuthTokens();
+      usePublicSalesStore().logOutAccount();
       this.loginType = LoginTypeEnum.NONE;
+      this._isLoggedIn = false;
     }
   },
   getters: {

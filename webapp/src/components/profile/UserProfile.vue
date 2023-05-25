@@ -20,7 +20,7 @@
     </div>
 
     <div class="userProfile__extra">
-      <Button
+      <Button v-if="useUserServiceStore().isLoggedIn"
         class="p-button p-component secondary userProfile__btn"
         @click="useUserServiceStore().logOutAccount()">Logout</Button>
     </div>

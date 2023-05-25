@@ -3,6 +3,8 @@ import {Coin} from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import factoryApi from "@/api/factory.api";
 import {InitPaymentSessionRequest, Transaction} from "@/models/saleServiceCommons";
+import {clearAuthTokens} from "axios-jwt";
+import {LoginTypeEnum} from "@/store/userService.store";
 export interface PublicSalesState{
   total: Coin | undefined,
   parts: parts | undefined,
@@ -136,6 +138,9 @@ export const usePublicSalesStore = defineStore({
     setCurrentPrice(){
       this.c4eToUSDC = 0.18;
     },
+    logOutAccount(){
+      this.tokenReservations = [];
+    }
   },
   getters:{
     getTotal(): Coin | undefined{
