@@ -24,7 +24,6 @@ data:
         server_name  wallet-dev.c4e.io;
     
         location /api-devnet/ {
-            rewrite /api-devnet/(.*) /api/$1  break;
             proxy_pass http://api-gateway-and-composer.publicsale-dev.svc.cluster.local/;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
