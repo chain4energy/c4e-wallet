@@ -91,6 +91,7 @@ export default {
     PAIR_EMAIL: '/api/publicsale-service/initEmailPairing',
     RESERVE_TOKENS: '/api/publicsale-service/token/reservation',
     INIT_PAYMENT_SESSION: '/api/publicsale-service/payment/initSession',
-    TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations'
+    TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations',
+    KYC_INIT_SESSION: '/api/publicsale-service/kyc/init'
   }
 };

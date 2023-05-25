@@ -132,7 +132,10 @@ const address = computed(() =>{
 });
 
 const onKycStart = () => {
-  router.push({name: 'kyc'});
+  useUserServiceStore().initKycSession(true).then(() => {
+    router.push({name: 'kyc'});
+  });
+
 };
 </script>
 

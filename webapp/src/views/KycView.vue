@@ -1,8 +1,5 @@
 <template>
   <div>
-    <Button
-      class="p-button p-component secondary"
-      @click="onKycStart">Start KYC</Button>
     <div id="app">
       <synaps-verify
         :sessionId="sessionId"
@@ -27,9 +24,7 @@ const sessionId = computed(() => {
   return userServiceStore.kycSessionId;
 });
 
-const onKycStart = () => {
-  useUserServiceStore().initKycSession(true);
-};
+
 </script>
 
 

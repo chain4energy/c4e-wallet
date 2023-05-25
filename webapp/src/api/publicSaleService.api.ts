@@ -22,6 +22,7 @@ import {
   ReserveTokensRequest,
   ReserveTokensResponse, TokenReservationResponse
 } from "@/models/saleServiceCommons";
+import {InitSessionResponse} from "@/models/user/kyc";
 
 export class PublicSaleServiceApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
@@ -89,4 +90,8 @@ export class PublicSaleServiceApi extends BaseApi {
   public async fetchReservationList(lockscreen: boolean): Promise<RequestResponse<TokenReservationResponse[], ErrorData<UserServiceErrData>>> {
     return this.publicSaleServiceGetCall<TokenReservationResponse[], UserServiceErrData>(queries.publicSaleService.TOKEN_RESERVATION_LIST, lockscreen);
   }
+  public async initKycSession(lockscreen: boolean): Promise<RequestResponse<InitSessionResponse, ErrorData<UserServiceErrData>>> {
+    return this.publicSaleServiceGetCall<InitSessionResponse, UserServiceErrData>(queries.publicSaleService.KYC_INIT_SESSION, lockscreen);
+  }
+
 }

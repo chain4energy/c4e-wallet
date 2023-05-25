@@ -121,7 +121,7 @@ export const useUserServiceStore = defineStore({
       });
     },
     async initKycSession(lockscreen = true) {
-      await apiFactory.userServiceApi().initKycSession(lockscreen).then(responseDate => {
+      await apiFactory.publicSaleServiceApi().initKycSession(lockscreen).then(responseDate => {
         console.log(responseDate);
         if(responseDate.isSuccess() && responseDate.data) {
           this.kycSessionId = responseDate.data.session_id;
