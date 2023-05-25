@@ -10,11 +10,22 @@
 import OtpComponent from "@/components/buyTokens/OtpComponent.vue";
 import {ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
+import {useToast} from "vue-toastification";
+import {useRouter} from "vue-router";
 
 const activationCode = ref<string>('');
 const onActivateClick = () => {
 
-  useUserServiceStore().activateEmailAccount(activationCode.value, true);
+  useUserServiceStore().activateEmailAccount(activationCode.value, onSuccess, onError, true);
+};
+const toast = useToast();
+const router = useRouter();
+const onSuccess = () => {
+  toast.success('Account activated');
+  router.push({name: 'publicSaleInfo'});
+};
+const onError = () => {
+  toast.error('An error occurred');
 };
 </script>
 
