@@ -8,10 +8,14 @@ import {RequestResponse} from "@/models/request-response";
 import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
+import axios from "axios";
+import { EmailPairingRequest } from "@/models/user/emailPairing";
 
 interface UserServiceState {
   _isLoggedIn: boolean,
-  loginType: LoginTypeEnum
+  loginType: LoginTypeEnum,
+  paired: boolean,
+  userEmail: string | undefined,
 }
 
 export enum LoginTypeEnum {
@@ -26,7 +30,9 @@ export const useUserServiceStore = defineStore({
   state: (): UserServiceState => {
     return {
       _isLoggedIn: false,
-      loginType: LoginTypeEnum.NONE
+      loginType: LoginTypeEnum.NONE,
+      paired: false,
+      userEmail: undefined
     };
   },
   actions: {
@@ -34,7 +40,7 @@ export const useUserServiceStore = defineStore({
       this._isLoggedIn = true;
     },
     async authWalletInit(initWalletAuthRequest: InitWalletAuthRequest,onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-       const initWalletAuthResponse = await apiFactory.userServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
+       const initWalletAuthResponse = await apiFactory.publicSaleServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
        if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
          await apiFactory.accountApi().sign(useUserStore().connectionInfo, initWalletAuthResponse.data.dataToSign).then(signedDataResponse => {
            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -46,7 +52,7 @@ export const useUserServiceStore = defineStore({
        }
     },
     async authMetamaskWalletInit(initWalletAuthRequest: InitWalletAuthRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      const initWalletAuthResponse = await apiFactory.userServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
+      const initWalletAuthResponse = await apiFactory.publicSaleServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
       if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
         await apiFactory.accountApi().signMetamask(initWalletAuthResponse.data.dataToSign).then(signedDataResponse => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -58,7 +64,7 @@ export const useUserServiceStore = defineStore({
       }
     },
     async createEmailAccount(createAccountRequest: CreateAccountRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      return await apiFactory.userServiceApi().createEmailAccount(createAccountRequest, lockscreen).then(res => {
+      return await apiFactory.publicSaleServiceApi().createEmailAccount(createAccountRequest, lockscreen).then(res => {
         if(res.isSuccess()) {
           onSuccess();
         } else {
@@ -67,7 +73,7 @@ export const useUserServiceStore = defineStore({
       });
     },
     async authWalletKeplr(walletAuthData: WalletAuthRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true, ) {
-      return await apiFactory.userServiceApi().authWalletKeplr(walletAuthData, lockscreen).then(responseDate => {
+      return await apiFactory.publicSaleServiceApi().authWalletKeplr(walletAuthData, lockscreen).then(responseDate => {
         if(responseDate.isSuccess()) {
           onSuccess();
           this.setTokens(responseDate);
@@ -78,7 +84,7 @@ export const useUserServiceStore = defineStore({
       });
     },
     async authWalletMetamask(walletAuthData: WalletAuthRequest,  onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.userServiceApi().authWalletMetamask(walletAuthData, lockscreen).then(responseDate => {
+      await apiFactory.publicSaleServiceApi().authWalletMetamask(walletAuthData, lockscreen).then(responseDate => {
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
           this.loginType = LoginTypeEnum.METAMASK;
@@ -89,9 +95,10 @@ export const useUserServiceStore = defineStore({
       });
     },
     async authEmailAccount(emailAccount: PasswordAuthenticateRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.userServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
+      await apiFactory.publicSaleServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
+          this.userEmail = emailAccount.login;
           this.loginType = LoginTypeEnum.EMAIL;
           onSuccess();
         } else {
@@ -101,8 +108,9 @@ export const useUserServiceStore = defineStore({
       });
     },
     async activateEmailAccount(code: string, lockscreen = true) {
-      await apiFactory.userServiceApi().activateEmailAccount(code, lockscreen).then(responseDate => {
+      await apiFactory.publicSaleServiceApi().activateEmailAccount(code, lockscreen).then(responseDate => {
         this.setTokens(responseDate);
+        this.loginType = LoginTypeEnum.EMAIL;
       });
     },
     setTokens(responseDate: RequestResponse<Jwt, ErrorData<UserServiceErrData>>){
@@ -121,12 +129,37 @@ export const useUserServiceStore = defineStore({
         //TODO: toast - log in error
       }
     },
+    async provideEmailAddress(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().pairEmail(emailAccount, lockscreen).then(responseDate => {
+        if(responseDate.isSuccess()) {
+          this.setIsLoggedIn();
+          this.loginType = LoginTypeEnum.EMAIL;
+          this.paired = true;
+          onSuccess();
+        } else {
+          onFail();
+        }
+      });
+    },
     logOutAccount(){
       clearAuthTokens();
       this.loginType = LoginTypeEnum.NONE;
     }
   },
-  getters: {},
+  getters: {
+    isLoggedIn():boolean {
+      return this._isLoggedIn;
+    },
+    getLoginType(): LoginTypeEnum {
+      return this.loginType;
+    },
+    isPaired(): boolean{
+      return this.paired;
+    },
+    getUserEmail(): string| undefined{
+      return this.userEmail;
+    }
+  },
   persist: {
     enabled: true
   }

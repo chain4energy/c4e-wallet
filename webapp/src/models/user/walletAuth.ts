@@ -23,3 +23,5 @@ export interface WalletAuthRequest {
   processID: string,
   signedData: string
 }
+
+

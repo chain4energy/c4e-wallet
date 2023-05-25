@@ -79,19 +79,18 @@ export default {
   airdrop: {
     AIRDROP_INFO: 'airdropInfo.json'
   },
-  userService:{
-    REFRESH_TOKEN: '/api/user-service/refresh',
-    EMAIL_CREATE_ACCOUNT: '/api/user-service/register',
-    AUTHENTICATE_EMAIL: '/api/user-service/auth/password',
-    AUTHENTICATE_KEPLR: '/api/user-service/auth/keplr',
-    AUTHENTICATE_METAMASK: '/api/user-service/auth/metamask',
-    AUTHENTICATE_DOUBLE_WALLET: '/api/user-service/auth/doubleWallet',
-    INIT_WALLET_AUTH: '/api/user-service/initWalletAuth',
-    ACTIVATE_ACCOUNT: '/api/user-service/activate/{activationCode}'
-  },
-  saleService: {
-    RESERVE_TOKENS: '/api/sale-service/token/reservation',
-    INIT_PAYMENT_SESSION: '/api/sale-service/payment/initSession',
-    TOKEN_RESERVATION_LIST: '/api/sale-service/token/reservations'
+  publicSaleService: {
+    REFRESH_TOKEN: '/api/publicsale-service/refresh',
+    EMAIL_CREATE_ACCOUNT: '/api/publicsale-service/register',
+    AUTHENTICATE_EMAIL: '/api/publicsale-service/auth/password',
+    AUTHENTICATE_KEPLR: '/api/publicsale-service/auth/keplr',
+    AUTHENTICATE_METAMASK: '/api/publicsale-service/auth/metamask',
+    AUTHENTICATE_DOUBLE_WALLET: '/api/publicsale-service/auth/doubleWallet',
+    INIT_WALLET_AUTH: '/api/publicsale-service/initWalletAuth',
+    ACTIVATE_ACCOUNT: '/api/publicsale-service/activate/{activationCode}',
+    PAIR_EMAIL: '/api/publicsale-service/initEmailPairing',
+    RESERVE_TOKENS: '/api/publicsale-service/token/reservation',
+    INIT_PAYMENT_SESSION: '/api/publicsale-service/payment/initSession',
+    TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations'
   }
 };

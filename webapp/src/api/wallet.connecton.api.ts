@@ -17,7 +17,8 @@ export enum ConnectionType {
   Disconnected,
   Cosmostation,
   Metamask,
-  Leap
+  Leap,
+  Email,
 }
 
 export class ConnectionInfo {
