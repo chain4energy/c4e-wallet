@@ -46,9 +46,7 @@
 <script setup lang="ts">
 
 import {useRouter} from "vue-router";
-import {onBeforeMount, onMounted, reactive, ref, watch} from "vue";
-import {Form, Field} from "vee-validate";
-import {useSaleServiceStore} from "@/store/saleService.store";
+import {onMounted, reactive, ref, watch} from "vue";
 import Dialog from 'primevue/dialog';
 import {useToast} from "vue-toastification";
 import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
@@ -81,11 +79,11 @@ watch(calculator, (next)=>{
   }
 });
 
-const saleStore = useSaleServiceStore();
+const publicSaleStore = usePublicSalesStore();
 const onBuy = () => {
   console.log(usdc.value);
   if(c4e.value)
-    saleStore.reserveTokens(Number(c4e.value), onSuccess, onFail);
+    publicSaleStore.reserveTokens(Number(c4e.value), onSuccess, onFail);
 };
 
 const toast = useToast();

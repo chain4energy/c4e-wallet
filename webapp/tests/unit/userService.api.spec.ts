@@ -19,7 +19,7 @@ import {useUserStore} from "@/store/user.store";
 
 jest.mock("axios");
 const mockedAxios = mockAxiosJWT();
-const api = apiFactory.userServiceApi();
+const api = apiFactory.publicSaleServiceApi();
 
 describe('user service api tests', () => {
   beforeEach(() => {

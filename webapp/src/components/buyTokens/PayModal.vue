@@ -81,7 +81,6 @@ import Dialog from "primevue/dialog";
 import {computed, onBeforeMount, ref, watch} from "vue";
 import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import {Currency} from "@/models/currency";
-import {useSaleServiceStore} from "@/store/saleService.store";
 import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
 
 const props = defineProps<{
@@ -120,7 +119,7 @@ const back = () => {
   step.value = 1;
 };
 const onPay = () => {
-  useSaleServiceStore().initPaymentSession({orderId: props.reservation.orderId, offeredCurrencyCode: currency_two.value, offeredAmount: Number((Math.round(amountTwo.value * 100) / 100).toFixed(2))})
+  usePublicSalesStore().initPaymentSession({orderId: props.reservation.orderId, offeredCurrencyCode: currency_two.value, offeredAmount: Number((Math.round(amountTwo.value * 100) / 100).toFixed(2))})
     .then(transactionId => {
       if(transactionId) {
         window.dispatchEvent(
