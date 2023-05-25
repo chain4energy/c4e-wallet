@@ -80,8 +80,9 @@
         </div>
         <div>
           <Button
+            :disabled="!LoggedInAsEmail || paired"
             class="p-button p-component secondary accountInfo__btn"
-            @click="console.log(111)">Provide address</Button>
+            @click="provideAccountAddress">Provide address</Button>
         </div>
       </div>
     </div>
@@ -94,12 +95,22 @@
 import { computed, onMounted, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
 import { usePublicSalesStore } from "@/store/publicSales.store";
+import { LoginTypeEnum, useUserServiceStore } from "@/store/userService.store";
+
+const emit = defineEmits(['addEmail']);
 import {useRouter} from "vue-router";
 
 const props = defineProps<{
   accordion: boolean
 }>();
 
+const LoggedInAsEmail = computed(() => {
+  return useUserServiceStore().isLoggedIn && useUserServiceStore().getLoginType === LoginTypeEnum.EMAIL;
+});
+
+const paired = computed(() => {
+  return useUserServiceStore().isPaired;
+})
 const router = useRouter();
 const showClosedTab = ref(true);
 
@@ -110,11 +121,14 @@ onMounted(() => {
   }
 });
 
+function provideAccountAddress(){
+  emit('addEmail');
+}
 
 const open = ref(false);
 
 const address = computed(() =>{
-  return useUserStore().getAccount.address
+  return useUserStore().getAccount.address;
 });
 
 const onKycStart = () => {

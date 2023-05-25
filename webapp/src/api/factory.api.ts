@@ -10,9 +10,8 @@ import {AirDropApi} from "@/api/airDrop.api";
 import {applyAuthTokenInterceptor, getBrowserLocalStorage, IAuthTokens, TokenRefreshRequest} from "axios-jwt";
 import { useConfigurationStore } from "@/store/configuration.store";
 import queries from "@/api/queries";
-import {UserServiceApi} from "@/api/userService.api";
-import {SaleServiceApi} from "@/api/saleService.api";
 import {FaucetApi} from "@/api/faucet.api";
+import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
 
 let testfileName = '';
 
@@ -31,8 +30,7 @@ class ApiFactory {
   private readonly _walletApi = new WalletConnectionApi();
   private readonly _keybaseApi = new KeybaseApi(() => this._axios);
   private readonly _airDropApi = new AirDropApi(() => this._axios);
-  private readonly _userServiceApi = new UserServiceApi(() => this._axiosJwt);
-  private readonly _saleServiceApi = new SaleServiceApi(() => this._axiosJwt);
+  private readonly _publicSaleServiceApi = new PublicSaleServiceApi(() => this._axiosJwt);
   private readonly _faucetApi = new FaucetApi(() => this._axios)
 
   private testMode = false;
@@ -43,7 +41,7 @@ class ApiFactory {
     // Important! Do NOT use the axios instance that you supplied to applyAuthTokenInterceptor (in our case 'axiosInstance')
     // because this will result in an infinite loop when trying to refresh the token.
     // Use the global axios client or a different instance
-    const response = await axios.post(useConfigurationStore().config.userServiceURL + queries.userService.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
+    const response = await axios.post(useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
 
     // If your backend supports rotating refresh tokens, you may also choose to return an object containing both tokens:
     // return {
@@ -90,11 +88,8 @@ class ApiFactory {
   public airDropApi(): AirDropApi{
     return this._airDropApi;
   }
-  public userServiceApi(): UserServiceApi{
-    return this._userServiceApi;
-  }
-  public saleServiceApi(): SaleServiceApi {
-    return this._saleServiceApi;
+  public publicSaleServiceApi(): PublicSaleServiceApi {
+    return this._publicSaleServiceApi;
   }
   public faucetApi(): FaucetApi {
     return this._faucetApi;

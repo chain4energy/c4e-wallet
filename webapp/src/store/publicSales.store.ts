@@ -2,7 +2,9 @@ import { defineStore } from "pinia";
 import {Coin} from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import factoryApi from "@/api/factory.api";
-import {Transaction} from "@/models/saleServiceCommons";
+import {InitPaymentSessionRequest, Transaction} from "@/models/saleServiceCommons";
+import {clearAuthTokens} from "axios-jwt";
+import {LoginTypeEnum} from "@/store/userService.store";
 export interface PublicSalesState{
   total: Coin | undefined,
   parts: parts | undefined,
@@ -82,7 +84,7 @@ export const usePublicSalesStore = defineStore({
       };
     },
     fetchTokenReservations(lockscreen = true){
-      return factoryApi.saleServiceApi().fetchReservationList(lockscreen).then(res => {
+      return factoryApi.publicSaleServiceApi().fetchReservationList(lockscreen).then(res => {
         if(res.isSuccess() && res.data) {
           const denom = useConfigurationStore().config.tokenReservationDenom;
           const transactions = Array<TokenReservation>();
@@ -117,12 +119,28 @@ export const usePublicSalesStore = defineStore({
           this.tokenReservations = transactions;
         }
       });
-
-
+    },
+    reserveTokens(amount: number, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      return factoryApi.publicSaleServiceApi().reserveTokens(amount, lockscreen).then(res => {
+        if(res.isSuccess()) {
+          onSuccess();
+        } else {
+          onFail();
+        }
+      });
+    },
+    initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen = true) {
+      return factoryApi.publicSaleServiceApi().initPaymentSession(initPaymentSessionRequest, lockscreen).then(res => {
+        console.log(res);
+        return res.data?.transactionId;
+      });
     },
     setCurrentPrice(){
       this.c4eToUSDC = 0.18;
     },
+    logOutAccount(){
+      this.tokenReservations = [];
+    }
   },
   getters:{
     getTotal(): Coin | undefined{
