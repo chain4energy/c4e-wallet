@@ -11,6 +11,7 @@ import {Jwt} from "@/models/user/jwt";
 import axios from "axios";
 import { EmailPairingRequest } from "@/models/user/emailPairing";
 import {usePublicSalesStore} from "@/store/publicSales.store";
+import {KycStatus, KycStep, KycStepName, KycTier} from "@/models/user/kyc";
 
 interface UserServiceState {
   _isLoggedIn: boolean,
@@ -18,6 +19,7 @@ interface UserServiceState {
   kycSessionId: string
   paired: boolean,
   userEmail: string | undefined,
+  kycSteps: KycStep[]
 }
 
 export enum LoginTypeEnum {
@@ -35,7 +37,8 @@ export const useUserServiceStore = defineStore({
       loginType: LoginTypeEnum.NONE,
       kycSessionId: '',
       paired: false,
-      userEmail: undefined
+      userEmail: undefined,
+      kycSteps: Array<KycStep>()
     };
   },
   actions: {
@@ -129,6 +132,14 @@ export const useUserServiceStore = defineStore({
 
       });
     },
+    async fetchKycStatus(sessionId: string, lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().synapsFetchSessionDetails(sessionId,lockscreen).then(responseDate => {
+        if(responseDate.isSuccess() && responseDate.data) {
+          this.kycSteps = responseDate.data.kycStep;
+        }
+
+      });
+    },
     setTokens(responseDate: RequestResponse<Jwt, ErrorData<UserServiceErrData>>){
       if (responseDate.isSuccess()) {
         // save tokens to storage
@@ -179,7 +190,12 @@ export const useUserServiceStore = defineStore({
     },
     getKycSessionId(): string {
       return this.kycSessionId;
-    }
+    },
+    getStepStatus(): (stepName: KycStepName) => KycStatus | undefined {
+      return (stepName ) => {
+        return this.kycSteps.find((step) => step.name == stepName)?.state;
+      };
+    },
   },
   persist: {
     enabled: true

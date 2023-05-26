@@ -93,5 +93,8 @@ export default {
     INIT_PAYMENT_SESSION: '/api/publicsale-service/payment/initSession',
     TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations',
     KYC_INIT_SESSION: '/api/publicsale-service/kyc/init'
+  },
+  synaps: {
+    OVERVIEW: 'https://individual-api.synaps.io/v3/onboarding/overview'
   }
 };

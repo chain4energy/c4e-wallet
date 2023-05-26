@@ -22,7 +22,11 @@ import {
   ReserveTokensRequest,
   ReserveTokensResponse, TokenReservationResponse
 } from "@/models/saleServiceCommons";
-import {InitSessionResponse} from "@/models/user/kyc";
+import {InitSessionResponse, KycTier, SessionOverviewResponse} from "@/models/user/kyc";
+import {ValidatorsResponse} from "@/models/blockchain/validator";
+import {mapValidators} from "@/models/mapper/validator.mapper";
+import {mapKycSteps} from "@/models/mapper/synaps.mapper";
+import {KeybaseErrorData} from "@/models/keybase/keybase";
 
 export class PublicSaleServiceApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
@@ -94,4 +98,31 @@ export class PublicSaleServiceApi extends BaseApi {
     return this.publicSaleServiceGetCall<InitSessionResponse, UserServiceErrData>(queries.publicSaleService.KYC_INIT_SESSION, lockscreen);
   }
 
+  public async synapsFetchSessionDetails(sessionId: string, lockscreen: boolean): Promise<RequestResponse<KycTier, ErrorData<UserServiceErrData>>> {
+    const mapData = (hasureData: SessionOverviewResponse | undefined) => {
+      return mapKycSteps(hasureData);
+    };
+    const messages = {
+      errorResponseName: 'Synaps data Error',
+      errorResponseMassage: 'Synaps data error received',
+      errorResponseToast: 'Synaps data Error: ',
+      mappingErrorMassage: 'Synaps data mapping error: ',
+    };
+    const isResponseError = (response: RequestResponse<SessionOverviewResponse, ErrorData<UserServiceErrData>>) => {return response.isError();};
+    return this.axiosWith200ErrorCall<KycTier, SessionOverviewResponse, UserServiceErrData>({
+        method: 'GET',
+        url: queries.synaps.OVERVIEW,
+      headers: {
+          'Session-Id': sessionId
+      }
+      },
+      mapData,
+      lockscreen,
+      null,
+      'synapsFetchSessionDetails - ',
+      isResponseError,
+      true,
+      messages
+    );
+  }
 }
