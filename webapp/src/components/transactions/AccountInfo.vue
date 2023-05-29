@@ -4,7 +4,7 @@
       <div class="accountInfo__closedItem">
         <div class="accountInfo__closedHeader">
           <div class="accountInfo__headMainTxt">Your account</div>
-          <div class="accountInfo__headTxt" style="margin-left: 5px"> (email)</div>
+          <div class="accountInfo__headTxt" style="margin-left: 5px">Type: {{getLoginType()}}</div>
         </div>
         <div class="accountInfo__headTxt">Email: somebody@test.com</div>
       </div>
@@ -12,7 +12,7 @@
         <div class="accountInfo__closedHeader">
           <div class="accountInfo__headMainTxt">KYC level</div>
         </div>
-        <div class="accountInfo__headTxt">None</div>
+        <div class="accountInfo__headTxt">Tier {{useUserServiceStore().getKycTier}}</div>
       </div>
       <div class="accountInfo__closedItem">
         <div class="accountInfo__closedHeader">
@@ -37,7 +37,7 @@
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
         <div class="accountInfo__head">
           <p class="accountInfo__headMainTxt">Your account</p>
-          <p class="accountInfo__headTxt">Type: email</p>
+          <p class="accountInfo__headTxt">Type: {{getLoginType()}}</p>
           <p class="accountInfo__headTxt">Email: somebody@test.com</p>
         </div>
         <div v-if="showClosedTab" @click="open = !open" class="accountInfo__closedItem accountInfo__arrow accountInfo__arrow-rotate" >
@@ -51,7 +51,7 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <p class="accountInfo__headMainTxt">KYC level</p>
-          <p class="accountInfo__headTxt">None</p>
+          <p class="accountInfo__headTxt">Tier {{useUserServiceStore().getKycTier}}</p>
         </div>
         <div>
           <Button
@@ -92,13 +92,13 @@
 
 <script setup lang="ts">
 
-import { computed, onMounted, ref } from "vue";
-import { useUserStore } from "@/store/user.store";
-import { usePublicSalesStore } from "@/store/publicSales.store";
-import { LoginTypeEnum, useUserServiceStore } from "@/store/userService.store";
+import {computed, onMounted, ref} from "vue";
+import {useUserStore} from "@/store/user.store";
+import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
+import {useRouter} from "vue-router";
+import {useI18n} from "vue-i18n";
 
 const emit = defineEmits(['addEmail']);
-import {useRouter} from "vue-router";
 
 const props = defineProps<{
   accordion: boolean
@@ -136,6 +136,18 @@ const onKycStart = () => {
     router.push({name: 'kyc'});
   });
 
+};
+const i18n = useI18n();
+const getLoginType = () => {
+  const loginType = useUserServiceStore().getLoginType;
+  if(loginType == LoginTypeEnum.EMAIL) {
+    return i18n.t('ENUMS.LOGIN_TYPE.EMAIL');
+  } else if(loginType == LoginTypeEnum.KEPLR) {
+    return i18n.t('ENUMS.LOGIN_TYPE.KEPLR');
+  } else if(loginType == LoginTypeEnum.METAMASK) {
+    return i18n.t('ENUMS.LOGIN_TYPE.METAMASK');
+  }
+  return i18n.t('ENUMS.LOGIN_TYPE.NONE');
 };
 </script>
 

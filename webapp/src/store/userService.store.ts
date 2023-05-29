@@ -2,16 +2,15 @@ import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
 import {clearAuthTokens, setAuthTokens} from "axios-jwt";
-import {InitWalletAuthRequest, InitWalletAuthResponse, WalletAuthRequest} from "@/models/user/walletAuth";
+import {InitWalletAuthRequest, WalletAuthRequest} from "@/models/user/walletAuth";
 import {useUserStore} from "@/store/user.store";
 import {RequestResponse} from "@/models/request-response";
 import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
-import axios from "axios";
-import { EmailPairingRequest } from "@/models/user/emailPairing";
+import {EmailPairingRequest} from "@/models/user/emailPairing";
 import {usePublicSalesStore} from "@/store/publicSales.store";
-import {KycStatus, KycStep, KycStepName, KycTier} from "@/models/user/kyc";
+import {KycStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum} from "@/models/user/kyc";
 
 interface UserServiceState {
   _isLoggedIn: boolean,
@@ -28,6 +27,7 @@ export enum LoginTypeEnum {
   METAMASK,
   NONE
 }
+
 
 export const useUserServiceStore = defineStore({
   id: 'userServiceStore',
@@ -196,6 +196,58 @@ export const useUserServiceStore = defineStore({
         return this.kycSteps.find((step) => step.name == stepName)?.state;
       };
     },
+    getKycTierSteps(): (kycTier: KycTierEnum) => KycStepInfo[] {
+      return (kycTier ) => {
+        if(kycTier == KycTierEnum.TIER_1) {
+          return [
+            {
+              name: KycStepName.IDENTITY,
+              state: this.getStepStatus(KycStepName.IDENTITY)
+            }];
+        } else if(kycTier == KycTierEnum.TIER_2) {
+          return [
+            {
+              name: KycStepName.IDENTITY,
+              state: this.getStepStatus(KycStepName.IDENTITY)
+            },
+            {
+              name: KycStepName.LIVENESS,
+              state: this.getStepStatus(KycStepName.LIVENESS)
+            },
+          ];
+        } else if(kycTier == KycTierEnum.TIER_3) {
+          return [
+            {
+              name: KycStepName.IDENTITY,
+              state: this.getStepStatus(KycStepName.IDENTITY)
+            },
+            {
+              name: KycStepName.LIVENESS,
+              state: this.getStepStatus(KycStepName.LIVENESS)
+            },
+            {
+              name: KycStepName.PHONE,
+              state: this.getStepStatus(KycStepName.PHONE)
+            },
+          ];
+        }
+        return [];
+      };
+    },
+    getKycTier(): KycTierEnum {
+      if(this.getStepStatus(KycStepName.IDENTITY) == KycStatus.VALIDATED) {
+        if(this.getStepStatus(KycStepName.LIVENESS) == KycStatus.VALIDATED) {
+          if(this.getStepStatus(KycStepName.PHONE) == KycStatus.VALIDATED) {
+            return KycTierEnum.TIER_3;
+          } else {
+            return KycTierEnum.TIER_2;
+          }
+        } else {
+          return KycTierEnum.TIER_1;
+        }
+      }
+      return KycTierEnum.TIER_0;
+    }
   },
   persist: {
     enabled: true
