@@ -59,6 +59,11 @@ export const useUserServiceStore = defineStore({
          onFail();
        }
     },
+    async sendMetamaskTransaction(amount: string) {
+      await apiFactory.accountApi().sendTransaction( amount).then(res => {
+        console.log(res)
+      });
+    },
     async authMetamaskWalletInit(initWalletAuthRequest: InitWalletAuthRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       const initWalletAuthResponse = await apiFactory.publicSaleServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
       if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
@@ -189,6 +194,7 @@ export const useUserServiceStore = defineStore({
       this.loginType = LoginTypeEnum.NONE;
       this._isLoggedIn = false;
       this.paired = false;
+      this.kycSteps = [];
     }
   },
   getters: {
