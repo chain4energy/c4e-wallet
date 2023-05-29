@@ -82,6 +82,9 @@ export class PublicSaleServiceApi extends BaseApi {
   public pairEmail(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>>{
     return this.publicSaleServicePostCall<EmailPairingRequest, Jwt, UserServiceErrData>(queries.publicSaleService.PAIR_EMAIL, emailPairing, lockscreen);
   }
+  public pairMetamask(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>>{
+    return this.publicSaleServicePostCall<EmailPairingRequest, Jwt, UserServiceErrData>(queries.publicSaleService.PAIR_METAMASK, emailPairing, lockscreen);
+  }
 
   public async reserveTokens(amount: number, lockscreen: boolean): Promise<RequestResponse<ReserveTokensResponse, ErrorData<UserServiceErrData>>> {
     return this.publicSaleServicePostCall<ReserveTokensRequest, ReserveTokensResponse, UserServiceErrData>(queries.publicSaleService.RESERVE_TOKENS, {amount: amount}, lockscreen);
