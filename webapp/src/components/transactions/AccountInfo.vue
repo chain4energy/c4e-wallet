@@ -80,9 +80,9 @@
         </div>
         <div>
           <Button
-            :disabled="!LoggedInAsEmail || paired"
+            :disabled="!isLoggedIn || !isLogedInInService || paired"
             class="p-button p-component secondary accountInfo__btn"
-            @click="provideAccountAddress">Provide address</Button>
+            @click="submit">Provide address</Button>
         </div>
       </div>
     </div>
@@ -94,22 +94,26 @@
 
 import { computed, onMounted, ref } from "vue";
 import { useUserStore } from "@/store/user.store";
-import { usePublicSalesStore } from "@/store/publicSales.store";
 import { LoginTypeEnum, useUserServiceStore } from "@/store/userService.store";
+import { useToast } from "vue-toastification";
 
-const emit = defineEmits(['addEmail']);
+const emit = defineEmits(['openModal']);
 
 const props = defineProps<{
   accordion: boolean
 }>();
 
-const LoggedInAsEmail = computed(() => {
-  return useUserServiceStore().isLoggedIn && useUserServiceStore().getLoginType === LoginTypeEnum.EMAIL;
+const isLoggedIn = computed(() =>{
+  return useUserStore().isLoggedIn;
+});
+
+const isLogedInInService = computed(() => {
+  return useUserServiceStore().isLoggedIn;
 });
 
 const paired = computed(() => {
   return useUserServiceStore().isPaired;
-})
+});
 const showClosedTab = ref(true);
 
 onMounted(() => {
@@ -119,8 +123,8 @@ onMounted(() => {
   }
 });
 
-function provideAccountAddress(){
-  emit('addEmail');
+function submit(){
+  emit('openModal');
 }
 
 const open = ref(false);

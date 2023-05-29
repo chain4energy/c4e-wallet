@@ -17,6 +17,7 @@ interface UserServiceState {
   loginType: LoginTypeEnum,
   paired: boolean,
   userEmail: string | undefined,
+  metamaskAddress : string | undefined,
 }
 
 export enum LoginTypeEnum {
@@ -33,7 +34,8 @@ export const useUserServiceStore = defineStore({
       _isLoggedIn: false,
       loginType: LoginTypeEnum.NONE,
       paired: false,
-      userEmail: undefined
+      userEmail: undefined,
+      metamaskAddress : undefined,
     };
   },
   actions: {
@@ -146,11 +148,25 @@ export const useUserServiceStore = defineStore({
         }
       });
     },
+    async pairMetamaskAddress(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().pairMetamask(emailAccount, lockscreen).then(responseDate => {
+        if(responseDate.isSuccess()) {
+          this.setIsLoggedIn();
+          this.loginType = LoginTypeEnum.EMAIL;
+          this.paired = true;
+          onSuccess();
+        } else {
+          onFail();
+        }
+      });
+    },
+
     logOutAccount(){
       clearAuthTokens();
       usePublicSalesStore().logOutAccount();
       this.loginType = LoginTypeEnum.NONE;
       this._isLoggedIn = false;
+      this.paired = false;
     }
   },
   getters: {
