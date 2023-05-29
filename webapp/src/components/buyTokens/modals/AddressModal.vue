@@ -2,22 +2,21 @@
 <div class="addressModal">
   <div class="addressModal__background" @click="$emit('close')"></div>
   <div class="addressModal__holder">
-    <form class="addressModal__form" @submit="submit">
-      <input type="email" v-model="address"/>
+    <p>Keplr Address: {{usersWallet}}</p>
+    <p v-if="mode === LoginTypeEnum.EMAIL">Email: {{usersEmail}}</p>
+    <p v-if="mode === LoginTypeEnum.METAMASK">Metamask address</p>
       <Button @click="submit" :label="'submit'"/>
-    </form>
-
   </div>
 </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onUnmounted, ref } from "vue";
-import {useUserServiceStore} from "@/store/userService.store";
+import { LoginTypeEnum, useUserServiceStore } from "@/store/userService.store";
 import { useToast } from "vue-toastification";
+import { useUserStore } from "@/store/user.store";
 
 const toast = useToast();
-const address = ref('');
 
 document.body.style.overflow = "hidden";
 onUnmounted(() => {
@@ -30,18 +29,46 @@ const usersEmail = computed(() => {
   return useUserServiceStore().getUserEmail;
 });
 
+const usersWallet = computed(() => {
+  return useUserStore().getAccount.address;
+});
+
+const mode = computed(() => {
+  return useUserServiceStore().getLoginType;
+})
+
 function submit(){
-  if(usersEmail.value){
+  switch (useUserServiceStore().getLoginType){
+    case LoginTypeEnum.EMAIL: submitEmail();
+      break;
+    case LoginTypeEnum.METAMASK: submitMetamask()
+      break;
+    case LoginTypeEnum.KEPLR: console.log(3);
+      break;
+    case LoginTypeEnum.NONE: useToast().error('you have to be logged in');
+  }
+}
+
+function submitEmail(){
+  if(usersWallet.value){
     emit('submit');
     useUserServiceStore().provideEmailAddress(
-      { claimedAddress: address.value,
-        emailAddress: usersEmail.value,
-        walletType: 'keplr'
+      { claimedAddress: usersWallet.value,
       }, onSuccessPairing, onFail, true);
   }else {
     toast.error('You have to be logged in with Email');
   }
+}
 
+function submitMetamask(){
+  if(usersWallet.value){
+    emit('submit');
+    useUserServiceStore().pairMetamaskAddress(
+      { claimedAddress: usersWallet.value,
+      }, onSuccessPairing, onFail, true);
+  }else {
+    toast.error('You have to be logged in with Email');
+  }
 }
 function onSuccessPairing(){
   toast.success('Successfully logged in');

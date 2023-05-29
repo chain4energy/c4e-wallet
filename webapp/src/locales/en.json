@@ -363,7 +363,14 @@
     "AIRDROP": "Airdrop",
     "FAUCET": "Faucet",
     "BUYTOKENS": "Buy tokens",
-    "PROFILE": "Profile"
+    "PROFILE": "Profile",
+    "KYC": "KYC",
+    "PUBLICSALEINFO": "Buy tokens",
+    "ACCOUNTTYPE": "Sign in",
+    "EMAILREGISTRATION": "Email registration",
+    "KEPLRREGISTRATION": "Keplr registration",
+    "METAMASKREGISTRATION": "Metamask registration",
+    "EMAILLOGIN": "Email login"
   },
   "TOAST": {
     "SUCCESS": {
@@ -426,5 +433,13 @@
     "REQUEST_TOKENS": "Request Tokens",
     "INPUT_ADDRESS": "Input an address to request token",
     "TITLE": "C4E Faucet"
+  },
+  "ENUMS": {
+    "LOGIN_TYPE": {
+      "EMAIL": "Email",
+      "KEPLR": "Keplr",
+      "METAMASK": "Metamask",
+      "NONE": "Not logged in"
+    }
   }
 }

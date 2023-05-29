@@ -12,7 +12,7 @@
               <div class="invalid-feedback">{{ errors.email ? $t(errors.email) : '' }}</div>
             </div>
           </div>
-          <div>You need to connect keplr wallet first</div>
+          <div v-if="!userLoggedIn">You need to connect keplr wallet first</div>
           <Button
             @click="dataService.onKeplrLogIn()"
             v-if="!userLoggedIn"
@@ -31,7 +31,7 @@
 
       <div class="flex justify-content-center">
         <Button class="p-button p-component secondary">Cancel</Button>
-        <Button class="p-button p-component secondary" @click="createAccount">Create account</Button>
+        <Button :disabled="!userLoggedIn" class="p-button p-component secondary" @click="createAccount">Create account</Button>
       </div>
     </Form>
   </div>
@@ -64,7 +64,7 @@ const onCreateAccount = () => {
 };
 
 const userLoggedIn = computed(() => {
-  return useUserStore().getAccount.address != '';
+  return useUserStore().connectionInfo.connectionType == ConnectionType.Keplr;
 });
 
 const createAccount = () => {

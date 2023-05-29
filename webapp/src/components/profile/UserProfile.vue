@@ -5,7 +5,7 @@
       <TabView>
         <TabPanel class="userProfile__tabHeader">
           <template #header>Account info</template>
-          <AccountInfo :accordion="false" @add-email="showAddressAddModal"/>
+          <AccountInfo :accordion="false" @open-modal="showAddressAddModal"/>
           <div class="userProfile__holder">
             <InvestmentCalculator :rate="currency"/>
           </div>

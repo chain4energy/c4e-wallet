@@ -358,7 +358,14 @@
     "AIRDROP": "Airdrop",
     "BUYTOKENS": "Kup tokeny",
     "PROFILE": "Profil",
-    "FAUCET": "Kranik"
+    "FAUCET": "Kranik",
+    "KYC": "KYC",
+    "PUBLICSALEINFO": "Kup tokeny",
+    "ACCOUNTTYPE": "Logowanie",
+    "EMAILREGISTRATION": "Rejestracja emailem",
+    "KEPLRREGISTRATION": "Rejestracja Kerplrem",
+    "METAMASKREGISTRATION": "Rejestracja Metamaskiem",
+    "EMAILLOGIN": "Logowanie emailem"
   },
   "TOAST": {
     "SUCCESS": {
@@ -420,5 +427,13 @@
     "REQUEST_TOKENS": "Doładuj Tokeny",
     "INPUT_ADDRESS": "Podaj adres na który zostaną doładowane tokeny",
     "TITLE": "Kranik C4E"
+  },
+  "ENUMS": {
+    "LOGIN_TYPE": {
+      "EMAIL": "Email",
+      "KEPLR": "Keplr",
+      "METAMASK": "Metamask",
+      "NONE": "Nie zalogowano"
+    }
   }
 }

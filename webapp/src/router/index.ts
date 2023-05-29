@@ -11,6 +11,7 @@ import AirDropView from "@/views/AirDropView.vue";
 import buyTokensRoutes from "@/router/buyTokens";
 import profileRoutes from "@/router/profile";
 import FaucetView from "@/views/FaucetView.vue";
+import KycView from "@/views/KycView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -65,6 +66,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/terms_conditions',
     name: "terms_conditions",
     component: TermsConditionsView
+  },
+  {
+    path: '/kyc',
+    name: 'kyc',
+    component: KycView
   },
   {
     path: '/:pathMatch(.*)*',

@@ -1,4 +1,4 @@
 export enum WalletType {
   KEPLR='keplr',
-  METAMASK='metamask'
+  METAMASK='Metamask'
 }

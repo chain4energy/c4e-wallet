@@ -88,9 +88,14 @@ export default {
     AUTHENTICATE_DOUBLE_WALLET: '/api/publicsale-service/auth/doubleWallet',
     INIT_WALLET_AUTH: '/api/publicsale-service/initWalletAuth',
     ACTIVATE_ACCOUNT: '/api/publicsale-service/activate/{activationCode}',
-    PAIR_EMAIL: '/api/publicsale-service/initEmailPairing',
+    PAIR_EMAIL: '/api/publicsale-service/claim/emailKeplr/init',
+    PAIR_METAMASK:'/api/publicsale-service/claim/metamaskKeplr/init',
     RESERVE_TOKENS: '/api/publicsale-service/token/reservation',
     INIT_PAYMENT_SESSION: '/api/publicsale-service/payment/initSession',
-    TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations'
+    TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations',
+    KYC_INIT_SESSION: '/api/publicsale-service/kyc/init'
+  },
+  synaps: {
+    OVERVIEW: 'https://individual-api.synaps.io/v3/onboarding/overview'
   }
 };
