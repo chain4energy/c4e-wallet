@@ -31,9 +31,9 @@ import SynapsVerify from '@synaps-io/vue3-verify';
 const selectedTierId = ref();
 const modalVisible = ref<boolean>(false);
 const sessionId = computed(() => {
-  return '3c4a4218-60e5df7f-a9d2eb31-daf53da6';
+  return useUserServiceStore().kycSessionId;
 });
-useUserServiceStore().fetchKycStatus('3c4a4218-60e5df7f-a9d2eb31-daf53da6', false);
+useUserServiceStore().fetchKycStatus(sessionId.value, false);
 
 
 const tierInfoList = [
