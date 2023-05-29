@@ -56,7 +56,7 @@
         <div>
           <Button
             class="p-button p-component secondary accountInfo__btn"
-            @click="console.log(111)">Start KYC</Button>
+            @click="onKycStart">Start KYC</Button>
         </div>
       </div>
       <hr class="accountInfo__line"/>
@@ -98,6 +98,7 @@ import { LoginTypeEnum, useUserServiceStore } from "@/store/userService.store";
 import { useToast } from "vue-toastification";
 
 const emit = defineEmits(['openModal']);
+import {useRouter} from "vue-router";
 
 const props = defineProps<{
   accordion: boolean
@@ -113,7 +114,8 @@ const isLogedInInService = computed(() => {
 
 const paired = computed(() => {
   return useUserServiceStore().isPaired;
-});
+})
+const router = useRouter();
 const showClosedTab = ref(true);
 
 onMounted(() => {
@@ -133,7 +135,12 @@ const address = computed(() =>{
   return useUserStore().getAccount.address;
 });
 
+const onKycStart = () => {
+  useUserServiceStore().initKycSession(true).then(() => {
+    router.push({name: 'kyc'});
+  });
 
+};
 </script>
 
 <style scoped lang="scss">
