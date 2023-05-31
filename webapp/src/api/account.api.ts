@@ -73,7 +73,7 @@ export class AccountApi extends TxBroadcastBaseApi {
   private static isAccountNotFound(status?: number, data?: BlockchainApiErrorData): boolean {
     const code = data?.code;
     const message = data?.message;
-    return status === 404 && code === 5 && message !== undefined && /rpc error: code = NotFound/i.test(message);
+    return status === 404 && code === 5 && message !== undefined && (/rpc error: code = NotFound/i.test(message) || /account.*not found/i.test(message));
   }
 
   public async fetchBalance(address: string, denom: string, lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{

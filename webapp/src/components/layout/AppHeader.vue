@@ -45,7 +45,7 @@
 
       <div class="container-fluid d-flex justify-content-between">
         <span class="d-flex" style="align-items: center">
-        <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36"/>
+        <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" @click="onLogoClick()" />
         <div class="bottom-container">
         <h2>{{ $t("SECTION_TITLES." + currentRouteName?.toUpperCase()) }}</h2>
           <breadcrumbs-component/>
@@ -140,13 +140,14 @@ import LogoutKeplr from "@/components/layout/loginPopup/LogoutConfirm.vue";
 import {SideBarIconType} from "@/services/permissions/sidebar.config";
 import {useConfigurationStore} from '@/store/configuration.store';
 import {changeTitle} from "@/utils/title-changer";
-import {useRouter} from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
 import {computed, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {PermissionsService} from "@/services/permissions/permissions.service";
 import KeplrLogo from '../commons/KeplrLogo.vue';
 import * as GovernanceIcon from "@/components/commons/GovernanceIcon.vue";
+import dataService from "@/services/data.service";
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
@@ -190,9 +191,17 @@ function openAccInfo() {
 
 function logout() {
   // const latestBlock = computed(() => useBlockStore().getLatestBlock);
-  useUserStore().logOut();
+  dataService.onLogOut();
 }
+const route= useRoute();
+const onLogoClick = () => {
 
+  if(route.name == 'Dashboard') {
+    window.location.reload();
+  } else {
+    router.push({name: 'Dashboard'});
+  }
+};
 </script>
 
 <style scoped lang="scss">

@@ -17,7 +17,6 @@ import 'vue-loading-overlay/dist/css/index.css';
 import C4ESpinner from './commons/C4ESpinner.vue';
 
 const splashStore = useSplashStore();
-// const ttt = true;
 
 </script>
 

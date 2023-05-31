@@ -1,7 +1,7 @@
 <template>
   <div v-if="proposal" class="details-container">
     <div class="id"><h3>#{{ proposal.proposalId }}</h3> </div>
-    <h4 style="padding-left:20px">{{ proposal.content.title }}</h4>
+    <h4 style="padding-left:20px">{{ proposal?.content?.title }}</h4>
     <div v-if="voted === VoteOption.Yes" class="vote user-vote-yes">
       {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES') }}</b>
     </div>
@@ -45,6 +45,9 @@
         <span>
           <PercentsView :amount="proposalsStore.getTallyParams.vetoThreshold" :precision="2"/>
         </span>
+      <span>{{ $t("GOVERNANCE_VIEW.VIEW_IN_EXPLORER") }}:</span>
+      <span><a v-bind:href="url" target="_blank">{{url}}</a></span>
+
     </div>
   </div>
 </template>
@@ -60,6 +63,7 @@ import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import ProposalType from "./ProposalType.vue";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 const props = defineProps<{
   proposal?: Proposal
@@ -70,6 +74,7 @@ onMounted(() => {
 });
 
 const proposalsStore = useProposalsStore();
+const url = useConfigurationStore().config.explorerUrl + "/proposals/" + props.proposal?.proposalId;
 const formattedDate = (value: Date) => {
   return moment(value).format('DD MMMM YYYY HH:mm:ss');
 };

@@ -9,7 +9,11 @@ import {LoggedService} from "./logged.service";
 import {LogLevel} from "./logger/log-level";
 import {ServiceTypeEnum} from "./logger/service-type.enum";
 import {ConnectionInfo} from "@/api/wallet.connecton.api";
-
+import {useAirDropStore} from "@/store/airDrop.store";
+import {useToast} from "vue-toastification";
+import WifiIcon from '@/components/features/WifiOnIcon.vue';
+import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
+import {useI18n} from "vue-i18n";
 const keplrKeyStoreChange = 'keplr_keystorechange';
 
 class DataService extends LoggedService {
@@ -19,7 +23,6 @@ class DataService extends LoggedService {
   private dashboardTimeout = 3000;
   private validatorsTimeout = 10000;
   private accountTimeout = 10000;
-
   private lastBlockTimeout = 0;
   private lastDashboardTimeout = 0;
   private lastValidatorsTimeout = 0;
@@ -33,6 +36,7 @@ class DataService extends LoggedService {
   private onProposalDetailsError?: () => void;
 
   private static instance: DataService;
+  private isOnline = navigator.onLine;
 
   public static getInstance(): DataService {
     if (!DataService.instance) {
@@ -46,6 +50,18 @@ class DataService extends LoggedService {
   }
 
   public async onAppStart() {
+    const i18n = useI18n();
+    window.addEventListener('offline', () => {
+      this.isOnline = navigator.onLine;
+      useToast().error(i18n.t('TOAST.INTERNET_CONNECTION.OFFLINE'), {icon: WifiOffIcon, timeout: false});
+      this.clearIntervals();
+    });
+    window.addEventListener('online', () => {
+      this.isOnline = navigator.onLine;
+      useToast().clear();
+      useToast().error(i18n.t('TOAST.INTERNET_CONNECTION.ONLINE'), {icon: WifiIcon });
+      this.setIntervals();
+    });
     this.logToConsole(LogLevel.DEBUG, 'onAppStart');
     await useConfigurationStore().fetchConfigList().then(() => {
         const config = useConfigurationStore().getConfig;
@@ -56,37 +72,62 @@ class DataService extends LoggedService {
         this.accountTimeout = config.accountDataRefreshTimeout;
       }
     );
+    window.addEventListener('focus', () => {
+      if(this.isOnline) {
+        this.refreshBlocksData();
+        this.refreshDashboard();
+        this.refreshValidators();
+        this.setIntervals();
+      }
+    }, false);
+    window.addEventListener('blur', () => {
+      this.clearIntervals();
+    }, false);
   }
-
-  private onInit() {
+  private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');
     const lockScreen = true;
-    Promise.all([
-      useBlockStore().fetchLatestBlock(lockScreen),
-      useBlockStore().fetchAverageBlockTime(lockScreen),
-      useTokensStore().fetchPools(lockScreen),
-      useTokensStore().fetchTotalSupply(lockScreen),
-      useTokensStore().fetchStakingPool(lockScreen),
-      useTokensStore().fetchInflation(lockScreen),
-      useTokensStore().fetchLockedVesting(lockScreen),
-      useTokensStore().fetchDistributorParams(lockScreen),
-      useValidatorsStore().fetchValidators(lockScreen),
-      useValidatorsStore().fetchStackingParams(lockScreen),
-      useProposalsStore().fetchTallyParams(),
-      useProposalsStore().fetchDepositParams(),
+    await this.waitTillCondition(() => useConfigurationStore().getInitialized);
+    if(this.isOnline) {
+      Promise.all([
+        useBlockStore().fetchLatestBlock(lockScreen),
+        useBlockStore().fetchAverageBlockTime(lockScreen),
+        useTokensStore().fetchPools(lockScreen),
+        useTokensStore().fetchTotalSupply(lockScreen),
+        useTokensStore().fetchStakingPool(lockScreen),
+        useTokensStore().fetchInflation(lockScreen),
+        useTokensStore().fetchLockedVesting(lockScreen),
+        useTokensStore().fetchDistributorParams(lockScreen),
+        useValidatorsStore().fetchValidators(lockScreen),
+        useValidatorsStore().fetchStackingParams(lockScreen),
+        useProposalsStore().fetchTallyParams(),
+        useProposalsStore().fetchDepositParams(),
 
-    ]).then(() => {
-      const now = new Date().getTime();
-      this.lastBlockTimeout = now;
-      this.lastDashboardTimeout = now;
-      this.lastValidatorsTimeout = now;
-      this.blockIntervalId = window.setInterval(refreshBlocksData, this.blockTimeout);
-      this.dashboardIntervalId = window.setInterval(refreshDashboard, this.dashboardTimeout);
-      this.validatorsIntervalId = window.setInterval(refreshValidators, this.validatorsTimeout);
-
-    });
+      ]).then(() => {
+        this.setIntervals();
+      });
+    }
+  }
+  public setIntervals() {
+    const now = new Date().getTime();
+    this.lastBlockTimeout = now;
+    this.lastDashboardTimeout = now;
+    this.lastValidatorsTimeout = now;
+    this.blockIntervalId = window.setInterval(refreshBlocksData, this.blockTimeout);
+    this.dashboardIntervalId = window.setInterval(refreshDashboard, this.dashboardTimeout);
+    this.validatorsIntervalId = window.setInterval(refreshValidators, this.validatorsTimeout);
   }
 
+  public clearIntervals() {
+    window.clearInterval(this.blockIntervalId);
+    window.clearInterval(this.dashboardIntervalId);
+    window.clearInterval(this.validatorsIntervalId);
+  }
+  async waitTillCondition(condition: () => boolean) {
+    while (!condition()) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
   public onWindowLoad() {
     this.logToConsole(LogLevel.DEBUG, 'onWindowLoad');
     useUserStore().reconnect(this.onLoginSuccess);
@@ -95,6 +136,13 @@ class DataService extends LoggedService {
   public onKeplrLogIn(onSuccess?: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onKeplrLogIn');
     useUserStore().connectKeplr((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo, onSuccess);
+    });
+  }
+
+  public onCosmostationLogIn(onSuccess?: () => void) {
+    this.logToConsole(LogLevel.DEBUG, 'onCosmostationLogIn');
+    useUserStore().connectCosmostation((connetionInfo: ConnectionInfo) => {
       this.onLoginSuccess(connetionInfo, onSuccess);
     });
   }
@@ -108,7 +156,7 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onLogOut');
     window.clearInterval(this.accountIntervalId);
     this.disableKeplrAccountChangeListener();
-    useValidatorsStore().clear();
+    // useValidatorsStore().clear();
     useProposalsStore().clearUserVote();
     useUserStore().logOut();
   }
@@ -127,9 +175,7 @@ class DataService extends LoggedService {
       useProposalsStore().clear();
       useTokensStore().clear();
       useValidatorsStore().clear();
-      window.clearInterval(this.blockIntervalId);
-      window.clearInterval(this.dashboardIntervalId);
-      window.clearInterval(this.validatorsIntervalId);
+      this.clearIntervals();
       this.onInit();
       if (refreshProposals) {
         useProposalsStore().fetchProposals(true);
@@ -142,7 +188,10 @@ class DataService extends LoggedService {
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
     this.onProposalDetailsError = onError;
-    useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
+    useProposalsStore().fetchProposalsDetailsTally(proposeId).then(() => {
+      useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
+    });
+
   }
 
   public onProposalUnselected() {
@@ -265,6 +314,20 @@ class DataService extends LoggedService {
     window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
   }
 
+  public onClaimAirdrop(address: string) {
+    this.logToConsole(LogLevel.DEBUG, 'onClaimAirdrop');
+    useAirDropStore().fetchCampaigns(address, true);
+  }
+
+  public async onProposalUpdateVotes(proposalId: number) {
+    this.logToConsole(LogLevel.DEBUG, 'onProposalUpdateVotes');
+    await useProposalsStore().fetchVotingProposalTallyResult(proposalId, true, false);
+  }
+  public onClaimRewards() {
+    this.logToConsole(LogLevel.DEBUG, 'onClaimRewards');
+    useUserStore().claimRewards();
+  }
+
 }
 
 export default DataService.getInstance();
@@ -288,4 +351,3 @@ function refreshDashboard() {
 function refreshValidators() {
   DataService.getInstance().refreshValidators();
 }
-

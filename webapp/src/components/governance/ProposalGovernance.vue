@@ -31,7 +31,7 @@
 
     <div class="middle">
       <div>
-        <h5 class="fw-bold">{{ proposal.content.title }}</h5>
+        <h5 class="fw-bold">{{ getTitle() }}</h5>
       </div>
       <div class="voting-date">
         <div class="start-date">
@@ -49,13 +49,29 @@
       </div>
     </div>
     <div class="bottom" @mousemove="updateTooltipPosition($event)" v-if="proposal.status !== ProposalStatus.DEPOSIT_PERIOD">
-      <div style="height:20px" class="chartdiv">
-        <div @mouseover="showTooltip('YES', (yesPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="yes" :style="'flex-basis:' + yesPercentage * 100 + '%'"></div>
-        <div @mouseover="showTooltip('ABSTAIN', (abstainPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="abstain" :style="'flex-basis:' + abstainPercentage * 100 + '%'"></div>
-        <div @mouseover="showTooltip('NO', (noPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no" :style="'flex-basis:' + noPercentage * 100 + '%'"></div>
-        <div @mouseover="showTooltip('NO_WITH_VETO', (noWithVetoPercentage).toFixed(2) * 100 + '%')" @mouseout="hideTooltip" class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentage * 100 + '%'"></div>
-        <!-- <v-chart :option="option" /> -->
+      <div class="chartbox">
+        <div style="height:20px" class="chartdiv">
+          <div @mouseover="showTooltip('YES', (yesPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="yes" :style="'flex-basis:' + yesPercentage * 100 + '%'"></div>
+          <div @mouseover="showTooltip('ABSTAIN', (abstainPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="abstain" :style="'flex-basis:' + abstainPercentage * 100 + '%'"></div>
+          <div @mouseover="showTooltip('NO', (noPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no" :style="'flex-basis:' + noPercentage * 100 + '%'"></div>
+          <div @mouseover="showTooltip('NO_WITH_VETO', (noWithVetoPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentage * 100 + '%'"></div>
+          <div @mouseover="showTooltip('NOT_VOTED', (notVotedPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="not-voted" :style="'flex-basis:' + notVotedPercentage * 100 + '%'"></div>
+
+
+          <!-- <v-chart :option="option" /> -->
+        </div>
+        <div @mouseover="showTooltip('THRESHOLD', thresholdPercentage.toFixed(2) + '%')" :style="{'left':thresholdPercentagePosition+'%'}" @mouseout="hideTooltip"  class="pin">
+          <div>T</div>
+          <div class="dots"></div>
+          <div class="vl"></div>
+        </div>
+        <div @mouseover="showTooltip('QUORUM', quorumPercentage.toFixed(2)  + '%')" :style="{'left':quorumPercentage+'%'}" @mouseout="hideTooltip" class="pin">
+          <div>Q</div>
+          <div class="dots"></div>
+          <div class="vl"></div>
+        </div>
       </div>
+
 
 
 
@@ -68,7 +84,7 @@
               <b><PercentsView :amount="yesPercentage" :precision="2"/></b>
             </div>
 <!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).yes" :reduce-big-number="true" :precision="2"/>)-->
-            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).yes)" :reduce-big-number="true" :precision="2"/>)
+            (<CoinAmount :amount="new BigIntWrapper(yes)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
         <div style="display: flex; align-items: center">
@@ -79,7 +95,7 @@
               <b><PercentsView :amount="abstainPercentage" :precision="2"/></b>
             </div>
 <!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).abstain" :reduce-big-number="true" :precision="2"/>)-->
-            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).abstain)" :reduce-big-number="true" :precision="2"/>)
+            (<CoinAmount :amount="new BigIntWrapper(abstain)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
         <div style="display: flex; align-items: center">
@@ -90,7 +106,7 @@
               <b><PercentsView :amount=" noPercentage" :precision="2"/></b>
             </div>
 <!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).no" :reduce-big-number="true" :precision="2"/>)-->
-            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).no)" :reduce-big-number="true" :precision="2"/>)
+            (<CoinAmount :amount="new BigIntWrapper(no)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
         <div style="display: flex; align-items: center">
@@ -101,7 +117,7 @@
               <b><PercentsView :amount="noWithVetoPercentage" :precision="2"/></b>
             </div>
 <!--            (<CoinAmount :amount="useProposalsStore().getProposalTally(proposal).noWithVeto" :reduce-big-number="true" :precision="2"/>)-->
-            (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getProposalTally(proposal).noWithVeto)" :reduce-big-number="true" :precision="2"/>)
+            (<CoinAmount :amount="new BigIntWrapper(noWithVeto)" :reduce-big-number="true" :precision="2"/>)
           </div>
         </div>
       </div>
@@ -114,13 +130,13 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {BarChart} from "echarts/charts";
 import { use } from "echarts/core";
 import {SVGRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent, GridComponent} from "echarts/components";
 import {useRouter} from "vue-router";
-import {Proposal, ProposalStatus} from "@/models/store/proposal";
+import {Proposal, ProposalStatus, ProposalType} from "@/models/store/proposal";
 import { createProposalListChartData } from '@/charts/governance';
 import { useProposalsStore } from '@/store/proposals.store';
 import CoinAmount from '../commons/CoinAmount.vue';
@@ -128,6 +144,7 @@ import PercentsView from "@/components/commons/PercentsView";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import { useConfigurationStore } from '@/store/configuration.store';
 import {BigIntWrapper} from "@/models/store/common";
+import {BigDecimal} from "@/models/store/big.decimal";
 
 use([
   SVGRenderer,
@@ -141,7 +158,6 @@ use([
 const props = defineProps<{
   proposal: Proposal
 }>();
-
 
 const router = useRouter();
 
@@ -160,6 +176,7 @@ const showChartTooltip = ref(false);
 const tooltipPosX = ref(0);
 const tooltipPosY = ref(0);
 const tooltipBorderColor = ref('');
+const proposalStore = useProposalsStore();
 
 const showTooltip = (option, value) => {
   if(option == 'YES') {
@@ -173,6 +190,15 @@ const showTooltip = (option, value) => {
   }
   if(option == 'NO_WITH_VETO') {
     tooltipBorderColor.value = '#FDDB2A';
+  }
+  if(option == 'THRESHOLD') {
+    tooltipBorderColor.value = '#000000';
+  }
+  if(option == 'QUORUM') {
+    tooltipBorderColor.value = '#000000';
+  }
+  if(option == 'NOT_VOTED') {
+    tooltipBorderColor.value = '#8d8d8d';
   }
   tooltipOption.value = option;
   tooltipValue.value = value;
@@ -190,37 +216,61 @@ const updateTooltipPosition = (e) => {
 function hideTooltip(){
     showChartTooltip.value = false;
 }
+const thresholdPercentage = computed(() => {
+  return useProposalsStore().getTallyParams.threshold * 100;
+});
+
+const thresholdPercentagePosition = computed(() => {
+  return yesPercentage.value.add(noPercentage.value).subtract(abstainPercentage.value).subtract(noWithVetoPercentage.value).multiply(useProposalsStore().getTallyParams.threshold * 100)
+});
+
+const quorumPercentage = computed(() => {
+  return useProposalsStore().getTallyParams.quorum * 100;
+});
 
 const yesPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getYesPercentage();
+  const yesPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYesPercentage();
+  return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
 });
 
 const noPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getNoPercentage();
+  const noPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoPercentage();
+  return noPercentage!=undefined ? noPercentage : new BigDecimal(0);
 });
 
 const abstainPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getAbstainPercentage();
+  const abstainPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getAbstainPercentage();
+  return abstainPercentage != undefined ? abstainPercentage : new BigDecimal(0);
 });
 
 const noWithVetoPercentage = computed(() => {
-  return useProposalsStore().getProposalTally(props.proposal).getNoWithVetoPercentage();
+  const noWithVetoPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoWithVetoPercentage();
+  return noWithVetoPercentage != undefined ? noWithVetoPercentage : new BigDecimal(0);
+});
+
+const notVotedPercentage = computed(() => {
+  const notVotedPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNotVotedPercentage();
+  return notVotedPercentage != undefined ? notVotedPercentage : new BigDecimal(0);
 });
 
 const yes = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).yes);
+  const yes = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYes();
+  return yes != undefined ? yes : 0n;
 });
 
 const no = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).no);
+  const no = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNo();
+  return no!=undefined ? no : 0n;
 });
 
 const abstain = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).abstain);
+  const abstain = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getAbstain();
+  return abstain != undefined ? abstain : 0n;
 });
 
 const noWithVeto = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getProposalTally(props.proposal).noWithVeto);
+ const noWithVeto = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoWithVeto();
+ return noWithVeto!=undefined ? noWithVeto : 0n;
 });
 
 const sumOfVotes = computed(() => {
@@ -255,7 +305,17 @@ const option = computed(() => {
   );
 });
 
-
+const getTitle = () => {
+  if(props.proposal?.content?.title) {
+    return props.proposal?.content?.title;
+  } else if(props.proposal && props.proposal?.metaData) {
+    try {
+      return JSON.parse(props.proposal.metaData).description;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">
@@ -266,7 +326,7 @@ const option = computed(() => {
   margin-left: 10px;
 }
 .proposal-container {
-  min-height: 360px;
+  min-height: 390px;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   border-radius: 10px;
   position: relative;
@@ -334,8 +394,9 @@ const option = computed(() => {
     }
   }
   .middle {
-    height: 50%;
+    height: 44%;
     padding: 20px 30px;
+
     h5 {
 
 
@@ -385,18 +446,50 @@ const option = computed(() => {
       display: flex;
       justify-content: space-around;
     }
-    .chartdiv {
-      margin: 0 auto 15px auto;
-      width: 90%;
-      display: flex;
-      border-radius: 15px;
-      overflow: hidden;
-      background: grey;
+    .chartbox {
 
-      div {
-        height: 100%;
+      padding-top: 35px;
+      width: 90%;
+      position: relative;
+      margin: 0 auto 15px auto;
+      .chartdiv {
+
+        width: 100%;
+        display: flex;
+        border-radius: 15px;
+        overflow: hidden;
+        background: grey;
+
+        div {
+          height: 100%;
+        }
+      }
+      .pin {
+        transform: translateX(-50%);
+        position: absolute;
+        left: 50%;
+        top: 0;
+        height: auto;
+        .vl {
+          width: 2px;
+          background-color: black;
+          margin-left: auto;
+          margin-right: auto;
+          height: 30px;
+        }
+        .dots {
+          width: 7px;
+          height: 7px;
+          margin-left: auto;
+          margin-right: auto;
+          margin-bottom: 0;
+          padding-bottom: 0px;
+          border-radius: 50%;
+          background-color: black;
+        }
       }
     }
+
   }
 }
 
@@ -426,5 +519,9 @@ const option = computed(() => {
 
 .abstain {
   background: #27697f;
+}
+
+.not-voted {
+  background: #8d8d8d;
 }
 </style>

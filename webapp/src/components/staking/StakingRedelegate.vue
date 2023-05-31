@@ -112,7 +112,7 @@ const filteredValidators = computed<ValidatorBase[]>(() => {
     });
   } else {
     return useValidatorsStore().getUserDelgationsValidators.filter((val) => {
-      return searchFilter(val);
+      return searchFilter(val) && val.operatorAddress !== props.validator.operatorAddress;
     });
   }
 });

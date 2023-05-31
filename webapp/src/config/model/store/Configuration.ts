@@ -143,7 +143,7 @@ export class Configuration implements JsonConfiguration {
   stakingPageURL: string;
   addressPrefix: string;
   stakingDenom: string;
-  strategicPoolAddress: string;
+  strategicPoolAddress: string[];
   airdropPoolAddress: string;
   chainId: string;
   networkName: string;
@@ -161,12 +161,16 @@ export class Configuration implements JsonConfiguration {
   accountDataRefreshTimeout: number;
   proposalsPageLimit: number;
   queries: Queries;
+  explorerUrl: string;
   explorerAccount: string;
   explorerTx: string;
   isMainNetwork: boolean;
   testFileName?: string;
   airdropBaseURL: string;
+  proposalVotingRefreshTimeout: number;
   airdropDefaultDenom: string;
+
+  targetInflationAprMultiplier: number;
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -200,6 +204,7 @@ export class Configuration implements JsonConfiguration {
       this.accountDataRefreshTimeout = configuration.accountDataRefreshTimeout;
       this.proposalsPageLimit = configuration.proposalsPageLimit;
       this.queries = new Queries(configuration.queries);
+      this.explorerUrl = configuration.explorerUrl;
       this.explorerAccount = configuration.explorerAccount;
       this.explorerTx = configuration.explorerTx;
       this.isMainNetwork = configuration.isMainNetwork;
@@ -208,6 +213,8 @@ export class Configuration implements JsonConfiguration {
       this.testFileName = configuration.testFileName;
       this.airdropBaseURL = configuration.airdropBaseURL;
       this.airdropDefaultDenom = configuration.airdropDefaultDenom;
+      this.proposalVotingRefreshTimeout = configuration.proposalVotingRefreshTimeout;
+      this.targetInflationAprMultiplier = configuration.targetInflationAprMultiplier;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -216,7 +223,7 @@ export class Configuration implements JsonConfiguration {
       this.stakingPageURL = '';
       this.addressPrefix = '';
       this.stakingDenom = '';
-      this.strategicPoolAddress = '';
+      this.strategicPoolAddress = [''];
       this.airdropPoolAddress = '';
       this.chainId = '';
       this.networkName = '',
@@ -225,7 +232,7 @@ export class Configuration implements JsonConfiguration {
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
       this.keplrGasPriceSteps = new KeplrGasPriceSteps(undefined);
-      this.reservedCoinsAmount = 0;
+      this.reservedCoinsAmount = 250000;
       this.minPeriodBetweenDataRefresh = 60000;
       this.blockDataRefreshTimeout = 60000;
       this.dashboardDataRefreshTimeout = 60000;
@@ -233,6 +240,7 @@ export class Configuration implements JsonConfiguration {
       this.accountDataRefreshTimeout = 60000;
       this.proposalsPageLimit = 10;
       this.queries = new Queries(undefined);
+      this.explorerUrl = '';
       this.explorerAccount = '';
       this.explorerTx = '';
       this.isMainNetwork = false;
@@ -240,6 +248,8 @@ export class Configuration implements JsonConfiguration {
       this.testMode = false;
       this.airdropBaseURL = '';
       this.airdropDefaultDenom = 'uc4e';
+      this.proposalVotingRefreshTimeout = 30000;
+      this.targetInflationAprMultiplier = 1;
     }
   }
 

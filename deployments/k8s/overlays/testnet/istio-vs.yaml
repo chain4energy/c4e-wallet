@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: c4e-web-app-testnet
+spec:
+  hosts:
+    - wallet-testnet.c4e.io
+  gateways:
+    - explorer/public-gateway
+  http:
+    - route:
+        - destination:
+            host: c4e-web-app-testnet.testnet.svc.cluster.local
+            port:
+              number: 80

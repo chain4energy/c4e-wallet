@@ -1,6 +1,7 @@
 import { Coin } from "./common";
 
 export interface StakingPool {
+  proposal_id?: number,
   bonded_tokens: string;
   not_bonded_tokens: string;
 }

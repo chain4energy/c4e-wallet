@@ -1,14 +1,14 @@
 <template>
   <div class="loginChoose__holder">
     <div class="top-bar">
-      <h2 style="font-weight: bold">Welcome</h2>
+      <h2 style="font-weight: bold">{{ $t('CONNECT.WELCOME') }}</h2>
       <Button icon="pi pi-times" style="margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
     </div>
 
 
-    <p>The world’s first blockchain network based on green energy production</p>
+    <p>{{ $t('CONNECT.WELCOME_MESSAGE') }}</p>
     <div class="loginChoose__body">
-      <div class="box" @click="$emit('typeChange', LoginEmail)">
+      <div v-if="props.showAddressOption" class="box" @click="$emit('typeChange', LoginEmail)">
         <div class="iconContainer">
           <Icon class="icon" name="Globe"></Icon>
         </div>
@@ -24,6 +24,17 @@
           <img style="height:50px;;padding-top: 6px;" src="@/assets/keplrIcon2.png">
         </div>
         <span>{{ $t('CONNECT.CONNECT_KEPLR') }}</span>
+        <div style="margin-left:auto" class="nextStep">
+          <div class="iconContainer" style="background-color: #72bf44">
+            <Icon style="color:white" class="icon" name="ArrowRightCircle"></Icon>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 10px" class="box" @click="$emit('cosmostation')" v-if="!isMobile()">
+        <div style="margin-left: 25px; margin-right: 20px; ">
+          <img style="height:50px;;padding-top: 6px;" src="@/assets/cosmostationIcon.png">
+        </div>
+        <span>{{ $t('CONNECT.CONNECT_COSMOSTATION') }}</span>
         <div style="margin-left:auto" class="nextStep">
           <div class="iconContainer" style="background-color: #72bf44">
             <Icon style="color:white" class="icon" name="ArrowRightCircle"></Icon>
@@ -50,7 +61,16 @@
 <script setup lang="ts">
 import KeplrLogo from '@/components/commons/KeplrLogo.vue';
 import LoginEmail from '@/components/layout/loginPopup/LoginAddress.vue';
+import {Validator} from "@/models/store/validator";
+import {RedelegationDirection} from "@/components/staking/StakingRedelegate";
 
+const props = defineProps({
+  showAddressOption: {
+    type: Boolean,
+    default: true,
+    required: false
+  }
+});
 function isMobile() {
    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
      return true;

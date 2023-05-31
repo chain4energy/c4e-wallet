@@ -2,23 +2,44 @@
 
   <div class="footer">
     <span>FAQ</span>
-    <span>Help</span>
-    <router-link to="/terms_conditions"><span>Terms & Conditions</span></router-link>
-    <router-link to="/privacy_policy"><span>Privacy Policy</span></router-link>
-    <span class="right">c4e</span>
-    <div class="hide">{{ app_version + "-" + blockchain_version + "/" + compilation_timestamp}}</div>
+    <a href="https://docs.c4e.io/usersGuide/walletBasics.html" target="_blank">
+      <span>{{$t('FOOTER.HELP')}}</span>
+    </a>
+    <router-link to="/terms_conditions"><span>{{$t('FOOTER.TERMS')}}</span></router-link>
+    <router-link to="/privacy_policy"><span>{{$t('FOOTER.PRIVACY')}}</span></router-link>
+    <span ref="versionSpan" class="right">c4e</span>
+    <div ref="versionDiv" v-bind:class="{show: showVersion}" class="hide">{{ app_version + "/" + compilation_timestamp}}</div>
   </div>
 </template>
 
 <script setup lang="ts">
 import {useConfigurationStore} from "@/store/configuration.store";
-import {onBeforeMount} from "vue";
+import {onBeforeMount, onMounted, ref} from "vue";
+import {loadFonts} from "@/plugins/webfontloader";
 
 const app_version = process.env.VUE_APP_VERSION;
-const blockchain_version = process.env.VUE_APP_BLOCKCHAIN_VERSION;
+// const blockchain_version = process.env.VUE_APP_BLOCKCHAIN_VERSION;
 const compilation_timestamp = process.env.VUE_APP_COMPILATION_TIMESTAMP;
+const showVersion = ref<boolean>(false);
+const versionDiv = ref<HTMLDivElement>();
+const versionSpan = ref<HTMLDivElement>();
+
 onBeforeMount(() => {
   console.log(useConfigurationStore().config.airdropPoolAddress);
+
+
+});
+onMounted(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (!versionDiv.value || !versionSpan.value) return;
+    if (!versionDiv.value!.contains(event.target as Node) && !versionSpan.value!.contains(event.target as Node)) {
+      if(showVersion.value==true)
+        showVersion.value = false;
+    } else if(versionSpan.value!.contains(event.target as Node)) {
+      showVersion.value = !showVersion.value;
+    }
+  };
+  document.addEventListener('click', handleClickOutside);
 });
 
 </script>
@@ -51,17 +72,26 @@ onBeforeMount(() => {
     float: right;
     padding-right: 20px;
 
-    &:hover {
-      & + .hide {
-        width: 400px;
-        height: 40px;
-        position:absolute;
-        bottom:40px;
-        right:10px;
-        display:block;
-        background-color: white;
-      }
-    }
+    //&:hover {
+    //  & + .hide {
+    //    width: 400px;
+    //    height: 40px;
+    //    position:absolute;
+    //    bottom:40px;
+    //    right:10px;
+    //    display:block;
+    //    background-color: white;
+    //  }
+    //}
+  }
+  .show {
+    width: 400px;
+    height: 40px;
+    position:absolute;
+    bottom:40px;
+    right:10px;
+    display:block;
+    background-color: white;
   }
 }
 </style>

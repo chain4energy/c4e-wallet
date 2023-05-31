@@ -1,14 +1,15 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import { StakingPool } from "@/models/store/tokens";
-import { Coin, DecCoin } from "@/models/store/common";
-import { useConfigurationStore } from "./configuration.store";
-import { useToast } from "vue-toastification";
-import { StoreLogger } from "@/services/logged.service";
-import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
-import { LogLevel } from "@/services/logger/log-level";
-import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
-import {Delegations, UnbondingDelegations} from "@/models/store/staking";
+import {StakingPool} from "@/models/store/tokens";
+import {Coin, DecCoin} from "@/models/store/common";
+import {useConfigurationStore} from "./configuration.store";
+import {useToast} from "vue-toastification";
+import {StoreLogger} from "@/services/logged.service";
+import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
+import {LogLevel} from "@/services/logger/log-level";
+import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
+import {ToastsService} from "@/services/toasts/toasts.service";
+import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
@@ -18,6 +19,7 @@ interface TokensState {
   totalSupply: Coin
   communityPool: DecCoin
   strategicReversePool: Coin
+  strategicReversePoolUnbonded: Coin,
   airdropPool: Coin
   inflation: number,
   lockedVesting: bigint,
@@ -34,6 +36,7 @@ export const useTokensStore = defineStore({
       totalSupply: emptyCoin,
       communityPool: new DecCoin(new BigDecimal(0), denom),
       strategicReversePool: emptyCoin,
+      strategicReversePoolUnbonded: emptyCoin,
       airdropPool: emptyCoin,
       inflation: Number.NaN,
       lockedVesting: BigInt(0),
@@ -48,7 +51,7 @@ export const useTokensStore = defineStore({
         } else {
           const message = 'Error fetching staking pool data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.STAKING_POOL, message);
         }
       });
     },
@@ -60,7 +63,7 @@ export const useTokensStore = defineStore({
         } else {
           const message = 'Error fetching total supply data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.TOTAL_SUPPLY, message);
         }
       });
     },
@@ -79,46 +82,49 @@ export const useTokensStore = defineStore({
         } else {
           const message = 'Error fetching community pool data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.COMMUNITY_POOL, message);
         }
       });
     },
     async fetchStrategicReversePool(lockscreen = true) {
       const denom = useConfigurationStore().config.stakingDenom;
-      const address = useConfigurationStore().config.strategicPoolAddress;
-      let delegations = new Delegations();
-      let unbondingDelegations = new UnbondingDelegations();
-      let unbonded = new Coin(0n, denom);
-      await Promise.all([
-        await apiFactory.accountApi().fetchDelegations(address, lockscreen).then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            delegations = response.data;
-          } else {
-            const message = 'Error fetching strategic reverse pool data';
-            logger.logToConsole(LogLevel.ERROR, message);
-            toast.error(message);
-          }
-        }),
-        await apiFactory.accountApi().fetchUnbondingDelegations(address, lockscreen).then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            unbondingDelegations = response.data;
-          } else {
-            const message = 'Error fetching strategic reverse pool data';
-            logger.logToConsole(LogLevel.ERROR, message);
-            toast.error(message);
-          }
-        }),
-        await apiFactory.accountApi().fetchBalance(address, denom, lockscreen).then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            unbonded = response.data;
-          } else {
-            const message = 'Error fetching strategic reverse pool data';
-            logger.logToConsole(LogLevel.ERROR, message);
-            toast.error(message);
-          }
-        }),
-      ]);
-      this.strategicReversePool= new Coin((delegations.totalDelegated + unbondingDelegations.totalUndelegating + unbonded.amount), denom );
+
+      let delegations = 0n;
+      let unbondingDelegations = 0n;
+      let unbonded = 0n;
+      for (const address of useConfigurationStore().config.strategicPoolAddress) {
+        await Promise.all([
+          await apiFactory.accountApi().fetchDelegations(address, lockscreen).then(response => {
+            if (response.isSuccess() && response.data !== undefined) {
+              delegations += response.data.totalDelegated;
+            } else {
+              const message = 'Error fetching strategic reverse pool data';
+              logger.logToConsole(LogLevel.ERROR, message);
+              ToastsService.getInstance().errorToast(ToastsTypeEnum.STRATEGIC_REVERSE_POOL, message);
+            }
+          }),
+          await apiFactory.accountApi().fetchUnbondingDelegations(address, lockscreen).then(response => {
+            if (response.isSuccess() && response.data !== undefined) {
+              unbondingDelegations += response.data.totalUndelegating;
+            } else {
+              const message = 'Error fetching strategic reverse pool data';
+              logger.logToConsole(LogLevel.ERROR, message);
+              ToastsService.getInstance().errorToast(ToastsTypeEnum.STRATEGIC_REVERSE_POOL, message);
+            }
+          }),
+          await apiFactory.accountApi().fetchBalance(address, denom, lockscreen).then(response => {
+            if (response.isSuccess() && response.data !== undefined) {
+              unbonded += response.data.amount;
+            } else {
+              const message = 'Error fetching strategic reverse pool data';
+              logger.logToConsole(LogLevel.ERROR, message);
+              ToastsService.getInstance().errorToast(ToastsTypeEnum.STRATEGIC_REVERSE_POOL, message);
+            }
+          }),
+        ]);
+      }
+      this.strategicReversePool = new Coin((delegations + unbondingDelegations + unbonded), denom );
+      this.strategicReversePoolUnbonded = new Coin(unbonded, denom);
     },
     async fetchAirdropPool(lockscreen = true) {
       const denom = useConfigurationStore().config.stakingDenom;
@@ -129,7 +135,7 @@ export const useTokensStore = defineStore({
         } else {
           const message = 'Error fetching airdrop pool data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.AIRDROP_POOL, message);
         }
       });
     },
@@ -140,7 +146,7 @@ export const useTokensStore = defineStore({
         } else {
           const message = 'Error fetching distributorParams data';
           logger.logToConsole(LogLevel.ERROR, message);
-          toast.error(message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.DISTRIBUTOR_PARAMS, message);
         }
       });
     },
@@ -196,7 +202,7 @@ export const useTokensStore = defineStore({
     },
     getCirculatingSupply(): DecCoin {
       const amount =  this.getTotalUnbonded
-                    - this.strategicReversePool.amount
+                    - this.strategicReversePoolUnbonded.amount
                     - this.getAirdropPool.amount
                     - this.getLockedVesting;
       const amountDec = new BigDecimal(amount).subtract(this.communityPool.amount);

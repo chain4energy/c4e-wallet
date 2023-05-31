@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: c4e-web-app
+  labels:
+    app: c4e-web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: c4e-web-app
+  template:
+    metadata:
+      labels:
+        app: c4e-web-app
+    spec:
+      containers:
+        - name: c4e-web-app
+          imagePullPolicy: Always
+          image: c4e-web-app
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              name: np-config
+            - mountPath: /usr/share/nginx/html/config.json
+              name: config-volume
+              subPath: config.json
+
+      volumes:
+        - name: np-config
+          configMap:
+            name: nginx-config
+        - name: config-volume
+          configMap:
+            name: net-config
+
+      imagePullSecrets:
+        - name: regcred

@@ -25,6 +25,9 @@
             color: grey;
             font-size: 0.6em;
             display: block;
+            @media (max-width: 1024px) {
+                font-size: 0.5em;
+            }
         }
 
         .value {

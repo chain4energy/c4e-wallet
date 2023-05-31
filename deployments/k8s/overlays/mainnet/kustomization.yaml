@@ -1,0 +1,28 @@
+bases:
+  - ../../base
+resources:
+  - nginx-config.yaml
+  - net-config.yaml
+  - istio-vs.yaml
+namespace: mainnet
+images:
+  - name: c4e-web-app
+    newName: g99vzm03.gra7.container-registry.ovh.net/c4e-chain/c4e-web-app
+    newTag: mainnet-IMAGE_TAG
+patchesStrategicMerge:
+  - ovh-regcred.yaml
+patches:
+  - target:
+      kind: Deployment
+      name: .*
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: c4e-web-app-mainnet
+  - target:
+      kind: Service
+      name: .*
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: c4e-web-app-mainnet

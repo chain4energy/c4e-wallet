@@ -1,14 +1,24 @@
 <template>
-  <div v-if="proposal" class="chart-container">
+  <div  v-if="proposal && option !== false" class="chart-container">
     <div class="top">
-
+      {{props.proposalDetailsTally}}
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL_VOTED") }} / {{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
       <span>
 <!--        <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/> /-->
-        <CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.total)" :reduce-big-number="true" :precision="2"/> /
-        <CoinAmount :amount="tokensStore.totalSupply" :reduce-big-number="true" :precision="2"/>
+        <CoinAmount :amount="totalVotes!==undefined ? new BigIntWrapper(totalVotes) : 0" :reduce-big-number="true" :precision="2"/> /
+        <CoinAmount :amount="bondedTokens !== undefined ? new BigIntWrapper(bondedTokens) : 0" :reduce-big-number="true" :precision="2"/>
+      </span>
+
+    </div>
+    <div class="top">
+      <span>
+        {{ $t("GOVERNANCE_VIEW.CURRENT_TURNOUT") }}
+      </span>
+      <span>
+        {{calculatePercents(Number(totalVotes), Number(bondedTokens), 2)}}%
       </span>
     </div>
+
     <ShadowedSvgChart id="voteschartdiv" class="chartdiv">
         <v-chart :option="option" autoresize />
         <div class="inside">
@@ -16,16 +26,17 @@
           {{ $t("GOVERNANCE_VIEW."+getProposalStatus())}}
         </div>
     </ShadowedSvgChart>
+<!--    <ProgressBarComponent v-if="getProposalStatus()===ProposalStatus.VOTING_PERIOD" ref="childRef" @refresh="updateVotes" :loading-time="useConfigurationStore().getConfig.proposalVotingRefreshTimeout" style="width: 100%"></ProgressBarComponent>-->
     <div class="voting-result">
       <div style="display: flex; align-items: center">
         <div class="dot yes"></div>
         <div class="bar-legend">
           <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.YES") }}</div>
           <div style="font-weight: bold">
-            <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getYesPercentage()" :precision="2"></PercentsView>
+            <PercentsView :amount="yesPercentage" :precision="2"></PercentsView>
           </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.yes)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="yes" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -33,10 +44,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.ABSTAIN") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getAbstainPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="abstainPercentage" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.abstain)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="abstain" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -44,10 +55,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="noPercentage" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.no)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="no" :reduce-big-number="true" :precision="2"/>)
       </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -55,10 +66,10 @@
         <div class="bar-legend">
         <div>{{ $t("GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO") }}</div>
         <div style="font-weight: bold">
-          <PercentsView :amount="useProposalsStore().getSelectedProposalTally.getNoWithVetoPercentage()" :precision="2"></PercentsView>
+          <PercentsView :amount="noWithVetoPercentage" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="new BigIntWrapper(useProposalsStore().getSelectedProposalTally.noWithVeto)" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="noWithVeto" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
     </div>
@@ -79,7 +90,7 @@
 
 <script setup lang="ts">
 
-import {computed} from "vue";
+import {computed, onBeforeMount, ref} from "vue";
 import {PieChart} from "echarts/charts";
 import VChart from "vue-echarts";
 import {use} from "echarts/core";
@@ -87,17 +98,18 @@ import {SVGRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent} from "echarts/components";
 import VoteModal from "@/components/governance/VoteModal.vue";
 import Icon from "../features/IconComponent.vue";
-import {Proposal} from "@/models/store/proposal";
-import {ProposalStatus} from "@/models/store/proposal";
-import { useConfigurationStore } from "@/store/configuration.store";
-import { createProposalDetailsChartData } from "@/charts/governance";
-import { useProposalsStore } from "@/store/proposals.store";
+import {Proposal, ProposalDetailsTally, ProposalStatus} from "@/models/store/proposal";
+import {useConfigurationStore} from "@/store/configuration.store";
+import {createProposalDetailsChartData} from "@/charts/governance";
+import {useProposalsStore} from "@/store/proposals.store";
 import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView.vue";
 import GovernanceIcon from "../commons/GovernanceIcon.vue";
 import {useTokensStore} from "@/store/tokens.store";
 import {BigIntWrapper} from "@/models/store/common";
+import ProgressBarComponent from "@/components/features/ProgressBarComponent.vue";
+import dataService from "@/services/data.service";
 
 use([
   SVGRenderer,
@@ -110,48 +122,154 @@ use([
 
 const tokensStore = useTokensStore();
 
+onBeforeMount(async () => {
+  if (props.proposal?.status && props.proposal.status !== ProposalStatus.VOTING_PERIOD) {
+    await dataService.onProposalUpdateVotes(props.proposal.proposalId);
+  }
+});
+
+if(props.proposal?.status === ProposalStatus.VOTING_PERIOD) {
+  setInterval(() => {
+    updateVotes();
+  },useConfigurationStore().getConfig.proposalVotingRefreshTimeout)
+}
+
+const childRef = ref<InstanceType<typeof ProgressBarComponent>>();
 const props = defineProps<{
-  proposal?: Proposal
+  proposal?: Proposal,
+  proposalDetailsTally?: ProposalDetailsTally
 }>();
 
 const icons  = new Map<string, string>([
   [ProposalStatus.PASSED, 'CheckSquare'],
   [ProposalStatus.REJECTED, 'XCircle'],
-  [ProposalStatus.VOTING_PERIOD, '']
+  [ProposalStatus.VOTING_PERIOD, ''],
+  [ProposalStatus.UNSPECIFIED, ''],
+  [ProposalStatus.DEPOSIT_PERIOD, ''],
+  [ProposalStatus.FAILED, ''],
 ]);
 
+const proposalsStore = useProposalsStore();
 const sumOfVotes = computed(() => {
-  const val = useProposalsStore().getSelectedProposalTally.total;
+  const val = useProposalsStore().getProposalDetailsTally?.total;
   return (val && val > 0) ? val : -1n;
 });
 
+const updateVotes = async () => {
+  if(props.proposal?.proposalId) {
+    console.log('refresh')
+    await dataService.onProposalUpdateVotes(props.proposal.proposalId);
+  }
+  childRef.value?.startFillingBar();
+};
 
 const yes = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.yes);
+  const res = props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.yes : proposalsStore.getProposalDetailsTally?.getYes();
+  if(res != undefined) {
+    return res;
+  }
+  return undefined;
 });
 
 const no = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.no);
+  const res = props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.no : proposalsStore.getProposalDetailsTally?.getNo();
+  if(res != undefined) {
+    return res;
+  }
+  return undefined;
 });
 
 const abstain = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.abstain);
+  const res = props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.abstain : proposalsStore.getProposalDetailsTally?.getAbstain();
+  if(res != undefined) {
+    return res;
+  }
+  return undefined;
 });
 
 const noWithVeto = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(useProposalsStore().getSelectedProposalTally.noWithVeto);
+  const res = props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.noWithVeto : proposalsStore.getProposalDetailsTally?.getNoWithVeto();
+  if(res != undefined) {
+    return res;
+  }
+  return undefined;
+});
+
+const notVoted = computed(() => {
+  const total = proposalsStore.proposalTally?.total != undefined ? proposalsStore.proposalTally.total : 0n;
+  const res = props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    useTokensStore().getStakingPool.bondedTokens - total : proposalsStore.getProposalDetailsTally?.getNotVoted();
+  if(res != undefined) {
+    return res;
+  }
+  return undefined;
+});
+
+const yesPercentage = computed(() => {
+  return props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.getYesPercentage() : useProposalsStore().getProposalDetailsTally?.getYesPercentage();
+});
+
+const noPercentage = computed(() => {
+  return props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.getNoPercentage() : useProposalsStore().getProposalDetailsTally?.getNoPercentage();
+});
+
+const abstainPercentage = computed(() => {
+  return props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.getAbstainPercentage() : useProposalsStore().getProposalDetailsTally?.getAbstainPercentage();
+});
+
+const noWithVetoPercentage = computed(() => {
+  return props.proposal?.status === ProposalStatus.VOTING_PERIOD ?
+    proposalsStore.proposalTally?.getNoWithVetoPercentage() : useProposalsStore().getProposalDetailsTally?.getNoWithVetoPercentage();
+});
+
+const totalVotes = computed(() => {
+  let total: bigint | undefined;
+  if(props.proposal?.status == ProposalStatus.VOTING_PERIOD) {
+    total = proposalsStore.proposalTally?.total;
+  } else {
+    total = useProposalsStore().getProposalDetailsTally?.proposalTally.total;
+  }
+  return total;
+});
+
+const bondedTokens = computed(() => {
+  let bonded: bigint | undefined;
+  if(props.proposal?.status == ProposalStatus.VOTING_PERIOD) {
+    bonded = useTokensStore().getStakingPool.bondedTokens;
+  } else {
+    bonded = useProposalsStore().getProposalDetailsTally?.stakingPool.bondedTokens;
+  }
+  return bonded;
 });
 
 const option = computed(() => {
-  if (!yes.value || !abstain.value || !no.value || !noWithVeto.value) {
-    return '';
+  if (yes.value==undefined || abstain.value==undefined || no.value==undefined || noWithVeto.value==undefined || notVoted.value==undefined) {
+    return false;
   }
-  return createProposalDetailsChartData(yes.value, abstain.value, no.value, noWithVeto.value, sumOfVotes.value);
+
+  return createProposalDetailsChartData(useConfigurationStore().config.getConvertedAmount(yes.value),
+    useConfigurationStore().config.getConvertedAmount(abstain.value),
+    useConfigurationStore().config.getConvertedAmount(no.value),
+    useConfigurationStore().config.getConvertedAmount(noWithVeto.value),
+    useConfigurationStore().config.getConvertedAmount(notVoted.value),
+    sumOfVotes.value);
 });
 
 function getProposalTitle() {
-  const result = useProposalsStore().getProposal?.content.title;
+  const result = useProposalsStore().getProposal?.content?.title;
   return result ? result : '';
+}
+
+function calculatePercents(a, b, precision){
+  const result= (a/b) *100;
+  return result.toFixed(precision);
 }
 
 function getProposalStatus(): ProposalStatus{
@@ -170,7 +288,7 @@ function getProposalStatus(): ProposalStatus{
 }
 
 .chart-container {
-  height: 560px;
+  height: 620px;
   width: 100%;
   box-shadow: -1px 1px 3px 3px rgba(0,0,0,0.1);
   border-radius: 10px;
@@ -185,7 +303,7 @@ function getProposalStatus(): ProposalStatus{
   }
   .chartdiv {
     width: 100%;
-    height: 70%;
+    height: 65%;
     position: relative;
     .inside{
       width: 50%;
@@ -237,4 +355,6 @@ function getProposalStatus(): ProposalStatus{
 .gov-icon {
   padding-right: 0.5rem;
 }
+
 </style>
+

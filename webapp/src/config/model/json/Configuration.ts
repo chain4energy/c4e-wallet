@@ -49,7 +49,7 @@ export interface Configuration {
   stakingPageURL: string,
   addressPrefix: string,
   stakingDenom: string,
-  strategicPoolAddress: string,
+  strategicPoolAddress: string[],
   airdropPoolAddress: string,
   chainId: string,
   networkName: string,
@@ -65,11 +65,14 @@ export interface Configuration {
   accountDataRefreshTimeout: number,
   proposalsPageLimit: number,
   queries: JsonQueries;
+  explorerUrl: string,
   explorerAccount: string,
   explorerTx: string,
   isMainNetwork: boolean,
   testMode?: boolean,
   testFileName?: string,
-  airdropBaseURL: string
-  airdropDefaultDenom: string
+  airdropBaseURL: string;
+  proposalVotingRefreshTimeout: number;
+  airdropDefaultDenom: string;
+  targetInflationAprMultiplier: number
 }

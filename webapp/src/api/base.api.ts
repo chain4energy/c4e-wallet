@@ -532,7 +532,7 @@ export default abstract class BaseApi extends LoggedService {
 
   private createErrorResponseWithToast<T, E>(errorData: ErrorData<E>, toastMessageBeginning: string | undefined, showErrorToast: boolean): RequestResponse<T, ErrorData<E>> {
     if (showErrorToast) {
-      toast.error(toastMessageBeginning + this.getServiceType() + '\r\n' + errorData.getInfo());
+      //toast.error(toastMessageBeginning + this.getServiceType() + '\r\n' + errorData.getInfo());
     }
     return new RequestResponse<T, ErrorData<E>>(errorData);
   }
