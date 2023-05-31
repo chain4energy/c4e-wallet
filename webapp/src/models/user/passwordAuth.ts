@@ -11,3 +11,10 @@ export interface CreateAccountRequest {
   password: string,
   phone?: string
 }
+
+export interface AccountRequest{
+  "accountType": "string",
+  "kycLevel": "string",
+  "login": "string",
+  "terms": true
+}

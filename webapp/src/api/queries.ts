@@ -80,6 +80,7 @@ export default {
     AIRDROP_INFO: 'airdropInfo.json'
   },
   publicSaleService: {
+    GET_ACCOUNT: '/api/publicsale-service/accountInfo',
     REFRESH_TOKEN: '/api/publicsale-service/refresh',
     EMAIL_CREATE_ACCOUNT: '/api/publicsale-service/register',
     AUTHENTICATE_EMAIL: '/api/publicsale-service/auth/password',
@@ -89,11 +90,15 @@ export default {
     INIT_WALLET_AUTH: '/api/publicsale-service/initWalletAuth',
     ACTIVATE_ACCOUNT: '/api/publicsale-service/activate/{activationCode}',
     PAIR_EMAIL: '/api/publicsale-service/claim/emailKeplr/init',
+    CONFIRM_SIGNED_EMAIL_DATA: '/api/publicsale-service/claim/emailKeplr/signedData',
+    VERIFY_EMAIL: '/api/publicsale-service/claim/emailKeplr/dataVerify',
     PAIR_METAMASK:'/api/publicsale-service/claim/metamaskKeplr/init',
+    PAIR_METAMASK_VERFICATION: '/api/publicsale-service/claim/metamaskKeplr/signatureVerify',
     RESERVE_TOKENS: '/api/publicsale-service/token/reservation',
     INIT_PAYMENT_SESSION: '/api/publicsale-service/payment/initSession',
     TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations',
-    KYC_INIT_SESSION: '/api/publicsale-service/kyc/init'
+    KYC_INIT_SESSION: '/api/publicsale-service/kyc/init',
+    ACCEPT_TERMS:'/api/publicsale-service/acceptTerms',
   },
   synaps: {
     OVERVIEW: 'https://individual-api.synaps.io/v3/onboarding/overview'

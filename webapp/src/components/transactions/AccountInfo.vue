@@ -63,12 +63,13 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <p class="accountInfo__headMainTxt">Terms acceptance</p>
-          <p class="accountInfo__headTxt">No</p>
+          <p class="accountInfo__headTxt">{{ isTermsAccepted }}</p>
         </div>
         <div>
           <Button
             class="p-button p-component secondary accountInfo__btn"
-            @click="console.log(111)">Accept</Button>
+            :disabled="isTermsAccepted"
+            @click="$emit('openApproval')">Accept</Button>
         </div>
       </div>
       <hr class="accountInfo__line"/>
@@ -97,7 +98,7 @@ import { useUserStore } from "@/store/user.store";
 import { LoginTypeEnum, useUserServiceStore } from "@/store/userService.store";
 import { useToast } from "vue-toastification";
 
-const emit = defineEmits(['openModal']);
+const emit = defineEmits(['openModal', 'openApproval']);
 import {useRouter} from "vue-router";
 
 const props = defineProps<{
@@ -111,6 +112,10 @@ const isLoggedIn = computed(() =>{
 const isLogedInInService = computed(() => {
   return useUserServiceStore().isLoggedIn;
 });
+
+const isTermsAccepted = computed(() =>{
+  return useUserServiceStore().isTermsAccepted;
+})
 
 const paired = computed(() => {
   return useUserServiceStore().isPaired;

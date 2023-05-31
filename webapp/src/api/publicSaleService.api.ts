@@ -1,6 +1,6 @@
 import BaseApi, {ErrorData} from "@/api/base.api";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
-import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
+import { AccountRequest, CreateAccountRequest, PasswordAuthenticateRequest } from "@/models/user/passwordAuth";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {RequestResponse} from "@/models/request-response";
 import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common";
@@ -14,7 +14,12 @@ import {
   InitWalletAuthResponse,
   WalletAuthRequest
 } from "@/models/user/walletAuth";
-import {EmailPairingRequest} from "@/models/user/emailPairing";
+import {
+  EmailPairingConfirmationReq,
+  EmailPairingRequest,
+  EmailPairingRes, MetamaskKeplrPairingReq,
+  SignedEmailPairingRequest
+} from "@/models/user/emailPairing";
 import {formatString} from "@/utils/string-formatter";
 import {
   InitPaymentSessionRequest,
@@ -45,6 +50,17 @@ export class PublicSaleServiceApi extends BaseApi {
       'createEmailAccount - '
     );
   }
+  private publicSaleServicePostEmptyCall<R, T, E>(userServiceUrlPart: string, lockscreen: boolean): Promise<RequestResponse<T, ErrorData<E>>> {
+    return this.axiosCall<T, E>({
+        method: 'POST',
+        url: useConfigurationStore().config.publicSaleServiceURL + userServiceUrlPart,
+      },
+      lockscreen,
+      null,
+      true,
+      'createEmailAccount - '
+    );
+  }
 
   private publicSaleServiceGetCall<T, E>(userServiceUrlPart: string, lockscreen: boolean): Promise<RequestResponse<T, ErrorData<E>>> {
     return this.axiosCall<T, E>({
@@ -57,7 +73,12 @@ export class PublicSaleServiceApi extends BaseApi {
       'createEmailAccount - '
     );
   }
-
+  public async getAccount(lockscreen: boolean): Promise<RequestResponse<AccountRequest, ErrorData<UserServiceErrData>>> {
+    return this.publicSaleServiceGetCall<AccountRequest, UserServiceErrData>(queries.publicSaleService.GET_ACCOUNT, lockscreen);
+  }
+  public async acceptTerms(lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<UserServiceErrData>>> {
+    return this.publicSaleServicePostEmptyCall<PasswordAuthenticateRequest, AccountInfo, UserServiceErrData>(queries.publicSaleService.ACCEPT_TERMS, lockscreen);
+  }
   public async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<UserServiceErrData>>> {
     return this.publicSaleServicePostCall<PasswordAuthenticateRequest, AccountInfo, UserServiceErrData>(queries.publicSaleService.EMAIL_CREATE_ACCOUNT, createAccountRequest, lockscreen);
   }
@@ -79,11 +100,20 @@ export class PublicSaleServiceApi extends BaseApi {
   public async activateEmailAccount(code: string, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
     return this.publicSaleServiceGetCall<Jwt, UserServiceErrData>(formatString(queries.publicSaleService.ACTIVATE_ACCOUNT, {activationCode: code}), lockscreen);
   }
-  public pairEmail(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>>{
-    return this.publicSaleServicePostCall<EmailPairingRequest, Jwt, UserServiceErrData>(queries.publicSaleService.PAIR_EMAIL, emailPairing, lockscreen);
+  public pairEmail(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
+    return this.publicSaleServicePostCall<EmailPairingRequest, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.PAIR_EMAIL, emailPairing, lockscreen);
   }
-  public pairMetamask(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>>{
-    return this.publicSaleServicePostCall<EmailPairingRequest, Jwt, UserServiceErrData>(queries.publicSaleService.PAIR_METAMASK, emailPairing, lockscreen);
+  public confirmEmailPairingKeplr(emailPairing: SignedEmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
+    return this.publicSaleServicePostCall<SignedEmailPairingRequest, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.CONFIRM_SIGNED_EMAIL_DATA, emailPairing, lockscreen);
+  }
+  public verifyEmailPairingKeplr(emailPairingVerification: EmailPairingConfirmationReq, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
+    return this.publicSaleServicePostCall< EmailPairingConfirmationReq, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.VERIFY_EMAIL, emailPairingVerification, lockscreen);
+  }
+  public pairMetamask(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
+    return this.publicSaleServicePostCall<EmailPairingRequest, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.PAIR_METAMASK, emailPairing, lockscreen);
+  }
+  public verifyPairingMetamaskKeplr(emailPairingVerification: MetamaskKeplrPairingReq, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
+    return this.publicSaleServicePostCall<MetamaskKeplrPairingReq, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.PAIR_METAMASK_VERFICATION, emailPairingVerification, lockscreen);
   }
 
   public async reserveTokens(amount: number, lockscreen: boolean): Promise<RequestResponse<ReserveTokensResponse, ErrorData<UserServiceErrData>>> {
@@ -100,6 +130,7 @@ export class PublicSaleServiceApi extends BaseApi {
   public async initKycSession(lockscreen: boolean): Promise<RequestResponse<InitSessionResponse, ErrorData<UserServiceErrData>>> {
     return this.publicSaleServiceGetCall<InitSessionResponse, UserServiceErrData>(queries.publicSaleService.KYC_INIT_SESSION, lockscreen);
   }
+
 
   public async synapsFetchSessionDetails(sessionId: string, lockscreen: boolean): Promise<RequestResponse<KycTier, ErrorData<UserServiceErrData>>> {
     const mapData = (hasureData: SessionOverviewResponse | undefined) => {

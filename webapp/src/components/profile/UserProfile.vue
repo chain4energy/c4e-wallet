@@ -1,11 +1,12 @@
 <template>
   <AddressModal style="position: fixed; z-index: 99999" @close="hideAddAddress" @submit="submitEmail" v-if="showAddressAdd" />
+  <ApprovalModal @close="hideApprovalModal" @submit="console.log(1)" v-if="showApprovalModal"/>
   <div class="userProfile">
     <div class="userProfile__holder">
       <TabView>
         <TabPanel class="userProfile__tabHeader">
           <template #header>Account info</template>
-          <AccountInfo :accordion="false" @open-modal="showAddressAddModal"/>
+          <AccountInfo :accordion="false" @open-modal="showAddressAddModal" @open-approval="showApprovalModalFunc"/>
           <div class="userProfile__holder">
             <InvestmentCalculator :rate="currency"/>
           </div>
@@ -35,17 +36,25 @@ import AccountInfo from "@/components/transactions/AccountInfo.vue";
 import { useUserStore } from "@/store/user.store";
 import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vue";
 import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
-import {computed, onBeforeMount, ref} from "vue";
+import { computed, onBeforeMount, onMounted, ref } from "vue";
 import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
 import PayModal from "@/components/buyTokens/PayModal.vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import AddressModal from "@/components/buyTokens/modals/AddressModal.vue";
+import ApprovalModal from "@/components/buyTokens/modals/ApprovalModal.vue";
 
-const showAddressAdd = ref(false)
+const showAddressAdd = ref(false);
+const showApprovalModal = ref(false);
 
 onBeforeMount(() => {
   usePublicSalesStore().fetchTokenReservations();
 });
+
+onMounted(() =>{
+  useUserServiceStore().getAccount(()=>{console.log(1)}, ()=>{console.log(2)})
+})
+
+
 const currency = computed(() => {
   return usePublicSalesStore().getC4eToUSDC;
 });
@@ -54,7 +63,6 @@ const selectedReservation = ref();
 const transactions = computed(() => {
   return usePublicSalesStore().getTransactions;
 });
-
 function submitEmail(){
   hideAddAddress();
 }
@@ -64,6 +72,13 @@ function showAddressAddModal(){
 }
 function hideAddAddress(){
   showAddressAdd.value = false;
+}
+
+function showApprovalModalFunc(){
+  showApprovalModal.value = true;
+}
+function hideApprovalModal(){
+  showApprovalModal.value = false;
 }
 
 

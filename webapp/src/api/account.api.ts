@@ -340,4 +340,7 @@ export class AccountApi extends TxBroadcastBaseApi {
 
     return this.signWithMetamask(dataToSign, true, null);
   }
+  public async signMetamaskPairing(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
+    return this.signWithMetamaskPairing(dataToSign, true, null);
+  }
 }
