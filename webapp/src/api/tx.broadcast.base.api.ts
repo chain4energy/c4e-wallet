@@ -25,6 +25,7 @@ import {DataToSign} from "@/models/user/walletAuth";
 import {_arrayBufferToBase64} from "@/utils/sign";
 import {useUserStore} from "@/store/user.store";
 import {ethers} from "ethers";
+import {TransactionRequest} from "@ethersproject/abstract-provider";
 
 const toast = useToast();
 
@@ -491,6 +492,45 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       const signature = await signer.signMessage(dataToSign);
 
       return new RequestResponse<string, TxBroadcastError>(undefined, signature);
+    } catch (err) {
+      this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
+      const error = err as Error;
+      return this.createTxSignErrorResponseWithToast(
+        new TxBroadcastError(error.message),
+        'Transaction Broadcast error',
+        !skipErrorToast
+      );
+    } finally {
+      this.after(lockScreen, localSpinner);
+      if (clientToDisconnect !== undefined) {
+        clientToDisconnect.disconnect();
+      }
+    }
+  }
+
+  protected async sendTransactionWithMetamask(
+    tx: TransactionRequest,
+    lockScreen: boolean, localSpinner: LocalSpinner | null,
+    skipErrorToast = false
+  ): Promise<RequestResponse<string, TxBroadcastError>>
+  {
+    this.logToConsole(LogLevel.DEBUG, 'signDirect');
+    this.before(lockScreen, localSpinner);
+    let clientToDisconnect: SigningStargateClient | undefined;
+    try {
+
+      const signer = this.getMetamaskSigner();
+      if (signer === undefined) {
+        return this.createTxSignErrorResponseWithToast(
+          new TxBroadcastError('Cannot get signing client'),
+          'Sign direct error',
+          !skipErrorToast
+        );
+      }
+      tx.from = await signer.getAddress();
+      const transaction = await signer.sendTransaction(tx);
+
+      return new RequestResponse<string, TxBroadcastError>(undefined, transaction.hash);
     } catch (err) {
       this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
       const error = err as Error;

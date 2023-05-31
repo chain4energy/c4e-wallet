@@ -38,6 +38,10 @@ const onBackClick = () => {
         router.push({name:'accountType'});
         break;
       }
+      case 'emailLogin': {
+        router.push({name:'accountType'});
+        break;
+      }
     }
 };
 

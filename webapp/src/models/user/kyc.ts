@@ -30,3 +30,13 @@ export interface SessionOverviewStep {
   state: KycStatus,
   name: KycStepName
 }
+export enum KycTierEnum {
+  TIER_0,
+  TIER_1,
+  TIER_2,
+  TIER_3
+}
+export interface KycStepInfo {
+  name: KycStepName,
+  state: KycStatus | undefined
+}

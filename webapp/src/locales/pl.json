@@ -357,7 +357,14 @@
     "TERMS_CONDITIONS": "Zasady i warunki użytkowania",
     "AIRDROP": "Airdrop",
     "BUYTOKENS": "Kup tokeny",
-    "PROFILE": "Profil"
+    "PROFILE": "Profil",
+    "KYC": "KYC",
+    "PUBLICSALEINFO": "Kup tokeny",
+    "ACCOUNTTYPE": "Logowanie",
+    "EMAILREGISTRATION": "Rejestracja emailem",
+    "KEPLRREGISTRATION": "Rejestracja Kerplrem",
+    "METAMASKREGISTRATION": "Rejestracja Metamaskiem",
+    "EMAILLOGIN": "Logowanie emailem"
   },
   "TOAST": {
     "SUCCESS": {
@@ -412,5 +419,13 @@
   "HEADER": {
     "TOP_UP_ACCOUNT": "Kranik",
     "VERSION": "Wersja"
+  },
+  "ENUMS": {
+    "LOGIN_TYPE": {
+      "EMAIL": "Email",
+      "KEPLR": "Keplr",
+      "METAMASK": "Metamask",
+      "NONE": "Nie zalogowano"
+    }
   }
 }

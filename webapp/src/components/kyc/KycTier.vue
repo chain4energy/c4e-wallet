@@ -30,12 +30,12 @@
 
 <script setup lang="ts">
 import Icon from "@/components/features/IconComponent.vue";
-import {KycStatus, KycStepName} from "@/models/user/kyc";
+import {KycStatus, KycStepInfo, KycStepName} from "@/models/user/kyc";
 
 const props = defineProps<{
   header: string,
   description: string,
-  listOfSteps: {name: KycStepName, state?: KycStatus}[],
+  listOfSteps: KycStepInfo[],
   tier: number
 
 }>();

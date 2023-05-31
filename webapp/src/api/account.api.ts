@@ -39,6 +39,8 @@ import { BlockchainApiErrorData } from "@/models/blockchain/common";
 import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
 import {DataToSign} from "@/models/user/walletAuth";
 import {MsgSignData} from "@/types/tx";
+import {TransactionRequest} from "@ethersproject/abstract-provider";
+import {ethers} from "ethers";
 
 
 
@@ -337,8 +339,19 @@ export class AccountApi extends TxBroadcastBaseApi {
   public async signMetamask(dataToSign: DataToSign):Promise<RequestResponse<string, TxBroadcastError>> {
 
 
-
     return this.signWithMetamask(dataToSign, true, null);
+  }
+  public async sendTransaction(amount: string):Promise<RequestResponse<string, TxBroadcastError>> {
+    const gas_limit = "0x100000";
+    const tx: TransactionRequest = {
+      from: '',
+      to: '0xf9AAA5C4868Ef0D1613E350A399C802566af7142',
+      value: ethers.utils.parseEther(amount),
+      gasLimit: ethers.utils.hexlify(gas_limit),
+      gasPrice: '0',
+    };
+
+    return this.sendTransactionWithMetamask(tx, true, null);
   }
   public async signMetamaskPairing(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
     return this.signWithMetamaskPairing(dataToSign, true, null);
