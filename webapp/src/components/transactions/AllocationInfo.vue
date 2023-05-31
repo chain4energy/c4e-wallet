@@ -40,7 +40,7 @@
       v-if="props.transaction.status === transactionStatus.Declared"
       data-bs-toggle="modal" data-bs-target="#voteModal"
       @click="submit"
-    >Pay or Tx-hash</Button>
+    >Pay</Button>
   </div>
 
 </div>

@@ -341,7 +341,7 @@ export class AccountApi extends TxBroadcastBaseApi {
 
     return this.signWithMetamask(dataToSign, true, null);
   }
-  public async sendTransaction(amount: string):Promise<RequestResponse<string, TxBroadcastError>> {
+  public async sendTransaction(amount: string, blockchainAddress: string, coinDecimals: number,destinationAddress: string):Promise<RequestResponse<string, TxBroadcastError>> {
     const gas_limit = "0x100000";
     const tx: TransactionRequest = {
       from: '',
@@ -349,9 +349,10 @@ export class AccountApi extends TxBroadcastBaseApi {
       value: ethers.utils.parseEther(amount),
       gasLimit: ethers.utils.hexlify(gas_limit),
       gasPrice: '0',
+      chainId: 11155111
     };
 
-    return this.sendTransactionWithMetamask(tx, true, null);
+    return this.sendTransactionWithMetamask(amount, blockchainAddress, coinDecimals, destinationAddress, true, null);
   }
   public async signMetamaskPairing(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
     return this.signWithMetamaskPairing(dataToSign, true, null);

@@ -13,6 +13,7 @@ import { EmailPairingRequest, EmailPairingRes } from "@/models/user/emailPairing
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import {KycStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum, KycTier} from "@/models/user/kyc";
 import { TxBroadcastError } from "@/api/tx.broadcast.base.api";
+import {ethers} from "ethers";
 
 interface UserServiceState {
   _isLoggedIn: boolean,
@@ -79,8 +80,8 @@ export const useUserServiceStore = defineStore({
          onFail();
        }
     },
-    async sendMetamaskTransaction(amount: string) {
-      await apiFactory.accountApi().sendTransaction( amount).then(res => {
+    async sendMetamaskTransaction(amount: string, blockchainAddress: string, coinDecimals: number) {
+      await apiFactory.accountApi().sendTransaction( amount, blockchainAddress, coinDecimals, '0xf9AAA5C4868Ef0D1613E350A399C802566af7142').then(res => {
         console.log(res)
       });
     },
@@ -223,7 +224,20 @@ export const useUserServiceStore = defineStore({
         }
       });
     },
+    async switchBlockchain(chainId: number) {
+      try {
+        if (!window.ethereum) {
+          throw new Error('MetaMask is not installed');
+        }
 
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: ethers.utils.hexValue(chainId) }],
+        });
+      } catch (error) {
+        console.error('Error switching the blockchain network:', error);
+      }
+    },
     pairMetamaskAddress: async function(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().pairMetamask(emailAccount, lockscreen).then(async responseData => {
         if (responseData.isSuccess() && responseData.data) {
@@ -258,12 +272,12 @@ export const useUserServiceStore = defineStore({
               metamaskSignedData: metamaskResp,
               processID: responseData.processID,
             }, true).then((res)=>{
-              if(res.isSuccess()){
-                this.setIsLoggedIn();
-                this.loginType = LoginTypeEnum.METAMASK;
-                this.paired = true;
-                this.verificationNeeded = false;
-              }
+            if(res.isSuccess()){
+              this.setIsLoggedIn();
+              this.loginType = LoginTypeEnum.METAMASK;
+              this.paired = true;
+              this.verificationNeeded = false;
+            }
           });
 
         }
@@ -279,7 +293,6 @@ export const useUserServiceStore = defineStore({
       });
 
     },
-
     logOutAccount(){
       clearAuthTokens();
       usePublicSalesStore().logOutAccount();

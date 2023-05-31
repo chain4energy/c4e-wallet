@@ -26,6 +26,7 @@ import {_arrayBufferToBase64} from "@/utils/sign";
 import {useUserStore} from "@/store/user.store";
 import {ethers} from "ethers";
 import {TransactionRequest} from "@ethersproject/abstract-provider";
+import {FormatTypes, Interface} from "ethers/lib/utils";
 
 const toast = useToast();
 
@@ -509,7 +510,10 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
   }
 
   protected async sendTransactionWithMetamask(
-    tx: TransactionRequest,
+    amount: string,
+    blockchainAddress: string,
+    coinDecimals: number,
+    destinationAddress: string,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
     skipErrorToast = false
   ): Promise<RequestResponse<string, TxBroadcastError>>
@@ -519,18 +523,19 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     let clientToDisconnect: SigningStargateClient | undefined;
     try {
 
-      const signer = this.getMetamaskSigner();
-      if (signer === undefined) {
-        return this.createTxSignErrorResponseWithToast(
-          new TxBroadcastError('Cannot get signing client'),
-          'Sign direct error',
-          !skipErrorToast
-        );
-      }
-      tx.from = await signer.getAddress();
-      const transaction = await signer.sendTransaction(tx);
 
-      return new RequestResponse<string, TxBroadcastError>(undefined, transaction.hash);
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      const contract = new ethers.Contract(blockchainAddress, this.abi, provider);
+
+      const baseUnitAmount = ethers.utils.parseUnits(amount, coinDecimals);
+
+      const signer = provider.getSigner();
+
+      const transfer = await contract.connect(signer).transfer(destinationAddress, baseUnitAmount);
+
+
+      return new RequestResponse<string, TxBroadcastError>(undefined, transfer);
     } catch (err) {
       this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
       const error = err as Error;
@@ -546,4 +551,226 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       }
     }
   }
+  abi = `[
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "name",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_spender",
+                "type": "address"
+            },
+            {
+                "name": "_value",
+                "type": "uint256"
+            }
+        ],
+        "name": "approve",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "totalSupply",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_from",
+                "type": "address"
+            },
+            {
+                "name": "_to",
+                "type": "address"
+            },
+            {
+                "name": "_value",
+                "type": "uint256"
+            }
+        ],
+        "name": "transferFrom",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "decimals",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "_owner",
+                "type": "address"
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "name": "balance",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "symbol",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_to",
+                "type": "address"
+            },
+            {
+                "name": "_value",
+                "type": "uint256"
+            }
+        ],
+        "name": "transfer",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "_owner",
+                "type": "address"
+            },
+            {
+                "name": "_spender",
+                "type": "address"
+            }
+        ],
+        "name": "allowance",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "payable": true,
+        "stateMutability": "payable",
+        "type": "fallback"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "name": "spender",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "Approval",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "Transfer",
+        "type": "event"
+    }
+]`
 }
