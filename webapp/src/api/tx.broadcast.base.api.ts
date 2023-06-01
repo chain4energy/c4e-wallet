@@ -10,12 +10,8 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { RequestResponse } from '@/models/request-response';
 import TxToast from "@/components/commons/TxToast.vue";
 import {Registry} from "@cosmjs/proto-signing";
-import { MsgClaim, MsgInitialClaim } from "@/api/customEvents/tx";
-import {ZIndexUtils} from "primevue/utils";
-import get = ZIndexUtils.get;
-import { RepeatedContinuousVestingAccount } from "@/models/blockchain/account";
-import * as bech32 from "bech32";
-import { customAccountParser } from "@/api/repeatedVestingAcc/custom_account_parser";
+import { MsgClaim, MsgInitialClaim } from "@/api/cfeclaim/tx";
+import { customAccountParser } from "@/api/periodicContinousVestingAccount/custom_account_parser";
 import {Keplr} from "@keplr-wallet/types";
 
 const toast = useToast();

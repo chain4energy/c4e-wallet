@@ -6,7 +6,7 @@ import {AccountApi} from "@/api/account.api";
 import WalletConnectionApi from "./wallet.connecton.api";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
 import { KeybaseApi } from "./keybase.api";
-import {AirDropApi} from "@/api/airDrop.api";
+import {ClaimApi} from "@/api/claim.api";
 
 let testfileName = '';
 
@@ -23,7 +23,7 @@ class ApiFactory {
   private readonly _accountApi = new AccountApi(() => this._axios);
   private readonly _walletApi = new WalletConnectionApi();
   private readonly _keybaseApi = new KeybaseApi(() => this._axios);
-  private readonly _airDropApi = new AirDropApi(() => this._axios);
+  private readonly _airDropApi = new ClaimApi(() => this._axios);
 
   private testMode = false;
 
@@ -59,7 +59,7 @@ class ApiFactory {
   public keybaseApi(): KeybaseApi{
     return this._keybaseApi;
   }
-  public airDropApi(): AirDropApi{
+  public airDropApi(): ClaimApi{
     return this._airDropApi;
   }
   public setAxiosInstance(axios: AxiosInstance) {

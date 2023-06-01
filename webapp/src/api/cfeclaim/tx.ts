@@ -1,11 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Coin } from "./coin";
-import { Duration } from ".//duration";
-import { Timestamp } from "./timestamp";
-import { CampaignType, campaignTypeFromJSON, campaignTypeToJSON, ClaimRecordEntry,
-  MissionType, missionTypeFromJSON, missionTypeToJSON } from "./claim";
+import { Coin } from "@/api/cosmos/base/v1beta1/coin";
+import { Duration } from "@/api/google/protobuf/duration";
+import { Timestamp } from "@/api/google/protobuf/timestamp";
+import { CampaignType, campaignTypeFromJSON, campaignTypeToJSON } from "./campaign";
+import { ClaimRecordEntry } from "./claim_record";
+import { MissionType, missionTypeFromJSON, missionTypeToJSON } from "./mission";
 
 export const protobufPackage = "chain4energy.c4echain.cfeclaim";
 
@@ -490,9 +491,9 @@ export const MsgCreateCampaign = {
     message.startTime !== undefined && (obj.startTime = message.startTime.toISOString());
     message.endTime !== undefined && (obj.endTime = message.endTime.toISOString());
     message.lockupPeriod !== undefined
-    && (obj.lockupPeriod = message.lockupPeriod ? Duration.toJSON(message.lockupPeriod) : undefined);
+      && (obj.lockupPeriod = message.lockupPeriod ? Duration.toJSON(message.lockupPeriod) : undefined);
     message.vestingPeriod !== undefined
-    && (obj.vestingPeriod = message.vestingPeriod ? Duration.toJSON(message.vestingPeriod) : undefined);
+      && (obj.vestingPeriod = message.vestingPeriod ? Duration.toJSON(message.vestingPeriod) : undefined);
     message.vestingPoolName !== undefined && (obj.vestingPoolName = message.vestingPoolName);
     return obj;
   },
@@ -1354,8 +1355,8 @@ type Builtin = Date | Function | Uint8Array | string | number | boolean | undefi
 
 export type DeepPartial<T> = T extends Builtin ? T
   : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-    : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-      : Partial<T>;
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P

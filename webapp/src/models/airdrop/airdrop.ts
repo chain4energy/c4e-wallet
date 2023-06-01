@@ -1,3 +1,5 @@
+import {Coin} from "@/api/cosmos/base/v1beta1/coin";
+
 export interface AirDropRes {
   data: airDrop,
   error: any
@@ -28,6 +30,23 @@ export interface CampaignRecord {
   campaign: Campaign,
   missions: Mission[]
 }
+
+//
+// export interface UserEntry {
+//   address: string;
+//   claimRecords: ClaimRecord[];
+// }
+//
+// export interface ClaimRecord {
+//   campaignId: number;
+//   address: string;
+//   amount: Coin[];
+//   completedMissions: number[];
+//   claimedMissions: number[];
+// }
+
+
+
 
 export interface Mission {
   mission_id: string,

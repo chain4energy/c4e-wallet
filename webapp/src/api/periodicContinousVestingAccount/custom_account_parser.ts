@@ -4,13 +4,14 @@ import { Any } from "cosmjs-types/google/protobuf/any";
 import Long from "long";
 import { Uint64 } from "@cosmjs/math";
 import {Account} from "@cosmjs/stargate";
+import { BaseAccount as VestinbBaseAccount } from "@/api/cosmos/auth/v1beta1/auth";
 import {
   BaseVestingAccount,
   ContinuousVestingAccount,
   DelayedVestingAccount,
   PeriodicVestingAccount,
 } from "cosmjs-types/cosmos/vesting/v1beta1/vesting";
-import {RepeatedContinuousVestingAccount} from "./vesting_account";
+import {PeriodicContinuousVestingAccount} from "./vesting_account";
 import { decodePubkey } from "@cosmjs/proto-signing";
 
 export function customAccountParser(input: Any): Account {
@@ -28,7 +29,7 @@ export function customAccountParser(input: Any): Account {
 
     // vesting
     case "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount": {
-      const baseAccount = RepeatedContinuousVestingAccount.decode(value)?.base_vesting_account?.baseAccount;
+      const baseAccount = PeriodicContinuousVestingAccount.decode(value)?.baseVestingAccount?.baseAccount;
       assert(baseAccount);
       return accountFromBaseAccount(baseAccount);
     }
@@ -59,7 +60,7 @@ export function customAccountParser(input: Any): Account {
   }
 }
 
-function accountFromBaseAccount(input: BaseAccount): Account {
+function accountFromBaseAccount(input: BaseAccount | VestinbBaseAccount): Account {
   const { address, pubKey, accountNumber, sequence } = input;
   const pubkey = pubKey ? decodePubkey(pubKey) : null;
   return {

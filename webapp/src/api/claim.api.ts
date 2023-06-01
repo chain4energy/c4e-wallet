@@ -20,7 +20,7 @@ import {
   MsgWithdrawDelegatorReward
 } from "cosmjs-types/cosmos/distribution/v1beta1/tx";
 
-export class AirDropApi extends BaseApi {
+export class ClaimApi extends BaseApi {
 
   private AIRDROP_INFO_URL = queries.airdrop.AIRDROP_INFO;
   private USER_AIRDROP_ENTRIES_URL = queries.blockchain.USER_AIRDROP_ENTRIES_URL;
