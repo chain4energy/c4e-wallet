@@ -1,19 +1,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Duration } from "./duration"
+import { Coin } from "./coin";
+import { Duration } from ".//duration";
 import { Timestamp } from "./timestamp";
-import {
-  AirdropCloseAction,
-  airdropCloseActionFromJSON,
-  airdropCloseActionToJSON,
-  AirdropEntry,
-  MissionType,
-  missionTypeFromJSON,
-  missionTypeToJSON,
-} from "./airdrop";
+import { CampaignType, campaignTypeFromJSON, campaignTypeToJSON, ClaimRecordEntry,
+  MissionType, missionTypeFromJSON, missionTypeToJSON } from "./claim";
 
-export const protobufPackage = "chain4energy.c4echain.cfeairdrop";
+export const protobufPackage = "chain4energy.c4echain.cfeclaim";
 
 export interface MsgClaim {
   claimer: string;
@@ -22,33 +16,40 @@ export interface MsgClaim {
 }
 
 export interface MsgClaimResponse {
+  amount: Coin[];
 }
 
 export interface MsgInitialClaim {
   claimer: string;
   campaignId: number;
-  addressToClaim: string;
+  destinationAddress: string;
 }
 
 export interface MsgInitialClaimResponse {
+  amount: Coin[];
 }
 
-export interface MsgCreateAirdropCampaign {
+export interface MsgCreateCampaign {
   owner: string;
   name: string;
   description: string;
-  allowFeegrant: boolean;
+  campaignType: CampaignType;
+  removableClaimRecords: boolean;
+  feegrantAmount: string;
   initialClaimFreeAmount: string;
+  free: string;
   startTime: Date | undefined;
   endTime: Date | undefined;
   lockupPeriod: Duration | undefined;
   vestingPeriod: Duration | undefined;
+  vestingPoolName: string;
 }
 
-export interface MsgCreateAirdropCampaignResponse {
+export interface MsgCreateCampaignResponse {
+  campaignId: number;
 }
 
-export interface MsgAddMissionToAidropCampaign {
+export interface MsgAddMission {
   owner: string;
   campaignId: number;
   name: string;
@@ -58,59 +59,52 @@ export interface MsgAddMissionToAidropCampaign {
   claimStartDate: Date | undefined;
 }
 
-export interface MsgAddMissionToAidropCampaignResponse {
+export interface MsgAddMissionResponse {
+  missionId: number;
 }
 
-export interface MsgAddAirdropEntries {
+export interface MsgAddClaimRecords {
   owner: string;
   campaignId: number;
-  airdropEntries: AirdropEntry[];
+  claimRecordEntries: ClaimRecordEntry[];
 }
 
-export interface MsgAddAirdropEntriesResponse {
+export interface MsgAddClaimRecordsResponse {
 }
 
-export interface MsgDeleteAirdropEntry {
+export interface MsgDeleteClaimRecord {
   owner: string;
   campaignId: number;
   userAddress: string;
 }
 
-export interface MsgDeleteAirdropEntryResponse {
+export interface MsgDeleteClaimRecordResponse {
 }
 
-export interface MsgCloseAirdropCampaign {
-  owner: string;
-  campaignId: number;
-  airdropCloseAction: AirdropCloseAction;
-}
-
-export interface MsgCloseAirdropCampaignResponse {
-}
-
-export interface MsgStartAirdropCampaign {
+export interface MsgCloseCampaign {
   owner: string;
   campaignId: number;
 }
 
-export interface MsgStartAirdropCampaignResponse {
+export interface MsgCloseCampaignResponse {
 }
 
-export interface MsgEditAirdropCampaign {
+export interface MsgEnableCampaign {
   owner: string;
   campaignId: number;
-  name: string;
-  description: string;
-  allowFeegrant: boolean;
-  initialClaimFreeAmount: string;
-  denom: string;
   startTime: Date | undefined;
   endTime: Date | undefined;
-  lockupPeriod: Duration | undefined;
-  vestingPeriod: Duration | undefined;
 }
 
-export interface MsgEditAirdropCampaignResponse {
+export interface MsgEnableCampaignResponse {
+}
+
+export interface MsgRemoveCampaign {
+  owner: string;
+  campaignId: number;
+}
+
+export interface MsgRemoveCampaignResponse {
 }
 
 function createBaseMsgClaim(): MsgClaim {
@@ -181,11 +175,14 @@ export const MsgClaim = {
 };
 
 function createBaseMsgClaimResponse(): MsgClaimResponse {
-  return {};
+  return { amount: [] };
 }
 
 export const MsgClaimResponse = {
-  encode(_: MsgClaimResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: MsgClaimResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.amount) {
+      Coin.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -196,6 +193,9 @@ export const MsgClaimResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.amount.push(Coin.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -204,23 +204,29 @@ export const MsgClaimResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgClaimResponse {
-    return {};
+  fromJSON(object: any): MsgClaimResponse {
+    return { amount: Array.isArray(object?.amount) ? object.amount.map((e: any) => Coin.fromJSON(e)) : [] };
   },
 
-  toJSON(_: MsgClaimResponse): unknown {
+  toJSON(message: MsgClaimResponse): unknown {
     const obj: any = {};
+    if (message.amount) {
+      obj.amount = message.amount.map((e) => e ? Coin.toJSON(e) : undefined);
+    } else {
+      obj.amount = [];
+    }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgClaimResponse>, I>>(_: I): MsgClaimResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgClaimResponse>, I>>(object: I): MsgClaimResponse {
     const message = createBaseMsgClaimResponse();
+    message.amount = object.amount?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseMsgInitialClaim(): MsgInitialClaim {
-  return { claimer: "", campaignId: 0, addressToClaim: "" };
+  return { claimer: "", campaignId: 0, destinationAddress: "" };
 }
 
 export const MsgInitialClaim = {
@@ -231,8 +237,8 @@ export const MsgInitialClaim = {
     if (message.campaignId !== 0) {
       writer.uint32(16).uint64(message.campaignId);
     }
-    if (message.addressToClaim !== "") {
-      writer.uint32(34).string(message.addressToClaim);
+    if (message.destinationAddress !== "") {
+      writer.uint32(26).string(message.destinationAddress);
     }
     return writer;
   },
@@ -250,8 +256,8 @@ export const MsgInitialClaim = {
         case 2:
           message.campaignId = longToNumber(reader.uint64() as Long);
           break;
-        case 4:
-          message.addressToClaim = reader.string();
+        case 3:
+          message.destinationAddress = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -265,7 +271,7 @@ export const MsgInitialClaim = {
     return {
       claimer: isSet(object.claimer) ? String(object.claimer) : "",
       campaignId: isSet(object.campaignId) ? Number(object.campaignId) : 0,
-      addressToClaim: isSet(object.addressToClaim) ? String(object.addressToClaim) : "",
+      destinationAddress: isSet(object.destinationAddress) ? String(object.destinationAddress) : "",
     };
   },
 
@@ -273,7 +279,7 @@ export const MsgInitialClaim = {
     const obj: any = {};
     message.claimer !== undefined && (obj.claimer = message.claimer);
     message.campaignId !== undefined && (obj.campaignId = Math.round(message.campaignId));
-    message.addressToClaim !== undefined && (obj.addressToClaim = message.addressToClaim);
+    message.destinationAddress !== undefined && (obj.destinationAddress = message.destinationAddress);
     return obj;
   },
 
@@ -281,80 +287,20 @@ export const MsgInitialClaim = {
     const message = createBaseMsgInitialClaim();
     message.claimer = object.claimer ?? "";
     message.campaignId = object.campaignId ?? 0;
-    message.addressToClaim = object.addressToClaim ?? "";
+    message.destinationAddress = object.destinationAddress ?? "";
     return message;
   },
 };
 
-// export const TypeRepeatedContinuousVestingAccount = {
-//   encode(message: Msg, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-//     if (message.claimer !== "") {
-//       writer.uint32(10).string(message.claimer);
-//     }
-//     if (message.campaignId !== 0) {
-//       writer.uint32(16).uint64(message.campaignId);
-//     }
-//     if (message.addressToClaim !== "") {
-//       writer.uint32(34).string(message.addressToClaim);
-//     }
-//     return writer;
-//   },
-//
-//   decode(input: _m0.Reader | Uint8Array, length?: number): MsgInitialClaim {
-//     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-//     let end = length === undefined ? reader.len : reader.pos + length;
-//     const message = createBaseMsgInitialClaim();
-//     while (reader.pos < end) {
-//       const tag = reader.uint32();
-//       switch (tag >>> 3) {
-//         case 1:
-//           message.claimer = reader.string();
-//           break;
-//         case 2:
-//           message.campaignId = longToNumber(reader.uint64() as Long);
-//           break;
-//         case 4:
-//           message.addressToClaim = reader.string();
-//           break;
-//         default:
-//           reader.skipType(tag & 7);
-//           break;
-//       }
-//     }
-//     return message;
-//   },
-//
-//   fromJSON(object: any): MsgInitialClaim {
-//     return {
-//       claimer: isSet(object.claimer) ? String(object.claimer) : "",
-//       campaignId: isSet(object.campaignId) ? Number(object.campaignId) : 0,
-//       addressToClaim: isSet(object.addressToClaim) ? String(object.addressToClaim) : "",
-//     };
-//   },
-//
-//   toJSON(message: MsgInitialClaim): unknown {
-//     const obj: any = {};
-//     message.claimer !== undefined && (obj.claimer = message.claimer);
-//     message.campaignId !== undefined && (obj.campaignId = Math.round(message.campaignId));
-//     message.addressToClaim !== undefined && (obj.addressToClaim = message.addressToClaim);
-//     return obj;
-//   },
-//
-//   fromPartial<I extends Exact<DeepPartial<MsgInitialClaim>, I>>(object: I): MsgInitialClaim {
-//     const message = createBaseMsgInitialClaim();
-//     message.claimer = object.claimer ?? "";
-//     message.campaignId = object.campaignId ?? 0;
-//     message.addressToClaim = object.addressToClaim ?? "";
-//     return message;
-//   },
-// };
-
 function createBaseMsgInitialClaimResponse(): MsgInitialClaimResponse {
-  return {};
+  return { amount: [] };
 }
 
 export const MsgInitialClaimResponse = {
-  encode(_: MsgInitialClaimResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: MsgInitialClaimResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.amount) {
+      Coin.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -365,6 +311,9 @@ export const MsgInitialClaimResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.amount.push(Coin.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -373,37 +322,47 @@ export const MsgInitialClaimResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgInitialClaimResponse {
-    return {};
+  fromJSON(object: any): MsgInitialClaimResponse {
+    return { amount: Array.isArray(object?.amount) ? object.amount.map((e: any) => Coin.fromJSON(e)) : [] };
   },
 
-  toJSON(_: MsgInitialClaimResponse): unknown {
+  toJSON(message: MsgInitialClaimResponse): unknown {
     const obj: any = {};
+    if (message.amount) {
+      obj.amount = message.amount.map((e) => e ? Coin.toJSON(e) : undefined);
+    } else {
+      obj.amount = [];
+    }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgInitialClaimResponse>, I>>(_: I): MsgInitialClaimResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgInitialClaimResponse>, I>>(object: I): MsgInitialClaimResponse {
     const message = createBaseMsgInitialClaimResponse();
+    message.amount = object.amount?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
 
-function createBaseMsgCreateAirdropCampaign(): MsgCreateAirdropCampaign {
+function createBaseMsgCreateCampaign(): MsgCreateCampaign {
   return {
     owner: "",
     name: "",
     description: "",
-    allowFeegrant: false,
+    campaignType: 0,
+    removableClaimRecords: false,
+    feegrantAmount: "",
     initialClaimFreeAmount: "",
+    free: "",
     startTime: undefined,
     endTime: undefined,
     lockupPeriod: undefined,
     vestingPeriod: undefined,
+    vestingPoolName: "",
   };
 }
 
-export const MsgCreateAirdropCampaign = {
-  encode(message: MsgCreateAirdropCampaign, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgCreateCampaign = {
+  encode(message: MsgCreateCampaign, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.owner !== "") {
       writer.uint32(10).string(message.owner);
     }
@@ -413,31 +372,43 @@ export const MsgCreateAirdropCampaign = {
     if (message.description !== "") {
       writer.uint32(26).string(message.description);
     }
-    if (message.allowFeegrant === true) {
-      writer.uint32(32).bool(message.allowFeegrant);
+    if (message.campaignType !== 0) {
+      writer.uint32(32).int32(message.campaignType);
+    }
+    if (message.removableClaimRecords === true) {
+      writer.uint32(40).bool(message.removableClaimRecords);
+    }
+    if (message.feegrantAmount !== "") {
+      writer.uint32(50).string(message.feegrantAmount);
     }
     if (message.initialClaimFreeAmount !== "") {
-      writer.uint32(42).string(message.initialClaimFreeAmount);
+      writer.uint32(58).string(message.initialClaimFreeAmount);
+    }
+    if (message.free !== "") {
+      writer.uint32(66).string(message.free);
     }
     if (message.startTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.startTime), writer.uint32(50).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.startTime), writer.uint32(74).fork()).ldelim();
     }
     if (message.endTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(58).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(82).fork()).ldelim();
     }
     if (message.lockupPeriod !== undefined) {
-      Duration.encode(message.lockupPeriod, writer.uint32(66).fork()).ldelim();
+      Duration.encode(message.lockupPeriod, writer.uint32(90).fork()).ldelim();
     }
     if (message.vestingPeriod !== undefined) {
-      Duration.encode(message.vestingPeriod, writer.uint32(74).fork()).ldelim();
+      Duration.encode(message.vestingPeriod, writer.uint32(98).fork()).ldelim();
+    }
+    if (message.vestingPoolName !== "") {
+      writer.uint32(106).string(message.vestingPoolName);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateAirdropCampaign {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateCampaign {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgCreateAirdropCampaign();
+    const message = createBaseMsgCreateCampaign();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -451,22 +422,34 @@ export const MsgCreateAirdropCampaign = {
           message.description = reader.string();
           break;
         case 4:
-          message.allowFeegrant = reader.bool();
+          message.campaignType = reader.int32() as any;
           break;
         case 5:
-          message.initialClaimFreeAmount = reader.string();
+          message.removableClaimRecords = reader.bool();
           break;
         case 6:
-          message.startTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.feegrantAmount = reader.string();
           break;
         case 7:
-          message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.initialClaimFreeAmount = reader.string();
           break;
         case 8:
-          message.lockupPeriod = Duration.decode(reader, reader.uint32());
+          message.free = reader.string();
           break;
         case 9:
+          message.startTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          break;
+        case 10:
+          message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          break;
+        case 11:
+          message.lockupPeriod = Duration.decode(reader, reader.uint32());
+          break;
+        case 12:
           message.vestingPeriod = Duration.decode(reader, reader.uint32());
+          break;
+        case 13:
+          message.vestingPoolName = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -476,71 +459,89 @@ export const MsgCreateAirdropCampaign = {
     return message;
   },
 
-  fromJSON(object: any): MsgCreateAirdropCampaign {
+  fromJSON(object: any): MsgCreateCampaign {
     return {
       owner: isSet(object.owner) ? String(object.owner) : "",
       name: isSet(object.name) ? String(object.name) : "",
       description: isSet(object.description) ? String(object.description) : "",
-      allowFeegrant: isSet(object.allowFeegrant) ? Boolean(object.allowFeegrant) : false,
+      campaignType: isSet(object.campaignType) ? campaignTypeFromJSON(object.campaignType) : 0,
+      removableClaimRecords: isSet(object.removableClaimRecords) ? Boolean(object.removableClaimRecords) : false,
+      feegrantAmount: isSet(object.feegrantAmount) ? String(object.feegrantAmount) : "",
       initialClaimFreeAmount: isSet(object.initialClaimFreeAmount) ? String(object.initialClaimFreeAmount) : "",
+      free: isSet(object.free) ? String(object.free) : "",
       startTime: isSet(object.startTime) ? fromJsonTimestamp(object.startTime) : undefined,
       endTime: isSet(object.endTime) ? fromJsonTimestamp(object.endTime) : undefined,
       lockupPeriod: isSet(object.lockupPeriod) ? Duration.fromJSON(object.lockupPeriod) : undefined,
       vestingPeriod: isSet(object.vestingPeriod) ? Duration.fromJSON(object.vestingPeriod) : undefined,
+      vestingPoolName: isSet(object.vestingPoolName) ? String(object.vestingPoolName) : "",
     };
   },
 
-  toJSON(message: MsgCreateAirdropCampaign): unknown {
+  toJSON(message: MsgCreateCampaign): unknown {
     const obj: any = {};
     message.owner !== undefined && (obj.owner = message.owner);
     message.name !== undefined && (obj.name = message.name);
     message.description !== undefined && (obj.description = message.description);
-    message.allowFeegrant !== undefined && (obj.allowFeegrant = message.allowFeegrant);
+    message.campaignType !== undefined && (obj.campaignType = campaignTypeToJSON(message.campaignType));
+    message.removableClaimRecords !== undefined && (obj.removableClaimRecords = message.removableClaimRecords);
+    message.feegrantAmount !== undefined && (obj.feegrantAmount = message.feegrantAmount);
     message.initialClaimFreeAmount !== undefined && (obj.initialClaimFreeAmount = message.initialClaimFreeAmount);
+    message.free !== undefined && (obj.free = message.free);
     message.startTime !== undefined && (obj.startTime = message.startTime.toISOString());
     message.endTime !== undefined && (obj.endTime = message.endTime.toISOString());
     message.lockupPeriod !== undefined
     && (obj.lockupPeriod = message.lockupPeriod ? Duration.toJSON(message.lockupPeriod) : undefined);
     message.vestingPeriod !== undefined
     && (obj.vestingPeriod = message.vestingPeriod ? Duration.toJSON(message.vestingPeriod) : undefined);
+    message.vestingPoolName !== undefined && (obj.vestingPoolName = message.vestingPoolName);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateAirdropCampaign>, I>>(object: I): MsgCreateAirdropCampaign {
-    const message = createBaseMsgCreateAirdropCampaign();
+  fromPartial<I extends Exact<DeepPartial<MsgCreateCampaign>, I>>(object: I): MsgCreateCampaign {
+    const message = createBaseMsgCreateCampaign();
     message.owner = object.owner ?? "";
     message.name = object.name ?? "";
     message.description = object.description ?? "";
-    message.allowFeegrant = object.allowFeegrant ?? false;
+    message.campaignType = object.campaignType ?? 0;
+    message.removableClaimRecords = object.removableClaimRecords ?? false;
+    message.feegrantAmount = object.feegrantAmount ?? "";
     message.initialClaimFreeAmount = object.initialClaimFreeAmount ?? "";
+    message.free = object.free ?? "";
     message.startTime = object.startTime ?? undefined;
     message.endTime = object.endTime ?? undefined;
     message.lockupPeriod = (object.lockupPeriod !== undefined && object.lockupPeriod !== null)
-        ? Duration.fromPartial(object.lockupPeriod)
-        : undefined;
+      ? Duration.fromPartial(object.lockupPeriod)
+      : undefined;
     message.vestingPeriod = (object.vestingPeriod !== undefined && object.vestingPeriod !== null)
-        ? Duration.fromPartial(object.vestingPeriod)
-        : undefined;
+      ? Duration.fromPartial(object.vestingPeriod)
+      : undefined;
+    message.vestingPoolName = object.vestingPoolName ?? "";
     return message;
   },
 };
 
-function createBaseMsgCreateAirdropCampaignResponse(): MsgCreateAirdropCampaignResponse {
-  return {};
+function createBaseMsgCreateCampaignResponse(): MsgCreateCampaignResponse {
+  return { campaignId: 0 };
 }
 
-export const MsgCreateAirdropCampaignResponse = {
-  encode(_: MsgCreateAirdropCampaignResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgCreateCampaignResponse = {
+  encode(message: MsgCreateCampaignResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.campaignId !== 0) {
+      writer.uint32(8).uint64(message.campaignId);
+    }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateAirdropCampaignResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateCampaignResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgCreateAirdropCampaignResponse();
+    const message = createBaseMsgCreateCampaignResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.campaignId = longToNumber(reader.uint64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -549,29 +550,29 @@ export const MsgCreateAirdropCampaignResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgCreateAirdropCampaignResponse {
-    return {};
+  fromJSON(object: any): MsgCreateCampaignResponse {
+    return { campaignId: isSet(object.campaignId) ? Number(object.campaignId) : 0 };
   },
 
-  toJSON(_: MsgCreateAirdropCampaignResponse): unknown {
+  toJSON(message: MsgCreateCampaignResponse): unknown {
     const obj: any = {};
+    message.campaignId !== undefined && (obj.campaignId = Math.round(message.campaignId));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgCreateAirdropCampaignResponse>, I>>(
-      _: I,
-  ): MsgCreateAirdropCampaignResponse {
-    const message = createBaseMsgCreateAirdropCampaignResponse();
+  fromPartial<I extends Exact<DeepPartial<MsgCreateCampaignResponse>, I>>(object: I): MsgCreateCampaignResponse {
+    const message = createBaseMsgCreateCampaignResponse();
+    message.campaignId = object.campaignId ?? 0;
     return message;
   },
 };
 
-function createBaseMsgAddMissionToAidropCampaign(): MsgAddMissionToAidropCampaign {
+function createBaseMsgAddMission(): MsgAddMission {
   return { owner: "", campaignId: 0, name: "", description: "", missionType: 0, weight: "", claimStartDate: undefined };
 }
 
-export const MsgAddMissionToAidropCampaign = {
-  encode(message: MsgAddMissionToAidropCampaign, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgAddMission = {
+  encode(message: MsgAddMission, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.owner !== "") {
       writer.uint32(10).string(message.owner);
     }
@@ -596,10 +597,10 @@ export const MsgAddMissionToAidropCampaign = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddMissionToAidropCampaign {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddMission {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgAddMissionToAidropCampaign();
+    const message = createBaseMsgAddMission();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -632,7 +633,7 @@ export const MsgAddMissionToAidropCampaign = {
     return message;
   },
 
-  fromJSON(object: any): MsgAddMissionToAidropCampaign {
+  fromJSON(object: any): MsgAddMission {
     return {
       owner: isSet(object.owner) ? String(object.owner) : "",
       campaignId: isSet(object.campaignId) ? Number(object.campaignId) : 0,
@@ -644,7 +645,7 @@ export const MsgAddMissionToAidropCampaign = {
     };
   },
 
-  toJSON(message: MsgAddMissionToAidropCampaign): unknown {
+  toJSON(message: MsgAddMission): unknown {
     const obj: any = {};
     message.owner !== undefined && (obj.owner = message.owner);
     message.campaignId !== undefined && (obj.campaignId = Math.round(message.campaignId));
@@ -656,10 +657,8 @@ export const MsgAddMissionToAidropCampaign = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgAddMissionToAidropCampaign>, I>>(
-      object: I,
-  ): MsgAddMissionToAidropCampaign {
-    const message = createBaseMsgAddMissionToAidropCampaign();
+  fromPartial<I extends Exact<DeepPartial<MsgAddMission>, I>>(object: I): MsgAddMission {
+    const message = createBaseMsgAddMission();
     message.owner = object.owner ?? "";
     message.campaignId = object.campaignId ?? 0;
     message.name = object.name ?? "";
@@ -671,22 +670,28 @@ export const MsgAddMissionToAidropCampaign = {
   },
 };
 
-function createBaseMsgAddMissionToAidropCampaignResponse(): MsgAddMissionToAidropCampaignResponse {
-  return {};
+function createBaseMsgAddMissionResponse(): MsgAddMissionResponse {
+  return { missionId: 0 };
 }
 
-export const MsgAddMissionToAidropCampaignResponse = {
-  encode(_: MsgAddMissionToAidropCampaignResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgAddMissionResponse = {
+  encode(message: MsgAddMissionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.missionId !== 0) {
+      writer.uint32(8).uint64(message.missionId);
+    }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddMissionToAidropCampaignResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddMissionResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgAddMissionToAidropCampaignResponse();
+    const message = createBaseMsgAddMissionResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.missionId = longToNumber(reader.uint64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -695,45 +700,45 @@ export const MsgAddMissionToAidropCampaignResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgAddMissionToAidropCampaignResponse {
-    return {};
+  fromJSON(object: any): MsgAddMissionResponse {
+    return { missionId: isSet(object.missionId) ? Number(object.missionId) : 0 };
   },
 
-  toJSON(_: MsgAddMissionToAidropCampaignResponse): unknown {
+  toJSON(message: MsgAddMissionResponse): unknown {
     const obj: any = {};
+    message.missionId !== undefined && (obj.missionId = Math.round(message.missionId));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgAddMissionToAidropCampaignResponse>, I>>(
-      _: I,
-  ): MsgAddMissionToAidropCampaignResponse {
-    const message = createBaseMsgAddMissionToAidropCampaignResponse();
+  fromPartial<I extends Exact<DeepPartial<MsgAddMissionResponse>, I>>(object: I): MsgAddMissionResponse {
+    const message = createBaseMsgAddMissionResponse();
+    message.missionId = object.missionId ?? 0;
     return message;
   },
 };
 
-function createBaseMsgAddAirdropEntries(): MsgAddAirdropEntries {
-  return { owner: "", campaignId: 0, airdropEntries: [] };
+function createBaseMsgAddClaimRecords(): MsgAddClaimRecords {
+  return { owner: "", campaignId: 0, claimRecordEntries: [] };
 }
 
-export const MsgAddAirdropEntries = {
-  encode(message: MsgAddAirdropEntries, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgAddClaimRecords = {
+  encode(message: MsgAddClaimRecords, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.owner !== "") {
       writer.uint32(10).string(message.owner);
     }
     if (message.campaignId !== 0) {
       writer.uint32(16).uint64(message.campaignId);
     }
-    for (const v of message.airdropEntries) {
-      AirdropEntry.encode(v!, writer.uint32(26).fork()).ldelim();
+    for (const v of message.claimRecordEntries) {
+      ClaimRecordEntry.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddAirdropEntries {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddClaimRecords {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgAddAirdropEntries();
+    const message = createBaseMsgAddClaimRecords();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -744,7 +749,7 @@ export const MsgAddAirdropEntries = {
           message.campaignId = longToNumber(reader.uint64() as Long);
           break;
         case 3:
-          message.airdropEntries.push(AirdropEntry.decode(reader, reader.uint32()));
+          message.claimRecordEntries.push(ClaimRecordEntry.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -754,50 +759,50 @@ export const MsgAddAirdropEntries = {
     return message;
   },
 
-  fromJSON(object: any): MsgAddAirdropEntries {
+  fromJSON(object: any): MsgAddClaimRecords {
     return {
       owner: isSet(object.owner) ? String(object.owner) : "",
       campaignId: isSet(object.campaignId) ? Number(object.campaignId) : 0,
-      airdropEntries: Array.isArray(object?.airdropEntries)
-          ? object.airdropEntries.map((e: any) => AirdropEntry.fromJSON(e))
-          : [],
+      claimRecordEntries: Array.isArray(object?.claimRecordEntries)
+        ? object.claimRecordEntries.map((e: any) => ClaimRecordEntry.fromJSON(e))
+        : [],
     };
   },
 
-  toJSON(message: MsgAddAirdropEntries): unknown {
+  toJSON(message: MsgAddClaimRecords): unknown {
     const obj: any = {};
     message.owner !== undefined && (obj.owner = message.owner);
     message.campaignId !== undefined && (obj.campaignId = Math.round(message.campaignId));
-    if (message.airdropEntries) {
-      obj.airdropEntries = message.airdropEntries.map((e) => e ? AirdropEntry.toJSON(e) : undefined);
+    if (message.claimRecordEntries) {
+      obj.claimRecordEntries = message.claimRecordEntries.map((e) => e ? ClaimRecordEntry.toJSON(e) : undefined);
     } else {
-      obj.airdropEntries = [];
+      obj.claimRecordEntries = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgAddAirdropEntries>, I>>(object: I): MsgAddAirdropEntries {
-    const message = createBaseMsgAddAirdropEntries();
+  fromPartial<I extends Exact<DeepPartial<MsgAddClaimRecords>, I>>(object: I): MsgAddClaimRecords {
+    const message = createBaseMsgAddClaimRecords();
     message.owner = object.owner ?? "";
     message.campaignId = object.campaignId ?? 0;
-    message.airdropEntries = object.airdropEntries?.map((e) => AirdropEntry.fromPartial(e)) || [];
+    message.claimRecordEntries = object.claimRecordEntries?.map((e) => ClaimRecordEntry.fromPartial(e)) || [];
     return message;
   },
 };
 
-function createBaseMsgAddAirdropEntriesResponse(): MsgAddAirdropEntriesResponse {
+function createBaseMsgAddClaimRecordsResponse(): MsgAddClaimRecordsResponse {
   return {};
 }
 
-export const MsgAddAirdropEntriesResponse = {
-  encode(_: MsgAddAirdropEntriesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgAddClaimRecordsResponse = {
+  encode(_: MsgAddClaimRecordsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddAirdropEntriesResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddClaimRecordsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgAddAirdropEntriesResponse();
+    const message = createBaseMsgAddClaimRecordsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -809,27 +814,27 @@ export const MsgAddAirdropEntriesResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgAddAirdropEntriesResponse {
+  fromJSON(_: any): MsgAddClaimRecordsResponse {
     return {};
   },
 
-  toJSON(_: MsgAddAirdropEntriesResponse): unknown {
+  toJSON(_: MsgAddClaimRecordsResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgAddAirdropEntriesResponse>, I>>(_: I): MsgAddAirdropEntriesResponse {
-    const message = createBaseMsgAddAirdropEntriesResponse();
+  fromPartial<I extends Exact<DeepPartial<MsgAddClaimRecordsResponse>, I>>(_: I): MsgAddClaimRecordsResponse {
+    const message = createBaseMsgAddClaimRecordsResponse();
     return message;
   },
 };
 
-function createBaseMsgDeleteAirdropEntry(): MsgDeleteAirdropEntry {
+function createBaseMsgDeleteClaimRecord(): MsgDeleteClaimRecord {
   return { owner: "", campaignId: 0, userAddress: "" };
 }
 
-export const MsgDeleteAirdropEntry = {
-  encode(message: MsgDeleteAirdropEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgDeleteClaimRecord = {
+  encode(message: MsgDeleteClaimRecord, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.owner !== "") {
       writer.uint32(10).string(message.owner);
     }
@@ -842,10 +847,10 @@ export const MsgDeleteAirdropEntry = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeleteAirdropEntry {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeleteClaimRecord {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgDeleteAirdropEntry();
+    const message = createBaseMsgDeleteClaimRecord();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -866,7 +871,7 @@ export const MsgDeleteAirdropEntry = {
     return message;
   },
 
-  fromJSON(object: any): MsgDeleteAirdropEntry {
+  fromJSON(object: any): MsgDeleteClaimRecord {
     return {
       owner: isSet(object.owner) ? String(object.owner) : "",
       campaignId: isSet(object.campaignId) ? Number(object.campaignId) : 0,
@@ -874,7 +879,7 @@ export const MsgDeleteAirdropEntry = {
     };
   },
 
-  toJSON(message: MsgDeleteAirdropEntry): unknown {
+  toJSON(message: MsgDeleteClaimRecord): unknown {
     const obj: any = {};
     message.owner !== undefined && (obj.owner = message.owner);
     message.campaignId !== undefined && (obj.campaignId = Math.round(message.campaignId));
@@ -882,8 +887,8 @@ export const MsgDeleteAirdropEntry = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDeleteAirdropEntry>, I>>(object: I): MsgDeleteAirdropEntry {
-    const message = createBaseMsgDeleteAirdropEntry();
+  fromPartial<I extends Exact<DeepPartial<MsgDeleteClaimRecord>, I>>(object: I): MsgDeleteClaimRecord {
+    const message = createBaseMsgDeleteClaimRecord();
     message.owner = object.owner ?? "";
     message.campaignId = object.campaignId ?? 0;
     message.userAddress = object.userAddress ?? "";
@@ -891,19 +896,19 @@ export const MsgDeleteAirdropEntry = {
   },
 };
 
-function createBaseMsgDeleteAirdropEntryResponse(): MsgDeleteAirdropEntryResponse {
+function createBaseMsgDeleteClaimRecordResponse(): MsgDeleteClaimRecordResponse {
   return {};
 }
 
-export const MsgDeleteAirdropEntryResponse = {
-  encode(_: MsgDeleteAirdropEntryResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgDeleteClaimRecordResponse = {
+  encode(_: MsgDeleteClaimRecordResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeleteAirdropEntryResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDeleteClaimRecordResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgDeleteAirdropEntryResponse();
+    const message = createBaseMsgDeleteClaimRecordResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -915,134 +920,27 @@ export const MsgDeleteAirdropEntryResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgDeleteAirdropEntryResponse {
+  fromJSON(_: any): MsgDeleteClaimRecordResponse {
     return {};
   },
 
-  toJSON(_: MsgDeleteAirdropEntryResponse): unknown {
+  toJSON(_: MsgDeleteClaimRecordResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgDeleteAirdropEntryResponse>, I>>(_: I): MsgDeleteAirdropEntryResponse {
-    const message = createBaseMsgDeleteAirdropEntryResponse();
+  fromPartial<I extends Exact<DeepPartial<MsgDeleteClaimRecordResponse>, I>>(_: I): MsgDeleteClaimRecordResponse {
+    const message = createBaseMsgDeleteClaimRecordResponse();
     return message;
   },
 };
 
-function createBaseMsgCloseAirdropCampaign(): MsgCloseAirdropCampaign {
-  return { owner: "", campaignId: 0, airdropCloseAction: 0 };
-}
-
-export const MsgCloseAirdropCampaign = {
-  encode(message: MsgCloseAirdropCampaign, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.owner !== "") {
-      writer.uint32(10).string(message.owner);
-    }
-    if (message.campaignId !== 0) {
-      writer.uint32(16).uint64(message.campaignId);
-    }
-    if (message.airdropCloseAction !== 0) {
-      writer.uint32(24).int32(message.airdropCloseAction);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCloseAirdropCampaign {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgCloseAirdropCampaign();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.owner = reader.string();
-          break;
-        case 2:
-          message.campaignId = longToNumber(reader.uint64() as Long);
-          break;
-        case 3:
-          message.airdropCloseAction = reader.int32() as any;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgCloseAirdropCampaign {
-    return {
-      owner: isSet(object.owner) ? String(object.owner) : "",
-      campaignId: isSet(object.campaignId) ? Number(object.campaignId) : 0,
-      airdropCloseAction: isSet(object.airdropCloseAction) ? airdropCloseActionFromJSON(object.airdropCloseAction) : 0,
-    };
-  },
-
-  toJSON(message: MsgCloseAirdropCampaign): unknown {
-    const obj: any = {};
-    message.owner !== undefined && (obj.owner = message.owner);
-    message.campaignId !== undefined && (obj.campaignId = Math.round(message.campaignId));
-    message.airdropCloseAction !== undefined
-    && (obj.airdropCloseAction = airdropCloseActionToJSON(message.airdropCloseAction));
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<MsgCloseAirdropCampaign>, I>>(object: I): MsgCloseAirdropCampaign {
-    const message = createBaseMsgCloseAirdropCampaign();
-    message.owner = object.owner ?? "";
-    message.campaignId = object.campaignId ?? 0;
-    message.airdropCloseAction = object.airdropCloseAction ?? 0;
-    return message;
-  },
-};
-
-function createBaseMsgCloseAirdropCampaignResponse(): MsgCloseAirdropCampaignResponse {
-  return {};
-}
-
-export const MsgCloseAirdropCampaignResponse = {
-  encode(_: MsgCloseAirdropCampaignResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCloseAirdropCampaignResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgCloseAirdropCampaignResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgCloseAirdropCampaignResponse {
-    return {};
-  },
-
-  toJSON(_: MsgCloseAirdropCampaignResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<MsgCloseAirdropCampaignResponse>, I>>(_: I): MsgCloseAirdropCampaignResponse {
-    const message = createBaseMsgCloseAirdropCampaignResponse();
-    return message;
-  },
-};
-
-function createBaseMsgStartAirdropCampaign(): MsgStartAirdropCampaign {
+function createBaseMsgCloseCampaign(): MsgCloseCampaign {
   return { owner: "", campaignId: 0 };
 }
 
-export const MsgStartAirdropCampaign = {
-  encode(message: MsgStartAirdropCampaign, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgCloseCampaign = {
+  encode(message: MsgCloseCampaign, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.owner !== "") {
       writer.uint32(10).string(message.owner);
     }
@@ -1052,10 +950,10 @@ export const MsgStartAirdropCampaign = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgStartAirdropCampaign {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCloseCampaign {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgStartAirdropCampaign();
+    const message = createBaseMsgCloseCampaign();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1073,41 +971,41 @@ export const MsgStartAirdropCampaign = {
     return message;
   },
 
-  fromJSON(object: any): MsgStartAirdropCampaign {
+  fromJSON(object: any): MsgCloseCampaign {
     return {
       owner: isSet(object.owner) ? String(object.owner) : "",
       campaignId: isSet(object.campaignId) ? Number(object.campaignId) : 0,
     };
   },
 
-  toJSON(message: MsgStartAirdropCampaign): unknown {
+  toJSON(message: MsgCloseCampaign): unknown {
     const obj: any = {};
     message.owner !== undefined && (obj.owner = message.owner);
     message.campaignId !== undefined && (obj.campaignId = Math.round(message.campaignId));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgStartAirdropCampaign>, I>>(object: I): MsgStartAirdropCampaign {
-    const message = createBaseMsgStartAirdropCampaign();
+  fromPartial<I extends Exact<DeepPartial<MsgCloseCampaign>, I>>(object: I): MsgCloseCampaign {
+    const message = createBaseMsgCloseCampaign();
     message.owner = object.owner ?? "";
     message.campaignId = object.campaignId ?? 0;
     return message;
   },
 };
 
-function createBaseMsgStartAirdropCampaignResponse(): MsgStartAirdropCampaignResponse {
+function createBaseMsgCloseCampaignResponse(): MsgCloseCampaignResponse {
   return {};
 }
 
-export const MsgStartAirdropCampaignResponse = {
-  encode(_: MsgStartAirdropCampaignResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgCloseCampaignResponse = {
+  encode(_: MsgCloseCampaignResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgStartAirdropCampaignResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCloseCampaignResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgStartAirdropCampaignResponse();
+    const message = createBaseMsgCloseCampaignResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1119,79 +1017,46 @@ export const MsgStartAirdropCampaignResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgStartAirdropCampaignResponse {
+  fromJSON(_: any): MsgCloseCampaignResponse {
     return {};
   },
 
-  toJSON(_: MsgStartAirdropCampaignResponse): unknown {
+  toJSON(_: MsgCloseCampaignResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgStartAirdropCampaignResponse>, I>>(_: I): MsgStartAirdropCampaignResponse {
-    const message = createBaseMsgStartAirdropCampaignResponse();
+  fromPartial<I extends Exact<DeepPartial<MsgCloseCampaignResponse>, I>>(_: I): MsgCloseCampaignResponse {
+    const message = createBaseMsgCloseCampaignResponse();
     return message;
   },
 };
 
-function createBaseMsgEditAirdropCampaign(): MsgEditAirdropCampaign {
-  return {
-    owner: "",
-    campaignId: 0,
-    name: "",
-    description: "",
-    allowFeegrant: false,
-    initialClaimFreeAmount: "",
-    denom: "",
-    startTime: undefined,
-    endTime: undefined,
-    lockupPeriod: undefined,
-    vestingPeriod: undefined,
-  };
+function createBaseMsgEnableCampaign(): MsgEnableCampaign {
+  return { owner: "", campaignId: 0, startTime: undefined, endTime: undefined };
 }
 
-export const MsgEditAirdropCampaign = {
-  encode(message: MsgEditAirdropCampaign, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgEnableCampaign = {
+  encode(message: MsgEnableCampaign, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.owner !== "") {
       writer.uint32(10).string(message.owner);
     }
     if (message.campaignId !== 0) {
       writer.uint32(16).uint64(message.campaignId);
     }
-    if (message.name !== "") {
-      writer.uint32(26).string(message.name);
-    }
-    if (message.description !== "") {
-      writer.uint32(34).string(message.description);
-    }
-    if (message.allowFeegrant === true) {
-      writer.uint32(40).bool(message.allowFeegrant);
-    }
-    if (message.initialClaimFreeAmount !== "") {
-      writer.uint32(50).string(message.initialClaimFreeAmount);
-    }
-    if (message.denom !== "") {
-      writer.uint32(58).string(message.denom);
-    }
     if (message.startTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.startTime), writer.uint32(66).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.startTime), writer.uint32(26).fork()).ldelim();
     }
     if (message.endTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(74).fork()).ldelim();
-    }
-    if (message.lockupPeriod !== undefined) {
-      Duration.encode(message.lockupPeriod, writer.uint32(82).fork()).ldelim();
-    }
-    if (message.vestingPeriod !== undefined) {
-      Duration.encode(message.vestingPeriod, writer.uint32(90).fork()).ldelim();
+      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgEditAirdropCampaign {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgEnableCampaign {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgEditAirdropCampaign();
+    const message = createBaseMsgEnableCampaign();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1202,31 +1067,10 @@ export const MsgEditAirdropCampaign = {
           message.campaignId = longToNumber(reader.uint64() as Long);
           break;
         case 3:
-          message.name = reader.string();
-          break;
-        case 4:
-          message.description = reader.string();
-          break;
-        case 5:
-          message.allowFeegrant = reader.bool();
-          break;
-        case 6:
-          message.initialClaimFreeAmount = reader.string();
-          break;
-        case 7:
-          message.denom = reader.string();
-          break;
-        case 8:
           message.startTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           break;
-        case 9:
+        case 4:
           message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
-          break;
-        case 10:
-          message.lockupPeriod = Duration.decode(reader, reader.uint32());
-          break;
-        case 11:
-          message.vestingPeriod = Duration.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1236,74 +1080,47 @@ export const MsgEditAirdropCampaign = {
     return message;
   },
 
-  fromJSON(object: any): MsgEditAirdropCampaign {
+  fromJSON(object: any): MsgEnableCampaign {
     return {
       owner: isSet(object.owner) ? String(object.owner) : "",
       campaignId: isSet(object.campaignId) ? Number(object.campaignId) : 0,
-      name: isSet(object.name) ? String(object.name) : "",
-      description: isSet(object.description) ? String(object.description) : "",
-      allowFeegrant: isSet(object.allowFeegrant) ? Boolean(object.allowFeegrant) : false,
-      initialClaimFreeAmount: isSet(object.initialClaimFreeAmount) ? String(object.initialClaimFreeAmount) : "",
-      denom: isSet(object.denom) ? String(object.denom) : "",
       startTime: isSet(object.startTime) ? fromJsonTimestamp(object.startTime) : undefined,
       endTime: isSet(object.endTime) ? fromJsonTimestamp(object.endTime) : undefined,
-      lockupPeriod: isSet(object.lockupPeriod) ? Duration.fromJSON(object.lockupPeriod) : undefined,
-      vestingPeriod: isSet(object.vestingPeriod) ? Duration.fromJSON(object.vestingPeriod) : undefined,
     };
   },
 
-  toJSON(message: MsgEditAirdropCampaign): unknown {
+  toJSON(message: MsgEnableCampaign): unknown {
     const obj: any = {};
     message.owner !== undefined && (obj.owner = message.owner);
     message.campaignId !== undefined && (obj.campaignId = Math.round(message.campaignId));
-    message.name !== undefined && (obj.name = message.name);
-    message.description !== undefined && (obj.description = message.description);
-    message.allowFeegrant !== undefined && (obj.allowFeegrant = message.allowFeegrant);
-    message.initialClaimFreeAmount !== undefined && (obj.initialClaimFreeAmount = message.initialClaimFreeAmount);
-    message.denom !== undefined && (obj.denom = message.denom);
     message.startTime !== undefined && (obj.startTime = message.startTime.toISOString());
     message.endTime !== undefined && (obj.endTime = message.endTime.toISOString());
-    message.lockupPeriod !== undefined
-    && (obj.lockupPeriod = message.lockupPeriod ? Duration.toJSON(message.lockupPeriod) : undefined);
-    message.vestingPeriod !== undefined
-    && (obj.vestingPeriod = message.vestingPeriod ? Duration.toJSON(message.vestingPeriod) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgEditAirdropCampaign>, I>>(object: I): MsgEditAirdropCampaign {
-    const message = createBaseMsgEditAirdropCampaign();
+  fromPartial<I extends Exact<DeepPartial<MsgEnableCampaign>, I>>(object: I): MsgEnableCampaign {
+    const message = createBaseMsgEnableCampaign();
     message.owner = object.owner ?? "";
     message.campaignId = object.campaignId ?? 0;
-    message.name = object.name ?? "";
-    message.description = object.description ?? "";
-    message.allowFeegrant = object.allowFeegrant ?? false;
-    message.initialClaimFreeAmount = object.initialClaimFreeAmount ?? "";
-    message.denom = object.denom ?? "";
     message.startTime = object.startTime ?? undefined;
     message.endTime = object.endTime ?? undefined;
-    message.lockupPeriod = (object.lockupPeriod !== undefined && object.lockupPeriod !== null)
-        ? Duration.fromPartial(object.lockupPeriod)
-        : undefined;
-    message.vestingPeriod = (object.vestingPeriod !== undefined && object.vestingPeriod !== null)
-        ? Duration.fromPartial(object.vestingPeriod)
-        : undefined;
     return message;
   },
 };
 
-function createBaseMsgEditAirdropCampaignResponse(): MsgEditAirdropCampaignResponse {
+function createBaseMsgEnableCampaignResponse(): MsgEnableCampaignResponse {
   return {};
 }
 
-export const MsgEditAirdropCampaignResponse = {
-  encode(_: MsgEditAirdropCampaignResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MsgEnableCampaignResponse = {
+  encode(_: MsgEnableCampaignResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgEditAirdropCampaignResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgEnableCampaignResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMsgEditAirdropCampaignResponse();
+    const message = createBaseMsgEnableCampaignResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1315,17 +1132,114 @@ export const MsgEditAirdropCampaignResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgEditAirdropCampaignResponse {
+  fromJSON(_: any): MsgEnableCampaignResponse {
     return {};
   },
 
-  toJSON(_: MsgEditAirdropCampaignResponse): unknown {
+  toJSON(_: MsgEnableCampaignResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MsgEditAirdropCampaignResponse>, I>>(_: I): MsgEditAirdropCampaignResponse {
-    const message = createBaseMsgEditAirdropCampaignResponse();
+  fromPartial<I extends Exact<DeepPartial<MsgEnableCampaignResponse>, I>>(_: I): MsgEnableCampaignResponse {
+    const message = createBaseMsgEnableCampaignResponse();
+    return message;
+  },
+};
+
+function createBaseMsgRemoveCampaign(): MsgRemoveCampaign {
+  return { owner: "", campaignId: 0 };
+}
+
+export const MsgRemoveCampaign = {
+  encode(message: MsgRemoveCampaign, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.owner !== "") {
+      writer.uint32(10).string(message.owner);
+    }
+    if (message.campaignId !== 0) {
+      writer.uint32(16).uint64(message.campaignId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveCampaign {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRemoveCampaign();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.owner = reader.string();
+          break;
+        case 2:
+          message.campaignId = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveCampaign {
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      campaignId: isSet(object.campaignId) ? Number(object.campaignId) : 0,
+    };
+  },
+
+  toJSON(message: MsgRemoveCampaign): unknown {
+    const obj: any = {};
+    message.owner !== undefined && (obj.owner = message.owner);
+    message.campaignId !== undefined && (obj.campaignId = Math.round(message.campaignId));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgRemoveCampaign>, I>>(object: I): MsgRemoveCampaign {
+    const message = createBaseMsgRemoveCampaign();
+    message.owner = object.owner ?? "";
+    message.campaignId = object.campaignId ?? 0;
+    return message;
+  },
+};
+
+function createBaseMsgRemoveCampaignResponse(): MsgRemoveCampaignResponse {
+  return {};
+}
+
+export const MsgRemoveCampaignResponse = {
+  encode(_: MsgRemoveCampaignResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveCampaignResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRemoveCampaignResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemoveCampaignResponse {
+    return {};
+  },
+
+  toJSON(_: MsgRemoveCampaignResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgRemoveCampaignResponse>, I>>(_: I): MsgRemoveCampaignResponse {
+    const message = createBaseMsgRemoveCampaignResponse();
     return message;
   },
 };
@@ -1334,14 +1248,14 @@ export const MsgEditAirdropCampaignResponse = {
 export interface Msg {
   Claim(request: MsgClaim): Promise<MsgClaimResponse>;
   InitialClaim(request: MsgInitialClaim): Promise<MsgInitialClaimResponse>;
-  CreateAirdropCampaign(request: MsgCreateAirdropCampaign): Promise<MsgCreateAirdropCampaignResponse>;
-  EditAirdropCampaign(request: MsgEditAirdropCampaign): Promise<MsgEditAirdropCampaignResponse>;
-  AddMissionToAidropCampaign(request: MsgAddMissionToAidropCampaign): Promise<MsgAddMissionToAidropCampaignResponse>;
-  AddAirdropEntries(request: MsgAddAirdropEntries): Promise<MsgAddAirdropEntriesResponse>;
-  DeleteAirdropEntry(request: MsgDeleteAirdropEntry): Promise<MsgDeleteAirdropEntryResponse>;
-  CloseAirdropCampaign(request: MsgCloseAirdropCampaign): Promise<MsgCloseAirdropCampaignResponse>;
+  CreateCampaign(request: MsgCreateCampaign): Promise<MsgCreateCampaignResponse>;
+  AddMission(request: MsgAddMission): Promise<MsgAddMissionResponse>;
+  AddClaimRecords(request: MsgAddClaimRecords): Promise<MsgAddClaimRecordsResponse>;
+  DeleteClaimRecord(request: MsgDeleteClaimRecord): Promise<MsgDeleteClaimRecordResponse>;
+  CloseCampaign(request: MsgCloseCampaign): Promise<MsgCloseCampaignResponse>;
+  EnableCampaign(request: MsgEnableCampaign): Promise<MsgEnableCampaignResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
-  StartAirdropCampaign(request: MsgStartAirdropCampaign): Promise<MsgStartAirdropCampaignResponse>;
+  RemoveCampaign(request: MsgRemoveCampaign): Promise<MsgRemoveCampaignResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1350,66 +1264,66 @@ export class MsgClientImpl implements Msg {
     this.rpc = rpc;
     this.Claim = this.Claim.bind(this);
     this.InitialClaim = this.InitialClaim.bind(this);
-    this.CreateAirdropCampaign = this.CreateAirdropCampaign.bind(this);
-    this.EditAirdropCampaign = this.EditAirdropCampaign.bind(this);
-    this.AddMissionToAidropCampaign = this.AddMissionToAidropCampaign.bind(this);
-    this.AddAirdropEntries = this.AddAirdropEntries.bind(this);
-    this.DeleteAirdropEntry = this.DeleteAirdropEntry.bind(this);
-    this.CloseAirdropCampaign = this.CloseAirdropCampaign.bind(this);
-    this.StartAirdropCampaign = this.StartAirdropCampaign.bind(this);
+    this.CreateCampaign = this.CreateCampaign.bind(this);
+    this.AddMission = this.AddMission.bind(this);
+    this.AddClaimRecords = this.AddClaimRecords.bind(this);
+    this.DeleteClaimRecord = this.DeleteClaimRecord.bind(this);
+    this.CloseCampaign = this.CloseCampaign.bind(this);
+    this.EnableCampaign = this.EnableCampaign.bind(this);
+    this.RemoveCampaign = this.RemoveCampaign.bind(this);
   }
   Claim(request: MsgClaim): Promise<MsgClaimResponse> {
     const data = MsgClaim.encode(request).finish();
-    const promise = this.rpc.request("chain4energy.c4echain.cfeairdrop.Msg", "Claim", data);
+    const promise = this.rpc.request("chain4energy.c4echain.cfeclaim.Msg", "Claim", data);
     return promise.then((data) => MsgClaimResponse.decode(new _m0.Reader(data)));
   }
 
   InitialClaim(request: MsgInitialClaim): Promise<MsgInitialClaimResponse> {
     const data = MsgInitialClaim.encode(request).finish();
-    const promise = this.rpc.request("chain4energy.c4echain.cfeairdrop.Msg", "InitialClaim", data);
+    const promise = this.rpc.request("chain4energy.c4echain.cfeclaim.Msg", "InitialClaim", data);
     return promise.then((data) => MsgInitialClaimResponse.decode(new _m0.Reader(data)));
   }
 
-  CreateAirdropCampaign(request: MsgCreateAirdropCampaign): Promise<MsgCreateAirdropCampaignResponse> {
-    const data = MsgCreateAirdropCampaign.encode(request).finish();
-    const promise = this.rpc.request("chain4energy.c4echain.cfeairdrop.Msg", "CreateAirdropCampaign", data);
-    return promise.then((data) => MsgCreateAirdropCampaignResponse.decode(new _m0.Reader(data)));
+  CreateCampaign(request: MsgCreateCampaign): Promise<MsgCreateCampaignResponse> {
+    const data = MsgCreateCampaign.encode(request).finish();
+    const promise = this.rpc.request("chain4energy.c4echain.cfeclaim.Msg", "CreateCampaign", data);
+    return promise.then((data) => MsgCreateCampaignResponse.decode(new _m0.Reader(data)));
   }
 
-  EditAirdropCampaign(request: MsgEditAirdropCampaign): Promise<MsgEditAirdropCampaignResponse> {
-    const data = MsgEditAirdropCampaign.encode(request).finish();
-    const promise = this.rpc.request("chain4energy.c4echain.cfeairdrop.Msg", "EditAirdropCampaign", data);
-    return promise.then((data) => MsgEditAirdropCampaignResponse.decode(new _m0.Reader(data)));
+  AddMission(request: MsgAddMission): Promise<MsgAddMissionResponse> {
+    const data = MsgAddMission.encode(request).finish();
+    const promise = this.rpc.request("chain4energy.c4echain.cfeclaim.Msg", "AddMission", data);
+    return promise.then((data) => MsgAddMissionResponse.decode(new _m0.Reader(data)));
   }
 
-  AddMissionToAidropCampaign(request: MsgAddMissionToAidropCampaign): Promise<MsgAddMissionToAidropCampaignResponse> {
-    const data = MsgAddMissionToAidropCampaign.encode(request).finish();
-    const promise = this.rpc.request("chain4energy.c4echain.cfeairdrop.Msg", "AddMissionToAidropCampaign", data);
-    return promise.then((data) => MsgAddMissionToAidropCampaignResponse.decode(new _m0.Reader(data)));
+  AddClaimRecords(request: MsgAddClaimRecords): Promise<MsgAddClaimRecordsResponse> {
+    const data = MsgAddClaimRecords.encode(request).finish();
+    const promise = this.rpc.request("chain4energy.c4echain.cfeclaim.Msg", "AddClaimRecords", data);
+    return promise.then((data) => MsgAddClaimRecordsResponse.decode(new _m0.Reader(data)));
   }
 
-  AddAirdropEntries(request: MsgAddAirdropEntries): Promise<MsgAddAirdropEntriesResponse> {
-    const data = MsgAddAirdropEntries.encode(request).finish();
-    const promise = this.rpc.request("chain4energy.c4echain.cfeairdrop.Msg", "AddAirdropEntries", data);
-    return promise.then((data) => MsgAddAirdropEntriesResponse.decode(new _m0.Reader(data)));
+  DeleteClaimRecord(request: MsgDeleteClaimRecord): Promise<MsgDeleteClaimRecordResponse> {
+    const data = MsgDeleteClaimRecord.encode(request).finish();
+    const promise = this.rpc.request("chain4energy.c4echain.cfeclaim.Msg", "DeleteClaimRecord", data);
+    return promise.then((data) => MsgDeleteClaimRecordResponse.decode(new _m0.Reader(data)));
   }
 
-  DeleteAirdropEntry(request: MsgDeleteAirdropEntry): Promise<MsgDeleteAirdropEntryResponse> {
-    const data = MsgDeleteAirdropEntry.encode(request).finish();
-    const promise = this.rpc.request("chain4energy.c4echain.cfeairdrop.Msg", "DeleteAirdropEntry", data);
-    return promise.then((data) => MsgDeleteAirdropEntryResponse.decode(new _m0.Reader(data)));
+  CloseCampaign(request: MsgCloseCampaign): Promise<MsgCloseCampaignResponse> {
+    const data = MsgCloseCampaign.encode(request).finish();
+    const promise = this.rpc.request("chain4energy.c4echain.cfeclaim.Msg", "CloseCampaign", data);
+    return promise.then((data) => MsgCloseCampaignResponse.decode(new _m0.Reader(data)));
   }
 
-  CloseAirdropCampaign(request: MsgCloseAirdropCampaign): Promise<MsgCloseAirdropCampaignResponse> {
-    const data = MsgCloseAirdropCampaign.encode(request).finish();
-    const promise = this.rpc.request("chain4energy.c4echain.cfeairdrop.Msg", "CloseAirdropCampaign", data);
-    return promise.then((data) => MsgCloseAirdropCampaignResponse.decode(new _m0.Reader(data)));
+  EnableCampaign(request: MsgEnableCampaign): Promise<MsgEnableCampaignResponse> {
+    const data = MsgEnableCampaign.encode(request).finish();
+    const promise = this.rpc.request("chain4energy.c4echain.cfeclaim.Msg", "EnableCampaign", data);
+    return promise.then((data) => MsgEnableCampaignResponse.decode(new _m0.Reader(data)));
   }
 
-  StartAirdropCampaign(request: MsgStartAirdropCampaign): Promise<MsgStartAirdropCampaignResponse> {
-    const data = MsgStartAirdropCampaign.encode(request).finish();
-    const promise = this.rpc.request("chain4energy.c4echain.cfeairdrop.Msg", "StartAirdropCampaign", data);
-    return promise.then((data) => MsgStartAirdropCampaignResponse.decode(new _m0.Reader(data)));
+  RemoveCampaign(request: MsgRemoveCampaign): Promise<MsgRemoveCampaignResponse> {
+    const data = MsgRemoveCampaign.encode(request).finish();
+    const promise = this.rpc.request("chain4energy.c4echain.cfeclaim.Msg", "RemoveCampaign", data);
+    return promise.then((data) => MsgRemoveCampaignResponse.decode(new _m0.Reader(data)));
   }
 }
 
@@ -1439,13 +1353,13 @@ var globalThis: any = (() => {
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
-    : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-        : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-            : Partial<T>;
+  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+    : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+      : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P
-    : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = date.getTime() / 1_000;

@@ -113,13 +113,13 @@ const address = computed(() => {
   return useUserStore().getAccount.address
 });
 
-// onMounted(() => {
-//   useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true).then((res) => {
-//     if(!res){
-//       useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true)
-//     }
-//   });
-// });
+onMounted(() => {
+  useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true).then((res) => {
+    if(!res){
+      useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true)
+    }
+  });
+});
 watch(isLoggedIn, (next, prev)=>{
   if(next){
     dataService.onClaimAirdrop(useUserStore().getAccount.address);
