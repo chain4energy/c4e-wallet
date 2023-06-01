@@ -15,12 +15,12 @@
       </div>
       <div class="publicSaleInfo__infoBlock">
         <p>Time to start</p>
-        <p v-bind:key="refreshDate">{{calculateTimeToPAss(new Date(Date.now()), startDate)}}</p>
+        <p >{{timeToStart}}</p>
         <p class="publicSaleInfo__dateText">({{startDate.toLocaleDateString('en-US')}})</p>
       </div>
       <div class="publicSaleInfo__infoBlock">
         <p>Time to end</p>
-        <p v-bind:key="refreshDate">{{calculateTimeToPAss(startDate, endDate)}}</p>
+        <p>{{timeToEnd}}</p>
         <p class="publicSaleInfo__dateText">({{endDate.toLocaleDateString('en-US')}})</p>
       </div>
     </div>
@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import PublicSalesBar from "@/components/buyTokens/PublicSalesBar.vue";
 import { usePublicSalesStore } from "@/store/publicSales.store";
-import { computed, ref, watch, watchEffect } from "vue";
+import {computed, onBeforeMount, onUnmounted, ref, watch, watchEffect} from "vue";
 import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import AmountView from "@/components/commons/AmountView.vue";
@@ -41,6 +41,25 @@ publicSalesStore.setTotal();
 publicSalesStore.setCurrentPrice();
 
 const refreshDate = ref(false)
+
+let startDateIntevalId = 0;
+let endDateIntervalId = 0;
+const timeToStart = ref();
+const timeToEnd = ref();
+
+onBeforeMount(() => {
+  startDateIntevalId = window.setInterval(() => {
+    timeToStart.value = calculateTimeToPAss(new Date(Date.now()), startDate.value);
+  }  , 1000);
+  endDateIntervalId = window.setInterval( () => {
+    timeToEnd.value = calculateTimeToPAss(startDate.value, endDate.value);
+  }, 1000);
+});
+
+onUnmounted(() => {
+  window.clearInterval(startDateIntevalId);
+  window.clearInterval(endDateIntervalId);
+});
 
 const total = computed(() =>{
   return publicSalesStore.getTotal;
@@ -59,13 +78,13 @@ const startDate = computed(() => {
 });
 const endDate = computed(() => {
   return publicSalesStore.getEndDate;
-})
+});
+
+const timeToPass = ref();
 
 function calculateTimeToPAss(startDate: Date, endDate: Date){
   if(startDate.getTime() < endDate.getTime()){
-    setInterval(() => {
-      refreshDate.value = !refreshDate.value
-    }, 1000)
+
     const now = new Date(Date.now());
     const diference = new Date(endDate).getTime() - now.getTime();
     const days = Math.floor(diference / (1000 * 60 * 60 * 24));

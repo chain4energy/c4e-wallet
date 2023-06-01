@@ -46,6 +46,7 @@ import {Currency} from "@/models/currency";
 import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
 import Dropdown from "primevue/dropdown";
 import PaymentCalculator from "@/components/buyTokens/PaymentCalculator.vue";
+import {ethers} from "ethers";
 
 const props = defineProps<{
   display: boolean,
@@ -58,6 +59,23 @@ const step = ref(1);
 const fiatCurrencyList = [Currency.USD, Currency.EUR];
 const selectedCurrency = ref();
 const calculatedAmount = ref();
+
+
+window.addEventListener("load", function() {
+  if (window.ethereum) {
+
+    window.ethereum.enable();
+
+    window.ethereum.on('networkChanged', function(networkId: number){
+      console.log('networkChanged',networkId);
+      blockchainNetworkList.value.forEach((network) => {
+        if(network.chainId == networkId) {
+          selectedBlockchainNetwork.value = network;
+        }
+      });
+    });
+  }
+});
 
 const blockchainNetworkList = ref([
   {

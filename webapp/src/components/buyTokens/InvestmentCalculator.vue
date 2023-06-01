@@ -13,8 +13,12 @@
       <div class="calculatorC4E__inputContainer">
         <div>
           <p>I want to invest</p>
-          <input class="calculatorC4E__input" type="text" v-model="calculator.usdc">
-          USD
+          <div style="display: flex">
+            <input class="calculatorC4E__input" type="text" v-model="calculator.usdc">
+            <Dropdown v-model="selectedCurrency" :options="currencyList" placeholder="Select network" style="max-width:80px" />
+          </div>
+
+
         </div>
       </div>
       <div class="calculatorC4E__btnSection">
@@ -51,6 +55,8 @@ import Dialog from 'primevue/dialog';
 import {useToast} from "vue-toastification";
 import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
 import {usePublicSalesStore} from "@/store/publicSales.store";
+import Dropdown from "primevue/dropdown";
+import {Currency} from "@/models/currency";
 
 const currencyExchangeRate = defineProps<{
   rate: number
@@ -66,6 +72,9 @@ onMounted(() => {
 const c4e = ref<number>();
 const usdc = ref();
 const summaryVisible = ref(false);
+
+const selectedCurrency = ref(Currency.USDT);
+const currencyList = [Currency.USDT, Currency.USDC, Currency.EUR, Currency.USD];
 
 watch(calculator, (next)=>{
   if(next.c4e != c4e.value){
@@ -142,10 +151,11 @@ const onConfirm = () => {
     flex-direction: column;
   }
   &__input{
+    height: 52px;
     padding: 20px 10px;
     background: #FFFFFF;
     border: 1px solid #81CF1F;
-    border-radius: 8px;
+    border-radius: 8px 0 0 8px;
     text-align: end;
 
     &:focus-visible{
@@ -159,5 +169,16 @@ const onConfirm = () => {
     }
 
   }
+}
+
+</style>
+<style lang="scss" scoped>
+.p-dropdown {
+  border: 1px solid #81CF1F !important;
+  border-left-width: 0 !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+:deep(.p-dropdown .p-dropdown-trigger){
+  display: none !important;
 }
 </style>

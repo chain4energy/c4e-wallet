@@ -38,7 +38,6 @@
     <Button
       class="p-button p-component secondary accountInfo__btn allocationInfo__btn"
       v-if="props.transaction.status === transactionStatus.Declared"
-      data-bs-toggle="modal" data-bs-target="#voteModal"
       @click="submit"
     >Pay</Button>
   </div>
