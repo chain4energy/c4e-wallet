@@ -67,6 +67,16 @@
 
           <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
 
+          <div class="profileMenu" @focusout="closeProfileDropdown" tabindex="0" @click="toggleProfileDropdown()" >
+            <div class="profileMenu-icon">    <Icon name="User" style="height:30px; width: 30px" /></div>
+            <div class="profileMenu__dropdown" v-if="profileDropdown">
+              <span v-if="useUserStore().isLoggedIn">Login to profile</span>
+              <span v-else>Logout</span>
+            </div>
+          </div>
+
+
+
 
         </div>
         <div class="navbar-nav mobile" @click="toggleDropdown" style="align-items: center">
@@ -201,6 +211,16 @@ const onLogoClick = () => {
   } else {
     router.push({name: 'Dashboard'});
   }
+};
+
+
+const profileDropdown = ref(false);
+const toggleProfileDropdown = () => {
+  profileDropdown.value = !profileDropdown.value;
+};
+
+const closeProfileDropdown = () => {
+  profileDropdown.value = false;
 };
 </script>
 
@@ -373,6 +393,36 @@ nav a.router-link-exact-active {
 
 .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
   color: var(--secondary-color) !important;
+}
+.profileMenu {
+
+  //padding: 10px;
+
+  border-radius: 5px;
+  position: relative;
+
+  cursor: pointer;
+  color: white;
+  z-index: 1;
+
+  &__dropdown {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: -120px;
+    top:40px;
+    padding: 15px;
+    background-color: #FFF1A9;
+    min-width: 130px;
+    border-radius: 10px 0 10px 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    z-index: 99999;
+    color: black;
+  }
+  &-icon {
+
+  }
 }
 
 // .userdata {

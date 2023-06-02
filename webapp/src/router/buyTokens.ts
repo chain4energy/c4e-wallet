@@ -6,6 +6,7 @@ import KeplrRegistrationView from "@/views/buyTokens/KeplrRegistrationView.vue";
 import MetamaskRegistrationvView from "@/views/buyTokens/MetamaskRegistrationvView.vue";
 import ActivateView from "@/views/buyTokens/ActivateView.vue";
 import EmailLoginView from "@/views/buyTokens/EmailLoginView.vue";
+import PaymentConfirmationView from "@/views/buyTokens/PaymentConfirmationView.vue";
 
 const buyTokensRoutes = {
   path: '/buyTokens',
@@ -46,6 +47,11 @@ const buyTokensRoutes = {
       path: 'activate',
       name: 'activate',
       component: ActivateView,
+    },
+    {
+      path: 'confiramtion',
+      name: 'paymentConfirmation',
+      component: PaymentConfirmationView
     }
   ]
 };

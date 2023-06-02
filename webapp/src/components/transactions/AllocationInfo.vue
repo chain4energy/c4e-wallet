@@ -16,7 +16,7 @@
       </tr>
       <tr v-if="transaction.status === transactionStatus.Declared && transaction.reservationEnd">
         <th class="allocationInfo__tableTabs">Remaining reservation time</th>
-        <th v-bind:key="refreshDate" class="allocationInfo__tableTabs">{{ timeToPass() }}</th>
+        <th class="allocationInfo__tableTabs">{{ timeToPass }}</th>
       </tr>
       <tr>
         <th class="allocationInfo__tableTabs">Payment type</th>
@@ -48,13 +48,26 @@
 <script setup lang="ts">
 import { paymentType, TokenReservation, transactionStatus } from "@/store/publicSales.store";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
-import {ref} from "vue";
+import {onBeforeMount, onUnmounted, ref} from "vue";
 
 const refreshDate = ref(false)
 
 const props = defineProps<{
   transaction: TokenReservation
 }>();
+
+let timeToPassId = 0;
+
+const timeToPass = ref();
+
+
+onBeforeMount(() => {
+  timeToPassId = window.setInterval(calculateTimeToPass, 1000);
+});
+
+onUnmounted(() => {
+  window.clearInterval(timeToPassId);
+});
 
 const emit = defineEmits(['pay']);
 function getPaymentType(){
@@ -84,17 +97,14 @@ function submit(){
   emit('pay');
 }
 
-function timeToPass(){
-  setInterval(() => {
-    refreshDate.value = !refreshDate.value
-  }, 1000)
+function calculateTimeToPass(){
   const now = new Date(Date.now());
   const diference = props.transaction.reservationEnd.getTime() - now.getTime();
   const days = Math.floor(diference / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((diference % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((diference % (1000 * 60)) / 1000);
-  return `${days}D ${hours}H ${minutes}M ${seconds}S`;
+  timeToPass.value = `${days}D ${hours}H ${minutes}M ${seconds}S`;
 }
 </script>
 
