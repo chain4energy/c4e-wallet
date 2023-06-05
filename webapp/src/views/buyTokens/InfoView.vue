@@ -14,16 +14,27 @@
         Potem jęki po jękach skomlą - to psów granie; A gdzieniegdzie ton twardszy jak grzmot - to strzelanie.<br>
         Tu przerwał, lecz róg trzymał; wszystkim się zdawało, Że Wojski wciąż gra jeszcze, a to echo grało.</p>
     </div>
-    <InvestmentCalculator :rate="currency"/>
+    <InvestmentCalculator />
+    <div v-for="items in transactions" :key="items" class="userProfile__holder">
+      <AllocationInfo :transaction="items" @pay="onPay(items)"/>
+    </div>
   </div>
+  <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />
 </template>
 
 <script lang="ts" setup>
 
 import PublicSaleInfo from "@/components/buyTokens/PublicSaleInfo.vue";
 import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vue";
-import { usePublicSalesStore } from "@/store/publicSales.store";
-import { computed } from "vue";
+import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
+import {computed, onBeforeMount, ref} from "vue";
+import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
+import PayModal from "@/components/buyTokens/PayModal.vue";
+
+onBeforeMount(() => {
+  usePublicSalesStore().fetchTokenReservations();
+});
+
 const publicSalesStore = usePublicSalesStore();
 publicSalesStore.setParts();
 publicSalesStore.setTotal();
@@ -31,6 +42,17 @@ publicSalesStore.setCurrentPrice();
 const currency = computed(() => {
   return publicSalesStore.getC4eToUSDC;
 });
+
+const transactions = computed(() => {
+  return usePublicSalesStore().getTransactions;
+});
+const showModal = ref<boolean>(false);
+const selectedReservation = ref();
+const onPay = (transaction: TokenReservation) => {
+  selectedReservation.value = transaction;
+  showModal.value = true;
+
+};
 </script>
 
 <style scoped lang="scss">

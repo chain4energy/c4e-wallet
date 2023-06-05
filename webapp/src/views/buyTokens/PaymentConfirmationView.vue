@@ -26,7 +26,7 @@
       Price: {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}
     </div>
     <div style="display: flex">
-      <Button class="p-button p-component secondary" >Cancel</Button>
+      <Button class="p-button p-component secondary"  @click="router.push({name:'publicSaleInfo'})">Cancel</Button>
       <Button class="p-button p-component secondary" @click="onBuy">Confirm</Button>
     </div>
   </div>
@@ -43,6 +43,7 @@ import {useUserServiceStore} from "@/store/userService.store";
 import {useToast} from "vue-toastification";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import {ethers} from "ethers";
+import {useRouter} from "vue-router";
 
 
 onBeforeMount(async () => {
@@ -52,6 +53,7 @@ onBeforeMount(async () => {
 });
 
 const transactionContextStore = useTransactionContextStore();
+const router = useRouter();
 const publicSaleStore = usePublicSalesStore();
 
 const blockchainNetworkList = ref([

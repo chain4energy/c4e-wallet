@@ -7,12 +7,12 @@
         <TabPanel class="userProfile__tabHeader">
           <template #header>Account info</template>
           <AccountInfo :accordion="false" @open-modal="showAddressAddModal" @open-approval="showApprovalModalFunc"/>
-          <div class="userProfile__holder">
-            <InvestmentCalculator :rate="currency"/>
-          </div>
-          <div v-for="items in transactions" :key="items" class="userProfile__holder">
-            <AllocationInfo :transaction="items" @pay="onPay(items)"/>
-          </div>
+<!--          <div class="userProfile__holder">-->
+<!--            <InvestmentCalculator />-->
+<!--          </div>-->
+<!--          <div v-for="items in transactions" :key="items" class="userProfile__holder">-->
+<!--            <AllocationInfo :transaction="items" @pay="onPay(items)"/>-->
+<!--          </div>-->
         </TabPanel>
         <TabPanel>
           <template #header>Transactions</template>
@@ -25,7 +25,7 @@
         class="p-button p-component secondary userProfile__btn"
         @click="useUserServiceStore().logOutAccount()">Logout</Button>
     </div>
-    <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />
+<!--    <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />-->
   </div>
 </template>
 

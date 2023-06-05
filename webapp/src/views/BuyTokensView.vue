@@ -26,6 +26,10 @@ const onBackClick = () => {
         router.push({name:'publicSaleInfo'});
         break;
       }
+      case 'paymentConfirmation': {
+        router.push({name:'publicSaleInfo'});
+        break;
+      }
       case 'emailRegistration': {
         router.push({name:'accountType'});
         break;

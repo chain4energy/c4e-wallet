@@ -1,8 +1,6 @@
 <template>
   <div class="select_container">
-<!--    <div>-->
-<!--      Chcesz kupić 1000 C4E-->
-<!--    </div>-->
+
     <div>
       Sign up
       <InputSwitch v-model="checked" />

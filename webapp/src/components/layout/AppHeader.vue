@@ -68,14 +68,12 @@
           <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
 
           <div class="profileMenu" @focusout="closeProfileDropdown" tabindex="0" @click="toggleProfileDropdown()" >
-            <div class="profileMenu-icon">    <Icon name="User" style="height:30px; width: 30px" /></div>
+            <div class="profileMenu-icon">    <UserIcon :style="useUserServiceStore().isLoggedIn ? 'color: #81CF1F' : ''" /></div>
             <div class="profileMenu__dropdown" v-if="profileDropdown">
-              <span v-if="useUserStore().isLoggedIn">Login to profile</span>
-              <span v-else>Logout</span>
+              <div class="option" v-if="!useUserServiceStore().isLoggedIn" @click="router.push({name: 'accountType'});">Login to profile</div>
+              <div class="option" @click="useUserServiceStore().logOutAccount(); console.log('asdasd')" v-else>Logout</div>
             </div>
           </div>
-
-
 
 
         </div>
@@ -158,6 +156,8 @@ import {PermissionsService} from "@/services/permissions/permissions.service";
 import KeplrLogo from '../commons/KeplrLogo.vue';
 import * as GovernanceIcon from "@/components/commons/GovernanceIcon.vue";
 import dataService from "@/services/data.service";
+import {useUserServiceStore} from "@/store/userService.store";
+import UserIcon from "@/components/features/UserIcon.vue";
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
@@ -403,7 +403,7 @@ nav a.router-link-exact-active {
 
   cursor: pointer;
   color: white;
-  z-index: 1;
+  z-index: 3;
 
   &__dropdown {
     display: flex;
@@ -411,14 +411,21 @@ nav a.router-link-exact-active {
     position: absolute;
     left: -120px;
     top:40px;
-    padding: 15px;
-    background-color: #FFF1A9;
     min-width: 130px;
     border-radius: 10px 0 10px 10px;
     overflow: hidden;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    z-index: 99999;
+    z-index: 3;
     color: black;
+
+    .option {
+      padding: 15px;
+      background-color: #D9D9D9;
+      width: 100%;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
   }
   &-icon {
 
