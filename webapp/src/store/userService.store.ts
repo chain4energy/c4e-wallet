@@ -11,7 +11,7 @@ import {Jwt} from "@/models/user/jwt";
 import axios from "axios";
 import { EmailPairingRequest, EmailPairingRes } from "@/models/user/emailPairing";
 import {usePublicSalesStore} from "@/store/publicSales.store";
-import {KycStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum, KycTier} from "@/models/user/kyc";
+import {KycProgressStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum, KycTier} from "@/models/user/kyc";
 import { TxBroadcastError } from "@/api/tx.broadcast.base.api";
 import {ethers} from "ethers";
 
@@ -185,7 +185,7 @@ export const useUserServiceStore = defineStore({
       }
     },
     async provideEmailAddress(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().pairEmail(emailAccount, lockscreen).then(async (responseData) => {
+      await apiFactory.publicSaleServiceApi().initPairEmailKeplr(emailAccount, lockscreen).then(async (responseData) => {
         if (responseData.isSuccess() && responseData.data) {
           await this.signPairingEmail(responseData.data);
           onSuccess();
@@ -212,7 +212,7 @@ export const useUserServiceStore = defineStore({
     },
 
     async verifyEmail(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().verifyEmailPairingKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, true).then(response => {
+      await apiFactory.publicSaleServiceApi().verifyPairingEmailKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, true).then(response => {
         if(response.isSuccess()){
           this.setIsLoggedIn();
           this.loginType = LoginTypeEnum.EMAIL;
@@ -239,7 +239,7 @@ export const useUserServiceStore = defineStore({
       }
     },
     pairMetamaskAddress: async function(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().pairMetamask(emailAccount, lockscreen).then(async responseData => {
+      await apiFactory.publicSaleServiceApi().initPairMetamaskKeplr(emailAccount, lockscreen).then(async responseData => {
         if (responseData.isSuccess() && responseData.data) {
           await this.signPairingMatamaskKeplr(responseData.data, onSuccess, onFail, true);
           // this.setIsLoggedIn();
@@ -319,7 +319,7 @@ export const useUserServiceStore = defineStore({
     getKycSessionId(): string {
       return this.kycSessionId;
     },
-    getStepStatus(): (stepName: KycStepName) => KycStatus | undefined {
+    getStepStatus(): (stepName: KycStepName) => KycProgressStatus | undefined {
       return (stepName ) => {
         return this.kycSteps.find((step) => step.name == stepName)?.state;
       };
@@ -363,9 +363,9 @@ export const useUserServiceStore = defineStore({
       };
     },
     getKycTier(): KycTierEnum {
-      if(this.getStepStatus(KycStepName.IDENTITY) == KycStatus.VALIDATED) {
-        if(this.getStepStatus(KycStepName.LIVENESS) == KycStatus.VALIDATED) {
-          if(this.getStepStatus(KycStepName.PHONE) == KycStatus.VALIDATED) {
+      if(this.getStepStatus(KycStepName.IDENTITY) == KycProgressStatus.VALIDATED) {
+        if(this.getStepStatus(KycStepName.LIVENESS) == KycProgressStatus.VALIDATED) {
+          if(this.getStepStatus(KycStepName.PHONE) == KycProgressStatus.VALIDATED) {
             return KycTierEnum.TIER_3;
           } else {
             return KycTierEnum.TIER_2;

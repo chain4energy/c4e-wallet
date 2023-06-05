@@ -31,3 +31,10 @@ export interface Transaction {
   errorInfo: string;
   blockchain: string;
 }
+
+export interface TokenPaymentProofRequest{
+  blockchainName:	string;
+  coinIdentifier:	string;
+  orderID:	number;
+  txHashes:	string[];
+}

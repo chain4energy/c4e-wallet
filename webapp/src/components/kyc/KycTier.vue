@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import Icon from "@/components/features/IconComponent.vue";
-import {KycStatus, KycStepInfo, KycStepName} from "@/models/user/kyc";
+import {KycProgressStatus, KycStepInfo, KycStepName} from "@/models/user/kyc";
 
 const props = defineProps<{
   header: string,
@@ -53,7 +53,7 @@ const getStepName = (name: KycStepName): string => {
 const isVerified = (): boolean => {
   let verified = true;
   props.listOfSteps.forEach(step => {
-    if(step.state != KycStatus.VALIDATED)
+    if(step.state != KycProgressStatus.VALIDATED)
       verified = false;
   });
   return verified;
