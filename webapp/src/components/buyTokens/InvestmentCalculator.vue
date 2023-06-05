@@ -34,17 +34,27 @@
         <p>Required</p>
         <span>terms acceptance</span>
         <span>proof of residence</span>
-        <Button class="p-button p-component secondary" style="width: 141px;" @click="onConfirm">Buy</Button>
+        <Button class="p-button p-component secondary" style="width: 141px;" @click="onBuy">Buy</Button>
       </div>
 
     </div>
 
-    <Dialog v-model:visible="summaryVisible" closeIcon="false" modal header="Summary" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px' }">
-      <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;">
-
+    <Dialog v-model:visible="summaryVisible" closeIcon="false" modal header="Order summary" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
+      <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
+        <h5 style="font-weight:700">You want to invest {{secondValue.amount}} {{secondValue.currency}}</h5>
+        <div class="requirements_container">
+          <div>Pass KYC - Level 2</div>
+          <div><Button class="p-button p-component secondary">Start KYC</Button></div>
+          <div>Accept sale terms</div>
+          <div><Button class="p-button p-component secondary">Accept</Button></div>
+          <div>Provide claimer address</div>
+          <div><Button class="p-button p-component secondary">Provide address</Button></div>
+          <div>Provide source address</div>
+          <div><Button class="p-button p-component secondary">Provide address</Button></div>
+        </div>
         <div style="display: flex">
-          <Button class="p-button p-component secondary" @click="summaryVisible=false">Close</Button>
-          <Button class="p-button p-component secondary" @click="onConfirm">Buy</Button>
+          <Button class="p-button p-component secondary" @click="summaryVisible=false">Cancel order</Button>
+          <Button class="p-button p-component secondary" @click="onConfirm">Confirm order</Button>
         </div>
       </div>
 
@@ -62,6 +72,7 @@ import {usePublicSalesStore} from "@/store/publicSales.store";
 import Dropdown from "primevue/dropdown";
 import {Currency} from "@/models/currency";
 import {useTransactionContextStore} from "@/store/transactionContext.store";
+import {useToast} from "vue-toastification";
 
 onMounted(() => {
   const c4eToUsdt = usePublicSalesStore().getC4eToUSDC;
@@ -125,16 +136,39 @@ const currencyList = [Currency.USDT, Currency.USDC, Currency.EUR, Currency.USD];
 const transactionContextStore = useTransactionContextStore();
 const router = useRouter();
 
+const onBuy = () => {
+  if(useUserServiceStore().loginType == LoginTypeEnum.NONE) {
+    router.push({name: 'signIn'});
+  } else {
+    summaryVisible.value = true;
+  }
+};
+
 const onConfirm = () => {
 
   if(useUserServiceStore().loginType == LoginTypeEnum.NONE) {
-    router.push({name: 'accountType'});
+    router.push({name: 'signIn'});
   } else {
+    summaryVisible.value = false;
     transactionContextStore.setAmountToBuy(firstValue.amount);
     transactionContextStore.setAmountToPay(secondValue.amount);
     transactionContextStore.setPaymentCurrency(secondValue.currency);
-    router.push({name: 'paymentConfirmation'});
+    onReserve();
+
   }
+};
+const publicSaleStore = usePublicSalesStore();
+const toast = useToast();
+const onReserve = () => {
+  publicSaleStore.reserveTokens(Number(transactionContextStore.amountToBuy), onSuccess, onFail);
+};
+const onSuccess = (orderId: number) => {
+  usePublicSalesStore().fetchTokenReservations();
+  toast.success('Tokens reserved successfully');
+  router.push({name: 'paymentConfirmation'});
+};
+const onFail = () => {
+  toast.error('An error occured');
 };
 </script>
 
@@ -195,7 +229,15 @@ const onConfirm = () => {
 
   }
 }
+.requirements_container {
+  padding: 20px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto;
 
+  font-size: 18px;
+
+}
 </style>
 <style lang="scss" scoped>
 .dropdown {
@@ -210,5 +252,9 @@ const onConfirm = () => {
 }
 :deep(.p-dropdown .p-dropdown-trigger){
   display: none !important;
+}
+::v-deep(.p-button:not(.p-button-icon-only)) {
+  border-radius: 5px !important;
+
 }
 </style>

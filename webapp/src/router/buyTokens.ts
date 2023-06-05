@@ -51,7 +51,7 @@ const buyTokensRoutes = {
       component: ActivateView,
     },
     {
-      path: 'confiramtion',
+      path: 'confirmation',
       name: 'paymentConfirmation',
       component: PaymentConfirmationView
     },

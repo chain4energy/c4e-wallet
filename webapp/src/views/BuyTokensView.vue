@@ -53,6 +53,7 @@ const onBackClick = () => {
 
 <style scoped lang="scss">
 .buy-tokens-container{
+  height: 100%;
   .back_container {
     text-align: left;
     padding: 20px 20px;

@@ -51,7 +51,8 @@
     "vue-router": "^4.0.3",
     "vue-svg-inline-plugin": "^2.2.3",
     "vue-toastification": "^2.0.0-rc.5",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "qrcode.vue": "^3.4.0"
   },
   "devDependencies": {
     "@keplr-wallet/types": "^0.11.63",
