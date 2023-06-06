@@ -5,7 +5,8 @@ import {Currency} from "@/models/currency";
 interface TransactionContextState {
   paymentCurrency?: Currency,
   amountToPay: number,
-  amountToBuy: number
+  amountToBuy: number,
+  orderId: number
 }
 
 
@@ -15,7 +16,8 @@ export const useTransactionContextStore = defineStore({
     return {
       paymentCurrency: undefined,
       amountToBuy: 0,
-      amountToPay: 0
+      amountToPay: 0,
+      orderId: 0
     };
   },
   actions: {
@@ -27,6 +29,9 @@ export const useTransactionContextStore = defineStore({
     },
     setPaymentCurrency(currency: Currency) {
       this.paymentCurrency = currency;
+    },
+    setOrderId(id: number) {
+      this.orderId = id;
     }
 
   },

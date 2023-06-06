@@ -535,7 +535,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       const transfer = await contract.connect(signer).transfer(destinationAddress, baseUnitAmount);
 
 
-      return new RequestResponse<string, TxBroadcastError>(undefined, transfer);
+      return new RequestResponse<string, TxBroadcastError>(undefined, transfer.hash);
     } catch (err) {
       this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
       const error = err as Error;

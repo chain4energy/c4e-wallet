@@ -4,7 +4,7 @@
       <h2>Confirm your payment</h2>
     </div>
     <div class="confirm_container__body">
-      <span>Your order np. XYZ has been placed successfully</span><br />
+      <span>Your order no. {{transactionContextStore.orderId}} has been placed successfully</span><br />
       <span>Please send <span style="font-weight: bold">{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</span> to the address below or play by Metamask</span>
       <Button class="secondary" @click="paymentModalVisible = true">Pay by Metamask</Button>
       <div class="address">
@@ -27,9 +27,9 @@
                 <div class="invalid-feedback">{{ errors.txHash ? $t(errors.txHash) : '' }}</div>
               </div>
               <div class="field col-12">
-                <Field v-model="selectedBlockchainNetwork" required name="selectedBlockchainNetwork" as="select" class="form-control"
+                <Field v-model="selectedBlockchainNetworkId" required name="selectedBlockchainNetwork" as="select" class="form-control"
                        :class="{'is-invalid': errors.selectedBlockchainNetwork}" >
-                  <option v-for="network in blockchainNetworkList" :key="network" :value="network.chainId">{{network.networkName}}</option>
+                  <option v-for="network in blockchainNetworkList" :key="network.id" :value="network.chainId">{{network.chainName}}</option>
                 </Field>
                 <span>Network</span>
                 <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
@@ -49,7 +49,7 @@
     <Dialog v-model:visible="paymentModalVisible" modal header="Order summary" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
       <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
         <div class="requirements_container">
-          <div>Amount of coin</div>
+          <div>Amount</div>
           <div>{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</div>
           <div>Source address</div>
           <div>0x9176238712hdasjhdkahdskj</div>
@@ -61,11 +61,20 @@
           <div style="padding: 10px 30px;">
             <div >
               <div class="field col-12">
-                <Field v-model="selectedBlockchainNetwork" required name="selectedBlockchainNetwork" as="select" class="form-control"
+                <Field v-model="selectedBlockchainNetworkId" required name="selectedBlockchainNetwork" as="select" class="form-control"
                        :class="{'is-invalid': errors.selectedBlockchainNetwork}" @change="onNetworkChange">
-                  <option v-for="network in blockchainNetworkList" :key="network" :value="network.chainId">{{network.networkName}}</option>
+                  <option v-for="network in blockchainNetworkList" :key="network" :value="network.chainId">{{network.chainName}}</option>
                 </Field>
                 <span>Network</span>
+                <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
+              </div>
+
+              <div class="field col-12">
+                <Field v-model="selectedTokenIdentifier" required name="selectedTokenIdentifier" as="select" class="form-control"
+                       :class="{'is-invalid': errors.selectedTokenIdentifier}">
+                     <option v-for="token in selectedBlockchainTokens" :key="token" :value="token.coinIdentifier">{{token.name}}</option>
+                </Field>
+                <span>Token</span>
                 <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
               </div>
             </div>
@@ -81,39 +90,6 @@
 
     </Dialog>
   </div>
-<!--<div>-->
-<!--  <div></div>-->
-<!--  <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;">-->
-<!--    <div v-if="isCrypto()">-->
-<!--      Network:-->
-<!--      <Dropdown  v-model="selectedBlockchainNetwork" :options="blockchainNetworkList" optionLabel="networkName" @change="onNetworkChange"  placeholder="Select network" class="w-full md:w-14rem">-->
-<!--        <template #value="slotProps">-->
-<!--          <div v-if="slotProps.value" class="flex align-items-center">-->
-<!--            <div>{{ slotProps.value.networkName }}</div>-->
-<!--          </div>-->
-<!--          <span v-else>-->
-<!--            {{ slotProps.placeholder }}-->
-<!--        </span>-->
-<!--        </template>-->
-<!--        <template #option="slotProps">-->
-<!--          <div class="flex align-items-center">-->
-<!--            <div>{{ slotProps.option.networkName }}</div>-->
-<!--          </div>-->
-<!--        </template>-->
-<!--      </Dropdown>-->
-<!--    </div>-->
-<!--    <div>-->
-<!--      Amount: {{transactionContextStore.amountToBuy}} {{Currency.C4E}}-->
-<!--    </div>-->
-<!--    <div>-->
-<!--      Price: {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}-->
-<!--    </div>-->
-<!--    <div style="display: flex">-->
-<!--      <Button class="p-button p-component secondary"  @click="router.push({name:'publicSaleInfo'})">Cancel</Button>-->
-<!--      <Button class="p-button p-component secondary" @click="onBuy">Confirm</Button>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
 </template>
 
 <script setup lang="ts">
@@ -121,7 +97,7 @@
 import {useTransactionContextStore} from "@/store/transactionContext.store";
 import Dropdown from "primevue/dropdown";
 import {Currency} from "../../models/currency";
-import {onBeforeMount, ref} from "vue";
+import {computed, onBeforeMount, ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import {useToast} from "vue-toastification";
 import {usePublicSalesStore} from "@/store/publicSales.store";
@@ -135,8 +111,11 @@ import Checkbox from "primevue/checkbox";
 import {object} from "yup";
 import * as Yup from "yup";
 import Dialog from "primevue/dialog";
+import {BlockchainInfo} from "@/models/saleServiceCommons";
 
 onBeforeMount(async () => {
+
+  await publicSaleStore.fetchBlockchainInfo(false);
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const {chainId} = await provider.getNetwork();
   changeNetwork(chainId);
@@ -160,53 +139,53 @@ const modalSchema = object().shape({
     .required( "This field is required"),
 
 });
+const blockchainNetworkList = computed(() => {
+  return publicSaleStore.blockchainInfo;
+});
 
-const blockchainNetworkList = ref([
-  {
-    networkName: 'Sepolia',
-    chainId: 11155111
-  },
-  {
-    networkName: 'BSC testnet',
-    chainId: 97
-  },
-  {
-    networkName: 'Polygon testnet',
-    chainId: 80001
-  }
-]);
-const selectedBlockchainNetwork = ref();
+const selectedTokenIdentifier = ref();
+const selectedBlockchainNetworkId = ref();
+const selectedBlockchainTokens = computed(() => {
+  return blockchainNetworkList.value.find(blockchain => {
+    return blockchain.chainId == selectedBlockchainNetworkId.value;
+  })?.availableTokens;
+});
+const selectedBlockchain = computed(() => {
+  return blockchainNetworkList.value.find(blockchain => {
+    return blockchain.chainId == selectedBlockchainNetworkId.value;
+  });
+});
+
 const onNetworkChange = () => {
-  useUserServiceStore().switchBlockchain(selectedBlockchainNetwork.value);
+  useUserServiceStore().switchBlockchain(selectedBlockchainNetworkId.value);
 };
 
 const toast = useToast();
 
-const onBuy = () => {
-  publicSaleStore.reserveTokens(Number(transactionContextStore.amountToBuy), onSuccess, onFail);
-};
-const onSuccess = (orderId: number) => {
-  usePublicSalesStore().fetchTokenReservations();
-  toast.success('Tokens reserved successfully');
-  onPay(orderId);
-};
+
 const onFail = () => {
   toast.error('An error occured');
 };
-const getBlockchainAddress = (): string => {
-  if(transactionContextStore.paymentCurrency == Currency.USDC) {
-    return '0xda2011e914b986a68a2cf56ff11fca787cd6197e';
-  } else  if(transactionContextStore.paymentCurrency == Currency.USDT) {
-    return '0x1fba0140aaaca3b58adf781999570942b8f6beb1';
-  }
-  return '';
-};
+
 const onStartMetamaskTransaction = () => {
-  useUserServiceStore().sendMetamaskTransaction(transactionContextStore.amountToPay.toString(), getBlockchainAddress(), 6);
+  if(selectedBlockchain.value){
+    useUserServiceStore().payByMetamask({
+      amount: transactionContextStore.amountToPay.toString(),
+      blockchainName: selectedBlockchain.value.chainName,
+      orderId: transactionContextStore.orderId,
+      blockchainAddress: selectedTokenIdentifier.value,
+      coinDecimals: 6
+    }, onSuccessStartMetamaskTransaction, onFail);
+  }
+
+
+};
+const onSuccessStartMetamaskTransaction = () => {
+  toast.success('Transaction complete');
 };
 const onPay = (orderId: number) => {
   if(isCrypto()) {
-    useUserServiceStore().sendMetamaskTransaction(transactionContextStore.amountToPay.toString(), getBlockchainAddress(), 6);
+    useUserServiceStore().sendMetamaskTransaction(transactionContextStore.amountToPay.toString(),selectedTokenIdentifier.value, 6);
   } else if(transactionContextStore.paymentCurrency){
     usePublicSalesStore().initPaymentSession({orderId: orderId, offeredCurrencyCode: transactionContextStore.paymentCurrency, offeredAmount: Number((Math.round(transactionContextStore.amountToPay * 100) / 100).toFixed(2))})
       .then(transactionId => {
@@ -225,7 +204,7 @@ const onPay = (orderId: number) => {
 const changeNetwork = (networkId: number) => {
   blockchainNetworkList.value.forEach((network) => {
     if(network.chainId == networkId) {
-      selectedBlockchainNetwork.value = network.chainId;
+      selectedBlockchainNetworkId.value = network.chainId;
     }
   });
 };

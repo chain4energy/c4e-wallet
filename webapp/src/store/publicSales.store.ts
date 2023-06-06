@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import {Coin} from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import factoryApi from "@/api/factory.api";
-import {InitPaymentSessionRequest, Transaction} from "@/models/saleServiceCommons";
+import {BlockchainInfo, InitPaymentSessionRequest, Transaction} from "@/models/saleServiceCommons";
 import {clearAuthTokens} from "axios-jwt";
 import {LoginTypeEnum} from "@/store/userService.store";
 export interface PublicSalesState{
@@ -12,6 +12,7 @@ export interface PublicSalesState{
   endDate: Date | undefined,
   c4eToUSDC: number | undefined,
   tokenReservations: TokenReservation[] | undefined,
+  blockchainInfo: BlockchainInfo[]
 }
 export interface parts{
   solved: Coin,
@@ -67,6 +68,7 @@ export const usePublicSalesStore = defineStore({
       endDate: undefined,
       c4eToUSDC: undefined,
       tokenReservations: undefined,
+      blockchainInfo: []
     };
   },
   actions: {
@@ -133,6 +135,15 @@ export const usePublicSalesStore = defineStore({
       return factoryApi.publicSaleServiceApi().initPaymentSession(initPaymentSessionRequest, lockscreen).then(res => {
         console.log(res);
         return res.data?.transactionId;
+      });
+    },
+    fetchBlockchainInfo(lockscreen = false) {
+      return factoryApi.publicSaleServiceApi().fetchBlockchainInfo(lockscreen).then(res => {
+        if(res.isSuccess() && res.data) {
+          this.blockchainInfo = res.data;
+        }
+
+        console.log(res);
       });
     },
     setCurrentPrice(){

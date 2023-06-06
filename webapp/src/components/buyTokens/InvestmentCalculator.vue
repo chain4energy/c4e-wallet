@@ -65,7 +65,7 @@
 <script setup lang="ts">
 
 import {useRouter} from "vue-router";
-import { onMounted, reactive, ref, watch} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import Dialog from 'primevue/dialog';
 import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
 import {usePublicSalesStore} from "@/store/publicSales.store";
@@ -91,7 +91,7 @@ const firstValue = reactive({
 
 const secondValue = reactive({
   amount: 0,
-  currency: Currency.USDT
+  currency: Currency.STABLE
 });
 
 
@@ -111,7 +111,7 @@ watch(() => exchangeRate.value, () => {
 });
 
 watch(() => secondValue.currency, () => {
-  if(secondValue.currency == Currency.USDT || secondValue.currency == Currency.USDC) {
+  if(secondValue.currency == Currency.USDT || secondValue.currency == Currency.USDC || secondValue.currency == Currency.STABLE) {
     exchangeRate.value = 0.18;
   } else {
     const requestedAmount = 100;
@@ -132,7 +132,7 @@ watch(() => secondValue.currency, () => {
 });
 
 const summaryVisible = ref(false);
-const currencyList = [Currency.USDT, Currency.USDC, Currency.EUR, Currency.USD];
+const currencyList = [Currency.STABLE, Currency.EUR, Currency.USD, Currency.PLN];
 const transactionContextStore = useTransactionContextStore();
 const router = useRouter();
 
@@ -163,9 +163,16 @@ const onReserve = () => {
   publicSaleStore.reserveTokens(Number(transactionContextStore.amountToBuy), onSuccess, onFail);
 };
 const onSuccess = (orderId: number) => {
+  console.log(orderId)
+  transactionContextStore.setOrderId(orderId);
   usePublicSalesStore().fetchTokenReservations();
   toast.success('Tokens reserved successfully');
-  router.push({name: 'paymentConfirmation'});
+  if(secondValue.currency != Currency.STABLE) {
+    router.push({name: 'fiatPaymentConfirmation'});
+  } else {
+    router.push({name: 'paymentConfirmation'});
+  }
+
 };
 const onFail = () => {
   toast.error('An error occured');

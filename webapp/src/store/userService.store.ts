@@ -14,6 +14,7 @@ import {usePublicSalesStore} from "@/store/publicSales.store";
 import {KycProgressStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum, KycTier} from "@/models/user/kyc";
 import { TxBroadcastError } from "@/api/tx.broadcast.base.api";
 import {ethers} from "ethers";
+import {MetamaskPayInfo, TokenPaymentProofRequest} from "@/models/saleServiceCommons";
 
 interface UserServiceState {
   _isLoggedIn: boolean,
@@ -80,9 +81,31 @@ export const useUserServiceStore = defineStore({
          onFail();
        }
     },
-    async sendMetamaskTransaction(amount: string, blockchainAddress: string, coinDecimals: number) {
-      await apiFactory.accountApi().sendTransaction( amount, blockchainAddress, coinDecimals, '0xf9AAA5C4868Ef0D1613E350A399C802566af7142').then(res => {
+    async provideTxPaymentProof(txPaymentProofRequest: TokenPaymentProofRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().provideTxPaymentProof( txPaymentProofRequest, lockscreen).then(res => {
+        if(res.isSuccess()) {
+          onSuccess();
+        } else {
+          onFail();
+        }
         console.log(res)
+      });
+    },
+    async payByMetamask(payInfo: MetamaskPayInfo, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      this.sendMetamaskTransaction(payInfo.amount, payInfo.blockchainAddress, payInfo.coinDecimals).then(res => {
+        if (res.isSuccess() && res.data){
+          this.provideTxPaymentProof({
+            blockchainName: payInfo.blockchainName, coinIdentifier: payInfo.blockchainAddress, orderID: payInfo.orderId, txHashes: [res.data]
+          }, onSuccess, onFail, lockscreen);
+        } else {
+          onFail();
+        }
+      });
+    },
+    async sendMetamaskTransaction(amount: string, blockchainAddress: string, coinDecimals: number) {
+      return await apiFactory.accountApi().sendTransaction( amount, blockchainAddress, coinDecimals, '0xf9AAA5C4868Ef0D1613E350A399C802566af7142').then(res => {
+        console.log(res)
+        return res;
       });
     },
     async authMetamaskWalletInit(initWalletAuthRequest: InitWalletAuthRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {

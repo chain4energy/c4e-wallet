@@ -22,6 +22,7 @@ import {
 } from "@/models/user/emailPairing";
 import {formatString} from "@/utils/string-formatter";
 import {
+  BlockchainInfo,
   InitPaymentSessionRequest,
   InitPaymentSessionResponse,
   ReserveTokensRequest,
@@ -136,8 +137,12 @@ export class PublicSaleServiceApi extends BaseApi {
     return this.publicSaleServiceGetCall<KycStatusResponse, UserServiceErrData>(queries.publicSaleService.GET_KYC_STATUS, lockscreen, "getKycStatus");
   }
 
-  public async provideTxPaymentProof(lockscreen: boolean): Promise<RequestResponse<TokenPaymentProofRequest, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServiceGetCall<TokenPaymentProofRequest, UserServiceErrData>(queries.publicSaleService.PROVIDE_TX_PAYMENT_PROOF, lockscreen, "provideTxPaymentProof");
+  public async provideTxPaymentProof(txPaymentProof: TokenPaymentProofRequest,lockscreen: boolean): Promise<RequestResponse<null, ErrorData<UserServiceErrData>>> {
+    return this.publicSaleServicePostCall<TokenPaymentProofRequest, null, UserServiceErrData>(queries.publicSaleService.PROVIDE_TX_PAYMENT_PROOF, txPaymentProof,lockscreen, "provideTxPaymentProof");
+  }
+
+  public async fetchBlockchainInfo(lockscreen: boolean): Promise<RequestResponse<BlockchainInfo[], ErrorData<UserServiceErrData>>> {
+    return this.publicSaleServiceGetCall<BlockchainInfo[], UserServiceErrData>(queries.publicSaleService.BLOCKCHAIN_INFO, lockscreen, "getBlockchainInfo");
   }
 
   public async synapsFetchSessionDetails(sessionId: string, lockscreen: boolean): Promise<RequestResponse<KycTier, ErrorData<UserServiceErrData>>> {

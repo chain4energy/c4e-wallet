@@ -38,3 +38,25 @@ export interface TokenPaymentProofRequest{
   orderID:	number;
   txHashes:	string[];
 }
+
+export interface MetamaskPayInfo {
+  blockchainName: string;
+  orderId: number;
+  amount: string;
+  blockchainAddress: string;
+  coinDecimals: number;
+}
+
+export interface BlockchainInfo {
+  availableTokens: TokenInfo[];
+  chainId: number;
+  chainName: string;
+  id: number;
+}
+export interface TokenInfo {
+  c4eAddress: string;
+  coinIdentifier: string;
+  exchangeRate: number;
+  id: number;
+  name: string;
+}
