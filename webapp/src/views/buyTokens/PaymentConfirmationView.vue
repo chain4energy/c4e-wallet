@@ -10,69 +10,64 @@
       <div style="text-align: center; margin:20px">
         <Button class="secondary" style="width: 50%" @click="paymentModalVisible = true">Pay {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}} by Metamask</Button> <br />
         <span>or</span><br />
-        <span class="underline">Provide TxHash manually</span>
+        <span @click="showManualPayment = true" class="underline open">Provide TxHash manually</span>
       </div>
-      <Accordion :activeIndex="0">
-        <AccordionTab header="Provide TxHash manually">
-          <div style="padding: 20px; color: black">
-            <div style="display: flex">
+
+      <div v-if="showManualPayment" class="box-shadow" style="padding: 20px; color: black">
+        <div style="width: 100%">
+          After completing the transaction, please enter the txHash below
+          <span @click="showManualPayment = false" class="close">Hide <IconComponent name="X" /></span>
+        </div>
+        <div>
+          <Form @submit="onConfirmPayment" :validation-schema="schema" v-slot="{errors}" >
+            <div style="padding: 10px 30px;">
+              <div >
+                <div class="field col-12">
+                  <Field v-model="selectedBlockchainNetworkId" required name="selectedBlockchainNetwork" as="select" class="form-control"
+                         :class="{'is-invalid': errors.selectedBlockchainNetwork}" >
+                    <option v-for="network in blockchainNetworkList" :key="network.id" :value="network.chainId">{{network.chainName}}</option>
+                  </Field>
+                  <span>Network</span>
+                  <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
+                </div>
+                <div class="field col-12">
+                  <Field v-model="selectedTokenIdentifier" required name="selectedTokenIdentifier" as="select" class="form-control"
+                         :class="{'is-invalid': errors.selectedTokenIdentifier}">
+                    <option v-for="token in selectedBlockchainTokens" :key="token" :value="token.coinIdentifier">{{token.name}}</option>
+                  </Field>
+                  <span>Token</span>
+                  <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
+                </div>
+                <div class="field col-12">
+                  <Field style="width:100%" v-model="txHash" placeholder="TxHash" name="txHash" type="text" class="form-control"
+                         :class="{'is-invalid': errors.txHash}"></Field>
+                  <div class="invalid-feedback">{{ errors.txHash ? $t(errors.txHash) : '' }}</div>
+                </div>
+              </div>
+            </div>
+            <div v-if="selectedToken?.c4eAddress" style="display: flex">
               <div style="margin-right: 20px;">
-                <span>Please send {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}} to the address below:</span>
-                <div class="address" style="margin-bottom:20px">{{address}} <Icon class="address__copy" name="Copy" /> <br /></div>
                 <span>The payment must be done from metamask address (source address)</span>
                 <div class="address">
                   {{address}}
                 </div>
+                <span>Please send <b>{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</b> to the address below:</span>
+                <div class="address" style="margin-bottom:20px">{{selectedToken?.c4eAddress}} <Icon class="address__copy" name="Copy" /> <br /></div>
+
               </div>
               <div style="margin-left: auto; margin-right: 20px">
                 <div style="margin-bottom: 10px">Recipient's address</div>
-                <QrcodeVue :value="address" size="200" :render-as="'svg'"></QrcodeVue>
+                <QrcodeVue :value="selectedToken?.c4eAddress" size="200" :render-as="'svg'"></QrcodeVue>
               </div>
             </div>
-            <div>
-              <div>
-                After completing the transaction, please enter the txHash below
-              </div>
-              <div>
-                <Form @submit="onConfirmPayment" :validation-schema="schema" v-slot="{errors}" >
-                  <div style="padding: 10px 30px;">
-                    <div >
-                      <div class="field col-12">
-                        <Field style="width:100%" v-model="txHash" placeholder="TxHash" name="txHash" type="text" class="form-control"
-                               :class="{'is-invalid': errors.txHash}"></Field>
-                        <div class="invalid-feedback">{{ errors.txHash ? $t(errors.txHash) : '' }}</div>
-                      </div>
-                      <div class="field col-12">
-                        <Field v-model="selectedBlockchainNetworkId" required name="selectedBlockchainNetwork" as="select" class="form-control"
-                               :class="{'is-invalid': errors.selectedBlockchainNetwork}" >
-                          <option v-for="network in blockchainNetworkList" :key="network.id" :value="network.chainId">{{network.chainName}}</option>
-                        </Field>
-                        <span>Network</span>
-                        <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
-                      </div>
-                      <div class="field col-12">
-                        <Field v-model="selectedTokenIdentifier" required name="selectedTokenIdentifier" as="select" class="form-control"
-                               :class="{'is-invalid': errors.selectedTokenIdentifier}">
-                          <option v-for="token in selectedBlockchainTokens" :key="token" :value="token.coinIdentifier">{{token.name}}</option>
-                        </Field>
-                        <span>Token</span>
-                        <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
-                      </div>
-                    </div>
-                  </div>
+            <div class="flex justify-content-center">
 
-                  <div class="flex justify-content-center">
-
-                    <Button class="p-button p-component secondary"  type="submit" >CONFIRM PAYMENT</Button>
-                  </div>
-
-                </Form>
-              </div>
+              <Button class="p-button p-component secondary"  type="submit" >CONFIRM PAYMENT</Button>
             </div>
-          </div>
-        </AccordionTab>
-      </Accordion>
 
+          </Form>
+        </div>
+      </div>
     </div>
 
     <Dialog v-model:visible="paymentModalVisible" modal header="Order summary" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
@@ -139,6 +134,7 @@ import * as Yup from "yup";
 import Dialog from "primevue/dialog";
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
+import IconComponent from "@/components/features/IconComponent.vue";
 
 onBeforeMount(async () => {
 
@@ -149,11 +145,13 @@ onBeforeMount(async () => {
 });
 
 const address = ref('0xAxerwerwerwerwerwerwerwerwerwerwerr');
+const recipientAddress = ref();
 const transactionContextStore = useTransactionContextStore();
 const router = useRouter();
 const publicSaleStore = usePublicSalesStore();
 const txHash = ref<string>();
 const paymentModalVisible = ref(false);
+const showManualPayment = ref<boolean>(false);
 
 const schema = object().shape({
   txHash:  Yup.string()
@@ -182,7 +180,14 @@ const selectedBlockchain = computed(() => {
     return blockchain.chainId == selectedBlockchainNetworkId.value;
   });
 });
-
+const selectedToken = computed(() => {
+  if(selectedBlockchainTokens.value) {
+    return selectedBlockchainTokens.value.find(token => {
+      return token.coinIdentifier == selectedTokenIdentifier.value;
+    });
+  }
+  return undefined;
+});
 const onNetworkChange = () => {
   useUserServiceStore().switchBlockchain(selectedBlockchainNetworkId.value);
 };
@@ -290,6 +295,21 @@ const onSuccessConfirmPayment = () => {
           opacity: 0.7;
         }
       }
+    }
+    .open {
+      cursor: pointer;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+    .close {
+      cursor: pointer;
+      text-decoration: underline;
+      float: right;
+      &:hover {
+        opacity: 0.7;
+      }
+
     }
   }
 }

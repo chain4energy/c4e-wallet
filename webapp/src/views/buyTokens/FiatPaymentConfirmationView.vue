@@ -8,8 +8,8 @@
       <h2>Your order info</h2>
       <div>
         <div>Amount of coins: {{transactionContextStore.amountToBuy}}</div>
-        <div>Amount of coins: {{transactionContextStore.amountToBuy}}</div>
-        <div>Current exchange rate: 1 C4E = {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</div>
+        <div>Amount of {{transactionContextStore.paymentCurrency}}: {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</div>
+        <div>Current exchange rate: 1 C4E = {{transactionContextStore.exchangeRate}} {{transactionContextStore.paymentCurrency}}</div>
       </div>
       <Button class="secondary" @click="onPay">GO TO ARI10 PAYMENT GATEWAY</Button>
     </div>

@@ -39,34 +39,14 @@
 
     </div>
 
-    <Dialog v-model:visible="summaryVisible" closeIcon="false" modal header="Order summary" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
-      <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
-        <h5 style="font-weight:700">You want to invest {{secondValue.amount}} {{secondValue.currency}}</h5>
-        <div class="requirements_container">
-          <div>Pass KYC - Level 2</div>
-          <div><Button class="p-button p-component secondary">Start KYC</Button></div>
-          <div>Accept sale terms</div>
-          <div><Button class="p-button p-component secondary">Accept</Button></div>
-          <div>Provide claimer address</div>
-          <div><Button class="p-button p-component secondary">Provide address</Button></div>
-          <div>Provide source address</div>
-          <div><Button class="p-button p-component secondary">Provide address</Button></div>
-        </div>
-        <div style="display: flex">
-          <Button class="p-button p-component secondary" @click="summaryVisible=false">Cancel order</Button>
-          <Button class="p-button p-component secondary" @click="onConfirm">Confirm order</Button>
-        </div>
-      </div>
 
-    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 
 import {useRouter} from "vue-router";
-import {onMounted, reactive, ref, watch} from "vue";
-import Dialog from 'primevue/dialog';
+import {onBeforeMount, onMounted, reactive, ref, watch} from "vue";
 import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import Dropdown from "primevue/dropdown";
@@ -74,11 +54,14 @@ import {Currency} from "@/models/currency";
 import {useTransactionContextStore} from "@/store/transactionContext.store";
 import {useToast} from "vue-toastification";
 
+const emit = defineEmits(['onBuy']);
+onBeforeMount(() => {
+  usePublicSalesStore().fetchBlockchainInfo(false).then(() => {
+    exchangeRate.value = usePublicSalesStore().blockchainInfo[0].availableTokens[0].exchangeRate;
+  });
+});
 onMounted(() => {
-  const c4eToUsdt = usePublicSalesStore().getC4eToUSDC;
-  if(c4eToUsdt) {
-    exchangeRate.value = c4eToUsdt;
-  }
+
   firstValue.amount = 1000;
   onFirstInputChange();
 
@@ -95,7 +78,7 @@ const secondValue = reactive({
 });
 
 
-const exchangeRate = ref(0.18);
+const exchangeRate = ref(1);
 
 const onFirstInputChange = () => {
   secondValue.amount = firstValue.amount * exchangeRate.value;
@@ -112,7 +95,7 @@ watch(() => exchangeRate.value, () => {
 
 watch(() => secondValue.currency, () => {
   if(secondValue.currency == Currency.USDT || secondValue.currency == Currency.USDC || secondValue.currency == Currency.STABLE) {
-    exchangeRate.value = 0.18;
+    exchangeRate.value = usePublicSalesStore().blockchainInfo[0].availableTokens[0].exchangeRate;
   } else {
     const requestedAmount = 100;
     const requestOptions = {
@@ -131,7 +114,6 @@ watch(() => secondValue.currency, () => {
   }
 });
 
-const summaryVisible = ref(false);
 const currencyList = [Currency.STABLE, Currency.EUR, Currency.USD, Currency.PLN];
 const transactionContextStore = useTransactionContextStore();
 const router = useRouter();
@@ -140,43 +122,16 @@ const onBuy = () => {
   if(useUserServiceStore().loginType == LoginTypeEnum.NONE) {
     router.push({name: 'signIn'});
   } else {
-    summaryVisible.value = true;
-  }
-};
-
-const onConfirm = () => {
-
-  if(useUserServiceStore().loginType == LoginTypeEnum.NONE) {
-    router.push({name: 'signIn'});
-  } else {
-    summaryVisible.value = false;
     transactionContextStore.setAmountToBuy(firstValue.amount);
     transactionContextStore.setAmountToPay(secondValue.amount);
     transactionContextStore.setPaymentCurrency(secondValue.currency);
-    onReserve();
-
+    transactionContextStore.setExchangeRate(exchangeRate.value);
+    emit('onBuy');
   }
 };
-const publicSaleStore = usePublicSalesStore();
+
 const toast = useToast();
-const onReserve = () => {
-  publicSaleStore.reserveTokens(Number(transactionContextStore.amountToBuy), onSuccess, onFail);
-};
-const onSuccess = (orderId: number) => {
-  console.log(orderId)
-  transactionContextStore.setOrderId(orderId);
-  usePublicSalesStore().fetchTokenReservations();
-  toast.success('Tokens reserved successfully');
-  if(secondValue.currency != Currency.STABLE) {
-    router.push({name: 'fiatPaymentConfirmation'});
-  } else {
-    router.push({name: 'paymentConfirmation'});
-  }
 
-};
-const onFail = () => {
-  toast.error('An error occured');
-};
 </script>
 
 <style scoped lang="scss">
@@ -236,15 +191,7 @@ const onFail = () => {
 
   }
 }
-.requirements_container {
-  padding: 20px;
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto auto;
 
-  font-size: 18px;
-
-}
 </style>
 <style lang="scss" scoped>
 .dropdown {

@@ -14,12 +14,36 @@
         Potem jęki po jękach skomlą - to psów granie; A gdzieniegdzie ton twardszy jak grzmot - to strzelanie.<br>
         Tu przerwał, lecz róg trzymał; wszystkim się zdawało, Że Wojski wciąż gra jeszcze, a to echo grało.</p>
     </div>
-    <InvestmentCalculator />
+    <InvestmentCalculator @onBuy="onBuyClick" />
     <div v-for="items in transactions" :key="items" class="userProfile__holder">
       <AllocationInfo :transaction="items" @pay="onPay(items)"/>
     </div>
   </div>
   <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />
+
+  <Dialog v-model:visible="summaryVisible" closeIcon="false" modal header="Order summary" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
+    <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
+      <h5 style="font-weight:700">You want to invest {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</h5>
+      <div class="requirements_container">
+        <div>Pass KYC - Level 2</div>
+        <div><Button class="p-button p-component secondary">Start KYC</Button></div>
+        <div>Accept sale terms</div>
+        <div v-if="isTermsAccepted">
+          <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
+        </div>
+        <div v-else ><Button class="p-button p-component secondary">Accept</Button></div>
+        <div>Provide claimer address</div>
+        <div><Button class="p-button p-component secondary">Provide address</Button></div>
+        <div>Provide source address</div>
+        <div><Button class="p-button p-component secondary">Provide address</Button></div>
+      </div>
+      <div style="display: flex">
+        <Button class="p-button p-component secondary" @click="summaryVisible=false">Cancel order</Button>
+        <Button class="p-button p-component secondary" @click="onConfirm">Confirm order</Button>
+      </div>
+    </div>
+
+  </Dialog>
 </template>
 
 <script lang="ts" setup>
@@ -30,17 +54,30 @@ import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import {computed, onBeforeMount, ref} from "vue";
 import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
 import PayModal from "@/components/buyTokens/PayModal.vue";
+import Dialog from "primevue/dialog";
+import {useTransactionContextStore} from "@/store/transactionContext.store";
+import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
+import {useRouter} from "vue-router";
+import {Currency} from "@/models/currency";
+import {useToast} from "vue-toastification";
+import IconComponent from "@/components/features/IconComponent.vue";
 
 onBeforeMount(() => {
-  usePublicSalesStore().fetchTokenReservations();
-});
 
+  publicSaleStore.fetchTokenReservations();
+});
+const router = useRouter();
+const toast = useToast();
+const publicSaleStore = usePublicSalesStore();
+const transactionContextStore = useTransactionContextStore();
 const publicSalesStore = usePublicSalesStore();
+const summaryVisible = ref(false);
 publicSalesStore.setParts();
 publicSalesStore.setTotal();
 publicSalesStore.setCurrentPrice();
-const currency = computed(() => {
-  return publicSalesStore.getC4eToUSDC;
+
+const isTermsAccepted = computed(() =>{
+  return useUserServiceStore().isTermsAccepted;
 });
 
 const transactions = computed(() => {
@@ -51,7 +88,33 @@ const selectedReservation = ref();
 const onPay = (transaction: TokenReservation) => {
   selectedReservation.value = transaction;
   showModal.value = true;
+};
+const onBuyClick = () => {
+  summaryVisible.value = true;
+};
 
+const onConfirm = () => {
+  if(useUserServiceStore().loginType == LoginTypeEnum.NONE) {
+    router.push({name: 'signIn'});
+  } else {
+    summaryVisible.value = false;
+    publicSaleStore.reserveTokens(Number(transactionContextStore.amountToBuy), onSuccess, onFail);
+  }
+};
+
+const onSuccess = (orderId: number) => {
+  transactionContextStore.setOrderId(orderId);
+  usePublicSalesStore().fetchTokenReservations();
+  toast.success('Tokens reserved successfully');
+  if(transactionContextStore.paymentCurrency != Currency.STABLE) {
+    router.push({name: 'fiatPaymentConfirmation'});
+  } else {
+    router.push({name: 'paymentConfirmation'});
+  }
+};
+
+const onFail = () => {
+  toast.error('An error occured');
 };
 </script>
 
@@ -81,5 +144,32 @@ const onPay = (transaction: TokenReservation) => {
     }
   }
 }
+.requirements_container {
+  padding: 20px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto;
 
+  font-size: 18px;
+  div {
+    height: 60px;
+    display: flex;
+    align-items: center;
+  }
+  div:nth-child(even) {
+    justify-content: center;
+  }
+
+}
+:deep(.p-dropdown .p-dropdown-label) {
+  font-size: 18px;
+  font-weight: bold;
+}
+:deep(.p-dropdown .p-dropdown-trigger){
+  display: none !important;
+}
+::v-deep(.p-button:not(.p-button-icon-only)) {
+  border-radius: 5px !important;
+
+}
 </style>

@@ -6,7 +6,8 @@ interface TransactionContextState {
   paymentCurrency?: Currency,
   amountToPay: number,
   amountToBuy: number,
-  orderId: number
+  orderId: number,
+  exchangeRate: number
 }
 
 
@@ -17,7 +18,8 @@ export const useTransactionContextStore = defineStore({
       paymentCurrency: undefined,
       amountToBuy: 0,
       amountToPay: 0,
-      orderId: 0
+      orderId: 0,
+      exchangeRate: 0
     };
   },
   actions: {
@@ -32,6 +34,9 @@ export const useTransactionContextStore = defineStore({
     },
     setOrderId(id: number) {
       this.orderId = id;
+    },
+    setExchangeRate(rate: number) {
+      this.exchangeRate = rate;
     }
 
   },

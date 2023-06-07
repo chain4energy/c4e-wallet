@@ -117,7 +117,7 @@ const isLogedInInService = computed(() => {
 
 const isTermsAccepted = computed(() =>{
   return useUserServiceStore().isTermsAccepted;
-})
+});
 
 const paired = computed(() => {
   return useUserServiceStore().isPaired;
