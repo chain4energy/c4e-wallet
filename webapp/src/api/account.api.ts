@@ -37,7 +37,7 @@ import { BigDecimal } from "@/models/store/big.decimal";
 import { VoteOption } from "@/models/store/proposal";
 import { BlockchainApiErrorData } from "@/models/blockchain/common";
 import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
-import {MsgInitialClaim} from "../api/cfeclaim/tx"
+import {MsgClaim, MsgInitialClaim} from "../api/cfeclaim/tx"
 
 
 export class AccountApi extends TxBroadcastBaseApi {
@@ -294,15 +294,15 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
-  public async claimAirDropMissions(connection: ConnectionInfo, campaignId: number, missionId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  public async claimAirDropMissions(connection: ConnectionInfo, campaignId: string, missionId: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
 
     const getMessages = (): readonly EncodeObject[] => {
-      const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgClaim';
-      const val = {
+      const typeUrl = '/chain4energy.c4echain.cfeclaim.MsgClaim';
+      const val: MsgClaim = {
         claimer: connection.account,
-        campaignId: campaignId,
-        missionId: missionId,
+        campaignId: Number(campaignId),
+        missionId: Number(missionId),
       };
       return [{ typeUrl: typeUrl, value: val }];
     };

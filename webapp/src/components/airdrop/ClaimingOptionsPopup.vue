@@ -105,7 +105,7 @@ function claimInitialAirdrop(id: string){
   emit('close');
 }
 
-function claimOtherAirdrop(campaignId: number, missionId: number){
+function claimOtherAirdrop(campaignId: string, missionId: string){
   useAirDropStore().claimOtherAirdrop(campaignId, missionId);
   emit('close');
 }

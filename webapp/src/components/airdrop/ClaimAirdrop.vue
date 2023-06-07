@@ -88,7 +88,7 @@
 import {useAirDropStore} from "@/store/airDrop.store";
 import {computed, onMounted, ref, watch} from "vue";
 import {useUserStore} from "@/store/user.store";
-import {CampaignRecord, CampainStatus} from "@/models/airdrop/airdrop";
+import {CampainStatus} from "@/models/airdrop/airdrop";
 import {Campaign, Mission, MissionTypeSt} from "@/models/store/airdrop";
 import PercentageBar from "@/components/commons/PercentageBar.vue";
 import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
@@ -148,7 +148,7 @@ function calculateMissions(campaign : Campaign){
       total += el.weight;
     }
   });
-  return new Coin(Number(total), campaign.amount.denom);
+  return new Coin(BigInt(total), campaign.amount.denom);
 }
 function getAmountOfClaimedMissions(campaign : Campaign){
   let total = 0;
@@ -213,6 +213,8 @@ function getTextForMissionsBtn(mission: Mission, type: MissionType){
     break;
     case MissionType.VOTE: text = 'Vote';
     break;
+    case MissionType.CLAIM: text = 'CLAIM';
+    break;
   }
   if(mission.completed && !mission.claimed){
     text = 'Claim';
@@ -231,6 +233,9 @@ function redirectMission(campaign: Campaign, mission : Mission, type: MissionTyp
   if (mission.mission_type === MissionTypeSt.INITIAL_CLAIM) {
     claimingProcessStarted.value = true;
     currentClaimIsInitial.value = true;
+  }else if(mission.mission_type === MissionTypeSt.CLAIM){
+    claimingProcessStarted.value = true;
+    currentClaimIsInitial.value = false;
   } else {
     currentClaimIsInitial.value = false;
     if (mission.completed && !mission.claimed) {

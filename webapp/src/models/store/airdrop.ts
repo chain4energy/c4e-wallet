@@ -119,6 +119,7 @@ export enum MissionTypeSt {
   INITIAL_CLAIM = 'INITIAL_CLAIM',
   VOTE = 'VOTE',
   DELEGATE = 'DELEGATE',
+  CLAIM = 'CLAIM',
   UNDEFINED = 'UNDEFINED'
 }
 
@@ -131,6 +132,8 @@ export function convertMissionType(missionTypeBc: MissionTypeBc): MissionTypeSt 
         return MissionTypeSt.INITIAL_CLAIM;
       case MissionTypeBc.VOTE:
         return MissionTypeSt.VOTE;
+      case MissionTypeBc.CLAIM:
+        return MissionTypeSt.CLAIM;
     }
   } else {
     console.log("missionTypeBc not defined");

@@ -124,7 +124,7 @@ export const useAirDropStore = defineStore({
         await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, extraAddress);
       }
     },
-    async claimOtherAirdrop(campaignId: number, missionId: number) {
+    async claimOtherAirdrop(campaignId: string, missionId: string) {
       const connectionInfo = useUserStore().connectionInfo;
       await apiFactory.accountApi().claimAirDropMissions(connectionInfo, campaignId, missionId);
     },
