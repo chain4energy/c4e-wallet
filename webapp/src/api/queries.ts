@@ -21,6 +21,7 @@ export default {
     DISTRIBUTOR_PARAMS_URL: '/c4e/distributor/v1beta1/params',
     USER_AIRDROP_ENTRIES_URL: '/c4e/claim/v1beta1/user_entry/{address}',
     CAMPAIGNS_URL: '/c4e/claim/v1beta1/campaigns',
+    CAMPAIGN_URL: '/c4e/claim/v1beta1/campaign/{campaign_id}',
     MISSIONS_URL: '/c4e/claim/v1beta1/missions',
     CAMPAIGN_MISSIONS_URL: '/c4e/claim/v1beta1/missions/{campaign_id}',
     AIRDROP_DISTRIBUTIONS: '/c4e/claim/v1beta1/airdrop_distributions/{campaign_id}', //total

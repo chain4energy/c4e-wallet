@@ -21,7 +21,7 @@ export interface airDrop {
 
 export interface ClaimRecord {
   address: string,
-  claim_address: string,
+  //claim_address: string,
   campaign_records: CampaignRecord[]
 }
 

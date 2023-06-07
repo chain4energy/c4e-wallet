@@ -1,9 +1,9 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Coin } from "@/api/cosmos/base/v1beta1/coin";
-import { Duration } from "@/api/google/protobuf/duration";
-import { Timestamp } from "@/api/google/protobuf/timestamp";
+import { Coin } from "../cosmos/base/v1beta1/coin";
+import { Duration } from "../google/protobuf/duration";
+import { Timestamp } from "../google/protobuf/timestamp";
 import { CampaignType, campaignTypeFromJSON, campaignTypeToJSON } from "./campaign";
 import { ClaimRecordEntry } from "./claim_record";
 import { MissionType, missionTypeFromJSON, missionTypeToJSON } from "./mission";

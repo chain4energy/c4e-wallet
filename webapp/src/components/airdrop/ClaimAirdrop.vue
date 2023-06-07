@@ -63,7 +63,7 @@
             <div v-if="activeCampain === campaignRecord" class="claimAirDrop__missions">
               <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
                 <div class="claimAirDrop__leftCol">
-                  <div class="claimAirDrop__smallTxt">{{`Mission# ${missions.mission_id}`}}</div>
+                  <div class="claimAirDrop__smallTxt">{{`Mission# ${missions.id}`}}</div>
                   <div>{{missions.description}}</div>
                 </div>
                 <div>
@@ -110,19 +110,22 @@ const isLoggedIn = computed(() =>{
   return useUserStore().isLoggedIn;
 });
 const address = computed(() => {
-  return useUserStore().getAccount.address
+  return useUserStore().getAccount.address;
 });
 
 onMounted(() => {
-  useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true).then((res) => {
-    if(!res){
-      useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true)
-    }
-  });
+  if(address.value){
+    useAirDropStore().fetchUsersCampaignData(address.value, true);
+  }
 });
 watch(isLoggedIn, (next, prev)=>{
   if(next){
     dataService.onClaimAirdrop(useUserStore().getAccount.address);
+  }
+});
+watch(address, (next, prev)=>{
+  if(next){
+    useAirDropStore().fetchUsersCampaignData(address.value, true);
   }
 });
 const fairdropPoolUsage = computed(()=>{

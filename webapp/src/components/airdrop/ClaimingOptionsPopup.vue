@@ -34,8 +34,8 @@ import * as bench32 from "bech32";
 
 const props = defineProps<{
   initialClaim: boolean,
-  campaignId: number,
-  missionId: number,
+  campaignId: string,
+  missionId: string,
 }>();
 
 const address= ref(useUserStore().getAccount.address);
@@ -99,8 +99,9 @@ function claim(){
   }
 }
 
-function claimInitialAirdrop(id: number){
-  useAirDropStore().claimInitialAirdrop(id);
+function claimInitialAirdrop(id: string){
+  alert(address.value)
+  useAirDropStore().claimInitialAirdrop(id, address.value);
   emit('close');
 }
 

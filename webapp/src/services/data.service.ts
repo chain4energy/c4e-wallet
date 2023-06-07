@@ -316,7 +316,7 @@ class DataService extends LoggedService {
 
   public onClaimAirdrop(address: string) {
     this.logToConsole(LogLevel.DEBUG, 'onClaimAirdrop');
-    useAirDropStore().fetchCampaigns(address, true);
+    //useAirDropStore().fetchCampaigns(address, true);
   }
 
   public async onProposalUpdateVotes(proposalId: number) {

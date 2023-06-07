@@ -61,7 +61,7 @@ export class AlocationsSt {
 }
 
 export class Campaign{
-  id : number;
+  id : string;
   name : string;
   description : string;
   enabled: boolean;
@@ -75,7 +75,7 @@ export class Campaign{
   missions: Mission[];
 
 
-  constructor(id: number, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, feegrant_amount: string, initial_claim_free_amount:string) {
+  constructor(id: string, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, feegrant_amount: string, initial_claim_free_amount:string, missions: Mission[]) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -87,7 +87,7 @@ export class Campaign{
     this.feegrant_amount = new Coin(BigInt(feegrant_amount), getDefaultDenom());
     this.initial_claim_free_amount = initial_claim_free_amount;
     this.amount = new Coin(BigInt(0), getDefaultDenom());
-    this.missions = new Array<Mission>();
+    this.missions = missions;
   }
 }
 
@@ -97,13 +97,13 @@ export class Mission {
   description : string;
   mission_type : MissionTypeSt;
 
-  weight: number;
+  weight: string;
   completed : boolean;
   claimed : boolean;
   claimed_time : string | undefined
 
 
-  constructor(id: string, name: string, description: string, mission_type: MissionTypeSt, weight: number, completed: boolean, claimed: boolean, claimed_time: string | undefined) {
+  constructor(id: string, name: string, description: string, mission_type: MissionTypeSt, weight: string, completed: boolean, claimed: boolean, claimed_time: string | undefined) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -144,7 +144,7 @@ export function findMission(missions: Mission[], missionId: string): Mission | u
   });
 }
 
-export function findCampaign(campaigns: Campaign[], campaignId: number): Campaign | undefined {
+export function findCampaign(campaigns: Campaign[], campaignId: string): Campaign | undefined {
   return campaigns.find(d => {
     return d.id == campaignId;
   });

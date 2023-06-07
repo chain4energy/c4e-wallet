@@ -207,8 +207,8 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       throw new Error('Cannot get signer');
     }
     const myRegistry = new Registry(defaultRegistryTypes);
-    const MsgInitialClaimTypeUrl = "/chain4energy.c4echain.cfeairdrop.MsgInitialClaim";
-    const MsgClaimTypeUrl = "/chain4energy.c4echain.cfeairdrop.MsgClaim";
+    const MsgInitialClaimTypeUrl = "/chain4energy.c4echain.cfeclaim.MsgInitialClaim";
+    const MsgClaimTypeUrl = "/chain4energy.c4echain.cfeclaim.MsgClaim";
     //const RepeatedContinuousVestingAccount = "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount";
     myRegistry.register(MsgInitialClaimTypeUrl, MsgInitialClaim);
     myRegistry.register(MsgClaimTypeUrl, MsgClaim);
