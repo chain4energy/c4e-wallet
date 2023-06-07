@@ -81,33 +81,7 @@ export const useUserServiceStore = defineStore({
          onFail();
        }
     },
-    async provideTxPaymentProof(txPaymentProofRequest: TokenPaymentProofRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().provideTxPaymentProof( txPaymentProofRequest, lockscreen).then(res => {
-        if(res.isSuccess()) {
-          onSuccess();
-        } else {
-          onFail();
-        }
-        console.log(res)
-      });
-    },
-    async payByMetamask(payInfo: MetamaskPayInfo, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      this.sendMetamaskTransaction(payInfo.amount, payInfo.blockchainAddress, payInfo.coinDecimals).then(res => {
-        if (res.isSuccess() && res.data){
-          this.provideTxPaymentProof({
-            blockchainName: payInfo.blockchainName, coinIdentifier: payInfo.blockchainAddress, orderID: payInfo.orderId, txHashes: [res.data]
-          }, onSuccess, onFail, lockscreen);
-        } else {
-          onFail();
-        }
-      });
-    },
-    async sendMetamaskTransaction(amount: string, blockchainAddress: string, coinDecimals: number) {
-      return await apiFactory.accountApi().sendTransaction( amount, blockchainAddress, coinDecimals, '0xf9AAA5C4868Ef0D1613E350A399C802566af7142').then(res => {
-        console.log(res)
-        return res;
-      });
-    },
+
     async authMetamaskWalletInit(initWalletAuthRequest: InitWalletAuthRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       const initWalletAuthResponse = await apiFactory.publicSaleServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
       if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {

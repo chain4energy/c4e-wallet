@@ -4,46 +4,75 @@
       <h2>Confirm your payment</h2>
     </div>
     <div class="confirm_container__body">
-      <span>Your order no. {{transactionContextStore.orderId}} has been placed successfully</span><br />
-      <span>Please send <span style="font-weight: bold">{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</span> to the address below or play by Metamask</span>
-      <Button class="secondary" @click="paymentModalVisible = true">Pay by Metamask</Button>
-      <div class="address">
-        <div style="margin-bottom:20px">{{address}} <Icon class="address__copy" name="Copy" /> <br /></div>
-
-        <QrcodeVue :value="address" size="200" :render-as="'svg'"></QrcodeVue>
+      <span>Your order no. {{transactionContextStore.orderId}} has been placed successfully.</span><br />
+      <span>Your order have to be paid in 24 hours, after this time it will be automatically cancelled.</span> <br />
+      <span>Please send <span style="font-weight: bold">{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</span> to the address below or play by Metamask</span> <br />
+      <div style="text-align: center; margin:20px">
+        <Button class="secondary" style="width: 50%" @click="paymentModalVisible = true">Pay {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}} by Metamask</Button> <br />
+        <span>or</span><br />
+        <span class="underline">Provide TxHash manually</span>
       </div>
-      <span>The payment must be done from Metamask address (source address):</span>
-      <div class="address">
-        {{address}}
-      </div>
-      <div>
-        <span>After completing the transaction, please enter txhash below.</span>
-        <Form @submit="onConfirmPayment" :validation-schema="schema" v-slot="{errors}" >
-          <div style="padding: 10px 30px;">
-            <div >
-              <div class="field col-12">
-                <Field style="width:100%" v-model="txHash" placeholder="TxHash" name="txHash" type="text" class="form-control"
-                       :class="{'is-invalid': errors.txHash}"></Field>
-                <div class="invalid-feedback">{{ errors.txHash ? $t(errors.txHash) : '' }}</div>
+      <Accordion :activeIndex="0">
+        <AccordionTab header="Provide TxHash manually">
+          <div style="padding: 20px; color: black">
+            <div style="display: flex">
+              <div style="margin-right: 20px;">
+                <span>Please send {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}} to the address below:</span>
+                <div class="address" style="margin-bottom:20px">{{address}} <Icon class="address__copy" name="Copy" /> <br /></div>
+                <span>The payment must be done from metamask address (source address)</span>
+                <div class="address">
+                  {{address}}
+                </div>
               </div>
-              <div class="field col-12">
-                <Field v-model="selectedBlockchainNetworkId" required name="selectedBlockchainNetwork" as="select" class="form-control"
-                       :class="{'is-invalid': errors.selectedBlockchainNetwork}" >
-                  <option v-for="network in blockchainNetworkList" :key="network.id" :value="network.chainId">{{network.chainName}}</option>
-                </Field>
-                <span>Network</span>
-                <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
+              <div style="margin-left: auto; margin-right: 20px">
+                <div style="margin-bottom: 10px">Recipient's address</div>
+                <QrcodeVue :value="address" size="200" :render-as="'svg'"></QrcodeVue>
+              </div>
+            </div>
+            <div>
+              <div>
+                After completing the transaction, please enter the txHash below
+              </div>
+              <div>
+                <Form @submit="onConfirmPayment" :validation-schema="schema" v-slot="{errors}" >
+                  <div style="padding: 10px 30px;">
+                    <div >
+                      <div class="field col-12">
+                        <Field style="width:100%" v-model="txHash" placeholder="TxHash" name="txHash" type="text" class="form-control"
+                               :class="{'is-invalid': errors.txHash}"></Field>
+                        <div class="invalid-feedback">{{ errors.txHash ? $t(errors.txHash) : '' }}</div>
+                      </div>
+                      <div class="field col-12">
+                        <Field v-model="selectedBlockchainNetworkId" required name="selectedBlockchainNetwork" as="select" class="form-control"
+                               :class="{'is-invalid': errors.selectedBlockchainNetwork}" >
+                          <option v-for="network in blockchainNetworkList" :key="network.id" :value="network.chainId">{{network.chainName}}</option>
+                        </Field>
+                        <span>Network</span>
+                        <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
+                      </div>
+                      <div class="field col-12">
+                        <Field v-model="selectedTokenIdentifier" required name="selectedTokenIdentifier" as="select" class="form-control"
+                               :class="{'is-invalid': errors.selectedTokenIdentifier}">
+                          <option v-for="token in selectedBlockchainTokens" :key="token" :value="token.coinIdentifier">{{token.name}}</option>
+                        </Field>
+                        <span>Token</span>
+                        <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex justify-content-center">
+
+                    <Button class="p-button p-component secondary"  type="submit" >CONFIRM PAYMENT</Button>
+                  </div>
+
+                </Form>
               </div>
             </div>
           </div>
+        </AccordionTab>
+      </Accordion>
 
-          <div class="flex justify-content-center">
-
-            <Button class="p-button p-component secondary"  type="submit" >CONFIRM PAYMENT</Button>
-          </div>
-
-        </Form>
-      </div>
     </div>
 
     <Dialog v-model:visible="paymentModalVisible" modal header="Order summary" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
@@ -95,7 +124,6 @@
 <script setup lang="ts">
 
 import {useTransactionContextStore} from "@/store/transactionContext.store";
-import Dropdown from "primevue/dropdown";
 import {Currency} from "../../models/currency";
 import {computed, onBeforeMount, ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
@@ -105,13 +133,12 @@ import {ethers} from "ethers";
 import {useRouter} from "vue-router";
 import Icon from "@/components/features/IconComponent.vue";
 import QrcodeVue from 'qrcode.vue'
-import Password from "primevue/password";
 import {Field, Form} from "vee-validate";
-import Checkbox from "primevue/checkbox";
 import {object} from "yup";
 import * as Yup from "yup";
 import Dialog from "primevue/dialog";
-import {BlockchainInfo} from "@/models/saleServiceCommons";
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
 
 onBeforeMount(async () => {
 
@@ -169,7 +196,7 @@ const onFail = () => {
 
 const onStartMetamaskTransaction = () => {
   if(selectedBlockchain.value){
-    useUserServiceStore().payByMetamask({
+    usePublicSalesStore().payByMetamask({
       amount: transactionContextStore.amountToPay.toString(),
       blockchainName: selectedBlockchain.value.chainName,
       orderId: transactionContextStore.orderId,
@@ -185,7 +212,7 @@ const onSuccessStartMetamaskTransaction = () => {
 };
 const onPay = (orderId: number) => {
   if(isCrypto()) {
-    useUserServiceStore().sendMetamaskTransaction(transactionContextStore.amountToPay.toString(),selectedTokenIdentifier.value, 6);
+    usePublicSalesStore().sendMetamaskTransaction(transactionContextStore.amountToPay.toString(),selectedTokenIdentifier.value, 6);
   } else if(transactionContextStore.paymentCurrency){
     usePublicSalesStore().initPaymentSession({orderId: orderId, offeredCurrencyCode: transactionContextStore.paymentCurrency, offeredAmount: Number((Math.round(transactionContextStore.amountToPay * 100) / 100).toFixed(2))})
       .then(transactionId => {
@@ -225,7 +252,17 @@ const isCrypto = () => {
 };
 
 const onConfirmPayment = () => {
-  console.log('confirm');
+  if(selectedBlockchain.value && txHash.value) {
+    usePublicSalesStore().provideTxPaymentProof({
+      blockchainName: selectedBlockchain.value.chainName,
+      orderID: transactionContextStore.orderId,
+      coinIdentifier: selectedTokenIdentifier.value,
+      txHashes: [txHash.value]
+    }, onSuccessConfirmPayment, onFail);
+  }
+};
+const onSuccessConfirmPayment = () => {
+  toast.success('Payment confimed');
 };
 </script>
 
