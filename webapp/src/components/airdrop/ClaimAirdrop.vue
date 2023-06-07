@@ -148,7 +148,7 @@ function calculateMissions(campaign : Campaign){
       total += el.weight;
     }
   });
-  return new Coin(BigInt(total), campaign.amount.denom);
+  return new Coin(Number(total), campaign.amount.denom);
 }
 function getAmountOfClaimedMissions(campaign : Campaign){
   let total = 0;
