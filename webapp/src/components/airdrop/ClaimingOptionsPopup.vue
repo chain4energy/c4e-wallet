@@ -100,7 +100,6 @@ function claim(){
 }
 
 function claimInitialAirdrop(id: string){
-  alert(address.value)
   useAirDropStore().claimInitialAirdrop(id, address.value);
   emit('close');
 }

@@ -73,9 +73,10 @@ export class Campaign{
   initial_claim_free_amount: string;
   amount: Coin;
   missions: Mission[];
+  totalDistribution: Coin
 
 
-  constructor(id: string, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, feegrant_amount: string, initial_claim_free_amount:string, missions: Mission[]) {
+  constructor(id: string, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, feegrant_amount: string, initial_claim_free_amount:string, missions: Mission[], amount: string, totalDistribution: string) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -86,8 +87,9 @@ export class Campaign{
     this.vesting_period = vesting_period;
     this.feegrant_amount = new Coin(BigInt(feegrant_amount), getDefaultDenom());
     this.initial_claim_free_amount = initial_claim_free_amount;
-    this.amount = new Coin(BigInt(0), getDefaultDenom());
+    this.amount = new Coin(BigInt(amount), getDefaultDenom());
     this.missions = missions;
+    this.totalDistribution = new Coin(BigInt(totalDistribution), getDefaultDenom());
   }
 }
 

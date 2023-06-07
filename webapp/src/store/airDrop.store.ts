@@ -286,7 +286,6 @@ export const useAirDropStore = defineStore({
         getPercentage(distributions.amount, claimsLeft.amount));
     },
     async fetchUsersCampaignData(address: string, lockscreen = true){
-      this.campaigns = Array<Campaign>();
       await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then((res) => {
         if(res.isSuccess() && res.data){
           const campaignsList = res.data.user_entry.claim_records;
@@ -297,6 +296,7 @@ export const useAirDropStore = defineStore({
       });
     },
     async fetchCampaign(id: string, campaignData: AirdropEntry, lockscreen = true){
+      this.campaigns = Array<Campaign>();
       await apiFactory.airDropApi().fetchCampaign(id, lockscreen).then(async (res) => {
         if (res.isSuccess() && res.data) {
           const campaign = res.data.campaign;
@@ -311,7 +311,7 @@ export const useAirDropStore = defineStore({
               return mission == el.id;
             });
             if(el.missionType !== MissionType.INITIAL_CLAIM){
-              const weight = Number(campaignData.amount[0].amount) * ((Number(el.weight)/100));
+              const weight = Number(campaignData.amount[0].amount) * (Number(el.weight));
               const mission = new Mission(
                 el.id,
                 el.name,
@@ -354,10 +354,12 @@ export const useAirDropStore = defineStore({
               campaign.feegrant_amount,
               campaign.initial_claim_free_amount,
               missionsList,
+              campaignData.amount[0].amount,
+              campaign.campaign_total_amount[0].amount
             ));
         }
       });
-      await this.fetchFairdropPoolUsage(this.campaigns.map((c: Campaign) => c.id), lockscreen);
+      // await this.fetchFairdropPoolUsage(this.campaigns.map((c: Campaign) => c.id), lockscreen);
     },
     // async fetchCampaigns(address: string, lockscreen = true){
     //   //await this.getUsersCampaignData(address);

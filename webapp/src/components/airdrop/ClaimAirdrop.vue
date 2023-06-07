@@ -41,9 +41,9 @@
           <div class="claimAirDrop__data">
             <ClaimInfo header="Claimed">
               <div class="claimAirDrop__data-text">
-                <CoinAmount :amount="calculateMissions(campaignRecord)" :show-denom="false" :precision="2"></CoinAmount>
+                <CoinAmount :amount="calculateMissions(campaignRecord)" :show-denom="true" :precision="2"></CoinAmount>
                 /
-                <CoinAmount :amount="campaignRecord.feegrant_amount" :show-denom="true" :precision="2"></CoinAmount>
+                <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
               </div>
             </ClaimInfo>
             <ClaimInfo header="Mission Complitted">
@@ -54,7 +54,7 @@
             </ClaimInfo>
             <ClaimInfo header="Total Distribution">
               <div class="claimAirDrop__data-text">
-                <CoinAmount :amount="campaignRecord.feegrant_amount" :show-denom="true" :precision="2"></CoinAmount>
+                <CoinAmount :amount="campaignRecord.totalDistribution" :show-denom="true" :precision="2"></CoinAmount>
               </div>
             </ClaimInfo>
           </div>
@@ -113,21 +113,21 @@ const address = computed(() => {
   return useUserStore().getAccount.address;
 });
 
-onMounted(() => {
-  if(address.value){
-    useAirDropStore().fetchUsersCampaignData(address.value, true);
-  }
-});
+// onMounted(() => {
+//   if(address.value){
+//     useAirDropStore().fetchUsersCampaignData(address.value, true);
+//   }
+// });
 watch(isLoggedIn, (next, prev)=>{
   if(next){
     dataService.onClaimAirdrop(useUserStore().getAccount.address);
   }
 });
-watch(address, (next, prev)=>{
-  if(next){
-    useAirDropStore().fetchUsersCampaignData(address.value, true);
-  }
-});
+// watch(address, (next, prev)=>{
+//   if(next){
+//     useAirDropStore().fetchUsersCampaignData(address.value, true);
+//   }
+// });
 const fairdropPoolUsage = computed(()=>{
   return useAirDropStore().getFairdropPoolUsage;
 });
@@ -145,10 +145,11 @@ function calculateMissions(campaign : Campaign){
   let total = 0;
   campaign.missions.forEach((el) => {
     if(el.claimed){
-      total += el.weight;
+      total += Number(el.weight);
     }
   });
-  return new Coin(Number(total), campaign.amount.denom);
+  // eslint-disable-next-line no-undef
+  return total
 }
 function getAmountOfClaimedMissions(campaign : Campaign){
   let total = 0;
