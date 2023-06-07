@@ -83,29 +83,49 @@
           <Button
             :disabled="!isLoggedIn || !isLogedInInService || paired"
             class="p-button p-component secondary accountInfo__btn"
-            @click="submit">Provide address</Button>
+            @click="provideClaimerAddress">Provide address</Button>
+        </div>
+      </div>
+      <hr class="accountInfo__line"/>
+      <div class="accountInfo__body">
+        <div class="accountInfo__head">
+          <p class="accountInfo__headMainTxt">Source address</p>
+          <p v-if="address" class="accountInfo__headTxt">{{ address }}</p>
+          <p v-else class="accountInfo__headTxt">No address</p>
+        </div>
+        <div>
+          <Button
+            :disabled="!isLoggedIn || !isLogedInInService || paired"
+            class="p-button p-component secondary accountInfo__btn"
+            @click="provideSourceAddress">Provide address</Button>
         </div>
       </div>
     </div>
 
   </div>
+  <ProvideAddresInfoModal v-if="showAddressInfoModal" :address-type="showAddressInfoModalAddressType" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
 </template>
 
 <script setup lang="ts">
 
-import { computed, onMounted, ref } from "vue";
-import { useUserStore } from "@/store/user.store";
-import { LoginTypeEnum, useUserServiceStore } from "@/store/userService.store";
-import { useToast } from "vue-toastification";
-
-const emit = defineEmits(['openModal', 'openApproval']);
+import {computed, onMounted, ref} from "vue";
+import {useUserStore} from "@/store/user.store";
+import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
+import ProvideAddresInfoModal from "@/components/buyTokens/modals/ProvideAddresInfoModal.vue";
+import {AddressType} from "@/components/buyTokens/modals/AddressType";
+import {useToast} from "vue-toastification";
+import {SignParingAddressResult} from "@/models/user/emailPairing";
+import {logger} from "ethers";
 
+const emit = defineEmits(['openModal', 'openApproval']);
 
 const props = defineProps<{
   accordion: boolean
 }>();
+
+const toast = useToast();
 
 const isLoggedIn = computed(() =>{
   return useUserStore().isLoggedIn;
@@ -122,6 +142,11 @@ const isTermsAccepted = computed(() =>{
 const paired = computed(() => {
   return useUserServiceStore().isPaired;
 })
+
+const usersWallet = computed(() => {
+  return useUserStore().getAccount.address;
+});
+
 const router = useRouter();
 const showClosedTab = ref(true);
 
@@ -132,8 +157,45 @@ onMounted(() => {
   }
 });
 
-function submit(){
-  emit('openModal');
+const showAddressInfoModal = ref(false);
+const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
+
+function provideClaimerAddress(){
+  showAddressInfoModalAddressType.value = AddressType.KEPLR;
+  showAddressInfoModal.value = true;
+}
+
+function closeProvideAddressModalClose(){
+  showAddressInfoModal.value = false;
+}
+
+function provideSourceAddress(){
+  showAddressInfoModalAddressType.value = AddressType.METAMASK;
+  showAddressInfoModal.value = true;
+}
+
+function addressConfirmed(){
+  showAddressInfoModal.value = false;
+  if(showAddressInfoModalAddressType.value == AddressType.KEPLR) {
+    if (usersWallet.value) {
+      // emit('submit');
+      useUserServiceStore().provideKeplrAddress(
+        {
+          claimedAddress: usersWallet.value,
+        }, onSuccessAddressPairing, onFail, true);
+    } else {
+      toast.error('You have to be logged in with Email');
+    }
+  }
+}
+
+function onSuccessAddressPairing(result: SignParingAddressResult){
+  console.log("!!!" + result);
+  router.push({name:'provideVerificationCode'});
+}
+
+function onFail(){
+  toast.error("error");
 }
 
 const open = ref(false);

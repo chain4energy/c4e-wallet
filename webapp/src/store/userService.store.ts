@@ -9,7 +9,7 @@ import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
 import axios from "axios";
-import { EmailPairingRequest, EmailPairingRes } from "@/models/user/emailPairing";
+import {EmailPairingRequest, EmailPairingRes, SignParingAddressResult} from "@/models/user/emailPairing";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import {KycProgressStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum, KycTier} from "@/models/user/kyc";
 import { TxBroadcastError } from "@/api/tx.broadcast.base.api";
@@ -181,34 +181,39 @@ export const useUserServiceStore = defineStore({
         //TODO: toast - log in error
       }
     },
-    async provideEmailAddress(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async provideKeplrAddress(emailAccount: EmailPairingRequest, onSuccess: ((response: SignParingAddressResult) => void), onFail: (() => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().initPairEmailKeplr(emailAccount, lockscreen).then(async (responseData) => {
         if (responseData.isSuccess() && responseData.data) {
-          await this.signPairingEmail(responseData.data);
-          onSuccess();
+          await this.signPairingEmailKeplr(responseData.data).then(resp=>{
+            // console.log('!!!!');
+            // console.log(resp);
+            if(responseData.data && resp.data) {
+              onSuccess({processID: responseData.data?.processID, signedData: resp.data});
+            }
+          });
         } else {
           onFail();
         }
       });
     },
-    async signPairingEmail(responseData: EmailPairingRes){
+    async signPairingEmailKeplr(responseData: EmailPairingRes){
      return await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
        if(signedDataResponse.isSuccess() && signedDataResponse.data){
-         await this.approveSignedDataEmail(signedDataResponse.data, responseData.processID);
+         await this.approveSignedDataParingEmailKeplr(signedDataResponse.data, responseData.processID);
          return signedDataResponse;
-       }else {
-         return signedDataResponse.error;
+       } else {
+         return signedDataResponse;
        }
       });
     },
-    async approveSignedDataEmail(signedDataResponse: string, processId: string, lockscreen = true) {
+    async approveSignedDataParingEmailKeplr(signedDataResponse: string, processId: string, lockscreen = true) {
       await apiFactory.publicSaleServiceApi().confirmEmailPairingKeplr({processID: processId, signedData:signedDataResponse}, lockscreen).then(res =>{
         this.verificationNeeded = res.isSuccess();
         console.log(res);
       });
     },
 
-    async verifyEmail(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async verifyParingEmailKeplr(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().verifyPairingEmailKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, true).then(response => {
         if(response.isSuccess()){
           this.setIsLoggedIn();

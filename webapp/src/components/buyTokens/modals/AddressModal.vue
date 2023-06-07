@@ -79,7 +79,7 @@ function submit(){
 
 function verify(){
   if(processID.value != '' && pairingCode.value != '' && signedData.value != ''){
-    useUserServiceStore().verifyEmail( processID.value, pairingCode.value, signedData.value, onSuccessPairing, onFail, true).then((res)=>{
+    useUserServiceStore().verifyParingEmailKeplr( processID.value, pairingCode.value, signedData.value, onSuccessPairing, onFail, true).then((res)=>{
       emit('submit');
     });
   } else {
@@ -90,7 +90,7 @@ function verify(){
 function submitEmail(){
   if(usersWallet.value){
     // emit('submit');
-    useUserServiceStore().provideEmailAddress(
+    useUserServiceStore().provideKeplrAddress(
       { claimedAddress: usersWallet.value,
       }, onSuccessPairing, onFail, true);
   }else {

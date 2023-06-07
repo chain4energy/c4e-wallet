@@ -25,3 +25,8 @@ export interface MetamaskKeplrPairingReq{
   metamaskSignedData: string,
   processID: string,
 }
+
+export interface SignParingAddressResult{
+  processID: string,
+  signedData: string
+}

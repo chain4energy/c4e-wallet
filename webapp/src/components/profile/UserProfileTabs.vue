@@ -1,5 +1,5 @@
 <template>
-  <AddressModal style="position: fixed; z-index: 99999" @close="hideAddAddress" @submit="submitEmail" v-if="showAddressAdd" />
+<!--  <AddressModal style="position: fixed; z-index: 99999" @close="hideAddAddress" @submit="submitEmail" v-if="showAddressAdd" />-->
   <ApprovalModal @close="hideApprovalModal" @submit="console.log(1)" v-if="showApprovalModal"/>
   <div class="userProfile">
     <div class="userProfile__holder">
@@ -7,12 +7,6 @@
         <TabPanel class="userProfile__tabHeader">
           <template #header>Account info</template>
           <AccountInfo :accordion="false" @open-modal="showAddressAddModal" @open-approval="showApprovalModalFunc"/>
-<!--          <div class="userProfile__holder">-->
-<!--            <InvestmentCalculator />-->
-<!--          </div>-->
-<!--          <div v-for="items in transactions" :key="items" class="userProfile__holder">-->
-<!--            <AllocationInfo :transaction="items" @pay="onPay(items)"/>-->
-<!--          </div>-->
         </TabPanel>
         <TabPanel>
           <template #header>Transactions</template>
