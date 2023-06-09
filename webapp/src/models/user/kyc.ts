@@ -3,7 +3,8 @@ export interface InitSessionResponse {
 }
 
 export interface KycStatusResponse {
-  kycLevel: number
+  kycLevel: number,
+  kycServiceState: Map<KycStepName, KycProgressStatus>,
 }
 
 export enum KycProgressStatus {
@@ -15,7 +16,8 @@ export enum KycProgressStatus {
 export enum KycStepName {
   LIVENESS='LIVENESS',
   IDENTITY='IDENTITY',
-  PHONE='PHONE'
+  PHONE='PHONE',
+  RESIDENCY="RESIDENCY"
 }
 
 export interface KycTier {

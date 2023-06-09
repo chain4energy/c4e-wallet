@@ -22,8 +22,9 @@ import {useUserServiceStore} from "@/store/userService.store";
 const router = useRouter();
 const route = useRoute();
 onMounted(() =>{
-  useUserServiceStore().getAccount(()=>{console.log(1)}, ()=>{console.log(2)})
-})
+  useUserServiceStore().getAccount(()=>{console.log(1)}, ()=>{console.log(2)});
+  useUserServiceStore().getKycStatus();
+});
 const onBackClick = () => {
     switch (route.name){
       case 'accountType': {

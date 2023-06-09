@@ -6,7 +6,7 @@
     <div class="confirm_container__body">
       <span>Your order no. {{transactionContextStore.orderId}} has been placed successfully.</span><br />
       <span>Your order have to be paid in 24 hours, after this time it will be automatically cancelled.</span> <br />
-      <span>Please send <span style="font-weight: bold">{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</span> to the address below or play by Metamask</span> <br />
+      <span>Please send <span style="font-weight: bold">{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</span> to the address below or pay by Metamask</span> <br />
       <div style="text-align: center; margin:20px">
         <Button class="secondary" style="width: 50%" @click="paymentModalVisible = true">Pay {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}} by Metamask</Button> <br />
         <span>or</span><br />

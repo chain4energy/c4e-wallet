@@ -1,3 +1,6 @@
+import {LoginTypeEnum} from "@/store/userService.store";
+import {KycProgressStatus, KycStepName} from "@/models/user/kyc";
+
 export interface PasswordAuthenticateRequest {
   login: string,
   password: string
@@ -13,8 +16,15 @@ export interface CreateAccountRequest {
 }
 
 export interface AccountRequest{
-  "accountType": "string",
-  "kycLevel": "string",
-  "login": "string",
-  "terms": true
+  accountType: LoginTypeEnum,
+  claimAddress: string,
+  ethereumAddress: string,
+  kycInfo: KycInfo
+  login: string,
+  terms: boolean,
+}
+
+export interface KycInfo {
+  kycLevel: number,
+  kycServiceState: Map<KycStepName, KycProgressStatus>,
 }

@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import {Currency} from "@/models/currency";
+import {KycTierEnum} from "@/models/user/kyc";
 
 
 interface TransactionContextState {
@@ -49,6 +50,16 @@ export const useTransactionContextStore = defineStore({
     },
     getAmountToBuy(): number {
       return this.amountToBuy;
+    },
+    getRequiredKycLevel(): KycTierEnum {
+      if(this.amountToBuy > 10000) {
+        return KycTierEnum.TIER_3;
+      } else if(this.amountToBuy > 1000) {
+        return KycTierEnum.TIER_2;
+      } else if(this.amountToBuy > 100) {
+        return KycTierEnum.TIER_1;
+      }
+      return KycTierEnum.TIER_0;
     }
   },
   persist: {

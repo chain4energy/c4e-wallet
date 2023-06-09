@@ -6,7 +6,7 @@
           <div class="accountInfo__headMainTxt">Your account</div>
           <div class="accountInfo__headTxt" style="margin-left: 5px">Type: {{getLoginType()}}</div>
         </div>
-        <div class="accountInfo__headTxt">Email: somebody@test.com</div>
+        <div class="accountInfo__headTxt">Email: {{useUserServiceStore().userEmail}}</div>
       </div>
       <div class="accountInfo__closedItem">
         <div class="accountInfo__closedHeader">
@@ -38,7 +38,7 @@
         <div class="accountInfo__head">
           <p class="accountInfo__headMainTxt">Your account</p>
           <p class="accountInfo__headTxt">Type: {{getLoginType()}}</p>
-          <p class="accountInfo__headTxt">Email: somebody@test.com</p>
+          <p class="accountInfo__headTxt">Email: {{useUserServiceStore().userEmail}}</p>
         </div>
         <div v-if="showClosedTab" @click="open = !open" class="accountInfo__closedItem accountInfo__arrow accountInfo__arrow-rotate" >
           <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
