@@ -7,7 +7,8 @@ export enum AccountType {
   BaseAccount,
   ContinuousVestingAccount,
   Unknown,
-  Nonexistent
+  Nonexistent,
+  RepeatedContinuousVestingAccount
 }
 
 export class Account {

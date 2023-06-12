@@ -41,7 +41,7 @@
           <div class="claimAirDrop__data">
             <ClaimInfo header="Claimed">
               <div class="claimAirDrop__data-text">
-                <CoinAmount :amount="calculateMissions(campaignRecord)" :show-denom="false" :precision="2"></CoinAmount>
+                <CoinAmount :amount="calculateMissions(campaignRecord)" :show-denom="true" :precision="2"></CoinAmount>
                 /
                 <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
               </div>
@@ -54,7 +54,7 @@
             </ClaimInfo>
             <ClaimInfo header="Total Distribution">
               <div class="claimAirDrop__data-text">
-                <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
+                <CoinAmount :amount="campaignRecord.totalDistribution" :show-denom="true" :precision="2"></CoinAmount>
               </div>
             </ClaimInfo>
           </div>
@@ -63,7 +63,7 @@
             <div v-if="activeCampain === campaignRecord" class="claimAirDrop__missions">
               <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
                 <div class="claimAirDrop__leftCol">
-                  <div class="claimAirDrop__smallTxt">{{`Mission# ${missions.mission_id}`}}</div>
+                  <div class="claimAirDrop__smallTxt">{{`Mission# ${missions.id}`}}</div>
                   <div>{{missions.description}}</div>
                 </div>
                 <div>
@@ -88,7 +88,7 @@
 import {useAirDropStore} from "@/store/airDrop.store";
 import {computed, onMounted, ref, watch} from "vue";
 import {useUserStore} from "@/store/user.store";
-import {CampaignRecord, CampainStatus} from "@/models/airdrop/airdrop";
+import {CampainStatus} from "@/models/airdrop/airdrop";
 import {Campaign, Mission, MissionTypeSt} from "@/models/store/airdrop";
 import PercentageBar from "@/components/commons/PercentageBar.vue";
 import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
@@ -110,21 +110,24 @@ const isLoggedIn = computed(() =>{
   return useUserStore().isLoggedIn;
 });
 const address = computed(() => {
-  return useUserStore().getAccount.address
+  return useUserStore().getAccount.address;
 });
 
 // onMounted(() => {
-//   useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true).then((res) => {
-//     if(!res){
-//       useAirDropStore().fetchCampaigns(useUserStore().getAccount.address, true)
-//     }
-//   });
+//   if(address.value){
+//     useAirDropStore().fetchUsersCampaignData(address.value, true);
+//   }
 // });
 watch(isLoggedIn, (next, prev)=>{
   if(next){
     dataService.onClaimAirdrop(useUserStore().getAccount.address);
   }
 });
+// watch(address, (next, prev)=>{
+//   if(next){
+//     useAirDropStore().fetchUsersCampaignData(address.value, true);
+//   }
+// });
 const fairdropPoolUsage = computed(()=>{
   return useAirDropStore().getFairdropPoolUsage;
 });
@@ -142,10 +145,11 @@ function calculateMissions(campaign : Campaign){
   let total = 0;
   campaign.missions.forEach((el) => {
     if(el.claimed){
-      total += el.weight;
+      total += Number(el.weight);
     }
   });
-  return new Coin(total, campaign.amount.denom);
+  // eslint-disable-next-line no-undef
+  return total
 }
 function getAmountOfClaimedMissions(campaign : Campaign){
   let total = 0;
@@ -160,10 +164,6 @@ function getAmountOfClaimedMissions(campaign : Campaign){
 const airdropClaimRecord = computed(() => {
   return useAirDropStore().getCampaigns;
 });
-
-function getClaimedWeight(campain: CampaignRecord){
-  return 2000000;
-}
 
 function checkCampaignStatus(startTime: Date, endTime: Date) {
   if(new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime()> new Date(Date.now()).getTime()){
@@ -214,6 +214,8 @@ function getTextForMissionsBtn(mission: Mission, type: MissionType){
     break;
     case MissionType.VOTE: text = 'Vote';
     break;
+    case MissionType.CLAIM: text = 'CLAIM';
+    break;
   }
   if(mission.completed && !mission.claimed){
     text = 'Claim';
@@ -225,36 +227,31 @@ const selectedMissionId = ref();
 const selectedCampaignId = ref();
 const currentClaimIsInitial = ref();
 
-function redirectMission(campaign: Campaign, mission : Mission, type: MissionType){
+function redirectMission(campaign: Campaign, mission : Mission, type: MissionType) {
   selectedCampaignId.value = campaign.id;
   selectedMissionId.value = mission.id;
 
-  if(mission.mission_type === MissionTypeSt.INITIAL_CLAIM){
-    claimingProcessStarted.value=true;
+  if (mission.mission_type === MissionTypeSt.INITIAL_CLAIM) {
+    claimingProcessStarted.value = true;
     currentClaimIsInitial.value = true;
-    claimInitialAirdrop(Number(campaign.id));
+  }else if(mission.mission_type === MissionTypeSt.CLAIM){
+    claimingProcessStarted.value = true;
+    currentClaimIsInitial.value = false;
   } else {
     currentClaimIsInitial.value = false;
-    if(mission.completed && !mission.claimed){
-      claimingProcessStarted.value=true;
-      //claimOtherAirdrop(campaign.id, mission.id)
+    if (mission.completed && !mission.claimed) {
+      claimingProcessStarted.value = true;
     } else {
-      switch (type){
-        case MissionType.DELEGATE: router.push('staking');
+      switch (type) {
+        case MissionType.DELEGATE:
+          router.push('staking');
           break;
-        case MissionType.VOTE: router.push('governance');
+        case MissionType.VOTE:
+          router.push('governance');
           break;
       }
     }
   }
-}
-
-function claimInitialAirdrop(id: number){
-  useAirDropStore().claimInitialAirdrop(id);
-}
-
-function claimOtherAirdrop(campaignId: number, missionId: number){
-  useAirDropStore().claimOtherAirdrop(campaignId, missionId);
 }
 
 

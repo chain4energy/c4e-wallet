@@ -26,6 +26,17 @@ export interface ContinuousVestingAccount {
   start_time: string
 }
 
+export interface RepeatedContinuousVestingAccount {
+  base_vesting_account: {
+    base_account: BaseAccount,
+    original_vesting?: Coin[],
+    delegated_free: [],
+    delegated_vesting: Coin[],
+    end_time: string
+  },
+  start_time: string
+}
+
 export interface AccountResponse {
   account: Account
 }
