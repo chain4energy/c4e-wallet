@@ -16,10 +16,15 @@
 <script lang="ts" setup>
 
 import {useRoute, useRouter} from "vue-router";
+import {onMounted} from "vue";
+import {useUserServiceStore} from "@/store/userService.store";
 
 const router = useRouter();
 const route = useRoute();
-
+onMounted(() =>{
+  useUserServiceStore().getAccount(()=>{console.log(1)}, ()=>{console.log(2)});
+  useUserServiceStore().getKycStatus();
+});
 const onBackClick = () => {
     switch (route.name){
       case 'accountType': {

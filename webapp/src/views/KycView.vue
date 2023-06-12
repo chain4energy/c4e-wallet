@@ -21,42 +21,45 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import {computed, onBeforeMount, ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import KycTier from "@/components/kyc/KycTier.vue";
 import {KycStepName, KycTierEnum} from "@/models/user/kyc";
 import Dialog from "primevue/dialog";
 import SynapsVerify from '@synaps-io/vue3-verify';
 
+onBeforeMount(() => {
+  useUserServiceStore().getKycStatus().then(() => {
+    tierInfoList.value = [
+      {
+      header: 'Tier 1',
+      description: 'Lorem ipsum lorem ipsum lorem lorem',
+      steps: useUserServiceStore().getKycTierSteps(KycTierEnum.TIER_1),
+      tier: 8270
+      },
+      {
+        header: 'Tier 2',
+        description: 'Lorem ipsum lorem ipsum lorem lorem',
+        steps: useUserServiceStore().getKycTierSteps(KycTierEnum.TIER_2),
+        tier: 3286
+      },
+      {
+        header: 'Tier 3',
+        description: 'Lorem ipsum lorem ipsum lorem lorem',
+        steps: useUserServiceStore().getKycTierSteps(KycTierEnum.TIER_3),
+        tier: 9031
+      }];
+  });
+
+});
 const selectedTierId = ref();
 const modalVisible = ref<boolean>(false);
 const sessionId = computed(() => {
   return useUserServiceStore().kycSessionId;
 });
-useUserServiceStore().fetchKycStatus(sessionId.value, false);
 
 
-const tierInfoList = [
-  {
-    header: 'Tier 1',
-    description: 'Lorem ipsum lorem ipsum lorem lorem',
-    steps: useUserServiceStore().getKycTierSteps(KycTierEnum.TIER_1),
-    tier: 8270
-  },
-  {
-    header: 'Tier 2',
-    description: 'Lorem ipsum lorem ipsum lorem lorem',
-    steps: useUserServiceStore().getKycTierSteps(KycTierEnum.TIER_2),
-    tier: 6406
-  },
-  {
-    header: 'Tier 3',
-    description: 'Lorem ipsum lorem ipsum lorem lorem',
-    steps: useUserServiceStore().getKycTierSteps(KycTierEnum.TIER_3),
-    tier: 8207
-  }
-];
-console.log(tierInfoList)
+const tierInfoList = ref();
 const onVerifyButton = (tier: number) => {
   selectedTierId.value = tier;
   modalVisible.value = true;

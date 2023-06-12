@@ -12,8 +12,9 @@
 
       <div v-for="step in listOfSteps" :key="step" style="margin-top: 15px; padding:5px;border-bottom: 1px solid rgba(143,143,143,0.2);">
         <Icon v-if="step.state == KycProgressStatus.VALIDATED" style="color: #72bf44; width: 35px; height: 35px" name="Check" />
-        <Icon v-if="step.state == KycProgressStatus.NOT_STARTED" style="color: #ff2500; width: 35px; height: 35px" name="X" />
-        <Icon v-if="step.state == KycProgressStatus.PENDING" style="color: #4b4b4b; width: 35px; height: 35px" name="Loader" />
+        <Icon v-else-if="step.state == KycProgressStatus.NOT_STARTED" style="color: #ff2500; width: 35px; height: 35px" name="X" />
+        <Icon v-else-if="step.state == KycProgressStatus.PENDING" style="color: #4b4b4b; width: 35px; height: 35px" name="Loader" />
+        <Icon v-else style="color: #ff2500; width: 35px; height: 35px" name="X" />
         {{getStepName(step.name)}}
       </div>
     </div>
@@ -47,6 +48,8 @@ const getStepName = (name: KycStepName): string => {
     return 'Personal information';
   if(name == KycStepName.PHONE)
     return 'Phone number';
+  if(name == KycStepName.RESIDENCY)
+    return 'Proof of residency';
   return '';
 };
 

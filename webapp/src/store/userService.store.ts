@@ -8,13 +8,13 @@ import {RequestResponse} from "@/models/request-response";
 import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
+import {EmailPairingRequest, EmailPairingRes} from "@/models/user/emailPairing";
 import axios from "axios";
 import {EmailPairingRequest, EmailPairingRes, SignParingAddressResult} from "@/models/user/emailPairing";
 import {usePublicSalesStore} from "@/store/publicSales.store";
-import {KycProgressStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum, KycTier} from "@/models/user/kyc";
-import { TxBroadcastError } from "@/api/tx.broadcast.base.api";
+import {KycProgressStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum} from "@/models/user/kyc";
+import {TxBroadcastError} from "@/api/tx.broadcast.base.api";
 import {ethers} from "ethers";
-import {MetamaskPayInfo, TokenPaymentProofRequest} from "@/models/saleServiceCommons";
 
 interface UserServiceState {
   _isLoggedIn: boolean,
@@ -22,17 +22,19 @@ interface UserServiceState {
   kycSessionId: string
   paired: boolean,
   userEmail: string | undefined,
-  metamaskAddress : string | undefined,
-  kycSteps: KycStep[],
   verificationNeeded: boolean,
   termsAccepted: boolean,
+  ethereumAddress: string,
+  claimAddress: string,
+  kycServiceState: Map<KycStepName, KycProgressStatus>,
+  kycLevel: number
 }
 
 export enum LoginTypeEnum {
-  EMAIL,
-  KEPLR,
-  METAMASK,
-  NONE
+  EMAIL="EMAIL",
+  KEPLR="KEPLR",
+  METAMASK="METAMASK",
+  NONE="NONE"
 }
 
 
@@ -45,10 +47,12 @@ export const useUserServiceStore = defineStore({
       kycSessionId: '',
       paired: false,
       userEmail: undefined,
-      kycSteps: Array<KycStep>(),
-      metamaskAddress : undefined,
       verificationNeeded: false,
       termsAccepted: false,
+      ethereumAddress: '',
+      claimAddress: '',
+      kycServiceState: new Map<KycStepName, KycProgressStatus>(),
+      kycLevel: 0
     };
   },
   actions: {
@@ -58,14 +62,33 @@ export const useUserServiceStore = defineStore({
 
     async getAccount(onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().getAccount(lockscreen).then(responseDate => {
-        if(responseDate.isSuccess()) {
-          console.log(responseDate.data?.terms)
-          if(responseDate.data?.terms){
-            this.termsAccepted = responseDate.data?.terms
+        if(responseDate.isSuccess() && responseDate.data) {
+          this.termsAccepted = responseDate.data.terms;
+          this.loginType = responseDate.data.accountType;
+          this.userEmail = responseDate.data.login;
+          this.ethereumAddress = responseDate.data.ethereumAddress;
+          this.claimAddress = responseDate.data?.claimAddress;
+          this.kycLevel = responseDate.data.kycInfo.kycLevel;
+          const map = new Map<KycStepName, KycProgressStatus>();
+          for(const [key, value] of Object.entries(responseDate.data.kycInfo.kycServiceState)) {
+            map.set(key as KycStepName, value as KycProgressStatus);
           }
+          this.kycServiceState = map;
+
           onSuccess();
         } else {
           onFail();
+        }
+      });
+    },
+    async getKycStatus() {
+      await apiFactory.publicSaleServiceApi().getKycStatus(false).then(response => {
+        if(response.isSuccess() && response.data) {
+          const map = new Map<KycStepName, KycProgressStatus>();
+          for(const [key, value] of Object.entries(response.data.kycServiceState)) {
+            map.set(key as KycStepName, value as KycProgressStatus);
+          }
+          this.kycServiceState = map;
         }
       });
     },
@@ -108,7 +131,6 @@ export const useUserServiceStore = defineStore({
         if(responseDate.isSuccess()) {
           onSuccess();
           this.setTokens(responseDate);
-          this.loginType = LoginTypeEnum.KEPLR;
         } else {
           onFail();
         }
@@ -118,7 +140,6 @@ export const useUserServiceStore = defineStore({
       await apiFactory.publicSaleServiceApi().authWalletMetamask(walletAuthData, lockscreen).then(responseDate => {
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
-          this.loginType = LoginTypeEnum.METAMASK;
           onSuccess();
         } else {
           onFail();
@@ -130,7 +151,6 @@ export const useUserServiceStore = defineStore({
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
           this.userEmail = emailAccount.login;
-          this.loginType = LoginTypeEnum.EMAIL;
           onSuccess();
         } else {
           onFail();
@@ -153,14 +173,6 @@ export const useUserServiceStore = defineStore({
         console.log(responseDate);
         if(responseDate.isSuccess() && responseDate.data) {
           this.kycSessionId = responseDate.data.session_id;
-        }
-
-      });
-    },
-    async fetchKycStatus(sessionId: string, lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().synapsFetchSessionDetails(sessionId,lockscreen).then(responseDate => {
-        if(responseDate.isSuccess() && responseDate.data) {
-          this.kycSteps = responseDate.data.kycStep;
         }
 
       });
@@ -301,7 +313,7 @@ export const useUserServiceStore = defineStore({
       this.loginType = LoginTypeEnum.NONE;
       this._isLoggedIn = false;
       this.paired = false;
-      this.kycSteps = [];
+      this.kycServiceState.clear();
       this.verificationNeeded = false;
     }
   },
@@ -323,7 +335,7 @@ export const useUserServiceStore = defineStore({
     },
     getStepStatus(): (stepName: KycStepName) => KycProgressStatus | undefined {
       return (stepName ) => {
-        return this.kycSteps.find((step) => step.name == stepName)?.state;
+        return this.kycServiceState.get(stepName);
       };
     },
     getKycTierSteps(): (kycTier: KycTierEnum) => KycStepInfo[] {
@@ -344,6 +356,10 @@ export const useUserServiceStore = defineStore({
               name: KycStepName.LIVENESS,
               state: this.getStepStatus(KycStepName.LIVENESS)
             },
+            {
+              name: KycStepName.RESIDENCY,
+              state: this.getStepStatus(KycStepName.RESIDENCY)
+            },
           ];
         } else if(kycTier == KycTierEnum.TIER_3) {
           return [
@@ -356,8 +372,8 @@ export const useUserServiceStore = defineStore({
               state: this.getStepStatus(KycStepName.LIVENESS)
             },
             {
-              name: KycStepName.PHONE,
-              state: this.getStepStatus(KycStepName.PHONE)
+              name: KycStepName.RESIDENCY,
+              state: this.getStepStatus(KycStepName.RESIDENCY)
             },
           ];
         }
@@ -365,18 +381,18 @@ export const useUserServiceStore = defineStore({
       };
     },
     getKycTier(): KycTierEnum {
-      if(this.getStepStatus(KycStepName.IDENTITY) == KycProgressStatus.VALIDATED) {
-        if(this.getStepStatus(KycStepName.LIVENESS) == KycProgressStatus.VALIDATED) {
-          if(this.getStepStatus(KycStepName.PHONE) == KycProgressStatus.VALIDATED) {
-            return KycTierEnum.TIER_3;
-          } else {
-            return KycTierEnum.TIER_2;
-          }
-        } else {
-          return KycTierEnum.TIER_1;
-        }
-      }
-      return KycTierEnum.TIER_0;
+      // if(this.getStepStatus(KycStepName.IDENTITY) == KycProgressStatus.VALIDATED) {
+      //   if(this.getStepStatus(KycStepName.LIVENESS) == KycProgressStatus.VALIDATED) {
+      //     if(this.getStepStatus(KycStepName.PHONE) == KycProgressStatus.VALIDATED) {
+      //       return KycTierEnum.TIER_3;
+      //     } else {
+      //       return KycTierEnum.TIER_2;
+      //     }
+      //   } else {
+      //     return KycTierEnum.TIER_1;
+      //   }
+      // }
+      return this.kycLevel;
     },
     isVerificationNeeded(): boolean{
       return this.verificationNeeded;

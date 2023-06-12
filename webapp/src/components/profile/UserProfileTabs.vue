@@ -45,8 +45,9 @@ onBeforeMount(() => {
 });
 
 onMounted(() =>{
-  useUserServiceStore().getAccount(()=>{console.log(1)}, ()=>{console.log(2)})
-})
+  useUserServiceStore().getAccount(()=>{console.log(1)}, ()=>{console.log(2)});
+  useUserServiceStore().getKycStatus();
+});
 
 
 const currency = computed(() => {
