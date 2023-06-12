@@ -66,7 +66,7 @@ export class SidebarConfig{
 
   private createBuyTokens(): SidebarElement{
     const retVal = new SidebarElement();
-    retVal.id = 4;
+    retVal.id = 5;
     retVal.href = '/buyTokens';
     retVal.title = 'BuyTokens';
     retVal.icon = new SidebarIcon('ShoppingCart');
@@ -75,7 +75,7 @@ export class SidebarConfig{
 
   private createProfile(): SidebarElement{
     const retVal = new SidebarElement();
-    retVal.id = 5;
+    retVal.id = 6;
     retVal.href = '/profile';
     retVal.title = 'Profile';
     retVal.icon = new SidebarIcon('User');
