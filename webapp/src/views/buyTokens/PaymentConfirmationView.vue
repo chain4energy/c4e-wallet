@@ -8,7 +8,9 @@
       <span>Your order have to be paid in 24 hours, after this time it will be automatically cancelled.</span> <br />
       <span>Please send <span style="font-weight: bold">{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</span> to the address below or pay by Metamask</span> <br />
       <div style="text-align: center; margin:20px">
-        <Button class="secondary" style="width: 50%" @click="paymentModalVisible = true">Pay {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}} by Metamask</Button> <br />
+        <Button class="secondary" style="width: 40%; min-width:300px" @click="paymentModalVisible = true">
+          <img style="height:30px;" src="@/assets/svg/MetaMaskIcon.svg">
+          Pay {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}} by Metamask</Button> <br />
         <span>or</span><br />
         <span @click="showManualPayment = true" class="underline open">Provide TxHash manually</span>
       </div>
@@ -78,7 +80,7 @@
           <div>Source address</div>
           <div>0x9176238712hdasjhdkahdskj</div>
           <div>Destination address</div>
-          <div>0x9176238712hdasjhdkahdskj</div>
+          <div>{{addDotsInsideTooLongString(selectedToken?.c4eAddress, 25)}}</div>
 
         </div>
         <Form @submit="onStartMetamaskTransaction" :validation-schema="modalSchema" v-slot="{errors}" >
@@ -132,8 +134,6 @@ import {Field, Form} from "vee-validate";
 import {object} from "yup";
 import * as Yup from "yup";
 import Dialog from "primevue/dialog";
-import Accordion from 'primevue/accordion';
-import AccordionTab from 'primevue/accordiontab';
 import IconComponent from "@/components/features/IconComponent.vue";
 
 onBeforeMount(async () => {
@@ -200,13 +200,14 @@ const onFail = () => {
 };
 
 const onStartMetamaskTransaction = () => {
-  if(selectedBlockchain.value){
+  if(selectedBlockchain.value && selectedToken.value){
     usePublicSalesStore().payByMetamask({
       amount: transactionContextStore.amountToPay.toString(),
       blockchainName: selectedBlockchain.value.chainName,
       orderId: transactionContextStore.orderId,
       blockchainAddress: selectedTokenIdentifier.value,
-      coinDecimals: 6
+      coinDecimals: 6,
+      c4eAddress: selectedToken.value.c4eAddress
     }, onSuccessStartMetamaskTransaction, onFail);
   }
 
@@ -214,24 +215,6 @@ const onStartMetamaskTransaction = () => {
 };
 const onSuccessStartMetamaskTransaction = () => {
   toast.success('Transaction complete');
-};
-const onPay = (orderId: number) => {
-  if(isCrypto()) {
-    usePublicSalesStore().sendMetamaskTransaction(transactionContextStore.amountToPay.toString(),selectedTokenIdentifier.value, 6);
-  } else if(transactionContextStore.paymentCurrency){
-    usePublicSalesStore().initPaymentSession({orderId: orderId, offeredCurrencyCode: transactionContextStore.paymentCurrency, offeredAmount: Number((Math.round(transactionContextStore.amountToPay * 100) / 100).toFixed(2))})
-      .then(transactionId => {
-        if(transactionId) {
-          window.dispatchEvent(
-            new CustomEvent('ari10-widget-start-commodities-payment-request', {
-              detail: {
-                transactionId: transactionId,
-              }
-            })
-          );
-        }
-      });
-  }
 };
 const changeNetwork = (networkId: number) => {
   blockchainNetworkList.value.forEach((network) => {
@@ -268,6 +251,14 @@ const onConfirmPayment = () => {
 };
 const onSuccessConfirmPayment = () => {
   toast.success('Payment confimed');
+};
+const addDotsInsideTooLongString = (text: string | undefined, maxLength: number): string => {
+  if(text == undefined)
+    return '';
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength - 3) + "..." + text.substring(text.length - 2);
+  }
+  return text;
 };
 </script>
 
@@ -319,7 +310,7 @@ const onSuccessConfirmPayment = () => {
   display: grid;
   grid-template-columns: auto auto;
   grid-gap: 10px;
-  font-size: 18px;
+  font-size: 16px;
 
 }
 ::v-deep(.p-button:not(.p-button-icon-only)) {

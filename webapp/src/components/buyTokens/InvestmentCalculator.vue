@@ -1,6 +1,9 @@
 <template>
   <div class="calculatorC4E">
-    <div class="calculatorC4E__header">Calculate investment</div>
+    <div class="calculatorC4E__header">
+      Calculate investment
+      <span style="float:right;  font-weight: 300;font-size: 19px;">Requirements <TooltipComponent tooltipText="asdasd" /></span>
+    </div>
     <div class="calculatorC4E__body">
       <div style="width:100%; margin-right: 70px">
         <div style="display: flex; width:100%; box-sizing: border-box">
@@ -31,9 +34,7 @@
       </div>
 
       <div class="calculatorC4E__btnSection">
-        <p>Required</p>
-        <span>terms acceptance</span>
-        <span>proof of residence</span>
+
         <Button class="p-button p-component secondary" style="width: 141px;" @click="onBuy">Buy</Button>
       </div>
 
@@ -53,11 +54,15 @@ import Dropdown from "primevue/dropdown";
 import {Currency} from "@/models/currency";
 import {useTransactionContextStore} from "@/store/transactionContext.store";
 import {useToast} from "vue-toastification";
+import TooltipComponent from "@/components/TooltipComponent.vue";
 
 const emit = defineEmits(['onBuy']);
 onBeforeMount(() => {
   usePublicSalesStore().fetchBlockchainInfo(false).then(() => {
-    exchangeRate.value = usePublicSalesStore().blockchainInfo[0].availableTokens[0].exchangeRate;
+    const rate =  usePublicSalesStore().roundInfo?.c4eToUsd;
+    if(rate) {
+      exchangeRate.value = rate;
+    }
   });
 });
 onMounted(() => {
@@ -95,7 +100,11 @@ watch(() => exchangeRate.value, () => {
 
 watch(() => secondValue.currency, () => {
   if(secondValue.currency == Currency.USDT || secondValue.currency == Currency.USDC || secondValue.currency == Currency.STABLE) {
-    exchangeRate.value = usePublicSalesStore().blockchainInfo[0].availableTokens[0].exchangeRate;
+    const rate =  usePublicSalesStore().roundInfo?.c4eToUsd;
+    if(rate) {
+      exchangeRate.value = rate;
+    }
+
   } else {
     const requestedAmount = 100;
     const requestOptions = {
@@ -154,6 +163,7 @@ const toast = useToast();
     font-weight: 700;
     font-size: 29px;
     line-height: 35px;
+    margin-bottom:30px;
   }
   &__body{
     width: 100%;

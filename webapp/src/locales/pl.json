@@ -364,7 +364,10 @@
     "EMAILREGISTRATION": "Rejestracja emailem",
     "KEPLRREGISTRATION": "Rejestracja Kerplrem",
     "METAMASKREGISTRATION": "Rejestracja Metamaskiem",
-    "EMAILLOGIN": "Logowanie emailem"
+    "EMAILLOGIN": "Logowanie emailem",
+    "PAYMENTCONFIRMATION": "Potwierdzenie płatności",
+    "FIATPAYMENTCONFIRMATION": "Potwierdzenie płatności",
+    "USERPROFILETABS": "Profil"
   },
   "TOAST": {
     "SUCCESS": {

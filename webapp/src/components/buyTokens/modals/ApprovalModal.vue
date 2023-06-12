@@ -74,7 +74,7 @@ function submit(){
 }
 
 function onSuccessPairing(){
-  toast.success('Successfully logged in');
+  toast.success('Sale terms accepted');
 }
 
 function onFail(){
@@ -92,7 +92,7 @@ function onFail(){
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  z-index: 1009;
   width: 100%;
   height: 100vh;
   &__background {

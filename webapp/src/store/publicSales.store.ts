@@ -4,7 +4,7 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import factoryApi from "@/api/factory.api";
 import {
   BlockchainInfo,
-  InitPaymentSessionRequest, MetamaskPayInfo,
+  InitPaymentSessionRequest, MetamaskPayInfo, RoundInfo,
   TokenPaymentProofRequest,
   Transaction
 } from "@/models/saleServiceCommons";
@@ -18,7 +18,8 @@ export interface PublicSalesState{
   endDate: Date | undefined,
   c4eToUSDC: number | undefined,
   tokenReservations: TokenReservation[] | undefined,
-  blockchainInfo: BlockchainInfo[]
+  blockchainInfo: BlockchainInfo[],
+  roundInfo: RoundInfo | undefined
 }
 export interface parts{
   solved: Coin,
@@ -74,7 +75,8 @@ export const usePublicSalesStore = defineStore({
       endDate: undefined,
       c4eToUSDC: undefined,
       tokenReservations: undefined,
-      blockchainInfo: []
+      blockchainInfo: [],
+      roundInfo: undefined
     };
   },
   actions: {
@@ -139,7 +141,6 @@ export const usePublicSalesStore = defineStore({
     },
     initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen = true) {
       return factoryApi.publicSaleServiceApi().initPaymentSession(initPaymentSessionRequest, lockscreen).then(res => {
-        console.log(res);
         return res.data?.transactionId;
       });
     },
@@ -148,8 +149,13 @@ export const usePublicSalesStore = defineStore({
         if(res.isSuccess() && res.data) {
           this.blockchainInfo = res.data;
         }
-
-        console.log(res);
+      });
+    },
+    fetchRoundInfo(lockscreen = false) {
+      return factoryApi.publicSaleServiceApi().fetchRoundInfo(lockscreen).then(res => {
+        if(res.isSuccess() && res.data) {
+          this.roundInfo = res.data;
+        }
       });
     },
     async provideTxPaymentProof(txPaymentProofRequest: TokenPaymentProofRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
@@ -163,7 +169,7 @@ export const usePublicSalesStore = defineStore({
       });
     },
     async payByMetamask(payInfo: MetamaskPayInfo, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      this.sendMetamaskTransaction(payInfo.amount, payInfo.blockchainAddress, payInfo.coinDecimals).then(res => {
+      this.sendMetamaskTransaction(payInfo.amount, payInfo.blockchainAddress, payInfo.coinDecimals, payInfo.c4eAddress).then(res => {
         if (res.isSuccess() && res.data){
           this.provideTxPaymentProof({
             blockchainName: payInfo.blockchainName, coinIdentifier: payInfo.blockchainAddress, orderID: payInfo.orderId, txHashes: [res.data]
@@ -173,8 +179,8 @@ export const usePublicSalesStore = defineStore({
         }
       });
     },
-    async sendMetamaskTransaction(amount: string, blockchainAddress: string, coinDecimals: number) {
-      return await apiFactory.accountApi().sendTransaction( amount, blockchainAddress, coinDecimals, '0xf9AAA5C4868Ef0D1613E350A399C802566af7142').then(res => {
+    async sendMetamaskTransaction(amount: string, blockchainAddress: string, coinDecimals: number, c4eAddress: string) {
+      return await apiFactory.accountApi().sendTransaction( amount, blockchainAddress, coinDecimals, c4eAddress).then(res => {
         console.log(res)
         return res;
       });

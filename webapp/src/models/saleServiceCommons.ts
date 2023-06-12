@@ -1,3 +1,5 @@
+import {Coin} from "@/models/store/common";
+
 export interface ReserveTokensRequest {
   amount: number
 }
@@ -45,6 +47,7 @@ export interface MetamaskPayInfo {
   amount: string;
   blockchainAddress: string;
   coinDecimals: number;
+  c4eAddress: string;
 }
 
 export interface BlockchainInfo {
@@ -59,4 +62,20 @@ export interface TokenInfo {
   exchangeRate: number;
   id: number;
   name: string;
+
 }
+export interface RoundInfoResponse {
+  availableTokens: number;
+  c4eToUsd: number;
+  endDate: string;
+  startDate: string;
+  id: number;
+}
+export interface RoundInfo {
+  availableTokens: Coin;
+  c4eToUsd: number;
+  endDate: Date;
+  startDate: Date;
+  id: number;
+}
+

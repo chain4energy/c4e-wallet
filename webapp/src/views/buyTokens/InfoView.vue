@@ -37,7 +37,7 @@
         <div v-if="isTermsAccepted">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
-        <div v-else ><Button class="p-button p-component secondary">Accept</Button></div>
+        <div v-else ><Button class="p-button p-component secondary" @click="showApprovalModalFunc">Accept</Button></div>
         <div>Provide claimer address <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
         <div><Button class="p-button p-component secondary">Provide address</Button></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">Provide source address <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
@@ -49,6 +49,7 @@
       </div>
     </div>
   </Dialog>
+  <ApprovalModal @close="hideApprovalModal" @submit="hideApprovalModal" v-if="showApprovalModal"/>
 </template>
 
 <script lang="ts" setup>
@@ -67,6 +68,7 @@ import {Currency} from "@/models/currency";
 import {useToast} from "vue-toastification";
 import IconComponent from "@/components/features/IconComponent.vue";
 import TooltipComponent from "@/components/TooltipComponent.vue";
+import ApprovalModal from "@/components/buyTokens/modals/ApprovalModal.vue";
 
 onBeforeMount(() => {
 
@@ -81,6 +83,14 @@ const summaryVisible = ref(false);
 publicSalesStore.setParts();
 publicSalesStore.setTotal();
 publicSalesStore.setCurrentPrice();
+
+const showApprovalModal = ref(false);
+function hideApprovalModal(){
+  showApprovalModal.value = false;
+}
+function showApprovalModalFunc(){
+  showApprovalModal.value = true;
+}
 
 const isTermsAccepted = computed(() =>{
   return useUserServiceStore().isTermsAccepted;

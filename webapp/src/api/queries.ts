@@ -105,7 +105,8 @@ export default {
     RESERVE_TOKENS: '/api/publicsale-service/token/reservation',
     TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations',
     PROVIDE_TX_PAYMENT_PROOF: '/api/publicsale-service/token/tx',
-    BLOCKCHAIN_INFO: '/api/publicsale-service/blockchain/info'
+    BLOCKCHAIN_INFO: '/api/publicsale-service/blockchain/info',
+    ROUND_INFO: '/api/publicsale-service/round/info'
   },
   synaps: {
     OVERVIEW: 'https://individual-api.synaps.io/v3/onboarding/overview'

@@ -1,9 +1,9 @@
 <template>
-  <div class="tooltip-icon">
-    <div v-tooltip="{ value: tooltipText, escape: true }">
+  <span class="tooltip-icon">
+    <span v-tooltip="{ value: tooltipText, escape: true }">
       <Icon name="HelpCircle"/>
-    </div>
-  </div>
+    </span>
+  </span>
 </template>
 
 <script setup lang="ts">

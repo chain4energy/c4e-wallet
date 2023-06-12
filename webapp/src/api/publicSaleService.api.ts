@@ -26,13 +26,14 @@ import {
   InitPaymentSessionRequest,
   InitPaymentSessionResponse,
   ReserveTokensRequest,
-  ReserveTokensResponse, TokenPaymentProofRequest, TokenReservationResponse
+  ReserveTokensResponse, RoundInfo, RoundInfoResponse, TokenPaymentProofRequest, TokenReservationResponse
 } from "@/models/saleServiceCommons";
 import {InitSessionResponse, KycStatusResponse, KycTier, SessionOverviewResponse} from "@/models/user/kyc";
 import {ValidatorsResponse} from "@/models/blockchain/validator";
 import {mapValidators} from "@/models/mapper/validator.mapper";
 import {mapKycSteps} from "@/models/mapper/synaps.mapper";
 import {KeybaseErrorData} from "@/models/keybase/keybase";
+import {mapRoundInfo} from "@/models/mapper/publicSale.mapper";
 
 export class PublicSaleServiceApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
@@ -143,6 +144,31 @@ export class PublicSaleServiceApi extends BaseApi {
 
   public async fetchBlockchainInfo(lockscreen: boolean): Promise<RequestResponse<BlockchainInfo[], ErrorData<UserServiceErrData>>> {
     return this.publicSaleServiceGetCall<BlockchainInfo[], UserServiceErrData>(queries.publicSaleService.BLOCKCHAIN_INFO, lockscreen, "getBlockchainInfo");
+  }
+
+  public async fetchRoundInfo(lockscreen: boolean): Promise<RequestResponse<RoundInfo, ErrorData<UserServiceErrData>>> {
+    const mapData = (roundInfo: RoundInfoResponse | undefined) => {
+      return mapRoundInfo(roundInfo);
+    };
+    const messages = {
+      errorResponseName: 'RoundInfo data Error',
+      errorResponseMassage: 'RoundInfo data error received',
+      errorResponseToast: 'RoundInfo data Error: ',
+      mappingErrorMassage: 'RoundInfo data mapping error: ',
+    };
+    const isResponseError = (response: RequestResponse<RoundInfoResponse, ErrorData<UserServiceErrData>>) => {return response.isError();};
+    return this.axiosWith200ErrorCall<RoundInfo, RoundInfoResponse, UserServiceErrData>({
+        method: 'GET',
+        url: useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.ROUND_INFO,
+      },
+      mapData,
+      lockscreen,
+      null,
+      'fetchRoundInfo - ',
+      isResponseError,
+      true,
+      messages
+    );
   }
 
   public async synapsFetchSessionDetails(sessionId: string, lockscreen: boolean): Promise<RequestResponse<KycTier, ErrorData<UserServiceErrData>>> {

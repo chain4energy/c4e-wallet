@@ -7,7 +7,7 @@
     <div class="publicSaleInfo__summary">
       <div class="publicSaleInfo__infoBlock">
         <p>Total Raise</p>
-        <CoinAmount :amount="total" :show-denom="true" :precision="2" :reduce-big-number="false" />
+        <CoinAmount :amount="total ? total : 0" :show-denom="true" :precision="2" :reduce-big-number="false" />
       </div>
       <div class="publicSaleInfo__infoBlock">
         <p>Price</p>
@@ -16,12 +16,12 @@
       <div class="publicSaleInfo__infoBlock">
         <p>Time to start</p>
         <p >{{timeToStart}}</p>
-        <p class="publicSaleInfo__dateText">({{startDate.toLocaleDateString('en-US')}})</p>
+        <p v-if="startDate" class="publicSaleInfo__dateText">({{startDate.toLocaleDateString('en-US')}})</p>
       </div>
       <div class="publicSaleInfo__infoBlock">
         <p>Time to end</p>
         <p>{{timeToEnd}}</p>
-        <p class="publicSaleInfo__dateText">({{endDate.toLocaleDateString('en-US')}})</p>
+        <p v-if="endDate" class="publicSaleInfo__dateText">({{endDate.toLocaleDateString('en-US')}})</p>
       </div>
     </div>
   </div>
@@ -62,7 +62,7 @@ onUnmounted(() => {
 });
 
 const total = computed(() =>{
-  return publicSalesStore.getTotal;
+  return publicSalesStore.roundInfo?.availableTokens;
 });
 
 const parts = computed(() =>{
@@ -70,19 +70,22 @@ const parts = computed(() =>{
 });
 
 const currency = computed(() => {
-  return publicSalesStore.getC4eToUSDC;
+  return publicSalesStore.roundInfo?.c4eToUsd;
 });
 
 const startDate = computed(() => {
-  return publicSalesStore.getStartDate;
+  return publicSalesStore.roundInfo?.startDate;
 });
 const endDate = computed(() => {
-  return publicSalesStore.getEndDate;
+  return publicSalesStore.roundInfo?.endDate;
 });
 
 const timeToPass = ref();
 
-function calculateTimeToPAss(startDate: Date, endDate: Date){
+function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefined){
+  if (startDate == undefined || endDate == undefined) {
+    return '-';
+  }
   if(startDate.getTime() < endDate.getTime()){
 
     const now = new Date(Date.now());

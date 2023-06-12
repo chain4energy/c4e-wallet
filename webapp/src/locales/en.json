@@ -369,7 +369,10 @@
     "EMAILREGISTRATION": "Email registration",
     "KEPLRREGISTRATION": "Keplr registration",
     "METAMASKREGISTRATION": "Metamask registration",
-    "EMAILLOGIN": "Email login"
+    "EMAILLOGIN": "Email login",
+    "PAYMENTCONFIRMATION": "Payment confirmation",
+    "FIATPAYMENTCONFIRMATION": "Payment confirmation",
+    "USERPROFILETABS": "Profile"
   },
   "TOAST": {
     "SUCCESS": {

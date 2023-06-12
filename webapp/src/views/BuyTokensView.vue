@@ -18,12 +18,14 @@
 import {useRoute, useRouter} from "vue-router";
 import {onMounted} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
+import {usePublicSalesStore} from "@/store/publicSales.store";
 
 const router = useRouter();
 const route = useRoute();
 onMounted(() =>{
   useUserServiceStore().getAccount(()=>{console.log(1)}, ()=>{console.log(2)});
   useUserServiceStore().getKycStatus();
+  usePublicSalesStore().fetchRoundInfo();
 });
 const onBackClick = () => {
     switch (route.name){
@@ -50,6 +52,9 @@ const onBackClick = () => {
       case 'emailLogin': {
         router.push({name:'accountType'});
         break;
+      }
+      default: {
+        router.push({name:'publicSaleInfo'});
       }
     }
 };
