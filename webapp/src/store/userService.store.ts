@@ -8,7 +8,7 @@ import {RequestResponse} from "@/models/request-response";
 import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
-import {EmailPairingRequest, EmailPairingRes} from "@/models/user/emailPairing";
+// import {EmailPairingRequest, EmailPairingRes} from "@/models/user/emailPairing";
 import axios from "axios";
 import {EmailPairingRequest, EmailPairingRes, SignParingAddressResult} from "@/models/user/emailPairing";
 import {usePublicSalesStore} from "@/store/publicSales.store";
