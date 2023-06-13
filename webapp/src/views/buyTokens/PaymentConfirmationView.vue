@@ -80,7 +80,7 @@
           <div>Source address</div>
           <div>0x9176238712hdasjhdkahdskj</div>
           <div>Destination address</div>
-          <div>{{addDotsInsideTooLongString(selectedToken?.c4eAddress, 25)}}</div>
+          <div v-tooltip="{ value: selectedToken?.c4eAddress, escape: true }">{{addDotsInsideTooLongString(selectedToken?.c4eAddress, 25)}}</div>
 
         </div>
         <Form @submit="onStartMetamaskTransaction" :validation-schema="modalSchema" v-slot="{errors}" >

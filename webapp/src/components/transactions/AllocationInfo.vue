@@ -6,7 +6,7 @@
   <div class="allocationInfo__body">
     <table class="allocationInfo__table">
       <tr>
-        <th class="allocationInfo__tableTabs">Amount Requested</th>
+        <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.AMOUNT_REQUESTED')}}</th>
         <th class="allocationInfo__tableTabs">
           <CoinAmount
             :amount="transaction.amount"
@@ -15,15 +15,15 @@
             :precision="2"/></th>
       </tr>
       <tr v-if="transaction.status === transactionStatus.Declared && transaction.reservationEnd">
-        <th class="allocationInfo__tableTabs">Remaining reservation time</th>
+        <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.REMAINING_RESERVATION_TIME')}}</th>
         <th class="allocationInfo__tableTabs">{{ timeToPass }}</th>
       </tr>
       <tr>
-        <th class="allocationInfo__tableTabs">Payment type</th>
+        <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.PAYMENT_TYPE')}}</th>
         <th class="allocationInfo__tableTabs">{{ getPaymentType() }}</th>
       </tr>
       <tr>
-        <th class="allocationInfo__tableTabs">Status</th>
+        <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.STATUS')}}</th>
         <th :style="{color: getStatusColor()}">{{ getStatus() }}</th>
       </tr>
       <tr v-if="transaction.txHash">

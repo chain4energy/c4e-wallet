@@ -69,7 +69,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/kyc',
     name: 'kyc',
-    component: KycView
+    component: KycView,
+    meta: {
+      requiresAuth: true
+    },
   },
   {
     path: '/:pathMatch(.*)*',

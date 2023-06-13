@@ -70,6 +70,8 @@ export interface RoundInfoResponse {
   endDate: string;
   startDate: string;
   id: number;
+  reservedTokens: number;
+  soldTokens: number;
 }
 export interface RoundInfo {
   availableTokens: Coin;
@@ -77,5 +79,7 @@ export interface RoundInfo {
   endDate: Date;
   startDate: Date;
   id: number;
+  reservedTokens: Coin;
+  soldTokens: Coin;
 }
 

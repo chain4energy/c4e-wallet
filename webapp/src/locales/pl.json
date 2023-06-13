@@ -367,7 +367,9 @@
     "EMAILLOGIN": "Logowanie emailem",
     "PAYMENTCONFIRMATION": "Potwierdzenie płatności",
     "FIATPAYMENTCONFIRMATION": "Potwierdzenie płatności",
-    "USERPROFILETABS": "Profil"
+    "USERPROFILETABS": "Profil",
+    "SIGNIN": "Logowanie",
+    "SIGNUP": "Rejestracja"
   },
   "TOAST": {
     "SUCCESS": {
@@ -430,5 +432,39 @@
       "METAMASK": "Metamask",
       "NONE": "Nie zalogowano"
     }
+  },
+  "PROFILE_VIEW": {
+    "TYPE": "Typ logowania",
+    "YOUR_ACCOUNT": "Twoje konto",
+    "TERMS_ACCEPTANCE": "Akceptacja warunków",
+    "CLAIMER_ADDRESS": "Claimer address",
+    "SOURCE_ADDRESS": "Source address",
+    "NO_ADDRESS_PROVIDED": "Brak adresu",
+    "ACCOUNT_INFO": "Informacje o koncie",
+    "TRANSACTIONS": "Transakcje"
+  },
+  "BUTTONS": {
+    "START_KYC": "Start KYC",
+    "ACCEPT": "Akceptuj",
+    "PROVIDE_ADDRESS": "Provide address",
+    "LOGOUT": "Wyloguj",
+    "BUY": "Kup"
+  },
+  "BUY_TOKENS_VIEW": {
+    "ROUND_INFO": "Public Sale Info: RUNDA",
+    "TOTAL_RAISE": "Total Raise",
+    "PRICE": "Cena",
+    "TIME_TO_START": "Czas do startu",
+    "TIME_TO_END": "Czas do końca",
+    "ALREADY_STARTED": "Wystartowało",
+    "CALCULATE_INVESTMENT": "Kalkulator inwestycyjny",
+    "I_WANT_TO_BUY": "Kupuje",
+    "I_WANT_TO_INVEST": "Inwestuję",
+    "REQUIREMENTS": "Wymagania",
+    "ALLOCATION_INFO": "Informacje o alokacji",
+    "AMOUNT_REQUESTED": "Żądana ilość",
+    "REMAINING_RESERVATION_TIME": "Pozostaly czas rezerwacji",
+    "PAYMENT_TYPE": "Typ płatności",
+    "STATUS": "Status"
   }
 }

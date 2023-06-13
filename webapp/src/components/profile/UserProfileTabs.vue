@@ -5,19 +5,19 @@
     <div class="userProfile__holder">
       <TabView>
         <TabPanel class="userProfile__tabHeader">
-          <template #header>Account info</template>
+          <template #header>{{$t('PROFILE_VIEW.ACCOUNT_INFO')}}</template>
           <AccountInfo :accordion="false" @open-modal="showAddressAddModal" @open-approval="showApprovalModalFunc"/>
         </TabPanel>
         <TabPanel>
-          <template #header>Transactions</template>
+          <template #header>{{$t('PROFILE_VIEW.TRANSACTIONS')}} {{useUserServiceStore().isLoggedIn()}}</template>
         </TabPanel>
       </TabView>
     </div>
 
     <div class="userProfile__extra">
-      <Button v-if="useUserServiceStore().isLoggedIn"
+      <Button v-if="useUserServiceStore().isLoggedIn()"
         class="p-button p-component secondary userProfile__btn"
-        @click="useUserServiceStore().logOutAccount()">Logout</Button>
+        @click="useUserServiceStore().logOutAccount()">{{$t('BUTTONS.LOGOUT')}}</Button>
     </div>
 <!--    <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />-->
   </div>

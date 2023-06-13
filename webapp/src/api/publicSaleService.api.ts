@@ -81,6 +81,10 @@ export class PublicSaleServiceApi extends BaseApi {
   public async acceptTerms(lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<UserServiceErrData>>> {
     return this.publicSaleServicePostEmptyCall<PasswordAuthenticateRequest, AccountInfo, UserServiceErrData>(queries.publicSaleService.ACCEPT_TERMS, lockscreen, "acceptTerms");
   }
+
+  public async logout(lockscreen: boolean): Promise<RequestResponse<undefined, ErrorData<UserServiceErrData>>> {
+    return this.publicSaleServiceGetCall<undefined, UserServiceErrData>(queries.publicSaleService.LOGOUT, lockscreen, "logout");
+  }
   public async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<UserServiceErrData>>> {
     return this.publicSaleServicePostCall<PasswordAuthenticateRequest, AccountInfo, UserServiceErrData>(queries.publicSaleService.EMAIL_CREATE_ACCOUNT, createAccountRequest, lockscreen, "createEmailAccount");
   }

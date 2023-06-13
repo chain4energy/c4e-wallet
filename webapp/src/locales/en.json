@@ -372,7 +372,9 @@
     "EMAILLOGIN": "Email login",
     "PAYMENTCONFIRMATION": "Payment confirmation",
     "FIATPAYMENTCONFIRMATION": "Payment confirmation",
-    "USERPROFILETABS": "Profile"
+    "USERPROFILETABS": "Profile",
+    "SIGNIN": "Sign in",
+    "SIGNUP": "Sign up"
   },
   "TOAST": {
     "SUCCESS": {
@@ -436,5 +438,39 @@
       "METAMASK": "Metamask",
       "NONE": "Not logged in"
     }
+  },
+  "PROFILE_VIEW": {
+    "TYPE": "Type",
+    "YOUR_ACCOUNT": "Your account",
+    "TERMS_ACCEPTANCE": "Terms acceptance",
+    "CLAIMER_ADDRESS": "Claimer address",
+    "SOURCE_ADDRESS": "Source address",
+    "NO_ADDRESS_PROVIDED": "No address provided",
+    "ACCOUNT_INFO": "Account info",
+    "TRANSACTIONS": "Transactions"
+  },
+  "BUTTONS": {
+    "START_KYC": "Start KYC",
+    "ACCEPT": "Accept",
+    "PROVIDE_ADDRESS": "Provide address",
+    "LOGOUT": "Logout",
+    "BUY": "Buy"
+  },
+  "BUY_TOKENS_VIEW": {
+    "ROUND_INFO": "Public Sale Info: ROUND",
+    "TOTAL_RAISE": "Total Raise",
+    "PRICE": "Price",
+    "TIME_TO_START": "Time to start",
+    "TIME_TO_END": "Time to end",
+    "ALREADY_STARTED": "Already Started",
+    "CALCULATE_INVESTMENT": "Calculate investment",
+    "I_WANT_TO_BUY": "I want to buy",
+    "I_WANT_TO_INVEST": "I want to invest",
+    "REQUIREMENTS": "Requirements",
+    "ALLOCATION_INFO": "Allocation info",
+    "AMOUNT_REQUESTED": "Amount requested",
+    "REMAINING_RESERVATION_TIME": "Remaining reservation time",
+    "PAYMENT_TYPE": "Payment type",
+    "STATUS": "Status"
   }
 }

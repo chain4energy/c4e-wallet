@@ -70,7 +70,9 @@ const onVerifyClick = () => {
 <style scoped lang="scss">
 
 .tier_container {
-  width: 430px;
+  //width:100%;
+  min-width: 410px;
+  max-width: 520px;
   height: 700px;
   position: relative;
 

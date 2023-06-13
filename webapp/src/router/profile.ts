@@ -7,16 +7,25 @@ const profileRoutes =
     path: '/profile',
     name: 'Profile',
     component: UserProfileView,
+    meta: {
+      requiresAuth: true
+    },
     children: [
       {
         path: '',
         name: 'userProfileTabs',
         component: UserProfileTabs,
+        meta: {
+          requiresAuth: true
+        },
       },
       {
         path: 'provideVerificationCode',
         name: 'provideVerificationCode',
         component: ActivateView,
+        meta: {
+          requiresAuth: true
+        },
       }
     ]
   };

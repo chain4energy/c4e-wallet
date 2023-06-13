@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
-import {clearAuthTokens, setAuthTokens} from "axios-jwt";
+import {clearAuthTokens, setAuthTokens, isLoggedIn} from "axios-jwt";
 import {InitWalletAuthRequest, WalletAuthRequest} from "@/models/user/walletAuth";
 import {useUserStore} from "@/store/user.store";
 import {RequestResponse} from "@/models/request-response";
@@ -17,7 +17,6 @@ import {TxBroadcastError} from "@/api/tx.broadcast.base.api";
 import {ethers} from "ethers";
 
 interface UserServiceState {
-  _isLoggedIn: boolean,
   loginType: LoginTypeEnum,
   kycSessionId: string
   paired: boolean,
@@ -42,7 +41,6 @@ export const useUserServiceStore = defineStore({
   id: 'userServiceStore',
   state: (): UserServiceState => {
     return {
-      _isLoggedIn: false,
       loginType: LoginTypeEnum.NONE,
       kycSessionId: '',
       paired: false,
@@ -56,10 +54,6 @@ export const useUserServiceStore = defineStore({
     };
   },
   actions: {
-    setIsLoggedIn() {
-      this._isLoggedIn = true;
-    },
-
     async getAccount(onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().getAccount(lockscreen).then(responseDate => {
         if(responseDate.isSuccess() && responseDate.data) {
@@ -185,7 +179,6 @@ export const useUserServiceStore = defineStore({
             accessToken: responseDate.data.access_token.token,
             refreshToken: responseDate.data.refresh_token.token
           });
-          this.setIsLoggedIn();
         } else {
           //TODO: toast - log in error
         }
@@ -228,7 +221,6 @@ export const useUserServiceStore = defineStore({
     async verifyParingEmailKeplr(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().verifyPairingEmailKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, true).then(response => {
         if(response.isSuccess()){
-          this.setIsLoggedIn();
           this.loginType = LoginTypeEnum.EMAIL;
           this.paired = true;
           this.verificationNeeded = false;
@@ -287,7 +279,6 @@ export const useUserServiceStore = defineStore({
               processID: responseData.processID,
             }, true).then((res)=>{
             if(res.isSuccess()){
-              this.setIsLoggedIn();
               this.loginType = LoginTypeEnum.METAMASK;
               this.paired = true;
               this.verificationNeeded = false;
@@ -309,18 +300,21 @@ export const useUserServiceStore = defineStore({
     },
     logOutAccount(){
       clearAuthTokens();
+      apiFactory.publicSaleServiceApi().logout(true).then(() => {
+        console.log('logout');
+      });
       usePublicSalesStore().logOutAccount();
       this.loginType = LoginTypeEnum.NONE;
-      this._isLoggedIn = false;
       this.paired = false;
       this.kycServiceState.clear();
       this.verificationNeeded = false;
-    }
+    },
+    isLoggedIn():boolean {
+      return isLoggedIn();
+    },
   },
   getters: {
-    isLoggedIn():boolean {
-      return this._isLoggedIn;
-    },
+
     getLoginType(): LoginTypeEnum {
       return this.loginType;
     },

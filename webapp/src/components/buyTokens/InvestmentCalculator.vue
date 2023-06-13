@@ -1,14 +1,14 @@
 <template>
   <div class="calculatorC4E">
     <div class="calculatorC4E__header">
-      Calculate investment
-      <span style="float:right;  font-weight: 300;font-size: 19px;">Requirements <TooltipComponent tooltipText="asdasd" /></span>
+      {{$t('BUY_TOKENS_VIEW.CALCULATE_INVESTMENT')}}
+      <span style="float:right;  font-weight: 300;font-size: 19px;">{{$t('BUY_TOKENS_VIEW.REQUIREMENTS')}} <TooltipComponent tooltipText="asdasd" /></span>
     </div>
     <div class="calculatorC4E__body">
       <div style="width:100%; margin-right: 70px">
         <div style="display: flex; width:100%; box-sizing: border-box">
           <div style="width:50%; margin-right: 40px" class="calculatorC4E__inputContainer">
-            <p>I want to buy</p>
+            <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_BUY')}}</p>
             <div>
               <div style="display: flex">
                 <input @paste="onFirstInputChange" @keyup="onFirstInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" v-model="firstValue.amount">
@@ -19,7 +19,7 @@
 
           <div style="width:50%" class="calculatorC4E__inputContainer">
             <div>
-              <p>I want to invest</p>
+              <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_INVEST')}}</p>
               <div style="display: flex">
                 <input @paste="onSecondInputChange"  @keyup="onSecondInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" v-model="secondValue.amount">
                 <Dropdown v-model="secondValue.currency" :options="currencyList" placeholder="Select network" style="max-width:80px;" class="dropdown" />
@@ -35,7 +35,7 @@
 
       <div class="calculatorC4E__btnSection">
 
-        <Button class="p-button p-component secondary" style="width: 141px;" @click="onBuy">Buy</Button>
+        <Button class="p-button p-component secondary" style="width: 141px;" @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
       </div>
 
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="publicSaleInfo">
-    <h3 class="publicSaleInfo__header">Public Sale Info</h3>
+    <h3 class="publicSaleInfo__header">{{$t('BUY_TOKENS_VIEW.ROUND_INFO')}} 1</h3>
     <div style="width: 100%; height: 50px; padding: 0 20px;">
       <PublicSalesBar v-if="parts && total" :total="total" :values="parts"/>
     </div>
@@ -10,16 +10,16 @@
         <CoinAmount :amount="total ? total : 0" :show-denom="true" :precision="2" :reduce-big-number="false" />
       </div>
       <div class="publicSaleInfo__infoBlock">
-        <p>Price</p>
+        <p>{{$t('BUY_TOKENS_VIEW.PRICE')}}</p>
         <p>1 C4E = {{currency}} USDC</p>
       </div>
       <div class="publicSaleInfo__infoBlock">
-        <p>Time to start</p>
+        <p>{{$t('BUY_TOKENS_VIEW.TIME_TO_START')}}</p>
         <p >{{timeToStart}}</p>
         <p v-if="startDate" class="publicSaleInfo__dateText">({{startDate.toLocaleDateString('en-US')}})</p>
       </div>
       <div class="publicSaleInfo__infoBlock">
-        <p>Time to end</p>
+        <p>{{$t('BUY_TOKENS_VIEW.TIME_TO_END')}}</p>
         <p>{{timeToEnd}}</p>
         <p v-if="endDate" class="publicSaleInfo__dateText">({{endDate.toLocaleDateString('en-US')}})</p>
       </div>
@@ -35,6 +35,7 @@ import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import AmountView from "@/components/commons/AmountView.vue";
 import CalculatorC4E from "@/components/buyTokens/CalculatorC4E.vue";
+import {useI18n} from "vue-i18n";
 const publicSalesStore = usePublicSalesStore();
 publicSalesStore.setParts();
 publicSalesStore.setTotal();
@@ -81,6 +82,7 @@ const endDate = computed(() => {
 });
 
 const timeToPass = ref();
+const i18n = useI18n();
 
 function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefined){
   if (startDate == undefined || endDate == undefined) {
@@ -96,7 +98,7 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
     const seconds = Math.floor((diference % (1000 * 60)) / 1000);
     return `${days}D ${hours}H ${minutes}M ${seconds}S`;
   } else {
-    return 'Already Started';
+    return i18n.t('BUY_TOKENS_VIEW.ALREADY_STARTED');
   }
 }
 
