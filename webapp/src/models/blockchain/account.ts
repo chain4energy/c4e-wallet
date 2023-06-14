@@ -1,4 +1,5 @@
 import { Coin } from "./common"
+import {ContinuousVestingPeriod} from "@/api/periodicContinousVestingAccount/vesting_account";
 
 export interface Account {
   "@type": string,
@@ -26,7 +27,7 @@ export interface ContinuousVestingAccount {
   start_time: string
 }
 
-export interface RepeatedContinuousVestingAccount {
+export interface PeriodicContinuousVestingAccount {
   base_vesting_account: {
     base_account: BaseAccount,
     original_vesting?: Coin[],
@@ -34,6 +35,7 @@ export interface RepeatedContinuousVestingAccount {
     delegated_vesting: Coin[],
     end_time: string
   },
+  vestingPeriods: ContinuousVestingPeriod[];
   start_time: string
 }
 
