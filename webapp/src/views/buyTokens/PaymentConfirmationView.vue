@@ -1,16 +1,16 @@
 <template>
   <div class="confirm_container">
     <div class="confirm_container__header">
-      <h2>Confirm your payment</h2>
+      <h2>{{$t('PAYMENT_CONFIRMATION_VIEW.CONFIRM_PAYMENT')}}</h2>
     </div>
     <div class="confirm_container__body">
-      <span>Your order no. {{transactionContextStore.orderId}} has been placed successfully.</span><br />
-      <span>Your order have to be paid in 24 hours, after this time it will be automatically cancelled.</span> <br />
-      <span>Please send <span style="font-weight: bold">{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</span> to the address below or pay by Metamask</span> <br />
+      <span>{{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.FIRST_LINE', {orderId: transactionContextStore.orderId})}}.</span><br />
+      <span>{{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.SECOND_LINE')}}</span> <br />
+      <span>{{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.THIRD_LINE_1')}} <b>{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</b> {{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.THIRD_LINE_2')}}</span> <br />
       <div style="text-align: center; margin:20px">
         <Button class="secondary" style="width: 40%; min-width:300px" @click="paymentModalVisible = true">
           <img style="height:30px;" src="@/assets/svg/MetaMaskIcon.svg">
-          Pay {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}} by Metamask</Button> <br />
+          {{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.PAY')}} {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}} {{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.THIRD_LINE_2')}}</Button> <br />
         <span>or</span><br />
         <span @click="showManualPayment = true" class="underline open">Provide TxHash manually</span>
       </div>
@@ -51,7 +51,7 @@
               <div style="margin-right: 20px;">
                 <span>The payment must be done from metamask address (source address)</span>
                 <div class="address">
-                  {{address}}
+                  {{ sourceAddress }}
                 </div>
                 <span>Please send <b>{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</b> to the address below:</span>
                 <div class="address" style="margin-bottom:20px">{{selectedToken?.c4eAddress}} <Icon class="address__copy" name="Copy" /> <br /></div>
@@ -78,7 +78,7 @@
           <div>Amount</div>
           <div>{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</div>
           <div>Source address</div>
-          <div>0x9176238712hdasjhdkahdskj</div>
+          <div v-tooltip="{ value: sourceAddress, escape: true }">{{addDotsInsideTooLongString(sourceAddress, 25)}}</div>
           <div>Destination address</div>
           <div v-tooltip="{ value: selectedToken?.c4eAddress, escape: true }">{{addDotsInsideTooLongString(selectedToken?.c4eAddress, 25)}}</div>
 
@@ -135,6 +135,7 @@ import {object} from "yup";
 import * as Yup from "yup";
 import Dialog from "primevue/dialog";
 import IconComponent from "@/components/features/IconComponent.vue";
+import {useI18n} from "vue-i18n";
 
 onBeforeMount(async () => {
 
@@ -143,8 +144,7 @@ onBeforeMount(async () => {
   const {chainId} = await provider.getNetwork();
   changeNetwork(chainId);
 });
-
-const address = ref('0xAxerwerwerwerwerwerwerwerwerwerwerr');
+const sourceAddress = ref(useUserServiceStore().ethereumAddress);
 const recipientAddress = ref();
 const transactionContextStore = useTransactionContextStore();
 const router = useRouter();

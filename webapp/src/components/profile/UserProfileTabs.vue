@@ -9,7 +9,7 @@
           <AccountInfo :accordion="false" @open-modal="showAddressAddModal" @open-approval="showApprovalModalFunc"/>
         </TabPanel>
         <TabPanel>
-          <template #header>{{$t('PROFILE_VIEW.TRANSACTIONS')}} {{useUserServiceStore().isLoggedIn()}}</template>
+          <template #header>{{$t('PROFILE_VIEW.TRANSACTIONS')}}</template>
         </TabPanel>
       </TabView>
     </div>

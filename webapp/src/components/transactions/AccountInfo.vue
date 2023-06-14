@@ -76,12 +76,12 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <p class="accountInfo__headMainTxt">{{$t('PROFILE_VIEW.CLAIMER_ADDRESS')}}</p>
-          <p v-if="address" class="accountInfo__headTxt">{{ address }}</p>
+          <p v-if="address" class="accountInfo__headTxt">{{ claimAddress }}</p>
           <p v-else class="accountInfo__headTxt">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
         </div>
         <div>
           <Button
-            :disabled="!isLoggedIn || !isLogedInInService || paired"
+            :disabled="!isLoggedIn || !isLogedInInService || claimAddress != ''"
             class="p-button p-component secondary accountInfo__btn"
             @click="provideClaimerAddress">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button>
         </div>
@@ -90,12 +90,12 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <p class="accountInfo__headMainTxt">{{$t('PROFILE_VIEW.SOURCE_ADDRESS')}}</p>
-          <p v-if="address" class="accountInfo__headTxt">{{ address }}</p>
+          <p v-if="address" class="accountInfo__headTxt">{{ sourceAddress }}</p>
           <p v-else class="accountInfo__headTxt">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
         </div>
         <div>
           <Button
-            :disabled="!isLoggedIn || !isLogedInInService || paired"
+            :disabled="!isLogedInInService || sourceAddress != ''"
             class="p-button p-component secondary accountInfo__btn"
             @click="provideSourceAddress">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button>
         </div>
@@ -103,7 +103,7 @@
     </div>
 
   </div>
-  <ProvideAddresInfoModal v-if="showAddressInfoModal" :address-type="showAddressInfoModalAddressType" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
+  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
 </template>
 
 <script setup lang="ts">
@@ -118,6 +118,7 @@ import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useToast} from "vue-toastification";
 import {SignParingAddressResult} from "@/models/user/emailPairing";
 import {logger} from "ethers";
+import {useContextStore} from "@/store/context.store";
 
 const emit = defineEmits(['openModal', 'openApproval']);
 
@@ -177,17 +178,32 @@ function provideSourceAddress(){
 function addressConfirmed(){
   showAddressInfoModal.value = false;
   if(showAddressInfoModalAddressType.value == AddressType.KEPLR) {
+    console.log('Connect keplr account');
     if (usersWallet.value) {
+      console.log('test')
+      useUserServiceStore().initEmailKeplrPairing(useUserStore().getAccount.address, onSuccessConnect, onFail);
       // emit('submit');
-      useUserServiceStore().provideKeplrAddress(
-        {
-          claimedAddress: usersWallet.value,
-        }, onSuccessAddressPairing, onFail, true);
+      // useUserServiceStore().provideKeplrAddress(
+      //   {
+      //     claimedAddress: usersWallet.value,
+      //   }, onSuccessAddressPairing, onFail, true);
     } else {
       toast.error('You have to be logged in with Email');
     }
   }
+  if(showAddressInfoModalAddressType.value == AddressType.METAMASK) {
+    console.log('Connect metamask account');
+    useUserStore().connectMetamask().then(async (address) => {
+      if (address) {
+        await useUserServiceStore().initEmailMetamaskPairing(address, onSuccessConnect, onFail);
+      }
+    });
+  }
 }
+const onSuccessConnect = () => {
+  useContextStore().addressType = showAddressInfoModalAddressType.value;
+  router.push({name: 'provideVerificationCode'});
+};
 
 function onSuccessAddressPairing(result: SignParingAddressResult){
   console.log("!!!" + result);
@@ -204,6 +220,13 @@ const address = computed(() =>{
   return useUserStore().getAccount.address;
 });
 
+const sourceAddress = computed(() =>{
+  return useUserServiceStore().ethereumAddress;
+});
+
+const claimAddress = computed(() =>{
+  return useUserServiceStore().claimAddress;
+});
 const onKycStart = () => {
   useUserServiceStore().initKycSession(true).then(() => {
     router.push({name: 'kyc'});

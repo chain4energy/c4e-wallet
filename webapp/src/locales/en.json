@@ -454,7 +454,9 @@
     "ACCEPT": "Accept",
     "PROVIDE_ADDRESS": "Provide address",
     "LOGOUT": "Logout",
-    "BUY": "Buy"
+    "BUY": "Buy",
+    "CANCEL_ORDER": "Cancel order",
+    "CONFIRM_ORDER": "Confirm order"
   },
   "BUY_TOKENS_VIEW": {
     "ROUND_INFO": "Public Sale Info: ROUND",
@@ -471,6 +473,21 @@
     "AMOUNT_REQUESTED": "Amount requested",
     "REMAINING_RESERVATION_TIME": "Remaining reservation time",
     "PAYMENT_TYPE": "Payment type",
-    "STATUS": "Status"
+    "STATUS": "Status",
+    "PASS_KYC": "Pass KYC - Level",
+    "ACCEPT_SALE_TERMS": "Accept sale terms",
+    "PROVIDE_CLAIMER_ADDRESS": "Provide claimer address",
+    "PROVIDE_SOURCE_ADDRESS": "Provide source address",
+    "ORDER_SUMMARY": "Order summary"
+  },
+  "PAYMENT_CONFIRMATION_VIEW": {
+    "CONFIRM_PAYMENT": "Confirm Your Payment",
+    "SUMMARY": {
+      "FIRST_LINE": "Your order no. {orderId} has been placed successfully",
+      "SECOND_LINE": "Your order have to be paid in 24 hours, after this time it will be automatically cancelled.",
+      "THIRD_LINE_1": "Please pay",
+      "THIRD_LINE_2": "by MetaMask wallet",
+      "PAY": "Pay"
+    }
   }
 }

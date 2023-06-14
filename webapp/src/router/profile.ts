@@ -1,6 +1,7 @@
 import ActivateView from "@/views/buyTokens/ActivateView.vue";
 import UserProfileView from "@/views/UserProfileView.vue";
 import UserProfileTabs from "@/components/profile/UserProfileTabs.vue";
+import ProvideVerificationCodeView from "@/views/buyTokens/ProvideVerificationCodeView.vue";
 
 const profileRoutes =
   {
@@ -22,7 +23,7 @@ const profileRoutes =
       {
         path: 'provideVerificationCode',
         name: 'provideVerificationCode',
-        component: ActivateView,
+        component: ProvideVerificationCodeView,
         meta: {
           requiresAuth: true
         },

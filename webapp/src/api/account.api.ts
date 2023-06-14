@@ -336,7 +336,7 @@ export class AccountApi extends TxBroadcastBaseApi {
 
     return this.signDirect(connection, getMessages, dataToSign, fee, '', true, null);
   }
-  public async signMetamask(dataToSign: DataToSign):Promise<RequestResponse<string, TxBroadcastError>> {
+  public async signMetamask(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 
 
     return this.signWithMetamask(dataToSign, true, null);

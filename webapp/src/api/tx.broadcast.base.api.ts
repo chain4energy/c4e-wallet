@@ -433,7 +433,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     }
   }
   protected async signWithMetamask(
-    dataToSign: DataToSign,
+    dataToSign: string,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
     skipErrorToast = false
   ): Promise<RequestResponse<string, TxBroadcastError>>
@@ -452,7 +452,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         );
       }
 
-      const signature = await signer.signMessage(dataToSign.randomString);
+      const signature = await signer.signMessage(dataToSign);
 
       return new RequestResponse<string, TxBroadcastError>(undefined, signature);
     } catch (err) {

@@ -15,10 +15,11 @@ import {
   WalletAuthRequest
 } from "@/models/user/walletAuth";
 import {
+  EmailMetamaskPairingRequest,
   EmailPairingConfirmationReq,
   EmailPairingRequest,
   EmailPairingRes, MetamaskKeplrPairingReq,
-  SignedEmailPairingRequest
+  SignedEmailPairingRequest, SignParingAddressResult
 } from "@/models/user/emailPairing";
 import {formatString} from "@/utils/string-formatter";
 import {
@@ -115,9 +116,23 @@ export class PublicSaleServiceApi extends BaseApi {
   public verifyPairingEmailKeplr(emailPairingVerification: EmailPairingConfirmationReq, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
     return this.publicSaleServicePostCall< EmailPairingConfirmationReq, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.VERIFY_EMAIL_KEPLR, emailPairingVerification, lockscreen, "verifyPairingEmailKeplr");
   }
+
+  public emailKeplrPairingDataVerify(emailPairingVerification: SignParingAddressResult, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>>{
+    return this.publicSaleServicePostCall< SignParingAddressResult, Jwt, UserServiceErrData>(queries.publicSaleService.VERIFY_EMAIL_KEPLR, emailPairingVerification, lockscreen, "emailKeplrPairingDataVerify");
+  }
+
+  public initEmailMetamaskPairing(emailPairingVerification: EmailMetamaskPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
+    return this.publicSaleServicePostCall< EmailMetamaskPairingRequest, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.INIT_PAIR_EMAIL_METAMASK, emailPairingVerification, lockscreen, "initEmailMetamaskPairing");
+  }
+
   public initPairMetamaskKeplr(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
     return this.publicSaleServicePostCall<EmailPairingRequest, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.INIT_PAIR_METAMASK_KEPLR, emailPairing, lockscreen, "initPairMetamaskKeplr");
   }
+
+  public emailMetamaskPairingDataVerify(signedData: SignedEmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>>{
+    return this.publicSaleServicePostCall<SignedEmailPairingRequest, Jwt, UserServiceErrData>(queries.publicSaleService.VERIFY_EMAIL_METAMASK, signedData, lockscreen, "emailMetamaskPairingDataVerify");
+  }
+
   public verifyPairingMetamaskKeplr(emailPairingVerification: MetamaskKeplrPairingReq, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
     return this.publicSaleServicePostCall<MetamaskKeplrPairingReq, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.VERIFY_METAMASK_KEPLR, emailPairingVerification, lockscreen, "verifyPairingMetamaskKeplr");
   }

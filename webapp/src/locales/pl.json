@@ -448,7 +448,9 @@
     "ACCEPT": "Akceptuj",
     "PROVIDE_ADDRESS": "Provide address",
     "LOGOUT": "Wyloguj",
-    "BUY": "Kup"
+    "BUY": "Kup",
+    "CANCEL_ORDER": "Anuluj zamówienie",
+    "CONFIRM_ORDER": "Potwierdź zamówienie"
   },
   "BUY_TOKENS_VIEW": {
     "ROUND_INFO": "Public Sale Info: RUNDA",
@@ -465,6 +467,22 @@
     "AMOUNT_REQUESTED": "Żądana ilość",
     "REMAINING_RESERVATION_TIME": "Pozostaly czas rezerwacji",
     "PAYMENT_TYPE": "Typ płatności",
-    "STATUS": "Status"
+    "STATUS": "Status",
+    "PASS_KYC": "Pass KYC - Level",
+    "ACCEPT_SALE_TERMS": "Zaakceptuj warunki sprzedaży",
+    "PROVIDE_CLAIMER_ADDRESS": "Provide claimer address",
+    "PROVIDE_SOURCE_ADDRESS": "Provide source address",
+    "ORDER_SUMMARY": "Podsumowanie zamówienia"
+  },
+  "PAYMENT_CONFIRMATION_VIEW": {
+    "CONFIRM_PAYMENT": "Confirm Your Payment",
+    "SUMMARY": {
+      "FIRST_LINE": "Your order no. {orderId} has been placed successfully",
+      "SECOND_LINE": "Your order have to be paid in 24 hours, after this time it will be automatically cancelled.",
+      "THIRD_LINE_1": "Please pay",
+      "THIRD_LINE_2": "by MetaMask wallet",
+      "PAY": "Pay"
+    }
   }
+
 }

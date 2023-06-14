@@ -72,6 +72,7 @@ export interface RoundInfoResponse {
   id: number;
   reservedTokens: number;
   soldTokens: number;
+  totalTokens: number;
 }
 export interface RoundInfo {
   availableTokens: Coin;
@@ -81,5 +82,6 @@ export interface RoundInfo {
   id: number;
   reservedTokens: Coin;
   soldTokens: Coin;
+  totalTokens: Coin;
 }
 

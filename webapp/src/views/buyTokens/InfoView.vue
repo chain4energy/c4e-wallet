@@ -21,35 +21,42 @@
   </div>
   <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />
 
-  <Dialog v-model:visible="summaryVisible" closeIcon="false" modal header="Order summary" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
+  <Dialog v-model:visible="summaryVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
     <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
       <h5 style="font-weight:700">You want to invest {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</h5>
       <div class="requirements_container">
         <div>
-          Pass KYC - Level {{transactionContextStore.getRequiredKycLevel}}
+          {{$t('BUY_TOKENS_VIEW.PASS_KYC')}} {{transactionContextStore.getRequiredKycLevel}}
           <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/>
         </div>
         <div v-if="isKycLevelRequired">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
-        <div v-else><Button class="p-button p-component secondary">Start KYC</Button></div>
-        <div>Accept sale terms <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
+        <div v-else><Button @click="onKycStart" class="p-button p-component secondary">{{$t('BUTTONS.START_KYC')}}</Button></div>
+        <div>{{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
         <div v-if="isTermsAccepted">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
-        <div v-else ><Button class="p-button p-component secondary" @click="showApprovalModalFunc">Accept</Button></div>
-        <div>Provide claimer address <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
-        <div><Button class="p-button p-component secondary">Provide address</Button></div>
-        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">Provide source address <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
-        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE"><Button class="p-button p-component secondary">Provide address</Button></div>
+        <div v-else ><Button class="p-button p-component secondary" @click="showApprovalModalFunc">{{$t('BUTTONS.ACCEPT')}}</Button></div>
+        <div>{{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
+        <div v-if="claimerAddress != ''">
+          <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
+        </div>
+        <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
+        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
+        <div v-if="sourceAddress != ''">
+          <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
+        </div>
+        <div v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE"><Button @click="provideSourceAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
       </div>
       <div style="display: flex">
-        <Button class="p-button p-component secondary" @click="summaryVisible=false">Cancel order</Button>
-        <Button class="p-button p-component secondary" @click="onConfirm">Confirm order</Button>
+        <Button class="p-button p-component secondary" @click="summaryVisible=false">{{$t('BUTTONS.CANCEL_ORDER')}}</Button>
+        <Button class="p-button p-component secondary" :disabled="!canConfirmOrder" @click="onConfirm">{{$t('BUTTONS.CONFIRM_ORDER')}}</Button>
       </div>
     </div>
   </Dialog>
   <ApprovalModal @close="hideApprovalModal" @submit="hideApprovalModal" v-if="showApprovalModal"/>
+  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
 </template>
 
 <script lang="ts" setup>
@@ -69,6 +76,13 @@ import {useToast} from "vue-toastification";
 import IconComponent from "@/components/features/IconComponent.vue";
 import TooltipComponent from "@/components/TooltipComponent.vue";
 import ApprovalModal from "@/components/buyTokens/modals/ApprovalModal.vue";
+import {useI18n} from "vue-i18n";
+import {ethereum} from "@cosmostation/extension-client";
+import ProvideAddresInfoModal from "@/components/buyTokens/modals/ProvideAddresInfoModal.vue";
+import {AddressType} from "@/components/buyTokens/modals/AddressType";
+import {useUserStore} from "@/store/user.store";
+import {useContextStore} from "@/store/context.store";
+import {SignParingAddressResult} from "@/models/user/emailPairing";
 
 onBeforeMount(() => {
 
@@ -83,6 +97,9 @@ const summaryVisible = ref(false);
 publicSalesStore.setParts();
 publicSalesStore.setTotal();
 publicSalesStore.setCurrentPrice();
+const i18n = useI18n();
+const showAddressInfoModal = ref(false);
+const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
 
 const showApprovalModal = ref(false);
 function hideApprovalModal(){
@@ -91,6 +108,13 @@ function hideApprovalModal(){
 function showApprovalModalFunc(){
   showApprovalModal.value = true;
 }
+
+const claimerAddress = computed(() => {
+  return useUserServiceStore().claimAddress;
+});
+const sourceAddress = computed(() => {
+  return useUserServiceStore().ethereumAddress;
+});
 
 const isTermsAccepted = computed(() =>{
   return useUserServiceStore().isTermsAccepted;
@@ -138,6 +162,59 @@ const onSuccess = (orderId: number) => {
 const onFail = () => {
   toast.error('An error occured');
 };
+
+const onKycStart = () => {
+  useUserServiceStore().initKycSession(true).then(() => {
+    router.push({name: 'kyc'});
+  });
+
+};
+const usersWallet = computed(() => {
+  return useUserStore().getAccount.address;
+});
+function provideClaimerAddress(){
+  showAddressInfoModalAddressType.value = AddressType.KEPLR;
+  showAddressInfoModal.value = true;
+}
+function provideSourceAddress(){
+  showAddressInfoModalAddressType.value = AddressType.METAMASK;
+  showAddressInfoModal.value = true;
+}
+function addressConfirmed(){
+  showAddressInfoModal.value = false;
+  if(showAddressInfoModalAddressType.value == AddressType.KEPLR) {
+    console.log('Connect keplr account');
+    if (usersWallet.value) {
+      useUserServiceStore().initEmailKeplrPairing(useUserStore().getAccount.address, onSuccessConnect, onFail);
+    } else {
+      toast.error('You have to be logged in with Email');
+    }
+  }
+  if(showAddressInfoModalAddressType.value == AddressType.METAMASK) {
+    console.log('Connect metamask account');
+    useUserStore().connectMetamask().then(async (address) => {
+      if (address) {
+        await useUserServiceStore().initEmailMetamaskPairing(address, onSuccessConnect, onFail);
+      }
+    });
+  }
+}
+const onSuccessConnect = () => {
+  useContextStore().addressType = showAddressInfoModalAddressType.value;
+  router.push({name: 'provideVerificationCode'});
+};
+function closeProvideAddressModalClose(){
+  showAddressInfoModal.value = false;
+}
+
+const canConfirmOrder = computed(() => {
+  const isSourceAddressRequired = transactionContextStore.paymentCurrency == Currency.STABLE;
+  if(isSourceAddressRequired) {
+    return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != '' && sourceAddress.value != '';
+  }
+  return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != '';
+});
+
 </script>
 
 <style scoped lang="scss">

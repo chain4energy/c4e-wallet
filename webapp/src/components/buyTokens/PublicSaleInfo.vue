@@ -37,9 +37,9 @@ import AmountView from "@/components/commons/AmountView.vue";
 import CalculatorC4E from "@/components/buyTokens/CalculatorC4E.vue";
 import {useI18n} from "vue-i18n";
 const publicSalesStore = usePublicSalesStore();
-publicSalesStore.setParts();
-publicSalesStore.setTotal();
-publicSalesStore.setCurrentPrice();
+// publicSalesStore.setParts();
+// publicSalesStore.setTotal();
+// publicSalesStore.setCurrentPrice();
 
 const refreshDate = ref(false)
 
@@ -63,7 +63,7 @@ onUnmounted(() => {
 });
 
 const total = computed(() =>{
-  return publicSalesStore.roundInfo?.availableTokens;
+  return publicSalesStore.roundInfo?.totalTokens;
 });
 
 const parts = computed(() =>{

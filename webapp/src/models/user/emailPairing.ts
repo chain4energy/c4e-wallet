@@ -30,3 +30,6 @@ export interface SignParingAddressResult{
   processID: string,
   signedData: string
 }
+export interface EmailMetamaskPairingRequest {
+  paymentAddress: string,
+}

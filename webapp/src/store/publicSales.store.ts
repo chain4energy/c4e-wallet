@@ -22,7 +22,7 @@ export interface PublicSalesState{
   roundInfo: RoundInfo | undefined
 }
 export interface parts{
-  solved: Coin,
+  sold: Coin,
   reserved: Coin,
 }
 export enum accountSaleType{
@@ -89,7 +89,7 @@ export const usePublicSalesStore = defineStore({
     setParts(){
       const denom = useConfigurationStore().config.stakingDenom;
       this.parts = {
-        solved: new Coin(BigInt(105000000000000), denom),
+        sold: new Coin(BigInt(105000000000000), denom),
         reserved : new Coin(BigInt(45000000000000), denom)
       };
     },
@@ -197,7 +197,9 @@ export const usePublicSalesStore = defineStore({
       return this.total;
     },
     getParts(): parts | undefined{
-      return this.parts;
+      if(this.roundInfo)
+        return {sold: this.roundInfo.soldTokens, reserved: this.roundInfo.reservedTokens};
+      return undefined;
     },
     getC4eToUSDC(): number| undefined{
       return this.c4eToUSDC;
