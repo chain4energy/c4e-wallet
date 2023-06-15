@@ -215,6 +215,7 @@ const onStartMetamaskTransaction = () => {
 
 };
 const onSuccessStartMetamaskTransaction = () => {
+  router.push({name: 'publicSaleInfo'});
   toast.success('Transaction complete');
 };
 const changeNetwork = (networkId: number) => {

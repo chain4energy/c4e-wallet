@@ -20,7 +20,7 @@
     </div>
   </div>
 <!--  <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />-->
-  <BuyTokensModal :visible="showModal"  @closeModal="showModal = false" @confirm="onBuyClick" :reservation="selectedReservation" />
+  <BuyTokensModal :visible="showModal"  @closeModal="showModal = false" @confirm="onPayReservation" :reservation="selectedReservation" />
 
   <Dialog v-model:visible="summaryVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
     <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
@@ -57,7 +57,7 @@
     </div>
   </Dialog>
   <ApprovalModal @close="hideApprovalModal" @submit="hideApprovalModal" v-if="showApprovalModal"/>
-  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
+  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :address="addressToConnect" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
 
 </template>
 
@@ -103,6 +103,7 @@ publicSalesStore.setCurrentPrice();
 const i18n = useI18n();
 const showAddressInfoModal = ref(false);
 const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
+const addressToConnect = ref();
 
 const showApprovalModal = ref(false);
 function hideApprovalModal(){
@@ -139,7 +140,6 @@ const onPay = (transaction: TokenReservation) => {
   showModal.value = true;
 };
 const onBuyClick = () => {
-  showModal.value = false;
   summaryVisible.value = true;
 };
 
@@ -152,6 +152,15 @@ const onConfirm = () => {
   }
 };
 
+const onPayReservation = () => {
+  showModal.value = false;
+  transactionContextStore.setOrderId(selectedReservation.value.orderId);
+  if(transactionContextStore.paymentCurrency != Currency.STABLE) {
+    router.push({name: 'fiatPaymentConfirmation'});
+  } else {
+    router.push({name: 'paymentConfirmation'});
+  }
+};
 const onSuccess = (orderId: number) => {
   transactionContextStore.setOrderId(orderId);
   usePublicSalesStore().fetchTokenReservations();
@@ -178,10 +187,16 @@ const usersWallet = computed(() => {
 });
 function provideClaimerAddress(){
   showAddressInfoModalAddressType.value = AddressType.KEPLR;
+  addressToConnect.value = useUserStore().getAccount.address;
   showAddressInfoModal.value = true;
 }
 function provideSourceAddress(){
   showAddressInfoModalAddressType.value = AddressType.METAMASK;
+  useUserStore().connectMetamask().then(async (address) => {
+    if (address) {
+      addressToConnect.value = address;
+    }
+  });
   showAddressInfoModal.value = true;
 }
 function addressConfirmed(){
@@ -196,11 +211,7 @@ function addressConfirmed(){
   }
   if(showAddressInfoModalAddressType.value == AddressType.METAMASK) {
     console.log('Connect metamask account');
-    useUserStore().connectMetamask().then(async (address) => {
-      if (address) {
-        await useUserServiceStore().initEmailMetamaskPairing(address, onSuccessConnect, onFail);
-      }
-    });
+    useUserServiceStore().initEmailMetamaskPairing(addressToConnect.value, onSuccessConnect, onFail);
   }
 }
 const onSuccessConnect = () => {
