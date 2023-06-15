@@ -1,3 +1,5 @@
+import {Coin} from "@/models/store/common";
+
 export interface ReserveTokensRequest {
   amount: number
 }
@@ -31,3 +33,55 @@ export interface Transaction {
   errorInfo: string;
   blockchain: string;
 }
+
+export interface TokenPaymentProofRequest{
+  blockchainName:	string;
+  coinIdentifier:	string;
+  orderID:	number;
+  txHashes:	string[];
+}
+
+export interface MetamaskPayInfo {
+  blockchainName: string;
+  orderId: number;
+  amount: string;
+  blockchainAddress: string;
+  coinDecimals: number;
+  c4eAddress: string;
+}
+
+export interface BlockchainInfo {
+  availableTokens: TokenInfo[];
+  chainId: number;
+  chainName: string;
+  id: number;
+}
+export interface TokenInfo {
+  c4eAddress: string;
+  coinIdentifier: string;
+  exchangeRate: number;
+  id: number;
+  name: string;
+
+}
+export interface RoundInfoResponse {
+  availableTokens: number;
+  c4eToUsd: number;
+  endDate: string;
+  startDate: string;
+  id: number;
+  reservedTokens: number;
+  soldTokens: number;
+  totalTokens: number;
+}
+export interface RoundInfo {
+  availableTokens: Coin;
+  c4eToUsd: number;
+  endDate: Date;
+  startDate: Date;
+  id: number;
+  reservedTokens: Coin;
+  soldTokens: Coin;
+  totalTokens: Coin;
+}
+

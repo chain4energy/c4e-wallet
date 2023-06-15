@@ -14,23 +14,207 @@
         Potem jęki po jękach skomlą - to psów granie; A gdzieniegdzie ton twardszy jak grzmot - to strzelanie.<br>
         Tu przerwał, lecz róg trzymał; wszystkim się zdawało, Że Wojski wciąż gra jeszcze, a to echo grało.</p>
     </div>
-    <InvestmentCalculator :rate="currency"/>
+    <InvestmentCalculator @onBuy="onBuyClick" />
+    <div v-for="items in transactions" :key="items" class="userProfile__holder">
+      <AllocationInfo :transaction="items" @pay="onPay(items)"/>
+    </div>
   </div>
+  <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />
+
+  <Dialog v-model:visible="summaryVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
+    <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
+      <h5 style="font-weight:700">You want to invest {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</h5>
+      <div class="requirements_container">
+        <div>
+          {{$t('BUY_TOKENS_VIEW.PASS_KYC')}} {{transactionContextStore.getRequiredKycLevel}}
+          <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/>
+        </div>
+        <div v-if="isKycLevelRequired">
+          <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
+        </div>
+        <div v-else><Button @click="onKycStart" class="p-button p-component secondary">{{$t('BUTTONS.START_KYC')}}</Button></div>
+        <div>{{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
+        <div v-if="isTermsAccepted">
+          <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
+        </div>
+        <div v-else ><Button class="p-button p-component secondary" @click="showApprovalModalFunc">{{$t('BUTTONS.ACCEPT')}}</Button></div>
+        <div>{{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
+        <div v-if="claimerAddress != ''">
+          <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
+        </div>
+        <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
+        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
+        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE && sourceAddress != ''">
+          <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
+        </div>
+        <div v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE"><Button @click="provideSourceAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
+      </div>
+      <div style="display: flex">
+        <Button class="p-button p-component secondary" @click="summaryVisible=false">{{$t('BUTTONS.CANCEL_ORDER')}}</Button>
+        <Button class="p-button p-component secondary" :disabled="!canConfirmOrder" @click="onConfirm">{{$t('BUTTONS.CONFIRM_ORDER')}}</Button>
+      </div>
+    </div>
+  </Dialog>
+  <ApprovalModal @close="hideApprovalModal" @submit="hideApprovalModal" v-if="showApprovalModal"/>
+  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
 </template>
 
 <script lang="ts" setup>
 
 import PublicSaleInfo from "@/components/buyTokens/PublicSaleInfo.vue";
 import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vue";
-import { usePublicSalesStore } from "@/store/publicSales.store";
-import { computed } from "vue";
+import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
+import {computed, onBeforeMount, ref} from "vue";
+import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
+import PayModal from "@/components/buyTokens/PayModal.vue";
+import Dialog from "primevue/dialog";
+import {useTransactionContextStore} from "@/store/transactionContext.store";
+import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
+import {useRouter} from "vue-router";
+import {Currency} from "@/models/currency";
+import {useToast} from "vue-toastification";
+import IconComponent from "@/components/features/IconComponent.vue";
+import TooltipComponent from "@/components/TooltipComponent.vue";
+import ApprovalModal from "@/components/buyTokens/modals/ApprovalModal.vue";
+import {useI18n} from "vue-i18n";
+import {ethereum} from "@cosmostation/extension-client";
+import ProvideAddresInfoModal from "@/components/buyTokens/modals/ProvideAddresInfoModal.vue";
+import {AddressType} from "@/components/buyTokens/modals/AddressType";
+import {useUserStore} from "@/store/user.store";
+import {useContextStore} from "@/store/context.store";
+import {SignParingAddressResult} from "@/models/user/emailPairing";
+
+onBeforeMount(() => {
+
+  publicSaleStore.fetchTokenReservations();
+});
+const router = useRouter();
+const toast = useToast();
+const publicSaleStore = usePublicSalesStore();
+const transactionContextStore = useTransactionContextStore();
 const publicSalesStore = usePublicSalesStore();
+const summaryVisible = ref(false);
 publicSalesStore.setParts();
 publicSalesStore.setTotal();
 publicSalesStore.setCurrentPrice();
-const currency = computed(() => {
-  return publicSalesStore.getC4eToUSDC;
+const i18n = useI18n();
+const showAddressInfoModal = ref(false);
+const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
+
+const showApprovalModal = ref(false);
+function hideApprovalModal(){
+  showApprovalModal.value = false;
+}
+function showApprovalModalFunc(){
+  showApprovalModal.value = true;
+}
+
+const claimerAddress = computed(() => {
+  return useUserServiceStore().claimAddress;
 });
+const sourceAddress = computed(() => {
+  return useUserServiceStore().ethereumAddress;
+});
+
+const isTermsAccepted = computed(() =>{
+  return useUserServiceStore().isTermsAccepted;
+});
+
+const isKycLevelRequired = computed(() => {
+  return useUserServiceStore().kycLevel >= transactionContextStore.getRequiredKycLevel;
+});
+
+const transactions = computed(() => {
+  return usePublicSalesStore().getTransactions;
+});
+const showModal = ref<boolean>(false);
+const selectedReservation = ref();
+
+
+const onPay = (transaction: TokenReservation) => {
+  selectedReservation.value = transaction;
+  showModal.value = true;
+};
+const onBuyClick = () => {
+  summaryVisible.value = true;
+};
+
+const onConfirm = () => {
+  if(useUserServiceStore().loginType == LoginTypeEnum.NONE) {
+    router.push({name: 'signIn'});
+  } else {
+    summaryVisible.value = false;
+    publicSaleStore.reserveTokens(Number(transactionContextStore.amountToBuy), onSuccess, onFail);
+  }
+};
+
+const onSuccess = (orderId: number) => {
+  transactionContextStore.setOrderId(orderId);
+  usePublicSalesStore().fetchTokenReservations();
+  toast.success('Tokens reserved successfully');
+  if(transactionContextStore.paymentCurrency != Currency.STABLE) {
+    router.push({name: 'fiatPaymentConfirmation'});
+  } else {
+    router.push({name: 'paymentConfirmation'});
+  }
+};
+
+const onFail = () => {
+  toast.error('An error occured');
+};
+
+const onKycStart = () => {
+  useUserServiceStore().initKycSession(true).then(() => {
+    router.push({name: 'kyc'});
+  });
+
+};
+const usersWallet = computed(() => {
+  return useUserStore().getAccount.address;
+});
+function provideClaimerAddress(){
+  showAddressInfoModalAddressType.value = AddressType.KEPLR;
+  showAddressInfoModal.value = true;
+}
+function provideSourceAddress(){
+  showAddressInfoModalAddressType.value = AddressType.METAMASK;
+  showAddressInfoModal.value = true;
+}
+function addressConfirmed(){
+  showAddressInfoModal.value = false;
+  if(showAddressInfoModalAddressType.value == AddressType.KEPLR) {
+    console.log('Connect keplr account');
+    if (usersWallet.value) {
+      useUserServiceStore().initEmailKeplrPairing(useUserStore().getAccount.address, onSuccessConnect, onFail);
+    } else {
+      toast.error('You have to be logged in with Email');
+    }
+  }
+  if(showAddressInfoModalAddressType.value == AddressType.METAMASK) {
+    console.log('Connect metamask account');
+    useUserStore().connectMetamask().then(async (address) => {
+      if (address) {
+        await useUserServiceStore().initEmailMetamaskPairing(address, onSuccessConnect, onFail);
+      }
+    });
+  }
+}
+const onSuccessConnect = () => {
+  useContextStore().addressType = showAddressInfoModalAddressType.value;
+  router.push({name: 'provideVerificationCode'});
+};
+function closeProvideAddressModalClose(){
+  showAddressInfoModal.value = false;
+}
+
+const canConfirmOrder = computed(() => {
+  const isSourceAddressRequired = transactionContextStore.paymentCurrency == Currency.STABLE;
+  if(isSourceAddressRequired) {
+    return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != '' && sourceAddress.value != '';
+  }
+  return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != '';
+});
+
 </script>
 
 <style scoped lang="scss">
@@ -59,5 +243,32 @@ const currency = computed(() => {
     }
   }
 }
+.requirements_container {
+  padding: 20px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto;
 
+  font-size: 18px;
+  div {
+    height: 60px;
+    display: flex;
+    align-items: center;
+  }
+  div:nth-child(even) {
+    justify-content: center;
+  }
+
+}
+:deep(.p-dropdown .p-dropdown-label) {
+  font-size: 18px;
+  font-weight: bold;
+}
+:deep(.p-dropdown .p-dropdown-trigger){
+  display: none !important;
+}
+::v-deep(.p-button:not(.p-button-icon-only)) {
+  border-radius: 5px !important;
+
+}
 </style>

@@ -2,9 +2,15 @@ import { defineStore } from "pinia";
 import {Coin} from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import factoryApi from "@/api/factory.api";
-import {InitPaymentSessionRequest, Transaction} from "@/models/saleServiceCommons";
+import {
+  BlockchainInfo,
+  InitPaymentSessionRequest, MetamaskPayInfo, RoundInfo,
+  TokenPaymentProofRequest,
+  Transaction
+} from "@/models/saleServiceCommons";
 import {clearAuthTokens} from "axios-jwt";
 import {LoginTypeEnum} from "@/store/userService.store";
+import apiFactory from "@/api/factory.api";
 export interface PublicSalesState{
   total: Coin | undefined,
   parts: parts | undefined,
@@ -12,9 +18,11 @@ export interface PublicSalesState{
   endDate: Date | undefined,
   c4eToUSDC: number | undefined,
   tokenReservations: TokenReservation[] | undefined,
+  blockchainInfo: BlockchainInfo[],
+  roundInfo: RoundInfo | undefined
 }
 export interface parts{
-  solved: Coin,
+  sold: Coin,
   reserved: Coin,
 }
 export enum accountSaleType{
@@ -67,6 +75,8 @@ export const usePublicSalesStore = defineStore({
       endDate: undefined,
       c4eToUSDC: undefined,
       tokenReservations: undefined,
+      blockchainInfo: [],
+      roundInfo: undefined
     };
   },
   actions: {
@@ -79,7 +89,7 @@ export const usePublicSalesStore = defineStore({
     setParts(){
       const denom = useConfigurationStore().config.stakingDenom;
       this.parts = {
-        solved: new Coin(BigInt(105000000000000), denom),
+        sold: new Coin(BigInt(105000000000000), denom),
         reserved : new Coin(BigInt(45000000000000), denom)
       };
     },
@@ -120,10 +130,10 @@ export const usePublicSalesStore = defineStore({
         }
       });
     },
-    reserveTokens(amount: number, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    reserveTokens(amount: number, onSuccess: ((orderId: number) => void), onFail: (() => void), lockscreen = true) {
       return factoryApi.publicSaleServiceApi().reserveTokens(amount, lockscreen).then(res => {
-        if(res.isSuccess()) {
-          onSuccess();
+        if(res.isSuccess() && res.data?.orderId) {
+          onSuccess(res.data.orderId);
         } else {
           onFail();
         }
@@ -131,8 +141,48 @@ export const usePublicSalesStore = defineStore({
     },
     initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen = true) {
       return factoryApi.publicSaleServiceApi().initPaymentSession(initPaymentSessionRequest, lockscreen).then(res => {
-        console.log(res);
         return res.data?.transactionId;
+      });
+    },
+    fetchBlockchainInfo(lockscreen = false) {
+      return factoryApi.publicSaleServiceApi().fetchBlockchainInfo(lockscreen).then(res => {
+        if(res.isSuccess() && res.data) {
+          this.blockchainInfo = res.data;
+        }
+      });
+    },
+    fetchRoundInfo(lockscreen = false) {
+      return factoryApi.publicSaleServiceApi().fetchRoundInfo(lockscreen).then(res => {
+        if(res.isSuccess() && res.data) {
+          this.roundInfo = res.data;
+        }
+      });
+    },
+    async provideTxPaymentProof(txPaymentProofRequest: TokenPaymentProofRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().provideTxPaymentProof( txPaymentProofRequest, lockscreen).then(res => {
+        if(res.isSuccess()) {
+          onSuccess();
+        } else {
+          onFail();
+        }
+        console.log(res)
+      });
+    },
+    async payByMetamask(payInfo: MetamaskPayInfo, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      this.sendMetamaskTransaction(payInfo.amount, payInfo.blockchainAddress, payInfo.coinDecimals, payInfo.c4eAddress).then(res => {
+        if (res.isSuccess() && res.data){
+          this.provideTxPaymentProof({
+            blockchainName: payInfo.blockchainName, coinIdentifier: payInfo.blockchainAddress, orderID: payInfo.orderId, txHashes: [res.data]
+          }, onSuccess, onFail, lockscreen);
+        } else {
+          onFail();
+        }
+      });
+    },
+    async sendMetamaskTransaction(amount: string, blockchainAddress: string, coinDecimals: number, c4eAddress: string) {
+      return await apiFactory.accountApi().sendTransaction( amount, blockchainAddress, coinDecimals, c4eAddress).then(res => {
+        console.log(res)
+        return res;
       });
     },
     setCurrentPrice(){
@@ -147,7 +197,9 @@ export const usePublicSalesStore = defineStore({
       return this.total;
     },
     getParts(): parts | undefined{
-      return this.parts;
+      if(this.roundInfo)
+        return {sold: this.roundInfo.soldTokens, reserved: this.roundInfo.reservedTokens};
+      return undefined;
     },
     getC4eToUSDC(): number| undefined{
       return this.c4eToUSDC;

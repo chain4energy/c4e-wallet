@@ -365,7 +365,12 @@
     "EMAILREGISTRATION": "Rejestracja emailem",
     "KEPLRREGISTRATION": "Rejestracja Kerplrem",
     "METAMASKREGISTRATION": "Rejestracja Metamaskiem",
-    "EMAILLOGIN": "Logowanie emailem"
+    "EMAILLOGIN": "Logowanie emailem",
+    "PAYMENTCONFIRMATION": "Potwierdzenie płatności",
+    "FIATPAYMENTCONFIRMATION": "Potwierdzenie płatności",
+    "USERPROFILETABS": "Profil",
+    "SIGNIN": "Logowanie",
+    "SIGNUP": "Rejestracja"
   },
   "TOAST": {
     "SUCCESS": {
@@ -435,5 +440,57 @@
       "METAMASK": "Metamask",
       "NONE": "Nie zalogowano"
     }
+  },
+  "PROFILE_VIEW": {
+    "TYPE": "Typ logowania",
+    "YOUR_ACCOUNT": "Twoje konto",
+    "TERMS_ACCEPTANCE": "Akceptacja warunków",
+    "CLAIMER_ADDRESS": "Claimer address",
+    "SOURCE_ADDRESS": "Source address",
+    "NO_ADDRESS_PROVIDED": "Brak adresu",
+    "ACCOUNT_INFO": "Informacje o koncie",
+    "TRANSACTIONS": "Transakcje"
+  },
+  "BUTTONS": {
+    "START_KYC": "Start KYC",
+    "ACCEPT": "Akceptuj",
+    "PROVIDE_ADDRESS": "Provide address",
+    "LOGOUT": "Wyloguj",
+    "BUY": "Kup",
+    "CANCEL_ORDER": "Anuluj zamówienie",
+    "CONFIRM_ORDER": "Potwierdź zamówienie"
+  },
+  "BUY_TOKENS_VIEW": {
+    "ROUND_INFO": "Public Sale Info: RUNDA",
+    "TOTAL_RAISE": "Total Raise",
+    "PRICE": "Cena",
+    "TIME_TO_START": "Czas do startu",
+    "TIME_TO_END": "Czas do końca",
+    "ALREADY_STARTED": "Wystartowało",
+    "CALCULATE_INVESTMENT": "Kalkulator inwestycyjny",
+    "I_WANT_TO_BUY": "Kupuje",
+    "I_WANT_TO_INVEST": "Inwestuję",
+    "REQUIREMENTS": "Wymagania",
+    "ALLOCATION_INFO": "Informacje o alokacji",
+    "AMOUNT_REQUESTED": "Żądana ilość",
+    "REMAINING_RESERVATION_TIME": "Pozostaly czas rezerwacji",
+    "PAYMENT_TYPE": "Typ płatności",
+    "STATUS": "Status",
+    "PASS_KYC": "Pass KYC - Level",
+    "ACCEPT_SALE_TERMS": "Zaakceptuj warunki sprzedaży",
+    "PROVIDE_CLAIMER_ADDRESS": "Provide claimer address",
+    "PROVIDE_SOURCE_ADDRESS": "Provide source address",
+    "ORDER_SUMMARY": "Podsumowanie zamówienia"
+  },
+  "PAYMENT_CONFIRMATION_VIEW": {
+    "CONFIRM_PAYMENT": "Confirm Your Payment",
+    "SUMMARY": {
+      "FIRST_LINE": "Your order no. {orderId} has been placed successfully",
+      "SECOND_LINE": "Your order have to be paid in 24 hours, after this time it will be automatically cancelled.",
+      "THIRD_LINE_1": "Please pay",
+      "THIRD_LINE_2": "by MetaMask wallet",
+      "PAY": "Pay"
+    }
   }
+
 }

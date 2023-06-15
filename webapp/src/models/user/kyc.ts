@@ -2,23 +2,28 @@ export interface InitSessionResponse {
   session_id: string
 }
 
-export enum KycStatus {
+export interface KycStatusResponse {
+  kycLevel: number,
+  kycServiceState: Map<KycStepName, KycProgressStatus>,
+}
+
+export enum KycProgressStatus {
   VALIDATED='VALIDATED',
   PENDING='PENDING',
-  NOT_STARTED='NOT_STARTED'
 }
 
 export enum KycStepName {
   LIVENESS='LIVENESS',
   IDENTITY='IDENTITY',
-  PHONE='PHONE'
+  PHONE='PHONE',
+  RESIDENCY="RESIDENCY"
 }
 
 export interface KycTier {
   kycStep: KycStep[]
 }
 export interface KycStep {
-  state: KycStatus,
+  state: KycProgressStatus,
   name: KycStepName
 }
 
@@ -27,7 +32,7 @@ export interface SessionOverviewResponse {
 }
 
 export interface SessionOverviewStep {
-  state: KycStatus,
+  state: KycProgressStatus,
   name: KycStepName
 }
 export enum KycTierEnum {
@@ -38,5 +43,5 @@ export enum KycTierEnum {
 }
 export interface KycStepInfo {
   name: KycStepName,
-  state: KycStatus | undefined
+  state: KycProgressStatus | undefined
 }

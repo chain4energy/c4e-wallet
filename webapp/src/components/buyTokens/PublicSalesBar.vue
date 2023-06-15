@@ -2,7 +2,7 @@
   <div class="publicSalesBar">
     <div class="publicSalesBar__helper">
       <div>0%</div>
-      <div :style="{transform: `translateX(${mark}${totalPercents.toFixed(0)}px)`}">{{ totalPercentToShow}}% </div>
+      <div v-if="totalPercentToShow > 5" :style="{transform: `translateX(${mark}${totalPercents.toFixed(0)}px)`}">{{ totalPercentToShow}}% </div>
       <div>100%</div>
     </div>
     <canvas class="publicSalesBar__canvas" ref="tokens"></canvas>
@@ -34,13 +34,13 @@ function initCanvas() {
   tokens.value.width = tokens.value.offsetWidth;
   tokens.value.height = tokens.value.offsetHeight;
   ctx.value = tokens.value.getContext("2d");
-  const denom = useConfigurationStore().config.stakingDenom;
+  const denom = amount.total.denom;
   const total = useConfigurationStore().config.getConvertedAmount(amount.total.amount, denom);
-  const solvedPercents = (Number(useConfigurationStore().config.getConvertedAmount(amount.values.solved.amount, denom))/Number(total)) * 100;
+  const solvedPercents = (Number(useConfigurationStore().config.getConvertedAmount(amount.values.sold.amount, denom))/Number(total)) * 100;
   const reservedPercents = (Number(useConfigurationStore().config.getConvertedAmount(amount.values.reserved.amount, denom))/Number(total)) * 100;
   const totalInPer = Number(reservedPercents) + Number(solvedPercents);
   const posNeg = Math.sign(50 - totalInPer);
-  totalPercentToShow.value = totalInPer;
+  totalPercentToShow.value = Number(totalInPer.toFixed(2));
   switch (posNeg){
     case 1: mark.value = '-'; totalPercents.value = (tokens.value.width/100) * (50 - totalInPer);
     break;
@@ -60,7 +60,7 @@ function initCanvas() {
   ctx.value.fillStyle = '#FFFFFF';
   solvedBarText.font = "16px Arial";
   ctx.value.globalCompositeOperation = 'source-over';
-  const text = `${Number(useConfigurationStore().config.getConvertedAmount(amount.values.solved.amount, denom)).toString()} C4E`;
+  const text = `${Number(useConfigurationStore().config.getConvertedAmount(amount.values.sold.amount, denom)).toString()} C4E`;
   const textWidth = ctx.value.measureText(text ).width;
   ctx.value.fillText(
     text,
@@ -90,7 +90,7 @@ function initCanvas() {
   ctx.value.fillStyle = '#000000';
   restBarText.font = "16px Arial";
   ctx.value.globalCompositeOperation = 'source-over';
-  const textRest = `${Number(useConfigurationStore().config.getConvertedAmount(amount.total.amount, denom)) - (Number(useConfigurationStore().config.getConvertedAmount(amount.values.solved.amount, denom)) + Number(useConfigurationStore().config.getConvertedAmount(amount.values.reserved.amount, denom)))} C4E`;
+  const textRest = `${Number(useConfigurationStore().config.getConvertedAmount(amount.total.amount, denom)) - (Number(useConfigurationStore().config.getConvertedAmount(amount.values.sold.amount, denom)) + Number(useConfigurationStore().config.getConvertedAmount(amount.values.reserved.amount, denom)))} C4E`;
   const text3Width = ctx.value.measureText(textRest ).width;
   ctx.value.fillText(
     textRest,

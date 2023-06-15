@@ -370,7 +370,12 @@
     "EMAILREGISTRATION": "Email registration",
     "KEPLRREGISTRATION": "Keplr registration",
     "METAMASKREGISTRATION": "Metamask registration",
-    "EMAILLOGIN": "Email login"
+    "EMAILLOGIN": "Email login",
+    "PAYMENTCONFIRMATION": "Payment confirmation",
+    "FIATPAYMENTCONFIRMATION": "Payment confirmation",
+    "USERPROFILETABS": "Profile",
+    "SIGNIN": "Sign in",
+    "SIGNUP": "Sign up"
   },
   "TOAST": {
     "SUCCESS": {
@@ -440,6 +445,57 @@
       "KEPLR": "Keplr",
       "METAMASK": "Metamask",
       "NONE": "Not logged in"
+    }
+  },
+  "PROFILE_VIEW": {
+    "TYPE": "Type",
+    "YOUR_ACCOUNT": "Your account",
+    "TERMS_ACCEPTANCE": "Terms acceptance",
+    "CLAIMER_ADDRESS": "Claimer address",
+    "SOURCE_ADDRESS": "Source address",
+    "NO_ADDRESS_PROVIDED": "No address provided",
+    "ACCOUNT_INFO": "Account info",
+    "TRANSACTIONS": "Transactions"
+  },
+  "BUTTONS": {
+    "START_KYC": "Start KYC",
+    "ACCEPT": "Accept",
+    "PROVIDE_ADDRESS": "Provide address",
+    "LOGOUT": "Logout",
+    "BUY": "Buy",
+    "CANCEL_ORDER": "Cancel order",
+    "CONFIRM_ORDER": "Confirm order"
+  },
+  "BUY_TOKENS_VIEW": {
+    "ROUND_INFO": "Public Sale Info: ROUND",
+    "TOTAL_RAISE": "Total Raise",
+    "PRICE": "Price",
+    "TIME_TO_START": "Time to start",
+    "TIME_TO_END": "Time to end",
+    "ALREADY_STARTED": "Already Started",
+    "CALCULATE_INVESTMENT": "Calculate investment",
+    "I_WANT_TO_BUY": "I want to buy",
+    "I_WANT_TO_INVEST": "I want to invest",
+    "REQUIREMENTS": "Requirements",
+    "ALLOCATION_INFO": "Allocation info",
+    "AMOUNT_REQUESTED": "Amount requested",
+    "REMAINING_RESERVATION_TIME": "Remaining reservation time",
+    "PAYMENT_TYPE": "Payment type",
+    "STATUS": "Status",
+    "PASS_KYC": "Pass KYC - Level",
+    "ACCEPT_SALE_TERMS": "Accept sale terms",
+    "PROVIDE_CLAIMER_ADDRESS": "Provide claimer address",
+    "PROVIDE_SOURCE_ADDRESS": "Provide source address",
+    "ORDER_SUMMARY": "Order summary"
+  },
+  "PAYMENT_CONFIRMATION_VIEW": {
+    "CONFIRM_PAYMENT": "Confirm Your Payment",
+    "SUMMARY": {
+      "FIRST_LINE": "Your order no. {orderId} has been placed successfully",
+      "SECOND_LINE": "Your order have to be paid in 24 hours, after this time it will be automatically cancelled.",
+      "THIRD_LINE_1": "Please pay",
+      "THIRD_LINE_2": "by MetaMask wallet",
+      "PAY": "Pay"
     }
   }
 }

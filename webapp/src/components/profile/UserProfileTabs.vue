@@ -1,30 +1,25 @@
 <template>
-  <AddressModal style="position: fixed; z-index: 99999" @close="hideAddAddress" @submit="submitEmail" v-if="showAddressAdd" />
+<!--  <AddressModal style="position: fixed; z-index: 99999" @close="hideAddAddress" @submit="submitEmail" v-if="showAddressAdd" />-->
+  <ApprovalModal @close="hideApprovalModal" @submit="console.log(1)" v-if="showApprovalModal"/>
   <div class="userProfile">
     <div class="userProfile__holder">
       <TabView>
         <TabPanel class="userProfile__tabHeader">
-          <template #header>Account info</template>
-          <AccountInfo :accordion="false" @open-modal="showAddressAddModal"/>
-          <div class="userProfile__holder">
-            <InvestmentCalculator :rate="currency"/>
-          </div>
-          <div v-for="items in transactions" :key="items" class="userProfile__holder">
-            <AllocationInfo :transaction="items" @pay="onPay(items)"/>
-          </div>
+          <template #header>{{$t('PROFILE_VIEW.ACCOUNT_INFO')}}</template>
+          <AccountInfo :accordion="false" @open-modal="showAddressAddModal" @open-approval="showApprovalModalFunc"/>
         </TabPanel>
         <TabPanel>
-          <template #header>Transactions</template>
+          <template #header>{{$t('PROFILE_VIEW.TRANSACTIONS')}}</template>
         </TabPanel>
       </TabView>
     </div>
 
     <div class="userProfile__extra">
-      <Button v-if="useUserServiceStore().isLoggedIn"
+      <Button v-if="useUserServiceStore().isLoggedIn()"
         class="p-button p-component secondary userProfile__btn"
-        @click="useUserServiceStore().logOutAccount()">Logout</Button>
+        @click="useUserServiceStore().logOutAccount()">{{$t('BUTTONS.LOGOUT')}}</Button>
     </div>
-    <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />
+<!--    <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />-->
   </div>
 </template>
 
@@ -35,17 +30,26 @@ import AccountInfo from "@/components/transactions/AccountInfo.vue";
 import { useUserStore } from "@/store/user.store";
 import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vue";
 import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
-import {computed, onBeforeMount, ref} from "vue";
+import { computed, onBeforeMount, onMounted, ref } from "vue";
 import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
 import PayModal from "@/components/buyTokens/PayModal.vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import AddressModal from "@/components/buyTokens/modals/AddressModal.vue";
+import ApprovalModal from "@/components/buyTokens/modals/ApprovalModal.vue";
 
-const showAddressAdd = ref(false)
+const showAddressAdd = ref(false);
+const showApprovalModal = ref(false);
 
 onBeforeMount(() => {
   usePublicSalesStore().fetchTokenReservations();
 });
+
+onMounted(() =>{
+  useUserServiceStore().getAccount(()=>{console.log(1)}, ()=>{console.log(2)});
+  useUserServiceStore().getKycStatus();
+});
+
+
 const currency = computed(() => {
   return usePublicSalesStore().getC4eToUSDC;
 });
@@ -54,7 +58,6 @@ const selectedReservation = ref();
 const transactions = computed(() => {
   return usePublicSalesStore().getTransactions;
 });
-
 function submitEmail(){
   hideAddAddress();
 }
@@ -64,6 +67,13 @@ function showAddressAddModal(){
 }
 function hideAddAddress(){
   showAddressAdd.value = false;
+}
+
+function showApprovalModalFunc(){
+  showApprovalModal.value = true;
+}
+function hideApprovalModal(){
+  showApprovalModal.value = false;
 }
 
 

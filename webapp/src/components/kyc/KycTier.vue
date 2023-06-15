@@ -11,9 +11,10 @@
     <div class="list">
 
       <div v-for="step in listOfSteps" :key="step" style="margin-top: 15px; padding:5px;border-bottom: 1px solid rgba(143,143,143,0.2);">
-        <Icon v-if="step.state == KycStatus.VALIDATED" style="color: #72bf44; width: 35px; height: 35px" name="Check" />
-        <Icon v-if="step.state == KycStatus.NOT_STARTED" style="color: #ff2500; width: 35px; height: 35px" name="X" />
-        <Icon v-if="step.state == KycStatus.PENDING" style="color: #4b4b4b; width: 35px; height: 35px" name="Loader" />
+        <Icon v-if="step.state == KycProgressStatus.VALIDATED" style="color: #72bf44; width: 35px; height: 35px" name="Check" />
+        <Icon v-else-if="step.state == KycProgressStatus.NOT_STARTED" style="color: #ff2500; width: 35px; height: 35px" name="X" />
+        <Icon v-else-if="step.state == KycProgressStatus.PENDING" style="color: #4b4b4b; width: 35px; height: 35px" name="Loader" />
+        <Icon v-else style="color: #ff2500; width: 35px; height: 35px" name="X" />
         {{getStepName(step.name)}}
       </div>
     </div>
@@ -30,7 +31,7 @@
 
 <script setup lang="ts">
 import Icon from "@/components/features/IconComponent.vue";
-import {KycStatus, KycStepInfo, KycStepName} from "@/models/user/kyc";
+import {KycProgressStatus, KycStepInfo, KycStepName} from "@/models/user/kyc";
 
 const props = defineProps<{
   header: string,
@@ -47,13 +48,15 @@ const getStepName = (name: KycStepName): string => {
     return 'Personal information';
   if(name == KycStepName.PHONE)
     return 'Phone number';
+  if(name == KycStepName.RESIDENCY)
+    return 'Proof of residency';
   return '';
 };
 
 const isVerified = (): boolean => {
   let verified = true;
   props.listOfSteps.forEach(step => {
-    if(step.state != KycStatus.VALIDATED)
+    if(step.state != KycProgressStatus.VALIDATED)
       verified = false;
   });
   return verified;
@@ -67,7 +70,9 @@ const onVerifyClick = () => {
 <style scoped lang="scss">
 
 .tier_container {
-  width: 430px;
+  //width:100%;
+  min-width: 410px;
+  max-width: 520px;
   height: 700px;
   position: relative;
 

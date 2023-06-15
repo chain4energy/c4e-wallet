@@ -1,32 +1,40 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
-import {clearAuthTokens, setAuthTokens} from "axios-jwt";
+import {clearAuthTokens, setAuthTokens, isLoggedIn} from "axios-jwt";
 import {InitWalletAuthRequest, WalletAuthRequest} from "@/models/user/walletAuth";
 import {useUserStore} from "@/store/user.store";
 import {RequestResponse} from "@/models/request-response";
 import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
-import {EmailPairingRequest} from "@/models/user/emailPairing";
+// import {EmailPairingRequest, EmailPairingRes} from "@/models/user/emailPairing";
+import axios from "axios";
+import {EmailPairingRequest, EmailPairingRes, SignParingAddressResult} from "@/models/user/emailPairing";
 import {usePublicSalesStore} from "@/store/publicSales.store";
-import {KycStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum} from "@/models/user/kyc";
+import {KycProgressStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum} from "@/models/user/kyc";
+import {TxBroadcastError} from "@/api/tx.broadcast.base.api";
+import {ethers} from "ethers";
+import {useContextStore} from "@/store/context.store";
 
 interface UserServiceState {
-  _isLoggedIn: boolean,
   loginType: LoginTypeEnum,
   kycSessionId: string
   paired: boolean,
   userEmail: string | undefined,
-  metamaskAddress : string | undefined,
-  kycSteps: KycStep[]
+  verificationNeeded: boolean,
+  termsAccepted: boolean,
+  ethereumAddress: string,
+  claimAddress: string,
+  kycServiceState: Map<KycStepName, KycProgressStatus>,
+  kycLevel: number
 }
 
 export enum LoginTypeEnum {
-  EMAIL,
-  KEPLR,
-  METAMASK,
-  NONE
+  EMAIL="EMAIL",
+  KEPLR="KEPLR",
+  METAMASK="METAMASK",
+  NONE="NONE"
 }
 
 
@@ -34,18 +42,50 @@ export const useUserServiceStore = defineStore({
   id: 'userServiceStore',
   state: (): UserServiceState => {
     return {
-      _isLoggedIn: false,
       loginType: LoginTypeEnum.NONE,
       kycSessionId: '',
       paired: false,
       userEmail: undefined,
-      kycSteps: Array<KycStep>(),
-      metamaskAddress : undefined,
+      verificationNeeded: false,
+      termsAccepted: false,
+      ethereumAddress: '',
+      claimAddress: '',
+      kycServiceState: new Map<KycStepName, KycProgressStatus>(),
+      kycLevel: 0
     };
   },
   actions: {
-    setIsLoggedIn() {
-      this._isLoggedIn = true;
+    async getAccount(onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().getAccount(lockscreen).then(responseDate => {
+        if(responseDate.isSuccess() && responseDate.data) {
+          this.termsAccepted = responseDate.data.terms;
+          this.loginType = responseDate.data.accountType;
+          this.userEmail = responseDate.data.login;
+          this.ethereumAddress = responseDate.data.ethereumAddress;
+          this.claimAddress = responseDate.data?.claimAddress;
+          this.kycLevel = responseDate.data.kycInfo.kycLevel;
+          const map = new Map<KycStepName, KycProgressStatus>();
+          for(const [key, value] of Object.entries(responseDate.data.kycInfo.kycServiceState)) {
+            map.set(key as KycStepName, value as KycProgressStatus);
+          }
+          this.kycServiceState = map;
+
+          onSuccess();
+        } else {
+          onFail();
+        }
+      });
+    },
+    async getKycStatus() {
+      await apiFactory.publicSaleServiceApi().getKycStatus(false).then(response => {
+        if(response.isSuccess() && response.data) {
+          const map = new Map<KycStepName, KycProgressStatus>();
+          for(const [key, value] of Object.entries(response.data.kycServiceState)) {
+            map.set(key as KycStepName, value as KycProgressStatus);
+          }
+          this.kycServiceState = map;
+        }
+      });
     },
     async authWalletInit(initWalletAuthRequest: InitWalletAuthRequest,onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
        const initWalletAuthResponse = await apiFactory.publicSaleServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
@@ -59,15 +99,11 @@ export const useUserServiceStore = defineStore({
          onFail();
        }
     },
-    async sendMetamaskTransaction(amount: string) {
-      await apiFactory.accountApi().sendTransaction( amount).then(res => {
-        console.log(res)
-      });
-    },
+
     async authMetamaskWalletInit(initWalletAuthRequest: InitWalletAuthRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
       const initWalletAuthResponse = await apiFactory.publicSaleServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
       if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
-        await apiFactory.accountApi().signMetamask(initWalletAuthResponse.data.dataToSign).then(signedDataResponse => {
+        await apiFactory.accountApi().signMetamask(initWalletAuthResponse.data.dataToSign.randomString).then(signedDataResponse => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           this.authWalletMetamask({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data}, onSuccess, onFail);
@@ -90,7 +126,6 @@ export const useUserServiceStore = defineStore({
         if(responseDate.isSuccess()) {
           onSuccess();
           this.setTokens(responseDate);
-          this.loginType = LoginTypeEnum.KEPLR;
         } else {
           onFail();
         }
@@ -100,7 +135,6 @@ export const useUserServiceStore = defineStore({
       await apiFactory.publicSaleServiceApi().authWalletMetamask(walletAuthData, lockscreen).then(responseDate => {
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
-          this.loginType = LoginTypeEnum.METAMASK;
           onSuccess();
         } else {
           onFail();
@@ -112,7 +146,6 @@ export const useUserServiceStore = defineStore({
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
           this.userEmail = emailAccount.login;
-          this.loginType = LoginTypeEnum.EMAIL;
           onSuccess();
         } else {
           onFail();
@@ -139,14 +172,6 @@ export const useUserServiceStore = defineStore({
 
       });
     },
-    async fetchKycStatus(sessionId: string, lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().synapsFetchSessionDetails(sessionId,lockscreen).then(responseDate => {
-        if(responseDate.isSuccess() && responseDate.data) {
-          this.kycSteps = responseDate.data.kycStep;
-        }
-
-      });
-    },
     setTokens(responseDate: RequestResponse<Jwt, ErrorData<UserServiceErrData>>){
       if (responseDate.isSuccess()) {
         // save tokens to storage
@@ -155,7 +180,6 @@ export const useUserServiceStore = defineStore({
             accessToken: responseDate.data.access_token.token,
             refreshToken: responseDate.data.refresh_token.token
           });
-          this.setIsLoggedIn();
         } else {
           //TODO: toast - log in error
         }
@@ -163,44 +187,173 @@ export const useUserServiceStore = defineStore({
         //TODO: toast - log in error
       }
     },
-    async provideEmailAddress(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().pairEmail(emailAccount, lockscreen).then(responseDate => {
-        if(responseDate.isSuccess()) {
-          this.setIsLoggedIn();
-          this.loginType = LoginTypeEnum.EMAIL;
-          this.paired = true;
+    async initEmailKeplrPairing(claimedAddress: string, onSuccess: (() => void), onFail: (() => void), lockscreen=true) {
+      await apiFactory.publicSaleServiceApi().initPairEmailKeplr({claimedAddress: claimedAddress}, lockscreen).then(async (responseData) => {
+        if (responseData.isSuccess() && responseData.data) {
+          useContextStore().dataToSign = responseData.data;
           onSuccess();
         } else {
           onFail();
         }
       });
     },
-    async pairMetamaskAddress(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().pairMetamask(emailAccount, lockscreen).then(responseDate => {
-        if(responseDate.isSuccess()) {
-          this.setIsLoggedIn();
-          this.loginType = LoginTypeEnum.EMAIL;
-          this.paired = true;
-          onSuccess();
+    async provideKeplrAddress(emailAccount: EmailPairingRequest, onSuccess: ((response: SignParingAddressResult) => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().initPairEmailKeplr(emailAccount, lockscreen).then(async (responseData) => {
+        if (responseData.isSuccess() && responseData.data) {
+          await this.signPairingEmailKeplr(responseData.data).then(resp=>{
+            // console.log('!!!!');
+            // console.log(resp);
+            if(responseData.data && resp.data) {
+              onSuccess({processID: responseData.data?.processID, signedData: resp.data});
+            }
+          });
         } else {
           onFail();
         }
+      });
+    },
+    async signPairingEmailKeplr(responseData: EmailPairingRes){
+     return await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
+       if(signedDataResponse.isSuccess() && signedDataResponse.data){
+         await this.approveSignedDataParingEmailKeplr(signedDataResponse.data, responseData.processID);
+         return signedDataResponse;
+       } else {
+         return signedDataResponse;
+       }
+      });
+    },
+    async approveSignedDataParingEmailKeplr(signedDataResponse: string, processId: string, lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().confirmEmailPairingKeplr({processID: processId, signedData:signedDataResponse}, lockscreen).then(res =>{
+        this.verificationNeeded = res.isSuccess();
+        console.log(res);
       });
     },
 
+    async verifyParingEmailKeplr(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().verifyPairingEmailKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, true).then(response => {
+        if(response.isSuccess()){
+          this.loginType = LoginTypeEnum.EMAIL;
+          this.paired = true;
+          this.verificationNeeded = false;
+          onSuccess();
+        }else {
+          onFail();
+        }
+      });
+    },
+    async switchBlockchain(chainId: number) {
+      try {
+        if (!window.ethereum) {
+          throw new Error('MetaMask is not installed');
+        }
+
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: ethers.utils.hexValue(chainId) }],
+        });
+      } catch (error) {
+        console.error('Error switching the blockchain network:', error);
+      }
+    },
+    pairMetamaskAddress: async function(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().initPairMetamaskKeplr(emailAccount, lockscreen).then(async responseData => {
+        if (responseData.isSuccess() && responseData.data) {
+          await this.signPairingMatamaskKeplr(responseData.data, onSuccess, onFail, true);
+          // this.setIsLoggedIn();
+          // this.loginType = LoginTypeEnum.EMAIL;
+          // this.paired = true;
+        }
+      });
+    },
+    async initEmailMetamaskPairing(paymentAddress: string, onSuccess: (() => void), onFail: (() => void), lockscreen=true){
+      await apiFactory.publicSaleServiceApi().initEmailMetamaskPairing({paymentAddress: paymentAddress}, lockscreen).then((res) => {
+        if(res.isSuccess() && res.data) {
+          useContextStore().dataToSign = res.data;
+          onSuccess();
+        } else {
+          onFail();
+        }
+      });
+    },
+    async emailMetamaskPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().emailMetamaskPairingDataVerify({processID: processID, signedData: signedData}, lockscreen).then((res) => {
+        if(res.isSuccess()) {
+          onSuccess();
+        } else {
+          onFail();
+        }
+      });
+    },
+    async emailKeplrPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().emailKeplrPairingDataVerify({processID: processID, signedData: signedData}, lockscreen).then((res) => {
+        if(res.isSuccess()) {
+          onSuccess();
+        } else {
+          onFail();
+        }
+      });
+    },
+    async signPairingMatamaskKeplr(responseData: EmailPairingRes, onSuccess: (() => void), onFail: (() => void), lockscreen = true){
+      let metamaskResp = '';
+      let keplrResp = '';
+      try{
+        await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
+          if(signedDataResponse.isSuccess() && signedDataResponse.data){
+            keplrResp = signedDataResponse.data
+            await apiFactory.accountApi().signMetamaskPairing(signedDataResponse.data).then(async (signedDataResponseMetamask: RequestResponse<string, TxBroadcastError>)=>{
+              if(signedDataResponseMetamask.isSuccess() && signedDataResponseMetamask.data) {
+                metamaskResp = signedDataResponseMetamask.data;
+              }
+            });
+          }
+        });
+      }catch (e) {
+        return e;
+      } finally {
+        if(metamaskResp != '' && keplrResp != ''){
+          await apiFactory.publicSaleServiceApi().verifyPairingMetamaskKeplr(
+            {
+              keplrSignedData: keplrResp,
+              metamaskSignedData: metamaskResp,
+              processID: responseData.processID,
+            }, true).then((res)=>{
+            if(res.isSuccess()){
+              this.loginType = LoginTypeEnum.METAMASK;
+              this.paired = true;
+              this.verificationNeeded = false;
+            }
+          });
+
+        }
+      }
+
+    },
+
+    async approveTerms(onSuccess: (() => void), onFail: (() => void), lockscreen = true){
+      await apiFactory.publicSaleServiceApi().acceptTerms(true).then(res =>{
+        if(res.isSuccess()){
+          this.getAccount(onSuccess, onFail, true)
+        }
+      });
+
+    },
     logOutAccount(){
       clearAuthTokens();
+      apiFactory.publicSaleServiceApi().logout(true).then(() => {
+        console.log('logout');
+      });
       usePublicSalesStore().logOutAccount();
       this.loginType = LoginTypeEnum.NONE;
-      this._isLoggedIn = false;
       this.paired = false;
-      this.kycSteps = [];
-    }
+      this.kycServiceState.clear();
+      this.verificationNeeded = false;
+    },
+    isLoggedIn():boolean {
+      return isLoggedIn();
+    },
   },
   getters: {
-    isLoggedIn():boolean {
-      return this._isLoggedIn;
-    },
+
     getLoginType(): LoginTypeEnum {
       return this.loginType;
     },
@@ -213,9 +366,9 @@ export const useUserServiceStore = defineStore({
     getKycSessionId(): string {
       return this.kycSessionId;
     },
-    getStepStatus(): (stepName: KycStepName) => KycStatus | undefined {
+    getStepStatus(): (stepName: KycStepName) => KycProgressStatus | undefined {
       return (stepName ) => {
-        return this.kycSteps.find((step) => step.name == stepName)?.state;
+        return this.kycServiceState.get(stepName);
       };
     },
     getKycTierSteps(): (kycTier: KycTierEnum) => KycStepInfo[] {
@@ -236,6 +389,10 @@ export const useUserServiceStore = defineStore({
               name: KycStepName.LIVENESS,
               state: this.getStepStatus(KycStepName.LIVENESS)
             },
+            {
+              name: KycStepName.RESIDENCY,
+              state: this.getStepStatus(KycStepName.RESIDENCY)
+            },
           ];
         } else if(kycTier == KycTierEnum.TIER_3) {
           return [
@@ -248,8 +405,8 @@ export const useUserServiceStore = defineStore({
               state: this.getStepStatus(KycStepName.LIVENESS)
             },
             {
-              name: KycStepName.PHONE,
-              state: this.getStepStatus(KycStepName.PHONE)
+              name: KycStepName.RESIDENCY,
+              state: this.getStepStatus(KycStepName.RESIDENCY)
             },
           ];
         }
@@ -257,18 +414,24 @@ export const useUserServiceStore = defineStore({
       };
     },
     getKycTier(): KycTierEnum {
-      if(this.getStepStatus(KycStepName.IDENTITY) == KycStatus.VALIDATED) {
-        if(this.getStepStatus(KycStepName.LIVENESS) == KycStatus.VALIDATED) {
-          if(this.getStepStatus(KycStepName.PHONE) == KycStatus.VALIDATED) {
-            return KycTierEnum.TIER_3;
-          } else {
-            return KycTierEnum.TIER_2;
-          }
-        } else {
-          return KycTierEnum.TIER_1;
-        }
-      }
-      return KycTierEnum.TIER_0;
+      // if(this.getStepStatus(KycStepName.IDENTITY) == KycProgressStatus.VALIDATED) {
+      //   if(this.getStepStatus(KycStepName.LIVENESS) == KycProgressStatus.VALIDATED) {
+      //     if(this.getStepStatus(KycStepName.PHONE) == KycProgressStatus.VALIDATED) {
+      //       return KycTierEnum.TIER_3;
+      //     } else {
+      //       return KycTierEnum.TIER_2;
+      //     }
+      //   } else {
+      //     return KycTierEnum.TIER_1;
+      //   }
+      // }
+      return this.kycLevel;
+    },
+    isVerificationNeeded(): boolean{
+      return this.verificationNeeded;
+    },
+    isTermsAccepted():boolean{
+      return this.termsAccepted;
     }
   },
   persist: {

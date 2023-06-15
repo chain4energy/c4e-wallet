@@ -68,6 +68,14 @@
 
           <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
 
+          <div class="profileMenu" @focusout="closeProfileDropdown" tabindex="0" @click="toggleProfileDropdown()" >
+            <div class="profileMenu-icon">    <UserIcon :style="useUserServiceStore().isLoggedIn() ? 'color: #81CF1F' : ''" /></div>
+            <div class="profileMenu__dropdown" v-if="profileDropdown">
+              <div class="option" v-if="!useUserServiceStore().isLoggedIn()" @click="router.push({name: 'signIn'});">Login to profile</div>
+              <div class="option" @click="useUserServiceStore().logOutAccount();" v-else>Logout</div>
+            </div>
+          </div>
+
 
         </div>
         <div class="navbar-nav mobile" @click="toggleDropdown" style="align-items: center">
@@ -149,6 +157,8 @@ import {PermissionsService} from "@/services/permissions/permissions.service";
 import KeplrLogo from '../commons/KeplrLogo.vue';
 import * as GovernanceIcon from "@/components/commons/GovernanceIcon.vue";
 import dataService from "@/services/data.service";
+import {useUserServiceStore} from "@/store/userService.store";
+import UserIcon from "@/components/features/UserIcon.vue";
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
@@ -215,6 +225,16 @@ const onLogoClick = () => {
   } else {
     router.push({name: 'Dashboard'});
   }
+};
+
+
+const profileDropdown = ref(false);
+const toggleProfileDropdown = () => {
+  profileDropdown.value = !profileDropdown.value;
+};
+
+const closeProfileDropdown = () => {
+  profileDropdown.value = false;
 };
 </script>
 
@@ -387,6 +407,43 @@ nav a.router-link-exact-active {
 
 .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
   color: var(--secondary-color) !important;
+}
+.profileMenu {
+
+  //padding: 10px;
+
+  border-radius: 5px;
+  position: relative;
+
+  cursor: pointer;
+  color: white;
+  z-index: 3;
+
+  &__dropdown {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: -120px;
+    top:40px;
+    min-width: 130px;
+    border-radius: 10px 0 10px 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    z-index: 3;
+    color: black;
+
+    .option {
+      padding: 15px;
+      background-color: #D9D9D9;
+      width: 100%;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+  &-icon {
+
+  }
 }
 
 // .userdata {

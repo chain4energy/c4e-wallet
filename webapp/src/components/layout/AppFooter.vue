@@ -1,7 +1,9 @@
 <template>
 
   <div class="footer">
-    <span>FAQ</span>
+    <a href="https://c4e.io/faq/" target="_blank">
+      <span>FAQ</span>
+    </a>
     <a href="https://docs.c4e.io/usersGuide/walletBasics.html" target="_blank">
       <span>{{$t('FOOTER.HELP')}}</span>
     </a>
