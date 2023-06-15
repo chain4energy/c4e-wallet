@@ -19,7 +19,8 @@
       <AllocationInfo :transaction="items" @pay="onPay(items)"/>
     </div>
   </div>
-  <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />
+<!--  <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />-->
+  <BuyTokensModal :visible="showModal"  @closeModal="showModal = false" @confirm="onBuyClick" :reservation="selectedReservation" />
 
   <Dialog v-model:visible="summaryVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
     <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
@@ -39,7 +40,7 @@
         </div>
         <div v-else ><Button class="p-button p-component secondary" @click="showApprovalModalFunc">{{$t('BUTTONS.ACCEPT')}}</Button></div>
         <div>{{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
-        <div v-if="claimerAddress != ''">
+        <div v-if="claimerAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
@@ -57,6 +58,7 @@
   </Dialog>
   <ApprovalModal @close="hideApprovalModal" @submit="hideApprovalModal" v-if="showApprovalModal"/>
   <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
+
 </template>
 
 <script lang="ts" setup>
@@ -83,6 +85,7 @@ import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useUserStore} from "@/store/user.store";
 import {useContextStore} from "@/store/context.store";
 import {SignParingAddressResult} from "@/models/user/emailPairing";
+import BuyTokensModal from "@/components/buyTokens/modals/BuyTokensModal.vue";
 
 onBeforeMount(() => {
 
@@ -136,6 +139,7 @@ const onPay = (transaction: TokenReservation) => {
   showModal.value = true;
 };
 const onBuyClick = () => {
+  showModal.value = false;
   summaryVisible.value = true;
 };
 
@@ -210,9 +214,9 @@ function closeProvideAddressModalClose(){
 const canConfirmOrder = computed(() => {
   const isSourceAddressRequired = transactionContextStore.paymentCurrency == Currency.STABLE;
   if(isSourceAddressRequired) {
-    return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != '' && sourceAddress.value != '';
+    return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != undefined && sourceAddress.value != '';
   }
-  return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != '';
+  return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != undefined;
 });
 
 </script>

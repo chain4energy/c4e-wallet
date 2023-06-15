@@ -369,7 +369,9 @@
     "FIATPAYMENTCONFIRMATION": "Potwierdzenie płatności",
     "USERPROFILETABS": "Profil",
     "SIGNIN": "Logowanie",
-    "SIGNUP": "Rejestracja"
+    "SIGNUP": "Rejestracja",
+    "ACTIVATE": "Aktywacja konta",
+    "PROVIDEVERIFICATIONCODE": "Weryfikacja"
   },
   "TOAST": {
     "SUCCESS": {

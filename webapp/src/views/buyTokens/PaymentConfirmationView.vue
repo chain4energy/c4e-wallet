@@ -203,7 +203,8 @@ const onStartMetamaskTransaction = () => {
   if(selectedBlockchain.value && selectedToken.value){
     usePublicSalesStore().payByMetamask({
       amount: transactionContextStore.amountToPay.toString(),
-      blockchainName: selectedBlockchain.value.chainName,
+      blockchainID: selectedBlockchain.value.id,
+      exchangeID: selectedToken.value.id,
       orderId: transactionContextStore.orderId,
       blockchainAddress: selectedTokenIdentifier.value,
       coinDecimals: 6,

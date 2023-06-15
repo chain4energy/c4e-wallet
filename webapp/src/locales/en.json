@@ -374,7 +374,9 @@
     "FIATPAYMENTCONFIRMATION": "Payment confirmation",
     "USERPROFILETABS": "Profile",
     "SIGNIN": "Sign in",
-    "SIGNUP": "Sign up"
+    "SIGNUP": "Sign up",
+    "ACTIVATE": "Account activation",
+    "PROVIDEVERIFICATIONCODE": "Verification"
   },
   "TOAST": {
     "SUCCESS": {

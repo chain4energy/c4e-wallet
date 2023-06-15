@@ -81,7 +81,7 @@
         </div>
         <div>
           <Button
-            :disabled="!isLoggedIn || !isLogedInInService || claimAddress != ''"
+            :disabled="!isLoggedIn || !isLogedInInService || claimAddress != undefined"
             class="p-button p-component secondary accountInfo__btn"
             @click="provideClaimerAddress">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button>
         </div>

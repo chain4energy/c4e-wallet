@@ -172,7 +172,7 @@ export const usePublicSalesStore = defineStore({
       this.sendMetamaskTransaction(payInfo.amount, payInfo.blockchainAddress, payInfo.coinDecimals, payInfo.c4eAddress).then(res => {
         if (res.isSuccess() && res.data){
           this.provideTxPaymentProof({
-            blockchainName: payInfo.blockchainName, coinIdentifier: payInfo.blockchainAddress, orderID: payInfo.orderId, txHashes: [res.data]
+            blockchainID: payInfo.blockchainID, exchangeID: payInfo.exchangeID, orderID: payInfo.orderId, txHashes: [res.data]
           }, onSuccess, onFail, lockscreen);
         } else {
           onFail();

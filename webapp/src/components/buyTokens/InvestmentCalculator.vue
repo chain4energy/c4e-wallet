@@ -11,7 +11,7 @@
             <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_BUY')}}</p>
             <div>
               <div style="display: flex">
-                <input @paste="onFirstInputChange" @keyup="onFirstInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" v-model="firstValue.amount">
+                <input @paste="onFirstInputChange" @keyup="onFirstInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" :disabled="firstInputBlocked" v-model="firstValue.amount">
                 <Dropdown v-model="firstValue.currency" :options="[Currency.C4E]"  placeholder="Select network" style="max-width:80px;" class="dropdown" />
               </div>
             </div>
@@ -48,7 +48,7 @@
 
 import {useRouter} from "vue-router";
 import {onBeforeMount, onMounted, reactive, ref, watch} from "vue";
-import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
+import { useUserServiceStore} from "@/store/userService.store";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import Dropdown from "primevue/dropdown";
 import {Currency} from "@/models/currency";
@@ -56,9 +56,23 @@ import {useTransactionContextStore} from "@/store/transactionContext.store";
 import {useToast} from "vue-toastification";
 import TooltipComponent from "@/components/TooltipComponent.vue";
 
+
+const props =  defineProps({
+  firstInputBlocked: {
+    type:  Boolean,
+    required: false,
+    default: false
+  },
+  firstInputDefaultValue: {
+    type: Number,
+    required: false,
+    default: 1000
+  }
+});
+
 const emit = defineEmits(['onBuy']);
 onBeforeMount(() => {
-  usePublicSalesStore().fetchBlockchainInfo(false).then(() => {
+  usePublicSalesStore().fetchRoundInfo(false).then(() => {
     const rate =  usePublicSalesStore().roundInfo?.c4eToUsd;
     if(rate) {
       exchangeRate.value = rate;
@@ -67,7 +81,7 @@ onBeforeMount(() => {
 });
 onMounted(() => {
 
-  firstValue.amount = 1000;
+  firstValue.amount = props.firstInputDefaultValue;
   onFirstInputChange();
 
 });
