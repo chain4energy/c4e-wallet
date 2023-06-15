@@ -35,14 +35,15 @@ export interface Transaction {
 }
 
 export interface TokenPaymentProofRequest{
-  blockchainName:	string;
-  coinIdentifier:	string;
+  blockchainID:	number;
+  exchangeID:	number;
   orderID:	number;
   txHashes:	string[];
 }
 
 export interface MetamaskPayInfo {
-  blockchainName: string;
+  blockchainID: number;
+  exchangeID: number;
   orderId: number;
   amount: string;
   blockchainAddress: string;
@@ -62,7 +63,7 @@ export interface TokenInfo {
   exchangeRate: number;
   id: number;
   name: string;
-
+  decimals: number;
 }
 export interface RoundInfoResponse {
   availableTokens: number;
