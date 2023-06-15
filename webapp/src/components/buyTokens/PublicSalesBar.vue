@@ -34,7 +34,7 @@ function initCanvas() {
   tokens.value.width = tokens.value.offsetWidth;
   tokens.value.height = tokens.value.offsetHeight;
   ctx.value = tokens.value.getContext("2d");
-  const denom = useConfigurationStore().config.stakingDenom;
+  const denom = amount.total.denom;
   const total = useConfigurationStore().config.getConvertedAmount(amount.total.amount, denom);
   const solvedPercents = (Number(useConfigurationStore().config.getConvertedAmount(amount.values.sold.amount, denom))/Number(total)) * 100;
   const reservedPercents = (Number(useConfigurationStore().config.getConvertedAmount(amount.values.reserved.amount, denom))/Number(total)) * 100;

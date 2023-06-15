@@ -29,7 +29,7 @@
         </div>
 
         <div style="margin-top:30px">
-          1 {{firstValue.currency}} = {{exchangeRate}} {{secondValue.currency}}
+          1 {{firstValue.currency}} = {{exchangeRate.toFixed(5)}} {{secondValue.currency}}
         </div>
       </div>
 

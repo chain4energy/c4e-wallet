@@ -76,7 +76,7 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <p class="accountInfo__headMainTxt">{{$t('PROFILE_VIEW.CLAIMER_ADDRESS')}}</p>
-          <p v-if="address" class="accountInfo__headTxt">{{ claimAddress }}</p>
+          <p v-if="claimAddress" class="accountInfo__headTxt">{{ claimAddress }}</p>
           <p v-else class="accountInfo__headTxt">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
         </div>
         <div>
@@ -90,7 +90,7 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <p class="accountInfo__headMainTxt">{{$t('PROFILE_VIEW.SOURCE_ADDRESS')}}</p>
-          <p v-if="address" class="accountInfo__headTxt">{{ sourceAddress }}</p>
+          <p v-if="sourceAddress" class="accountInfo__headTxt">{{ sourceAddress }}</p>
           <p v-else class="accountInfo__headTxt">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
         </div>
         <div>

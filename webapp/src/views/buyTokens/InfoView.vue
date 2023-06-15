@@ -44,7 +44,7 @@
         </div>
         <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
-        <div v-if="sourceAddress != ''">
+        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE && sourceAddress != ''">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE"><Button @click="provideSourceAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>

@@ -7,9 +7,9 @@
     <div class="payment_container__content">
       <h2>Your order info</h2>
       <div class="box-shadow summary">
-        <div>Amount of coins: {{transactionContextStore.amountToBuy}}</div>
+        <div>Amount of C4E: {{transactionContextStore.amountToBuy}}</div>
         <div>Amount of {{transactionContextStore.paymentCurrency}}: {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</div>
-        <div>Current exchange rate: 1 C4E = {{transactionContextStore.exchangeRate}} {{transactionContextStore.paymentCurrency}}</div>
+        <div>Current exchange rate: 1 C4E = {{transactionContextStore.exchangeRate.toFixed(5)}} {{transactionContextStore.paymentCurrency}}</div>
       </div>
       <Button class="secondary" @click="onPay">
         <img style="height:30px;" src="@/assets/ari10logo.svg">GO TO ARI10 PAYMENT GATEWAY
