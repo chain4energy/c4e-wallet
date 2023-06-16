@@ -28,23 +28,23 @@
       <div class="requirements_container">
         <div>
           {{$t('BUY_TOKENS_VIEW.PASS_KYC')}} {{transactionContextStore.getRequiredKycLevel}}
-          <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/>
+          <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.KYC')"/>
         </div>
         <div v-if="isKycLevelRequired">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else><Button @click="onKycStart" class="p-button p-component secondary">{{$t('BUTTONS.START_KYC')}}</Button></div>
-        <div>{{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
+        <div>{{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')"/></div>
         <div v-if="isTermsAccepted">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else ><Button class="p-button p-component secondary" @click="showApprovalModalFunc">{{$t('BUTTONS.ACCEPT')}}</Button></div>
-        <div>{{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
+        <div>{{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"/></div>
         <div v-if="claimerAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
-        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
+        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')"/></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE && sourceAddress != ''">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
