@@ -6,11 +6,12 @@ import {AccountApi} from "@/api/account.api";
 import WalletConnectionApi from "./wallet.connecton.api";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
 import { KeybaseApi } from "./keybase.api";
-import {applyAuthTokenInterceptor, getBrowserLocalStorage, IAuthTokens, TokenRefreshRequest} from "axios-jwt";
+import {applyAuthTokenInterceptor, getBrowserSessionStorage, IAuthTokens, TokenRefreshRequest} from "axios-jwt";
 import { useConfigurationStore } from "@/store/configuration.store";
 import queries from "@/api/queries";
 import {FaucetApi} from "@/api/faucet.api";
 import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
+import {applyStorage} from "axios-jwt/dist/src/applyStorage";
 import {ClaimApi} from "@/api/claim.api";
 
 let testfileName = '';
@@ -55,6 +56,7 @@ class ApiFactory {
     this._axios = axios.create({});
     this._axiosJwt = axios.create({});
     applyAuthTokenInterceptor(this._axiosJwt, {requestRefresh: this.requestRefresh });
+    applyStorage(getBrowserSessionStorage());
   }
 
   public static getInstance(): ApiFactory {

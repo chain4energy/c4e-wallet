@@ -5,7 +5,7 @@
         User Email: {{usersEmail}}
       </div>
       <div>
-        User Wallet: {{usersWallet}}
+        User Wallet: {{address}}
       </div>
       <Button @click="emit('confirm')">Confirm</Button>
     </div>
@@ -27,6 +27,7 @@ const router = useRouter();
 const props = defineProps<{
   addressType: AddressType,
   display: boolean,
+  address: string
 }>();
 
 const show = ref(false);
@@ -36,10 +37,6 @@ watch(() => props.display, (newVal, _) => {
 
 const usersEmail = computed(() => {
   return useUserServiceStore().getUserEmail;
-});
-
-const usersWallet = computed(() => {
-  return useUserStore().getAccount.address;
 });
 
 const emit = defineEmits(['close', 'confirm']);

@@ -35,11 +35,7 @@ const onActivateClick = () => {
 
     const accountNumber = contextStore.dataToSign?.dataToSign.accountNumber;
     const sequenceNumber = contextStore.dataToSign?.dataToSign.sequenceNumber;
-    console.log(accountNumber);
-    console.log(sequenceNumber);
-    console.log(processID)
     if(processID && accountNumber && sequenceNumber) {
-      console.log('asdasd')
       dataToSign = 'This message is for pairing your email with keplr/n' + dataToSign;
       console.log(dataToSign);
       apiFactory.accountApi().sign(useUserStore().connectionInfo, {accountNumber: accountNumber, randomString: dataToSign, sequenceNumber:sequenceNumber }).then(signedDataResponse => {
@@ -51,16 +47,12 @@ const onActivateClick = () => {
       });
     }
   }
-
-
-
-  // useUserServiceStore().verifyParingEmailKeplr(activationCode.value, onSuccess, onError, true);
 };
 const toast = useToast();
 const router = useRouter();
 const onSuccess = () => {
   toast.success('Metamask connected');
-  router.push({name: 'Profile'});
+  router.push({name: 'userProfileTabs'});
 };
 const onError = () => {
   toast.error('An error occurred');
