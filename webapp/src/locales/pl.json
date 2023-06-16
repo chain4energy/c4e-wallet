@@ -486,6 +486,14 @@
       "PAY": "Pay"
     }
   },
+  "TOOLTIPS": {
+    "HINTS": {
+      "KYC": "KYC Level\nLevel 0 \n(No KYC)\nLevel 1\n(Proof of Identity)\nLevel 2\n(Proof of Residence)\nLevel 3 \n(Proof of Funds)",
+      "TERMS": "All the Public Sale terms are available at:",
+      "CLAIMER_ADDRESS": "Provide an address of the wallet you will use for claiming the tokens. It has to be an C4E wallet address. \nIf you don't have it follow this instructions with Keplr wallet:\nhttps://docs.c4e.io/usersGuide/auth.html",
+      "SOURCE_ADDRESS": "Please provide your EVM wallet address you will send your stablecoins from.\nPlease do not use a CEX exchange address."
+    }
+  },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Rejestracja",
     "SIGN_IN": "Logowanie",
