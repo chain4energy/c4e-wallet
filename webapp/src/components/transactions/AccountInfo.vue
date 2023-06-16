@@ -103,7 +103,7 @@
     </div>
 
   </div>
-  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
+  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :address="addressToConnect" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
 </template>
 
 <script setup lang="ts">
@@ -163,41 +163,37 @@ const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
 
 function provideClaimerAddress(){
   showAddressInfoModalAddressType.value = AddressType.KEPLR;
+  addressToConnect.value = useUserStore().getAccount.address;
   showAddressInfoModal.value = true;
 }
 
 function closeProvideAddressModalClose(){
   showAddressInfoModal.value = false;
 }
-
+const addressToConnect = ref();
 function provideSourceAddress(){
   showAddressInfoModalAddressType.value = AddressType.METAMASK;
+  useUserStore().connectMetamask().then(async (address) => {
+    if (address) {
+      addressToConnect.value = address;
+    }
+  });
   showAddressInfoModal.value = true;
 }
 
 function addressConfirmed(){
   showAddressInfoModal.value = false;
   if(showAddressInfoModalAddressType.value == AddressType.KEPLR) {
-    console.log('Connect keplr account');
     if (usersWallet.value) {
-      console.log('test')
-      useUserServiceStore().initEmailKeplrPairing(useUserStore().getAccount.address, onSuccessConnect, onFail);
-      // emit('submit');
-      // useUserServiceStore().provideKeplrAddress(
-      //   {
-      //     claimedAddress: usersWallet.value,
-      //   }, onSuccessAddressPairing, onFail, true);
+      useUserServiceStore().initEmailKeplrPairing(addressToConnect.value, onSuccessConnect, onFail);
     } else {
       toast.error('You have to be logged in with Email');
     }
   }
-  if(showAddressInfoModalAddressType.value == AddressType.METAMASK) {
+  if(showAddressInfoModalAddressType.value == AddressType.METAMASK && addressToConnect.value) {
     console.log('Connect metamask account');
-    useUserStore().connectMetamask().then(async (address) => {
-      if (address) {
-        await useUserServiceStore().initEmailMetamaskPairing(address, onSuccessConnect, onFail);
-      }
-    });
+
+    useUserServiceStore().initEmailMetamaskPairing(addressToConnect.value, onSuccessConnect, onFail);
   }
 }
 const onSuccessConnect = () => {
