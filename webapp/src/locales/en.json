@@ -488,7 +488,15 @@
     "ACCEPT_SALE_TERMS": "Accept sale terms",
     "PROVIDE_CLAIMER_ADDRESS": "Provide claimer address",
     "PROVIDE_SOURCE_ADDRESS": "Provide source address",
-    "ORDER_SUMMARY": "Order summary"
+    "ORDER_SUMMARY": "Order summary",
+    "DESCRIPTION_FIRST_HEADER": "About C4E Tokens",
+    "DESCRIPTION_FIRST_CONTENT": "Chain4Energy (C4E) tokens play an integral role in our decentralized energy ecosystem. They serve as a medium of exchange, facilitating transactions within our platform, and enabling access to our suite of energy solutions.",
+    "DESCRIPTION_SECOND_HEADER": "Token Sale Details",
+    "DESCRIPTION_SECOND_CONTENT": "The C4E public token sale offers potential investors an opportunity to secure tokens at an attractive price of $0.085 per token. Post token generation event (TGE), investors can look forward to a 20% release, followed by a six-month vesting period.\n\nPayment for the tokens can be made in Fiat (PLN, USD, EUR), or in the stablecoins USDC and USDT. We accept payments through Ethereum, BNB Smart Chain, and Polygon. The need for KYC procedure depends on your investment level.",
+    "REQUIREMENTS_TIP": "Depending on the amount invested the different KYC (Know Your Customer) level can be applied.",
+    "TOKENOMICS": "Tokenomics",
+    "WHITE_PAPER": "White paper"
+
   },
   "PAYMENT_CONFIRMATION_VIEW": {
     "CONFIRM_PAYMENT": "Confirm Your Payment",
@@ -507,5 +515,14 @@
       "CLAIMER_ADDRESS": "Provide an address of the wallet you will use for claiming the tokens. It has to be an C4E wallet address. \nIf you don't have it follow this instructions with Keplr wallet:\nhttps://docs.c4e.io/usersGuide/auth.html",
       "SOURCE_ADDRESS": "Please provide your EVM wallet address you will send your stablecoins from.\nPlease do not use a CEX exchange address."
     }
+  },
+  "SIGN_IN_VIEW": {
+    "SIGN_UP": "Sign up",
+    "SIGN_IN": "Sign in",
+    "EMAIL": "E-mail address",
+    "PASSWORD": "Type your password",
+    "RETYPE": "Retype your password",
+    "REGISTER": "Register",
+    "TERMS": "Accept terms and conditions"
   }
 }

@@ -1,6 +1,7 @@
-import {RoundInfo, RoundInfoResponse} from "@/models/saleServiceCommons";
+import {RoundInfo, RoundInfoResponse, TokenReservationResponse} from "@/models/saleServiceCommons";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {Coin} from "@/models/store/common";
+import {paymentType, TokenReservation} from "@/store/publicSales.store";
 
 export function mapRoundInfo(roundInfo: RoundInfoResponse | undefined): RoundInfo  {
   if (roundInfo === undefined) {
@@ -23,4 +24,27 @@ export function mapRoundInfo(roundInfo: RoundInfoResponse | undefined): RoundInf
   };
 }
 
+export function mapTokenReservations(tokenReservations: TokenReservationResponse[] | undefined): TokenReservation[]  {
+  if (tokenReservations === undefined) {
+    throw new Error('tokenReservations is undefined');
+  }
+  const denom = useConfigurationStore().config.tokenReservationDenom;
 
+  const tokenReservationList: TokenReservation[] = [];
+
+  tokenReservations.forEach(reservation => {
+
+    const storeReservation: TokenReservation = new TokenReservation(
+      reservation.orderId,
+      new Coin(BigInt(reservation.amountRequested), denom),
+      paymentType.Crypto,
+      reservation.status,
+      reservation.transactions,
+      new Date(reservation.reservationEndTime),
+      new Date(reservation.orderEndTime)
+    );
+    tokenReservationList.push(storeReservation);
+  });
+
+  return tokenReservationList;
+}

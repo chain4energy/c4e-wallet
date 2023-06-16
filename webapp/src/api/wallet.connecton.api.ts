@@ -173,7 +173,7 @@ export default class WalletConnectionApi extends LoggedService {
       rpc: config.bcRpcURL,
       rest: config.bcApiURL,
       bip44: {
-        coinType: 4444
+        coinType: 118
       },
       bech32Config: {
         bech32PrefixAccAddr: config.addressPrefix,

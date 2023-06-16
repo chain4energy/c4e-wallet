@@ -4,7 +4,7 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import factoryApi from "@/api/factory.api";
 import {
   BlockchainInfo,
-  InitPaymentSessionRequest, MetamaskPayInfo, RoundInfo,
+  InitPaymentSessionRequest, MetamaskPayInfo, RESERVATION_STATUS, RoundInfo,
   TokenPaymentProofRequest,
   Transaction
 } from "@/models/saleServiceCommons";
@@ -45,16 +45,18 @@ export class TokenReservation {
   orderId: number;
   amount: Coin;
   paymentType: paymentType;
-  status: transactionStatus;
+  status: RESERVATION_STATUS;
   transactions: Transaction[];
-  reservationEnd?: Date;
+  reservationEnd: Date;
+  orderEndTime: Date;
   constructor(
     orderId: number,
     amount: Coin,
     paymentType: paymentType,
-    status: transactionStatus,
+    status: RESERVATION_STATUS,
     transactions: Transaction[],
-    reservationEnd? : Date,
+    reservationEnd: Date,
+    orderEndTime: Date
   ) {
     this.orderId = orderId;
     this.amount = amount;
@@ -62,6 +64,7 @@ export class TokenReservation {
     this.status = status;
     this.transactions = transactions;
     this.reservationEnd = reservationEnd;
+    this.orderEndTime = orderEndTime;
   }
 }
 
@@ -96,37 +99,7 @@ export const usePublicSalesStore = defineStore({
     fetchTokenReservations(lockscreen = true){
       return factoryApi.publicSaleServiceApi().fetchReservationList(lockscreen).then(res => {
         if(res.isSuccess() && res.data) {
-          const denom = useConfigurationStore().config.tokenReservationDenom;
-          const transactions = Array<TokenReservation>();
-          res.data.forEach((el)=>{
-            const amountRequested = el.amountRequested ? el.amountRequested : 0;
-            const amount = new Coin(BigInt(amountRequested), denom);
-            const curPaymentType = paymentType.Crypto;
-            let curStatus = transactionStatus.updating;
-            // switch (el.paymentType){
-            //   case 'Crypto': curPaymentType = paymentType.Crypto;
-            //     break;
-            //   case 'StandardCurrency': curPaymentType = paymentType.StandardCurrency;
-            //     break;
-            // }
-            switch (el.status) {
-              case 'DECLARED': curStatus = transactionStatus.Declared;
-                break;
-              case 'PAID': curStatus = transactionStatus.Paid;
-                break;
-              case 'ERROR': curStatus = transactionStatus.Error;
-                break;
-            }
-            let transaction;
-            if(el.reservationEndTime){
-              transaction = new TokenReservation(el.orderId, amount, curPaymentType, curStatus, el.transactions, new Date(el.reservationEndTime));
-            } else {
-              transaction = new TokenReservation(el.orderId, amount, curPaymentType, curStatus, el.transactions);
-            }
-
-            transactions.push(transaction);
-          });
-          this.tokenReservations = transactions;
+          this.tokenReservations = res.data;
         }
       });
     },

@@ -34,7 +34,8 @@ import {ValidatorsResponse} from "@/models/blockchain/validator";
 import {mapValidators} from "@/models/mapper/validator.mapper";
 import {mapKycSteps} from "@/models/mapper/synaps.mapper";
 import {KeybaseErrorData} from "@/models/keybase/keybase";
-import {mapRoundInfo} from "@/models/mapper/publicSale.mapper";
+import {mapRoundInfo, mapTokenReservations} from "@/models/mapper/publicSale.mapper";
+import {TokenReservation} from "@/store/publicSales.store";
 
 export class PublicSaleServiceApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
@@ -145,8 +146,30 @@ export class PublicSaleServiceApi extends BaseApi {
     return this.publicSaleServicePostCall<InitPaymentSessionRequest, InitPaymentSessionResponse, UserServiceErrData>(queries.publicSaleService.INIT_PAYMENT_SESSION, initPaymentSessionRequest, lockscreen, "initPaymentSession");
   }
 
-  public async fetchReservationList(lockscreen: boolean): Promise<RequestResponse<TokenReservationResponse[], ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServiceGetCall<TokenReservationResponse[], UserServiceErrData>(queries.publicSaleService.TOKEN_RESERVATION_LIST, lockscreen, "fetchReservationList");
+  public async fetchReservationList(lockscreen: boolean): Promise<RequestResponse<TokenReservation[], ErrorData<UserServiceErrData>>> {
+    const mapData = (tokenReservationList: TokenReservationResponse[] | undefined) => {
+      return mapTokenReservations(tokenReservationList);
+    };
+    const messages = {
+      errorResponseName: 'Token reservation data Error',
+      errorResponseMassage: 'Token reservation data error received',
+      errorResponseToast: 'Token reservation data Error: ',
+      mappingErrorMassage: 'Token reservation data mapping error: ',
+    };
+    const isResponseError = (response: RequestResponse<TokenReservationResponse[], ErrorData<UserServiceErrData>>) => {return response.isError();};
+    return this.axiosWith200ErrorCall<TokenReservation[], TokenReservationResponse[], UserServiceErrData>({
+        method: 'GET',
+        url: useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.TOKEN_RESERVATION_LIST
+      },
+      mapData,
+      lockscreen,
+      null,
+      'fetchReservationList - ',
+      isResponseError,
+      true,
+      messages
+    );
+  //  return this.publicSaleServiceGetCall<TokenReservationResponse[], UserServiceErrData>(queries.publicSaleService.TOKEN_RESERVATION_LIST, lockscreen, "fetchReservationList");
   }
 
   public async initKycSession(lockscreen: boolean): Promise<RequestResponse<InitSessionResponse, ErrorData<UserServiceErrData>>> {

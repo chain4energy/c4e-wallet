@@ -3,16 +3,14 @@
     <PublicSaleInfo />
     <div class="info__details">
       <h2>Chain4Energy token sale</h2>
-      <p>Natenczas Wojski chwycił na taśmie przypięty Swój róg bawoli, długi, cętkowany,<br>
-        kręty Jak wąż boa, oburącz do ust go przycisnął, Wzdął policzki jak banię, w oczach krwią zabłysnął,<br>
-        Zasunął wpół powieki, wciągnął w głąb pół brzucha I do płuc wysłał z niego cały zapas ducha.<br>
-        I zagrał: róg jak wicher niewstrzymanym dechem Niesie w puszczę muzykę i podwaja echem.<br>
-        Umilkli strzelce, stali szczwacze zadziwieni Mocą, czystością, dziwną harmoniją pieni.<br>
-        Starzec cały kunszt, którym niegdyś w lasach słynął, Jeszcze raz przed uszami myśliwców rozwinął;<br>
-        Napełnił wnet, ożywił knieje i dąbrowy, Jakby psiarnię w nie wpuścił i rozpoczął łowy.<br>
-        Bo w graniu była łowów historyja krótka: Zrazu odzew dźwięczący, rześki - to pobudka;<br>
-        Potem jęki po jękach skomlą - to psów granie; A gdzieniegdzie ton twardszy jak grzmot - to strzelanie.<br>
-        Tu przerwał, lecz róg trzymał; wszystkim się zdawało, Że Wojski wciąż gra jeszcze, a to echo grało.</p>
+      <h3>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_FIRST_HEADER')}}</h3>
+      <p>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_FIRST_CONTENT')}}</p>
+      <h3>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_SECOND_HEADER')}}</h3>
+      <p>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_SECOND_CONTENT')}}</p>
+    </div>
+    <div class="info__links">
+      <span>{{$t('BUY_TOKENS_VIEW.TOKENOMICS')}}</span>
+      <span>{{$t('BUY_TOKENS_VIEW.WHITE_PAPER')}}</span>
     </div>
     <InvestmentCalculator @onBuy="onBuyClick" />
     <div v-for="items in transactions" :key="items" class="userProfile__holder">
@@ -255,6 +253,16 @@ const canConfirmOrder = computed(() => {
       font-weight: 400;
       font-size: 16px;
       line-height: 24px;
+    }
+  }
+  &__links{
+    display: inline-flex;
+    width: 100%;
+    justify-content: flex-end;
+    span {
+      padding: 10px 20px;
+      font-family: Poppins, sans-serif;
+      font-size: 18px;
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
-  <div class="tile">
+  <div class="tile" style="text-align: left;">
 
-    <div style="display:flex; flex-direction: row" class="text left-element">
+    <div style="display:flex; flex-direction: row; " class="text left-element">
       <Icon name="Coins"></Icon>
       <div>
         <span class="label">{{ $t('DASHBOARD_VIEW.STACKING_APR') }}</span>
