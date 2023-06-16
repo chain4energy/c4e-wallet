@@ -491,5 +491,14 @@
       "THIRD_LINE_2": "by MetaMask wallet",
       "PAY": "Pay"
     }
+  },
+  "SIGN_IN_VIEW": {
+    "SIGN_UP": "Sign up",
+    "SIGN_IN": "Sign in",
+    "EMAIL": "Email address",
+    "PASSWORD": "Enter your password",
+    "RETYPE": "Retype your password",
+    "REGISTER": "Register",
+    "TERMS": "Accept terms and policy"
   }
 }
