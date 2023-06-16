@@ -215,8 +215,9 @@ const onStartMetamaskTransaction = () => {
 
 };
 const onSuccessStartMetamaskTransaction = () => {
-  router.push({name: 'publicSaleInfo'});
+  paymentModalVisible.value = false;
   toast.success('Transaction complete');
+  router.push({name: 'publicSaleInfo'});
 };
 const changeNetwork = (networkId: number) => {
   blockchainNetworkList.value.forEach((network) => {

@@ -20,17 +20,38 @@ export interface InitPaymentSessionResponse {
 
 export interface TokenReservationResponse {
   orderId: number;
-  status: string;
+  status: RESERVATION_STATUS;
   amountRequested: number;
   orderEndTime: string;
   reservationEndTime: string;
   transactions: Transaction[]
 }
 
+export enum RESERVATION_STATUS {
+  DECLARED="DECLARED",
+  PENDING='PENDING',
+  PARTIALLY_PAID='PARTIALLY_PAID',
+  OVERPAID='OVERPAID',
+  COMPLETED='COMPLETED',
+  REJECTED='REJECTED',
+  CANCELED='CANCELED'
+}
+export enum TRANSACTION_STATUS {
+  NOT_VERIFIED='NOT_VERIFIED',
+  TRANSFER_COVERED='TRANSFER_COVERED',
+  INSUFFICIENT_TRANSFER='INSUFFICIENT_TRANSFER',
+  EXCEEDED_TRANSFER='EXCEEDED_TRANSFER',
+  INCORRECT_TOKEN='INCORRECT_TOKEN',
+  INVALID_TX_HASH='INVALID_TX_HASH',
+  TRANSFER_SOURCE_ADDRESS_UNRECOGNIZED='TRANSFER_SOURCE_ADDRESS_UNRECOGNIZED',
+  TRANSFER_RECIPIENT_ADDRESS_INCORRECT='TRANSFER_RECIPIENT_ADDRESS_INCORRECT',
+  TX_UNSUCCESSFUL='TX_UNSUCCESSFUL',
+  TX_NOT_CONFIRMED='TX_NOT_CONFIRMED'
+}
 export interface Transaction {
   txHash: string;
   amount: string;
-  errorInfo: string;
+  errorInfo: TRANSACTION_STATUS;
   blockchain: string;
 }
 
