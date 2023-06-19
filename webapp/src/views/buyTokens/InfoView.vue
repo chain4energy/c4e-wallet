@@ -41,6 +41,13 @@
         <div v-if="claimerAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
+        <div v-else-if="!isLoggedIn && claimerAddress == undefined">
+          <Button>
+          @click="dataService.onKeplrLogIn()"
+          class="p-button p-component secondary">
+          {{ $t('AIRDROP.CONNECT') }}
+          </Button>
+        </div>
         <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')"/></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE && sourceAddress != ''">
@@ -84,6 +91,8 @@ import {useUserStore} from "@/store/user.store";
 import {useContextStore} from "@/store/context.store";
 import {SignParingAddressResult} from "@/models/user/emailPairing";
 import BuyTokensModal from "@/components/buyTokens/modals/BuyTokensModal.vue";
+import dataService from "@/services/data.service";
+import Button from "primevue/button";
 
 onBeforeMount(() => {
 
@@ -104,6 +113,9 @@ const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
 const addressToConnect = ref();
 
 const showApprovalModal = ref(false);
+const isLoggedIn = computed(() =>{
+  return useUserStore().isLoggedIn;
+});
 function hideApprovalModal(){
   showApprovalModal.value = false;
 }

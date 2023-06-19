@@ -91,6 +91,13 @@
         </div>
         <div>
           <Button
+            @click="dataService.onKeplrLogIn()"
+            v-if="!isLoggedIn && claimAddress == undefined"
+            class="p-button p-component secondary">
+            {{ $t('AIRDROP.CONNECT') }}
+          </Button>
+          <Button
+            v-else
             :disabled="!isLoggedIn || !isLogedInInService || claimAddress != undefined"
             class="p-button p-component secondary accountInfo__btn"
             @click="provideClaimerAddress">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button>
@@ -133,6 +140,8 @@ import {SignParingAddressResult} from "@/models/user/emailPairing";
 import {logger} from "ethers";
 import {useContextStore} from "@/store/context.store";
 import TooltipComponent from "@/components/TooltipComponent.vue";
+import dataService from "@/services/data.service";
+import Button from "primevue/button";
 
 const emit = defineEmits(['openModal', 'openApproval']);
 

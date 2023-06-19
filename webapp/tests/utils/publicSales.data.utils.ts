@@ -2,6 +2,7 @@ import {BlockchainInfo, ReserveTokensResponse, TokenInfo, TokenReservationRespon
 import {RequestResponse} from "@/models/request-response";
 import {ErrorData} from "@/api/base.api";
 import {UserServiceErrData} from "@/models/user/userServiceCommons";
+import {TokenReservation} from "@/store/publicSales.store";
 
 export function createReservationList(){
   return [
@@ -75,7 +76,7 @@ export const defaultBlockchainData = [
   }
 ]
 export function expectReservationList(
-  reservationList: RequestResponse<TokenReservationResponse[], any>,
+  reservationList: RequestResponse<TokenReservation[], any>,
   expectedReservation= defaultReservationList){
   const list = reservationList.data;
   if(!list){
@@ -85,9 +86,9 @@ export function expectReservationList(
   for (let i = 0; i < list.length; i++){
     expect(list[i].orderId).toBe(expectedReservation[i].orderId);
     expect(list[i].status).toBe(expectedReservation[i].status);
-    expect(list[i].amountRequested).toBe(expectedReservation[i].amountRequested);
+    expect(list[i].amount).toBe(expectedReservation[i].amountRequested);
     expect(list[i].orderEndTime).toBe(expectedReservation[i].orderEndTime);
-    expect(list[i].reservationEndTime).toBe(expectedReservation[i].reservationEndTime);
+    expect(list[i].reservationEnd).toBe(expectedReservation[i].reservationEndTime);
     for(let a = 0; a < list[i].transactions.length; a++){
       expect(list[i].transactions[a].txHash).toBe(expectedReservation[i].transactions[a].txHash);
       expect(list[i].transactions[a].amount).toBe(expectedReservation[i].transactions[a].amount);
