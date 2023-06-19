@@ -2,7 +2,6 @@ import {createPinia, setActivePinia} from "pinia";
 import {useSplashStore} from "@/store/splash.store";
 import {mockAxios} from "../utils/mock.util";
 import apiFactory from "@/api/factory.api";
-import {expectBlock} from "../utils/block.blockchain.data.util";
 import {
   createBlockchainInfo,
   createReservationList,

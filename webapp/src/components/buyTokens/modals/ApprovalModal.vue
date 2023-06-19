@@ -2,6 +2,9 @@
   <div class="approvalModal">
     <div class="approvalModal__background" @click="$emit('close')"></div>
     <div class="approvalModal__holder">
+      <div style="position: absolute; right: 0; top:0; margin-right: 20px">
+        <Button icon="pi pi-times" style="width: 20px; right:0" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
+      </div>
       <div ref="terms" class="approvalModal__rules">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
         labore et dolore magna aliqua. Laoreet sit amet cursus sit amet dictum sit. Risus viverra adipiscing at in.
@@ -47,6 +50,7 @@
       <div class="approvalModal__form">
         <div class="approvalModal__checkbox">
           <Field type="checkbox"
+                 :disabled="!accepted.enabled"
                  @click="accepted.checkbox = !accepted.checkbox"
                  name="accept" v-model="accepted.checkbox"
                  :value="!accepted.checkbox"/>
@@ -70,7 +74,7 @@ import {Field,Form} from "vee-validate";
 const toast = useToast();
 
 const emit = defineEmits(['close', 'submit']);
-const accepted = reactive({checkbox : false});
+const accepted = reactive({checkbox : false, enabled: false});
 const terms = ref();
 
 
@@ -87,7 +91,7 @@ function checkScrollBar(){
   if (percents != 100) {
     return;
   }
-  accepted.checkbox = true;
+  accepted.enabled = true;
 }
 document.body.style.overflow = "hidden";
 onUnmounted(() => {
@@ -137,6 +141,7 @@ function onFail(){
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
     justify-content: space-between;
     width: 800px;
     background-color: #FFFFFF;
