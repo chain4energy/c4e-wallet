@@ -14,7 +14,7 @@
             :reduce-big-number="false"
             :precision="2"/></th>
       </tr>
-      <tr v-if="transaction.status === transactionStatus.Declared && transaction.reservationEnd">
+      <tr v-if="transaction.status === RESERVATION_STATUS.DECLARED && transaction.reservationEnd">
         <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.REMAINING_RESERVATION_TIME')}}</th>
         <th class="allocationInfo__tableTabs">{{ timeToPass }}</th>
       </tr>
@@ -37,7 +37,7 @@
     </table>
     <Button
       class="p-button p-component secondary accountInfo__btn allocationInfo__btn"
-      v-if="props.transaction.status === transactionStatus.Declared"
+      v-if="props.transaction.status === RESERVATION_STATUS.DECLARED"
       @click="submit"
     >Pay</Button>
   </div>
@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { paymentType, TokenReservation, transactionStatus } from "@/store/publicSales.store";
+import {paymentType, TokenReservation, transactionStatus} from "@/store/publicSales.store";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {onBeforeMount, onUnmounted, ref} from "vue";
 import {RESERVATION_STATUS} from "@/models/saleServiceCommons";

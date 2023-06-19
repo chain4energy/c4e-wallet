@@ -60,16 +60,6 @@ const buyTokensRoutes = {
       path: 'fiatConfirmation',
       name: 'fiatPaymentConfirmation',
       component: FiatPaymentConfirmationView
-    },
-    {
-      path: 'signIn',
-      name: 'signIn',
-      component: SignInView
-    },
-    {
-      path: 'signUp',
-      name: 'signUp',
-      component: SignUpView
     }
   ]
 };

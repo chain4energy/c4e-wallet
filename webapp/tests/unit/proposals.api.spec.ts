@@ -60,7 +60,7 @@ describe('test proposals API', () => {
     const result = await  api.fetchProposals('1', false);
     expect(result.response.isError()).toBe(false);
     expect(result.response.isSuccess()).toBe(true);
-    expect(result.response.error).toBeUndefined()
+    expect(result.response.error).toBeUndefined();
     expect(result.response.data?.proposals.length).toBe(0);
     expect(result.response.data?.numberOfActive).toBe(0);
   });

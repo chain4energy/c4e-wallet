@@ -11,6 +11,7 @@
       <div class="accountInfo__closedItem">
         <div class="accountInfo__closedHeader">
           <div class="accountInfo__headMainTxt">KYC level</div>
+          <TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="'aaa'"/>
         </div>
         <div class="accountInfo__headTxt">Level {{useUserServiceStore().getKycTier}}</div>
       </div>
@@ -50,8 +51,11 @@
       <hr class="accountInfo__line"/>
       <div class="accountInfo__body">
         <div class="accountInfo__head">
-          <p class="accountInfo__headMainTxt">KYC level</p>
-          <p class="accountInfo__headTxt">Level {{useUserServiceStore().getKycTier}}</p>
+          <div class="accountInfo__headMainTxt">
+            <p>{{$t('PROFILE_VIEW.KYC_LEVEL')}}</p>
+            <TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.KYC')"/>
+          </div>
+          <p class="accountInfo__headTxt">{{$t('PROFILE_VIEW.LEVEL')}} {{useUserServiceStore().getKycTier}}</p>
         </div>
         <div>
           <Button
@@ -62,8 +66,11 @@
       <hr class="accountInfo__line"/>
       <div class="accountInfo__body">
         <div class="accountInfo__head">
-          <p class="accountInfo__headMainTxt">{{$t('PROFILE_VIEW.TERMS_ACCEPTANCE')}}</p>
-          <p class="accountInfo__headTxt">{{ isTermsAccepted }}</p>
+          <div class="accountInfo__headMainTxt">
+            <p>{{$t('PROFILE_VIEW.TERMS_ACCEPTANCE')}}</p>
+            <TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')"/>
+          </div>
+          <p class="accountInfo__headTxt" :class="{invalid: !isTermsAccepted }" >{{ isTermsAccepted ? $t('PROFILE_VIEW.ACCEPTED') : $t('PROFILE_VIEW.NOT_ACCEPTED') }}</p>
         </div>
         <div>
           <Button
@@ -75,12 +82,22 @@
       <hr class="accountInfo__line"/>
       <div class="accountInfo__body">
         <div class="accountInfo__head">
-          <p class="accountInfo__headMainTxt">{{$t('PROFILE_VIEW.CLAIMER_ADDRESS')}}</p>
+          <div class="accountInfo__headMainTxt">
+            <p>{{$t('PROFILE_VIEW.CLAIMER_ADDRESS')}}</p>
+            <TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"/>
+          </div>
           <p v-if="claimAddress" class="accountInfo__headTxt">{{ claimAddress }}</p>
-          <p v-else class="accountInfo__headTxt">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
+          <p v-else class="accountInfo__headTxt invalid">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
         </div>
         <div>
           <Button
+            @click="dataService.onKeplrLogIn()"
+            v-if="!isLoggedIn && claimAddress == undefined"
+            class="p-button p-component secondary">
+            {{ $t('AIRDROP.CONNECT') }}
+          </Button>
+          <Button
+            v-else
             :disabled="!isLoggedIn || !isLogedInInService || claimAddress != undefined"
             class="p-button p-component secondary accountInfo__btn"
             @click="provideClaimerAddress">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button>
@@ -89,9 +106,12 @@
       <hr class="accountInfo__line"/>
       <div class="accountInfo__body">
         <div class="accountInfo__head">
-          <p class="accountInfo__headMainTxt">{{$t('PROFILE_VIEW.SOURCE_ADDRESS')}}</p>
+          <div class="accountInfo__headMainTxt">
+            <p>{{$t('PROFILE_VIEW.SOURCE_ADDRESS')}}</p>
+            <TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')"/>
+          </div>
           <p v-if="sourceAddress" class="accountInfo__headTxt">{{ sourceAddress }}</p>
-          <p v-else class="accountInfo__headTxt">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
+          <p v-else class="accountInfo__headTxt invalid">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
         </div>
         <div>
           <Button
@@ -119,6 +139,9 @@ import {useToast} from "vue-toastification";
 import {SignParingAddressResult} from "@/models/user/emailPairing";
 import {logger} from "ethers";
 import {useContextStore} from "@/store/context.store";
+import TooltipComponent from "@/components/TooltipComponent.vue";
+import dataService from "@/services/data.service";
+import Button from "primevue/button";
 
 const emit = defineEmits(['openModal', 'openApproval']);
 
@@ -284,6 +307,7 @@ const getLoginType = () => {
     font-size: 24px;
     line-height: 28px;
     color: black;
+    display: inline-flex;
   }
   &__headTxt{
     font-family: 'Work Sans',sans-serif;
@@ -317,5 +341,9 @@ const getLoginType = () => {
       transform: rotateX(180deg);
     }
   }
+}
+
+.invalid {
+  color: red;
 }
 </style>

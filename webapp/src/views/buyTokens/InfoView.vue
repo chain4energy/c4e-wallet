@@ -20,9 +20,9 @@
 <!--  <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />-->
   <BuyTokensModal :visible="showModal"  @closeModal="showModal = false" @confirm="onPayReservation" :reservation="selectedReservation" />
 
-  <Dialog v-model:visible="summaryVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
+  <Dialog v-model:visible="summaryVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px', 'z-index': 500}">
     <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
-      <h5 style="font-weight:700">You want to invest {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</h5>
+      <h5 style="font-weight:700">{{$t('BUY_TOKENS_VIEW.YOU_INVEST')}} {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</h5>
       <div class="requirements_container">
         <div>
           {{$t('BUY_TOKENS_VIEW.PASS_KYC')}} {{transactionContextStore.getRequiredKycLevel}}
@@ -40,6 +40,12 @@
         <div>{{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"/></div>
         <div v-if="claimerAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
+        </div>
+        <div v-else-if="!isLoggedIn && claimerAddress == undefined">
+          <Button @click="dataService.onKeplrLogIn()"
+                  class="p-button p-component secondary">>
+          {{ $t('AIRDROP.CONNECT') }}
+          </Button>
         </div>
         <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')"/></div>
@@ -84,6 +90,8 @@ import {useUserStore} from "@/store/user.store";
 import {useContextStore} from "@/store/context.store";
 import {SignParingAddressResult} from "@/models/user/emailPairing";
 import BuyTokensModal from "@/components/buyTokens/modals/BuyTokensModal.vue";
+import dataService from "@/services/data.service";
+import Button from "primevue/button";
 
 onBeforeMount(() => {
 
@@ -104,6 +112,9 @@ const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
 const addressToConnect = ref();
 
 const showApprovalModal = ref(false);
+const isLoggedIn = computed(() =>{
+  return useUserStore().isLoggedIn;
+});
 function hideApprovalModal(){
   showApprovalModal.value = false;
 }

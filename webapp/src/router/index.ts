@@ -12,6 +12,8 @@ import buyTokensRoutes from "@/router/buyTokens";
 import profileRoutes from "@/router/profile";
 import FaucetView from "@/views/FaucetView.vue";
 import KycView from "@/views/KycView.vue";
+import SignInView from "@/views/buyTokens/SignInView.vue";
+import SignUpView from "@/views/buyTokens/SignUpView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -88,7 +90,17 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   buyTokensRoutes,
-  profileRoutes
+  profileRoutes,
+  {
+    path: '/buyTokens/signIn',
+    name: 'signIn',
+    component: SignInView
+  },
+  {
+    path: '/buyTokens/signUp',
+    name: 'signUp',
+    component: SignUpView
+  }
 ];
 
 const router = createRouter({

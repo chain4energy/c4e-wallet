@@ -16,6 +16,7 @@ import {KycProgressStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum} from 
 import {TxBroadcastError} from "@/api/tx.broadcast.base.api";
 import {ethers} from "ethers";
 import {useContextStore} from "@/store/context.store";
+import {useRouter} from "vue-router";
 
 interface UserServiceState {
   loginType: LoginTypeEnum,
@@ -339,14 +340,22 @@ export const useUserServiceStore = defineStore({
     },
     logOutAccount(){
       clearAuthTokens();
-      apiFactory.publicSaleServiceApi().logout(true).then(() => {
-        console.log('logout');
-      });
+      useContextStore().$reset();
       usePublicSalesStore().logOutAccount();
-      this.loginType = LoginTypeEnum.NONE;
-      this.paired = false;
-      this.kycServiceState.clear();
-      this.verificationNeeded = false;
+      apiFactory.publicSaleServiceApi().logout(true).then(() => {
+        console.log()});
+      this.loginType =  LoginTypeEnum.NONE;
+      this.kycSessionId = '';
+      this.paired= false;
+      this.userEmail= undefined;
+      this.verificationNeeded= false;
+      this.termsAccepted= false;
+      this.ethereumAddress= '';
+      this.claimAddress= '';
+      this.kycServiceState= new Map<KycStepName, KycProgressStatus>();
+      this.kycLevel= 0;
+      window.location.reload();
+
     },
     isLoggedIn():boolean {
       return isLoggedIn();

@@ -30,15 +30,17 @@ import AccountInfo from "@/components/transactions/AccountInfo.vue";
 import { useUserStore } from "@/store/user.store";
 import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vue";
 import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
-import { computed, onBeforeMount, onMounted, ref } from "vue";
+import {computed, onBeforeMount, onMounted, ref, watchEffect} from "vue";
 import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
 import PayModal from "@/components/buyTokens/PayModal.vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import AddressModal from "@/components/buyTokens/modals/AddressModal.vue";
 import ApprovalModal from "@/components/buyTokens/modals/ApprovalModal.vue";
+import {useRouter} from "vue-router";
 
 const showAddressAdd = ref(false);
 const showApprovalModal = ref(false);
+
 
 onBeforeMount(() => {
   usePublicSalesStore().fetchTokenReservations();

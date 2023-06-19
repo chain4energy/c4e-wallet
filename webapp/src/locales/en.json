@@ -457,7 +457,11 @@
     "SOURCE_ADDRESS": "Source address",
     "NO_ADDRESS_PROVIDED": "No address provided",
     "ACCOUNT_INFO": "Account info",
-    "TRANSACTIONS": "Transactions"
+    "TRANSACTIONS": "Transactions",
+    "KYC_LEVEL": "KYC Level",
+    "LEVEL": "Level",
+    "ACCEPTED": "Accepted",
+    "NOT_ACCEPTED": "Not accepted"
   },
   "BUTTONS": {
     "START_KYC": "Start KYC",
@@ -495,7 +499,8 @@
     "DESCRIPTION_SECOND_CONTENT": "The C4E public token sale offers potential investors an opportunity to secure tokens at an attractive price of $0.085 per token. Post token generation event (TGE), investors can look forward to a 20% release, followed by a six-month vesting period.\n\nPayment for the tokens can be made in Fiat (PLN, USD, EUR), or in the stablecoins USDC and USDT. We accept payments through Ethereum, BNB Smart Chain, and Polygon. The need for KYC procedure depends on your investment level.",
     "REQUIREMENTS_TIP": "Depending on the amount invested the different KYC (Know Your Customer) level can be applied.",
     "TOKENOMICS": "Tokenomics",
-    "WHITE_PAPER": "White paper"
+    "WHITE_PAPER": "White paper",
+    "YOU_INVEST": "You want to invest"
 
   },
   "PAYMENT_CONFIRMATION_VIEW": {

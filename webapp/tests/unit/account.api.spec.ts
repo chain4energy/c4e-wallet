@@ -57,8 +57,8 @@ describe('account api tests', () => {
 
   afterEach(() => {
     expect(useSplashStore().splashCounter).toBe(0);
-    // mockedAxios.request.mockClear();
-    // mockedAxios.request.mockReset();
+    mockedAxios.request.mockClear();
+    mockedAxios.request.mockReset();
   })
 
   it('gets BaseAccount', async () => {
