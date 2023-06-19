@@ -24,7 +24,7 @@
       </tr>
       <tr>
         <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.STATUS')}}</th>
-        <th :style="{color: getStatusColor()}">{{ getStatus() }}</th>
+        <th :style="{color: getStatusColor()}">{{ transaction.status }}</th>
       </tr>
       <tr v-if="transaction.txHash">
         <th class="allocationInfo__tableTabs">Tx-hash</th>
@@ -49,6 +49,7 @@
 import { paymentType, TokenReservation, transactionStatus } from "@/store/publicSales.store";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {onBeforeMount, onUnmounted, ref} from "vue";
+import {RESERVATION_STATUS} from "@/models/saleServiceCommons";
 
 const refreshDate = ref(false)
 
@@ -77,18 +78,11 @@ function getPaymentType(){
     case paymentType.updating: return '';
   }
 }
-function getStatus(){
-  switch (props.transaction.status){
-    case transactionStatus.Declared: return 'Declared';
-    case transactionStatus.Paid: return 'Paid';
-    case transactionStatus.Error: return 'ERROR';
-  }
-}
 function getStatusColor(){
   switch (props.transaction.status){
-    case transactionStatus.Declared: return `#858585`;
-    case transactionStatus.Paid: return `#19B15D`;
-    case transactionStatus.Error: return `#E02626`;
+    case RESERVATION_STATUS.DECLARED: return `#858585`;
+    case RESERVATION_STATUS.COMPLETED: return `#19B15D`;
+    case RESERVATION_STATUS.CANCELED: return `#E02626`;
   }
 }
 

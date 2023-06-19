@@ -1,22 +1,22 @@
 <template>
-  <div style="height: 100%">
-    <div style="height: 350px;" class="login_container box-shadow">
+  <div style="padding-bottom: 60px;">
+    <div class="login_container box-shadow">
       <div class="login_container__header">
-        <h1 style="font-weight: 900;">SIGN IN</h1>
+        <h1 style="font-weight: 900; padding-top: 20px;">{{$t("SIGN_IN_VIEW.SIGN_IN")}}</h1>
       </div>
       <div class="login_container__body">
         <Form @submit="login" :validation-schema="schema" v-slot="{errors}" >
           <div style="padding: 10px 30px;">
             <div >
               <div class="field col-12">
-                <Field style="width:100%" v-model="email" placeholder="Email address" name="email" type="text" class="form-control"
+                <Field style="width:100%" v-model="email" :placeholder="$t('SIGN_IN_VIEW.EMAIL')" name="email" type="text" class="form-control"
                        :class="{'is-invalid': errors.email}"></Field>
                 <div class="invalid-feedback">{{ errors.email ? $t(errors.email) : '' }}</div>
               </div>
 
               <div class="field col-12 ">
-                <Field style="width:100%" v-model="password" placeholder="Enter your password" name="password" type="text" class="form-control" :class="{'is-invalid': errors.password}">
-                  <Password style="width:100%" v-model="password" name="password" placeholder="Enter your password" toggleMask :feedback="false"></Password>
+                <Field style="width:100%" v-model="password" :placeholder="$t('SIGN_IN_VIEW.PASSWORD')" name="password" type="text" class="form-control" :class="{'is-invalid': errors.password}">
+                  <Password style="width:100%" v-model="password" name="password" :placeholder="$t('SIGN_IN_VIEW.PASSWORD')" toggleMask :feedback="false"></Password>
                 </Field>
                 <div class="invalid">{{errors.password ? $t(errors.password) : ''}}</div>
               </div>
@@ -26,10 +26,11 @@
 
           <div class="flex justify-content-center">
 
-            <Button class="p-button p-component secondary" style="width: 40%" type="submit">Sign in</Button>
+            <Button class="p-button p-component secondary" style="width: 40%" type="submit">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</Button>
           </div>
-          <RouterLink class="register"  to="/buyTokens/signUp">REGISTER</RouterLink>
-
+          <div style="padding: 5px">
+            <RouterLink class="register" to="/buyTokens/signUp">{{ $t('SIGN_IN_VIEW.REGISTER') }}</RouterLink>
+          </div>
         </Form>
       </div>
     </div>

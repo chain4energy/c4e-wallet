@@ -3,47 +3,46 @@
     <PublicSaleInfo />
     <div class="info__details">
       <h2>Chain4Energy token sale</h2>
-      <p>Natenczas Wojski chwycił na taśmie przypięty Swój róg bawoli, długi, cętkowany,<br>
-        kręty Jak wąż boa, oburącz do ust go przycisnął, Wzdął policzki jak banię, w oczach krwią zabłysnął,<br>
-        Zasunął wpół powieki, wciągnął w głąb pół brzucha I do płuc wysłał z niego cały zapas ducha.<br>
-        I zagrał: róg jak wicher niewstrzymanym dechem Niesie w puszczę muzykę i podwaja echem.<br>
-        Umilkli strzelce, stali szczwacze zadziwieni Mocą, czystością, dziwną harmoniją pieni.<br>
-        Starzec cały kunszt, którym niegdyś w lasach słynął, Jeszcze raz przed uszami myśliwców rozwinął;<br>
-        Napełnił wnet, ożywił knieje i dąbrowy, Jakby psiarnię w nie wpuścił i rozpoczął łowy.<br>
-        Bo w graniu była łowów historyja krótka: Zrazu odzew dźwięczący, rześki - to pobudka;<br>
-        Potem jęki po jękach skomlą - to psów granie; A gdzieniegdzie ton twardszy jak grzmot - to strzelanie.<br>
-        Tu przerwał, lecz róg trzymał; wszystkim się zdawało, Że Wojski wciąż gra jeszcze, a to echo grało.</p>
+      <h3>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_FIRST_HEADER')}}</h3>
+      <p>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_FIRST_CONTENT')}}</p>
+      <h3>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_SECOND_HEADER')}}</h3>
+      <p>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_SECOND_CONTENT')}}</p>
+    </div>
+    <div class="info__links">
+      <span>{{$t('BUY_TOKENS_VIEW.TOKENOMICS')}}</span>
+      <span>{{$t('BUY_TOKENS_VIEW.WHITE_PAPER')}}</span>
     </div>
     <InvestmentCalculator @onBuy="onBuyClick" />
     <div v-for="items in transactions" :key="items" class="userProfile__holder">
       <AllocationInfo :transaction="items" @pay="onPay(items)"/>
     </div>
   </div>
-  <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />
+<!--  <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />-->
+  <BuyTokensModal :visible="showModal"  @closeModal="showModal = false" @confirm="onPayReservation" :reservation="selectedReservation" />
 
-  <Dialog v-model:visible="summaryVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
+  <Dialog v-model:visible="summaryVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px', 'z-index': 500}">
     <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
-      <h5 style="font-weight:700">You want to invest {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</h5>
+      <h5 style="font-weight:700">{{$t('BUY_TOKENS_VIEW.YOU_INVEST')}} {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</h5>
       <div class="requirements_container">
         <div>
           {{$t('BUY_TOKENS_VIEW.PASS_KYC')}} {{transactionContextStore.getRequiredKycLevel}}
-          <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/>
+          <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.KYC')"/>
         </div>
         <div v-if="isKycLevelRequired">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else><Button @click="onKycStart" class="p-button p-component secondary">{{$t('BUTTONS.START_KYC')}}</Button></div>
-        <div>{{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
+        <div>{{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')"/></div>
         <div v-if="isTermsAccepted">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else ><Button class="p-button p-component secondary" @click="showApprovalModalFunc">{{$t('BUTTONS.ACCEPT')}}</Button></div>
-        <div>{{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
-        <div v-if="claimerAddress != ''">
+        <div>{{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"/></div>
+        <div v-if="claimerAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
-        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" tooltip-text="Some information related to KYC"/></div>
+        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')"/></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE && sourceAddress != ''">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
@@ -56,7 +55,8 @@
     </div>
   </Dialog>
   <ApprovalModal @close="hideApprovalModal" @submit="hideApprovalModal" v-if="showApprovalModal"/>
-  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
+  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :address="addressToConnect" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
+
 </template>
 
 <script lang="ts" setup>
@@ -83,6 +83,7 @@ import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useUserStore} from "@/store/user.store";
 import {useContextStore} from "@/store/context.store";
 import {SignParingAddressResult} from "@/models/user/emailPairing";
+import BuyTokensModal from "@/components/buyTokens/modals/BuyTokensModal.vue";
 
 onBeforeMount(() => {
 
@@ -100,6 +101,7 @@ publicSalesStore.setCurrentPrice();
 const i18n = useI18n();
 const showAddressInfoModal = ref(false);
 const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
+const addressToConnect = ref();
 
 const showApprovalModal = ref(false);
 function hideApprovalModal(){
@@ -148,6 +150,15 @@ const onConfirm = () => {
   }
 };
 
+const onPayReservation = () => {
+  showModal.value = false;
+  transactionContextStore.setOrderId(selectedReservation.value.orderId);
+  if(transactionContextStore.paymentCurrency != Currency.STABLE) {
+    router.push({name: 'fiatPaymentConfirmation'});
+  } else {
+    router.push({name: 'paymentConfirmation'});
+  }
+};
 const onSuccess = (orderId: number) => {
   transactionContextStore.setOrderId(orderId);
   usePublicSalesStore().fetchTokenReservations();
@@ -174,10 +185,16 @@ const usersWallet = computed(() => {
 });
 function provideClaimerAddress(){
   showAddressInfoModalAddressType.value = AddressType.KEPLR;
+  addressToConnect.value = useUserStore().getAccount.address;
   showAddressInfoModal.value = true;
 }
 function provideSourceAddress(){
   showAddressInfoModalAddressType.value = AddressType.METAMASK;
+  useUserStore().connectMetamask().then(async (address) => {
+    if (address) {
+      addressToConnect.value = address;
+    }
+  });
   showAddressInfoModal.value = true;
 }
 function addressConfirmed(){
@@ -192,11 +209,7 @@ function addressConfirmed(){
   }
   if(showAddressInfoModalAddressType.value == AddressType.METAMASK) {
     console.log('Connect metamask account');
-    useUserStore().connectMetamask().then(async (address) => {
-      if (address) {
-        await useUserServiceStore().initEmailMetamaskPairing(address, onSuccessConnect, onFail);
-      }
-    });
+    useUserServiceStore().initEmailMetamaskPairing(addressToConnect.value, onSuccessConnect, onFail);
   }
 }
 const onSuccessConnect = () => {
@@ -210,9 +223,9 @@ function closeProvideAddressModalClose(){
 const canConfirmOrder = computed(() => {
   const isSourceAddressRequired = transactionContextStore.paymentCurrency == Currency.STABLE;
   if(isSourceAddressRequired) {
-    return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != '' && sourceAddress.value != '';
+    return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != undefined && sourceAddress.value != '';
   }
-  return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != '';
+  return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != undefined;
 });
 
 </script>
@@ -240,6 +253,16 @@ const canConfirmOrder = computed(() => {
       font-weight: 400;
       font-size: 16px;
       line-height: 24px;
+    }
+  }
+  &__links{
+    display: inline-flex;
+    width: 100%;
+    justify-content: flex-end;
+    span {
+      padding: 10px 20px;
+      font-family: Poppins, sans-serif;
+      font-size: 18px;
     }
   }
 }

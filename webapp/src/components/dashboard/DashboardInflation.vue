@@ -1,9 +1,9 @@
 <template>
   <div class="tile">
 
-    <div style="display:flex; flex-direction: row" class="text left-element">
+    <div style="display:flex; flex-direction: row; text-align:left" class="text left-element">
         <Icon name="TrendingUp"></Icon>
-      <div>
+      <div >
         <span class="label">{{ $t('DASHBOARD_VIEW.INFLATION') }}</span>
         <PercentsView :amount="useTokensStore().inflation" :precision="2" :remove-dec="false" />
       </div>

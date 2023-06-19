@@ -203,10 +203,11 @@ const onStartMetamaskTransaction = () => {
   if(selectedBlockchain.value && selectedToken.value){
     usePublicSalesStore().payByMetamask({
       amount: transactionContextStore.amountToPay.toString(),
-      blockchainName: selectedBlockchain.value.chainName,
+      blockchainID: selectedBlockchain.value.id,
+      exchangeID: selectedToken.value.id,
       orderId: transactionContextStore.orderId,
       blockchainAddress: selectedTokenIdentifier.value,
-      coinDecimals: 6,
+      coinDecimals: selectedToken.value.decimals,
       c4eAddress: selectedToken.value.c4eAddress
     }, onSuccessStartMetamaskTransaction, onFail);
   }
@@ -214,7 +215,9 @@ const onStartMetamaskTransaction = () => {
 
 };
 const onSuccessStartMetamaskTransaction = () => {
+  paymentModalVisible.value = false;
   toast.success('Transaction complete');
+  router.push({name: 'publicSaleInfo'});
 };
 const changeNetwork = (networkId: number) => {
   blockchainNetworkList.value.forEach((network) => {
@@ -240,11 +243,11 @@ const isCrypto = () => {
 };
 
 const onConfirmPayment = () => {
-  if(selectedBlockchain.value && txHash.value) {
+  if(selectedBlockchain.value && txHash.value && selectedToken.value) {
     usePublicSalesStore().provideTxPaymentProof({
-      blockchainName: selectedBlockchain.value.chainName,
+      blockchainID: selectedBlockchain.value.id,
       orderID: transactionContextStore.orderId,
-      coinIdentifier: selectedTokenIdentifier.value,
+      exchangeID: selectedToken.value.id,
       txHashes: [txHash.value]
     }, onSuccessConfirmPayment, onFail);
   }

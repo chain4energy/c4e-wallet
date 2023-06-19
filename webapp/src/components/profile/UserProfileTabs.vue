@@ -1,6 +1,6 @@
 <template>
 <!--  <AddressModal style="position: fixed; z-index: 99999" @close="hideAddAddress" @submit="submitEmail" v-if="showAddressAdd" />-->
-  <ApprovalModal @close="hideApprovalModal" @submit="console.log(1)" v-if="showApprovalModal"/>
+  <ApprovalModal @close="hideApprovalModal" @submit="hideApprovalModal" v-if="showApprovalModal"/>
   <div class="userProfile">
     <div class="userProfile__holder">
       <TabView>

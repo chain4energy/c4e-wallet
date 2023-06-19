@@ -77,7 +77,7 @@ function initCanvas() {
   ctx.value.fillStyle = '#000000';
   reservedBarText.font = "16px Arial";
   ctx.value.globalCompositeOperation = 'source-over';
-  const text2 = `${Number(useConfigurationStore().config.getConvertedAmount(amount.values.reserved.amount, denom)).toString()} C4E`
+  const text2 = `${Number(useConfigurationStore().config.getConvertedAmount(amount.values.reserved.amount, denom)).toString()} C4E`;
   const text2Width = ctx.value.measureText(text2 ).width;
   ctx.value.fillText(
     text2,

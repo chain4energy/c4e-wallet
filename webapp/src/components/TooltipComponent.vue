@@ -1,6 +1,6 @@
 <template>
   <span class="tooltip-icon">
-    <span v-tooltip="{ value: tooltipText, escape: true }">
+    <span v-tooltip.left="{ value: tooltipText, escape: true }">
       <Icon name="HelpCircle"/>
     </span>
   </span>
@@ -17,7 +17,7 @@ const props = defineProps(["tooltipText"]);
 
 </style>
 <style lang="scss">
-.p-tooltip{
+.tooltip{
   z-index: 1003 !important;
 
 }
