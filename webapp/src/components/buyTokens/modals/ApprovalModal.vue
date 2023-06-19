@@ -1,6 +1,6 @@
 <template>
   <div class="approvalModal">
-    <div class="approvalModal__background" @click="$emit('close')"></div>
+    <div class="approvalModal__background" @click="closePopup"></div>
     <div class="approvalModal__holder">
       <div style="position: absolute; right: 0; top:0; margin-right: 20px">
         <Button icon="pi pi-times" style="width: 20px; right:0" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
@@ -56,10 +56,15 @@
                  :value="!accepted.checkbox"/>
           <label for="accept">I've read and consent the terms of agreement </label>
         </div>
-        <Button
-          :disabled="!accepted.checkbox"
-          class="p-button p-component secondary accountInfo__btn"
-          @click="submit">Accept</Button>
+        <div>
+          <Button
+            :disabled="!accepted.checkbox"
+            class="p-button p-component secondary accountInfo__btn"
+            @click="submit">Accept</Button>
+          <Button
+            class="p-button p-component secondary accountInfo__btn"
+            @click="closePopup()">Decline</Button>
+        </div>
       </div>
     </div>
   </div>
@@ -82,6 +87,10 @@ onMounted(()=>{
   terms.value.addEventListener('scroll', checkScrollBar );
 });
 
+function closePopup(){
+  emit('close')
+  terms.value.removeEventListener('scroll', checkScrollBar );
+}
 function checkScrollBar(){
   const clientHeight = terms.value.clientHeight
   const scrollHeight = terms.value.scrollHeight
@@ -96,12 +105,11 @@ function checkScrollBar(){
 document.body.style.overflow = "hidden";
 onUnmounted(() => {
   document.body.style.overflow = "auto";
-  terms.value.removeEventListener('scroll');
 });
-
 
 function submit(){
   useUserServiceStore().approveTerms(onSuccessPairing, onFail, true).then((res)=>{
+    terms.value.removeEventListener('scroll', checkScrollBar );
     emit('submit');
   });
 }
