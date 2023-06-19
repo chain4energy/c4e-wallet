@@ -42,9 +42,8 @@
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else-if="!isLoggedIn && claimerAddress == undefined">
-          <Button>
-          @click="dataService.onKeplrLogIn()"
-          class="p-button p-component secondary">
+          <Button @click="dataService.onKeplrLogIn()"
+                  class="p-button p-component secondary">>
           {{ $t('AIRDROP.CONNECT') }}
           </Button>
         </div>
