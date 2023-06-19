@@ -446,9 +446,9 @@
     "TRANSACTIONS": "Transakcje"
   },
   "BUTTONS": {
-    "START_KYC": "Start KYC",
+    "START_KYC": "Przejdź do KYC",
     "ACCEPT": "Akceptuj",
-    "PROVIDE_ADDRESS": "Provide address",
+    "PROVIDE_ADDRESS": "Podaj adres",
     "LOGOUT": "Wyloguj",
     "BUY": "Kup",
     "CANCEL_ORDER": "Anuluj zamówienie",
@@ -470,18 +470,19 @@
     "REMAINING_RESERVATION_TIME": "Pozostaly czas rezerwacji",
     "PAYMENT_TYPE": "Typ płatności",
     "STATUS": "Status",
-    "PASS_KYC": "Pass KYC - Level",
+    "PASS_KYC": "Uzyskaj KYC - Poziom",
     "ACCEPT_SALE_TERMS": "Zaakceptuj warunki sprzedaży",
-    "PROVIDE_CLAIMER_ADDRESS": "Provide claimer address",
-    "PROVIDE_SOURCE_ADDRESS": "Provide source address",
+    "PROVIDE_CLAIMER_ADDRESS": "Podaj adres odbiorczy",
+    "PROVIDE_SOURCE_ADDRESS": "Podaj adres źródłowy",
     "ORDER_SUMMARY": "Podsumowanie zamówienia",
     "DESCRIPTION_FIRST_HEADER": "About C4E Tokens",
     "DESCRIPTION_FIRST_CONTENT": "Chain4Energy (C4E) tokens play an integral role in our decentralized energy ecosystem. They serve as a medium of exchange, facilitating transactions within our platform, and enabling access to our suite of energy solutions.",
     "DESCRIPTION_SECOND_HEADER": "Token Sale Details",
     "DESCRIPTION_SECOND_CONTENT": "The C4E public token sale offers potential investors an opportunity to secure tokens at an attractive price of $0.085 per token. Post token generation event (TGE), investors can look forward to a 20% release, followed by a six-month vesting period.\n\nPayment for the tokens can be made in Fiat (PLN, USD, EUR), or in the stablecoins USDC and USDT. We accept payments through Ethereum, BNB Smart Chain, and Polygon. The need for KYC procedure depends on your investment level.",
-    "REQUIREMENTS_TIP": "Depending on the amount invested the different KYC (Know Your Customer) level can be applied.",
+    "REQUIREMENTS_TIP": "W zależności od zainwestowanej kwoty, może zostać zastosowany różny poziom procesu identyfikacji klienta (KYC - Know Your Customer).",
     "TOKENOMICS": "Tokenomics",
-    "WHITE_PAPER": "White paper"
+    "WHITE_PAPER": "White paper",
+    "YOU_INVEST": "Chcesz zainwestować"
 
   },
   "PAYMENT_CONFIRMATION_VIEW": {
@@ -496,11 +497,10 @@
   },
   "TOOLTIPS": {
     "HINTS": {
-      "KYC": "KYC Level\nLevel 0 \n(No KYC)\nLevel 1\n(Proof of Identity)\nLevel 2\n(Proof of Residence)\nLevel 3 \n(Proof of Funds)",
-      "TERMS": "All the Public Sale terms are available at:",
-      "CLAIMER_ADDRESS": "Provide an address of the wallet you will use for claiming the tokens. It has to be an C4E wallet address. \nIf you don't have it follow this instructions with Keplr wallet:\nhttps://docs.c4e.io/usersGuide/auth.html",
-      "SOURCE_ADDRESS": "Please provide your EVM wallet address you will send your stablecoins from.\nPlease do not use a CEX exchange address."
-    }
+      "KYC": "Poziom KYC\nPoziom 0\n(Brak KYC)\nPoziom 1\n(Profil tożsamości)\nPoziom 2\n(Profil zamieszkania)\nPoziom 3\n(Profil dochodów)",
+      "TERMS": "Wszystkie warunki dotyczące sprzedaży publicznej są dostępne pod adresem:",
+      "CLAIMER_ADDRESS": "Podaj adres portfela, z którego będziesz korzystać do odbioru tokenów. Musi to być adres portfela C4E. \nJeśli go nie masz, postępuj zgodnie z instrukcjami dotyczącymi portfela Keplr:\nhttps://docs.c4e.io/usersGuide/auth.html",
+      "SOURCE_ADDRESS": "Podaj swój adres portfela EVM, z którego będziesz wysyłać swoje stabilne kryptowaluty.\nProsimy, nie używaj adresu giełdy kryptowalutowej (CEX)."}
   },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Rejestracja",

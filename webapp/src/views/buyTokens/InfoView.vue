@@ -22,7 +22,7 @@
 
   <Dialog v-model:visible="summaryVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px', 'z-index': 500}">
     <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
-      <h5 style="font-weight:700">You want to invest {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</h5>
+      <h5 style="font-weight:700">{{$t('BUY_TOKENS_VIEW.YOU_INVEST')}} {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</h5>
       <div class="requirements_container">
         <div>
           {{$t('BUY_TOKENS_VIEW.PASS_KYC')}} {{transactionContextStore.getRequiredKycLevel}}
