@@ -449,7 +449,11 @@
     "SOURCE_ADDRESS": "Source address",
     "NO_ADDRESS_PROVIDED": "No address provided",
     "ACCOUNT_INFO": "Account info",
-    "TRANSACTIONS": "Transactions"
+    "TRANSACTIONS": "Transactions",
+    "KYC_LEVEL": "KYC Level",
+    "LEVEL": "Level",
+    "ACCEPTED": "Accepted",
+    "NOT_ACCEPTED": "Not accepted"
   },
   "BUTTONS": {
     "START_KYC": "Start KYC",
