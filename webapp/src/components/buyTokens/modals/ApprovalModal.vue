@@ -2,7 +2,7 @@
   <div class="approvalModal">
     <div class="approvalModal__background" @click="$emit('close')"></div>
     <div class="approvalModal__holder">
-      <div class="approvalModal__rules">
+      <div ref="terms" class="approvalModal__rules">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
         labore et dolore magna aliqua. Laoreet sit amet cursus sit amet dictum sit. Risus viverra adipiscing at in.
         Semper eget duis at tellus at. Id interdum velit laoreet id donec ultrices tincidunt. Habitant morbi tristique senectus et.
@@ -44,8 +44,16 @@
         Faucibus interdum posuere lorem ipsum dolor. Viverra orci sagittis eu volutpat. Elit scelerisque mauris pellentesque pulvinar
         pellentesque habitant morbi. Tincidunt dui ut ornare lectus. Tellus orci ac auctor augue mauris.
       </div>
-      <div>
+      <div class="approvalModal__form">
+        <div class="approvalModal__checkbox">
+          <Field type="checkbox"
+                 @click="accepted.checkbox = !accepted.checkbox"
+                 name="accept" v-model="accepted.checkbox"
+                 :value="!accepted.checkbox"/>
+          <label for="accept">I've read and consent the terms of agreement </label>
+        </div>
         <Button
+          :disabled="!accepted.checkbox"
           class="p-button p-component secondary accountInfo__btn"
           @click="submit">Accept</Button>
       </div>
@@ -54,18 +62,39 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted } from "vue";
+import {onMounted, onUnmounted, reactive, ref} from "vue";
 import { useUserServiceStore } from "@/store/userService.store";
 import { useToast } from "vue-toastification";
+import {Field,Form} from "vee-validate";
 
 const toast = useToast();
 
 const emit = defineEmits(['close', 'submit']);
+const accepted = reactive({checkbox : false});
+const terms = ref();
 
+
+onMounted(()=>{
+  terms.value.addEventListener('scroll', checkScrollBar );
+});
+
+function checkScrollBar(){
+  const clientHeight = terms.value.clientHeight
+  const scrollHeight = terms.value.scrollHeight
+  const scrollTop = terms.value.scrollTop
+  const res = (scrollTop / (scrollHeight - clientHeight)) * 100;
+  const percents = res.toFixed(0)
+  if (percents != 100) {
+    return;
+  }
+  accepted.checkbox = true;
+}
 document.body.style.overflow = "hidden";
 onUnmounted(() => {
   document.body.style.overflow = "auto";
+  terms.value.removeEventListener('scroll');
 });
+
 
 function submit(){
   useUserServiceStore().approveTerms(onSuccessPairing, onFail, true).then((res)=>{
@@ -141,6 +170,18 @@ function onFail(){
   &__rules{
     max-height: 400px;
     overflow-y: auto;
+    padding: 10px;
+  }
+  &__form{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    margin-top: 15px;
+  }
+  &__checkbox{
+    display: flex;
+    flex-direction: row;
   }
 }
 
