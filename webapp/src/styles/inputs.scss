@@ -87,6 +87,7 @@
 
 .p-tooltip {
   max-width: 100vw !important;
+  z-index: 2001 !important;
   .p-tooltip-text {
     background: #FEF993 !important;
     color: black !important;
