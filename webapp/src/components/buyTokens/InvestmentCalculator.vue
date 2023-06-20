@@ -100,16 +100,16 @@ const secondValue = reactive({
 const exchangeRate = ref(1);
 
 const onFirstInputChange = () => {
-  secondValue.amount = firstValue.amount * exchangeRate.value;
+  secondValue.amount = round(firstValue.amount * exchangeRate.value, 2);
 };
 
 const onSecondInputChange = () => {
-  firstValue.amount = secondValue.amount / exchangeRate.value;
+  firstValue.amount = round(secondValue.amount / exchangeRate.value, 6);
 };
 
 
 watch(() => exchangeRate.value, () => {
-  secondValue.amount = firstValue.amount * exchangeRate.value;
+  secondValue.amount = round(firstValue.amount * exchangeRate.value,2);
 });
 
 watch(() => secondValue.currency, () => {
@@ -146,7 +146,7 @@ const onBuy = () => {
     router.push({name: 'signIn'});
   } else {
     transactionContextStore.setAmountToBuy(firstValue.amount);
-    transactionContextStore.setAmountToPay(secondValue.amount);
+    transactionContextStore.setAmountToPay(round(secondValue.amount,2));
     transactionContextStore.setPaymentCurrency(secondValue.currency);
     transactionContextStore.setExchangeRate(exchangeRate.value);
     emit('onBuy');
@@ -154,6 +154,10 @@ const onBuy = () => {
 };
 
 const toast = useToast();
+
+const round = (number: number, decimals: number) => {
+  return Math.ceil(number*10**decimals)/10**decimals;
+};
 
 </script>
 
