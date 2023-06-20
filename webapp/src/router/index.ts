@@ -14,6 +14,7 @@ import KycView from "@/views/KycView.vue";
 import SignInView from "@/views/buyTokens/SignInView.vue";
 import SignUpView from "@/views/buyTokens/SignUpView.vue";
 import PortfolioView from "@/views/PortfolioView.vue";
+import ProvideVerificationCodeView from "@/views/buyTokens/ProvideVerificationCodeView.vue";
 import {portfolioRoutes} from "@/router/portfolioRoutes";
 
 const routes: Array<RouteRecordRaw> = [
@@ -93,6 +94,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/buyTokens/signUp',
     name: 'signUp',
     component: SignUpView
+  },
+  {
+    path: '/profile/provideVerificationCode',
+    name: 'provideVerificationCode',
+    component: ProvideVerificationCodeView,
+    meta: {
+      requiresAuth: true
+    },
   },
   portfolioRoutes
 ];

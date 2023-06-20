@@ -42,12 +42,6 @@ onBeforeMount(() => {
         description: 'Lorem ipsum lorem ipsum lorem lorem',
         steps: useUserServiceStore().getKycTierSteps(KycTierEnum.TIER_2),
         tier: 3286
-      },
-      {
-        header: 'Level 3',
-        description: 'Lorem ipsum lorem ipsum lorem lorem',
-        steps: useUserServiceStore().getKycTierSteps(KycTierEnum.TIER_3),
-        tier: 9031
       }];
   });
 

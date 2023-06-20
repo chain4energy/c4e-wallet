@@ -25,8 +25,8 @@ interface UserServiceState {
   userEmail: string | undefined,
   verificationNeeded: boolean,
   termsAccepted: boolean,
-  ethereumAddress: string,
-  claimAddress: string,
+  ethereumAddress?: string,
+  claimAddress?: string,
   kycServiceState: Map<KycStepName, KycProgressStatus>,
   kycLevel: number
 }
@@ -49,8 +49,8 @@ export const useUserServiceStore = defineStore({
       userEmail: undefined,
       verificationNeeded: false,
       termsAccepted: false,
-      ethereumAddress: '',
-      claimAddress: '',
+      ethereumAddress: undefined,
+      claimAddress: undefined,
       kycServiceState: new Map<KycStepName, KycProgressStatus>(),
       kycLevel: 0
     };
@@ -62,8 +62,8 @@ export const useUserServiceStore = defineStore({
           this.termsAccepted = responseDate.data.terms;
           this.loginType = responseDate.data.accountType;
           this.userEmail = responseDate.data.login;
-          this.ethereumAddress = responseDate.data.ethereumAddress;
-          this.claimAddress = responseDate.data?.claimAddress;
+          this.ethereumAddress = responseDate.data.ethereumAddress == '' ? undefined : responseDate.data.ethereumAddress;
+          this.claimAddress = responseDate.data?.claimAddress == '' ? undefined : responseDate.data.claimAddress;
           this.kycLevel = responseDate.data.kycInfo.kycLevel;
           const map = new Map<KycStepName, KycProgressStatus>();
           for(const [key, value] of Object.entries(responseDate.data.kycInfo.kycServiceState)) {
@@ -350,8 +350,8 @@ export const useUserServiceStore = defineStore({
       this.userEmail= undefined;
       this.verificationNeeded= false;
       this.termsAccepted= false;
-      this.ethereumAddress= '';
-      this.claimAddress= '';
+      this.ethereumAddress= undefined;
+      this.claimAddress= undefined;
       this.kycServiceState= new Map<KycStepName, KycProgressStatus>();
       this.kycLevel= 0;
       window.location.reload();

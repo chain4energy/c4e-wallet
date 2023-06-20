@@ -115,7 +115,7 @@
         </div>
         <div>
           <Button
-            :disabled="!isLogedInInService || sourceAddress != ''"
+            :disabled="!isLogedInInService || sourceAddress != undefined"
             class="p-button p-component secondary accountInfo__btn"
             @click="provideSourceAddress">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button>
         </div>

@@ -51,10 +51,6 @@ onMounted(() =>{
   useUserServiceStore().getKycStatus();
 });
 
-
-const currency = computed(() => {
-  return usePublicSalesStore().getC4eToUSDC;
-});
 const showModal = ref<boolean>(false);
 const selectedReservation = ref();
 const transactions = computed(() => {

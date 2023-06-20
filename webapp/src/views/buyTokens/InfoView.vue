@@ -49,7 +49,7 @@
         </div>
         <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')"/></div>
-        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE && sourceAddress != ''">
+        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE && sourceAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE"><Button @click="provideSourceAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
@@ -103,9 +103,7 @@ const publicSaleStore = usePublicSalesStore();
 const transactionContextStore = useTransactionContextStore();
 const publicSalesStore = usePublicSalesStore();
 const summaryVisible = ref(false);
-publicSalesStore.setParts();
-publicSalesStore.setTotal();
-publicSalesStore.setCurrentPrice();
+
 const i18n = useI18n();
 const showAddressInfoModal = ref(false);
 const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
@@ -236,7 +234,7 @@ function closeProvideAddressModalClose(){
 const canConfirmOrder = computed(() => {
   const isSourceAddressRequired = transactionContextStore.paymentCurrency == Currency.STABLE;
   if(isSourceAddressRequired) {
-    return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != undefined && sourceAddress.value != '';
+    return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != undefined && sourceAddress.value != undefined;
   }
   return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != undefined;
 });

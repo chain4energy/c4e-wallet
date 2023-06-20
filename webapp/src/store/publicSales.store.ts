@@ -16,7 +16,6 @@ export interface PublicSalesState{
   parts: parts | undefined,
   startDate: Date | undefined,
   endDate: Date | undefined,
-  c4eToUSDC: number | undefined,
   tokenReservations: TokenReservation[] | undefined,
   blockchainInfo: BlockchainInfo[],
   roundInfo: RoundInfo | undefined
@@ -76,7 +75,6 @@ export const usePublicSalesStore = defineStore({
       parts: undefined,
       startDate: undefined,
       endDate: undefined,
-      c4eToUSDC: undefined,
       tokenReservations: undefined,
       blockchainInfo: [],
       roundInfo: undefined
@@ -158,9 +156,6 @@ export const usePublicSalesStore = defineStore({
         return res;
       });
     },
-    setCurrentPrice(){
-      this.c4eToUSDC = 0.18;
-    },
     logOutAccount(){
       this.tokenReservations = [];
     }
@@ -173,9 +168,6 @@ export const usePublicSalesStore = defineStore({
       if(this.roundInfo)
         return {sold: this.roundInfo.soldTokens, reserved: this.roundInfo.reservedTokens};
       return undefined;
-    },
-    getC4eToUSDC(): number| undefined{
-      return this.c4eToUSDC;
     },
     getStartDate(): Date | undefined{
       return this.startDate;

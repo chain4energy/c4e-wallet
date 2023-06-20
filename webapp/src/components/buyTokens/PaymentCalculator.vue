@@ -110,7 +110,7 @@ const calculate = () => {
     fetch("https://xqkzzpmim7.eu-west-1.awsapprunner.com/currencies/USDT/calculate", requestOptions)
       .then(response => response.json())
       .then(data => {
-        const c4eTOUSDT = usePublicSalesStore().getC4eToUSDC;
+        const c4eTOUSDT = usePublicSalesStore().roundInfo?.c4eToUsd;
         if(c4eTOUSDT != undefined) {
           rate.value = c4eTOUSDT * requestedAmount / data.amount;
         }
