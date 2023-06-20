@@ -54,8 +54,8 @@ const onSuccess = () => {
   toast.success('Metamask connected');
   router.push({name: 'userProfileTabs'});
 };
-const onError = () => {
-  toast.error('An error occurred');
+const onError = (errorMessage?: string) => {
+  toast.error('An error occurred \n' + errorMessage);
 };
 </script>
 

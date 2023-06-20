@@ -103,12 +103,12 @@ export const usePublicSalesStore = defineStore({
         }
       });
     },
-    reserveTokens(amount: number, onSuccess: ((orderId: number) => void), onFail: (() => void), lockscreen = true) {
+    reserveTokens(amount: number, onSuccess: ((orderId: number) => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
       return factoryApi.publicSaleServiceApi().reserveTokens(amount, lockscreen).then(res => {
         if(res.isSuccess() && res.data?.orderId) {
           onSuccess(res.data.orderId);
         } else {
-          onFail();
+          onFail(res.error?.data?.errorMessage);
         }
       });
     },

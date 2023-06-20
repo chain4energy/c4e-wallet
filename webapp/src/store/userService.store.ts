@@ -230,7 +230,7 @@ export const useUserServiceStore = defineStore({
       });
     },
 
-    async verifyParingEmailKeplr(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async verifyParingEmailKeplr(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().verifyPairingEmailKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, true).then(response => {
         if(response.isSuccess()){
           this.loginType = LoginTypeEnum.EMAIL;
@@ -238,7 +238,7 @@ export const useUserServiceStore = defineStore({
           this.verificationNeeded = false;
           onSuccess();
         }else {
-          onFail();
+          onFail(response.error?.data?.errorMessage);
         }
       });
     },
@@ -266,31 +266,31 @@ export const useUserServiceStore = defineStore({
         }
       });
     },
-    async initEmailMetamaskPairing(paymentAddress: string, onSuccess: (() => void), onFail: (() => void), lockscreen=true){
+    async initEmailMetamaskPairing(paymentAddress: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen=true){
       await apiFactory.publicSaleServiceApi().initEmailMetamaskPairing({paymentAddress: paymentAddress}, lockscreen).then((res) => {
         if(res.isSuccess() && res.data) {
           useContextStore().dataToSign = res.data;
           onSuccess();
         } else {
-          onFail();
+          onFail(res.error?.data?.errorMessage);
         }
       });
     },
-    async emailMetamaskPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async emailMetamaskPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().emailMetamaskPairingDataVerify({processID: processID, signedData: signedData}, lockscreen).then((res) => {
         if(res.isSuccess()) {
           onSuccess();
         } else {
-          onFail();
+          onFail(res.error?.data?.errorMessage);
         }
       });
     },
-    async emailKeplrPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async emailKeplrPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().emailKeplrPairingDataVerify({processID: processID, signedData: signedData}, lockscreen).then((res) => {
         if(res.isSuccess()) {
           onSuccess();
         } else {
-          onFail();
+          onFail(res.error?.data?.errorMessage);
         }
       });
     },
