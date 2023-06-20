@@ -16,7 +16,19 @@ import {
   defaultDelegatorUnbondingDelegationsValidators
 } from "../utils/staking.blockchain.data.util";
 
-jest.mock("axios");
+jest.mock('axios', () => {
+  return {
+    create: jest.fn(() => ({
+      get: jest.fn(),
+      interceptors: {
+        request: { use: jest.fn(), eject: jest.fn() },
+        response: { use: jest.fn(), eject: jest.fn() }
+      }
+    })),
+    request: jest.fn(),
+    AxiosError: jest.fn()
+  }
+})
 const mockedAxios = mockAxios();
 const address = 'c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55';
 

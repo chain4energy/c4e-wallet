@@ -8,7 +8,19 @@ import { AverageBlockTimeResponse } from '@/models/hasura/average.block.time';
 import { createAveragetBlockTimeResponseData } from '../utils/average.block.time.hasura.data.util';
 import { createErrorResponse as createHasuraErrorResponse, createHasuraError, defaultHasuraErrorMessage, defaultHasuraErrorName } from '../utils/common.hasura.data.util';
 
-jest.mock("axios");
+jest.mock('axios', () => {
+  return {
+    create: jest.fn(() => ({
+      get: jest.fn(),
+      interceptors: {
+        request: { use: jest.fn(), eject: jest.fn() },
+        response: { use: jest.fn(), eject: jest.fn() }
+      }
+    })),
+    request: jest.fn(),
+    AxiosError: jest.fn()
+  }
+})
 const mockedAxios = mockAxios();
 const api = apiFactory.blockApi()
 
@@ -57,7 +69,7 @@ describe('block api tests', () => {
 
   });
 
-  it('gets latest block - bad data', async () => { 
+  it('gets latest block - bad data', async () => {
     const latestBlock = {
       data: {}
     };
@@ -126,12 +138,12 @@ describe('block api tests', () => {
     expect(result.error?.data?.errors).not.toBeUndefined();
     expect(result.error?.data?.errors.length).toBe(1);
     expect(result.error?.data?.errors[0].message).toBe(errorMessage);
-    
+
 
 
   });
 
-  it('gets average block time - bad data', async () => { 
+  it('gets average block time - bad data', async () => {
     const latestBlock = {
       data: {}
     };
