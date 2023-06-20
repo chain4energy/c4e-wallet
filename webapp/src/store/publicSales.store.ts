@@ -138,7 +138,7 @@ export const usePublicSalesStore = defineStore({
         } else {
           onFail();
         }
-        console.log(res)
+        console.log(res);
       });
     },
     async payByMetamask(payInfo: MetamaskPayInfo, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {

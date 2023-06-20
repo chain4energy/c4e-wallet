@@ -13,6 +13,7 @@ import profileRoutes from "@/router/profile";
 import KycView from "@/views/KycView.vue";
 import SignInView from "@/views/buyTokens/SignInView.vue";
 import SignUpView from "@/views/buyTokens/SignUpView.vue";
+import PortfolioView from "@/views/PortfolioView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -91,6 +92,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/buyTokens/signUp',
     name: 'signUp',
     component: SignUpView
+  },
+  {
+    path: '/portfolio',
+    name: 'portfolio',
+    component: PortfolioView
   }
 ];
 

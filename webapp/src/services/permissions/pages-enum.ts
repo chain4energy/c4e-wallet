@@ -4,5 +4,6 @@ export enum PagesEnum{
   GOVERNANCE,
   AIRDROP,
   BUYTOKENS,
-  PROFILE
+  PROFILE,
+  PORTFOLIO
 }
