@@ -14,6 +14,7 @@ import KycView from "@/views/KycView.vue";
 import SignInView from "@/views/buyTokens/SignInView.vue";
 import SignUpView from "@/views/buyTokens/SignUpView.vue";
 import PortfolioView from "@/views/PortfolioView.vue";
+import {portfolioRoutes} from "@/router/portfolioRoutes";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -93,11 +94,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'signUp',
     component: SignUpView
   },
-  {
-    path: '/portfolio',
-    name: 'portfolio',
-    component: PortfolioView
-  }
+  portfolioRoutes
 ];
 
 const router = createRouter({

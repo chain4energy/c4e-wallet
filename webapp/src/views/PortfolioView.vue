@@ -1,11 +1,14 @@
 <script setup lang="ts">
 
+import PortfolioSummary from "@/components/portfolio/PortfolioSummary.vue";
+import PortfolioVesting from "@/components/portfolio/PortfolioVesting.vue";
 </script>
 
 <template>
 
     <div>
-      <p>Portfolio View</p>
+      <PortfolioSummary/>
+      <PortfolioVesting/>
     </div>
 
 </template>
