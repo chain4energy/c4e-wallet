@@ -177,6 +177,12 @@ export const usePublicSalesStore = defineStore({
     },
     getTransactions(): TokenReservation[] | undefined{
       return this.tokenReservations;
+    },
+    getC4eToUSD(): number {
+      if(this.roundInfo?.c4eToUsd) {
+        return this.roundInfo.c4eToUsd;
+      }
+      return 9999;
     }
   }
 });

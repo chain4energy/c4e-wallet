@@ -23,10 +23,7 @@ import {TxRaw} from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import {fromBase64} from "@cosmjs/encoding";
 import {DataToSign} from "@/models/user/walletAuth";
 import {_arrayBufferToBase64} from "@/utils/sign";
-import {useUserStore} from "@/store/user.store";
 import {ethers} from "ethers";
-import {TransactionRequest} from "@ethersproject/abstract-provider";
-import {FormatTypes, Interface} from "ethers/lib/utils";
 
 const toast = useToast();
 
@@ -276,6 +273,9 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       }
       case ConnectionType.Cosmostation: {
         return this.getOfflineDirectSignerExtensionBased(window.cosmostation?.providers.keplr, 'Cosmostation not installed');
+      }
+      case ConnectionType.Leap: {
+        return this.getOfflineDirectSignerExtensionBased(window.leap, 'Leap not installed');
       }
       default: {
         throw new Error('No signer for connnection type: ' + connectionType);

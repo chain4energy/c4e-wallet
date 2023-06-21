@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <div v-tooltip="{ value: 'You cannot invest less then $25, €25 or PLN 100', disabled: minimumRequired()}" class="calculatorC4E__btnSection">
+      <div v-tooltip="{ value: 'You cannot invest less then $25 and more than $10000', disabled: minimumRequired()}" class="calculatorC4E__btnSection">
 
         <Button class="p-button p-component secondary" :disabled="!minimumRequired()" style="width: 141px;" @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
       </div>
@@ -66,7 +66,7 @@ const props =  defineProps({
   firstInputDefaultValue: {
     type: Number,
     required: false,
-    default: 1000
+    default: 10000
   },
   disableStablecoin: {
     type: Boolean,
@@ -173,14 +173,7 @@ const round = (number: number, currency: string) => {
 };
 
 const minimumRequired = () => {
-  if(secondValue.currency == Currency.USD && secondValue.amount <25) {
-    return false;
-  } else if(secondValue.currency == Currency.EUR && secondValue.amount <25) {
-    return false;
-  } else if(secondValue.currency == Currency.PLN && secondValue.amount <100) {
-    return false;
-  }
-  return true;
+  return firstValue.amount * usePublicSalesStore().getC4eToUSD >= 25 && firstValue.amount * usePublicSalesStore().getC4eToUSD <=10000 ;
 };
 </script>
 

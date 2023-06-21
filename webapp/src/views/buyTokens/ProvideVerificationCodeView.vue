@@ -57,7 +57,7 @@ const onSuccess = () => {
     toast.success('Keplr connected');
   }
 
-  router.push({name: 'userProfileTabs'});
+  router.back();
 };
 const onError = (errorMessage?: string) => {
   toast.error('An error occurred \n' + errorMessage);
