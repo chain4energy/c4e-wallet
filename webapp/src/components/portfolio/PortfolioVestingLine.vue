@@ -8,7 +8,15 @@ export interface IVestingLine {
   vestingUSDFunds: number,
 }
 
-const props = defineProps<IVestingLine>();
+const props = defineProps<{vesting: IVestingLine }>();
+
+const calculateDays = (date: string) => {
+  const oneDay = 24 * 60 * 60 * 1000;
+  let formatted = date.split(',')[0].split('.');
+  let targetDate = new Date(Number(formatted[2]), Number(formatted[1])-1, Number(formatted[0]));
+  let now = Date.now();
+  return Math.ceil((targetDate.getTime() - now)/oneDay);
+};
 
 </script>
 
@@ -19,14 +27,14 @@ const props = defineProps<IVestingLine>();
       <C4EIcon size="75" icon="c4e-green"/>
     </div>
     <div class="portfolioVesting__tile">
-      <h3>{{ props.vestingEndDate }}</h3>
+      <h3>{{ vesting.vestingEndDate }}</h3>
     </div>
     <div class="portfolioVesting__tile">
-      <h4>{{ props.vestingC4EFunds }} C4E</h4>
-      <h5>${{ props.vestingUSDFunds }}</h5>
+      <h4>{{ vesting.vestingC4EFunds }} C4E</h4>
+      <h5>${{ vesting.vestingUSDFunds }}</h5>
     </div>
     <div class="portfolioVesting__tile">
-      <h3>10 days</h3>
+      <h3>{{calculateDays(vesting.vestingEndDate)}} days</h3>
     </div>
   </div>
 
