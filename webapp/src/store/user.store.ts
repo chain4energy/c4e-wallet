@@ -28,7 +28,7 @@ export interface UserState {
   connectionInfo: ConnectionInfo
   account: Account
   balance: bigint
-  vestimgAccLocked: bigint
+  vestingAccLocked: bigint
   rewards: Rewards
   delegations: Delegations
   undelegations: UnbondingDelegations
@@ -45,7 +45,7 @@ export const useUserStore = defineStore({
       [connectionInfoName]: new ConnectionInfo(),
       account: Account.disconnected,
       balance: 0n,
-      vestimgAccLocked: 0n,
+      vestingAccLocked: 0n,
       rewards: new Rewards(),
       delegations: new Delegations(),
       undelegations: new UnbondingDelegations()
@@ -155,13 +155,13 @@ export const useUserStore = defineStore({
 
     async calculateVestingLocked(latestBlTime: Date) {
       if (!this.isContinuousVestingAccount ) {
-        this.vestimgAccLocked = 0n;
+        this.vestingAccLocked = 0n;
         return;
       }
       if (this.account.continuousVestingData !== undefined) {
-        this.vestimgAccLocked = this.account.continuousVestingData.calculateVestingLocked(latestBlTime);
+        this.vestingAccLocked = this.account.continuousVestingData.calculateVestingLocked(latestBlTime);
       } else {
-        this.vestimgAccLocked = 0n;
+        this.vestingAccLocked = 0n;
       }
     },
 
@@ -319,7 +319,7 @@ export const useUserStore = defineStore({
       return this.delegations.totalDelegated;
     },
     getVestingLockAmount() : bigint {
-      return this.vestimgAccLocked;
+      return this.vestingAccLocked;
     },
     getTotal() : bigint {
       return this.undelegations.totalUndelegating + this.delegations.totalDelegated + this.balance;
@@ -329,6 +329,9 @@ export const useUserStore = defineStore({
     },
     hasDelegations(): boolean {
       return this.delegations.hasDelegations();
+    },
+    getAccountVestingDetails(): object {
+      return this.account.vesting_periods
     }
   },
   persist: {
@@ -349,7 +352,7 @@ function checkIfConnected(connectionInfo: ConnectionInfo): boolean {
 
 function clearStateForNonexistentAccount(state: UserState) {
   state.balance = 0n;
-  state.vestimgAccLocked = 0n;
+  state.vestingAccLocked = 0n;
   state.rewards = new Rewards();
   state.delegations = new Delegations();
   state.undelegations = new UnbondingDelegations();
