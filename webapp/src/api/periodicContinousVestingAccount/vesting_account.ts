@@ -8,8 +8,8 @@ export const protobufPackage = "chain4energy.c4echain.cfevesting";
 
 /** ContinuousVestingPeriod defines a length of time and amount of coins that will vest. */
 export interface ContinuousVestingPeriod {
-  startTime: number;
-  endTime: number;
+  start_time: number;
+  end_time: number;
   amount: Coin[];
 }
 
@@ -24,16 +24,16 @@ export interface PeriodicContinuousVestingAccount {
 }
 
 function createBaseContinuousVestingPeriod(): ContinuousVestingPeriod {
-  return { startTime: 0, endTime: 0, amount: [] };
+  return { start_time: 0, end_time: 0, amount: [] };
 }
 
 export const ContinuousVestingPeriod = {
   encode(message: ContinuousVestingPeriod, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.startTime !== 0) {
-      writer.uint32(8).int64(message.startTime);
+    if (message.start_time !== 0) {
+      writer.uint32(8).int64(message.start_time);
     }
-    if (message.endTime !== 0) {
-      writer.uint32(16).int64(message.endTime);
+    if (message.end_time !== 0) {
+      writer.uint32(16).int64(message.end_time);
     }
     for (const v of message.amount) {
       Coin.encode(v!, writer.uint32(26).fork()).ldelim();
@@ -49,10 +49,10 @@ export const ContinuousVestingPeriod = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.startTime = longToNumber(reader.int64() as Long);
+          message.start_time = longToNumber(reader.int64() as Long);
           break;
         case 2:
-          message.endTime = longToNumber(reader.int64() as Long);
+          message.end_time = longToNumber(reader.int64() as Long);
           break;
         case 3:
           message.amount.push(Coin.decode(reader, reader.uint32()));
@@ -67,16 +67,16 @@ export const ContinuousVestingPeriod = {
 
   fromJSON(object: any): ContinuousVestingPeriod {
     return {
-      startTime: isSet(object.startTime) ? Number(object.startTime) : 0,
-      endTime: isSet(object.endTime) ? Number(object.endTime) : 0,
+      start_time: isSet(object.start_time) ? Number(object.start_time) : 0,
+      end_time: isSet(object.end_time) ? Number(object.end_time) : 0,
       amount: Array.isArray(object?.amount) ? object.amount.map((e: any) => Coin.fromJSON(e)) : [],
     };
   },
 
   toJSON(message: ContinuousVestingPeriod): unknown {
     const obj: any = {};
-    message.startTime !== undefined && (obj.startTime = Math.round(message.startTime));
-    message.endTime !== undefined && (obj.endTime = Math.round(message.endTime));
+    message.start_time !== undefined && (obj.startTime = Math.round(message.start_time));
+    message.end_time !== undefined && (obj.endTime = Math.round(message.end_time));
     if (message.amount) {
       obj.amount = message.amount.map((e) => e ? Coin.toJSON(e) : undefined);
     } else {
@@ -87,8 +87,8 @@ export const ContinuousVestingPeriod = {
 
   fromPartial<I extends Exact<DeepPartial<ContinuousVestingPeriod>, I>>(object: I): ContinuousVestingPeriod {
     const message = createBaseContinuousVestingPeriod();
-    message.startTime = object.startTime ?? 0;
-    message.endTime = object.endTime ?? 0;
+    message.start_time = object.start_time ?? 0;
+    message.end_time = object.end_time ?? 0;
     message.amount = object.amount?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
