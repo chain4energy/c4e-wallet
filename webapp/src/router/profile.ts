@@ -19,14 +19,6 @@ const profileRoutes =
         meta: {
           requiresAuth: true
         },
-      },
-      {
-        path: 'provideVerificationCode',
-        name: 'provideVerificationCode',
-        component: ProvideVerificationCodeView,
-        meta: {
-          requiresAuth: true
-        },
       }
     ]
   };

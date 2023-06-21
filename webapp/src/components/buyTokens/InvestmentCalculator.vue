@@ -33,9 +33,9 @@
         </div>
       </div>
 
-      <div class="calculatorC4E__btnSection">
+      <div v-tooltip="{ value: 'You cannot invest less then $25, €25 or PLN 100', disabled: minimumRequired()}" class="calculatorC4E__btnSection">
 
-        <Button class="p-button p-component secondary" style="width: 141px;" @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
+        <Button class="p-button p-component secondary" :disabled="!minimumRequired()" style="width: 141px;" @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
       </div>
 
     </div>
@@ -47,8 +47,8 @@
 <script setup lang="ts">
 
 import {useRouter} from "vue-router";
-import {onBeforeMount, onMounted, reactive, ref, watch} from "vue";
-import { useUserServiceStore} from "@/store/userService.store";
+import {computed, onBeforeMount, onMounted, reactive, ref, watch} from "vue";
+import {useUserServiceStore} from "@/store/userService.store";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import Dropdown from "primevue/dropdown";
 import {Currency} from "@/models/currency";
@@ -67,6 +67,11 @@ const props =  defineProps({
     type: Number,
     required: false,
     default: 1000
+  },
+  disableStablecoin: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
 
@@ -93,23 +98,23 @@ const firstValue = reactive({
 
 const secondValue = reactive({
   amount: 0,
-  currency: Currency.STABLE
+  currency: props.disableStablecoin ? Currency.USD : Currency.STABLE
 });
 
 
 const exchangeRate = ref(1);
 
 const onFirstInputChange = () => {
-  secondValue.amount = firstValue.amount * exchangeRate.value;
+  secondValue.amount = round(firstValue.amount * exchangeRate.value, secondValue.currency);
 };
 
 const onSecondInputChange = () => {
-  firstValue.amount = secondValue.amount / exchangeRate.value;
+  firstValue.amount = round(secondValue.amount / exchangeRate.value, firstValue.currency);
 };
 
 
 watch(() => exchangeRate.value, () => {
-  secondValue.amount = firstValue.amount * exchangeRate.value;
+  secondValue.amount = round(firstValue.amount * exchangeRate.value, secondValue.currency);
 });
 
 watch(() => secondValue.currency, () => {
@@ -129,7 +134,8 @@ watch(() => secondValue.currency, () => {
     fetch("https://xqkzzpmim7.eu-west-1.awsapprunner.com/currencies/USDT/calculate", requestOptions)
       .then(response => response.json())
       .then(data => {
-        const c4eTOUSDT = usePublicSalesStore().getC4eToUSDC;
+        const c4eTOUSDT = usePublicSalesStore().roundInfo?.c4eToUsd;
+
         if(c4eTOUSDT != undefined) {
           exchangeRate.value = c4eTOUSDT * requestedAmount / data.amount;
         }
@@ -137,7 +143,12 @@ watch(() => secondValue.currency, () => {
   }
 });
 
-const currencyList = [Currency.STABLE, Currency.EUR, Currency.USD, Currency.PLN];
+const currencyList = computed(() => {
+  if(props.disableStablecoin == false) {
+    return [Currency.STABLE, Currency.EUR, Currency.USD, Currency.PLN];
+  } else return [ Currency.EUR, Currency.USD, Currency.PLN];
+});
+
 const transactionContextStore = useTransactionContextStore();
 const router = useRouter();
 
@@ -146,7 +157,7 @@ const onBuy = () => {
     router.push({name: 'signIn'});
   } else {
     transactionContextStore.setAmountToBuy(firstValue.amount);
-    transactionContextStore.setAmountToPay(secondValue.amount);
+    transactionContextStore.setAmountToPay(round(secondValue.amount,secondValue.currency));
     transactionContextStore.setPaymentCurrency(secondValue.currency);
     transactionContextStore.setExchangeRate(exchangeRate.value);
     emit('onBuy');
@@ -155,6 +166,22 @@ const onBuy = () => {
 
 const toast = useToast();
 
+const round = (number: number, currency: string) => {
+  let decimals = 2;
+  if (currency === 'Stablecoin' || currency === 'C4E') decimals = 6;
+  return Math.ceil(number*10**decimals)/10**decimals;
+};
+
+const minimumRequired = () => {
+  if(secondValue.currency == Currency.USD && secondValue.amount <25) {
+    return false;
+  } else if(secondValue.currency == Currency.EUR && secondValue.amount <25) {
+    return false;
+  } else if(secondValue.currency == Currency.PLN && secondValue.amount <100) {
+    return false;
+  }
+  return true;
+};
 </script>
 
 <style scoped lang="scss">

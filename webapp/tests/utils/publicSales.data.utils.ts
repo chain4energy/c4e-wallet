@@ -47,9 +47,9 @@ export const defaultReservationList = [
   {
     orderId: 1,
     status: 'DECLARED',
-    amountRequested: 20000000,
-    orderEndTime: '2023-06-11T12:54:03.326Z',
-    reservationEndTime: '2023-06-11T13:54:03.326Z',
+    amountRequested: 20000000n,
+    orderEndTime: new Date('2023-06-11T12:54:03.326Z'),
+    reservationEndTime: new Date('2023-06-11T13:54:03.326Z'),
     transactions:[{
       txHash: '',
       amount: '20000000',
@@ -86,9 +86,9 @@ export function expectReservationList(
   for (let i = 0; i < list.length; i++){
     expect(list[i].orderId).toBe(expectedReservation[i].orderId);
     expect(list[i].status).toBe(expectedReservation[i].status);
-    expect(list[i].amount).toBe(expectedReservation[i].amountRequested);
-    expect(list[i].orderEndTime).toBe(expectedReservation[i].orderEndTime);
-    expect(list[i].reservationEnd).toBe(expectedReservation[i].reservationEndTime);
+    expect(list[i].amount.amount).toBe(expectedReservation[i].amountRequested);
+    expect(list[i].orderEndTime).toEqual(expectedReservation[i].orderEndTime);
+    expect(list[i].reservationEnd).toEqual(expectedReservation[i].reservationEndTime);
     for(let a = 0; a < list[i].transactions.length; a++){
       expect(list[i].transactions[a].txHash).toBe(expectedReservation[i].transactions[a].txHash);
       expect(list[i].transactions[a].amount).toBe(expectedReservation[i].transactions[a].amount);

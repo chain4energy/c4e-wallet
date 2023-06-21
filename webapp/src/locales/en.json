@@ -377,7 +377,8 @@
     "SIGNIN": "Sign in",
     "SIGNUP": "Sign up",
     "ACTIVATE": "Account activation",
-    "PROVIDEVERIFICATIONCODE": "Verification"
+    "PROVIDEVERIFICATIONCODE": "Verification",
+    "PORTFOLIO": "Portfolio"
   },
   "TOAST": {
     "SUCCESS": {

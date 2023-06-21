@@ -51,11 +51,16 @@ const onActivateClick = () => {
 const toast = useToast();
 const router = useRouter();
 const onSuccess = () => {
-  toast.success('Metamask connected');
+  if(contextStore.addressType == AddressType.METAMASK) {
+    toast.success('Metamask connected');
+  } else if (contextStore.addressType == AddressType.KEPLR) {
+    toast.success('Keplr connected');
+  }
+
   router.push({name: 'userProfileTabs'});
 };
-const onError = () => {
-  toast.error('An error occurred');
+const onError = (errorMessage?: string) => {
+  toast.error('An error occurred \n' + errorMessage);
 };
 </script>
 

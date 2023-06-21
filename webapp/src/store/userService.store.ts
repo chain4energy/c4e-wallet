@@ -25,8 +25,8 @@ interface UserServiceState {
   userEmail: string | undefined,
   verificationNeeded: boolean,
   termsAccepted: boolean,
-  ethereumAddress: string,
-  claimAddress: string,
+  ethereumAddress?: string,
+  claimAddress?: string,
   kycServiceState: Map<KycStepName, KycProgressStatus>,
   kycLevel: number
 }
@@ -49,8 +49,8 @@ export const useUserServiceStore = defineStore({
       userEmail: undefined,
       verificationNeeded: false,
       termsAccepted: false,
-      ethereumAddress: '',
-      claimAddress: '',
+      ethereumAddress: undefined,
+      claimAddress: undefined,
       kycServiceState: new Map<KycStepName, KycProgressStatus>(),
       kycLevel: 0
     };
@@ -62,8 +62,8 @@ export const useUserServiceStore = defineStore({
           this.termsAccepted = responseDate.data.terms;
           this.loginType = responseDate.data.accountType;
           this.userEmail = responseDate.data.login;
-          this.ethereumAddress = responseDate.data.ethereumAddress;
-          this.claimAddress = responseDate.data?.claimAddress;
+          this.ethereumAddress = responseDate.data.ethereumAddress == '' ? undefined : responseDate.data.ethereumAddress;
+          this.claimAddress = responseDate.data?.claimAddress == '' ? undefined : responseDate.data.claimAddress;
           this.kycLevel = responseDate.data.kycInfo.kycLevel;
           const map = new Map<KycStepName, KycProgressStatus>();
           for(const [key, value] of Object.entries(responseDate.data.kycInfo.kycServiceState)) {
@@ -230,7 +230,7 @@ export const useUserServiceStore = defineStore({
       });
     },
 
-    async verifyParingEmailKeplr(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async verifyParingEmailKeplr(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().verifyPairingEmailKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, true).then(response => {
         if(response.isSuccess()){
           this.loginType = LoginTypeEnum.EMAIL;
@@ -238,7 +238,7 @@ export const useUserServiceStore = defineStore({
           this.verificationNeeded = false;
           onSuccess();
         }else {
-          onFail();
+          onFail(response.error?.data?.errorMessage);
         }
       });
     },
@@ -266,31 +266,31 @@ export const useUserServiceStore = defineStore({
         }
       });
     },
-    async initEmailMetamaskPairing(paymentAddress: string, onSuccess: (() => void), onFail: (() => void), lockscreen=true){
+    async initEmailMetamaskPairing(paymentAddress: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen=true){
       await apiFactory.publicSaleServiceApi().initEmailMetamaskPairing({paymentAddress: paymentAddress}, lockscreen).then((res) => {
         if(res.isSuccess() && res.data) {
           useContextStore().dataToSign = res.data;
           onSuccess();
         } else {
-          onFail();
+          onFail(res.error?.data?.errorMessage);
         }
       });
     },
-    async emailMetamaskPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async emailMetamaskPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().emailMetamaskPairingDataVerify({processID: processID, signedData: signedData}, lockscreen).then((res) => {
         if(res.isSuccess()) {
           onSuccess();
         } else {
-          onFail();
+          onFail(res.error?.data?.errorMessage);
         }
       });
     },
-    async emailKeplrPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async emailKeplrPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().emailKeplrPairingDataVerify({processID: processID, signedData: signedData}, lockscreen).then((res) => {
         if(res.isSuccess()) {
           onSuccess();
         } else {
-          onFail();
+          onFail(res.error?.data?.errorMessage);
         }
       });
     },
@@ -350,8 +350,8 @@ export const useUserServiceStore = defineStore({
       this.userEmail= undefined;
       this.verificationNeeded= false;
       this.termsAccepted= false;
-      this.ethereumAddress= '';
-      this.claimAddress= '';
+      this.ethereumAddress= undefined;
+      this.claimAddress= undefined;
       this.kycServiceState= new Map<KycStepName, KycProgressStatus>();
       this.kycLevel= 0;
       window.location.reload();

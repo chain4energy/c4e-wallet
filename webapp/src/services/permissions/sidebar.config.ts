@@ -14,6 +14,7 @@ export class SidebarConfig{
     this.config.set(PagesEnum.AIRDROP, this.createAirDrop());
     this.config.set(PagesEnum.BUYTOKENS, this.createBuyTokens());
     this.config.set(PagesEnum.PROFILE, this.createProfile());
+    this.config.set(PagesEnum.PORTFOLIO, this.createPortfolio());
   }
 
   getConfigForPage(page: PagesEnum): SidebarElement | undefined{
@@ -79,6 +80,15 @@ export class SidebarConfig{
     retVal.href = '/profile';
     retVal.title = 'Profile';
     retVal.icon = new SidebarIcon('User');
+    return retVal;
+  }
+
+  private createPortfolio(): SidebarElement{
+    const retVal = new SidebarElement();
+    retVal.id = 6;
+    retVal.href = '/portfolio';
+    retVal.title = 'Portfolio';
+    retVal.icon = new SidebarIcon('Wallet');
     return retVal;
   }
 

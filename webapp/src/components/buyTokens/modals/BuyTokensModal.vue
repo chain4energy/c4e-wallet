@@ -2,7 +2,7 @@
   <div>
     <Dialog :visible="visible" @update:visible="emit('closeModal')" modal header="Payment" :baseZIndex="-100" :style="{ width: '80vw' }">
       <div>
-        <InvestmentCalculator @onBuy="onBuyClick" :first-input-blocked="true" :first-input-default-value="Number(reservation.amount.amount)" />
+        <InvestmentCalculator @onBuy="onBuyClick" :disable-stablecoin="sourceAddress == undefined" :first-input-blocked="true" :first-input-default-value="Number(reservation.amount.amount)" />
       </div>
     </Dialog>
   </div>
@@ -13,6 +13,8 @@
 import Dialog from "primevue/dialog";
 import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vue";
 import {TokenReservation} from "@/store/publicSales.store";
+import {computed} from "vue";
+import {useUserServiceStore} from "@/store/userService.store";
 
 defineProps({
   visible: {
@@ -26,6 +28,9 @@ defineProps({
 });
 const emit = defineEmits(["closeModal", 'confirm']);
 
+const sourceAddress = computed(() => {
+  return useUserServiceStore().ethereumAddress;
+});
 const onBuyClick = () => {
   emit('confirm');
 };

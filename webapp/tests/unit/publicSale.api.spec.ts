@@ -1,6 +1,6 @@
 import {createPinia, setActivePinia} from "pinia";
 import {useSplashStore} from "@/store/splash.store";
-import {mockAxios} from "../utils/mock.util";
+import {mockAxios, mockAxiosJWT} from "../utils/mock.util";
 import apiFactory from "@/api/factory.api";
 import {
   createBlockchainInfo,
@@ -11,8 +11,19 @@ import {
 } from "../utils/publicSales.data.utils";
 import {TokenReservationResponse} from "@/models/saleServiceCommons";
 
-jest.mock("axios");
-const mockedAxios = mockAxios();
+jest.mock('axios', () => {
+  return {
+    create: jest.fn(() => ({
+      get: jest.fn(),
+      interceptors: {
+        request: { use: jest.fn(), eject: jest.fn() },
+        response: { use: jest.fn(), eject: jest.fn() }
+      }
+    })),
+    request: jest.fn(),
+  }
+})
+const mockedAxios = mockAxiosJWT();
 const api = apiFactory.publicSaleServiceApi();
 
 describe('public sale api tests', () => {

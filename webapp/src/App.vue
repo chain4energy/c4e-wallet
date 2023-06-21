@@ -38,7 +38,7 @@ useRecaptchaProvider();
 const logger = inject<LoggerService>('logger') as LoggerService;
 dataService.onAppStart();
 const disclaimerOpen = ref();
-usePublicSalesStore().setCurrentPrice();
+
 onMounted(() => {
   createRouterBeforeEach(logger);
   disclaimerOpen.value = !localStorage.getItem('disclaimer');
