@@ -331,7 +331,7 @@ export const useUserStore = defineStore({
       return this.delegations.hasDelegations();
     },
     getAccountVestingDetails(): object {
-      return this.account.vesting_periods
+      return this.account.
     }
   },
   persist: {
