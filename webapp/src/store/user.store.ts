@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {Account, AccountType} from "@/models/store/account";
+import {Account, AccountType, VestingPeriods} from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
 import {ConnectionError, ConnectionInfo, ConnectionType} from "@/api/wallet.connecton.api";
 import {useToast} from "vue-toastification";
@@ -330,8 +330,8 @@ export const useUserStore = defineStore({
     hasDelegations(): boolean {
       return this.delegations.hasDelegations();
     },
-    getAccountVestingDetails(): object {
-      return this.account.
+    getAccountVestingDetails(): VestingPeriods[] | undefined {
+      return this.account.vestingPeriods;
     }
   },
   persist: {
