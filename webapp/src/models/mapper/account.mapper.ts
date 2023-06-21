@@ -1,4 +1,9 @@
-import { Account as BcAccount, BaseAccount, ContinuousVestingAccount} from "@/models/blockchain/account";
+import {
+  Account as BcAccount,
+  BaseAccount,
+  ContinuousVestingAccount,
+  PeriodicContinuousVestingAccount
+} from "@/models/blockchain/account";
 import { Account as StoreAccount, AccountType, ContinuousVestingData } from "@/models/store/account";
 import { Coin} from "@/models/store/common";
 
@@ -28,6 +33,21 @@ export function mapAccount(account: BcAccount | undefined): StoreAccount  {
     case "/cosmos.vesting.v1beta1.ContinuousVestingAccount": {
       const bcAccount = account as unknown as ContinuousVestingAccount;
       const result = new StoreAccount(AccountType.ContinuousVestingAccount, bcAccount.base_vesting_account.base_account.address);
+      const origVesting = new Array<Coin>();
+      bcAccount.base_vesting_account.original_vesting?.forEach((coin) => {
+        const c = new Coin(BigInt(coin.amount), coin.denom);
+        origVesting.push(c);
+      });
+      const startTime = new Date(Number(bcAccount.start_time)*secToMilis);
+      const endTime = new Date(Number(bcAccount.base_vesting_account.end_time)*secToMilis);
+      const vestingData = new ContinuousVestingData(startTime, endTime, origVesting);
+      result.continuousVestingData = vestingData;
+      return result;
+
+    }
+    case "/chain4energy.c4echain.cfevesting.PeriodicContinuousVestingAccount": {
+      const bcAccount = account as unknown as PeriodicContinuousVestingAccount;
+      const result = new StoreAccount(AccountType.PeriodicContinuousVestingAccount, bcAccount.base_vesting_account.base_account.address);
       const origVesting = new Array<Coin>();
       bcAccount.base_vesting_account.original_vesting?.forEach((coin) => {
         const c = new Coin(BigInt(coin.amount), coin.denom);

@@ -6,6 +6,7 @@ import {AccountApi} from "@/api/account.api";
 import WalletConnectionApi from "./wallet.connecton.api";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
 import { KeybaseApi } from "./keybase.api";
+import {ClaimApi} from "@/api/claim.api";
 import {AirDropApi} from "@/api/airDrop.api";
 import {applyAuthTokenInterceptor, getBrowserSessionStorage, IAuthTokens, TokenRefreshRequest} from "axios-jwt";
 import { useConfigurationStore } from "@/store/configuration.store";
@@ -30,6 +31,7 @@ class ApiFactory {
   private readonly _accountApi = new AccountApi(() => this._axios);
   private readonly _walletApi = new WalletConnectionApi();
   private readonly _keybaseApi = new KeybaseApi(() => this._axios);
+  private readonly _airDropApi = new ClaimApi(() => this._axios);
   private readonly _airDropApi = new AirDropApi(() => this._axios);
   private readonly _publicSaleServiceApi = new PublicSaleServiceApi(() => this._axiosJwt);
   private readonly _faucetApi = new FaucetApi(() => this._axios)
@@ -87,7 +89,7 @@ class ApiFactory {
   public keybaseApi(): KeybaseApi{
     return this._keybaseApi;
   }
-  public airDropApi(): AirDropApi{
+  public airDropApi(): ClaimApi{
     return this._airDropApi;
   }
   public publicSaleServiceApi(): PublicSaleServiceApi {

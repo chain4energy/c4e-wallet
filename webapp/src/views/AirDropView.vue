@@ -7,12 +7,12 @@
       </template>
       <AirDropTotal/>
     </TabPanel>
-<!--    <TabPanel>-->
-<!--      <template #header>-->
-<!--        <div>{{$t('AIRDROP.CLAIM_AIRDROP')}}</div>-->
-<!--      </template>-->
-<!--      <ClaimAirDrop/>-->
-<!--    </TabPanel>-->
+    <TabPanel>
+      <template #header>
+        <div>{{$t('AIRDROP.CLAIM_AIRDROP')}}</div>
+      </template>
+      <ClaimAirDrop/>
+    </TabPanel>
   </TabView>
 </div>
 </template>

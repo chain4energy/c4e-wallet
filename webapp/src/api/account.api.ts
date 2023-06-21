@@ -37,6 +37,7 @@ import { BigDecimal } from "@/models/store/big.decimal";
 import { VoteOption } from "@/models/store/proposal";
 import { BlockchainApiErrorData } from "@/models/blockchain/common";
 import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
+import {MsgClaim, MsgInitialClaim} from "../api/cfeclaim/tx"
 import {DataToSign} from "@/models/user/walletAuth";
 import {MsgSignData} from "@/types/tx";
 import {TransactionRequest} from "@ethersproject/abstract-provider";
@@ -283,31 +284,30 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
-  public async claimInitialAirDrop(connection: ConnectionInfo, campaignId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  public async claimInitialAirDrop(connection: ConnectionInfo, campaignId: string, extraAddress: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
 
     const getMessages = (): readonly EncodeObject[] => {
-      const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgInitialClaim';
-      const val = {
+      const typeUrl = '/chain4energy.c4echain.cfeclaim.MsgInitialClaim';
+      const val: MsgInitialClaim ={
         claimer: connection.account,
-        campaign_id: campaignId,
-        addressToClaim: '', //TODO Create optional UI
+        campaignId: Number(campaignId),
+        destinationAddress: extraAddress,
       };
       return [{ typeUrl: typeUrl, value: val }];
     };
-
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
-  public async claimAirDropMissions(connection: ConnectionInfo, campaignId: number, missionId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  public async claimAirDropMissions(connection: ConnectionInfo, campaignId: string, missionId: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
 
     const getMessages = (): readonly EncodeObject[] => {
-      const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgInitialClaim';
-      const val = {
+      const typeUrl = '/chain4energy.c4echain.cfeclaim.MsgClaim';
+      const val: MsgClaim = {
         claimer: connection.account,
-        campaign_id: campaignId,
-        mission_id: missionId,
+        campaignId: Number(campaignId),
+        missionId: Number(missionId),
       };
       return [{ typeUrl: typeUrl, value: val }];
     };

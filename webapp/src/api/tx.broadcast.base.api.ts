@@ -1,4 +1,13 @@
 import BaseApi from "@/api/base.api";
+import { ConnectionType, ConnectionInfo } from "@/api/wallet.connecton.api";
+import { useToast } from 'vue-toastification';
+import { StdFee } from "@cosmjs/amino";
+import { EncodeObject } from "@cosmjs/proto-signing";
+import { LocalSpinner } from "@/services/model/localSpinner";
+import { LogLevel } from '@/services/logger/log-level';
+import {SigningStargateClient, isDeliverTxFailure, DeliverTxResponse, defaultRegistryTypes} from "@cosmjs/stargate";
+import { useConfigurationStore } from "@/store/configuration.store";
+import { RequestResponse } from '@/models/request-response';
 import {ConnectionInfo, ConnectionType} from "@/api/wallet.connecton.api";
 import {useToast} from 'vue-toastification';
 import {LocalSpinner} from "@/services/model/localSpinner";
@@ -7,6 +16,9 @@ import {defaultRegistryTypes, DeliverTxResponse, isDeliverTxFailure, SigningStar
 import {useConfigurationStore} from "@/store/configuration.store";
 import {RequestResponse} from '@/models/request-response';
 import TxToast from "@/components/commons/TxToast.vue";
+import {Registry} from "@cosmjs/proto-signing";
+import { MsgClaim, MsgInitialClaim } from "@/api/cfeclaim/tx";
+import { customAccountParser } from "@/api/periodicContinousVestingAccount/custom_account_parser";
 import {Keplr} from "@keplr-wallet/types";
 import {
   EncodeObject,
@@ -90,6 +102,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
   {
     this.logToConsole(LogLevel.DEBUG, 'signAndBroadcast');
     this.before(lockScreen, localSpinner);
+    const myRegistry = new Registry(defaultRegistryTypes);
     let clientToDisconnect: SigningStargateClient | undefined;
     try {
       if (!connection.modifiable) {
@@ -104,11 +117,10 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       if (client === undefined) {
         return this.createTxErrorResponseWithToast(
           new TxBroadcastError('Cannot get signing client'),
-          'Transaction Broadcast error',
+          'Transaction Broadcast error 2',
           !skipErrorToast
         );
       }
-
       const messages = getMessages(isLedger);
       if (messages instanceof TxBroadcastError) {
         return new RequestResponse<TxData, TxBroadcastError>(messages);
@@ -118,7 +130,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       if (isDeliverTxFailure(response)) {
         return this.createTxErrorResponseWithToast(
           new TxBroadcastError('Deliver tx failure', response),
-          'Transaction Broadcast error',
+          'Transaction Broadcast error 3',
           !skipErrorToast
         );
       }
@@ -128,7 +140,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       const error = err as Error;
       return this.createTxErrorResponseWithToast(
         new TxBroadcastError(error.message),
-        'Transaction Broadcast error',
+        'Transaction Broadcast error 4',
         !skipErrorToast
       );
     } finally {
@@ -216,13 +228,25 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
 
   private async createClient(connectionType: ConnectionType): Promise<{ client: SigningStargateClient, isLedger: boolean }> {
     const { signer, isLedger } = await this.getOfflineSigner(connectionType);
+
     if (signer == undefined) {
       throw new Error('Cannot get signer');
     }
+    const myRegistry = new Registry(defaultRegistryTypes);
+    const MsgInitialClaimTypeUrl = "/chain4energy.c4echain.cfeclaim.MsgInitialClaim";
+    const MsgClaimTypeUrl = "/chain4energy.c4echain.cfeclaim.MsgClaim";
+    //const RepeatedContinuousVestingAccount = "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount";
+    myRegistry.register(MsgInitialClaimTypeUrl, MsgInitialClaim);
+    myRegistry.register(MsgClaimTypeUrl, MsgClaim);
+
+    // myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
+    console.log(myRegistry)
+    //myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
     const rpc = useConfigurationStore().config.bcRpcURL;
     const client = await SigningStargateClient.connectWithSigner(
       rpc,
       signer,
+      {registry: myRegistry,  accountParser: customAccountParser}
     );
     return { client: client, isLedger: isLedger };
   }

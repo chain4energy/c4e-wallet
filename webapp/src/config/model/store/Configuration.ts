@@ -7,6 +7,7 @@ import {
   JsonQueries
 } from "../json/Configuration";
 import queriesDefaults from "@/api/queries";
+import { BigIntWrapper } from "@/models/store/common";
 export class Gas implements JsonGas {
   vote: number;
   delegate: number;
@@ -292,7 +293,8 @@ export class Configuration implements JsonConfiguration {
         amount = this.bigintToConvertedAmount(origAmount, viewDenomConf.conversionFactor);
       } else if (typeof origAmount === 'number') {
         amount = (origAmount / viewDenomConf.conversionFactor);
-      } else {
+      }
+      else {
         amount = origAmount.divide( viewDenomConf.conversionFactor);
       }
       return amount;
