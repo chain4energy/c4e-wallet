@@ -29,10 +29,13 @@ const calculateDays = (date: number) => {
     `${Math.floor(timeRemaining / oneDay)} ${i18n.t("PORTFOLIO_VIEW.DAYS")}`;
 };
 
-function sumVestingAmount(): bigint {
+function sumVestingAmount(): number {
   let sumAmount = 0n;
   props.vesting.amount.forEach((item) => sumAmount += item.amount);
-  return sumAmount;
+
+  const el1 = Date.now()/1000 - props.vesting.startTime;
+  const el2  = props.vesting.endTime - props.vesting.startTime;
+  return Number(sumAmount) * (1 - el1/el2);
 }
 
 </script>

@@ -323,7 +323,7 @@
   },
   "USER_DATA": {
     "TOTAL": "Total",
-    "AVAILABLE": "Available",
+    "AVAILABLE": "Balance",
     "STAKED": "Staked",
     "UNSTAKING": "Unstaking",
     "CLAIM_REWARDS": "Claim",
@@ -524,7 +524,8 @@
     "TERMS": "Accept terms and conditions"
   },
   "PORTFOLIO_VIEW": {
-    "BALANCE": "Available",
+    "BALANCE": "Balance",
+    "SPENDABLE": "Spendable",
     "LOCKED": "Locked",
     "SEND": "Send",
     "DETAILS": "Vesting details",

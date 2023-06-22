@@ -3,8 +3,22 @@
 import PortfolioVestingLine from "@/components/portfolio/PortfolioVestingLine.vue";
 import {useUserStore} from "@/store/user.store";
 import {VestingPeriods} from "@/models/store/account";
+import {computed, ComputedRef} from "vue";
 
 const userStore = useUserStore();
+
+const continuousVestingData = computed(() => userStore.getAccount.continuousVestingData);
+
+let contVestingDetails = computed(() => {
+  if (continuousVestingData.value) {
+     return [{
+      startTime: continuousVestingData.value.startTime.getTime() / 1000,
+      endTime: continuousVestingData.value.endTime.getTime() / 1000,
+      amount: continuousVestingData.value.originalVesting
+    }];
+  }
+  else return [];
+});
 
 const filterVestingArray = (array: VestingPeriods[] | undefined) => {
   return array?.filter(element => {
@@ -18,15 +32,24 @@ const filterVestingArray = (array: VestingPeriods[] | undefined) => {
 
   <div class="portfolioVesting">
     <h2 class="portfolioVesting__header">{{$t("PORTFOLIO_VIEW.DETAILS")}}</h2>
-    <div class="portfolioVesting__list" v-if="filterVestingArray(userStore.getAccountVestingDetails).length">
+    <div class="portfolioVesting__list"
+         v-if="filterVestingArray(userStore.getAccountVestingDetails) && filterVestingArray(userStore.getAccountVestingDetails).length || contVestingDetails && contVestingDetails.length"
+    >
       <div class="portfolioVesting__line">
         <div/>
         <h3>{{$t("PORTFOLIO_VIEW.END_DATE")}}</h3>
         <h3>{{$t("PORTFOLIO_VIEW.LOCKED")}}</h3>
         <h3>{{$t("PORTFOLIO_VIEW.TIME")}}</h3>
       </div>
+
       <PortfolioVestingLine
         v-for="(item, index) in filterVestingArray(userStore.getAccountVestingDetails)"
+        :vesting = 'item'
+        :key = index
+      />
+
+      <PortfolioVestingLine
+        v-for="(item, index) in filterVestingArray(contVestingDetails)"
         :vesting = 'item'
         :key = index
       />

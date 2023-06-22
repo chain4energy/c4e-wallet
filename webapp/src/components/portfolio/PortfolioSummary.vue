@@ -53,23 +53,23 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
     <div>
       <C4EIcon size="100" icon="c4e-green"/>
     </div>
-    <div class="portfolioSummary__tile" v-if="spendableBalance">
+    <div class="portfolioSummary__tile" >
       <h3>{{$t("PORTFOLIO_VIEW.BALANCE")}}</h3>
+      <h4>
+        <CoinAmount :key="totalBalance" :amount="convertAmount(totalBalance)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
+      </h4>
+      <h5>
+        $<FormattedNumber :amount="amountToUSD(totalBalance)" :precision="2"/>
+      </h5>
+    </div>
+    <div class="portfolioSummary__tile" v-if="spendableBalance">
+      <h3>{{$t("PORTFOLIO_VIEW.SPENDABLE")}}</h3>
       <h4>
         <CoinAmount :key="spendableBalance" :amount="convertAmount(spendableBalance)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
       </h4>
       <h5>$<FormattedNumber :amount="amountToUSD(spendableBalance)" :precision="2"/></h5>
     </div>
-    <div class="portfolioSummary__tile" v-if="lockedBalance">
-      <h3>{{$t("PORTFOLIO_VIEW.LOCKED")}}</h3>
-      <h4>
-        <CoinAmount :key="lockedBalance" :amount="convertAmount(lockedBalance)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
-      </h4>
-      <h5>
-        $<FormattedNumber :amount="amountToUSD(lockedBalance)" :precision="2"/>
-      </h5>
 
-    </div>
     <div>
       <Button class="secondary portfolioSummary__button">{{$t("PORTFOLIO_VIEW.SEND")}}</Button>
     </div>

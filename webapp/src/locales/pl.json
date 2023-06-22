@@ -318,7 +318,7 @@
   },
   "USER_DATA": {
       "TOTAL": "Całkowity",
-      "AVAILABLE": "Do dyspozycji",
+      "AVAILABLE": "Balans",
       "STAKED": "Oddelegowane",
       "UNSTAKING": "Odblokowywanie",
       "CLAIM_REWARDS": "Odbierz",
@@ -516,8 +516,9 @@
     "TERMS": "Akceptuję zasady i warunki"
   },
   "PORTFOLIO_VIEW": {
-    "BALANCE": "Do dyspozycji",
-    "LOCKED": "Ulokowane",
+    "BALANCE": "Balans",
+    "SPENDABLE": "Dostępne",
+    "LOCKED": "Zablokowane",
     "SEND": "Wyślij",
     "DETAILS": "Szczegóły vestingu",
     "END_DATE": "Koniec vestingu",
