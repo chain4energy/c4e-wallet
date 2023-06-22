@@ -49,7 +49,7 @@
             <ClaimInfo header="Mission Complitted">
               <p class="claimAirDrop__data-text">{{getAmountOfClaimedMissions(campaignRecord)}}/{{campaignRecord.missions.length}}</p>
             </ClaimInfo>
-            <ClaimInfo header="Time to start claiming">
+            <ClaimInfo :header="getTextForTimeColumn(campaignRecord)">
               <p class="claimAirDrop__data-text">{{calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)}}</p>
             </ClaimInfo>
             <ClaimInfo header="Total Distribution">
@@ -63,7 +63,9 @@
             <div v-if="activeCampain === campaignRecord" class="claimAirDrop__missions">
               <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
                 <div class="claimAirDrop__leftCol">
-                  <div class="claimAirDrop__smallTxt">{{`Mission# ${missions.id}`}}</div>
+                  <div class="claimAirDrop__smallTxt">{{`Mission# ${missions.id}`}} ({{missions.weightInPerc}})
+                    <CoinAmount :amount="missions.weight" :show-denom="true" :precision="2"></CoinAmount>
+                  </div>
                   <div>{{missions.description}}</div>
                 </div>
                 <div>
@@ -85,19 +87,17 @@
 </template>
 
 <script setup lang="ts">
-import {useAirDropStore} from "@/store/airDrop.store";
-import {computed, onMounted, ref, watch} from "vue";
-import {useUserStore} from "@/store/user.store";
-import {CampainStatus} from "@/models/airdrop/airdrop";
-import {Campaign, Mission, MissionTypeSt} from "@/models/store/airdrop";
+import { useAirDropStore } from "@/store/airDrop.store";
+import { computed, onMounted, ref, watch } from "vue";
+import { useUserStore } from "@/store/user.store";
+import { CampainStatus } from "@/models/airdrop/airdrop";
+import { Campaign, Mission, MissionTypeSt } from "@/models/store/airdrop";
 import PercentageBar from "@/components/commons/PercentageBar.vue";
 import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
-import CoinAmount from '@/components/commons/CoinAmount.vue';
-import {Coin} from "@/models/store/common";
-import {MissionType} from "@/models/blockchain/airdrop";
+import CoinAmount from "@/components/commons/CoinAmount.vue";
+import { MissionType } from "@/models/blockchain/airdrop";
 import router from "@/router";
 import ClaimingOptionsPopup from "@/components/airdrop/ClaimingOptionsPopup.vue";
-import dataService from "@/services/data.service";
 
 const percentsBar = ref();
 
@@ -113,21 +113,21 @@ const address = computed(() => {
   return useUserStore().getAccount.address;
 });
 
-// onMounted(() => {
-//   if(address.value){
-//     useAirDropStore().fetchUsersCampaignData(address.value, true);
-//   }
-// });
-watch(isLoggedIn, (next, prev)=>{
-  if(next){
-    dataService.onClaimAirdrop(useUserStore().getAccount.address);
+onMounted(() => {
+  if(address.value){
+    useAirDropStore().fetchUsersCampaignData(address.value, true);
   }
 });
-// watch(address, (next, prev)=>{
+// watch(isLoggedIn, (next, prev)=>{
 //   if(next){
-//     useAirDropStore().fetchUsersCampaignData(address.value, true);
+//     dataService.onClaimAirdrop(useUserStore().getAccount.address);
 //   }
 // });
+watch(address, (next, prev)=>{
+  if(next){
+    useAirDropStore().fetchUsersCampaignData(address.value, true);
+  }
+});
 const fairdropPoolUsage = computed(()=>{
   return useAirDropStore().getFairdropPoolUsage;
 });
@@ -149,7 +149,7 @@ function calculateMissions(campaign : Campaign){
     }
   });
   // eslint-disable-next-line no-undef
-  return total
+  return total;
 }
 function getAmountOfClaimedMissions(campaign : Campaign){
   let total = 0;
@@ -187,10 +187,27 @@ function calculateProgress(startTime: Date, endTime: Date){
 }
 const childComponentRef = ref(null);
 const updateComponent = ref(false);
+
+function getTextForTimeColumn(campaign: Campaign){
+  const res = checkCampaignStatus(new Date(campaign.start_time), new Date(campaign.end_time));
+  switch (res){
+    case CampainStatus.Past: return 'Campaign has past';
+    case CampainStatus.Now: return 'Time till end of campaign';
+    case CampainStatus.Future: return 'Time till campaign start';
+  }
+}
 function calculateTimeToPAss(startDate: Date, endDate: Date){
   if(new Date(startDate).getTime() < new Date(Date.now()).getTime() && new Date(endDate).getTime()> new Date(Date.now()).getTime()){
     const now = new Date(Date.now());
     const diference = new Date(endDate).getTime() - now.getTime();
+    const days = Math.floor(diference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diference % (1000 * 60)) / 1000);
+    return `${days}D ${hours}H ${minutes}M ${seconds}S`;
+  } else if(new Date(endDate).getTime()> new Date(Date.now()).getTime()){
+    const now = new Date(Date.now());
+    const diference = new Date(startDate).getTime() - now.getTime();
     const days = Math.floor(diference / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diference % (1000 * 60 * 60)) / (1000 * 60));
@@ -257,7 +274,9 @@ function redirectMission(campaign: Campaign, mission : Mission, type: MissionTyp
 
 
 function isDisabled(campaignRec: Campaign, mission: Mission) {
-  if(checkCampaignStatus(new Date(campaignRec.start_time), new Date(campaignRec.end_time)) !== CampainStatus.Now){
+  if (!campaignRec.enabled){
+    return false;
+  } else if(checkCampaignStatus(new Date(campaignRec.start_time), new Date(campaignRec.end_time)) !== CampainStatus.Now){
     return false;
   } else if(!isInitialMissionClaimed(campaignRec) && mission.mission_type !== MissionTypeSt.INITIAL_CLAIM){
     return false;

@@ -98,18 +98,19 @@ export class Mission {
   name : string;
   description : string;
   mission_type : MissionTypeSt;
-
+  weightInPerc: number;
   weight: string;
   completed : boolean;
   claimed : boolean;
   claimed_time : string | undefined
 
 
-  constructor(id: string, name: string, description: string, mission_type: MissionTypeSt, weight: string, completed: boolean, claimed: boolean, claimed_time: string | undefined) {
+  constructor(id: string, name: string, description: string, mission_type: MissionTypeSt,weightInPerc: number, weight: string, completed: boolean, claimed: boolean, claimed_time: string | undefined) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.mission_type = mission_type;
+    this.weightInPerc = weightInPerc;
     this.weight = weight;
     this.completed = completed;
     this.claimed = claimed;

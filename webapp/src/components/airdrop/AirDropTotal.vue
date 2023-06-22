@@ -175,6 +175,8 @@ async function submit() {
       addressC4E = address.value;
     }
   }
+  dataService.refreshAccountData()
+  dataService.onClaimAirdrop(useUserStore().getAccount.address);
   await useAirDropStore().fetchAirdropTotal(addressC4E);
 }
 
