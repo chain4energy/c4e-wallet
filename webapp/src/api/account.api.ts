@@ -7,7 +7,7 @@ import { RequestResponse } from "@/models/request-response";
 import { Account as StoreAccount } from "@/models/store/account";
 import { Coin } from "@/models/store/common";
 
-import { AccountResponse, BalanceResponse} from "@/models/blockchain/account";
+import {AccountResponse, BalanceResponse, SpendableBalancesResponse} from "@/models/blockchain/account";
 
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ConnectionInfo } from "@/api/wallet.connecton.api";
@@ -85,6 +85,12 @@ export class AccountApi extends TxBroadcastBaseApi {
     const mapData = (bcData: BalanceResponse | undefined) => {return mapCoin(bcData?.balance, denom);};
     return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.BALANCE_URL, {address: address, denom: denom}),
       mapData, lockscreen, null, 'fetchBalance - ');
+  }
+
+  public async fetchSpendableBalances(address: string, lockscreen: boolean): Promise<RequestResponse<Coin[] | undefined, ErrorData<BlockchainApiErrorData>>>{
+    const mapData = (bcData: SpendableBalancesResponse | undefined) => {return bcData?.balances.map(el => mapCoin(el, el.denom));};
+    return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.SPENDABLE_BALANCES_URL, {address: address}),
+      mapData, lockscreen, null, 'fetchSpendableBalances - ');
   }
 
   public async fetchDelegations(address: string, lockscreen: boolean): Promise<RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>>{

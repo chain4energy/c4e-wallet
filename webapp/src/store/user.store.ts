@@ -20,6 +20,7 @@ import TxToast from "@/components/commons/TxToast.vue";
 import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
 import {Signer} from "ethers";
 import factoryApi from "@/api/factory.api";
+import { Coin } from "@/models/store/common";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -28,7 +29,8 @@ export interface UserState {
   connectionInfo: ConnectionInfo
   account: Account
   balance: bigint
-  vestingAccLocked: bigint
+  vestingAccLocked: bigint,
+  spendableBalance: Coin[],
   rewards: Rewards
   delegations: Delegations
   undelegations: UnbondingDelegations
@@ -46,6 +48,7 @@ export const useUserStore = defineStore({
       account: Account.disconnected,
       balance: 0n,
       vestingAccLocked: 0n,
+      spendableBalance: [],
       rewards: new Rewards(),
       delegations: new Delegations(),
       undelegations: new UnbondingDelegations()
@@ -135,6 +138,7 @@ export const useUserStore = defineStore({
           if (account.type !== AccountType.Nonexistent) {
             const allResults = await Promise.all([
               fetchBalance(connectionInfo, this, lockscreen),
+              fetchSpendableBalances(connectionInfo, this, lockscreen),
               fetchRewards(connectionInfo, this, lockscreen),
               fetchDelegations(connectionInfo, this, lockscreen),
               fetchUnbondingDelegations(connectionInfo, this, lockscreen),
@@ -332,6 +336,11 @@ export const useUserStore = defineStore({
     },
     getAccountVestingDetails(): VestingPeriods[] | undefined {
       return this.account.vestingPeriods;
+    },
+    getSpendableBalance(): bigint | undefined{
+      if (this.spendableBalance.length) {
+        return this.spendableBalance[0].amount;
+      }
     }
   },
   persist: {
@@ -373,6 +382,18 @@ async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState, lo
   if (response.isSuccess() && response.data !== undefined) {
     const balance = response.data;
     state.balance = balance.amount;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+async function fetchSpendableBalances(connectionInfo: ConnectionInfo, state: UserState, lockscreen: boolean): Promise<boolean> {
+  const address = connectionInfo.account;
+  const response = await apiFactory.accountApi().fetchSpendableBalances(address, lockscreen);
+  if (response.isSuccess() && response.data !== undefined) {
+    const spendableBalance = response.data;
+    state.spendableBalance = spendableBalance;
     return true;
   } else {
     return false;

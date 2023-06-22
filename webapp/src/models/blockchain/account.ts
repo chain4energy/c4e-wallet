@@ -47,6 +47,11 @@ export interface BalanceResponse {
   balance: Coin,
 }
 
+export interface SpendableBalancesResponse {
+  balances: Coin[],
+  pagination: object
+}
+
 export interface ContinuousVestingPeriodInner {
   start_time: number;
   end_time: number;
