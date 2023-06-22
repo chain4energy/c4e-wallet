@@ -2,8 +2,15 @@
 
 import PortfolioVestingLine from "@/components/portfolio/PortfolioVestingLine.vue";
 import {useUserStore} from "@/store/user.store";
+import {VestingPeriods} from "@/models/store/account";
 
 const userStore = useUserStore();
+
+const filterVestingArray = (array: VestingPeriods[] | undefined) => {
+  return array?.filter(element => {
+    return new Date(element.endTime*1000).getTime() - Date.now() > 0;
+  });
+};
 
 </script>
 
@@ -11,7 +18,7 @@ const userStore = useUserStore();
 
   <div class="portfolioVesting">
     <h2 class="portfolioVesting__header">{{$t("PORTFOLIO_VIEW.DETAILS")}}</h2>
-    <div class="portfolioVesting__list">
+    <div class="portfolioVesting__list" v-if="filterVestingArray(userStore.getAccountVestingDetails).length">
       <div class="portfolioVesting__line">
         <div/>
         <h3>{{$t("PORTFOLIO_VIEW.END_DATE")}}</h3>
@@ -19,11 +26,14 @@ const userStore = useUserStore();
         <h3>{{$t("PORTFOLIO_VIEW.TIME")}}</h3>
       </div>
       <PortfolioVestingLine
-        v-for="(item, index) in userStore.getAccountVestingDetails"
+        v-for="(item, index) in filterVestingArray(userStore.getAccountVestingDetails)"
         :vesting = 'item'
         :key = index
       />
     </div>
+    <h3 v-else>
+      You have no active vestings!
+    </h3>
   </div>
 
 </template>

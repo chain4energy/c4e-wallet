@@ -49,11 +49,6 @@ const props = defineProps<{
   showDenom?: boolean,
   showVesting?: boolean
 }>();
-
-const locked = computed(()=> {
-  return useUserStore().getVestingLockAmount;
-});
-
 function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
   if( typeof amount === 'bigint'){
     return new BigIntWrapper(amount);
@@ -61,6 +56,11 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
     return amount;
   }
 }
+const locked = computed(()=> {
+  return useUserStore().getVestingLockAmount;
+});
+
+
 
 onMounted(() =>{
   dataService.refreshValidators();

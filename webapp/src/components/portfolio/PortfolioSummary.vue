@@ -12,42 +12,24 @@ import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 const userStore = useUserStore();
 const publicSalesStore = usePublicSalesStore();
 
-const locked = computed(()=> {
-  return userStore.getVestingLockAmount;
-});
-
-const lockedVesting = computed(()=> {
-  return userStore.getAccount.continuousVestingData?.originalVesting[0].amount;
-});
-
-const balance = computed(()=> {
+const totalBalance = computed(()=> {
   return userStore.getBalance;
+});
+
+const spendableBalance = computed(()=> {
+  return userStore.getSpendableBalance || 0n;
+});
+
+const lockedBalance = computed(()=> {
+  return totalBalance.value - spendableBalance.value;
 });
 
 const ratio = computed(()=> {
   return publicSalesStore.getConversionRatio;
 });
 
-/*
-
-function sumVestingAmount(vesting: VestingPeriods): bigint {
-  let sumAmount = 0n;
-  vesting.amount.forEach((item) => sumAmount += item.amount);
-  return sumAmount;
-}
-
-const totalVestingAmount = () => {
-  let total = 0n;
-  userStore.getAccountVestingDetails?.forEach(vesting => {
-    total += sumVestingAmount(vesting);
-  });
-  return total;
-};
-
- */
-
 const amountToUSD = (amount: bigint) => {
-  let converted = Number(amount / 1000000n);
+  let converted = Number(String(amount)) / 1000000;
   if (ratio.value)
     return converted * ratio.value;
   else
@@ -62,43 +44,29 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
   }
 }
 
-let spendableAmmount: bigint;
-await fetch('https://lcd-dev.c4e.io/cosmos/bank/v1beta1/spendable_balances/c4e1803djx5a8uatg2qg7xppp3df84stxh2s0n3tmy')
-  .then(res => res.json())
-  .then(res => spendableAmmount = res.balances[0].amount);
-
 </script>
 
 <template>
 
-  <div class="portfolioSummary">
+  <div class="portfolioSummary" v-if="totalBalance">
 
     <div>
       <C4EIcon size="100" icon="c4e-green"/>
     </div>
-    <div class="portfolioSummary__tile">
+    <div class="portfolioSummary__tile" v-if="spendableBalance">
       <h3>{{$t("PORTFOLIO_VIEW.BALANCE")}}</h3>
       <h4>
-        <CoinAmount :key="balance" :amount="convertAmount(balance)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
+        <CoinAmount :key="spendableBalance" :amount="convertAmount(spendableBalance)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
       </h4>
-      <h5>$<FormattedNumber :amount="amountToUSD(balance)" :precision="2"/></h5>
+      <h5>$<FormattedNumber :amount="amountToUSD(spendableBalance)" :precision="2"/></h5>
     </div>
-    <div class="portfolioSummary__tile">
+    <div class="portfolioSummary__tile" v-if="lockedBalance">
       <h3>{{$t("PORTFOLIO_VIEW.LOCKED")}}</h3>
       <h4>
-        store: <CoinAmount :key="locked" :amount="convertAmount(locked)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
+        <CoinAmount :key="lockedBalance" :amount="convertAmount(lockedBalance)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
       </h4>
-
-      <h4 v-if="lockedVesting">
-        calc: <CoinAmount :key="locked" :amount="convertAmount(lockedVesting)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
-      </h4>
-
-      <h4>
-        api: <CoinAmount :key="locked" :amount="convertAmount(spendableAmmount)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
-      </h4>
-
-      <h5 v-if="lockedVesting">
-        $<FormattedNumber :amount="amountToUSD(lockedVesting)" :precision="2"/>
+      <h5>
+        $<FormattedNumber :amount="amountToUSD(lockedBalance)" :precision="2"/>
       </h5>
 
     </div>
@@ -152,6 +120,7 @@ await fetch('https://lcd-dev.c4e.io/cosmos/bank/v1beta1/spendable_balances/c4e18
     background: #02447A;
     box-shadow: 0 0 2px 2px #02447A;
     border-radius: 2px;
+    height: 100%;
   }
 }
 
