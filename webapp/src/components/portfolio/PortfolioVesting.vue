@@ -10,13 +10,13 @@ const userStore = useUserStore();
 <template>
 
   <div class="portfolioVesting">
-    <h2 class="portfolioVesting__header">Vesting details</h2>
+    <h2 class="portfolioVesting__header">{{$t("PORTFOLIO_VIEW.DETAILS")}}</h2>
     <div class="portfolioVesting__list">
       <div class="portfolioVesting__line">
         <div/>
-        <h3>Vesting End</h3>
-        <h3>Locked</h3>
-        <h3>Time remaining</h3>
+        <h3>{{$t("PORTFOLIO_VIEW.END_DATE")}}</h3>
+        <h3>{{$t("PORTFOLIO_VIEW.LOCKED")}}</h3>
+        <h3>{{$t("PORTFOLIO_VIEW.TIME")}}</h3>
       </div>
       <PortfolioVestingLine
         v-for="(item, index) in userStore.getAccountVestingDetails"

@@ -5,8 +5,10 @@ import {VestingPeriods} from "@/models/store/account";
 import {BigDecimal} from "@/models/store/big.decimal";
 import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
+import {useI18n} from "vue-i18n";
 
 const props = defineProps<{vesting: VestingPeriods }>();
+const i18n = useI18n();
 
 function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
   if( typeof amount === 'bigint'){
@@ -22,9 +24,9 @@ const calculateDays = (date: number) => {
   let timeRemaining = new Date(date*1000).getTime() - Date.now();
   return timeRemaining/oneDay < 1
     ?
-    `${Math.floor(timeRemaining / oneHour)} h ${Math.floor(timeRemaining/60000) % 60} min`
+    `${Math.floor(timeRemaining / oneHour)} ${i18n.t("PORTFOLIO_VIEW.HOURS")} ${Math.floor(timeRemaining/60000) % 60} ${i18n.t("PORTFOLIO_VIEW.MINS")}`
     :
-    `${Math.floor(timeRemaining / oneDay)} days`;
+    `${Math.floor(timeRemaining / oneDay)} ${i18n.t("PORTFOLIO_VIEW.DAYS")}`;
 };
 
 function sumVestingAmount(): bigint {

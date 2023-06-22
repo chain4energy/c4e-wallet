@@ -522,5 +522,16 @@
     "RETYPE": "Retype your password",
     "REGISTER": "Register",
     "TERMS": "Accept terms and conditions"
+  },
+  "PORTFOLIO_VIEW": {
+    "BALANCE": "Balance",
+    "LOCKED": "Locked",
+    "SEND": "Send",
+    "DETAILS": "Vesting details",
+    "END_DATE": "Vesting end date",
+    "TIME": "Time remaining",
+    "HOURS": "h",
+    "MINS": "min",
+    "DAYS": "days"
   }
 }

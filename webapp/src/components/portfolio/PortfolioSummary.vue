@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import C4EIcon from "@/components/commons/C4EIcon.vue";
 import {useUserStore} from "@/store/user.store";
-import {VestingPeriods} from "@/models/store/account";
+// import {VestingPeriods} from "@/models/store/account";
 import FormattedNumber from "@/components/commons/FormattedNumber.vue";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import {computed} from "vue";
@@ -28,6 +28,8 @@ const ratio = computed(()=> {
   return publicSalesStore.getConversionRatio;
 });
 
+/*
+
 function sumVestingAmount(vesting: VestingPeriods): bigint {
   let sumAmount = 0n;
   vesting.amount.forEach((item) => sumAmount += item.amount);
@@ -41,6 +43,8 @@ const totalVestingAmount = () => {
   });
   return total;
 };
+
+ */
 
 const amountToUSD = (amount: bigint) => {
   let converted = Number(amount / 1000000n);
@@ -73,14 +77,14 @@ await fetch('https://lcd-dev.c4e.io/cosmos/bank/v1beta1/spendable_balances/c4e18
       <C4EIcon size="100" icon="c4e-green"/>
     </div>
     <div class="portfolioSummary__tile">
-      <h3>Balance</h3>
+      <h3>{{$t("PORTFOLIO_VIEW.BALANCE")}}</h3>
       <h4>
         <CoinAmount :key="balance" :amount="convertAmount(balance)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
       </h4>
       <h5>$<FormattedNumber :amount="amountToUSD(balance)" :precision="2"/></h5>
     </div>
     <div class="portfolioSummary__tile">
-      <h3>Locked</h3>
+      <h3>{{$t("PORTFOLIO_VIEW.LOCKED")}}</h3>
       <h4>
         store: <CoinAmount :key="locked" :amount="convertAmount(locked)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
       </h4>
@@ -99,7 +103,7 @@ await fetch('https://lcd-dev.c4e.io/cosmos/bank/v1beta1/spendable_balances/c4e18
 
     </div>
     <div>
-      <Button class="secondary portfolioSummary__button">Send</Button>
+      <Button class="secondary portfolioSummary__button">{{$t("PORTFOLIO_VIEW.SEND")}}</Button>
     </div>
 
   </div>

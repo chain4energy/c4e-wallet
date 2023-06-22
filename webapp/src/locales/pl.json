@@ -514,6 +514,17 @@
     "RETYPE": "Powtórz hasło",
     "REGISTER": "Załóż konto",
     "TERMS": "Akceptuję zasady i warunki"
+  },
+  "PORTFOLIO_VIEW": {
+    "BALANCE": "Do dyspozycji",
+    "LOCKED": "Ulokowane",
+    "SEND": "Wyślij",
+    "DETAILS": "Szczegóły vestingu",
+    "END_DATE": "Koniec vestingu",
+    "TIME": "Pozostały czas",
+    "HOURS": "godz.",
+    "MINS": "min.",
+    "DAYS": "dni"
   }
 
 }
