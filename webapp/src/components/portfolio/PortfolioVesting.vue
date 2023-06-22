@@ -16,7 +16,7 @@ const userStore = useUserStore();
         <div/>
         <h3>Vesting End</h3>
         <h3>Locked</h3>
-        <h3>Days</h3>
+        <h3>Time remaining</h3>
       </div>
       <PortfolioVestingLine
         v-for="(item, index) in userStore.getAccountVestingDetails"

@@ -17,10 +17,14 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
 }
 
 const calculateDays = (date: number) => {
-  const oneDay = 24 * 60 * 60 * 1000;
-  let targetDate = new Date(date*1000);
-  let now = Date.now();
-  return Math.floor((targetDate.getTime() - now)/oneDay);
+  const oneHour = 60 * 60 * 1000;
+  const oneDay = 24 * oneHour;
+  let timeRemaining = new Date(date*1000).getTime() - Date.now();
+  return timeRemaining/oneDay < 1
+    ?
+    `${Math.floor(timeRemaining / oneHour)} h ${Math.floor(timeRemaining/60000) % 60} min`
+    :
+    `${Math.floor(timeRemaining / oneDay)} days`;
 };
 
 function sumVestingAmount(): bigint {
@@ -46,7 +50,7 @@ function sumVestingAmount(): bigint {
       </h4>
     </div>
     <div class="portfolioVesting__tile">
-      <h3>{{calculateDays(vesting.endTime)}} days</h3>
+      <h3>{{calculateDays(vesting.endTime)}}</h3>
     </div>
   </div>
 
