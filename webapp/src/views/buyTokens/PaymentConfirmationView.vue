@@ -201,6 +201,8 @@ const onFail = () => {
 
 const onStartMetamaskTransaction = () => {
   if(selectedBlockchain.value && selectedToken.value){
+    console.log('asdasd')
+    console.log(transactionContextStore.amountToPay)
     usePublicSalesStore().payByMetamask({
       amount: transactionContextStore.amountToPay.toString(),
       blockchainID: selectedBlockchain.value.id,

@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import {Currency} from "@/models/currency";
 import {KycTierEnum} from "@/models/user/kyc";
 import {usePublicSalesStore} from "@/store/publicSales.store";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 
 interface TransactionContextState {
@@ -72,6 +73,9 @@ export const useTransactionContextStore = defineStore({
           return 3286;
       }
       return undefined;
+    },
+    getAmountToBuyUc4e(): number {
+      return this.amountToBuy * useConfigurationStore().config.getViewDenomConversionFactor('uc4e');
     }
   },
   persist: {

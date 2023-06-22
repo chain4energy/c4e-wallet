@@ -126,7 +126,7 @@ const onPay = () => {
         }
       });
   } else if(step.value==3) {
-    usePublicSalesStore().sendMetamaskTransaction(calculatedAmount.value.toString(), getBlockchainAddress(), 6);
+    // usePublicSalesStore().sendMetamaskTransaction(calculatedAmount.value.toString(), getBlockchainAddress(), 6);
   }
 
 };

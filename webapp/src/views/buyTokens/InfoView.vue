@@ -172,7 +172,7 @@ const onConfirm = () => {
     router.push({name: 'signIn'});
   } else {
     transactionContextStore.orderModalVisible = true;
-    publicSaleStore.reserveTokens(Number(transactionContextStore.amountToBuy), onSuccess, onFail);
+    publicSaleStore.reserveTokens(Number(transactionContextStore.getAmountToBuyUc4e), onSuccess, onFail);
   }
 };
 
@@ -187,6 +187,7 @@ const onPayReservation = () => {
 };
 const onSuccess = (orderId: number) => {
   transactionContextStore.setOrderId(orderId);
+  transactionContextStore.orderModalVisible = false;
   usePublicSalesStore().fetchTokenReservations();
   toast.success('Tokens reserved successfully');
   if(transactionContextStore.paymentCurrency != Currency.STABLE) {

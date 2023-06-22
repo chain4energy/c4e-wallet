@@ -78,7 +78,7 @@ const props =  defineProps({
 const emit = defineEmits(['onBuy']);
 onBeforeMount(() => {
   usePublicSalesStore().fetchRoundInfo(false).then(() => {
-    const rate =  usePublicSalesStore().roundInfo?.c4eToUsd;
+    const rate =  usePublicSalesStore().getC4eToUSD;
     if(rate) {
       exchangeRate.value = rate;
     }
@@ -119,7 +119,7 @@ watch(() => exchangeRate.value, () => {
 
 watch(() => secondValue.currency, () => {
   if(secondValue.currency == Currency.USDT || secondValue.currency == Currency.USDC || secondValue.currency == Currency.STABLE) {
-    const rate =  usePublicSalesStore().roundInfo?.c4eToUsd;
+    const rate =  usePublicSalesStore().getC4eToUSD;
     if(rate) {
       exchangeRate.value = rate;
     }
@@ -134,7 +134,7 @@ watch(() => secondValue.currency, () => {
     fetch("https://xqkzzpmim7.eu-west-1.awsapprunner.com/currencies/USDT/calculate", requestOptions)
       .then(response => response.json())
       .then(data => {
-        const c4eTOUSDT = usePublicSalesStore().roundInfo?.c4eToUsd;
+        const c4eTOUSDT = usePublicSalesStore().getC4eToUSD;
 
         if(c4eTOUSDT != undefined) {
           exchangeRate.value = c4eTOUSDT * requestedAmount / data.amount;

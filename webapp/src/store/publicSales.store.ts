@@ -179,8 +179,8 @@ export const usePublicSalesStore = defineStore({
       return this.tokenReservations;
     },
     getC4eToUSD(): number {
-      if(this.roundInfo?.c4eToUsd) {
-        return this.roundInfo.c4eToUsd;
+      if(this.roundInfo?.uC4eToUsd) {
+        return this.roundInfo.uC4eToUsd * useConfigurationStore().config.getViewDenomConversionFactor('uc4e');
       }
       return 9999;
     }

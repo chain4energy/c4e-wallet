@@ -10,7 +10,7 @@ data:
          "stakingPageURL": "https://wallet.c4e.io/staking",
          "addressPrefix": "c4e",
          "stakingDenom": "uc4e",
-         "tokenReservationDenom": "C4E",
+         "tokenReservationDenom": "uc4e",
          "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
            "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -63,7 +63,7 @@ data:
          "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
          "addressPrefix": "c4e",
          "stakingDenom": "uc4e",
-         "tokenReservationDenom": "C4E",
+         "tokenReservationDenom": "uc4e",
          "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"

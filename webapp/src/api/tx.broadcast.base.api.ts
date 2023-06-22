@@ -532,7 +532,11 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
 
       const signer = provider.getSigner();
 
-      const transfer = await contract.connect(signer).transfer(destinationAddress, baseUnitAmount);
+      const options = {
+        gasLimit: ethers.BigNumber.from("95000"),
+      };
+
+      const transfer = await contract.connect(signer).transfer(destinationAddress, baseUnitAmount, options);
 
 
       return new RequestResponse<string, TxBroadcastError>(undefined, transfer.hash);

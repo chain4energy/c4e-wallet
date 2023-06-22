@@ -88,7 +88,7 @@ export interface TokenInfo {
 }
 export interface RoundInfoResponse {
   availableTokens: number;
-  c4eToUsd: number;
+  uC4eToUsd: number;
   endDate: string;
   startDate: string;
   id: number;
@@ -98,7 +98,7 @@ export interface RoundInfoResponse {
 }
 export interface RoundInfo {
   availableTokens: Coin;
-  c4eToUsd: number;
+  uC4eToUsd: number;
   endDate: Date;
   startDate: Date;
   id: number;

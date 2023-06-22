@@ -71,7 +71,7 @@ const parts = computed(() =>{
 });
 
 const currency = computed(() => {
-  return publicSalesStore.roundInfo?.c4eToUsd;
+  return publicSalesStore.getC4eToUSD;
 });
 
 const startDate = computed(() => {
