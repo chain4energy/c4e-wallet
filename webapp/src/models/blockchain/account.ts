@@ -35,7 +35,7 @@ export interface PeriodicContinuousVestingAccount {
     delegated_vesting: Coin[],
     end_time: string
   },
-  vesting_periods: ContinuousVestingPeriod[];
+  vesting_periods: ContinuousVestingPeriodInner[];
   start_time: string
 }
 
@@ -45,5 +45,11 @@ export interface AccountResponse {
 
 export interface BalanceResponse {
   balance: Coin,
+}
+
+export interface ContinuousVestingPeriodInner {
+  start_time: number;
+  end_time: number;
+  amount: Coin[];
 }
 

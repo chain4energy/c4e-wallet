@@ -79,7 +79,7 @@ export class SidebarConfig{
     retVal.id = 6;
     retVal.href = '/portfolio';
     retVal.title = 'Portfolio';
-    retVal.icon = new SidebarIcon('Wallet');
+    retVal.icon = new SidebarIcon('TrendingUp');
     return retVal;
   }
 

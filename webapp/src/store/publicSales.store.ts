@@ -177,6 +177,9 @@ export const usePublicSalesStore = defineStore({
     },
     getTransactions(): TokenReservation[] | undefined{
       return this.tokenReservations;
+    },
+    getConversionRatio(): number | undefined {
+      return this.roundInfo?.c4eToUsd;
     }
   }
 });

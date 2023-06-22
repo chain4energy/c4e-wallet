@@ -1,19 +1,9 @@
 <script setup lang="ts">
 
-import PortfolioVestingLine, {IVestingLine} from "@/components/portfolio/PortfolioVestingLine.vue";
+import PortfolioVestingLine from "@/components/portfolio/PortfolioVestingLine.vue";
+import {useUserStore} from "@/store/user.store";
 
-const fakeList: IVestingLine[] = [
-  {
-    vestingEndDate: '25.01.2024, 12:14:35',
-    vestingC4EFunds: 123000000,
-    vestingUSDFunds: 123000000,
-  },
-  {
-    vestingEndDate: '25.07.2023, 12:14:35',
-    vestingC4EFunds: 123000000,
-    vestingUSDFunds: 123000000,
-  }
-];
+const userStore = useUserStore();
 
 </script>
 
@@ -28,13 +18,11 @@ const fakeList: IVestingLine[] = [
         <h3>Locked</h3>
         <h3>Days</h3>
       </div>
-
       <PortfolioVestingLine
-        v-for="(item, index) in fakeList"
+        v-for="(item, index) in userStore.getAccountVestingDetails"
         :vesting = 'item'
         :key = index
       />
-
     </div>
   </div>
 

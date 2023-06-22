@@ -60,11 +60,9 @@ export function mapAccount(account: BcAccount | undefined): StoreAccount  {
       const vestingPeriods = new Array<VestingPeriods>();
 
       bcAccount.vesting_periods?.forEach((period) => {
-        console.log(period);
         const amounts = new Array<Coin>();
         period.amount.forEach((coin) => {
           const c = new Coin(BigInt(coin.amount), coin.denom);
-          console.log(c);
           amounts.push(c);
         });
         const p = new VestingPeriods(period.start_time, period.end_time, amounts);

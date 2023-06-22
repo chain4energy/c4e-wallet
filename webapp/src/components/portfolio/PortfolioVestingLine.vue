@@ -1,22 +1,33 @@
 <script setup lang="ts">
 
 import C4EIcon from "@/components/commons/C4EIcon.vue";
+import {VestingPeriods} from "@/models/store/account";
+import {BigDecimal} from "@/models/store/big.decimal";
+import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
+import CoinAmount from "@/components/commons/CoinAmount.vue";
 
-export interface IVestingLine {
-  vestingEndDate: string,
-  vestingC4EFunds: number,
-  vestingUSDFunds: number,
+const props = defineProps<{vesting: VestingPeriods }>();
+
+function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
+  if( typeof amount === 'bigint'){
+    return new BigIntWrapper(amount);
+  } else {
+    return amount;
+  }
 }
 
-const props = defineProps<{vesting: IVestingLine }>();
-
-const calculateDays = (date: string) => {
+const calculateDays = (date: number) => {
   const oneDay = 24 * 60 * 60 * 1000;
-  let formatted = date.split(',')[0].split('.');
-  let targetDate = new Date(Number(formatted[2]), Number(formatted[1])-1, Number(formatted[0]));
+  let targetDate = new Date(date*1000);
   let now = Date.now();
-  return Math.ceil((targetDate.getTime() - now)/oneDay);
+  return Math.floor((targetDate.getTime() - now)/oneDay);
 };
+
+function sumVestingAmount(): bigint {
+  let sumAmount = 0n;
+  props.vesting.amount.forEach((item) => sumAmount += item.amount);
+  return sumAmount;
+}
 
 </script>
 
@@ -27,14 +38,15 @@ const calculateDays = (date: string) => {
       <C4EIcon size="75" icon="c4e-green"/>
     </div>
     <div class="portfolioVesting__tile">
-      <h3>{{ vesting.vestingEndDate }}</h3>
+      <h3>{{ new Date(vesting.endTime*1000).toLocaleString() }}</h3>
     </div>
     <div class="portfolioVesting__tile">
-      <h4>{{ vesting.vestingC4EFunds }} C4E</h4>
-      <h5>${{ vesting.vestingUSDFunds }}</h5>
+      <h4>
+        <CoinAmount :amount="convertAmount(sumVestingAmount())" :precision="4" :reduce-big-number="true" :show-tooltip="false" :show-denom="true"/>
+      </h4>
     </div>
     <div class="portfolioVesting__tile">
-      <h3>{{calculateDays(vesting.vestingEndDate)}} days</h3>
+      <h3>{{calculateDays(vesting.endTime)}} days</h3>
     </div>
   </div>
 
