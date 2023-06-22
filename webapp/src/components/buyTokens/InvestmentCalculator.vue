@@ -87,6 +87,9 @@ onBeforeMount(() => {
 onMounted(() => {
 
   firstValue.amount = props.firstInputDefaultValue;
+  if(useTransactionContextStore().orderModalVisible) {
+    firstValue.amount = useTransactionContextStore().amountToBuy;
+  }
   onFirstInputChange();
 
 });
