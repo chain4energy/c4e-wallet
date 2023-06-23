@@ -4,13 +4,23 @@ import {useUserStore} from "@/store/user.store";
 // import {VestingPeriods} from "@/models/store/account";
 import FormattedNumber from "@/components/commons/FormattedNumber.vue";
 import {usePublicSalesStore} from "@/store/publicSales.store";
-import {computed} from "vue";
+import {computed, watch} from "vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {BigDecimal} from "@/models/store/big.decimal";
 import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
+import {useBlockStore} from "@/store/block.store";
 
 const userStore = useUserStore();
 const publicSalesStore = usePublicSalesStore();
+const blockStore = useBlockStore();
+
+const latestBlock = computed(() => {
+  return blockStore.getLatestBlock.time;
+});
+
+watch(latestBlock, () => {
+  userStore.updateSpendables();
+});
 
 const totalBalance = computed(()=> {
   return userStore.getBalance;

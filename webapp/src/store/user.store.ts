@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {Account, AccountType, VestingPeriods} from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
+import factoryApi from "@/api/factory.api";
 import {ConnectionError, ConnectionInfo, ConnectionType} from "@/api/wallet.connecton.api";
 import {useToast} from "vue-toastification";
 import {RequestResponse} from '@/models/request-response';
@@ -17,10 +18,7 @@ import i18n from "@/plugins/i18n";
 import {useProposalsStore} from "./proposals.store";
 import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
-import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
-import {Signer} from "ethers";
-import factoryApi from "@/api/factory.api";
-import { Coin } from "@/models/store/common";
+import {Coin} from "@/models/store/common";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -282,6 +280,9 @@ export const useUserStore = defineStore({
         });
       }
     },
+    async updateSpendables() {
+      await fetchSpendableBalances(this.account.address, this, false);
+    }
   },
   getters: {
     getConnectionType(): ConnectionType {
@@ -388,12 +389,11 @@ async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState, lo
   }
 }
 
-async function fetchSpendableBalances(connectionInfo: ConnectionInfo, state: UserState, lockscreen: boolean): Promise<boolean> {
-  const address = connectionInfo.account;
+async function fetchSpendableBalances(connectionInfo: ConnectionInfo | string, state: UserState, lockscreen: boolean): Promise<boolean> {
+  const address = connectionInfo instanceof ConnectionInfo ? connectionInfo.account : connectionInfo;
   const response = await apiFactory.accountApi().fetchSpendableBalances(address, lockscreen);
   if (response.isSuccess() && response.data !== undefined) {
-    const spendableBalance = response.data;
-    state.spendableBalance = spendableBalance;
+    state.spendableBalance = response.data;
     return true;
   } else {
     return false;
