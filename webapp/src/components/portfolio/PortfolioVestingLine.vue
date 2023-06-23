@@ -6,9 +6,13 @@ import {BigDecimal} from "@/models/store/big.decimal";
 import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {useI18n} from "vue-i18n";
+import {calculateLockedVesting} from "@/utils/vesting-utils";
+import {useBlockStore} from "@/store/block.store";
 
 const props = defineProps<{vesting: VestingPeriods }>();
 const i18n = useI18n();
+
+const blockStore = useBlockStore();
 
 function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
   if( typeof amount === 'bigint'){
@@ -29,14 +33,14 @@ const calculateDays = (date: number) => {
     `${Math.floor(timeRemaining / oneDay)} ${i18n.t("PORTFOLIO_VIEW.DAYS")}`;
 };
 
-function sumVestingAmount(): number {
+function sumVestingAmount(): bigint {
   let sumAmount = 0n;
   props.vesting.amount.forEach((item) => sumAmount += item.amount);
 
-  const el1 = Date.now()/1000 - props.vesting.startTime;
-  const el2  = props.vesting.endTime - props.vesting.startTime;
-  return Number(sumAmount) * (1 - el1/el2);
+  return calculateLockedVesting(props.vesting.startTime*1000, props.vesting.endTime*1000, blockStore.getLatestBlock.time.getTime(), sumAmount);
 }
+
+
 
 </script>
 
@@ -45,6 +49,9 @@ function sumVestingAmount(): number {
   <div class="portfolioVesting__line">
     <div>
       <C4EIcon size="75" icon="c4e-green"/>
+    </div>
+    <div class="portfolioVesting__tile">
+      <h3>{{ new Date(vesting.startTime*1000).toLocaleString() }}</h3>
     </div>
     <div class="portfolioVesting__tile">
       <h3>{{ new Date(vesting.endTime*1000).toLocaleString() }}</h3>

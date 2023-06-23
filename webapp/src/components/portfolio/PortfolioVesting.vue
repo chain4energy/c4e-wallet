@@ -3,12 +3,14 @@
 import PortfolioVestingLine from "@/components/portfolio/PortfolioVestingLine.vue";
 import {useUserStore} from "@/store/user.store";
 import {VestingPeriods} from "@/models/store/account";
-import {computed, ComputedRef} from "vue";
+import {computed} from "vue";
 
 const userStore = useUserStore();
 
 const continuousVestingData = computed(() => userStore.getAccount.continuousVestingData);
+const accountType = computed(() => userStore.getAccountType);
 
+// variable changing format of continuousVestingData to the same type like vesting period to ise the same component
 let contVestingDetails = computed(() => {
   if (continuousVestingData.value) {
      return [{
@@ -20,10 +22,11 @@ let contVestingDetails = computed(() => {
   else return [];
 });
 
+// filter completed vestings and sort them
 const filterVestingArray = (array: VestingPeriods[] | undefined) => {
   return array?.filter(element => {
     return new Date(element.endTime*1000).getTime() - Date.now() > 0;
-  });
+  }).sort((a,b) => a.endTime - b.endTime);
 };
 
 </script>
@@ -33,26 +36,33 @@ const filterVestingArray = (array: VestingPeriods[] | undefined) => {
   <div class="portfolioVesting">
     <h2 class="portfolioVesting__header">{{$t("PORTFOLIO_VIEW.DETAILS")}}</h2>
     <div class="portfolioVesting__list"
-         v-if="filterVestingArray(userStore.getAccountVestingDetails) && filterVestingArray(userStore.getAccountVestingDetails).length || contVestingDetails && contVestingDetails.length"
+         v-if="filterVestingArray(userStore.getAccountVestingDetails) && filterVestingArray(userStore.getAccountVestingDetails).length
+         ||
+         contVestingDetails && contVestingDetails.length"
     >
       <div class="portfolioVesting__line">
         <div/>
+        <h3>{{$t("PORTFOLIO_VIEW.START_DATE")}}</h3>
         <h3>{{$t("PORTFOLIO_VIEW.END_DATE")}}</h3>
         <h3>{{$t("PORTFOLIO_VIEW.LOCKED")}}</h3>
         <h3>{{$t("PORTFOLIO_VIEW.TIME")}}</h3>
       </div>
-
-      <PortfolioVestingLine
-        v-for="(item, index) in filterVestingArray(userStore.getAccountVestingDetails)"
-        :vesting = 'item'
-        :key = index
-      />
-
-      <PortfolioVestingLine
-        v-for="(item, index) in filterVestingArray(contVestingDetails)"
-        :vesting = 'item'
-        :key = index
-      />
+      <!-- Periodic vesting -->
+      <div v-if ='accountType === 5'>
+        <PortfolioVestingLine
+          v-for="(item, index) in filterVestingArray(userStore.getAccountVestingDetails)"
+          :vesting = 'item'
+          :key = index
+        />
+      </div>
+      <!-- Continuous vesting -->
+      <div v-else-if="accountType === 2">
+        <PortfolioVestingLine
+          v-for="(item, index) in filterVestingArray(contVestingDetails)"
+          :vesting = 'item'
+          :key = index
+        />
+      </div>
     </div>
     <h3 v-else>
       You have no active vestings!
@@ -64,7 +74,7 @@ const filterVestingArray = (array: VestingPeriods[] | undefined) => {
 <style scoped lang="scss">
 
 .portfolioVesting {
-  width: 70%;
+  width: 85%;
   background: #0F3153;
   box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
   font-family: 'Inter',sans-serif;
