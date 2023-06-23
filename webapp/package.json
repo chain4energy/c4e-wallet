@@ -31,7 +31,7 @@
     "core-js": "^3.8.3",
     "echarts": "^5.4.0",
     "ethers": "^5.7.2",
-    "lucide-vue-next": "^0.44.0",
+    "lucide-vue-next": "^0.250.0",
     "moment": "^2.29.3",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "pinia": "^2.0.28",

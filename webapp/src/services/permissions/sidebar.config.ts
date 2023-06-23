@@ -34,7 +34,7 @@ export class SidebarConfig{
     retVal.id = 1;
     retVal.href = '/staking';
     retVal.title = 'Staking';
-    retVal.icon = new SidebarIcon('Wallet');
+    retVal.icon = new SidebarIcon('BarChart4');
     return retVal;
   }
 
@@ -79,7 +79,7 @@ export class SidebarConfig{
     retVal.id = 6;
     retVal.href = '/portfolio';
     retVal.title = 'Portfolio';
-    retVal.icon = new SidebarIcon('TrendingUp');
+    retVal.icon = new SidebarIcon('Wallet');
     return retVal;
   }
 
