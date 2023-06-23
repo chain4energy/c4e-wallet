@@ -528,6 +528,7 @@
     "SPENDABLE": "Spendable",
     "LOCKED": "Locked",
     "SEND": "Send",
+    "RECEIVE": "Receive",
     "DETAILS": "Vesting details",
     "START_DATE": "Start date",
     "END_DATE": "End date",

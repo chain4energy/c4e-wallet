@@ -4,11 +4,13 @@ import {useUserStore} from "@/store/user.store";
 // import {VestingPeriods} from "@/models/store/account";
 import FormattedNumber from "@/components/commons/FormattedNumber.vue";
 import {usePublicSalesStore} from "@/store/publicSales.store";
-import {computed, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {BigDecimal} from "@/models/store/big.decimal";
 import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 import {useBlockStore} from "@/store/block.store";
+import Dialog from "primevue/dialog";
+import QrcodeVue from "qrcode.vue";
 
 const userStore = useUserStore();
 const publicSalesStore = usePublicSalesStore();
@@ -51,6 +53,8 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
   }
 }
 
+const receiveDialogVisible = ref(false);
+
 </script>
 
 <template>
@@ -77,11 +81,19 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
       <h5>$<FormattedNumber :amount="amountToUSD(spendableBalance)" :precision="2"/></h5>
     </div>
 
-    <div>
+    <div class="portfolioSummary__buttons">
+      <Button class="secondary portfolioSummary__button" @click.prevent="() => receiveDialogVisible = true">{{$t("PORTFOLIO_VIEW.RECEIVE")}}</Button>
       <Button class="secondary portfolioSummary__button">{{$t("PORTFOLIO_VIEW.SEND")}}</Button>
     </div>
 
   </div>
+
+  <Dialog v-model:visible="receiveDialogVisible" modal :header='$t("PORTFOLIO_VIEW.RECEIVE")' :style="{ width: '95vw', 'max-width': '600px' }">
+    <div style="display: flex; align-items: center; justify-content:center; flex-direction: column">
+      <p style="{margin: 20px auto;}">Your address: {{userStore.getAccount.address}}</p>
+      <QrcodeVue :value="userStore.getAccount.address" size="200" :render-as="'svg'"></QrcodeVue>
+    </div>
+  </Dialog>
 
 </template>
 
@@ -112,6 +124,12 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
   h4 {
     padding: 5px;
     font-weight: 800;
+  }
+  &__buttons {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
   }
   &__button {
     width: 80%;
