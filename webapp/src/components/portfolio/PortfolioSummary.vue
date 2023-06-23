@@ -14,11 +14,12 @@ const userStore = useUserStore();
 const publicSalesStore = usePublicSalesStore();
 const blockStore = useBlockStore();
 
+// latest block watcher for updating the spendable balance
 const latestBlock = computed(() => {
   return blockStore.getLatestBlock.time;
 });
-
 watch(latestBlock, () => {
+  if (userStore.getAccountType)
   userStore.updateSpendables();
 });
 
@@ -28,10 +29,6 @@ const totalBalance = computed(()=> {
 
 const spendableBalance = computed(()=> {
   return userStore.getSpendableBalance || 0n;
-});
-
-const lockedBalance = computed(()=> {
-  return totalBalance.value - spendableBalance.value;
 });
 
 const ratio = computed(()=> {

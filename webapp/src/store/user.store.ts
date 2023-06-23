@@ -19,6 +19,7 @@ import {useProposalsStore} from "./proposals.store";
 import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
 import {Coin} from "@/models/store/common";
+import {calculateLockedVesting} from "@/utils/vesting-utils";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -156,13 +157,17 @@ export const useUserStore = defineStore({
     },
 
     async calculateVestingLocked(latestBlTime: Date) {
-      if (!this.isContinuousVestingAccount ) {
-        this.vestingAccLocked = 0n;
-        return;
+      if (this.isContinuousVestingAccount) {
+        if (this.account.continuousVestingData !== undefined) {
+          this.vestingAccLocked = this.account.continuousVestingData.calculateVestingLocked(latestBlTime);
+        }
       }
-      if (this.account.continuousVestingData !== undefined) {
-        this.vestingAccLocked = this.account.continuousVestingData.calculateVestingLocked(latestBlTime);
-      } else {
+      else if (this.isPeriodicVestingAccount) {
+        if (this.account.vestingPeriods !== undefined) {
+          this.vestingAccLocked = calculatePeriodicVestingLocked(this.account.vestingPeriods, latestBlTime);
+        }
+      }
+      else {
         this.vestingAccLocked = 0n;
       }
     },
@@ -299,6 +304,11 @@ export const useUserStore = defineStore({
         && this.account.continuousVestingData !== undefined
         && useBlockStore().getLatestBlock.time.getTime() <= this.account.continuousVestingData?.endTime.getTime();
     },
+    isPeriodicVestingAccount(): boolean {
+      return this.account.type === AccountType.PeriodicContinuousVestingAccount
+        && this.account.vestingPeriods !== undefined
+        && useBlockStore().getLatestBlock.time.getTime() <= findMaxTime(this.account.vestingPeriods);
+    },
     getAccountType(): AccountType {
       return this.account.type;
     },
@@ -338,10 +348,16 @@ export const useUserStore = defineStore({
     getAccountVestingDetails(): VestingPeriods[] | undefined {
       return this.account.vestingPeriods;
     },
-    getSpendableBalance(): bigint | undefined{
+    getSpendableBalance(): bigint | undefined {
       if (this.spendableBalance.length) {
         return this.spendableBalance[0].amount;
       }
+    },
+    getMaxTime(): number {
+      if (this.account.vestingPeriods) {
+        return findMaxTime(this.account.vestingPeriods);
+      }
+      return 0;
     }
   },
   persist: {
@@ -463,4 +479,21 @@ function onTxDeliverySuccess(tx?: TxData) {
     logger.logToConsole(LogLevel.WARNING, `Tx delivered successfully but cannt get TX data`);
     toast.warning(`Tx delivered successfully but cannt get TX data`);
   }
+}
+
+function findMaxTime(periods: VestingPeriods[]) {
+ let maxTime = 0;
+ periods.forEach(period => maxTime = period.endTime > maxTime ? period.endTime : maxTime);
+ return maxTime*1000;
+}
+
+function calculatePeriodicVestingLocked  (periods: VestingPeriods[], latestBlockTime: Date) {
+  const blockTime = latestBlockTime.getTime();
+  let totalLocked = 0n;
+  periods.forEach(period => {
+    let sumAmount = 0n;
+    period.amount.forEach((item) => sumAmount += item.amount);
+    totalLocked += calculateLockedVesting(period.startTime*1000, period.endTime*1000, blockTime, sumAmount);
+  });
+  return totalLocked;
 }

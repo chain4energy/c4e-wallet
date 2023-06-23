@@ -2,23 +2,27 @@
   <div class="amount">
     <slot name="logo-front"></slot>
     <div class="amount__amount">
-      <div class="userdata-container" :class="useUserStore().isContinuousVestingAccount ? '' : 'width-95'">
+      <div class="userdata-container" :class="useUserStore().isContinuousVestingAccount || useUserStore().isPeriodicVestingAccount ? '' : 'width-95'">
         <div class="userdata-option" v-for="(items, index) in props.coins" :key="index">
           <span class="header" v-if="items.header">{{items.header}}</span>
           <CoinAmount :amount="convertAmount(items.amount)" :precision="precision" :show-denom="items.showDenom || showDenom" :show-tooltip="true" :reduce-big-number="reduceBigNumber"/>
         </div>
       </div>
-      <span class="vesting-container" v-if="useUserStore().isContinuousVestingAccount && showVesting">
+      <span class="vesting-container" v-if="(useUserStore().isContinuousVestingAccount || useUserStore().isPeriodicVestingAccount) && showVesting">
         <div class="vesting-flag">Vesting</div>
-        <div class="userdata-option vesting-first" v-if="useUserStore().isContinuousVestingAccount">
+        <div class="userdata-option vesting-first" v-if="useUserStore().isContinuousVestingAccount || useUserStore().isPeriodicVestingAccount">
               <span class="header">{{ $t('USER_DATA.LOCKED') }}</span>
               <CoinAmount :key="locked" :amount="convertAmount(locked)" :precision="precision" :reduce-big-number="reduceBigNumber" :show-tooltip="true" :show-denom="true"/>
-          </div>
-          <div class="userdata-option vesting" v-if="useUserStore().isContinuousVestingAccount">
+        </div>
+        <div class="userdata-option vesting" v-if="useUserStore().isContinuousVestingAccount">
               <span class="header">{{ $t('USER_DATA.VESTING_END') }}</span>
               <b><DateCommon :date="useUserStore().getAccount.continuousVestingData?.endTime" :show-time="false" :showTooltip="true" /></b>
-          </div>
-          <div class="userdata-option vesting" v-if="!useUserStore().isContinuousVestingAccount"></div>
+        </div>
+        <div class="userdata-option vesting" v-if="useUserStore().isPeriodicVestingAccount">
+              <span class="header">{{ $t('USER_DATA.VESTING_END') }}</span>
+              <b><DateCommon :date="useUserStore().getMaxTime" :show-time="false" :showTooltip="true" /></b>
+        </div>
+        <div class="userdata-option vesting" v-if="!useUserStore().isContinuousVestingAccount || useUserStore().isPeriodicVestingAccount"></div>
 
       </span>
     </div>
