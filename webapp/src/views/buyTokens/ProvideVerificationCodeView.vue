@@ -67,6 +67,7 @@ const onSuccess = () => {
 };
 const onError = (errorMessage?: string) => {
   toast.error('An error occurred \n' + errorMessage);
+  router.back();
 };
 </script>
 
