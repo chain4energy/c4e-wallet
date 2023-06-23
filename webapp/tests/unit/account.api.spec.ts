@@ -232,6 +232,7 @@ describe('account api tests', () => {
     expect(result.data?.denom).toBe(denom)
   });
 
+
   it('gets balance with error', async () => {
     const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
     // const axiosErrorMessage = axiosErrorMessagePrefix + '400';
@@ -255,6 +256,24 @@ describe('account api tests', () => {
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
 
+  });
+
+  it('gets spendable balance', async () => {
+    const amount = 12345n;
+    const balance = {
+      data: createSingleBalanceResponseData(denom, amount.toString())
+    };
+
+    mockedAxios.request.mockResolvedValue(balance);
+    const result = await api.fetchSpendableBalances('c4e1fj99a6veexy6a244l8nll35qddhn7s237q2vlc', false)
+
+   // console.log(result);
+
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data).toBe(amount)
+    expect(result.data).toBe(denom)
   });
 
   it('gets delegator delegations - delegations exist', async () => {
