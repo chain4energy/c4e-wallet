@@ -85,6 +85,7 @@ export const useUserServiceStore = defineStore({
             map.set(key as KycStepName, value as KycProgressStatus);
           }
           this.kycServiceState = map;
+          this.kycLevel = response.data.kycLevel;
         }
       });
     },

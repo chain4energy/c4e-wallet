@@ -20,9 +20,9 @@
 <!--  <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />-->
   <BuyTokensModal :visible="showModal"  @closeModal="showModal = false" @confirm="onPayReservation" :reservation="selectedReservation" />
 
-  <Dialog v-model:visible="summaryVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px', 'z-index': 500}">
+  <Dialog v-model:visible="transactionContextStore.orderModalVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px', 'z-index': 500}">
     <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
-      <h5 style="font-weight:700">{{$t('BUY_TOKENS_VIEW.YOU_INVEST')}} {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</h5>
+      <h5 style="font-weight:700">{{$t('BUY_TOKENS_VIEW.YOU_INVEST')}} {{transactionContextStore.amountToBuy}} C4E</h5>
       <div class="requirements_container">
         <div>
           {{$t('BUY_TOKENS_VIEW.PASS_KYC')}} {{transactionContextStore.getRequiredKycLevel}}
@@ -31,38 +31,51 @@
         <div v-if="isKycLevelRequired">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
-        <div v-else><Button @click="onKycStart" class="p-button p-component secondary">{{$t('BUTTONS.START_KYC')}}</Button></div>
+        <div v-else><Button @click="onKycStart" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.START_KYC')}}</Button></div>
         <div>{{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')"/></div>
         <div v-if="isTermsAccepted">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
-        <div v-else ><Button class="p-button p-component secondary" @click="showApprovalModalFunc">{{$t('BUTTONS.ACCEPT')}}</Button></div>
+        <div v-else ><Button class="p-button p-component secondary-link button-w7" @click="showApprovalModalFunc">{{$t('BUTTONS.ACCEPT')}}</Button></div>
         <div>{{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"/></div>
         <div v-if="claimerAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else-if="!isLoggedIn && claimerAddress == undefined">
           <Button @click="dataService.onKeplrLogIn()"
-                  class="p-button p-component secondary">>
+                  class="p-button p-component secondary-link button-w7">
           {{ $t('AIRDROP.CONNECT') }}
           </Button>
         </div>
-        <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
+        <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')"/></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE && sourceAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
-        <div v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE"><Button @click="provideSourceAddress" class="p-button p-component secondary">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
+        <div v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE"><Button @click="provideSourceAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
       </div>
       <div style="display: flex">
-        <Button class="p-button p-component secondary" @click="summaryVisible=false">{{$t('BUTTONS.CANCEL_ORDER')}}</Button>
+        <Button class="p-button p-component cancel" @click="transactionContextStore.orderModalVisible=false">{{$t('BUTTONS.CANCEL_ORDER')}}</Button>
         <Button class="p-button p-component secondary" :disabled="!canConfirmOrder" @click="onConfirm">{{$t('BUTTONS.CONFIRM_ORDER')}}</Button>
       </div>
     </div>
   </Dialog>
   <ApprovalModal @close="hideApprovalModal" @submit="hideApprovalModal" v-if="showApprovalModal"/>
   <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :address="addressToConnect" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
+  <Dialog v-model:visible="kycModalVisible" @hide="useUserServiceStore().getKycStatus()" modal header="KYC" :style="{ width: '95vw', 'max-width': '600px' }">
+    <div style="display: flex; align-items: center; justify-content:center; flex-direction: column">
+      <synaps-verify
+        :sessionId="sessionId"
+        :color="{ primary: '72bf44', secondary: 'ffffff' }"
+        lang="en"
+        :tier="useTransactionContextStore().getRequiredKycTierId"
+        service="individual"
+        @ready="console.log('ready')"
+        @finish="kycModalVisible = false"
+      />
+    </div>
 
+  </Dialog>
 </template>
 
 <script lang="ts" setup>
@@ -92,6 +105,7 @@ import {SignParingAddressResult} from "@/models/user/emailPairing";
 import BuyTokensModal from "@/components/buyTokens/modals/BuyTokensModal.vue";
 import dataService from "@/services/data.service";
 import Button from "primevue/button";
+import SynapsVerify from '@synaps-io/vue3-verify';
 
 onBeforeMount(() => {
 
@@ -102,12 +116,12 @@ const toast = useToast();
 const publicSaleStore = usePublicSalesStore();
 const transactionContextStore = useTransactionContextStore();
 const publicSalesStore = usePublicSalesStore();
-const summaryVisible = ref(false);
 
 const i18n = useI18n();
 const showAddressInfoModal = ref(false);
 const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
 const addressToConnect = ref();
+const kycModalVisible = ref(false);
 
 const showApprovalModal = ref(false);
 const isLoggedIn = computed(() =>{
@@ -141,21 +155,24 @@ const transactions = computed(() => {
 const showModal = ref<boolean>(false);
 const selectedReservation = ref();
 
+const sessionId = computed(() => {
+  return useUserServiceStore().kycSessionId;
+});
 
 const onPay = (transaction: TokenReservation) => {
   selectedReservation.value = transaction;
   showModal.value = true;
 };
 const onBuyClick = () => {
-  summaryVisible.value = true;
+  transactionContextStore.orderModalVisible = true;
 };
 
 const onConfirm = () => {
   if(useUserServiceStore().loginType == LoginTypeEnum.NONE) {
     router.push({name: 'signIn'});
   } else {
-    summaryVisible.value = false;
-    publicSaleStore.reserveTokens(Number(transactionContextStore.amountToBuy), onSuccess, onFail);
+    transactionContextStore.orderModalVisible = true;
+    publicSaleStore.reserveTokens(Number(transactionContextStore.getAmountToBuyUc4e), onSuccess, onFail);
   }
 };
 
@@ -170,6 +187,7 @@ const onPayReservation = () => {
 };
 const onSuccess = (orderId: number) => {
   transactionContextStore.setOrderId(orderId);
+  transactionContextStore.orderModalVisible = false;
   usePublicSalesStore().fetchTokenReservations();
   toast.success('Tokens reserved successfully');
   if(transactionContextStore.paymentCurrency != Currency.STABLE) {
@@ -187,7 +205,8 @@ const onFail = (errorMessage?: string) => {
 
 const onKycStart = () => {
   useUserServiceStore().initKycSession(true).then(() => {
-    router.push({name: 'kyc'});
+    kycModalVisible.value = true;
+   // router.push({name: 'kyc'});
   });
 
 };
@@ -225,6 +244,7 @@ function addressConfirmed(){
 }
 const onSuccessConnect = () => {
   useContextStore().addressType = showAddressInfoModalAddressType.value;
+  transactionContextStore.orderModalVisible = true;
   router.push({name: 'provideVerificationCode'});
 };
 function closeProvideAddressModalClose(){
@@ -303,6 +323,12 @@ const canConfirmOrder = computed(() => {
 }
 ::v-deep(.p-button:not(.p-button-icon-only)) {
   border-radius: 5px !important;
+
+}
+.button {
+  &-w7{
+    width: 80%;
+  }
 
 }
 </style>

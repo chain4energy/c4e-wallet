@@ -336,7 +336,7 @@
     "OPEN": "Open",
     "BACK": "Back",
     "DISCONNECT": "Disconnect",
-    "CONNECT": "Connect",
+    "CONNECT": "Connect wallet",
     "DESCRIPTION": "Description",
     "THE": "The",
     "RETURN": "Return",
@@ -501,7 +501,7 @@
     "REQUIREMENTS_TIP": "Depending on the amount invested the different KYC (Know Your Customer) level can be applied.",
     "TOKENOMICS": "Tokenomics",
     "WHITE_PAPER": "White paper",
-    "YOU_INVEST": "You want to invest"
+    "YOU_INVEST": "You want to buy"
 
   },
   "PAYMENT_CONFIRMATION_VIEW": {

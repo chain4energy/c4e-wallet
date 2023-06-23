@@ -1,6 +1,8 @@
 import {defineStore} from "pinia";
 import {Currency} from "@/models/currency";
 import {KycTierEnum} from "@/models/user/kyc";
+import {usePublicSalesStore} from "@/store/publicSales.store";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 
 interface TransactionContextState {
@@ -8,7 +10,8 @@ interface TransactionContextState {
   amountToPay: number,
   amountToBuy: number,
   orderId: number,
-  exchangeRate: number
+  exchangeRate: number,
+  orderModalVisible: boolean
 }
 
 
@@ -20,7 +23,8 @@ export const useTransactionContextStore = defineStore({
       amountToBuy: 0,
       amountToPay: 0,
       orderId: 0,
-      exchangeRate: 0
+      exchangeRate: 0,
+      orderModalVisible: false
     };
   },
   actions: {
@@ -52,14 +56,26 @@ export const useTransactionContextStore = defineStore({
       return this.amountToBuy;
     },
     getRequiredKycLevel(): KycTierEnum {
-      if(this.amountToBuy > 10000) {
+      if(this.amountToBuy * usePublicSalesStore().getC4eToUSD > 10000) {
         return KycTierEnum.TIER_3;
-      } else if(this.amountToBuy > 1000) {
+      } else if(this.amountToBuy * usePublicSalesStore().getC4eToUSD > 1000) {
         return KycTierEnum.TIER_2;
-      } else if(this.amountToBuy > 100) {
+      } else if(this.amountToBuy * usePublicSalesStore().getC4eToUSD > 100) {
         return KycTierEnum.TIER_1;
       }
       return KycTierEnum.TIER_0;
+    },
+    getRequiredKycTierId(): number | undefined {
+      switch (this.getRequiredKycLevel) {
+        case KycTierEnum.TIER_1:
+          return 8270;
+        case KycTierEnum.TIER_2:
+          return 3286;
+      }
+      return undefined;
+    },
+    getAmountToBuyUc4e(): number {
+      return this.amountToBuy * useConfigurationStore().config.getViewDenomConversionFactor('uc4e');
     }
   },
   persist: {

@@ -1,17 +1,17 @@
 <template>
   <div class="publicSaleInfo">
     <h3 class="publicSaleInfo__header">{{$t('BUY_TOKENS_VIEW.ROUND_INFO')}} 1</h3>
-    <div style="width: 100%; height: 50px; padding: 0 20px;">
-      <PublicSalesBar v-if="parts && total" :total="total" :values="parts"/>
-    </div>
+<!--    <div style="width: 100%; height: 50px; padding: 0 20px;">-->
+<!--      <PublicSalesBar v-if="parts && total" :total="total" :values="parts"/>-->
+<!--    </div>-->
     <div class="publicSaleInfo__summary">
+      <div class="publicSaleInfo__infoBlock">
+        <p>{{$t('BUY_TOKENS_VIEW.PRICE')}}</p>
+        <p>1 C4E = ${{currency}}</p>
+      </div>
       <div class="publicSaleInfo__infoBlock">
         <p>Total Raise</p>
         <CoinAmount :amount="total ? total : 0" :show-denom="true" :precision="2" :reduce-big-number="false" />
-      </div>
-      <div class="publicSaleInfo__infoBlock">
-        <p>{{$t('BUY_TOKENS_VIEW.PRICE')}}</p>
-        <p>1 C4E = {{currency}} USDC</p>
       </div>
       <div class="publicSaleInfo__infoBlock">
         <p>{{$t('BUY_TOKENS_VIEW.TIME_TO_START')}}</p>
@@ -71,7 +71,7 @@ const parts = computed(() =>{
 });
 
 const currency = computed(() => {
-  return publicSalesStore.roundInfo?.c4eToUsd;
+  return publicSalesStore.getC4eToUSD;
 });
 
 const startDate = computed(() => {

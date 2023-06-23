@@ -17,7 +17,7 @@ export function mapRoundInfo(roundInfo: RoundInfoResponse | undefined): RoundInf
     reservedTokens: new Coin(BigInt(reservedTokens), denom),
     soldTokens: new Coin(BigInt(soldTokens), denom),
     totalTokens: new Coin(BigInt(totalTokens), denom),
-    c4eToUsd: roundInfo.c4eToUsd,
+    uC4eToUsd: roundInfo.uC4eToUsd,
     endDate: new Date(roundInfo.endDate),
     id:roundInfo.id,
     startDate: new Date(roundInfo.startDate)

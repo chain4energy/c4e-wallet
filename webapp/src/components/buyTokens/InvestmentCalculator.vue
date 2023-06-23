@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <div v-tooltip="{ value: 'You cannot invest less then $25, €25 or PLN 100', disabled: minimumRequired()}" class="calculatorC4E__btnSection">
+      <div v-tooltip="{ value: 'You cannot invest less then $25 and more than $10000', disabled: minimumRequired()}" class="calculatorC4E__btnSection">
 
         <Button class="p-button p-component secondary" :disabled="!minimumRequired()" style="width: 141px;" @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
       </div>
@@ -66,7 +66,7 @@ const props =  defineProps({
   firstInputDefaultValue: {
     type: Number,
     required: false,
-    default: 1000
+    default: 10000
   },
   disableStablecoin: {
     type: Boolean,
@@ -78,7 +78,7 @@ const props =  defineProps({
 const emit = defineEmits(['onBuy']);
 onBeforeMount(() => {
   usePublicSalesStore().fetchRoundInfo(false).then(() => {
-    const rate =  usePublicSalesStore().roundInfo?.c4eToUsd;
+    const rate =  usePublicSalesStore().getC4eToUSD;
     if(rate) {
       exchangeRate.value = rate;
     }
@@ -87,6 +87,9 @@ onBeforeMount(() => {
 onMounted(() => {
 
   firstValue.amount = props.firstInputDefaultValue;
+  if(useTransactionContextStore().orderModalVisible) {
+    firstValue.amount = useTransactionContextStore().amountToBuy;
+  }
   onFirstInputChange();
 
 });
@@ -119,7 +122,7 @@ watch(() => exchangeRate.value, () => {
 
 watch(() => secondValue.currency, () => {
   if(secondValue.currency == Currency.USDT || secondValue.currency == Currency.USDC || secondValue.currency == Currency.STABLE) {
-    const rate =  usePublicSalesStore().roundInfo?.c4eToUsd;
+    const rate =  usePublicSalesStore().getC4eToUSD;
     if(rate) {
       exchangeRate.value = rate;
     }
@@ -134,7 +137,7 @@ watch(() => secondValue.currency, () => {
     fetch("https://xqkzzpmim7.eu-west-1.awsapprunner.com/currencies/USDT/calculate", requestOptions)
       .then(response => response.json())
       .then(data => {
-        const c4eTOUSDT = usePublicSalesStore().roundInfo?.c4eToUsd;
+        const c4eTOUSDT = usePublicSalesStore().getC4eToUSD;
 
         if(c4eTOUSDT != undefined) {
           exchangeRate.value = c4eTOUSDT * requestedAmount / data.amount;
@@ -173,14 +176,7 @@ const round = (number: number, currency: string) => {
 };
 
 const minimumRequired = () => {
-  if(secondValue.currency == Currency.USD && secondValue.amount <25) {
-    return false;
-  } else if(secondValue.currency == Currency.EUR && secondValue.amount <25) {
-    return false;
-  } else if(secondValue.currency == Currency.PLN && secondValue.amount <100) {
-    return false;
-  }
-  return true;
+  return firstValue.amount * usePublicSalesStore().getC4eToUSD >= 25 && firstValue.amount * usePublicSalesStore().getC4eToUSD <=10000 ;
 };
 </script>
 

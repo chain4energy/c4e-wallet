@@ -11,7 +11,7 @@ data:
       "publicSaleServiceURL": "/api-devnet",
       "addressPrefix": "c4e",
       "stakingDenom": "uc4e",
-      "tokenReservationDenom": "C4E",
+      "tokenReservationDenom": "uc4e",
       "strategicPoolAddress": [
         "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
         "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -66,7 +66,7 @@ data:
         "publicSaleServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
-        "tokenReservationDenom": "C4E",
+        "tokenReservationDenom": "uc4e",
         "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -121,7 +121,7 @@ data:
         "publicSaleServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
-        "tokenReservationDenom": "C4E",
+        "tokenReservationDenom": "uc4e",
         "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -176,7 +176,7 @@ data:
         "publicSaleServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
-        "tokenReservationDenom": "C4E",
+        "tokenReservationDenom": "uc4e",
         "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
