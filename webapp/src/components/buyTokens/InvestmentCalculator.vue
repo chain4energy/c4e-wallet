@@ -169,9 +169,9 @@ const onBuy = () => {
 
 const toast = useToast();
 
-const round = (number: number, currency: string) => {
+const round = (number: number, currency: Currency) => {
   let decimals = 2;
-  if (currency === 'Stablecoin' || currency === 'C4E') decimals = 6;
+  if (currency === Currency.STABLE || currency === Currency.C4E) decimals = 6;
   return Math.ceil(number*10**decimals)/10**decimals;
 };
 

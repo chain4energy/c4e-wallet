@@ -5,7 +5,7 @@
 <!--      <PublicSalesBar v-if="parts && total" :total="total" :values="parts"/>-->
 <!--    </div>-->
     <div class="publicSaleInfo__summary">
-      <div class="publicSaleInfo__infoBlock">
+      <div class="publicSaleInfo__infoBlock" style="background-color: #81CF1F">
         <p>{{$t('BUY_TOKENS_VIEW.PRICE')}}</p>
         <p>1 C4E = ${{currency}}</p>
       </div>

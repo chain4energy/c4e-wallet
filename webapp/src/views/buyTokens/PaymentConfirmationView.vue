@@ -256,12 +256,13 @@ const onConfirmPayment = () => {
 };
 const onSuccessConfirmPayment = () => {
   toast.success('Payment confimed');
+  router.push({name: 'publicSaleInfo'});
 };
 const addDotsInsideTooLongString = (text: string | undefined, maxLength: number): string => {
   if(text == undefined)
     return '';
   if (text.length > maxLength) {
-    return text.substring(0, maxLength - 3) + "..." + text.substring(text.length - 2);
+    return text.substring(0, maxLength - 7) + "..." + text.substring(text.length - 6);
   }
   return text;
 };

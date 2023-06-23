@@ -42,9 +42,9 @@
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else-if="!isLoggedIn && claimerAddress == undefined">
-          <Button @click="dataService.onKeplrLogIn()"
+          <Button @click="loginPopupStatus=true"
                   class="p-button p-component secondary-link button-w7">
-          {{ $t('AIRDROP.CONNECT') }}
+          {{ $t('COMMON.CONNECT') }}
           </Button>
         </div>
         <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
@@ -76,6 +76,7 @@
     </div>
 
   </Dialog>
+  <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
 </template>
 
 <script lang="ts" setup>
@@ -106,6 +107,7 @@ import BuyTokensModal from "@/components/buyTokens/modals/BuyTokensModal.vue";
 import dataService from "@/services/data.service";
 import Button from "primevue/button";
 import SynapsVerify from '@synaps-io/vue3-verify';
+import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 
 onBeforeMount(() => {
 
@@ -122,6 +124,7 @@ const showAddressInfoModal = ref(false);
 const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
 const addressToConnect = ref();
 const kycModalVisible = ref(false);
+const loginPopupStatus = ref(false);
 
 const showApprovalModal = ref(false);
 const isLoggedIn = computed(() =>{

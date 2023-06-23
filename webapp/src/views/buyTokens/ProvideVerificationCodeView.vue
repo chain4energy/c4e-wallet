@@ -1,7 +1,13 @@
 <template>
-  <div>
+  <div class="code_container box-shadow">
+    <div class="code_container__info">
+      A verification code has been sent to {{useUserServiceStore().userEmail}}. Please check your mailbox and enter code below.
+    </div>
     <OtpComponent digit-count="12" @update:otp="activationCode = $event" />
-    <Button class="p-button p-component secondary" @click="onActivateClick" >Activate</Button>
+    <div class="code_container__button">
+      <Button class="p-button p-component secondary" @click="onActivateClick" >Activate</Button>
+    </div>
+
   </div>
 </template>
 
@@ -65,5 +71,14 @@ const onError = (errorMessage?: string) => {
 </script>
 
 <style scoped lang="scss">
-
+.code_container {
+  padding: 70px 50px 50px 50px;
+  &__info {
+    margin-bottom: 50px;
+    font-size: 1.5em;
+  }
+  &__button {
+    margin-top: 30px;
+  }
+}
 </style>

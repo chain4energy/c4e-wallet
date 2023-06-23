@@ -123,12 +123,12 @@
     </div>
 
   </div>
-  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :address="addressToConnect" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
+  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :address="showAddressInfoModalAddressType == AddressType.METAMASK ? addressToConnect : c4eAddress" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
 </template>
 
 <script setup lang="ts">
 
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
 import {useRouter} from "vue-router";
@@ -186,7 +186,6 @@ const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
 
 function provideClaimerAddress(){
   showAddressInfoModalAddressType.value = AddressType.KEPLR;
-  addressToConnect.value = useUserStore().getAccount.address;
   showAddressInfoModal.value = true;
 }
 
@@ -203,6 +202,14 @@ function provideSourceAddress(){
   });
   showAddressInfoModal.value = true;
 }
+
+window.ethereum.on('accountsChanged', function (accounts: string[]) {
+  addressToConnect.value = accounts[0];
+});
+
+const c4eAddress = computed(() => {
+  return useUserStore().getAccount.address;
+});
 
 function addressConfirmed(){
   showAddressInfoModal.value = false;
