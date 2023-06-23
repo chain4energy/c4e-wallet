@@ -258,17 +258,27 @@ describe('account api tests', () => {
   });
 
   it('gets spendable balance', async () => {
-    const amount = 12345n;
-    const balances = {
-      balances: [{
-        denom: denom,
-        amount: amount.toString()
-      }]
-    }
+    const amount = 942541981n;
 
-    mockedAxios.request.mockResolvedValue(balances);
+    const fakeResponse = {
+      data: {
+        balances: [
+          {
+            denom:"uc4e",
+            amount:"942541981"
+          }
+        ],
+        pagination: {
+          "next_key": null,
+          total: "1"
+        }
+      }
+    };
 
-    const result = await api.fetchSpendableBalances(address, false)
+
+    mockedAxios.request.mockResolvedValue(fakeResponse);
+
+    const result = await api.fetchSpendableBalances('c4e1fj99a6veexy6a244l8nll35qddhn7s237q2vlc', false);
 
     console.log('response:');
     console.log(result);
@@ -276,8 +286,9 @@ describe('account api tests', () => {
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined()
-    expect(result.data).toBe(amount)
-    expect(result.data).toBe(denom)
+    expect(result.data).toBeDefined()
+    //@ts-ignore
+    expect(result.data[0].amount).toBe(amount)
   });
 
   it('gets delegator delegations - delegations exist', async () => {
