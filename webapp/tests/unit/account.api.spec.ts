@@ -232,7 +232,6 @@ describe('account api tests', () => {
     expect(result.data?.denom).toBe(denom)
   });
 
-
   it('gets balance with error', async () => {
     const errorMessage = 'rpc error: code = InvalidArgument desc = invalid address: decoding bech32 failed: invalid checksum (expected xq32ez got tg7pm3): invalid request';
     // const axiosErrorMessage = axiosErrorMessagePrefix + '400';
