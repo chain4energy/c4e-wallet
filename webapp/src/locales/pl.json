@@ -514,6 +514,11 @@
     "RETYPE": "Powtórz hasło",
     "REGISTER": "Załóż konto",
     "TERMS": "Akceptuję zasady i warunki"
+  },
+  "FORMS": {
+    "VALIDATION_ERRORS": {
+      "PASSWORD_REGEX": "Hasło musi składać się z min. 8 znaków (Musi zawierać jedną literę, jedną cyfrę, jeden znak specjalny)"
+    }
   }
 
 }

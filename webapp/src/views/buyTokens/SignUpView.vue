@@ -65,15 +65,17 @@ import {useUserServiceStore} from "@/store/userService.store";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 
-
+const pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/;
 const schema = object().shape({
   email:  Yup.string()
     .required( "This field is required"),
   password:  Yup.string()
-    .required( "This field is required"),
+    .required( "This field is required")
+    .matches(pattern,'FORMS.VALIDATION_ERRORS.PASSWORD_REGEX' ),
   passwordRetype: Yup.string().required("This field is required").oneOf([Yup.ref('password'), null], "Passwords don't match"),
   termsAccepted: Yup.bool().oneOf([true], "This field is required")
 });
+
 
 const email = ref<string>();
 const password = ref<string>();

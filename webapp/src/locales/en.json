@@ -522,5 +522,10 @@
     "RETYPE": "Retype your password",
     "REGISTER": "Register",
     "TERMS": "Accept terms and conditions"
+  },
+  "FORMS": {
+    "VALIDATION_ERRORS": {
+      "PASSWORD_REGEX": "The password must consist of min. 8 characters (Must contain one letter, one number, one special character)"
+    }
   }
 }
