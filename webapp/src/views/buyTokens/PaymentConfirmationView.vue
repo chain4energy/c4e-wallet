@@ -72,15 +72,24 @@
       </div>
     </div>
 
-    <Dialog v-model:visible="paymentModalVisible" modal header="Order summary" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px'}">
+    <Dialog v-model:visible="paymentModalVisible" modal header="MetaMask Payment" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '700px'}">
       <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
         <div class="requirements_container">
           <div>Amount</div>
           <div>{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</div>
-          <div>Source address</div>
-          <div v-tooltip="{ value: sourceAddress, escape: true }">{{addDotsInsideTooLongString(sourceAddress, 25)}}</div>
+          <div :class="{'warning': addressNotMatch}" >Source address</div>
+          <div :class="{'warning': addressNotMatch}" v-tooltip="{ value: sourceAddress, escape: true }">{{currentMetamaskAddress}}</div>
+          <div></div>
+          <div v-if="addressNotMatch" style="font-size: 0.7em" class="warning">
+            <Icon name="AlertCircle" />
+            Wrong address. Change to {{sourceAddress}}
+          </div>
+          <div v-else style="font-size: 0.7em" class="warning">
+            <Icon name="AlertCircle" />
+           Please make sure that your metamask account is the same as source address
+          </div>
           <div>Destination address</div>
-          <div v-tooltip="{ value: selectedToken?.c4eAddress, escape: true }">{{addDotsInsideTooLongString(selectedToken?.c4eAddress, 25)}}</div>
+          <div v-tooltip="{ value: selectedToken?.c4eAddress ? selectedToken.c4eAddress : '', escape: true }">{{selectedToken?.c4eAddress}}</div>
 
         </div>
         <Form @submit="onStartMetamaskTransaction" :validation-schema="modalSchema" v-slot="{errors}" >
@@ -108,7 +117,7 @@
 
           <div class="flex justify-content-center">
             <Button class="p-button p-component secondary" @click="paymentModalVisible=false">Close</Button>
-            <Button class="p-button p-component secondary" style="white-space: nowrap;"  type="submit" >Start MetaMask transaction</Button>
+            <Button class="p-button p-component secondary" style="white-space: nowrap;"  type="submit" :disabled="addressNotMatch" >Start MetaMask transaction</Button>
           </div>
 
         </Form>
@@ -136,15 +145,19 @@ import * as Yup from "yup";
 import Dialog from "primevue/dialog";
 import IconComponent from "@/components/features/IconComponent.vue";
 import {useI18n} from "vue-i18n";
+import {useUserStore} from "@/store/user.store";
 
 onBeforeMount(async () => {
-
+  useUserStore().connectMetamask();
   await publicSaleStore.fetchBlockchainInfo(false);
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const {chainId} = await provider.getNetwork();
   changeNetwork(chainId);
 });
 const sourceAddress = ref(useUserServiceStore().ethereumAddress);
+const currentMetamaskAddress = computed(() => {
+  return useUserStore().metamaskConnectionInfo.address;
+});
 const recipientAddress = ref();
 const transactionContextStore = useTransactionContextStore();
 const router = useRouter();
@@ -153,6 +166,9 @@ const txHash = ref<string>();
 const paymentModalVisible = ref(false);
 const showManualPayment = ref<boolean>(false);
 
+const addressNotMatch = computed(() => {
+  return useUserStore().metamaskConnectionInfo.address.toLowerCase() != useUserServiceStore().ethereumAddress?.toLowerCase();
+});
 const schema = object().shape({
   txHash:  Yup.string()
     .required( "This field is required"),
@@ -320,5 +336,12 @@ const addDotsInsideTooLongString = (text: string | undefined, maxLength: number)
 ::v-deep(.p-button:not(.p-button-icon-only)) {
   border-radius: 5px !important;
 
+}
+
+.warning {
+  color: #e02626;
+}
+.ok {
+  color: black;
 }
 </style>
