@@ -21,9 +21,14 @@ import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
 import {Signer} from "ethers";
 import factoryApi from "@/api/factory.api";
 
+
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
 
+export interface MetamaskConnectionInfo {
+  address: string;
+  networkId: number;
+}
 export interface UserState {
   connectionInfo: ConnectionInfo
   account: Account
@@ -31,7 +36,8 @@ export interface UserState {
   vestimgAccLocked: bigint
   rewards: Rewards
   delegations: Delegations
-  undelegations: UnbondingDelegations
+  undelegations: UnbondingDelegations,
+  metamaskConnectionInfo: MetamaskConnectionInfo
 }
 
 const connectionInfoName = 'connectionInfo';
@@ -48,7 +54,8 @@ export const useUserStore = defineStore({
       vestimgAccLocked: 0n,
       rewards: new Rewards(),
       delegations: new Delegations(),
-      undelegations: new UnbondingDelegations()
+      undelegations: new UnbondingDelegations(),
+      metamaskConnectionInfo: {address: '', networkId: -1}
     };
   },
   actions: {
@@ -82,10 +89,15 @@ export const useUserStore = defineStore({
         onSuccess
       );
     },
-    async connectMetamask(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
+    async connectMetamask(onSuccess?: () => void) {
         return apiFactory.walletApi().connectMetamask().then(response => {
           if(response.isSuccess() && response.data != undefined){
-            return response.data;
+            this.metamaskConnectionInfo = response.data;
+            if(onSuccess) {
+              onSuccess();
+            }
+
+            return response.data.address;
           }
         });
     },

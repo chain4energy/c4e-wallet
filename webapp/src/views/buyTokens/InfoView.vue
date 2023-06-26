@@ -61,7 +61,7 @@
     </div>
   </Dialog>
   <ApprovalModal @close="hideApprovalModal" @submit="hideApprovalModal" v-if="showApprovalModal"/>
-  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :address="addressToConnect" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
+  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :address="showAddressInfoModalAddressType == AddressType.METAMASK ? useUserStore().metamaskConnectionInfo.address : c4eAddress" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
   <Dialog v-model:visible="kycModalVisible" @hide="useUserServiceStore().getKycStatus()" modal header="KYC" :style="{ width: '95vw', 'max-width': '600px' }">
     <div style="display: flex; align-items: center; justify-content:center; flex-direction: column">
       <synaps-verify
@@ -122,7 +122,7 @@ const publicSalesStore = usePublicSalesStore();
 const i18n = useI18n();
 const showAddressInfoModal = ref(false);
 const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
-const addressToConnect = ref();
+
 const kycModalVisible = ref(false);
 const loginPopupStatus = ref(false);
 
@@ -133,6 +133,9 @@ const isLoggedIn = computed(() =>{
 function hideApprovalModal(){
   showApprovalModal.value = false;
 }
+const c4eAddress = computed(() => {
+  return useUserStore().getAccount.address;
+});
 function showApprovalModalFunc(){
   showApprovalModal.value = true;
 }
@@ -218,16 +221,11 @@ const usersWallet = computed(() => {
 });
 function provideClaimerAddress(){
   showAddressInfoModalAddressType.value = AddressType.KEPLR;
-  addressToConnect.value = useUserStore().getAccount.address;
   showAddressInfoModal.value = true;
 }
 function provideSourceAddress(){
   showAddressInfoModalAddressType.value = AddressType.METAMASK;
-  useUserStore().connectMetamask().then(async (address) => {
-    if (address) {
-      addressToConnect.value = address;
-    }
-  });
+  useUserStore().connectMetamask();
   showAddressInfoModal.value = true;
 }
 function addressConfirmed(){
@@ -242,7 +240,7 @@ function addressConfirmed(){
   }
   if(showAddressInfoModalAddressType.value == AddressType.METAMASK) {
     console.log('Connect metamask account');
-    useUserServiceStore().initEmailMetamaskPairing(addressToConnect.value, onSuccessConnect, onFail);
+    useUserServiceStore().initEmailMetamaskPairing(useUserStore().metamaskConnectionInfo.address, onSuccessConnect, onFail);
   }
 }
 const onSuccessConnect = () => {

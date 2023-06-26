@@ -91,10 +91,10 @@
         </div>
         <div>
           <Button
-            @click="dataService.onKeplrLogIn()"
             v-if="!isLoggedIn && claimAddress == undefined"
-            class="p-button p-component secondary">
-            {{ $t('AIRDROP.CONNECT') }}
+            @click="loginPopupStatus=true"
+                  class="p-button p-component secondary accountInfo__btn">
+            {{ $t('COMMON.CONNECT') }}
           </Button>
           <Button
             v-else
@@ -123,7 +123,8 @@
     </div>
 
   </div>
-  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :address="showAddressInfoModalAddressType == AddressType.METAMASK ? addressToConnect : c4eAddress" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
+  <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
+  <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :address="showAddressInfoModalAddressType == AddressType.METAMASK ? useUserStore().metamaskConnectionInfo.address : c4eAddress" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
 </template>
 
 <script setup lang="ts">
@@ -142,6 +143,7 @@ import {useContextStore} from "@/store/context.store";
 import TooltipComponent from "@/components/TooltipComponent.vue";
 import dataService from "@/services/data.service";
 import Button from "primevue/button";
+import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 
 const emit = defineEmits(['openModal', 'openApproval']);
 
@@ -150,7 +152,7 @@ const props = defineProps<{
 }>();
 
 const toast = useToast();
-
+const loginPopupStatus = ref(false);
 const isLoggedIn = computed(() =>{
   return useUserStore().isLoggedIn;
 });
@@ -192,20 +194,14 @@ function provideClaimerAddress(){
 function closeProvideAddressModalClose(){
   showAddressInfoModal.value = false;
 }
-const addressToConnect = ref();
 function provideSourceAddress(){
   showAddressInfoModalAddressType.value = AddressType.METAMASK;
-  useUserStore().connectMetamask().then(async (address) => {
-    if (address) {
-      addressToConnect.value = address;
-    }
-  });
+  useUserStore().connectMetamask();
   showAddressInfoModal.value = true;
 }
 
-window.ethereum.on('accountsChanged', function (accounts: string[]) {
-  addressToConnect.value = accounts[0];
-});
+
+
 
 const c4eAddress = computed(() => {
   return useUserStore().getAccount.address;
@@ -215,15 +211,15 @@ function addressConfirmed(){
   showAddressInfoModal.value = false;
   if(showAddressInfoModalAddressType.value == AddressType.KEPLR) {
     if (usersWallet.value) {
-      useUserServiceStore().initEmailKeplrPairing(addressToConnect.value, onSuccessConnect, onFail);
+      useUserServiceStore().initEmailKeplrPairing(c4eAddress.value, onSuccessConnect, onFail);
     } else {
       toast.error('You have to be logged in with Email');
     }
   }
-  if(showAddressInfoModalAddressType.value == AddressType.METAMASK && addressToConnect.value) {
+  if(showAddressInfoModalAddressType.value == AddressType.METAMASK) {
     console.log('Connect metamask account');
 
-    useUserServiceStore().initEmailMetamaskPairing(addressToConnect.value, onSuccessConnect, onFail);
+    useUserServiceStore().initEmailMetamaskPairing(useUserStore().metamaskConnectionInfo.address, onSuccessConnect, onFail);
   }
 }
 const onSuccessConnect = () => {

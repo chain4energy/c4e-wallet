@@ -17,6 +17,7 @@ import {TxBroadcastError} from "@/api/tx.broadcast.base.api";
 import {ethers} from "ethers";
 import {useContextStore} from "@/store/context.store";
 import {useRouter} from "vue-router";
+import {ConnectionType} from "@/api/wallet.connecton.api";
 
 interface UserServiceState {
   loginType: LoginTypeEnum,

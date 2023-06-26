@@ -14,6 +14,8 @@ import {useToast} from "vue-toastification";
 import WifiIcon from '@/components/features/WifiOnIcon.vue';
 import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
 import {useI18n} from "vue-i18n";
+import {useUserServiceStore} from "@/store/userService.store";
+import * as net from "net";
 const keplrKeyStoreChange = 'keplr_keystorechange';
 const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
 const leapKeyStoreChange = 'leap_keystorechange';
@@ -85,6 +87,14 @@ class DataService extends LoggedService {
     window.addEventListener('blur', () => {
       this.clearIntervals();
     }, false);
+
+    window.ethereum.on('networkChanged', function(networkId: number){
+      useUserStore().metamaskConnectionInfo.networkId = networkId;
+    });
+
+    window.ethereum.on('accountsChanged', function (accounts: string[]) {
+      useUserStore().metamaskConnectionInfo.address = accounts[0];
+    });
   }
   private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');
@@ -159,6 +169,11 @@ class DataService extends LoggedService {
   public onAddressLogIn(address: string, onSuccess?: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onAddressLogIn');
     useUserStore().connectAsAddress(address, (connetionInfo: ConnectionInfo) => {this.onLoginSuccess(connetionInfo, onSuccess);});
+  }
+
+  public async onMetamaskConnect(onSuccess?: () => void) {
+    this.logToConsole(LogLevel.DEBUG, 'onMetamaskConnect');
+    return useUserStore().connectMetamask(() => this.onMetamaskConnectSuccess(onSuccess));
   }
 
   public onLogOut() {
@@ -266,6 +281,13 @@ class DataService extends LoggedService {
     if (propId !== undefined && userAddress !== '') {
       useProposalsStore().fetchProposalUserVote(propId.proposalId, userAddress);
     }
+    if (onSuccess) {
+      onSuccess();
+    }
+  }
+
+  private onMetamaskConnectSuccess(onSuccess?: () => void) {
+
     if (onSuccess) {
       onSuccess();
     }
