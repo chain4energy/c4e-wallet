@@ -65,7 +65,7 @@ const filterVestingArray = (array: VestingPeriods[] | undefined) => {
       </div>
     </div>
     <h3 v-else>
-      You have no active vestings!
+      {{$t("PORTFOLIO_VIEW.NO_ACTIVE")}}
     </h3>
   </div>
 

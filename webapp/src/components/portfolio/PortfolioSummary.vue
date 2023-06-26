@@ -24,7 +24,7 @@ const latestBlock = computed(() => {
   return blockStore.getLatestBlock.time;
 });
 watch(latestBlock, () => {
-  if (userStore.getAccountType)
+  if (userStore.getAccount.address)
   userStore.updateSpendables();
 });
 
@@ -33,6 +33,7 @@ const totalBalance = computed(()=> {
 });
 
 const spendableBalance = computed(()=> {
+  if (!userStore.getAccount.address) return 0n;
   return userStore.getSpendableBalance || 0n;
 });
 
@@ -67,7 +68,7 @@ function copyTxt(){
 
 <template>
 
-  <div class="portfolioSummary" v-if="totalBalance">
+  <div class="portfolioSummary">
 
     <div>
       <C4EIcon size="100" icon="c4e-green"/>
@@ -79,7 +80,7 @@ function copyTxt(){
       </h4>
       <!-- <h5>$<FormattedNumber :amount="amountToUSD(totalBalance)" :precision="2"/></h5> -->
     </div>
-    <div class="portfolioSummary__tile" v-if="spendableBalance">
+    <div class="portfolioSummary__tile">
       <h3>{{$t("PORTFOLIO_VIEW.SPENDABLE")}}</h3>
       <h4>
         <CoinAmount :key="spendableBalance" :amount="convertAmount(spendableBalance)" :precision="2" :show-tooltip="true" :reduce-big-number="true" :show-denom="true"/>
@@ -88,16 +89,24 @@ function copyTxt(){
     </div>
 
     <div class="portfolioSummary__buttons">
-      <Button class="secondary portfolioSummary__button" @click.prevent="() => receiveDialogVisible = true">{{$t("PORTFOLIO_VIEW.RECEIVE")}}</Button>
-      <Button class="secondary portfolioSummary__button">{{$t("PORTFOLIO_VIEW.SEND")}}</Button>
+      <Button class="secondary portfolioSummary__button"
+              @click.prevent="() => receiveDialogVisible = true"
+              :disabled = '!userStore.getAccount.address'
+      >
+        {{$t("PORTFOLIO_VIEW.RECEIVE")}}
+      </Button>
+      <Button class="secondary portfolioSummary__button"
+              :disabled = '!userStore.getAccount.address'>
+        {{$t("PORTFOLIO_VIEW.SEND")}}
+      </Button>
     </div>
 
   </div>
 
   <Dialog v-model:visible="receiveDialogVisible" modal :header='$t("PORTFOLIO_VIEW.RECEIVE")' :style="{ width: '95vw', 'max-width': '600px' }">
     <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;">
-      <h3>Your address:</h3>
-      <div style="display: inline-flex; align-items: center; justify-content:center;">
+      <h3>{{$t("PORTFOLIO_VIEW.ADDRESS")}}</h3>
+      <div style="display: inline-flex; align-items: center; justify-content:center; flex-wrap: wrap; padding: 10px 0;">
         <p style="margin: 20px 10px;"> {{userStore.getAccount.address}}</p>
         <Copy @click="copyTxt" class="copy_button"/>
       </div>
@@ -171,5 +180,11 @@ function copyTxt(){
 .copy_button:hover {
   cursor: pointer;
   color: #8be955;
+}
+
+@media screen and (width<1024px) {
+  .portfolioSummary {
+    width: 95%;
+  }
 }
 </style>

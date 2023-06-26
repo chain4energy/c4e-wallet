@@ -535,6 +535,8 @@
     "TIME": "Time remaining",
     "HOURS": "h",
     "MINS": "min",
-    "DAYS": "days"
+    "DAYS": "days",
+    "NO_ACTIVE": "You have no active vestings!",
+    "ADDRESS": "Your address:"
   }
 }

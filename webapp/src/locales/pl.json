@@ -520,13 +520,16 @@
     "SPENDABLE": "Dostępne",
     "LOCKED": "Zablokowane",
     "SEND": "Wyślij",
+    "RECEIVE": "Odbierz",
     "DETAILS": "Szczegóły vestingu",
     "START_DATE": "Data rozpoczęcia",
     "END_DATE": "Data zakończenia",
     "TIME": "Pozostały czas",
     "HOURS": "godz.",
     "MINS": "min.",
-    "DAYS": "dni"
+    "DAYS": "dni",
+    "NO_ACTIVE": "Nie masz aktywnych vestingów!",
+    "ADDRESS": "Twój adres:"
   }
 
 }
