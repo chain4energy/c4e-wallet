@@ -278,10 +278,7 @@ describe('account api tests', () => {
 
     mockedAxios.request.mockResolvedValue(fakeResponse);
 
-    const result = await api.fetchSpendableBalances('c4e1fj99a6veexy6a244l8nll35qddhn7s237q2vlc', false);
-
-    console.log('response:');
-    console.log(result);
+    const result = await api.fetchSpendableBalances(address, false);
 
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)

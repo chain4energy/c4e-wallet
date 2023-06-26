@@ -11,6 +11,9 @@ import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 import {useBlockStore} from "@/store/block.store";
 import Dialog from "primevue/dialog";
 import QrcodeVue from "qrcode.vue";
+import {useToast} from "vue-toastification";
+import i18n from "@/plugins/i18n";
+import { Copy } from 'lucide-vue-next';
 
 const userStore = useUserStore();
 const publicSalesStore = usePublicSalesStore();
@@ -55,6 +58,11 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
 
 const receiveDialogVisible = ref(false);
 
+function copyTxt(){
+  navigator.clipboard.writeText(userStore.getAccount.address);
+  useToast().success(i18n.global.t('COPY.ADDRESS'));
+}
+
 </script>
 
 <template>
@@ -67,18 +75,16 @@ const receiveDialogVisible = ref(false);
     <div class="portfolioSummary__tile" >
       <h3>{{$t("PORTFOLIO_VIEW.BALANCE")}}</h3>
       <h4>
-        <CoinAmount :key="totalBalance" :amount="convertAmount(totalBalance)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
+        <CoinAmount :key="totalBalance" :amount="convertAmount(totalBalance)" :precision="2" :show-tooltip="true" :reduce-big-number="true" :show-denom="true"/>
       </h4>
-      <h5>
-        $<FormattedNumber :amount="amountToUSD(totalBalance)" :precision="2"/>
-      </h5>
+      <!-- <h5>$<FormattedNumber :amount="amountToUSD(totalBalance)" :precision="2"/></h5> -->
     </div>
     <div class="portfolioSummary__tile" v-if="spendableBalance">
       <h3>{{$t("PORTFOLIO_VIEW.SPENDABLE")}}</h3>
       <h4>
-        <CoinAmount :key="spendableBalance" :amount="convertAmount(spendableBalance)" :precision="4" :reduce-big-number="true" :show-denom="true"/>
+        <CoinAmount :key="spendableBalance" :amount="convertAmount(spendableBalance)" :precision="2" :show-tooltip="true" :reduce-big-number="true" :show-denom="true"/>
       </h4>
-      <h5>$<FormattedNumber :amount="amountToUSD(spendableBalance)" :precision="2"/></h5>
+      <!-- <h5>$<FormattedNumber :amount="amountToUSD(spendableBalance)" :precision="2"/></h5> -->
     </div>
 
     <div class="portfolioSummary__buttons">
@@ -89,8 +95,12 @@ const receiveDialogVisible = ref(false);
   </div>
 
   <Dialog v-model:visible="receiveDialogVisible" modal :header='$t("PORTFOLIO_VIEW.RECEIVE")' :style="{ width: '95vw', 'max-width': '600px' }">
-    <div style="display: flex; align-items: center; justify-content:center; flex-direction: column">
-      <p style="{margin: 20px auto;}">Your address: {{userStore.getAccount.address}}</p>
+    <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;">
+      <h3>Your address:</h3>
+      <div style="display: inline-flex; align-items: center; justify-content:center;">
+        <p style="margin: 20px 10px;"> {{userStore.getAccount.address}}</p>
+        <Copy @click="copyTxt" class="copy_button"/>
+      </div>
       <QrcodeVue :value="userStore.getAccount.address" size="200" :render-as="'svg'"></QrcodeVue>
     </div>
   </Dialog>
@@ -100,10 +110,11 @@ const receiveDialogVisible = ref(false);
 <style scoped lang="scss">
 
 .portfolioSummary {
-  width: 70%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
+  width: 75%;
+  display: inline-flex;
+  flex-wrap: wrap;
+  // grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  //gap: 24px;
   background: #0F3153;
   box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
   font-family: 'Inter',sans-serif;
@@ -114,9 +125,11 @@ const receiveDialogVisible = ref(false);
   padding: 20px 33px;
   border-radius: 5px;
   margin: 10px auto;
+  justify-content: space-around;
 
   div {
-    width: 100%;
+    flex: 1 1 20%;
+    min-width: 200px;
   }
   h3 {
     padding: 20px 10px;
@@ -133,6 +146,7 @@ const receiveDialogVisible = ref(false);
   }
   &__button {
     width: 80%;
+    border-radius: 5px !important;
   }
   &__tile {
     padding: 10px 0 0 5px;
@@ -146,7 +160,16 @@ const receiveDialogVisible = ref(false);
     box-shadow: 0 0 2px 2px #02447A;
     border-radius: 2px;
     height: 100%;
+    margin: 10px 12px;
   }
 }
 
+.copy_button {
+  transition: color 0.2s linear;
+}
+
+.copy_button:hover {
+  cursor: pointer;
+  color: #8be955;
+}
 </style>

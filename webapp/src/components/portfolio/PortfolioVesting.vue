@@ -36,14 +36,14 @@ const filterVestingArray = (array: VestingPeriods[] | undefined) => {
   <div class="portfolioVesting">
     <h2 class="portfolioVesting__header">{{$t("PORTFOLIO_VIEW.DETAILS")}}</h2>
     <div class="portfolioVesting__list"
-         v-if="filterVestingArray(userStore.getAccountVestingDetails) && filterVestingArray(userStore.getAccountVestingDetails).length
+         v-if="userStore.getAccountVestingDetails && filterVestingArray(userStore.getAccountVestingDetails).length
          ||
-         contVestingDetails && contVestingDetails.length"
+         contVestingDetails && filterVestingArray(contVestingDetails).length"
     >
       <div class="portfolioVesting__line">
-        <div/>
-        <h3>{{$t("PORTFOLIO_VIEW.START_DATE")}}</h3>
-        <h3>{{$t("PORTFOLIO_VIEW.END_DATE")}}</h3>
+        <div class="mobile-hidden"/>
+        <h3 class="start-date">{{$t("PORTFOLIO_VIEW.START_DATE")}}</h3>
+        <h3 class="end-date">{{$t("PORTFOLIO_VIEW.END_DATE")}}</h3>
         <h3>{{$t("PORTFOLIO_VIEW.LOCKED")}}</h3>
         <h3>{{$t("PORTFOLIO_VIEW.TIME")}}</h3>
       </div>
@@ -74,7 +74,7 @@ const filterVestingArray = (array: VestingPeriods[] | undefined) => {
 <style scoped lang="scss">
 
 .portfolioVesting {
-  width: 85%;
+  width: 75%;
   background: #0F3153;
   box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
   font-family: 'Inter',sans-serif;
@@ -123,5 +123,36 @@ const filterVestingArray = (array: VestingPeriods[] | undefined) => {
     border-radius: 2px;
   }
 }
+
+@media screen and (width<1500px) {
+  .mobile-hidden {
+    display: none;
+  }
+  .portfolioVesting h3{
+    font-size: 1.25rem !important;
+  }
+  .portfolioVesting__line {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+}
+
+@media screen and (width<1024px) {
+  .portfolioVesting {
+    width: 95%;
+  }
+}
+
+@media screen and (width<850px) {
+  .end-date {
+    display: none;
+  }
+}
+
+@media screen and (width<520px) {
+  .start-date {
+    display: none;
+  }
+}
+
 
 </style>
