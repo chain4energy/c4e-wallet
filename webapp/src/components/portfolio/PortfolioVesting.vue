@@ -1,36 +1,3 @@
-<script setup lang="ts">
-
-import PortfolioVestingLine from "@/components/portfolio/PortfolioVestingLine.vue";
-import {useUserStore} from "@/store/user.store";
-import {VestingPeriods} from "@/models/store/account";
-import {computed} from "vue";
-
-const userStore = useUserStore();
-
-const continuousVestingData = computed(() => userStore.getAccount.continuousVestingData);
-const accountType = computed(() => userStore.getAccountType);
-
-// variable changing format of continuousVestingData to the same type like vesting period to ise the same component
-let contVestingDetails = computed(() => {
-  if (continuousVestingData.value) {
-     return [{
-      startTime: continuousVestingData.value.startTime.getTime() / 1000,
-      endTime: continuousVestingData.value.endTime.getTime() / 1000,
-      amount: continuousVestingData.value.originalVesting
-    }];
-  }
-  else return [];
-});
-
-// filter completed vestings and sort them
-const filterVestingArray = (array: VestingPeriods[] | undefined) => {
-  return array?.filter(element => {
-    return new Date(element.endTime*1000).getTime() - Date.now() > 0;
-  }).sort((a,b) => a.endTime - b.endTime);
-};
-
-</script>
-
 <template>
 
   <div class="portfolioVesting">
@@ -70,6 +37,39 @@ const filterVestingArray = (array: VestingPeriods[] | undefined) => {
   </div>
 
 </template>
+
+<script setup lang="ts">
+
+import PortfolioVestingLine from "@/components/portfolio/PortfolioVestingLine.vue";
+import {useUserStore} from "@/store/user.store";
+import {VestingPeriods} from "@/models/store/account";
+import {computed} from "vue";
+
+const userStore = useUserStore();
+
+const continuousVestingData = computed(() => userStore.getAccount.continuousVestingData);
+const accountType = computed(() => userStore.getAccountType);
+
+// variable changing format of continuousVestingData to the same type like vesting period to ise the same component
+let contVestingDetails = computed(() => {
+  if (continuousVestingData.value) {
+    return [{
+      startTime: continuousVestingData.value.startTime.getTime() / 1000,
+      endTime: continuousVestingData.value.endTime.getTime() / 1000,
+      amount: continuousVestingData.value.originalVesting
+    }];
+  }
+  else return [];
+});
+
+// filter completed vestings and sort them
+const filterVestingArray = (array: VestingPeriods[] | undefined) => {
+  return array?.filter(element => {
+    return new Date(element.endTime*1000).getTime() - Date.now() > 0;
+  }).sort((a,b) => a.endTime - b.endTime);
+};
+
+</script>
 
 <style scoped lang="scss">
 

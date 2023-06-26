@@ -1,3 +1,27 @@
+<template>
+
+  <div class="portfolioVesting__line">
+    <div class="mobile-hidden">
+      <C4EIcon size="75" icon="c4e-green"/>
+    </div>
+    <div class="portfolioVesting__tile start-date">
+      <h3>{{ new Date(vesting.startTime*1000).toLocaleString() }}</h3>
+    </div>
+    <div class="portfolioVesting__tile end-date">
+      <h3>{{ new Date(vesting.endTime*1000).toLocaleString() }}</h3>
+    </div>
+    <div class="portfolioVesting__tile">
+      <h4>
+        <CoinAmount :amount="convertAmount(sumVestingAmount())" :precision="2" :reduce-big-number="true" :show-tooltip="true" :show-denom="true"/>
+      </h4>
+    </div>
+    <div class="portfolioVesting__tile">
+      <h3>{{calculateDays(vesting.endTime)}}</h3>
+    </div>
+  </div>
+
+</template>
+
 <script setup lang="ts">
 
 import C4EIcon from "@/components/commons/C4EIcon.vue";
@@ -40,33 +64,7 @@ function sumVestingAmount(): bigint {
   return calculateLockedVesting(props.vesting.startTime*1000, props.vesting.endTime*1000, blockStore.getLatestBlock.time.getTime(), sumAmount);
 }
 
-
-
 </script>
-
-<template>
-
-  <div class="portfolioVesting__line">
-    <div class="mobile-hidden">
-      <C4EIcon size="75" icon="c4e-green"/>
-    </div>
-    <div class="portfolioVesting__tile start-date">
-      <h3>{{ new Date(vesting.startTime*1000).toLocaleString() }}</h3>
-    </div>
-    <div class="portfolioVesting__tile end-date">
-      <h3>{{ new Date(vesting.endTime*1000).toLocaleString() }}</h3>
-    </div>
-    <div class="portfolioVesting__tile">
-      <h4>
-        <CoinAmount :amount="convertAmount(sumVestingAmount())" :precision="2" :reduce-big-number="true" :show-tooltip="true" :show-denom="true"/>
-      </h4>
-    </div>
-    <div class="portfolioVesting__tile">
-      <h3>{{calculateDays(vesting.endTime)}}</h3>
-    </div>
-  </div>
-
-</template>
 
 <style scoped lang="scss">
 

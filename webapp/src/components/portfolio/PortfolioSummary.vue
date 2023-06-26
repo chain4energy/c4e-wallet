@@ -1,76 +1,8 @@
-<script setup lang="ts">
-import C4EIcon from "@/components/commons/C4EIcon.vue";
-import {useUserStore} from "@/store/user.store";
-// import {VestingPeriods} from "@/models/store/account";
-import FormattedNumber from "@/components/commons/FormattedNumber.vue";
-import {usePublicSalesStore} from "@/store/publicSales.store";
-import {computed, ref, watch} from "vue";
-import CoinAmount from "@/components/commons/CoinAmount.vue";
-import {BigDecimal} from "@/models/store/big.decimal";
-import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
-import {useBlockStore} from "@/store/block.store";
-import Dialog from "primevue/dialog";
-import QrcodeVue from "qrcode.vue";
-import {useToast} from "vue-toastification";
-import i18n from "@/plugins/i18n";
-import { Copy } from 'lucide-vue-next';
-
-const userStore = useUserStore();
-const publicSalesStore = usePublicSalesStore();
-const blockStore = useBlockStore();
-
-// latest block watcher for updating the spendable balance
-const latestBlock = computed(() => {
-  return blockStore.getLatestBlock.time;
-});
-watch(latestBlock, () => {
-  if (userStore.getAccount.address)
-  userStore.updateSpendables();
-});
-
-const totalBalance = computed(()=> {
-  return userStore.getBalance;
-});
-
-const spendableBalance = computed(()=> {
-  if (!userStore.getAccount.address) return 0n;
-  return userStore.getSpendableBalance || 0n;
-});
-
-const ratio = computed(()=> {
-  return publicSalesStore.getConversionRatio;
-});
-
-const amountToUSD = (amount: bigint) => {
-  let converted = Number(String(amount)) / 1000000;
-  if (ratio.value)
-    return converted * ratio.value;
-  else
-    return converted * 0.085;
-};
-
-function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
-  if( typeof amount === 'bigint'){
-    return new BigIntWrapper(amount);
-  } else {
-    return amount;
-  }
-}
-
-const receiveDialogVisible = ref(false);
-
-function copyTxt(){
-  navigator.clipboard.writeText(userStore.getAccount.address);
-  useToast().success(i18n.global.t('COPY.ADDRESS'));
-}
-
-</script>
-
 <template>
 
   <div class="portfolioSummary">
 
-    <div>
+    <div class="mobile-hidden">
       <C4EIcon size="100" icon="c4e-green"/>
     </div>
     <div class="portfolioSummary__tile" >
@@ -80,7 +12,7 @@ function copyTxt(){
       </h4>
       <!-- <h5>$<FormattedNumber :amount="amountToUSD(totalBalance)" :precision="2"/></h5> -->
     </div>
-    <div class="portfolioSummary__tile">
+    <div class="portfolioSummary__tile" v-if="totalBalance !== spendableBalance">
       <h3>{{$t("PORTFOLIO_VIEW.SPENDABLE")}}</h3>
       <h4>
         <CoinAmount :key="spendableBalance" :amount="convertAmount(spendableBalance)" :precision="2" :show-tooltip="true" :reduce-big-number="true" :show-denom="true"/>
@@ -115,6 +47,76 @@ function copyTxt(){
   </Dialog>
 
 </template>
+
+<script setup lang="ts">
+import C4EIcon from "@/components/commons/C4EIcon.vue";
+import {useUserStore} from "@/store/user.store";
+import {usePublicSalesStore} from "@/store/publicSales.store";
+import {computed, ref, watch} from "vue";
+import CoinAmount from "@/components/commons/CoinAmount.vue";
+import {BigDecimal} from "@/models/store/big.decimal";
+import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
+import {useBlockStore} from "@/store/block.store";
+import Dialog from "primevue/dialog";
+import QrcodeVue from "qrcode.vue";
+import {useToast} from "vue-toastification";
+import i18n from "@/plugins/i18n";
+import { Copy } from 'lucide-vue-next';
+// import {VestingPeriods} from "@/models/store/account";
+// import FormattedNumber from "@/components/commons/FormattedNumber.vue"; - future USD ratio
+
+const userStore = useUserStore();
+const publicSalesStore = usePublicSalesStore();
+const blockStore = useBlockStore();
+
+// latest block watcher for updating the spendable balance
+/*
+const latestBlock = computed(() => {
+  return blockStore.getLatestBlock.time;
+});
+watch(latestBlock, () => {
+  if (userStore.getAccount.address)
+    userStore.updateSpendables();
+});
+
+ */
+
+const totalBalance = computed(()=> {
+  return userStore.getBalance;
+});
+
+const spendableBalance = computed(()=> {
+  if (!userStore.getAccount.address) return 0n;
+  return userStore.getSpendableBalance || 0n;
+});
+
+const ratio = computed(()=> {
+  return publicSalesStore.getConversionRatio;
+});
+
+const amountToUSD = (amount: bigint) => {
+  let converted = Number(String(amount)) / 1000000;
+  if (ratio.value)
+    return converted * ratio.value;
+  else
+    return converted * 0.085;
+};
+
+function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
+  if( typeof amount === 'bigint'){
+    return new BigIntWrapper(amount);
+  } else {
+    return amount;
+  }
+}
+
+function copyTxt(){
+  navigator.clipboard.writeText(userStore.getAccount.address);
+  useToast().success(i18n.global.t('COPY.ADDRESS'));
+}
+
+const receiveDialogVisible = ref(false);
+</script>
 
 <style scoped lang="scss">
 
@@ -185,6 +187,12 @@ function copyTxt(){
 @media screen and (width<1024px) {
   .portfolioSummary {
     width: 95%;
+  }
+}
+
+@media screen and (width<1150px) {
+  .mobile-hidden {
+    display: none;
   }
 }
 </style>
