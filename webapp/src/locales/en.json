@@ -323,7 +323,7 @@
   },
   "USER_DATA": {
     "TOTAL": "Total",
-    "AVAILABLE": "Available",
+    "AVAILABLE": "Balance",
     "STAKED": "Staked",
     "UNSTAKING": "Unstaking",
     "CLAIM_REWARDS": "Claim",
@@ -530,5 +530,21 @@
     "RETYPE": "Retype your password",
     "REGISTER": "Register",
     "TERMS": "Accept terms and conditions"
+  },
+  "PORTFOLIO_VIEW": {
+    "BALANCE": "Balance",
+    "SPENDABLE": "Spendable",
+    "LOCKED": "Locked",
+    "SEND": "Send",
+    "RECEIVE": "Receive",
+    "DETAILS": "Vesting details",
+    "START_DATE": "Start date",
+    "END_DATE": "End date",
+    "TIME": "Time remaining",
+    "HOURS": "h",
+    "MINS": "min",
+    "DAYS": "days",
+    "NO_ACTIVE": "You have no active vestings!",
+    "ADDRESS": "Your address:"
   }
 }

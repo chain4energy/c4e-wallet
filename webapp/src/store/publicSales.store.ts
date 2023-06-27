@@ -183,6 +183,9 @@ export const usePublicSalesStore = defineStore({
         return this.roundInfo.uC4eToUsd * useConfigurationStore().config.getViewDenomConversionFactor('uc4e');
       }
       return 9999;
+    },
+    getConversionRatio(): number | undefined {
+      return this.roundInfo?.c4eToUsd;
     }
   }
 });

@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
-import {Account, AccountType} from "@/models/store/account";
+import {Account, AccountType, VestingPeriods} from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
+import factoryApi from "@/api/factory.api";
 import {ConnectionError, ConnectionInfo, ConnectionType} from "@/api/wallet.connecton.api";
 import {useToast} from "vue-toastification";
 import {RequestResponse} from '@/models/request-response';
@@ -19,8 +20,9 @@ import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
 import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
 import {Signer} from "ethers";
-import factoryApi from "@/api/factory.api";
 import {FaucetErrorEnum} from "@/models/faucet";
+import {Coin} from "@/models/store/common";
+import {calculateLockedVesting} from "@/utils/vesting-utils";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -29,7 +31,8 @@ export interface UserState {
   connectionInfo: ConnectionInfo
   account: Account
   balance: bigint
-  vestimgAccLocked: bigint
+  vestingAccLocked: bigint,
+  spendableBalance: Coin[],
   rewards: Rewards
   delegations: Delegations
   undelegations: UnbondingDelegations
@@ -46,7 +49,8 @@ export const useUserStore = defineStore({
       [connectionInfoName]: new ConnectionInfo(),
       account: Account.disconnected,
       balance: 0n,
-      vestimgAccLocked: 0n,
+      vestingAccLocked: 0n,
+      spendableBalance: [],
       rewards: new Rewards(),
       delegations: new Delegations(),
       undelegations: new UnbondingDelegations()
@@ -136,6 +140,7 @@ export const useUserStore = defineStore({
           if (account.type !== AccountType.Nonexistent) {
             const allResults = await Promise.all([
               fetchBalance(connectionInfo, this, lockscreen),
+           //   fetchSpendableBalances(connectionInfo, this, lockscreen),
               fetchRewards(connectionInfo, this, lockscreen),
               fetchDelegations(connectionInfo, this, lockscreen),
               fetchUnbondingDelegations(connectionInfo, this, lockscreen),
@@ -155,14 +160,18 @@ export const useUserStore = defineStore({
     },
 
     async calculateVestingLocked(latestBlTime: Date) {
-      if (!this.isContinuousVestingAccount ) {
-        this.vestimgAccLocked = 0n;
-        return;
+      if (this.isContinuousVestingAccount) {
+        if (this.account.continuousVestingData !== undefined) {
+          this.vestingAccLocked = this.account.continuousVestingData.calculateVestingLocked(latestBlTime);
+        }
       }
-      if (this.account.continuousVestingData !== undefined) {
-        this.vestimgAccLocked = this.account.continuousVestingData.calculateVestingLocked(latestBlTime);
-      } else {
-        this.vestimgAccLocked = 0n;
+      else if (this.isPeriodicVestingAccount) {
+        if (this.account.vestingPeriods !== undefined) {
+          this.vestingAccLocked = calculatePeriodicVestingLocked(this.account.vestingPeriods, latestBlTime);
+        }
+      }
+      else {
+        this.vestingAccLocked = 0n;
       }
     },
 
@@ -283,6 +292,9 @@ export const useUserStore = defineStore({
           }
         });
     },
+    async updateSpendables() {
+      await fetchSpendableBalances(this.account.address, this, false);
+    }
   },
   getters: {
     getConnectionType(): ConnectionType {
@@ -298,6 +310,11 @@ export const useUserStore = defineStore({
       return this.account.type === AccountType.ContinuousVestingAccount
         && this.account.continuousVestingData !== undefined
         && useBlockStore().getLatestBlock.time.getTime() <= this.account.continuousVestingData?.endTime.getTime();
+    },
+    isPeriodicVestingAccount(): boolean {
+      return this.account.type === AccountType.PeriodicContinuousVestingAccount
+        && this.account.vestingPeriods !== undefined
+        && useBlockStore().getLatestBlock.time.getTime() <= findMaxTime(this.account.vestingPeriods);
     },
     getAccountType(): AccountType {
       return this.account.type;
@@ -324,7 +341,7 @@ export const useUserStore = defineStore({
       return this.delegations.totalDelegated;
     },
     getVestingLockAmount() : bigint {
-      return this.vestimgAccLocked;
+      return this.vestingAccLocked;
     },
     getTotal() : bigint {
       return this.undelegations.totalUndelegating + this.delegations.totalDelegated + this.balance;
@@ -334,6 +351,20 @@ export const useUserStore = defineStore({
     },
     hasDelegations(): boolean {
       return this.delegations.hasDelegations();
+    },
+    getAccountVestingDetails(): VestingPeriods[] | undefined {
+      return this.account.vestingPeriods;
+    },
+    getSpendableBalance(): bigint | undefined {
+      if (this.spendableBalance.length) {
+        return this.spendableBalance[0].amount;
+      }
+    },
+    getMaxTime(): number {
+      if (this.account.vestingPeriods) {
+        return findMaxTime(this.account.vestingPeriods);
+      }
+      return 0;
     }
   },
   persist: {
@@ -354,7 +385,7 @@ function checkIfConnected(connectionInfo: ConnectionInfo): boolean {
 
 function clearStateForNonexistentAccount(state: UserState) {
   state.balance = 0n;
-  state.vestimgAccLocked = 0n;
+  state.vestingAccLocked = 0n;
   state.rewards = new Rewards();
   state.delegations = new Delegations();
   state.undelegations = new UnbondingDelegations();
@@ -375,6 +406,17 @@ async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState, lo
   if (response.isSuccess() && response.data !== undefined) {
     const balance = response.data;
     state.balance = balance.amount;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+async function fetchSpendableBalances(connectionInfo: ConnectionInfo | string, state: UserState, lockscreen: boolean): Promise<boolean> {
+  const address = connectionInfo instanceof ConnectionInfo ? connectionInfo.account : connectionInfo;
+  const response = await apiFactory.accountApi().fetchSpendableBalances(address, lockscreen);
+  if (response.isSuccess() && response.data !== undefined) {
+    state.spendableBalance = response.data;
     return true;
   } else {
     return false;
@@ -444,4 +486,21 @@ function onTxDeliverySuccess(tx?: TxData) {
     logger.logToConsole(LogLevel.WARNING, `Tx delivered successfully but cannt get TX data`);
     toast.warning(`Tx delivered successfully but cannt get TX data`);
   }
+}
+
+function findMaxTime(periods: VestingPeriods[]) {
+ let maxTime = 0;
+ periods.forEach(period => maxTime = period.endTime > maxTime ? period.endTime : maxTime);
+ return maxTime*1000;
+}
+
+function calculatePeriodicVestingLocked  (periods: VestingPeriods[], latestBlockTime: Date) {
+  const blockTime = latestBlockTime.getTime();
+  let totalLocked = 0n;
+  periods.forEach(period => {
+    let sumAmount = 0n;
+    period.amount.forEach((item) => sumAmount += item.amount);
+    totalLocked += calculateLockedVesting(period.startTime*1000, period.endTime*1000, blockTime, sumAmount);
+  });
+  return totalLocked;
 }

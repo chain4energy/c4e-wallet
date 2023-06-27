@@ -318,7 +318,7 @@
   },
   "USER_DATA": {
       "TOTAL": "Całkowity",
-      "AVAILABLE": "Do dyspozycji",
+      "AVAILABLE": "Balans",
       "STAKED": "Oddelegowane",
       "UNSTAKING": "Odblokowywanie",
       "CLAIM_REWARDS": "Odbierz",
@@ -522,6 +522,22 @@
     "RETYPE": "Powtórz hasło",
     "REGISTER": "Załóż konto",
     "TERMS": "Akceptuję zasady i warunki"
+  },
+  "PORTFOLIO_VIEW": {
+    "BALANCE": "Balans",
+    "SPENDABLE": "Dostępne",
+    "LOCKED": "Zablokowane",
+    "SEND": "Wyślij",
+    "RECEIVE": "Odbierz",
+    "DETAILS": "Szczegóły vestingu",
+    "START_DATE": "Data rozpoczęcia",
+    "END_DATE": "Data zakończenia",
+    "TIME": "Pozostały czas",
+    "HOURS": "godz.",
+    "MINS": "min.",
+    "DAYS": "dni",
+    "NO_ACTIVE": "Nie masz aktywnych vestingów!",
+    "ADDRESS": "Twój adres:"
   }
 
 }

@@ -26,6 +26,7 @@ export default {
     CAMPAIGN_MISSIONS_URL: '/c4e/claim/v1beta1/missions/{campaign_id}',
     AIRDROP_DISTRIBUTIONS: '/c4e/claim/v1beta1/airdrop_distributions/{campaign_id}', //total
     AIRDROP_CLAIMS_LEFT: '/c4e/claim/v1beta1/airdrop_claims_left/{campaign_id}', //delete
+    SPENDABLE_BALANCES_URL: '/cosmos/bank/v1beta1/spendable_balances/{address}'
   },
   hasura: {
     AVERAGE_BLOCK_TIME_QUERY: 'query AverageBlockTime {' +

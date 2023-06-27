@@ -35,7 +35,7 @@ export class SidebarConfig{
     retVal.id = 1;
     retVal.href = '/staking';
     retVal.title = 'Staking';
-    retVal.icon = new SidebarIcon('Wallet');
+    retVal.icon = new SidebarIcon('BarChart4');
     return retVal;
   }
 

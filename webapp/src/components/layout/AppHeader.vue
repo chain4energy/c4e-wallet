@@ -406,7 +406,7 @@ nav a.router-link-exact-active {
   background-color: rgba(255, 255, 255);
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 700px), (max-height: 640px) {
   .menu {
     display: none;
   }
