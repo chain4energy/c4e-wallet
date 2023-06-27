@@ -41,7 +41,6 @@ class DataService extends LoggedService {
   private static instance: DataService;
   private isOnline = navigator.onLine;
 
-  private isPortfolio = false;
 
   public static getInstance(): DataService {
     if (!DataService.instance) {
@@ -198,13 +197,16 @@ class DataService extends LoggedService {
   }
 
   public onPortfolioSelected() {
-    this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected');
-    this.isPortfolio = true;
+    this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected refreshs');
+
+    const now = new Date().getTime();
+    this.lastSpendablesTimeout = now;
+    this.spendablesIntervalId = window.setInterval(refreshSpendables, this.spendableTimeout);
   }
 
   public onPortfolioUnselected() {
-    this.logToConsole(LogLevel.DEBUG, 'onPortfolioUnselected');
-    this.isPortfolio = false;
+    this.logToConsole(LogLevel.DEBUG, 'onPortfolioUnselected refreshs');
+    window.clearInterval(this.spendablesIntervalId);
   }
 
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
@@ -259,7 +261,7 @@ class DataService extends LoggedService {
     if (propId !== undefined && userAddress !== '') {
       useProposalsStore().fetchProposalUserVote(propId.proposalId, userAddress);
     }
-    //refresh spendables once logged in
+    // refresh spendables once logged in
     refreshSpendables();
     if (onSuccess) {
       onSuccess();
@@ -288,7 +290,6 @@ class DataService extends LoggedService {
     if (!this.skipRefreshing(this.lastAccountTimeout)) {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
-        if (this.isPortfolio) refreshSpendables();
       });
     }
   }
