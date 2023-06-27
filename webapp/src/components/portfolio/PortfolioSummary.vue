@@ -52,7 +52,7 @@
 import C4EIcon from "@/components/commons/C4EIcon.vue";
 import {useUserStore} from "@/store/user.store";
 import {usePublicSalesStore} from "@/store/publicSales.store";
-import {computed, ref, watch} from "vue";
+import {computed, onBeforeMount, onMounted, onUnmounted, ref, watch} from "vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {BigDecimal} from "@/models/store/big.decimal";
 import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
@@ -62,6 +62,7 @@ import QrcodeVue from "qrcode.vue";
 import {useToast} from "vue-toastification";
 import i18n from "@/plugins/i18n";
 import { Copy } from 'lucide-vue-next';
+import dataService from "@/services/data.service";
 // import {VestingPeriods} from "@/models/store/account";
 // import FormattedNumber from "@/components/commons/FormattedNumber.vue"; - future USD ratio
 
@@ -80,6 +81,14 @@ watch(latestBlock, () => {
 });
 
  */
+
+onMounted(() => {
+    dataService.onPortfolioSelected();
+});
+
+onUnmounted(() => {
+  dataService.onPortfolioUnselected();
+});
 
 const totalBalance = computed(()=> {
   return userStore.getBalance;

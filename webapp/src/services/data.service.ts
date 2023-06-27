@@ -23,20 +23,25 @@ class DataService extends LoggedService {
   private dashboardTimeout = 3000;
   private validatorsTimeout = 10000;
   private accountTimeout = 10000;
+  private spendableTimeout = 10000;
   private lastBlockTimeout = 0;
   private lastDashboardTimeout = 0;
   private lastValidatorsTimeout = 0;
   private lastAccountTimeout = 0;
+  private lastSpendablesTimeout = 0;
 
   private blockIntervalId = 0;
   private dashboardIntervalId = 0;
   private validatorsIntervalId = 0;
   private accountIntervalId = 0;
+  private spendablesIntervalId = 0;
 
   private onProposalDetailsError?: () => void;
 
   private static instance: DataService;
   private isOnline = navigator.onLine;
+
+  private isPortfolio = false;
 
   public static getInstance(): DataService {
     if (!DataService.instance) {
@@ -192,6 +197,16 @@ class DataService extends LoggedService {
     }
   }
 
+  public onPortfolioSelected() {
+    this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected');
+    this.isPortfolio = true;
+  }
+
+  public onPortfolioUnselected() {
+    this.logToConsole(LogLevel.DEBUG, 'onPortfolioUnselected');
+    this.isPortfolio = false;
+  }
+
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
     this.onProposalDetailsError = onError;
@@ -205,7 +220,6 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onProposalUnselected');
     useProposalsStore().clearProposal();
     this.onProposalDetailsError = undefined;
-
   }
 
   public onGovernanceUnselected() {
@@ -245,6 +259,8 @@ class DataService extends LoggedService {
     if (propId !== undefined && userAddress !== '') {
       useProposalsStore().fetchProposalUserVote(propId.proposalId, userAddress);
     }
+    //refresh spendables once logged in
+    refreshSpendables();
     if (onSuccess) {
       onSuccess();
     }
@@ -272,7 +288,20 @@ class DataService extends LoggedService {
     if (!this.skipRefreshing(this.lastAccountTimeout)) {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
+        if (this.isPortfolio) refreshSpendables();
       });
+    }
+  }
+
+  public refreshSpendables() {
+    // f-n refreshing spendable balances from API
+    if (useUserStore().getAccount.address) {
+      this.logToConsole(LogLevel.DEBUG, 'refreshSpendables');
+      if (!this.skipRefreshing(this.lastSpendablesTimeout)) {
+        useUserStore().updateSpendables().then(() => {
+          this.lastSpendablesTimeout = new Date().getTime();
+        });
+      }
     }
   }
 
@@ -357,4 +386,9 @@ function refreshDashboard() {
 
 function refreshValidators() {
   DataService.getInstance().refreshValidators();
+}
+
+
+function refreshSpendables() {
+  DataService.getInstance().refreshSpendables();
 }
