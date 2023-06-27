@@ -8,8 +8,6 @@ import {
   TokenPaymentProofRequest,
   Transaction
 } from "@/models/saleServiceCommons";
-import {clearAuthTokens} from "axios-jwt";
-import {LoginTypeEnum} from "@/store/userService.store";
 import apiFactory from "@/api/factory.api";
 export interface PublicSalesState{
   total: Coin | undefined,
@@ -183,9 +181,6 @@ export const usePublicSalesStore = defineStore({
         return this.roundInfo.uC4eToUsd * useConfigurationStore().config.getViewDenomConversionFactor('uc4e');
       }
       return 9999;
-    },
-    getConversionRatio(): number | undefined {
-      return this.roundInfo?.c4eToUsd;
     }
   }
 });
