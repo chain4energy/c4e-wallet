@@ -16,7 +16,7 @@
       </h4>
     </div>
     <div class="portfolioVesting__tile">
-      <h3>{{calculateDays(vesting.endTime)}}</h3>
+      <h3>{{calculateDays}}</h3>
     </div>
   </div>
 
@@ -32,6 +32,7 @@ import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {useI18n} from "vue-i18n";
 import {calculateLockedVesting} from "@/utils/vesting-utils";
 import {useBlockStore} from "@/store/block.store";
+import {computed} from "vue";
 
 const props = defineProps<{vesting: VestingPeriods }>();
 const i18n = useI18n();
@@ -46,16 +47,16 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
   }
 }
 
-const calculateDays = (date: number) => {
+const calculateDays = computed(() => {
   const oneHour = 60 * 60 * 1000;
   const oneDay = 24 * oneHour;
-  let timeRemaining = new Date(date*1000).getTime() - Date.now();
+  let timeRemaining = new Date(props.vesting.endTime*1000).getTime() - Date.now();
   return timeRemaining/oneDay < 1
     ?
     `${Math.floor(timeRemaining / oneHour)} ${i18n.t("PORTFOLIO_VIEW.HOURS")} ${Math.floor(timeRemaining/60000) % 60} ${i18n.t("PORTFOLIO_VIEW.MINS")}`
     :
     `${Math.floor(timeRemaining / oneDay)} ${i18n.t("PORTFOLIO_VIEW.DAYS")}`;
-};
+});
 
 function sumVestingAmount(): bigint {
   let sumAmount = 0n;
