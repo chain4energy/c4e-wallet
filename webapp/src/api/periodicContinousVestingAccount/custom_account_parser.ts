@@ -28,7 +28,7 @@ export function customAccountParser(input: Any): Account {
     }
 
     // vesting
-    case "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount": {
+    case "/chain4energy.c4echain.cfevesting.PeriodicContinuousVestingAccount": {
       const baseAccount = PeriodicContinuousVestingAccount.decode(value)?.baseVestingAccount?.baseAccount;
       assert(baseAccount);
       return accountFromBaseAccount(baseAccount);

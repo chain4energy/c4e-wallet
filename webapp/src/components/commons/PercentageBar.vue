@@ -37,7 +37,7 @@ function changeStatus(){
   let backgroundColor;
   let progress;
   switch (props.status){
-    case CampainStatus.Future: text = 'Waiting to start campaign';
+    case CampainStatus.Future: text = `${props.timeToPass}`
       backgroundColor = '#9A9B9C';
       ctx.value.rect(0, 0, canva.value.width, canva.value.height);
       progress = false;

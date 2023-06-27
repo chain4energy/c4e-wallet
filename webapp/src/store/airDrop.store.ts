@@ -84,15 +84,15 @@ export const useAirDropStore = defineStore({
     //   }
     // },
 
-    async fetchTestAirDropClaiming() {
-      try {
-        apiFactory.airDropApi().fetchUserAirdropEntries('', true).then((res) => {
-          console.log(res);
-        });
-      } catch (err) {
-        //console.error(err);
-      }
-    },
+    // async fetchTestAirDropClaiming() {
+    //   try {
+    //     apiFactory.airDropApi().fetchUserAirdropEntries('', true).then((res) => {
+    //       console.log(res);
+    //     });
+    //   } catch (err) {
+    //     //console.error(err);
+    //   }
+    // },
     // async fetchAirdropTotalOld(address: string, lockscreen = true) {
     //   try {
     //     apiFactory.airDropApi().fetchAirdropMockData(address, lockscreen).then((resp) => {
@@ -286,17 +286,22 @@ export const useAirDropStore = defineStore({
         getPercentage(distributions.amount, claimsLeft.amount));
     },
     async fetchUsersCampaignData(address: string, lockscreen = true){
+      this.campaigns = Array<Campaign>();
+      const campaignsIds = Array<string>();
       await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then((res) => {
         if(res.isSuccess() && res.data){
           const campaignsList = res.data.user_entry.claim_records;
           campaignsList.forEach(async (el) => {
             await this.fetchCampaign(el.campaign_id, el);
+            campaignsIds.push(el.campaign_id);
           });
+          if(campaignsIds.length > 0){
+            this.fetchFairdropPoolUsage(campaignsIds, true);
+          }
         }
       });
     },
     async fetchCampaign(id: string, campaignData: AirdropEntry, lockscreen = true){
-      this.campaigns = Array<Campaign>();
       await apiFactory.airDropApi().fetchCampaign(id, lockscreen).then(async (res) => {
         if (res.isSuccess() && res.data) {
           const campaign = res.data.campaign;
@@ -317,6 +322,7 @@ export const useAirDropStore = defineStore({
                 el.name,
                 el.description,
                 convertMissionType(el.missionType),
+                Number(el.weight) *100,
                 weight.toString(),
                 !!completed,
                 !!claimed,
@@ -329,6 +335,7 @@ export const useAirDropStore = defineStore({
                 el.name,
                 el.description,
                 convertMissionType(el.missionType),
+                Number(el.weight) *100,
                 '0',
                 !!completed,
                 !!claimed,
@@ -337,10 +344,13 @@ export const useAirDropStore = defineStore({
             }
           });
           let totalWeight = 0;
+          let totalWeightInPer = 0;
           missionsList.forEach((element) => {
+            totalWeightInPer+= element.weightInPerc;
             totalWeight += Number(element.weight);
           });
           initialMission.weight = (Number(campaignData.amount[0].amount) - totalWeight).toString();
+          initialMission.weightInPerc = (100 - totalWeightInPer);
           missionsList.unshift(initialMission);
             this.campaigns.push(new Campaign(
               campaign.id,
@@ -359,7 +369,6 @@ export const useAirDropStore = defineStore({
             ));
         }
       });
-      // await this.fetchFairdropPoolUsage(this.campaigns.map((c: Campaign) => c.id), lockscreen);
     },
     // async fetchCampaigns(address: string, lockscreen = true){
     //   //await this.getUsersCampaignData(address);

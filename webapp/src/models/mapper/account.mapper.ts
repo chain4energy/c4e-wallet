@@ -2,7 +2,7 @@ import {
   Account as BcAccount,
   BaseAccount,
   ContinuousVestingAccount,
-  RepeatedContinuousVestingAccount
+  PeriodicContinuousVestingAccount
 } from "@/models/blockchain/account";
 import { Account as StoreAccount, AccountType, ContinuousVestingData } from "@/models/store/account";
 import { Coin} from "@/models/store/common";
@@ -45,9 +45,9 @@ export function mapAccount(account: BcAccount | undefined): StoreAccount  {
       return result;
 
     }
-    case "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount": {
-      const bcAccount = account as unknown as RepeatedContinuousVestingAccount;
-      const result = new StoreAccount(AccountType.RepeatedContinuousVestingAccount, bcAccount.base_vesting_account.base_account.address);
+    case "/chain4energy.c4echain.cfevesting.PeriodicContinuousVestingAccount": {
+      const bcAccount = account as unknown as PeriodicContinuousVestingAccount;
+      const result = new StoreAccount(AccountType.PeriodicContinuousVestingAccount, bcAccount.base_vesting_account.base_account.address);
       const origVesting = new Array<Coin>();
       bcAccount.base_vesting_account.original_vesting?.forEach((coin) => {
         const c = new Coin(BigInt(coin.amount), coin.denom);
