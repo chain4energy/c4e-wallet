@@ -239,6 +239,7 @@ const changeNetwork = (networkId: number) => {
   blockchainNetworkList.value.forEach((network) => {
     if(network.chainId == networkId) {
       selectedBlockchainNetworkId.value = network.chainId;
+      selectedTokenIdentifier.value = network.availableTokens[0].coinIdentifier;
     }
   });
 };

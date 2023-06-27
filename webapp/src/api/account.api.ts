@@ -317,7 +317,7 @@ export class AccountApi extends TxBroadcastBaseApi {
   }
   public async sign(connection: ConnectionInfo, dataToSign: DataToSign):Promise<RequestResponse<string, TxBroadcastError>> {
 
-    const signDataMsgTypeUrl = '/' + 'sign' + '.MsgSignData';
+    const signDataMsgTypeUrl = 'sign/MsgSignData';
     const utf8Encode = new TextEncoder();
     const messageToSign = utf8Encode.encode(dataToSign.randomString);
 
