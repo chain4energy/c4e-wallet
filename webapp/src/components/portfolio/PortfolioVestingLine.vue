@@ -92,6 +92,10 @@ function sumVestingAmount(): bigint {
   margin: 20px auto;
 }
 
+h3, h4 {
+  font-size: 1.25rem;
+}
+
 h4 {
   padding: 5px;
   font-weight: 800;
@@ -101,8 +105,8 @@ h4 {
   .mobile-hidden {
     display: none;
   }
-  .portfolioVesting h3{
-    font-size: 1.25rem !important;
+  .portfolioVesting h3, .portfolioVesting h4{
+    font-size: 1rem !important;
   }
   .portfolioVesting__line {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));

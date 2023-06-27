@@ -140,7 +140,6 @@ const receiveDialogVisible = ref(false);
   font-family: 'Inter',sans-serif;
   align-items: center;
   font-weight: 700;
-  font-size: 20px;
   line-height: 24px;
   padding: 20px 33px;
   border-radius: 5px;
@@ -152,11 +151,13 @@ const receiveDialogVisible = ref(false);
     min-width: 200px;
   }
   h3 {
-    padding: 20px 10px;
+    padding: 10px 10px;
+    font-size: 1.5rem;
   }
   h4 {
-    padding: 5px;
+    padding: 10px;
     font-weight: 800;
+    font-size: 1.5rem;
   }
   &__buttons {
     height: 100%;
@@ -169,7 +170,7 @@ const receiveDialogVisible = ref(false);
     border-radius: 5px !important;
   }
   &__tile {
-    padding: 10px 0 0 5px;
+    padding: 10px 5px;
     display:flex;
     flex-direction: column;
     align-items: center;

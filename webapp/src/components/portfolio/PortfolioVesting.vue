@@ -111,7 +111,12 @@ const fakeVestings: VestingPeriods[] = [
   }
 
   h3 {
-    padding: 20px 10px;
+    padding: 5px;
+    margin: 0 auto;
+  }
+
+  h3, h4 {
+    font-size: 1.25rem;
   }
 
 
@@ -121,6 +126,7 @@ const fakeVestings: VestingPeriods[] = [
     padding: 20px;
     font-weight: 600;
     margin-bottom: 15px;
+    font-size: 1.5rem;
   }
 
   &__line {
@@ -150,7 +156,7 @@ const fakeVestings: VestingPeriods[] = [
     display: none;
   }
   .portfolioVesting h3{
-    font-size: 1.25rem !important;
+    font-size: 1rem !important;
   }
   .portfolioVesting__line {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
