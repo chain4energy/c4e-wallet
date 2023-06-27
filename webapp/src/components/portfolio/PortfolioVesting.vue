@@ -1,6 +1,6 @@
 <template>
 
-  <div class="portfolioVesting">
+  <div class="portfolioVesting" v-if ='accountType === 5 || accountType === 2'>
     <h2 class="portfolioVesting__header">{{$t("PORTFOLIO_VIEW.DETAILS")}}</h2>
     <div class="portfolioVesting__list"
          v-if="userStore.getAccountVestingDetails && filterVestingArray(userStore.getAccountVestingDetails).length
