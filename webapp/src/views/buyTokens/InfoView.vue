@@ -26,18 +26,28 @@
       <div class="requirements_container">
         <div>
           {{$t('BUY_TOKENS_VIEW.PASS_KYC')}} {{transactionContextStore.getRequiredKycLevel}}
-          <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.KYC')"/>
+          <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.KYC')"/> <br>
+          <span class="additional_info">Level {{useUserServiceStore().kycLevel}} - verified</span> <br>
+          <span v-if="!isKycLevelRequired" class="additional_info">Level {{transactionContextStore.getRequiredKycLevel}} - required</span>
         </div>
         <div v-if="isKycLevelRequired">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
-        <div v-else><Button @click="onKycStart" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.START_KYC')}}</Button></div>
-        <div>{{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')"/></div>
+        <div v-else><Button @click="onKycStart" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.START_KYC')}} - level {{transactionContextStore.getRequiredKycLevel}}</Button></div>
+        <div>
+          {{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')"/> <br>
+          <span v-if="isTermsAccepted" class="additional_info">Accepted</span>
+          <span v-else class="additional_info">Not accepted</span>
+        </div>
         <div v-if="isTermsAccepted">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else ><Button class="p-button p-component secondary-link button-w7" @click="showApprovalModalFunc">{{$t('BUTTONS.ACCEPT')}}</Button></div>
-        <div>{{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"/></div>
+        <div>
+          {{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"/> <br>
+          <span v-if="claimerAddress" class="additional_info">{{addDotsInsideTooLongString(claimerAddress, 28)}}</span>
+          <span v-else class="additional_info">Not provided</span>
+        </div>
         <div v-if="claimerAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
@@ -48,7 +58,11 @@
           </Button>
         </div>
         <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
-        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')"/></div>
+        <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">
+          {{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')"/><br>
+          <span v-if="sourceAddress" class="additional_info">{{addDotsInsideTooLongString(sourceAddress, 28)}}</span>
+          <span v-else class="additional_info">Not provided</span>
+        </div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE && sourceAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
@@ -108,6 +122,7 @@ import dataService from "@/services/data.service";
 import Button from "primevue/button";
 import SynapsVerify from '@synaps-io/vue3-verify';
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
+import {addDotsInsideTooLongString} from "@/utils/string-formatter";
 
 onBeforeMount(() => {
 
@@ -303,14 +318,20 @@ const canConfirmOrder = computed(() => {
   width: 100%;
   display: grid;
   grid-template-columns: auto auto;
+  grid-gap: 10px;
 
   font-size: 18px;
   div {
-    height: 60px;
-    display: flex;
+    min-height: 60px;
+
     align-items: center;
   }
+  .additional_info {
+    color: #8c8c8c;
+    padding-left:15px;
+  }
   div:nth-child(even) {
+    display: flex;
     justify-content: center;
   }
 
@@ -328,7 +349,7 @@ const canConfirmOrder = computed(() => {
 }
 .button {
   &-w7{
-    width: 80%;
+    width: 90%;
   }
 
 }
