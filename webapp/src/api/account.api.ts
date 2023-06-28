@@ -317,24 +317,8 @@ export class AccountApi extends TxBroadcastBaseApi {
   }
   public async sign(connection: ConnectionInfo, dataToSign: DataToSign):Promise<RequestResponse<string, TxBroadcastError>> {
 
-    const signDataMsgTypeUrl = 'sign/MsgSignData';
-    const utf8Encode = new TextEncoder();
-    const messageToSign = utf8Encode.encode(dataToSign.randomString);
 
-    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
-      const typeUrl = signDataMsgTypeUrl;
-      const val = {
-        signer: connection.account,
-        data: messageToSign
-      };
-
-      return [{ typeUrl: typeUrl, value: MsgSignData.fromPartial(val) }];
-
-    };
-    const fee = this.createFee(0, 'uc4e');
-
-
-    return this.signDirect(connection, getMessages, dataToSign, fee, '', true, null);
+    return this.signDirect(connection, dataToSign, true, null);
   }
   public async signMetamask(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 
