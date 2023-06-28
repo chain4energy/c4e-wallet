@@ -49,7 +49,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
@@ -119,7 +119,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
@@ -169,7 +169,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
@@ -219,7 +219,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
@@ -271,7 +271,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
@@ -346,7 +346,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
