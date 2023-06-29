@@ -6,6 +6,7 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { RequestResponse } from '@/models/request-response';
 import { LogLevel } from '@/services/logger/log-level';
+import {ethers, Signer} from "ethers";
 
 
 const toast = useToast();
@@ -14,7 +15,10 @@ export enum ConnectionType {
   Address,
   Keplr,
   Disconnected,
-  Cosmostation
+  Cosmostation,
+  Metamask,
+  Leap,
+  Email,
 }
 
 export class ConnectionInfo {
@@ -24,15 +28,18 @@ export class ConnectionInfo {
   readonly account: string;
   readonly modifiable: boolean;
   readonly connectionType: ConnectionType;
+  readonly pubKey?: Uint8Array;
   readonly accountName?: string;
   constructor(
     account = '',
     modifiable = false,
     connectionType = ConnectionType.Disconnected,
+    pubKey?: Uint8Array,
     accountName?: string) {
     this.account = account;
     this.modifiable = modifiable;
     this.connectionType = connectionType;
+    this.pubKey = pubKey;
     this.accountName = accountName;
 
   }
@@ -77,6 +84,29 @@ export default class WalletConnectionApi extends LoggedService {
     return this.connect(ConnectionType.Cosmostation);
   }
 
+  public connectLeap(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
+    return this.connect(ConnectionType.Leap);
+  }
+  public async connectMetamask(): Promise<RequestResponse<string, ConnectionError>> {
+    const ethereum = window.ethereum;
+    if (typeof window.ethereum !== 'undefined') {
+      console.log('Eth wallet is installed!');
+    }
+    if (ethereum.isMetaMask) {
+      console.log('MetaMask is installed!');
+    }
+
+    const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+    const account = accounts[0];
+    console.log('account is: ' + account);
+
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+
+    const address = await signer.getAddress();
+
+    return new RequestResponse<string, any>(undefined, address);
+  }
   public async connect(connectionType: ConnectionType): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
     useSplashStore().increment();
     let extension: Keplr | undefined;
@@ -90,6 +120,10 @@ export default class WalletConnectionApi extends LoggedService {
       extension = window.cosmostation?.providers.keplr;
       connectTypeMessage = 'connectCosmostation';
       notInstalledMessage = 'Cosmostation not installed';
+    } else if(connectionType == ConnectionType.Leap) {
+      extension = window.leap;
+      connectTypeMessage = 'connectLeap';
+      notInstalledMessage = 'Leap not installed';
     }
 
     try {
@@ -105,7 +139,8 @@ export default class WalletConnectionApi extends LoggedService {
           account[0].address,
           true,
           connectionType,
-          key?.name
+          account[0].pubkey,
+          key?.name,
         );
         return new RequestResponse<ConnectionInfo, any>(undefined, connection);
       } else {

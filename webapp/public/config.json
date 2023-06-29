@@ -5,34 +5,19 @@
     "hasuraURL": "https://hasura.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
-      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
     ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "perun-1",
     "networkName": "Mainnet(C4E)",
     "keplrNetworkName": "Chain4Energy",
     "queries": {
-      "STAKING_POOL_URL": "/cosmos/staking/v1beta1/pool",
-      "TOTAL_SUPPLY_URL": "/cosmos/bank/v1beta1/supply/by_denom?denom={denom}",
-      "COMMUNITY_POOL_URL": "/cosmos/distribution/v1beta1/community_pool",
-      "PROPOSALS_URL": "/cosmos/gov/v1/proposals",
-      "PROPOSALS_BY_ID_URL": "/cosmos/gov/v1/proposals/{id}",
-      "TALLYING_URL": "/cosmos/gov/v1beta1/params/tallying",
-      "DEPOSIT_URL": "/cosmos/gov/v1beta1/params/deposit",
-      "LATEST_BLOCK_URL": "/cosmos/base/tendermint/v1beta1/blocks/latest",
-      "VALIDATORS_URL": "/cosmos/staking/v1beta1/validators",
-      "ACCOUNT_URL": "/cosmos/auth/v1beta1/accounts/{address}",
-      "BALANCE_URL": "/cosmos/bank/v1beta1/balances/{address}/by_denom?denom={denom}",
-      "STAKED_AMOUNT_URL": "/cosmos/staking/v1beta1/delegations/{address}",
-      "UNSTAKED_AMOUNT_URL": "/cosmos/staking/v1beta1/delegators/{address}/unbonding_delegations",
-      "REWARDS_URL": "/cosmos/distribution/v1beta1/delegators/{address}/rewards",
-      "PROPOSAL_TALLY_URL": "/cosmos/gov/v1beta1/proposals/{id}/tally",
-      "INFLATION_URL": "/c4e/minter/inflation",
-      "STAKING_PARAMS_URL": "/cosmos/staking/v1beta1/params",
-      "VESTINGS_SUM_URL": "/c4e/vesting/summary"
     },
     "operationGas": {
       "vote": 250000,
@@ -67,7 +52,8 @@
     "airdropBaseURL": "https://airdrop.c4e.io/",
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
-    "targetInflationAprMultiplier": 5
+    "targetInflationAprMultiplier": 5,
+    "faucetURL": ""
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -75,34 +61,19 @@
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "publicSaleServiceURL": "/api-devnet",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
-      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
     ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "veles-dev-test-1",
     "networkName": "Dev(veles-dev-1)",
     "keplrNetworkName": "C4E Veles Dev",
     "queries": {
-      "STAKING_POOL_URL": "/cosmos/staking/v1beta1/pool",
-      "TOTAL_SUPPLY_URL": "/cosmos/bank/v1beta1/supply/by_denom?denom={denom}",
-      "COMMUNITY_POOL_URL": "/cosmos/distribution/v1beta1/community_pool",
-      "PROPOSALS_URL": "/cosmos/gov/v1/proposals",
-      "PROPOSALS_BY_ID_URL": "/cosmos/gov/v1/proposals/{id}",
-      "TALLYING_URL": "/cosmos/gov/v1beta1/params/tallying",
-      "DEPOSIT_URL": "/cosmos/gov/v1beta1/params/deposit",
-      "LATEST_BLOCK_URL": "/cosmos/base/tendermint/v1beta1/blocks/latest",
-      "VALIDATORS_URL": "/cosmos/staking/v1beta1/validators",
-      "ACCOUNT_URL": "/cosmos/auth/v1beta1/accounts/{address}",
-      "BALANCE_URL": "/cosmos/bank/v1beta1/balances/{address}/by_denom?denom={denom}",
-      "STAKED_AMOUNT_URL": "/cosmos/staking/v1beta1/delegations/{address}",
-      "UNSTAKED_AMOUNT_URL": "/cosmos/staking/v1beta1/delegators/{address}/unbonding_delegations",
-      "REWARDS_URL": "/cosmos/distribution/v1beta1/delegators/{address}/rewards",
-      "PROPOSAL_TALLY_URL": "/cosmos/gov/v1beta1/proposals/{id}/tally",
-      "INFLATION_URL": "/c4e/minter/v1beta1/inflation",
-      "STAKING_PARAMS_URL": "/cosmos/staking/v1beta1/params",
-      "VESTINGS_SUM_URL": "/c4e/vesting/v1beta1/summary"
     },
     "operationGas": {
       "vote": 250000,
@@ -137,7 +108,8 @@
     "airdropBaseURL": "",
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
-    "targetInflationAprMultiplier": 5
+    "targetInflationAprMultiplier": 5,
+    "faucetURL": "https://faucet-dev.c4e.io/send/{address}"
   },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
@@ -145,10 +117,13 @@
     "hasuraURL": "http://10.0.7.86:8080/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
-      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
     ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "perun-testnet-1",
@@ -187,7 +162,8 @@
     "airdropBaseURL": "https://airdrop.c4e.io/",
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
-    "targetInflationAprMultiplier": 5
+    "targetInflationAprMultiplier": 5,
+    "faucetURL": "https://faucet-testnet.c4e.io/send/{address}"
   },
   "Testnet": {
     "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -195,14 +171,17 @@
     "hasuraURL": "https://hasura-testnet.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
-      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
     ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-    "chainId": "veles-1",
-    "networkName": "Testnet(veles-1)",
+    "chainId": "babajaga-1",
+    "networkName": "Testnet(babajaga-1)",
     "keplrNetworkName": "Chain 4 Energy Testnet",
     "operationGas": {
       "vote": 200000,
@@ -237,7 +216,8 @@
     "airdropBaseURL": "https://airdrop.c4e.io/",
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
-    "targetInflationAprMultiplier": 5
+    "targetInflationAprMultiplier": 5,
+    "faucetURL": "https://faucet-testnet.c4e.io/send/{address}"
   },
   "pbtest" :{
     "bcApiURL": "api",
@@ -245,10 +225,13 @@
     "hasuraURL": "hasura",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
-      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
     ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "c4e-testnet-0.1.0",
@@ -288,7 +271,8 @@
     "airdropBaseURL": "https://airdrop.c4e.io/",
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
-    "targetInflationAprMultiplier": 5
+    "targetInflationAprMultiplier": 5,
+    "faucetURL": "https://faucet-testnet.c4e.io/send/{address}"
   },
   "local":{
     "bcApiURL": "http://localhost:1317",
@@ -296,40 +280,19 @@
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
-      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
     ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
     "chainId": "c4echain",
     "networkName": "Local",
     "keplrNetworkName": "C4E Veles Dev",
     "queries": {
-      "STAKING_POOL_URL": "/cosmos/staking/v1beta1/pool",
-      "TOTAL_SUPPLY_URL": "/cosmos/bank/v1beta1/supply/by_denom?denom={denom}",
-      "COMMUNITY_POOL_URL": "/cosmos/distribution/v1beta1/community_pool",
-      "PROPOSALS_URL": "/cosmos/gov/v1/proposals",
-      "PROPOSALS_BY_ID_URL": "/cosmos/gov/v1/proposals/{id}",
-      "TALLYING_URL": "/cosmos/gov/v1beta1/params/tallying",
-      "DEPOSIT_URL": "/cosmos/gov/v1beta1/params/deposit",
-      "LATEST_BLOCK_URL": "/cosmos/base/tendermint/v1beta1/blocks/latest",
-      "VALIDATORS_URL": "/cosmos/staking/v1beta1/validators",
-      "ACCOUNT_URL": "/cosmos/auth/v1beta1/accounts/{address}",
-      "BALANCE_URL": "/cosmos/bank/v1beta1/balances/{address}/by_denom?denom={denom}",
-      "STAKED_AMOUNT_URL": "/cosmos/staking/v1beta1/delegations/{address}",
-      "UNSTAKED_AMOUNT_URL": "/cosmos/staking/v1beta1/delegators/{address}/unbonding_delegations",
-      "REWARDS_URL": "/cosmos/distribution/v1beta1/delegators/{address}/rewards",
-      "PROPOSAL_TALLY_URL": "/cosmos/gov/v1beta1/proposals/{id}/tally",
-      "INFLATION_URL": "/c4e/minter/v1beta1/inflation",
-      "STAKING_PARAMS_URL": "/cosmos/staking/v1beta1/params",
-      "VESTINGS_SUM_URL": "/c4e/vesting/v1beta1/summary",
-      "DISTRIBUTOR_PARAMS_URL": "/c4e/distributor/v1beta1/params",
-      "USER_AIRDROP_ENTRIES_URL": "/c4e/airdrop/v1beta1/user_airdrop_entries/{address}",
-      "CAMPAIGNS_URL": "/c4e/airdrop/v1beta1/campaigns",
-      "MISSIONS_URL": "/c4e/airdrop/v1beta1/mission",
-      "AIRDROP_DISTRIBUTIONS": "/c4e/airdrop/v1beta1/airdrop_distributions/{campaign_id}",
-      "AIRDROP_CLAIMS_LEFT": "/c4e/airdrop/v1beta1/airdrop_claims_left/{campaign_id}"
     },
     "operationGas": {
       "vote": 250000,
@@ -363,6 +326,64 @@
     "airdropBaseURL": "",
     "airdropDefaultDenom": "uc4e",
     "proposalVotingRefreshTimeout": 30000,
-    "targetInflationAprMultiplier": 5
+    "targetInflationAprMultiplier": 5,
+    "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}"
+  },
+  "EV-testnet":{
+    "bcApiURL": "https://lcd-ev-testnet.c4e.io",
+    "bcRpcURL": "https://rpc-ev-testnet.c4e.io",
+    "hasuraURL": "https://hasura-ev-testnet.c4e.io/v1/graphql",
+    "keybaseURL": "https://keybase.io",
+    "stakingPageURL": "https://wallet-ev-testnet.c4e.io/staking",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
+    "addressPrefix": "c4e",
+    "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+    ],
+    "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+    "chainId": "cfe-ev-1",
+    "networkName": "C4E EV Testnet",
+    "keplrNetworkName": "C4E EV Testnet",
+    "queries": {
+      "INFLATION_URL": "/cosmos/mint/v1beta1/inflation"
+    },
+    "operationGas": {
+      "vote": 250000,
+      "delegate": 250000,
+      "undelegate": 250000,
+      "redelegate": 250000,
+      "claimRewards": 250000
+    },
+    "viewDenoms": [
+      {
+        "denom": "uc4e",
+        "viewDenom": "C4E",
+        "coinDecimals": 6
+      }
+    ],
+    "keplrGasPriceSteps": {
+      "low": 0.01,
+      "average": 0.025,
+      "high": 0.03
+    },
+    "reservedCoinsAmount": 250000,
+    "minPeriodBetweenDataRefresh": 1000,
+    "blockDataRefreshTimeout": 30000,
+    "dashboardDataRefreshTimeout": 300000,
+    "validatorsDataRefreshTimeout":600000,
+    "accountDataRefreshTimeout": 90000,
+    "proposalsPageLimit": 50,
+    "explorerUrl": "https://explorer-ev-testnet.c4e.io",
+    "explorerAccount": "https://explorer-ev-testnet.c4e.io/accounts/",
+    "explorerTx": "https://explorer-ev-testnet.c4e.io/transactions/",
+    "isMainNetwork": false,
+    "airdropBaseURL": "",
+    "proposalVotingRefreshTimeout": 30000,
+    "airdropDefaultDenom": "uc4e",
+    "targetInflationAprMultiplier": 5,
+    "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}"
   }
 }

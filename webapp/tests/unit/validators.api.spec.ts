@@ -7,7 +7,19 @@ import { mockAxios } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
 import { createErrorResponse } from '../utils/common.blockchain.data.util';
 
-jest.mock("axios");
+jest.mock('axios', () => {
+  return {
+    create: jest.fn(() => ({
+      get: jest.fn(),
+      interceptors: {
+        request: { use: jest.fn(), eject: jest.fn() },
+        response: { use: jest.fn(), eject: jest.fn() }
+      }
+    })),
+    request: jest.fn(),
+    AxiosError: jest.fn()
+  }
+})
 const mockedAxios = mockAxios();
 // const mockedAxios = axios as jest.Mocked<typeof axios>;
 const api = apiFactory.validatorsApi()

@@ -4,7 +4,7 @@ import {useToast} from "vue-toastification";
 
 export class ToastsService {
 
-  private timeout = 10 * 1000;
+  private timeout = 30 * 1000;
   private toastTypeMap = new Map<ToastsTypeEnum, Date>();
   private static instance: ToastsService;
   private toast = useToast();

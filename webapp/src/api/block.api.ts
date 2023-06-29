@@ -10,6 +10,7 @@ import { AverageBlockTimeResponse } from "@/models/hasura/average.block.time";
 import queries from "./queries";
 import { BlockchainApiErrorData } from "@/models/blockchain/common";
 import { HasuraErrorData } from "@/models/hasura/error";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 export class BlockApi extends BaseApi {
 
@@ -17,12 +18,9 @@ export class BlockApi extends BaseApi {
     return ServiceTypeEnum.BLOCK_API;
   }
 
-  private LATEST_BLOCK_URL = queries.blockchain.LATEST_BLOCK_URL;
-
-
   public async fetchLatestBlock(lockscreen: boolean): Promise<RequestResponse<Block, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: BlockResponse | undefined) => { return mapBlock(bcData); };
-    return  await this.axiosGetBlockchainApiCall(this.LATEST_BLOCK_URL,
+    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.LATEST_BLOCK_URL,
       mapData, lockscreen, null, 'fetchLatestBlock - ');
   }
 

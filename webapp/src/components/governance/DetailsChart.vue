@@ -151,7 +151,7 @@ const icons  = new Map<string, string>([
 
 const proposalsStore = useProposalsStore();
 const sumOfVotes = computed(() => {
-  const val = useProposalsStore().getProposalDetailsTally?.total;
+  const val = useProposalsStore().getProposalDetailsTally?.totalChart;
   return (val && val > 0) ? val : -1n;
 });
 

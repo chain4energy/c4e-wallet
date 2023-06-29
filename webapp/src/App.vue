@@ -11,6 +11,7 @@
     <app-footer class="footer"/>
     <CurrentBlockchain></CurrentBlockchain>
     <app-sidebar/>
+    <div class="ari10-widget-wrapper" data-widget-id='41875703-9ee2-4729-9d51-e574c61467c3'></div>
   </div>
 </template>
 
@@ -30,6 +31,7 @@ import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import dataService from './services/data.service';
 import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
+import {usePublicSalesStore} from "@/store/publicSales.store";
 
 const logger = inject<LoggerService>('logger') as LoggerService;
 dataService.onAppStart();
