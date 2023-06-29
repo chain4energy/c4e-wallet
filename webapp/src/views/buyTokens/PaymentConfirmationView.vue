@@ -12,7 +12,7 @@
           <img style="height:30px;" src="@/assets/svg/MetaMaskIcon.svg">
           {{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.PAY')}} {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}} {{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.THIRD_LINE_2')}}</Button> <br />
         <span>or</span><br />
-        <span @click="showManualPayment = true" class="underline open">Provide TxHash manually</span>
+        <span @click="showManualPayment == true ? showManualPayment = false : warningModalVisibility = true" class="underline open">Provide TxHash manually</span>
       </div>
 
       <div v-if="showManualPayment" class="box-shadow" style="padding: 20px; color: black">
@@ -124,6 +124,7 @@
       </div>
 
     </Dialog>
+    <WarningModal :visible="warningModalVisibility" @confirm="showManualPayment = true; warningModalVisibility=false" @closeModal="warningModalVisibility = false" />
   </div>
 </template>
 
@@ -146,6 +147,7 @@ import Dialog from "primevue/dialog";
 import IconComponent from "@/components/features/IconComponent.vue";
 import {useI18n} from "vue-i18n";
 import {useUserStore} from "@/store/user.store";
+import WarningModal from "@/components/buyTokens/modals/WarningModal.vue";
 
 onBeforeMount(async () => {
   useUserStore().connectMetamask();
@@ -165,6 +167,8 @@ const publicSaleStore = usePublicSalesStore();
 const txHash = ref<string>();
 const paymentModalVisible = ref(false);
 const showManualPayment = ref<boolean>(false);
+
+const warningModalVisibility = ref(false);
 
 const addressNotMatch = computed(() => {
   return useUserStore().metamaskConnectionInfo.address.toLowerCase() != useUserServiceStore().ethereumAddress?.toLowerCase();
