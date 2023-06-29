@@ -291,7 +291,7 @@ export class AccountApi extends TxBroadcastBaseApi {
       };
       return [{ typeUrl: typeUrl, value: val }];
     };
-    const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
+    const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
   public async claimAirDropMissions(connection: ConnectionInfo, campaignId: string, missionId: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
