@@ -32,7 +32,10 @@
         <div v-if="isKycLevelRequired">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
-        <div v-else><Button @click="onKycStart" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.START_KYC')}} - level {{transactionContextStore.getRequiredKycLevel}}</Button></div>
+        <div v-else>
+          <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
+          <Button @click="onKycStart" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.START_KYC')}} - level {{transactionContextStore.getRequiredKycLevel}}</Button>
+        </div>
         <div>
           {{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')"/> <br>
           <span v-if="isTermsAccepted" class="additional_info">Accepted</span>
@@ -317,7 +320,6 @@ const canConfirmOrder = computed(() => {
   font-size: 18px;
   div {
     min-height: 60px;
-
     align-items: center;
   }
   .additional_info {
@@ -325,8 +327,7 @@ const canConfirmOrder = computed(() => {
     padding-left:15px;
   }
   div:nth-child(even) {
-    display: flex;
-    justify-content: center;
+    text-align: center;
   }
 
 }

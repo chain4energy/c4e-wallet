@@ -218,19 +218,23 @@ const onFail = () => {
 };
 
 const onStartMetamaskTransaction = () => {
-  if(selectedBlockchain.value && selectedToken.value){
-    usePublicSalesStore().payByMetamask({
-      amount: transactionContextStore.amountToPay.toString(),
-      blockchainID: selectedBlockchain.value.id,
-      exchangeID: selectedToken.value.id,
-      orderId: transactionContextStore.orderId,
-      blockchainAddress: selectedTokenIdentifier.value,
-      coinDecimals: selectedToken.value.decimals,
-      c4eAddress: selectedToken.value.c4eAddress
-    }, onSuccessStartMetamaskTransaction, onFail);
-  }
-
-
+  useUserStore().connectMetamask().then(address => {
+    if(address != useUserServiceStore().ethereumAddress) {
+      toast.error('Wrong address. Change to '+sourceAddress.value);
+    } else {
+      if(selectedBlockchain.value && selectedToken.value){
+        usePublicSalesStore().payByMetamask({
+          amount: transactionContextStore.amountToPay.toString(),
+          blockchainID: selectedBlockchain.value.id,
+          exchangeID: selectedToken.value.id,
+          orderId: transactionContextStore.orderId,
+          blockchainAddress: selectedTokenIdentifier.value,
+          coinDecimals: selectedToken.value.decimals,
+          c4eAddress: selectedToken.value.c4eAddress
+        }, onSuccessStartMetamaskTransaction, onFail);
+      }
+    }
+  });
 };
 const onSuccessStartMetamaskTransaction = () => {
   paymentModalVisible.value = false;
@@ -241,6 +245,7 @@ const changeNetwork = (networkId: number) => {
   blockchainNetworkList.value.forEach((network) => {
     if(network.chainId == networkId) {
       selectedBlockchainNetworkId.value = network.chainId;
+      selectedTokenIdentifier.value = network.availableTokens[0].coinIdentifier;
     }
   });
 };

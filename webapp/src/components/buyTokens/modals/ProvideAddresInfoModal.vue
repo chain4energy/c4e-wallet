@@ -11,7 +11,7 @@
         <div>{{address}}</div>
       </div>
       <div class="connect_address__warning box-shadow">
-        <img class="icon" src="@/assets/svg/warning-triangle.svg">
+        <Icon style="height:110px; width:110px; color: red" name="AlertTriangle"/>
         <div v-if="props.addressType==AddressType.KEPLR" class="text">
           Verify if the claimer address is one you expect to be the address you will use to claim your tokens.<br>
           If this not expected address change to proper account in your wallet application.
