@@ -7,18 +7,6 @@ import queries from "@/api/queries";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {AirdropClaimsLeft, AirdropDistributions, CampaignsInfo as CampaignsInfoBc, MissionsInfo, MissionType, UserAirdropInfo} from "@/models/blockchain/airdrop";
 import {formatString} from "@/utils/string-formatter";
-import {TxBroadcastError, TxData} from "@/api/tx.broadcast.base.api";
-import {EncodeObject} from "@cosmjs/proto-signing";
-import {
-  MsgBeginRedelegate,
-  MsgDelegate,
-  MsgUndelegate,
-} from "cosmjs-types/cosmos/staking/v1beta1/tx";
-import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
-
-import {
-  MsgWithdrawDelegatorReward
-} from "cosmjs-types/cosmos/distribution/v1beta1/tx";
 
 export class AirDropApi extends BaseApi {
 

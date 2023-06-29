@@ -60,9 +60,6 @@ const schema = object().shape({
 
 const email = ref<string>();
 const password = ref<string>();
-const onCreateAccount = () => {
-  console.log('create account');
-};
 
 function login(){
 

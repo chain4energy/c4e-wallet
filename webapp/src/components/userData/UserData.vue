@@ -50,7 +50,6 @@ import C4EIcon from "../commons/C4EIcon.vue";
 import AmountView from "@/components/commons/AmountView.vue";
 import i18n from "@/plugins/i18n";
 import CoinAmount from "../commons/CoinAmount.vue";
-import DateCommon from "@/components/commons/DateCommon.vue"
 import dataService from "@/services/data.service";
 
 function claimRewards(){

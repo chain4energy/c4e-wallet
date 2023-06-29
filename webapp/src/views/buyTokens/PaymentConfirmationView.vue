@@ -131,7 +131,6 @@
 <script setup lang="ts">
 
 import {useTransactionContextStore} from "@/store/transactionContext.store";
-import {Currency} from "../../models/currency";
 import {computed, onBeforeMount, ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import {useToast} from "vue-toastification";
@@ -139,13 +138,12 @@ import {usePublicSalesStore} from "@/store/publicSales.store";
 import {ethers} from "ethers";
 import {useRouter} from "vue-router";
 import Icon from "@/components/features/IconComponent.vue";
-import QrcodeVue from 'qrcode.vue'
+import QrcodeVue from 'qrcode.vue';
 import {Field, Form} from "vee-validate";
 import {object} from "yup";
 import * as Yup from "yup";
 import Dialog from "primevue/dialog";
 import IconComponent from "@/components/features/IconComponent.vue";
-import {useI18n} from "vue-i18n";
 import {useUserStore} from "@/store/user.store";
 import WarningModal from "@/components/buyTokens/modals/WarningModal.vue";
 
@@ -160,7 +158,7 @@ const sourceAddress = ref(useUserServiceStore().ethereumAddress);
 const currentMetamaskAddress = computed(() => {
   return useUserStore().metamaskConnectionInfo.address;
 });
-const recipientAddress = ref();
+
 const transactionContextStore = useTransactionContextStore();
 const router = useRouter();
 const publicSaleStore = usePublicSalesStore();
@@ -257,11 +255,6 @@ window.addEventListener("load", function() {
   }
 });
 
-const isCrypto = () => {
-  return transactionContextStore.paymentCurrency == Currency.USDC || transactionContextStore.paymentCurrency == Currency.USDT;
-
-};
-
 const onConfirmPayment = () => {
   if(selectedBlockchain.value && txHash.value && selectedToken.value) {
     usePublicSalesStore().provideTxPaymentProof({
@@ -276,14 +269,7 @@ const onSuccessConfirmPayment = () => {
   toast.success('Payment confimed');
   router.push({name: 'publicSaleInfo'});
 };
-const addDotsInsideTooLongString = (text: string | undefined, maxLength: number): string => {
-  if(text == undefined)
-    return '';
-  if (text.length > maxLength) {
-    return text.substring(0, maxLength - 7) + "..." + text.substring(text.length - 6);
-  }
-  return text;
-};
+
 </script>
 
 

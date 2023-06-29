@@ -53,7 +53,6 @@ import {usePublicSalesStore} from "@/store/publicSales.store";
 import Dropdown from "primevue/dropdown";
 import {Currency} from "@/models/currency";
 import {useTransactionContextStore} from "@/store/transactionContext.store";
-import {useToast} from "vue-toastification";
 import TooltipComponent from "@/components/TooltipComponent.vue";
 
 
@@ -76,6 +75,7 @@ const props =  defineProps({
 });
 
 const emit = defineEmits(['onBuy']);
+
 onBeforeMount(() => {
   usePublicSalesStore().fetchRoundInfo(false).then(() => {
     const rate =  usePublicSalesStore().getC4eToUSD;
@@ -84,14 +84,13 @@ onBeforeMount(() => {
     }
   });
 });
-onMounted(() => {
 
+onMounted(() => {
   firstValue.amount = props.firstInputDefaultValue;
   if(useTransactionContextStore().orderModalVisible) {
     firstValue.amount = useTransactionContextStore().amountToBuy;
   }
   onFirstInputChange();
-
 });
 
 const firstValue = reactive({
@@ -103,7 +102,6 @@ const secondValue = reactive({
   amount: 0,
   currency: props.disableStablecoin ? Currency.USD : Currency.STABLE
 });
-
 
 const exchangeRate = ref(1);
 
@@ -166,8 +164,6 @@ const onBuy = () => {
     emit('onBuy');
   }
 };
-
-const toast = useToast();
 
 const round = (number: number, currency: Currency) => {
   let decimals = 2;

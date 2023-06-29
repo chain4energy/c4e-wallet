@@ -23,7 +23,7 @@ import {usePublicSalesStore} from "@/store/publicSales.store";
 const router = useRouter();
 const route = useRoute();
 onMounted(() =>{
-  useUserServiceStore().getAccount(()=>{console.log(1)}, ()=>{console.log(2)});
+  useUserServiceStore().getAccount(()=>{console.log(1);}, ()=>{console.log(2);});
   useUserServiceStore().getKycStatus();
   usePublicSalesStore().fetchRoundInfo();
 });

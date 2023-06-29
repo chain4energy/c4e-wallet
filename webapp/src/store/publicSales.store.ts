@@ -8,8 +8,6 @@ import {
   TokenPaymentProofRequest,
   Transaction
 } from "@/models/saleServiceCommons";
-import {clearAuthTokens} from "axios-jwt";
-import {LoginTypeEnum} from "@/store/userService.store";
 import apiFactory from "@/api/factory.api";
 export interface PublicSalesState{
   total: Coin | undefined,
@@ -84,7 +82,7 @@ export const usePublicSalesStore = defineStore({
     setTotal(){
       const denom = useConfigurationStore().config.stakingDenom;
       this.total = new Coin(BigInt(250000000000000), denom);
-      this.startDate = new Date('2023-05-08T10:00:00')
+      this.startDate = new Date('2023-05-08T10:00:00');
       this.endDate = new Date('2023-05-09T22:50:00');
     },
     setParts(){
@@ -152,7 +150,7 @@ export const usePublicSalesStore = defineStore({
     },
     async sendMetamaskTransaction(amount: string, blockchainAddress: string, coinDecimals: number, c4eAddress: string) {
       return await apiFactory.accountApi().sendTransaction( amount, blockchainAddress, coinDecimals, c4eAddress).then(res => {
-        console.log(res)
+        console.log(res);
         return res;
       });
     },
@@ -186,29 +184,4 @@ export const usePublicSalesStore = defineStore({
     }
   }
 });
-
-function getFakeTransactionsData() {
-  return [
-    {
-      amount: '1000000000',
-      paymentType: 'Crypto',
-      status: 'Declared',
-      reservationEnd: "2023-05-12T20:45:20",
-    },
-    {
-      amount: '1000000000',
-      paymentType: 'StandardCurrency',
-      status: 'Paid',
-      txHash: 'tx-123123123123123123',
-      blockChainType: 'BSC or Ethereum',
-    },
-    {
-      amount: '1000000000',
-      paymentType: 'Crypto',
-      status: 'Error',
-      txHash: 'tx-123123123123123123',
-      blockChainType: 'BSC',
-    },
-  ];
-}
 

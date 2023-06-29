@@ -129,7 +129,7 @@
 
 <script setup lang="ts">
 
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
 import {useRouter} from "vue-router";
@@ -137,11 +137,8 @@ import {useI18n} from "vue-i18n";
 import ProvideAddresInfoModal from "@/components/buyTokens/modals/ProvideAddresInfoModal.vue";
 import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useToast} from "vue-toastification";
-import {SignParingAddressResult} from "@/models/user/emailPairing";
-import {logger} from "ethers";
 import {useContextStore} from "@/store/context.store";
 import TooltipComponent from "@/components/TooltipComponent.vue";
-import dataService from "@/services/data.service";
 import Button from "primevue/button";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 
@@ -164,10 +161,6 @@ const isLogedInInService = computed(() => {
 const isTermsAccepted = computed(() =>{
   return useUserServiceStore().isTermsAccepted;
 });
-
-const paired = computed(() => {
-  return useUserServiceStore().isPaired;
-})
 
 const usersWallet = computed(() => {
   return useUserStore().getAccount.address;
@@ -226,11 +219,6 @@ const onSuccessConnect = () => {
   useContextStore().addressType = showAddressInfoModalAddressType.value;
   router.push({name: 'provideVerificationCode'});
 };
-
-function onSuccessAddressPairing(result: SignParingAddressResult){
-  console.log("!!!" + result);
-  router.push({name:'provideVerificationCode'});
-}
 
 function onFail(){
   toast.error("error");

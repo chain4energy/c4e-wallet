@@ -17,7 +17,6 @@
       <AllocationInfo :transaction="items" @pay="onPay(items)"/>
     </div>
   </div>
-<!--  <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />-->
   <BuyTokensModal :visible="showModal"  @closeModal="showModal = false" @confirm="onPayReservation" :reservation="selectedReservation" />
 
   <Dialog v-model:visible="transactionContextStore.orderModalVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px', 'z-index': 500}">
@@ -100,7 +99,6 @@ import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vu
 import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import {computed, onBeforeMount, ref} from "vue";
 import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
-import PayModal from "@/components/buyTokens/PayModal.vue";
 import Dialog from "primevue/dialog";
 import {useTransactionContextStore} from "@/store/transactionContext.store";
 import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
@@ -111,14 +109,11 @@ import IconComponent from "@/components/features/IconComponent.vue";
 import TooltipComponent from "@/components/TooltipComponent.vue";
 import ApprovalModal from "@/components/buyTokens/modals/ApprovalModal.vue";
 import {useI18n} from "vue-i18n";
-import {ethereum} from "@cosmostation/extension-client";
 import ProvideAddresInfoModal from "@/components/buyTokens/modals/ProvideAddresInfoModal.vue";
 import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useUserStore} from "@/store/user.store";
 import {useContextStore} from "@/store/context.store";
-import {SignParingAddressResult} from "@/models/user/emailPairing";
 import BuyTokensModal from "@/components/buyTokens/modals/BuyTokensModal.vue";
-import dataService from "@/services/data.service";
 import Button from "primevue/button";
 import SynapsVerify from '@synaps-io/vue3-verify';
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
@@ -132,7 +127,6 @@ const router = useRouter();
 const toast = useToast();
 const publicSaleStore = usePublicSalesStore();
 const transactionContextStore = useTransactionContextStore();
-const publicSalesStore = usePublicSalesStore();
 
 const i18n = useI18n();
 const showAddressInfoModal = ref(false);

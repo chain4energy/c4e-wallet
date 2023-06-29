@@ -28,20 +28,11 @@
 </template>
 
 <script setup lang="ts">
-import PublicSalesBar from "@/components/buyTokens/PublicSalesBar.vue";
 import { usePublicSalesStore } from "@/store/publicSales.store";
-import {computed, onBeforeMount, onUnmounted, ref, watch, watchEffect} from "vue";
-import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
+import {computed, onBeforeMount, onUnmounted, ref} from "vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
-import AmountView from "@/components/commons/AmountView.vue";
-import CalculatorC4E from "@/components/buyTokens/CalculatorC4E.vue";
 import {useI18n} from "vue-i18n";
 const publicSalesStore = usePublicSalesStore();
-// publicSalesStore.setParts();
-// publicSalesStore.setTotal();
-// publicSalesStore.setCurrentPrice();
-
-const refreshDate = ref(false)
 
 let startDateIntevalId = 0;
 let endDateIntervalId = 0;
@@ -66,9 +57,9 @@ const total = computed(() =>{
   return publicSalesStore.roundInfo?.totalTokens;
 });
 
-const parts = computed(() =>{
-  return publicSalesStore.getParts;
-});
+// const parts = computed(() =>{
+//   return publicSalesStore.getParts;
+// });
 
 const currency = computed(() => {
   return publicSalesStore.getC4eToUSD;
@@ -81,7 +72,6 @@ const endDate = computed(() => {
   return publicSalesStore.roundInfo?.endDate;
 });
 
-const timeToPass = ref();
 const i18n = useI18n();
 
 function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefined){

@@ -17,8 +17,6 @@ import i18n from "@/plugins/i18n";
 import {useProposalsStore} from "./proposals.store";
 import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
-import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
-import {Signer} from "ethers";
 import factoryApi from "@/api/factory.api";
 
 

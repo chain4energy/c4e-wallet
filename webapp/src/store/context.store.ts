@@ -1,6 +1,4 @@
 import {defineStore} from "pinia";
-import {Currency} from "@/models/currency";
-import {KycTierEnum} from "@/models/user/kyc";
 import {EmailPairingRes} from "@/models/user/emailPairing";
 import {AddressType} from "@/components/buyTokens/modals/AddressType";
 

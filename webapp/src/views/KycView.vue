@@ -24,7 +24,7 @@
 import {computed, onBeforeMount, ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import KycTier from "@/components/kyc/KycTier.vue";
-import {KycStepName, KycTierEnum} from "@/models/user/kyc";
+import { KycTierEnum} from "@/models/user/kyc";
 import Dialog from "primevue/dialog";
 import SynapsVerify from '@synaps-io/vue3-verify';
 

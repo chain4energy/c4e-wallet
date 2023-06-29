@@ -9,15 +9,13 @@ import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
 // import {EmailPairingRequest, EmailPairingRes} from "@/models/user/emailPairing";
-import axios from "axios";
 import {EmailPairingRequest, EmailPairingRes, SignParingAddressResult} from "@/models/user/emailPairing";
 import {usePublicSalesStore} from "@/store/publicSales.store";
-import {KycProgressStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum} from "@/models/user/kyc";
+import {KycProgressStatus, KycStepInfo, KycStepName, KycTierEnum} from "@/models/user/kyc";
 import {TxBroadcastError} from "@/api/tx.broadcast.base.api";
 import {ethers} from "ethers";
 import {useContextStore} from "@/store/context.store";
-import {useRouter} from "vue-router";
-import {ConnectionType} from "@/api/wallet.connecton.api";
+
 
 interface UserServiceState {
   loginType: LoginTypeEnum,
@@ -233,7 +231,7 @@ export const useUserServiceStore = defineStore({
     },
 
     async verifyParingEmailKeplr(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().verifyPairingEmailKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, true).then(response => {
+      await apiFactory.publicSaleServiceApi().verifyPairingEmailKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, lockscreen).then(response => {
         if(response.isSuccess()){
           this.loginType = LoginTypeEnum.EMAIL;
           this.paired = true;
@@ -302,7 +300,7 @@ export const useUserServiceStore = defineStore({
       try{
         await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
           if(signedDataResponse.isSuccess() && signedDataResponse.data){
-            keplrResp = signedDataResponse.data
+            keplrResp = signedDataResponse.data;
             await apiFactory.accountApi().signMetamaskPairing(signedDataResponse.data).then(async (signedDataResponseMetamask: RequestResponse<string, TxBroadcastError>)=>{
               if(signedDataResponseMetamask.isSuccess() && signedDataResponseMetamask.data) {
                 metamaskResp = signedDataResponseMetamask.data;
@@ -333,9 +331,9 @@ export const useUserServiceStore = defineStore({
     },
 
     async approveTerms(onSuccess: (() => void), onFail: (() => void), lockscreen = true){
-      await apiFactory.publicSaleServiceApi().acceptTerms(true).then(res =>{
+      await apiFactory.publicSaleServiceApi().acceptTerms(lockscreen).then(res =>{
         if(res.isSuccess()){
-          this.getAccount(onSuccess, onFail, true)
+          this.getAccount(onSuccess, onFail, true);
         }
       });
 
@@ -345,7 +343,7 @@ export const useUserServiceStore = defineStore({
       useContextStore().$reset();
       usePublicSalesStore().logOutAccount();
       apiFactory.publicSaleServiceApi().logout(true).then(() => {
-        console.log()});
+        console.log();});
       this.loginType =  LoginTypeEnum.NONE;
       this.kycSessionId = '';
       this.paired= false;

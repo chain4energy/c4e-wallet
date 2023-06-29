@@ -2,14 +2,12 @@ import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import { useUserStore } from "@/store/user.store";
 import { Block } from "@/models/store/block";
-import { useToast } from "vue-toastification";
 import { StoreLogger } from "@/services/logged.service";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { LogLevel } from "@/services/logger/log-level";
 import {ToastsService} from "@/services/toasts/toasts.service";
 import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";
 
-const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.BLOCK_STORE);
 
 interface BlockState {

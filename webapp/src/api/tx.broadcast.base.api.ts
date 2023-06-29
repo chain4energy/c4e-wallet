@@ -17,7 +17,7 @@ import {
   TxBodyEncodeObject
 } from '@cosmjs/proto-signing';
 import {encodeSecp256k1Pubkey, StdFee} from "@cosmjs/amino";
-import {Int53} from "@cosmjs/math"
+import {Int53} from "@cosmjs/math";
 import {MsgSignData} from "@/types/tx";
 import {TxRaw} from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import {fromBase64} from "@cosmjs/encoding";
