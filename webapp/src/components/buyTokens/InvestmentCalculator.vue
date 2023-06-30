@@ -12,7 +12,24 @@
             <div>
               <div style="display: flex">
                 <input @paste="onFirstInputChange" @keyup="onFirstInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" :disabled="firstInputBlocked" v-model="firstValue.amount">
-                <Dropdown v-model="firstValue.currency" :options="[Currency.C4E]"  placeholder="Select network" style="max-width:80px;" class="dropdown" />
+                <Dropdown v-model="firstValue.currency" :options="[Currency.C4E]"  placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
+                  <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                      <div class="flag flex align-items-center">
+                        <C4EIcon size="30" icon="c4e-circle" />
+                      </div>
+                      <div>{{ slotProps.value}}</div>
+                    </div>
+                  </template>
+                  <template #option="slotProps">
+                    <div class="flex align-items-center">
+                      <div class="flag flex align-items-center">
+                        <C4EIcon size="30" icon="c4e-circle" />
+                      </div>
+                      <div>{{ slotProps.option }}</div>
+                    </div>
+                  </template>
+                </Dropdown>
               </div>
             </div>
           </div>
@@ -22,7 +39,28 @@
               <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_INVEST')}}</p>
               <div style="display: flex">
                 <input @paste="onSecondInputChange"  @keyup="onSecondInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" v-model="secondValue.amount">
-                <Dropdown v-model="secondValue.currency" :options="currencyList" placeholder="Select network" style="max-width:80px;" class="dropdown" />
+                <Dropdown v-model="secondValue.currency" :options="currencyList" placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
+                  <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                      <div class="flag">
+                        <CountryFlag v-if='slotProps.value !== Currency.STABLE'
+                                     :country="flagSelector[slotProps.value]"/>
+                        <img src="../../assets/stablecoin.png" alt="stablecoin symbol" class="h-full" v-else/>
+                      </div>
+                      <div>{{ slotProps.value}}</div>
+                    </div>
+                  </template>
+                  <template #option="slotProps">
+                    <div class="flex align-items-center">
+                      <div class="flag">
+                        <CountryFlag v-if='slotProps.option !== Currency.STABLE'
+                                       :country="flagSelector[slotProps.option]"/>
+                        <img src="../../assets/stablecoin.png" alt="stablecoin symbol" class="h-full" v-else/>
+                      </div>
+                      <div>{{ slotProps.option }}</div>
+                    </div>
+                  </template>
+                </Dropdown>
               </div>
             </div>
           </div>
@@ -54,6 +92,8 @@ import Dropdown from "primevue/dropdown";
 import {Currency} from "@/models/currency";
 import {useTransactionContextStore} from "@/store/transactionContext.store";
 import TooltipComponent from "@/components/TooltipComponent.vue";
+import CountryFlag from 'vue-country-flag-next';
+import C4EIcon from "@/components/commons/C4EIcon.vue"; // https://www.npmjs.com/package/vue-country-flag-next
 
 
 const props =  defineProps({
@@ -173,6 +213,12 @@ const round = (number: number, currency: Currency) => {
 
 const minimumRequired = () => {
   return firstValue.amount * usePublicSalesStore().getC4eToUSD >= 25 && firstValue.amount * usePublicSalesStore().getC4eToUSD <=10000 ;
+};
+
+const flagSelector = {
+  EUR: 'eu',
+  USD: 'us',
+  PLN: 'pl'
 };
 </script>
 
