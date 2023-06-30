@@ -398,16 +398,34 @@
     }
   },
   "AIRDROP": {
-    "CONNECT": "zaloguj z Keplr",
+    "CONNECT": "Połącz z Keplr",
     "OR": "lub",
     "C4E_HELP": "Wprowadź adres C4E lub COSMOS",
     "COSMOS_HELP": "Wprowadź adres cosmos",
     "CHECK": "Sprawdź",
-    "CHECK_ALLOCATION": "Sprawdź Alokację",
+    "CHECK_ALLOCATION": "Sprawdź alokację",
     "CLAIM_AIRDROP": "Odbierz Airdrop",
-    "FAIRDROP_ALLOCATION": "Całkowita alokacja Fairdrop",
+    "FAIRDROP_ALLOCATION": "Całkowita alokacja Airdrop",
     "FOOTER_HEADER": "Co dalej? Obserwuj nas, aby być na bieżąco z aktualizacjami.",
-    "FOOTER_TEXT": "Połącz się z nami, aby być na bieżąco z airdropem i nowościami w C4E."
+    "FOOTER_TEXT": "Połącz się z nami, aby być na bieżąco z airdropem i nowościami w C4E.",
+    "DETAILS": "Szczegóły",
+    "TOTAL_HEADER": "Podsumowanie",
+    "TOTAL": "Razem",
+    "TOTAL_CLAIMED": "Odebrane",
+    "ACTIVE": "Aktywne kampanie",
+    "TO_CLAIM": "Do odebrania",
+    "CLAIMED": "Odebrane",
+    "MISSION_COMPLETED": "Ukończone misje",
+    "TOTAL_DISTRIBUTION": "Łączna dystrybucja",
+    "CAMPAIGN_PASSED": "Kampania zakończona",
+    "CAMPAIGN_START": "Do rozpoczęcia kampanii",
+    "CAMPAIGN_END": "Do zakończenia kampanii",
+    "CLAIM": "Odbierz",
+    "VOTE": "Zagłosuj",
+    "DELEGATE": "Oddeleguj",
+    "INITIAL": "Misja inicjująca - musi być odebrana jako pierwsza",
+    "SHOW_MISSIONS": "Pokaż misje",
+    "HIDE_MISSIONS": "Ukryj misje"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Odliczanie kampanii"

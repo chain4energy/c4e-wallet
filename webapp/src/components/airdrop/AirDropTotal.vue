@@ -44,7 +44,7 @@
           <div class="airDropTotal__content-items" v-if="!campaign.hideCampaign()">
             <div class="airDropTotal__content-header">
               <h5>{{ campaign.name }}</h5>
-              <a class="airDropTotal__content-details" :href="campaign.details_url" target="_blank">details</a>
+              <a class="airDropTotal__content-details" :href="campaign.details_url" target="_blank">{{$t('AIRDROP.DETAILS')}}</a>
             </div>
             <div class="airDropTotal__info">
               <div class="airDropTotal__content-content" v-for="allocations in campaign.allocations" :key="allocations">
