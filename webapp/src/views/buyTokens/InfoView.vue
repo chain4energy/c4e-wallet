@@ -348,4 +348,10 @@ const canConfirmOrder = computed(() => {
   }
 
 }
+
+@media screen and (max-width: 500px) {
+  .info {
+    padding: 25px 5px;
+  }
+}
 </style>

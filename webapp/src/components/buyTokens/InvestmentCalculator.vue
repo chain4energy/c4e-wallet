@@ -5,13 +5,13 @@
       <span style="float:right;  font-weight: 300;font-size: 19px;">{{$t('BUY_TOKENS_VIEW.REQUIREMENTS')}} <TooltipComponent :tooltipText="$t('BUY_TOKENS_VIEW.REQUIREMENTS_TIP')" /></span>
     </div>
     <div class="calculatorC4E__body">
-      <div style="width:100%; margin-right: 70px">
-        <div style="display: flex; width:100%; box-sizing: border-box">
-          <div style="width:50%; margin-right: 40px" class="calculatorC4E__inputContainer">
+      <div style=" flex: 1 1;">
+        <div style="display: flex; flex-wrap: wrap; box-sizing: border-box">
+          <div style=" flex: 1 1; margin: 0 20px;" class="calculatorC4E__inputContainer">
             <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_BUY')}}</p>
             <div>
-              <div style="display: flex">
-                <input @paste="onFirstInputChange" @keyup="onFirstInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" :disabled="firstInputBlocked" v-model="firstValue.amount">
+              <div style="display: flex; min-width:350px;">
+                <input @paste="onFirstInputChange" @keyup="onFirstInputChange" @blur="onSecondInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" :disabled="firstInputBlocked" v-model="firstValue.amount">
                 <Dropdown v-model="firstValue.currency" :options="[Currency.C4E]"  placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
                   <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
@@ -33,12 +33,11 @@
               </div>
             </div>
           </div>
-
-          <div style="width:50%" class="calculatorC4E__inputContainer">
+          <div style="flex: 1 1; margin: 0 20px;" class="calculatorC4E__inputContainer">
             <div>
               <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_INVEST')}}</p>
-              <div style="display: flex">
-                <input @paste="onSecondInputChange"  @keyup="onSecondInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" v-model="secondValue.amount">
+              <div style="display: flex; min-width:350px;">
+                <input @paste="onSecondInputChange"  @keyup="onSecondInputChange" @blur="onFirstInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" v-model="secondValue.amount">
                 <Dropdown v-model="secondValue.currency" :options="currencyList" placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
                   <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
@@ -73,7 +72,7 @@
 
       <div v-tooltip="{ value: 'You cannot invest less then $25 and more than $10000', disabled: minimumRequired()}" class="calculatorC4E__btnSection">
 
-        <Button class="p-button p-component secondary" :disabled="!minimumRequired()" style="width: 141px;" @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
+        <Button class="p-button p-component secondary" :disabled="!minimumRequired()" style="width: 141px; " @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
       </div>
 
     </div>
@@ -234,7 +233,7 @@ const flagSelector = {
   font-weight: 700;
   font-size: 20px;
   line-height: 24px;
-  padding: 32px 33px 26px 116px;
+  padding: 32px 33px 26px 32px;
   border-radius: 5px;
   &__header{
     width: 100%;
@@ -247,8 +246,9 @@ const flagSelector = {
   &__body{
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
   }
   &__inputContainer{
     text-align: start;
@@ -259,6 +259,8 @@ const flagSelector = {
     display: flex;
     flex-direction: column;
     font-size: 16px;
+    flex: 1 1;
+    max-width: 160px;
   }
   &__input{
     height: 52px;
