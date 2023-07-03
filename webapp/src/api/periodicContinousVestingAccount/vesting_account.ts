@@ -67,8 +67,8 @@ export const ContinuousVestingPeriod = {
 
   fromJSON(object: any): ContinuousVestingPeriod {
     return {
-      startTime: isSet(object.startTime) ? Number(object.startTime) : 0,
-      endTime: isSet(object.endTime) ? Number(object.endTime) : 0,
+      startTime: isSet(object.start_time) ? Number(object.start_time) : 0,
+      endTime: isSet(object.end_time) ? Number(object.end_time) : 0,
       amount: Array.isArray(object?.amount) ? object.amount.map((e: any) => Coin.fromJSON(e)) : [],
     };
   },

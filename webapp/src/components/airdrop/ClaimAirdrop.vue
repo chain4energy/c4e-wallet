@@ -7,18 +7,18 @@
         v-if="claimingProcessStarted" @close="claimingProcessStarted = false"/>
       <div class="claimAirDrop__total">
         <div class="claimAirDrop__container">
-          <h4 class="claimAirDrop__header claimAirDrop__mainTxt">Total</h4>
-          <div  class="claimAirDrop__data claimAirDrop__basicText">
-            <ClaimInfo header="header" >
+          <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{$t('AIRDROP.TOTAL_HEADER')}}</h4>
+          <div class="claimAirDrop__data claimAirDrop__basicText">
+            <ClaimInfo :header="$t('AIRDROP.TOTAL')" >
               <CoinAmount :amount="fairdropPoolUsage.total" :show-denom="true" :precision="2"/>
            </ClaimInfo>
-            <ClaimInfo header="Total claimed" :percentage-vale="fairdropPoolUsage.claimedPercentage">
+            <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" :percentage-vale="fairdropPoolUsage.claimedPercentage">
               <CoinAmount :amount="fairdropPoolUsage.claimed" :show-denom="true" :precision="2"/>
             </ClaimInfo>
-            <ClaimInfo header="Active campaigns">
+            <ClaimInfo :header="$t('AIRDROP.ACTIVE')">
               <CoinAmount :amount="fairdropPoolUsage.activeCampaigns" :show-denom="true" :precision="2"/>
             </ClaimInfo>
-            <ClaimInfo header="To claim" :percentage-vale="fairdropPoolUsage.toClaimePercentage">
+            <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" :percentage-vale="fairdropPoolUsage.toClaimePercentage">
               <CoinAmount :amount="fairdropPoolUsage.toClaim" :show-denom="true" :precision="2"/>
             </ClaimInfo>
           </div>
@@ -41,20 +41,20 @@
               :time-to-pass="calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)"
             />
             <div class="claimAirDrop__data">
-              <ClaimInfo header="Claimed">
+              <ClaimInfo :header="$t('AIRDROP.CLAIMED')">
                 <div class="claimAirDrop__data-text">
                   <CoinAmount :amount="calculateMissions(campaignRecord)" :show-denom="true" :precision="2"></CoinAmount>
                   /
                   <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
                 </div>
               </ClaimInfo>
-              <ClaimInfo header="Mission Completed">
+              <ClaimInfo :header="$t('AIRDROP.MISSION_COMPLETED')">
                 <p class="claimAirDrop__data-text">{{getAmountOfClaimedMissions(campaignRecord)}}/{{campaignRecord.missions.length}}</p>
               </ClaimInfo>
               <ClaimInfo :header="getTextForTimeColumn(campaignRecord)">
                 <p class="claimAirDrop__data-text">{{calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)}}</p>
               </ClaimInfo>
-              <ClaimInfo header="Total Distribution">
+              <ClaimInfo :header="$t('AIRDROP.TOTAL_DISTRIBUTION')">
                 <div class="claimAirDrop__data-text">
                   <CoinAmount :amount="campaignRecord.totalDistribution" :show-denom="true" :precision="2"></CoinAmount>
                 </div>
@@ -68,7 +68,7 @@
                     <div class="claimAirDrop__smallTxt">{{`Mission# ${missions.id}`}} ({{missions.weightInPerc}})
                       <CoinAmount :amount="missions.weight" :show-denom="true" :precision="2"></CoinAmount>
                     </div>
-                    <div>{{missions.description}}</div>
+                    <div>{{missions.description === 'Initial mission - basic mission that must be claimed first' ? $t('AIRDROP.INITIAL') : missions.description}}</div>
                   </div>
                   <div>
                     <Button
@@ -78,13 +78,13 @@
                       @click="redirectMission(campaignRecord, missions, missions.mission_type)"
                     >
 
-                    </Button>
-                  </div>
+                  </Button>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
     </div>
 </template>
 
@@ -100,9 +100,10 @@ import CoinAmount from "@/components/commons/CoinAmount.vue";
 import { MissionType } from "@/models/blockchain/airdrop";
 import router from "@/router";
 import ClaimingOptionsPopup from "@/components/airdrop/ClaimingOptionsPopup.vue";
-import { storeToRefs } from 'pinia';
+import {useI18n} from "vue-i18n";
 
 const percentsBar = ref();
+const i18n = useI18n();
 
 // const currentLang = computed(() => {
 //   return i18n.global.locale;
@@ -188,9 +189,9 @@ const updateComponent = ref(false);
 function getTextForTimeColumn(campaign: Campaign){
   const res = checkCampaignStatus(new Date(campaign.start_time), new Date(campaign.end_time));
   switch (res){
-    case CampainStatus.Past: return 'Campaign has past';
-    case CampainStatus.Now: return 'Time until end of campaign';
-    case CampainStatus.Future: return 'Time until campaign start';
+    case CampainStatus.Past: return i18n.t('AIRDROP.CAMPAIGN_PASSED');
+    case CampainStatus.Now: return i18n.t('AIRDROP.CAMPAIGN_END');
+    case CampainStatus.Future: return i18n.t('AIRDROP.CAMPAIGN_START');
   }
 }
 function calculateTimeToPAss(startDate: Date, endDate: Date){
@@ -222,17 +223,17 @@ setInterval(() => {
 function getTextForMissionsBtn(mission: Mission, type: MissionType){
   let text;
   switch (type){
-    case MissionType.INITIAL_CLAIM: text = 'Claim';
+    case MissionType.INITIAL_CLAIM: text = i18n.t('AIRDROP.CLAIM');
     break;
-    case MissionType.DELEGATE: text = 'Delegate';
+    case MissionType.DELEGATE: text = i18n.t('AIRDROP.DELEGATE');
     break;
-    case MissionType.VOTE: text = 'Vote';
+    case MissionType.VOTE: text = i18n.t('AIRDROP.VOTE');
     break;
-    case MissionType.CLAIM: text = 'Claim';
+    case MissionType.CLAIM: text = i18n.t('AIRDROP.CLAIM');
     break;
   }
   if(mission.completed && !mission.claimed){
-    text = 'Claim';
+    text = i18n.t('AIRDROP.CLAIM');
   }
   return text;
 }

@@ -92,9 +92,9 @@ export const useTokensStore = defineStore({
       let delegations = 0n;
       let unbondingDelegations = 0n;
       let unbonded = 0n;
+      const promises = Array<Promise<void>>();
       for (const address of useConfigurationStore().config.strategicPoolAddress) {
-        await Promise.all([
-          await apiFactory.accountApi().fetchDelegations(address, lockscreen).then(response => {
+        promises.push(apiFactory.accountApi().fetchDelegations(address, lockscreen).then(response => {
             if (response.isSuccess() && response.data !== undefined) {
               delegations += response.data.totalDelegated;
             } else {
@@ -102,8 +102,8 @@ export const useTokensStore = defineStore({
               logger.logToConsole(LogLevel.ERROR, message);
               ToastsService.getInstance().errorToast(ToastsTypeEnum.STRATEGIC_REVERSE_POOL, message);
             }
-          }),
-          await apiFactory.accountApi().fetchUnbondingDelegations(address, lockscreen).then(response => {
+          }));
+        promises.push( apiFactory.accountApi().fetchUnbondingDelegations(address, lockscreen).then(response => {
             if (response.isSuccess() && response.data !== undefined) {
               unbondingDelegations += response.data.totalUndelegating;
             } else {
@@ -111,8 +111,8 @@ export const useTokensStore = defineStore({
               logger.logToConsole(LogLevel.ERROR, message);
               ToastsService.getInstance().errorToast(ToastsTypeEnum.STRATEGIC_REVERSE_POOL, message);
             }
-          }),
-          await apiFactory.accountApi().fetchBalance(address, denom, lockscreen).then(response => {
+          }));
+        promises.push( apiFactory.accountApi().fetchBalance(address, denom, lockscreen).then(response => {
             if (response.isSuccess() && response.data !== undefined) {
               unbonded += response.data.amount;
             } else {
@@ -120,9 +120,9 @@ export const useTokensStore = defineStore({
               logger.logToConsole(LogLevel.ERROR, message);
               ToastsService.getInstance().errorToast(ToastsTypeEnum.STRATEGIC_REVERSE_POOL, message);
             }
-          }),
-        ]);
+          }));
       }
+      await Promise.all(promises);
       this.strategicReversePool = new Coin((delegations + unbondingDelegations + unbonded), denom );
       this.strategicReversePoolUnbonded = new Coin(unbonded, denom);
     },

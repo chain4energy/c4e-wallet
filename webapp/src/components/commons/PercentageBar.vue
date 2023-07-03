@@ -7,6 +7,9 @@
 <script setup lang="ts">
 import {onMounted, ref,  nextTick } from "vue";
 import {CampainStatus} from "@/models/airdrop/airdrop";
+import {useI18n} from "vue-i18n";
+
+const i18n = useI18n();
 const props = defineProps<{
   amount: number | null,
   status: CampainStatus;
@@ -43,7 +46,7 @@ function changeStatus(){
       progress = false;
       break;
     case CampainStatus.Past:
-      text = 'The campaign has past';
+      text = i18n.t('AIRDROP.CAMPAIGN_PASSED');
       ctx.value.rect(0, 0, canva.value.width, canva.value.height);
       backgroundColor = '#9A9B9C';
       progress = false;

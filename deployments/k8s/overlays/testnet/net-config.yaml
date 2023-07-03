@@ -10,12 +10,14 @@ data:
       "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
       "addressPrefix": "c4e",
       "stakingDenom": "uc4e",
+      "tokenReservationDenom": "C4E",
       "strategicPoolAddress": [
-          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+          "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
       ],
       "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-      "chainId": "veles-1",
-      "networkName": "Testnet(veles-1)",
+      "chainId": "babajaga-1",
+      "networkName": "Testnet(babajaga-1)",
       "keplrNetworkName": "Chain4Energy Testnet",
       "operationGas": {
         "vote": 72000,
@@ -50,7 +52,8 @@ data:
       "airdropBaseURL": "https://airdrop.c4e.io/",
       "airdropDefaultDenom": "uc4e",
       "proposalVotingRefreshTimeout": 30000,
-      "targetInflationAprMultiplier": 5
+      "targetInflationAprMultiplier": 5,
+      "faucetURL": "https://faucet-testnet.c4e.io/send/{address}"
     },
       "Mainnet": {
         "bcApiURL": "https://lcd.c4e.io",
@@ -60,8 +63,10 @@ data:
         "stakingPageURL": "https://wallet.c4e.io/staking",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
+        "tokenReservationDenom": "C4E",
         "strategicPoolAddress": [
-          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422"
+          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+          "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
         ],
         "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
         "chainId": "perun-1",
@@ -101,6 +106,7 @@ data:
         "airdropDefaultDenom": "uc4e",
         "proposalVotingRefreshTimeout": 30000,
         "targetInflationAprMultiplier": 5
+        "faucetURL": ""
       }
     }
 kind: ConfigMap

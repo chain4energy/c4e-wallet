@@ -26,6 +26,7 @@ export default {
     CAMPAIGN_MISSIONS_URL: '/c4e/claim/v1beta1/missions/{campaign_id}',
     AIRDROP_DISTRIBUTIONS: '/c4e/claim/v1beta1/airdrop_distributions/{campaign_id}', //total
     AIRDROP_CLAIMS_LEFT: '/c4e/claim/v1beta1/airdrop_claims_left/{campaign_id}', //delete
+    SPENDABLE_BALANCES_URL: '/cosmos/bank/v1beta1/spendable_balances/{address}'
   },
   hasura: {
     AVERAGE_BLOCK_TIME_QUERY: 'query AverageBlockTime {' +
@@ -80,5 +81,38 @@ export default {
   },
   airdrop: {
     AIRDROP_INFO: 'airdropInfo.json'
+  },
+  publicSaleService: {
+    ACCEPT_TERMS:'/api/publicsale-service/acceptTerms',
+    GET_ACCOUNT_INFO: '/api/publicsale-service/accountInfo',
+    ACTIVATE_ACCOUNT: '/api/publicsale-service/activate/{activationCode}',
+    AUTHENTICATE_KEPLR: '/api/publicsale-service/auth/keplr',
+    AUTHENTICATE_METAMASK: '/api/publicsale-service/auth/metamask',
+    AUTHENTICATE_EMAIL: '/api/publicsale-service/auth/password',
+    VERIFY_EMAIL_KEPLR: '/api/publicsale-service/claim/emailKeplr/dataVerify',
+    INIT_PAIR_EMAIL_KEPLR: '/api/publicsale-service/claim/emailKeplr/init',
+    CONFIRM_SIGNED_EMAIL_KEPLR_DATA: '/api/publicsale-service/claim/emailKeplr/signedData',
+    VERIFY_EMAIL_METAMASK: '/api/publicsale-service/claim/emailMetamask/dataVerify',
+    INIT_PAIR_EMAIL_METAMASK: '/api/publicsale-service/claim/emailMetamask/init',
+    CONFIRM_SIGNED_EMAIL_METAMASK_DATA: '/api/publicsale-service/claim/emailMetamask/signedData',
+    INIT_PAIR_KEPLR_METAMASK: '/api/publicsale-service/claim/keplrMetamask/init',
+    VERIFY_KEPLR_METAMASK: '/api/publicsale-service/claim/keplrMetamask/signatureVerify',
+    INIT_PAIR_METAMASK_KEPLR: '/api/publicsale-service/claim/metamaskKeplr/init',
+    VERIFY_METAMASK_KEPLR: '/api/publicsale-service/claim/metamaskKeplr/signatureVerify',
+    INIT_WALLET_AUTH: '/api/publicsale-service/initWalletAuth',
+    KYC_INIT_SESSION: '/api/publicsale-service/kyc/init',
+    GET_KYC_STATUS: '/api/publicsale-service/kyc/status',
+    INIT_PAYMENT_SESSION: '/api/publicsale-service/payment/initSession',
+    REFRESH_TOKEN: '/api/publicsale-service/refresh',
+    EMAIL_CREATE_ACCOUNT: '/api/publicsale-service/register',
+    RESERVE_TOKENS: '/api/publicsale-service/token/reservation',
+    TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations',
+    PROVIDE_TX_PAYMENT_PROOF: '/api/publicsale-service/token/tx',
+    BLOCKCHAIN_INFO: '/api/publicsale-service/blockchain/info',
+    ROUND_INFO: '/api/publicsale-service/round/info',
+    LOGOUT: '/api/publicsale-service/logout'
+  },
+  synaps: {
+    OVERVIEW: 'https://individual-api.synaps.io/v3/onboarding/overview'
   }
 };

@@ -51,11 +51,11 @@
     <div class="bottom" @mousemove="updateTooltipPosition($event)" v-if="proposal.status !== ProposalStatus.DEPOSIT_PERIOD">
       <div class="chartbox">
         <div style="height:20px" class="chartdiv">
-          <div @mouseover="showTooltip('YES', (yesPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="yes" :style="'flex-basis:' + yesPercentage * 100 + '%'"></div>
-          <div @mouseover="showTooltip('ABSTAIN', (abstainPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="abstain" :style="'flex-basis:' + abstainPercentage * 100 + '%'"></div>
-          <div @mouseover="showTooltip('NO', (noPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no" :style="'flex-basis:' + noPercentage * 100 + '%'"></div>
-          <div @mouseover="showTooltip('NO_WITH_VETO', (noWithVetoPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentage * 100 + '%'"></div>
-          <div @mouseover="showTooltip('NOT_VOTED', (notVotedPercentage * 100).toFixed(2) + '%')" @mouseout="hideTooltip" class="not-voted" :style="'flex-basis:' + notVotedPercentage * 100 + '%'"></div>
+          <div @mouseover="showTooltip('YES', '')" @mouseout="hideTooltip" class="yes" :style="'flex-basis:' + yesPercentageChart * 100 + '%'"></div>
+          <div @mouseover="showTooltip('ABSTAIN', '')" @mouseout="hideTooltip" class="abstain" :style="'flex-basis:' + abstainPercentageChart * 100 + '%'"></div>
+          <div @mouseover="showTooltip('NO', '')" @mouseout="hideTooltip" class="no" :style="'flex-basis:' + noPercentageChart * 100 + '%'"></div>
+          <div @mouseover="showTooltip('NO_WITH_VETO', '')" @mouseout="hideTooltip" class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentageChart * 100 + '%'"></div>
+          <div @mouseover="showTooltip('NOT_VOTED', '')" @mouseout="hideTooltip" class="not-voted" :style="'flex-basis:' + notVotedPercentageChart * 100 + '%'"></div>
 
 
           <!-- <v-chart :option="option" /> -->
@@ -250,6 +250,31 @@ const noWithVetoPercentage = computed(() => {
 
 const notVotedPercentage = computed(() => {
   const notVotedPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNotVotedPercentage();
+  return notVotedPercentage != undefined ? notVotedPercentage : new BigDecimal(0);
+});
+
+const yesPercentageChart = computed(() => {
+  const yesPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYesPercentageChart();
+  return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
+});
+
+const noPercentageChart = computed(() => {
+  const noPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoPercentageChart();
+  return noPercentage!=undefined ? noPercentage : new BigDecimal(0);
+});
+
+const abstainPercentageChart = computed(() => {
+  const abstainPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getAbstainPercentageChart();
+  return abstainPercentage != undefined ? abstainPercentage : new BigDecimal(0);
+});
+
+const noWithVetoPercentageChart = computed(() => {
+  const noWithVetoPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoWithVetoPercentageChart();
+  return noWithVetoPercentage != undefined ? noWithVetoPercentage : new BigDecimal(0);
+});
+
+const notVotedPercentageChart = computed(() => {
+  const notVotedPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNotVotedPercentageChart();
   return notVotedPercentage != undefined ? notVotedPercentage : new BigDecimal(0);
 });
 

@@ -30,7 +30,19 @@ import { defaultGas, defaultMemo, defaultTxErrorResponse, defaultTxSuccessRespon
 import { BigDecimal } from '@/models/store/big.decimal';
 import { VoteOption } from '@/models/store/proposal';
 
-jest.mock("axios");
+jest.mock('axios', () => {
+  return {
+    create: jest.fn(() => ({
+      get: jest.fn(),
+      interceptors: {
+        request: { use: jest.fn(), eject: jest.fn() },
+        response: { use: jest.fn(), eject: jest.fn() }
+      }
+    })),
+    request: jest.fn(),
+    AxiosError: jest.fn()
+  }
+})
 const mockedAxios = mockAxios();
 const api = apiFactory.accountApi()
 
@@ -57,8 +69,8 @@ describe('account api tests', () => {
 
   afterEach(() => {
     expect(useSplashStore().splashCounter).toBe(0);
-    // mockedAxios.request.mockClear();
-    // mockedAxios.request.mockReset();
+    mockedAxios.request.mockClear();
+    mockedAxios.request.mockReset();
   })
 
   it('gets BaseAccount', async () => {
@@ -243,6 +255,37 @@ describe('account api tests', () => {
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
 
+  });
+
+  it('gets spendable balance', async () => {
+    const amount = 942541981n;
+
+    const fakeResponse = {
+      data: {
+        balances: [
+          {
+            denom:"uc4e",
+            amount:"942541981"
+          }
+        ],
+        pagination: {
+          "next_key": null,
+          total: "1"
+        }
+      }
+    };
+
+
+    mockedAxios.request.mockResolvedValue(fakeResponse);
+
+    const result = await api.fetchSpendableBalances(address, false);
+
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data).toBeDefined()
+    //@ts-ignore
+    expect(result.data[0].amount).toBe(amount)
   });
 
   it('gets delegator delegations - delegations exist', async () => {

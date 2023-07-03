@@ -4,7 +4,7 @@ import {SidebarConfig, SidebarElement} from "@/services/permissions/sidebar.conf
 export class PermissionsService{
 
   sidebarElementOrder(): PagesEnum[]{
-    return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AirDrop];
+    return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AIRDROP, PagesEnum.BUYTOKENS, PagesEnum.PROFILE, PagesEnum.PORTFOLIO];
   }
 
   createSideBar(): SidebarElement[]{

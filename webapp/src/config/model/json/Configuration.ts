@@ -39,7 +39,15 @@ export interface JsonQueries {
   INFLATION_URL: string;
   STAKING_PARAMS_URL: string;
   VESTINGS_SUM_URL: string;
+  DISTRIBUTOR_PARAMS_URL: string;
+  USER_AIRDROP_ENTRIES_URL: string;
+  CAMPAIGNS_URL: string;
+  MISSIONS_URL: string;
+  AIRDROP_DISTRIBUTIONS: string;
+  AIRDROP_CLAIMS_LEFT: string;
+  SPENDABLE_BALANCES_URL: string;
 }
+
 
 export interface Configuration {
   bcApiURL: string,
@@ -47,6 +55,7 @@ export interface Configuration {
   hasuraURL: string,
   keybaseURL: string,
   stakingPageURL: string,
+  publicSaleServiceURL: string,
   addressPrefix: string,
   stakingDenom: string,
   strategicPoolAddress: string[],
@@ -74,5 +83,7 @@ export interface Configuration {
   airdropBaseURL: string;
   proposalVotingRefreshTimeout: number;
   airdropDefaultDenom: string;
-  targetInflationAprMultiplier: number
+  targetInflationAprMultiplier: number;
+  faucetURL: string;
+  tokenReservationDenom: string;
 }

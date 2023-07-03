@@ -48,7 +48,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Misc Improvements
 
-## [1.1.6](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.5) - 2022-03-27
+## [1.1.8](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.8) - 2022-04-13
+
+### Misc Improvements
+* Configuration update - Strategic Reserve poll
+* 
+## [1.1.7](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.7) - 2022-04-12
+
+### Misc Improvements
+* Configuration update - Strategic Reserve poll - multiple addresses support
+
+## [1.1.6](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.6) - 2022-04-12
 
 ### Features
 * Cosmostation wallet support

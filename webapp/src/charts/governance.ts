@@ -15,8 +15,7 @@ export function createProposalDetailsChartData(yes: number | BigDecimal, abstain
     const formatter = function (params: any) {
       return `
         <b>${params.data.name}</b></br>
-        <b>${formatBigNumberLocalized(params.value)}</b>
-        <b>(${formatBigNumberLocalized(String(params.percent))}%)</b>`;
+        <b>${formatBigNumberLocalized(params.value)}</b>`;
     };
     return createProposalDetailsSingleChartData(
       formatter,

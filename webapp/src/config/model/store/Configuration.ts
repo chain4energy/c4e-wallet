@@ -6,6 +6,7 @@ import {
   KeplrGasPriceSteps as JsonKeplrGasPriceSteps,
   JsonQueries
 } from "../json/Configuration";
+import queriesDefaults from "@/api/queries";
 import { BigIntWrapper } from "@/models/store/common";
 export class Gas implements JsonGas {
   vote: number;
@@ -89,49 +90,42 @@ export class Queries implements JsonQueries{
   INFLATION_URL: string;
   STAKING_PARAMS_URL: string;
   VESTINGS_SUM_URL: string;
+  DISTRIBUTOR_PARAMS_URL: string;
+  USER_AIRDROP_ENTRIES_URL: string;
+  CAMPAIGNS_URL: string;
+  MISSIONS_URL: string;
+  AIRDROP_DISTRIBUTIONS: string;
+  AIRDROP_CLAIMS_LEFT: string;
+  SPENDABLE_BALANCES_URL: string;
+
   constructor (
     queries : JsonQueries | undefined
-  ){
-    if(queries){
-      this.STAKING_POOL_URL = queries.STAKING_POOL_URL;
-      this.TOTAL_SUPPLY_URL = queries.TOTAL_SUPPLY_URL;
-      this.COMMUNITY_POOL_URL = queries.COMMUNITY_POOL_URL;
-      this.PROPOSALS_URL = queries.PROPOSALS_URL;
-      this.PROPOSALS_BY_ID_URL = queries.PROPOSALS_BY_ID_URL;
-      this.TALLYING_URL = queries.TALLYING_URL;
-      this.DEPOSIT_URL = queries.DEPOSIT_URL;
-      this.LATEST_BLOCK_URL = queries.LATEST_BLOCK_URL;
-      this.VALIDATORS_URL = queries.VALIDATORS_URL;
-      this.ACCOUNT_URL = queries.ACCOUNT_URL;
-      this.BALANCE_URL = queries.BALANCE_URL;
-      this.STAKED_AMOUNT_URL = queries.STAKED_AMOUNT_URL;
-      this.UNSTAKED_AMOUNT_URL = queries.UNSTAKED_AMOUNT_URL;
-      this.REWARDS_URL = queries.REWARDS_URL;
-      this.PROPOSAL_TALLY_URL = queries.PROPOSAL_TALLY_URL;
-      this.INFLATION_URL =queries.INFLATION_URL;
-      this.STAKING_PARAMS_URL = queries.STAKING_PARAMS_URL;
-      this.VESTINGS_SUM_URL = queries.VESTINGS_SUM_URL;
-    } else {
-      this.STAKING_POOL_URL = '';
-      this.TOTAL_SUPPLY_URL = '';
-      this.COMMUNITY_POOL_URL = '';
-      this.PROPOSALS_URL = '';
-      this.PROPOSALS_BY_ID_URL = '';
-      this.TALLYING_URL = '';
-      this.DEPOSIT_URL = '';
-      this.LATEST_BLOCK_URL = '';
-      this.VALIDATORS_URL = '';
-      this.ACCOUNT_URL = '';
-      this.BALANCE_URL = '';
-      this.STAKED_AMOUNT_URL = '';
-      this.UNSTAKED_AMOUNT_URL = '';
-      this.REWARDS_URL = '';
-      this.PROPOSAL_TALLY_URL = '';
-      this.INFLATION_URL = '';
-      this.STAKING_PARAMS_URL = '';
-      this.VESTINGS_SUM_URL = '';
-    }
-
+  ) {
+    this.STAKING_POOL_URL = queries?.STAKING_POOL_URL ? queries.STAKING_POOL_URL : queriesDefaults.blockchain.STAKING_POOL_URL;
+    this.TOTAL_SUPPLY_URL = queries?.TOTAL_SUPPLY_URL ? queries.TOTAL_SUPPLY_URL : queriesDefaults.blockchain.TOTAL_SUPPLY_URL;
+    this.COMMUNITY_POOL_URL = queries?.COMMUNITY_POOL_URL ? queries.COMMUNITY_POOL_URL : queriesDefaults.blockchain.COMMUNITY_POOL_URL;
+    this.PROPOSALS_URL = queries?.PROPOSALS_URL ? queries.PROPOSALS_URL : queriesDefaults.blockchain.PROPOSALS_URL;
+    this.PROPOSALS_BY_ID_URL = queries?.PROPOSALS_BY_ID_URL ? queries.PROPOSALS_BY_ID_URL : queriesDefaults.blockchain.PROPOSALS_BY_ID_URL;
+    this.TALLYING_URL = queries?.TALLYING_URL ? queries.TALLYING_URL : queriesDefaults.blockchain.TALLYING_URL;
+    this.DEPOSIT_URL = queries?.DEPOSIT_URL ? queries.DEPOSIT_URL : queriesDefaults.blockchain.DEPOSIT_URL;
+    this.LATEST_BLOCK_URL = queries?.LATEST_BLOCK_URL ? queries.LATEST_BLOCK_URL : queriesDefaults.blockchain.LATEST_BLOCK_URL;
+    this.VALIDATORS_URL = queries?.VALIDATORS_URL ? queries.VALIDATORS_URL : queriesDefaults.blockchain.VALIDATORS_URL;
+    this.ACCOUNT_URL = queries?.ACCOUNT_URL ? queries.ACCOUNT_URL : queriesDefaults.blockchain.ACCOUNT_URL;
+    this.BALANCE_URL = queries?.BALANCE_URL ? queries.BALANCE_URL : queriesDefaults.blockchain.BALANCE_URL;
+    this.STAKED_AMOUNT_URL = queries?.STAKED_AMOUNT_URL ? queries.STAKED_AMOUNT_URL : queriesDefaults.blockchain.STAKED_AMOUNT_URL;
+    this.UNSTAKED_AMOUNT_URL = queries?.UNSTAKED_AMOUNT_URL ? queries.UNSTAKED_AMOUNT_URL : queriesDefaults.blockchain.UNSTAKED_AMOUNT_URL;
+    this.REWARDS_URL = queries?.REWARDS_URL ? queries.REWARDS_URL : queriesDefaults.blockchain.REWARDS_URL;
+    this.PROPOSAL_TALLY_URL = queries?.PROPOSAL_TALLY_URL ? queries.PROPOSAL_TALLY_URL : queriesDefaults.blockchain.PROPOSAL_TALLY_URL;
+    this.INFLATION_URL = queries?.INFLATION_URL ? queries.INFLATION_URL : queriesDefaults.blockchain.INFLATION_URL;
+    this.STAKING_PARAMS_URL = queries?.STAKING_PARAMS_URL ? queries.STAKING_PARAMS_URL : queriesDefaults.blockchain.STAKING_PARAMS_URL;
+    this.VESTINGS_SUM_URL = queries?.VESTINGS_SUM_URL ? queries.VESTINGS_SUM_URL : queriesDefaults.blockchain.VESTINGS_SUM_URL;
+    this.DISTRIBUTOR_PARAMS_URL = queries?.DISTRIBUTOR_PARAMS_URL ? queries.DISTRIBUTOR_PARAMS_URL : queriesDefaults.blockchain.DISTRIBUTOR_PARAMS_URL;
+    this.USER_AIRDROP_ENTRIES_URL = queries?.USER_AIRDROP_ENTRIES_URL ? queries.USER_AIRDROP_ENTRIES_URL : queriesDefaults.blockchain.USER_AIRDROP_ENTRIES_URL;
+    this.CAMPAIGNS_URL = queries?.CAMPAIGNS_URL ? queries.CAMPAIGNS_URL : queriesDefaults.blockchain.CAMPAIGNS_URL;
+    this.MISSIONS_URL = queries?.MISSIONS_URL ? queries.MISSIONS_URL : queriesDefaults.blockchain.MISSIONS_URL;
+    this.AIRDROP_DISTRIBUTIONS = queries?.AIRDROP_DISTRIBUTIONS ? queries.AIRDROP_DISTRIBUTIONS : queriesDefaults.blockchain.AIRDROP_DISTRIBUTIONS;
+    this.AIRDROP_CLAIMS_LEFT = queries?.AIRDROP_CLAIMS_LEFT ? queries.AIRDROP_CLAIMS_LEFT : queriesDefaults.blockchain.AIRDROP_CLAIMS_LEFT;
+    this.SPENDABLE_BALANCES_URL = queries?.SPENDABLE_BALANCES_URL ? queries.SPENDABLE_BALANCES_URL : queriesDefaults.blockchain.SPENDABLE_BALANCES_URL;
   }
 }
 
@@ -141,8 +135,10 @@ export class Configuration implements JsonConfiguration {
   hasuraURL: string;
   keybaseURL: string;
   stakingPageURL: string;
+  publicSaleServiceURL: string;
   addressPrefix: string;
   stakingDenom: string;
+  tokenReservationDenom: string;
   strategicPoolAddress: string[];
   airdropPoolAddress: string;
   chainId: string;
@@ -169,6 +165,7 @@ export class Configuration implements JsonConfiguration {
   airdropBaseURL: string;
   proposalVotingRefreshTimeout: number;
   airdropDefaultDenom: string;
+  faucetURL: string;
 
   targetInflationAprMultiplier: number;
   public static readonly emptyConfiguration = new Configuration();
@@ -182,6 +179,7 @@ export class Configuration implements JsonConfiguration {
       this.hasuraURL = configuration.hasuraURL;
       this.keybaseURL = configuration.keybaseURL;
       this.stakingPageURL = configuration.stakingPageURL;
+      this.publicSaleServiceURL = configuration.publicSaleServiceURL;
       this.addressPrefix = configuration.addressPrefix;
       this.stakingDenom = configuration.stakingDenom;
       this.strategicPoolAddress = configuration.strategicPoolAddress;
@@ -215,12 +213,15 @@ export class Configuration implements JsonConfiguration {
       this.airdropDefaultDenom = configuration.airdropDefaultDenom;
       this.proposalVotingRefreshTimeout = configuration.proposalVotingRefreshTimeout;
       this.targetInflationAprMultiplier = configuration.targetInflationAprMultiplier;
+      this.faucetURL = configuration.faucetURL;
+      this.tokenReservationDenom = configuration.tokenReservationDenom;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
       this.hasuraURL = '';
       this.keybaseURL = '';
       this.stakingPageURL = '';
+      this.publicSaleServiceURL = ' ';
       this.addressPrefix = '';
       this.stakingDenom = '';
       this.strategicPoolAddress = [''];
@@ -250,6 +251,8 @@ export class Configuration implements JsonConfiguration {
       this.airdropDefaultDenom = 'uc4e';
       this.proposalVotingRefreshTimeout = 30000;
       this.targetInflationAprMultiplier = 1;
+      this.faucetURL = '';
+      this.tokenReservationDenom = '';
     }
   }
 

@@ -1,6 +1,7 @@
 import { useConfigurationStore } from "@/store/configuration.store";
 import { Coin, findByDenom } from "./common";
 import {calculateLockedVesting} from "@/utils/vesting-utils";
+import {ContinuousVestingPeriod} from "@/api/periodicContinousVestingAccount/vesting_account";
 
 export enum AccountType {
   Disconnected,
@@ -11,6 +12,8 @@ export enum AccountType {
   PeriodicContinuousVestingAccount
 }
 
+
+
 export class Account {
 
   static disconnected = new Account(AccountType.Disconnected, '');
@@ -18,11 +21,13 @@ export class Account {
   type: AccountType;
   address: string;
   continuousVestingData?: ContinuousVestingData;
+  vestingPeriods?: VestingPeriods[];
 
-  constructor (type: AccountType, address: string, continuousVestingData?: ContinuousVestingData) {
+  constructor (type: AccountType, address: string, continuousVestingData?: ContinuousVestingData, vestingPeriods?: VestingPeriods[]) {
     this.type = type;
     this.address = address;
     this.continuousVestingData = continuousVestingData;
+    this.vestingPeriods = vestingPeriods;
   }
 
 }
@@ -70,6 +75,18 @@ export class Balances {
 
   public getBalanceByDenom(denom: string): Coin {
     return findByDenom(this.balances, denom);
+  }
+}
+
+export class VestingPeriods {
+  startTime: number;
+  endTime: number;
+  amount: Coin[];
+
+  constructor(startTime: number, endTime: number, amount: Coin[]) {
+    this.startTime = startTime;
+    this.endTime = endTime;
+    this.amount = amount;
   }
 }
 

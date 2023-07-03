@@ -301,6 +301,10 @@ export class ProposalDetailsTally {
   }
 
   public get total(): bigint {
+    return this.proposalTally.yes + this.proposalTally.no + this.proposalTally.abstain + this.proposalTally.noWithVeto;
+  }
+
+  public get totalChart(): bigint {
     return this.stakingPool.bondedTokens;
   }
 
@@ -338,6 +342,40 @@ export class ProposalDetailsTally {
     return divideBigInts(this.getNotVoted(), this.total);
   }
 
+  public getYesPercentageChart(): BigDecimal {
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.yes, this.totalChart);
+  }
+  public getAbstainPercentageChart(): BigDecimal{
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.abstain, this.totalChart);
+  }
+
+  public getNoPercentageChart(): BigDecimal {
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.no, this.totalChart);
+  }
+
+  public getNoWithVetoPercentageChart(): BigDecimal {
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.proposalTally.noWithVeto, this.totalChart);
+  }
+
+  public getNotVotedPercentageChart(): BigDecimal {
+    if (this.total <= 0n) {
+      return new BigDecimal(0);
+    }
+    return divideBigInts(this.getNotVoted(), this.totalChart);
+  }
+
   public getAbstain(): bigint{
     return this.proposalTally.abstain;
   }
@@ -352,7 +390,7 @@ export class ProposalDetailsTally {
     return this.proposalTally.no;
   }
   public getNotVoted(): bigint {
-    return this.total - this.proposalTally.yes - this.proposalTally.no - this.proposalTally.abstain - this.proposalTally.noWithVeto;
+    return this.totalChart - this.proposalTally.yes - this.proposalTally.no - this.proposalTally.abstain - this.proposalTally.noWithVeto;
   }
 }
 

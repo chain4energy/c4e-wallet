@@ -12,6 +12,7 @@ import { mapParameter } from "@/models/mapper/params.mapper";
 import { Params } from "@/models/store/params";
 import {HasuraErrorData} from "@/models/hasura/error";
 import {ValidatorDescriptionResponse} from "@/models/hasura/validatorDescriptionResponse";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 export class ValidatorsApi extends BaseApi {
 
@@ -19,8 +20,8 @@ export class ValidatorsApi extends BaseApi {
     return ServiceTypeEnum.VALIDATORS_API;
   }
 
-  private VALIDATORS_URL = queries.blockchain.VALIDATORS_URL;
-  private STACKING_PARAMS_URL = queries.blockchain.STAKING_PARAMS_URL
+  // private VALIDATORS_URL = useConfigurationStore().config.queries.VALIDATORS_URL;
+  // private STACKING_PARAMS_URL = useConfigurationStore().config.queries.STAKING_PARAMS_URL
 
   public async fetchAllValidators(lockscreen: boolean): Promise<RequestResponse<{ validators: Validator[], numberOfActive: number }, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: ValidatorsResponse | undefined) => {
@@ -30,7 +31,7 @@ export class ValidatorsApi extends BaseApi {
       return mapAndAddValidators(data.validators, bcData?.validators, data.numberOfActive);
     };
 
-    const result = await this.axiosGetAllBlockchainApiCallPaginated(this.VALIDATORS_URL,
+    const result = await this.axiosGetAllBlockchainApiCallPaginated(useConfigurationStore().config.queries.VALIDATORS_URL,
       mapData, mapAndAddData, lockscreen, null, 'fetchAllValidators - ');
     if (result.data !== undefined) {
       result.data.validators = sortAndRankValidators(result.data.validators);
@@ -43,7 +44,7 @@ export class ValidatorsApi extends BaseApi {
       return mapParameter(params?.params);
     };
 
-    const result = await this.axiosGetBlockchainApiCall(this.STACKING_PARAMS_URL,
+    const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.STAKING_PARAMS_URL,
       mapData, lockscreen, null, 'fetchParameters -');
     return result;
   }
