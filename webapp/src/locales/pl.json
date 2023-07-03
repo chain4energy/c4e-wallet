@@ -425,7 +425,8 @@
     "DELEGATE": "Oddeleguj",
     "INITIAL": "Misja inicjująca - musi być odebrana jako pierwsza",
     "SHOW_MISSIONS": "Pokaż misje",
-    "HIDE_MISSIONS": "Ukryj misje"
+    "HIDE_MISSIONS": "Ukryj misje",
+    "MISSION": "Misja"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Odliczanie kampanii",

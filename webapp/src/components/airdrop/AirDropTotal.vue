@@ -197,8 +197,8 @@ watch(userLoggedIn, () => {
 @import '../../styles/variables.scss';
 
 .airDropTotal {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(calc(100% / 4), 1fr));
+  width: 60%;
+  margin: 0 auto;
   font-family: 'Inter', sans-serif;
 
 

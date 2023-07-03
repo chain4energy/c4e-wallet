@@ -432,7 +432,8 @@
     "DELEGATE": "Delegate",
     "INITIAL": "Initial mission - basic mission that must be claimed first",
     "SHOW_MISSIONS": "Show missions",
-    "HIDE_MISSIONS": "Hide missions"
+    "HIDE_MISSIONS": "Hide missions",
+    "MISSION": "Mission"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Campaign countdown",
