@@ -83,16 +83,16 @@ export class ClaimApi extends BaseApi {
 
   }
 
-  public async fetchCampaigns(lockscreen: boolean): Promise<RequestResponse<CampaignsInfoBc, ErrorData<BlockchainApiErrorData>>> {
-    const mapData = (bcData: CampaignsInfoBc | undefined) => {
-      if (bcData === undefined) {
-        throw new Error('fetchCampaigns - data absent');
-      }
-      return bcData;
-    };
-      return await this.axiosGetBlockchainApiCall(this.CAMPAIGNS_URL,
-        mapData, lockscreen, null, 'fetchCampaigns - ');
-  }
+  // public async fetchCampaigns(lockscreen: boolean): Promise<RequestResponse<CampaignsInfoBc, ErrorData<BlockchainApiErrorData>>> {
+  //   const mapData = (bcData: CampaignsInfoBc | undefined) => {
+  //     if (bcData === undefined) {
+  //       throw new Error('fetchCampaigns - data absent');
+  //     }
+  //     return bcData;
+  //   };
+  //     return await this.axiosGetBlockchainApiCall(this.CAMPAIGNS_URL,
+  //       mapData, lockscreen, null, 'fetchCampaigns - ');
+  // }
   public async fetchCampaign(id: string, lockscreen: boolean): Promise<RequestResponse<CampaignBc, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: CampaignBc | undefined) => {
       if (bcData === undefined) {
@@ -103,18 +103,18 @@ export class ClaimApi extends BaseApi {
     return await this.axiosGetBlockchainApiCall(formatString(this.CAMPAIGN_URL,{campaign_id: id}),
       mapData, lockscreen, null, 'fetchCampaigns - ');
   }
-  public async fetchMissions(lockscreen: boolean): Promise<RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>> {
-    const mapData = (bcData: MissionsInfo | undefined) => {
-      if (bcData === undefined) {
-        throw new Error('fetchMissions - data absent');
-      }
-      return bcData;
-    };
-
-    return await this.axiosGetBlockchainApiCall(this.MISSIONS_URL,
-      mapData, lockscreen, null, 'fetchMissions - ');
-
-  }
+  // public async fetchMissions(lockscreen: boolean): Promise<RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>> {
+  //   const mapData = (bcData: MissionsInfo | undefined) => {
+  //     if (bcData === undefined) {
+  //       throw new Error('fetchMissions - data absent');
+  //     }
+  //     return bcData;
+  //   };
+  //
+  //   return await this.axiosGetBlockchainApiCall(this.MISSIONS_URL,
+  //     mapData, lockscreen, null, 'fetchMissions - ');
+  //
+  // }
 
   public async fetchCampaignMissions(id: string, lockscreen: boolean): Promise<RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>> {
     const mapData = (bcData: MissionsInfo | undefined) => {

@@ -9,12 +9,12 @@ import {
   FairdropPollUsage,
   Mission
 } from "@/models/store/airdrop";
-import {ClaimRecord} from "@/models/airdrop/airdrop";
+import {CampainStatus} from "@/models/airdrop/airdrop";
 import {RequestResponse} from "@/models/request-response";
 import {ErrorData} from "@/api/base.api";
 import {AirdropErrData} from "@/models/blockchain/common";
 import {LogLevel} from "@/services/logger/log-level";
-import {AirdropEntry, MissionType} from "@/models/blockchain/airdrop";
+import {AirdropEntry, MissionType, UserAirdropEntry} from "@/models/blockchain/airdrop";
 import {StoreLogger} from "@/services/logged.service";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {Coin} from "@/models/store/common";
@@ -26,7 +26,7 @@ import {getDenomFromArray} from "@/utils/coins-utils";
 const logger = new StoreLogger(ServiceTypeEnum.AIR_DROP_STORE);
 
 interface airDropState {
-  claimRecord: ClaimRecord,
+  claimRecord: UserAirdropEntry,
   airDropMock: AirdropTotal,
   campaigns: Campaign[],
   fairdropPollUsage: FairdropPollUsage,
@@ -37,7 +37,7 @@ export const useAirDropStore = defineStore({
   id: 'airDropStore',
   state: (): airDropState => {
     return {
-      claimRecord: {} as ClaimRecord,
+      claimRecord: {} as UserAirdropEntry,
       airDropMock: Object(AirdropTotal),
       campaigns: Array<Campaign>(),
       fairdropPollUsage: new FairdropPollUsage(new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
@@ -47,6 +47,26 @@ export const useAirDropStore = defineStore({
     };
   },
   actions: {
+    sortCampaigns: function () {
+      console.log('CMPAIGNSSSSS', this.campaigns);
+      this.claimRecord.claim_records.sort((a, b) => {
+        return b.claimedMissions.length - a.claimedMissions.length;
+      });
+      const sortedByMissions = this.claimRecord.claim_records;
+      const presentSortedByMissions = Array<Campaign>();
+      const futureSortedByMissions = Array<Campaign>();
+      const pastSortedByMissions = Array<Campaign>();
+      sortedByMissions.forEach((el) => {
+        const camp = this.campaigns.find(camp => camp.id == el.campaign_id);
+        if(camp && camp.status === CampainStatus.Now){
+          presentSortedByMissions.push(camp);
+        } else if(camp && camp.status === CampainStatus.Future){
+          futureSortedByMissions.push(camp);
+        } else if(camp && camp.status === CampainStatus.Past){
+          pastSortedByMissions.push(camp);
+        }
+      });
+    },
     // async fetchAirdrop(address: string, lockscreen = true) {
     //   this.no_Drop = Boolean(false);
     //   try {
@@ -130,7 +150,6 @@ export const useAirDropStore = defineStore({
     },
     async fetchAirdropTotal(address: string, lockscreen = true) {
       try {
-
         const response = await apiFactory.airDropApi().fetchAirdropsInfo(lockscreen);
         console.log(JSON.stringify(response));
         const promises = Array<Promise<RequestResponse<any, ErrorData<AirdropErrData>>>>();
@@ -288,20 +307,26 @@ export const useAirDropStore = defineStore({
     async fetchUsersCampaignData(address: string, lockscreen = true){
       this.campaigns = Array<Campaign>();
       const campaignsIds = Array<string>();
-      await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then((res) => {
-        if(res.isSuccess() && res.data){
-          const campaignsList = res.data.user_entry.claim_records;
-          campaignsList.forEach(async (el) => {
-            await this.fetchCampaign(el.campaign_id, el);
+      this.claimRecord = {} as UserAirdropEntry;
+      const campaigns = Array<Campaign>();
+      await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(async (res) => {
+        if (res.isSuccess() && res.data) {
+          this.claimRecord = res.data.user_entry;
+          const campaignsList = this.claimRecord.claim_records;
+          await campaignsList.forEach(async (el) => {
+            const campaign = await this.fetchCampaign(el.campaign_id, el);
             campaignsIds.push(el.campaign_id);
+            this.campaigns.push(campaign);
           });
-          if(campaignsIds.length > 0){
+          if (campaignsIds.length > 0) {
             this.fetchFairdropPoolUsage(campaignsIds, true);
           }
+          this.sortCampaigns();
         }
       });
     },
     async fetchCampaign(id: string, campaignData: AirdropEntry, lockscreen = true){
+      let camp = {} as Campaign;
       await apiFactory.airDropApi().fetchCampaign(id, lockscreen).then(async (res) => {
         if (res.isSuccess() && res.data) {
           const campaign = res.data.campaign;
@@ -352,7 +377,8 @@ export const useAirDropStore = defineStore({
           initialMission.weight = (Number(campaignData.amount[0].amount) - totalWeight).toString();
           initialMission.weightInPerc = (100 - totalWeightInPer);
           missionsList.unshift(initialMission);
-            this.campaigns.push(new Campaign(
+          const status = await this.checkCampaignStatus(new Date(campaign.start_time), new Date(campaign.end_time));
+            camp = new Campaign(
               campaign.id,
               campaign.name,
               campaign.description,
@@ -365,11 +391,22 @@ export const useAirDropStore = defineStore({
               campaign.initial_claim_free_amount,
               missionsList,
               campaignData.amount[0].amount,
-              campaign.campaign_total_amount[0].amount
-            ));
+              campaign.campaign_total_amount[0].amount,
+              status,
+            );
         }
       });
+      return camp;
     },
+    checkCampaignStatus(startTime: Date, endTime: Date) {
+      if(new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime()> new Date(Date.now()).getTime()){
+        return CampainStatus.Now;
+      }else if(new Date(startTime).getTime() > new Date(Date.now()).getTime()){
+        return CampainStatus.Future;
+      } else {
+        return CampainStatus.Past;
+      }
+    }
     // async fetchCampaigns(address: string, lockscreen = true){
     //   //await this.getUsersCampaignData(address);
     //     // let userAirdropInfoLcd = {} as UserAirdropInfo;
@@ -402,7 +439,7 @@ export const useAirDropStore = defineStore({
   },
 
   getters: {
-    getAirdropClaimRecord(): ClaimRecord {
+    getAirdropClaimRecord(): UserAirdropEntry {
       return this.claimRecord;
     },
     getAirDropTotal(): AirdropTotal {

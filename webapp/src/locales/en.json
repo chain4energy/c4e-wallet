@@ -397,7 +397,8 @@
     "FOOTER_TEXT": "Connect with us to stay up-to-date on airdrop distribution and what's next for C4E."
   },
   "CLAIM_AIRDROP": {
-    "PROGRESS":"Campaign countdown"
+    "PROGRESS":"Campaign countdown",
+    "FINISHED" : "Campaign finished"
   },
   "COPY": {
     "ADDRESS": "Address has been copied to clipboard",

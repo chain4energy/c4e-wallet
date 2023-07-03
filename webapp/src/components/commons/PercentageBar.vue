@@ -33,7 +33,7 @@ function onResize() {
 }
 function changeStatus(){
   let text;
-  let fontStyle = '#ffffff';
+  let fontStyle = '#002C50';
   let backgroundColor;
   let progress;
   switch (props.status){

@@ -2,6 +2,7 @@ import {Coin} from "@/models/store/common";
 import {MissionType as MissionTypeBc} from "@/models/blockchain/airdrop";
 import {BigDecimal} from "@/models/store/big.decimal";
 import {useConfigurationStore} from "@/store/configuration.store";
+import {CampainStatus} from "@/models/airdrop/airdrop";
 
 export class AirdropTotal {
   campaignAllocations: CampaignAllocation[]
@@ -73,10 +74,11 @@ export class Campaign{
   initial_claim_free_amount: string;
   amount: Coin;
   missions: Mission[];
-  totalDistribution: Coin
+  totalDistribution: Coin;
+  status: CampainStatus;
 
 
-  constructor(id: string, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, feegrant_amount: string, initial_claim_free_amount:string, missions: Mission[], amount: string, totalDistribution: string) {
+  constructor(id: string, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, feegrant_amount: string, initial_claim_free_amount:string, missions: Mission[], amount: string, totalDistribution: string, status: CampainStatus) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -90,6 +92,7 @@ export class Campaign{
     this.amount = new Coin(BigInt(amount), getDefaultDenom());
     this.missions = missions;
     this.totalDistribution = new Coin(BigInt(totalDistribution), getDefaultDenom());
+    this.status = status;
   }
 }
 

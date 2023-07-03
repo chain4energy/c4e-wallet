@@ -28,7 +28,7 @@ const props = defineProps<{
   padding: 3.5px 13px;
   box-shadow: 0px 0px 2px 2px #02447A;
   border-radius: 2px;
-  width: 150px;
+  width: 100%;
 
   &__slot {
     margin: 0;
@@ -37,7 +37,7 @@ const props = defineProps<{
   p {
     font-weight: 400;
     font-size: 12px;
-    line-height: 15px
+    line-height: 15px;
   }
 }
 

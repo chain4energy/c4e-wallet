@@ -7,8 +7,8 @@
         v-if="claimingProcessStarted" @close="claimingProcessStarted = false"/>
       <div class="claimAirDrop__total">
         <div class="claimAirDrop__container">
-          <h4 class="claimAirDrop__header">Total</h4>
-          <div class="claimAirDrop__data">
+          <h4 class="claimAirDrop__header claimAirDrop__mainTxt">Total</h4>
+          <div  class="claimAirDrop__data claimAirDrop__basicText">
             <ClaimInfo header="header" >
               <CoinAmount :amount="fairdropPoolUsage.total" :show-denom="true" :precision="2"/>
            </ClaimInfo>
@@ -24,71 +24,73 @@
           </div>
         </div>
       </div>
-      <div class="claimAirDrop__total" v-for="campaignRecord in airdropClaimRecord" :key="campaignRecord.id">
-        <div class="claimAirDrop__container">
-          <h4 class="claimAirDrop__header">{{campaignRecord.name}}</h4>
-          <div class="claimAirDrop__progressHeader">
-            <h5 >{{$t('CLAIM_AIRDROP.PROGRESS')}}</h5>
-          </div>
+      <div class="claimAirDrop__total claimAirDrop__basicText" v-for="campaignRecord in airdropClaimRecord" :key="campaignRecord.id">
+          <div class="claimAirDrop__container">
+            <h4 class="claimAirDrop__header">{{campaignRecord.name}}</h4>
+            <div class="claimAirDrop__progressHeader">
+              <h5 v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past">{{$t('CLAIM_AIRDROP.PROGRESS')}}</h5>
+              <h5 v-else>{{$t('CLAIM_AIRDROP.FINISHED')}}</h5>
+            </div>
 
-          <PercentageBar
-            ref="percentsBar"
-            :key="updateComponent"
-            :amount="calculateProgress(campaignRecord.start_time, campaignRecord.end_time)"
-            :status="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time)"
-            :time-to-pass="calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)"
-          />
-          <div class="claimAirDrop__data">
-            <ClaimInfo header="Claimed">
-              <div class="claimAirDrop__data-text">
-                <CoinAmount :amount="calculateMissions(campaignRecord)" :show-denom="true" :precision="2"></CoinAmount>
-                /
-                <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
-              </div>
-            </ClaimInfo>
-            <ClaimInfo header="Mission Complitted">
-              <p class="claimAirDrop__data-text">{{getAmountOfClaimedMissions(campaignRecord)}}/{{campaignRecord.missions.length}}</p>
-            </ClaimInfo>
-            <ClaimInfo :header="getTextForTimeColumn(campaignRecord)">
-              <p class="claimAirDrop__data-text">{{calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)}}</p>
-            </ClaimInfo>
-            <ClaimInfo header="Total Distribution">
-              <div class="claimAirDrop__data-text">
-                <CoinAmount :amount="campaignRecord.totalDistribution" :show-denom="true" :precision="2"></CoinAmount>
-              </div>
-            </ClaimInfo>
-          </div>
-          <div class="claimAirDrop__body">
-            <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn">{{activeCampain === campaignRecord? 'Hide missions' : 'Show Missions'}}</button>
-            <div v-if="activeCampain === campaignRecord" class="claimAirDrop__missions">
-              <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
-                <div class="claimAirDrop__leftCol">
-                  <div class="claimAirDrop__smallTxt">{{`Mission# ${missions.id}`}} ({{missions.weightInPerc}})
-                    <CoinAmount :amount="missions.weight" :show-denom="true" :precision="2"></CoinAmount>
-                  </div>
-                  <div>{{missions.description}}</div>
+            <PercentageBar
+              v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past"
+              ref="percentsBar"
+              :key="updateComponent"
+              :amount="calculateProgress(campaignRecord.start_time, campaignRecord.end_time)"
+              :status="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time)"
+              :time-to-pass="calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)"
+            />
+            <div class="claimAirDrop__data">
+              <ClaimInfo header="Claimed">
+                <div class="claimAirDrop__data-text">
+                  <CoinAmount :amount="calculateMissions(campaignRecord)" :show-denom="true" :precision="2"></CoinAmount>
+                  /
+                  <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
                 </div>
-                <div>
-                  <Button
-                    :disabled="!isDisabled(campaignRecord, missions)"
-                          class="p-button p-component secondary claimAirDrop__missions-btn"
-                          :label="getTextForMissionsBtn(missions, missions.mission_type)"
-                          @click="redirectMission(campaignRecord, missions, missions.mission_type)"
-                  >
+              </ClaimInfo>
+              <ClaimInfo header="Mission Completed">
+                <p class="claimAirDrop__data-text">{{getAmountOfClaimedMissions(campaignRecord)}}/{{campaignRecord.missions.length}}</p>
+              </ClaimInfo>
+              <ClaimInfo :header="getTextForTimeColumn(campaignRecord)">
+                <p class="claimAirDrop__data-text">{{calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)}}</p>
+              </ClaimInfo>
+              <ClaimInfo header="Total Distribution">
+                <div class="claimAirDrop__data-text">
+                  <CoinAmount :amount="campaignRecord.totalDistribution" :show-denom="true" :precision="2"></CoinAmount>
+                </div>
+              </ClaimInfo>
+            </div>
+            <div class="claimAirDrop__body">
+              <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn claimAirDrop__basicText">{{activeCampain === campaignRecord? 'Hide missions' : 'Show Missions'}}</button>
+              <div v-if="activeCampain === campaignRecord" class="claimAirDrop__missions">
+                <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
+                  <div class="claimAirDrop__leftCol">
+                    <div class="claimAirDrop__smallTxt">{{`Mission# ${missions.id}`}} ({{missions.weightInPerc}})
+                      <CoinAmount :amount="missions.weight" :show-denom="true" :precision="2"></CoinAmount>
+                    </div>
+                    <div>{{missions.description}}</div>
+                  </div>
+                  <div>
+                    <Button
+                      :disabled="!isDisabled(campaignRecord, missions)"
+                      class="p-button p-component secondary claimAirDrop__missions-btn"
+                      :label="getTextForMissionsBtn(missions, missions.mission_type)"
+                      @click="redirectMission(campaignRecord, missions, missions.mission_type)"
+                    >
 
-                  </Button>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useAirDropStore } from "@/store/airDrop.store";
-import { computed, onMounted, ref, watch } from "vue";
+import {computed, nextTick, onMounted, ref, watch} from "vue";
 import { useUserStore } from "@/store/user.store";
 import { CampainStatus } from "@/models/airdrop/airdrop";
 import { Campaign, Mission, MissionTypeSt } from "@/models/store/airdrop";
@@ -98,12 +100,14 @@ import CoinAmount from "@/components/commons/CoinAmount.vue";
 import { MissionType } from "@/models/blockchain/airdrop";
 import router from "@/router";
 import ClaimingOptionsPopup from "@/components/airdrop/ClaimingOptionsPopup.vue";
+import { storeToRefs } from 'pinia';
 
 const percentsBar = ref();
 
 // const currentLang = computed(() => {
 //   return i18n.global.locale;
 // });
+const airDropStore = useAirDropStore();
 
 const claimingProcessStarted = ref();
 const isLoggedIn = computed(() =>{
@@ -112,17 +116,11 @@ const isLoggedIn = computed(() =>{
 const address = computed(() => {
   return useUserStore().getAccount.address;
 });
-
 onMounted(() => {
   if(address.value){
     useAirDropStore().fetchUsersCampaignData(address.value, true);
   }
 });
-// watch(isLoggedIn, (next, prev)=>{
-//   if(next){
-//     dataService.onClaimAirdrop(useUserStore().getAccount.address);
-//   }
-// });
 watch(address, (next, prev)=>{
   if(next){
     useAirDropStore().fetchUsersCampaignData(address.value, true);
@@ -148,7 +146,6 @@ function calculateMissions(campaign : Campaign){
       total += Number(el.weight);
     }
   });
-  // eslint-disable-next-line no-undef
   return total;
 }
 function getAmountOfClaimedMissions(campaign : Campaign){
@@ -162,7 +159,7 @@ function getAmountOfClaimedMissions(campaign : Campaign){
 }
 
 const airdropClaimRecord = computed(() => {
-  return useAirDropStore().getCampaigns;
+  return airDropStore.getCampaigns;
 });
 
 function checkCampaignStatus(startTime: Date, endTime: Date) {
@@ -192,8 +189,8 @@ function getTextForTimeColumn(campaign: Campaign){
   const res = checkCampaignStatus(new Date(campaign.start_time), new Date(campaign.end_time));
   switch (res){
     case CampainStatus.Past: return 'Campaign has past';
-    case CampainStatus.Now: return 'Time till end of campaign';
-    case CampainStatus.Future: return 'Time till campaign start';
+    case CampainStatus.Now: return 'Time until end of campaign';
+    case CampainStatus.Future: return 'Time until campaign start';
   }
 }
 function calculateTimeToPAss(startDate: Date, endDate: Date){
@@ -231,7 +228,7 @@ function getTextForMissionsBtn(mission: Mission, type: MissionType){
     break;
     case MissionType.VOTE: text = 'Vote';
     break;
-    case MissionType.CLAIM: text = 'CLAIM';
+    case MissionType.CLAIM: text = 'Claim';
     break;
   }
   if(mission.completed && !mission.claimed){
@@ -309,11 +306,21 @@ function isInitialMissionClaimed(campaign: Campaign) {
       grid-area: 1 /1/ 1 / 5;
     }
   }
+  &__basicText{
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+  }
+  &__mainTxt{
+    font-weight: 700;
+    font-size: 31px;
+    line-height: 38px;
+  }
   &__container {
     box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
     display: flex;
-    align-items: center;
-    padding: 1.5em;
+    padding: 1.5em 3.5em;
     flex-direction: column;
     justify-content: center;
     border-radius: 5px;
@@ -328,7 +335,7 @@ function isInitialMissionClaimed(campaign: Campaign) {
   }
   &__data{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
     grid-column-gap: 9px;
     grid-row-gap: 9px;
     max-width: 714px;
@@ -349,8 +356,9 @@ function isInitialMissionClaimed(campaign: Campaign) {
     justify-content: space-between;
     font-style: normal;
     font-weight: 700;
-    font-size: 20px;
-    line-height: 24px;
+    font-size: 31px;
+    line-height: 38px;
+
   }
   &__progressHeader{
     display: flex;
@@ -369,7 +377,7 @@ function isInitialMissionClaimed(campaign: Campaign) {
     color: white;
     border: none;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 15px;
     line-height: 15px;
     margin-bottom: 17px;
   }
