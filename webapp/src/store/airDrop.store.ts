@@ -47,25 +47,94 @@ export const useAirDropStore = defineStore({
     };
   },
   actions: {
-    sortCampaigns: function () {
-      console.log('CMPAIGNSSSSS', this.campaigns);
-      this.claimRecord.claim_records.sort((a, b) => {
+    // sortCampaigns: function () {
+    //   console.log('CMPAIGNSSSSS', this.campaigns);
+    //   this.claimRecord.claim_records.sort((a, b) => {
+    //     return b.claimedMissions.length - a.claimedMissions.length;
+    //   });
+    //   const sortedByMissions = this.claimRecord.claim_records;
+    //   const presentSortedByMissions = Array<Campaign>();
+    //   const futureSortedByMissions = Array<Campaign>();
+    //   const pastSortedByMissions = Array<Campaign>();
+    //   this.campaigns.forEach((el) => {
+    //     console.log(el)
+    //   })
+    //   sortedByMissions.forEach((el) => {
+    //     const camp = this.campaigns.find(camp => camp.id === el.campaign_id);
+    //     console.log(this.claimRecord)
+    //     if(camp && camp.status === CampainStatus.Now){
+    //       presentSortedByMissions.push(camp);
+    //     } else if(camp && camp.status === CampainStatus.Future){
+    //       futureSortedByMissions.push(camp);
+    //     } else if(camp && camp.status === CampainStatus.Past){
+    //       pastSortedByMissions.push(camp);
+    //     }
+    //   });
+    // },
+    async sortEntries(entries: UserAirdropEntry) {
+      entries.claim_records.sort((a, b) => {
         return b.claimedMissions.length - a.claimedMissions.length;
       });
-      const sortedByMissions = this.claimRecord.claim_records;
+      const sortedByMissions = entries.claim_records;
       const presentSortedByMissions = Array<Campaign>();
       const futureSortedByMissions = Array<Campaign>();
       const pastSortedByMissions = Array<Campaign>();
-      sortedByMissions.forEach((el) => {
-        const camp = this.campaigns.find(camp => camp.id == el.campaign_id);
-        if(camp && camp.status === CampainStatus.Now){
-          presentSortedByMissions.push(camp);
-        } else if(camp && camp.status === CampainStatus.Future){
-          futureSortedByMissions.push(camp);
-        } else if(camp && camp.status === CampainStatus.Past){
-          pastSortedByMissions.push(camp);
-        }
+      for (const el of sortedByMissions) {
+        await this.fetchCampaign(el.campaign_id, el).then((res) =>{
+          if (res && res.status === CampainStatus.Now) {
+            presentSortedByMissions.push(res);
+          } else if (res && res.status === CampainStatus.Future) {
+            futureSortedByMissions.push(res);
+          } else if (res && res.status === CampainStatus.Past) {
+            pastSortedByMissions.push(res);
+          }
+        });
+      }
+      const present = await this.sortCampaigns(presentSortedByMissions, entries);
+      const past = await this.sortCampaigns(pastSortedByMissions, entries);
+      const future = await this.sortCampaigns(futureSortedByMissions, entries);
+
+      console.log(present, future, past);
+      if(present.length> 0){
+        present.forEach((el) => {
+          this.campaigns.push(el);
+        });
+      }
+      if(future.length> 0){
+        future.forEach((el) => {
+          this.campaigns.push(el);
+        });
+      }
+      if(past.length> 0){
+        past.forEach((el) => {
+          this.campaigns.push(el);
+        });
+      }
+      // if(presentSortedByMissions.length > 0){
+      //   presentSortedByMissions.sort((a,b) => {
+      //     const missionsPassedA = entries.claim_records.find(ent => ent.campaign_id === a.id);
+      //     const missionsPassedB = entries.claim_records.find(ent => ent.campaign_id === b.id);
+      //     if(missionsPassedA && missionsPassedB && missionsPassedA.claimedMissions.length === missionsPassedB.claimedMissions.length){
+      //       return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
+      //     } else {
+      //       missionsPassedA.claimedMissions.length - missionsPassedB.claimedMissions.length
+      //     }
+      //
+      //   })
+      // }
+      return entries;
+    },
+    async sortCampaigns(list: Campaign[], ent: UserAirdropEntry){
+      list.sort((a, b) => {
+        const missionsClaimedA = ent.claim_records.find(function(element) { return element.campaign_id === a.id;  });
+        const missionsClaimedB = ent.claim_records.find(function(element) { return element.campaign_id === a.id;  });
+        if(missionsClaimedA && missionsClaimedB && missionsClaimedA.claimedMissions.length === missionsClaimedB.claimedMissions.length){
+          return new Date(b.end_time).getTime() - new Date(a.end_time).getTime()
+        } else if (missionsClaimedB && missionsClaimedA){
+          return missionsClaimedB.claimedMissions.length - missionsClaimedA.claimedMissions.length
+        } else return 0;
       });
+      return list;
     },
     // async fetchAirdrop(address: string, lockscreen = true) {
     //   this.no_Drop = Boolean(false);
@@ -311,17 +380,16 @@ export const useAirDropStore = defineStore({
       const campaigns = Array<Campaign>();
       await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(async (res) => {
         if (res.isSuccess() && res.data) {
-          this.claimRecord = res.data.user_entry;
+          this.claimRecord = await this.sortEntries(res.data.user_entry);
           const campaignsList = this.claimRecord.claim_records;
-          await campaignsList.forEach(async (el) => {
-            const campaign = await this.fetchCampaign(el.campaign_id, el);
-            campaignsIds.push(el.campaign_id);
-            this.campaigns.push(campaign);
-          });
+          // await campaignsList.forEach(async (el) => {
+          //   const campaign = await this.fetchCampaign(el.campaign_id, el);
+          //   campaignsIds.push(el.campaign_id);
+          //   this.campaigns.push(campaign);
+          // });
           if (campaignsIds.length > 0) {
             this.fetchFairdropPoolUsage(campaignsIds, true);
           }
-          this.sortCampaigns();
         }
       });
     },
