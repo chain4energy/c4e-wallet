@@ -9,16 +9,16 @@
         <div class="claimAirDrop__container">
           <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{$t('AIRDROP.TOTAL_HEADER')}}</h4>
           <div class="claimAirDrop__data claimAirDrop__basicText">
-            <ClaimInfo :header="$t('AIRDROP.TOTAL')" >
+            <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText">
               <CoinAmount :amount="fairdropPoolUsage.total" :show-denom="true" :precision="2"/>
            </ClaimInfo>
-            <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" :percentage-vale="fairdropPoolUsage.claimedPercentage">
+            <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText" :percentage-vale="fairdropPoolUsage.claimedPercentage">
               <CoinAmount :amount="fairdropPoolUsage.claimed" :show-denom="true" :precision="2"/>
             </ClaimInfo>
-            <ClaimInfo :header="$t('AIRDROP.ACTIVE')">
+            <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText">
               <CoinAmount :amount="fairdropPoolUsage.activeCampaigns" :show-denom="true" :precision="2"/>
             </ClaimInfo>
-            <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" :percentage-vale="fairdropPoolUsage.toClaimePercentage">
+            <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText" :percentage-vale="fairdropPoolUsage.toClaimePercentage">
               <CoinAmount :amount="fairdropPoolUsage.toClaim" :show-denom="true" :precision="2"/>
             </ClaimInfo>
           </div>
@@ -27,10 +27,12 @@
       <div class="claimAirDrop__total claimAirDrop__basicText" v-for="campaignRecord in airdropClaimRecord" :key="campaignRecord.id">
           <div class="claimAirDrop__container">
             <h4 class="claimAirDrop__header">{{campaignRecord.name}}</h4>
+            <hr class="claimAirDrop__hr"/>
             <div class="claimAirDrop__progressHeader">
-              <h5 v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past">{{$t('CLAIM_AIRDROP.PROGRESS')}}</h5>
-              <h5 v-else>{{$t('CLAIM_AIRDROP.FINISHED')}}</h5>
+              <h5 style="margin: 0 0 20px 10px" v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past">{{$t('CLAIM_AIRDROP.PROGRESS')}}</h5>
+              <h5 v-else style="margin: 0 0 20px 10px">{{$t('CLAIM_AIRDROP.FINISHED')}}</h5>
             </div>
+
 
             <PercentageBar
               v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past"
@@ -61,16 +63,16 @@
               </ClaimInfo>
             </div>
             <div class="claimAirDrop__body">
-              <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn claimAirDrop__basicText">{{activeCampain === campaignRecord? 'Hide missions' : 'Show Missions'}}</button>
+              <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn claimAirDrop__basicText">{{activeCampain === campaignRecord? $t('AIRDROP.HIDE_MISSIONS') : $t('AIRDROP.SHOW_MISSIONS')}}</button>
               <div v-if="activeCampain === campaignRecord" class="claimAirDrop__missions">
                 <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
                   <div class="claimAirDrop__leftCol">
-                    <div class="claimAirDrop__smallTxt">{{`Mission# ${missions.id}`}} ({{missions.weightInPerc}})
+                    <div class="claimAirDrop__smallTxt">{{ $t('AIRDROP.MISSION')}} {{`#${missions.id}`}} ({{missions.weightInPerc}}%)
                       <CoinAmount :amount="missions.weight" :show-denom="true" :precision="2"></CoinAmount>
                     </div>
                     <div>{{missions.description === 'Initial mission - basic mission that must be claimed first' ? $t('AIRDROP.INITIAL') : missions.description}}</div>
                   </div>
-                  <div>
+
                     <Button
                       :disabled="!isDisabled(campaignRecord, missions)"
                       class="p-button p-component secondary claimAirDrop__missions-btn"
@@ -79,7 +81,7 @@
                     >
 
                   </Button>
-                </div>
+
               </div>
             </div>
           </div>
@@ -212,7 +214,7 @@ function calculateTimeToPAss(startDate: Date, endDate: Date){
     const seconds = Math.floor((diference % (1000 * 60)) / 1000);
     return `${days}D ${hours}H ${minutes}M ${seconds}S`;
   } else {
-    return '0';
+    return '';
   }
 }
 const emit = defineEmits(['timeChanged'])
@@ -296,6 +298,7 @@ function isInitialMissionClaimed(campaign: Campaign) {
 @import '../../styles/variables.scss';
 .claimAirDrop{
   font-family: 'Inter', sans-serif;
+  width: 100%;
   &__total{
     margin-bottom: 10px;
     display: flex;
@@ -319,17 +322,16 @@ function isInitialMissionClaimed(campaign: Campaign) {
     line-height: 38px;
   }
   &__container {
+    width: 60%;
+    margin: 0 auto;
     box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
     display: flex;
-    padding: 1.5em 3.5em;
+    padding: 1.5em 5%;
     flex-direction: column;
     justify-content: center;
     border-radius: 5px;
-    grid-area: 1/2/1/8;
     color: $header-text-color;
     background-color: $main-color;
-    width:100%;
-    max-width: 700px;
     @media (max-width: 1200px) {
       grid-area: 1 /1/ 1 / 9;
     }
@@ -339,19 +341,13 @@ function isInitialMissionClaimed(campaign: Campaign) {
     grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
     grid-column-gap: 9px;
     grid-row-gap: 9px;
-    max-width: 714px;
     margin-bottom: 18px;
-    @media (max-width: 1010px) {
-      max-width: 500px;
-    }
-    @media (max-width: 520px) {
-      max-width: 100%;
-    }
     &-text{
       margin: 0;
     }
   }
   &__header{
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -359,7 +355,7 @@ function isInitialMissionClaimed(campaign: Campaign) {
     font-weight: 700;
     font-size: 31px;
     line-height: 38px;
-
+    margin: 15px 10px 25px;
   }
   &__progressHeader{
     display: flex;
@@ -371,16 +367,17 @@ function isInitialMissionClaimed(campaign: Campaign) {
     background-color: transparent;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
   }
   &__showBtn{
     background: transparent;
-    color: white;
     border: none;
-    font-weight: 400;
-    font-size: 15px;
-    line-height: 15px;
     margin-bottom: 17px;
+    color: $header-text-color;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+    text-decoration: underline;
   }
   &__missions{
     transition: 2s ease-in-out;
@@ -397,14 +394,14 @@ function isInitialMissionClaimed(campaign: Campaign) {
       margin-bottom: 10px;
     }
     &-btn {
-      width: 100%;
-      min-width: 107px;
+      width: 130px;
       max-height: 42px !important;
       margin: 8px !important;
       border-radius: 5px !important;
       color: $header-text-color !important;
       background-color: $secondary-color !important;
       border-color: $secondary-color !important;
+      box-sizing: border-box !important;
 
       &:not(.p-button-icon-only):not(.secondary):not(.outlined):not(.outlined-secondary):not(.preview):not(.delete) {
         background-color: $secondary-color !important;
@@ -423,13 +420,24 @@ function isInitialMissionClaimed(campaign: Campaign) {
   }
   &__smallTxt{
     font-weight: 400;
-    font-size: 9px;
-    line-height: 11px;
+    font-size: 12px;
+    line-height: 12px;
+    margin-bottom: 5px;
   }
   &__leftCol{
     text-align: initial;
+    width: 75%;
   }
-
+  &__boldText {
+    font-weight: 700;
+  }
+  &__hr {
+    margin: 0 0 1em;
+    color: $secondary-color;
+    font-size: 1.5em;
+    align-items: center;
+    width: 100%;
+  }
   &__content{
     width: 100%;
     display: grid;
