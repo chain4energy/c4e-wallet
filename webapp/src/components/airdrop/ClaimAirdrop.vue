@@ -119,11 +119,13 @@ const isLoggedIn = computed(() =>{
 const address = computed(() => {
   return useUserStore().getAccount.address;
 });
+
 onMounted(() => {
   if(address.value){
     useAirDropStore().fetchUsersCampaignData(address.value, true);
   }
 });
+
 watch(address, (next, prev)=>{
   if(next){
     useAirDropStore().fetchUsersCampaignData(address.value, true);
