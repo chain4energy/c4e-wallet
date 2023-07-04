@@ -42,6 +42,14 @@ export class ConnectionInfo {
     return this.connectionType === ConnectionType.Keplr;
   }
 
+  public isCosmostation(): boolean {
+    return this.connectionType === ConnectionType.Cosmostation;
+  }
+
+  public isLeap(): boolean {
+    return this.connectionType === ConnectionType.Leap;
+  }
+
   public isAddress(): boolean {
     return this.connectionType === ConnectionType.Address;
   }
