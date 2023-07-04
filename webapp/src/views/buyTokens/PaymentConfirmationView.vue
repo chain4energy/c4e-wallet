@@ -191,7 +191,7 @@ const selectedBlockchainNetworkId = ref();
 const selectedBlockchainTokens = computed(() => {
   return blockchainNetworkList.value.find(blockchain => {
     return blockchain.chainId == selectedBlockchainNetworkId.value;
-  })?.availableTokens;
+  })?.tokenExchanges;
 });
 const selectedBlockchain = computed(() => {
   return blockchainNetworkList.value.find(blockchain => {
@@ -245,7 +245,7 @@ const changeNetwork = (networkId: number) => {
   blockchainNetworkList.value.forEach((network) => {
     if(network.chainId == networkId) {
       selectedBlockchainNetworkId.value = network.chainId;
-      selectedTokenIdentifier.value = network.availableTokens[0].coinIdentifier;
+      selectedTokenIdentifier.value = network.tokenExchanges[0].coinIdentifier;
     }
   });
 };

@@ -9,6 +9,7 @@ import {
   Transaction
 } from "@/models/saleServiceCommons";
 import apiFactory from "@/api/factory.api";
+import {BigDecimal} from "@/models/store/big.decimal";
 export interface PublicSalesState{
   total: Coin | undefined,
   parts: parts | undefined,
@@ -123,7 +124,8 @@ export const usePublicSalesStore = defineStore({
     fetchRoundInfo(lockscreen = false) {
       return factoryApi.publicSaleServiceApi().fetchRoundInfo(lockscreen).then(res => {
         if(res.isSuccess() && res.data) {
-          this.roundInfo = res.data;
+          this.roundInfo = res.data.roundInfo;
+          this.blockchainInfo = res.data.blockchainInfo;
         }
       });
     },
@@ -176,11 +178,11 @@ export const usePublicSalesStore = defineStore({
     getTransactions(): TokenReservation[] | undefined{
       return this.tokenReservations;
     },
-    getC4eToUSD(): number {
+    getC4eToUSD(): BigDecimal {
       if(this.roundInfo?.uC4eToUsd) {
-        return this.roundInfo.uC4eToUsd * useConfigurationStore().config.getViewDenomConversionFactor('uc4e');
+        return this.roundInfo.uC4eToUsd.multiply(useConfigurationStore().config.getViewDenomConversionFactor('uc4e'));
       }
-      return 9999;
+      return new BigDecimal(9999);
     }
   }
 });

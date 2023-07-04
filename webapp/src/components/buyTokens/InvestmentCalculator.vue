@@ -11,7 +11,7 @@
             <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_BUY')}}</p>
             <div>
               <div style="display: flex; min-width:350px;">
-                <input @paste="onFirstInputChange" @keyup="onFirstInputChange" @blur="onSecondInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" :disabled="firstInputBlocked" v-model="firstValue.amount">
+                <input @paste="onFirstInputChange" @keyup="onFirstInputChange" @blur="onSecondInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" :disabled="firstInputBlocked" v-model="firstValue.amount.amount">
                 <Dropdown v-model="firstValue.currency" :options="[Currency.C4E]"  placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
                   <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
@@ -37,7 +37,7 @@
             <div>
               <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_INVEST')}}</p>
               <div style="display: flex; min-width:350px;">
-                <input @paste="onSecondInputChange"  @keyup="onSecondInputChange" @blur="onFirstInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" v-model="secondValue.amount">
+                <input @paste="onSecondInputChange"  @keyup="onSecondInputChange" @blur="onFirstInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" v-model="secondValue.amount.amount">
                 <Dropdown v-model="secondValue.currency" :options="currencyList" placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
                   <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
@@ -66,7 +66,7 @@
         </div>
 
         <div style="margin-top:30px">
-          1 {{firstValue.currency}} = {{exchangeRate.toFixed(5)}} {{secondValue.currency}}
+          1 {{firstValue.currency}} = {{exchangeRate?.toString()}} {{secondValue.currency}}
         </div>
       </div>
 
@@ -92,7 +92,9 @@ import {Currency} from "@/models/currency";
 import {useTransactionContextStore} from "@/store/transactionContext.store";
 import TooltipComponent from "@/components/TooltipComponent.vue";
 import CountryFlag from 'vue-country-flag-next';
-import C4EIcon from "@/components/commons/C4EIcon.vue"; // https://www.npmjs.com/package/vue-country-flag-next
+import C4EIcon from "@/components/commons/C4EIcon.vue";
+import {BigDecimal} from "@/models/store/big.decimal";
+import {Coin, DecCoin} from "@/models/store/common"; // https://www.npmjs.com/package/vue-country-flag-next
 
 
 const props =  defineProps({
@@ -125,7 +127,7 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-  firstValue.amount = props.firstInputDefaultValue;
+  firstValue.amount = new DecCoin(new BigDecimal(props.firstInputDefaultValue),Currency.C4E);
   if(useTransactionContextStore().orderModalVisible) {
     firstValue.amount = useTransactionContextStore().amountToBuy;
   }
@@ -133,28 +135,29 @@ onMounted(() => {
 });
 
 const firstValue = reactive({
-  amount: 0,
+  amount: new DecCoin(new BigDecimal(0),Currency.C4E),
   currency: Currency.C4E
 });
 
 const secondValue = reactive({
-  amount: 0,
+  amount: new DecCoin(new BigDecimal(0),props.disableStablecoin ? Currency.USD : Currency.STABLE),
   currency: props.disableStablecoin ? Currency.USD : Currency.STABLE
 });
 
-const exchangeRate = ref(1);
+const exchangeRate = ref<BigDecimal>(new BigDecimal(0));
 
 const onFirstInputChange = () => {
-  secondValue.amount = round(firstValue.amount * exchangeRate.value, secondValue.currency);
+
+  secondValue.amount = new DecCoin(exchangeRate.value.multiply(firstValue.amount.amount), secondValue.currency);
 };
 
 const onSecondInputChange = () => {
-  firstValue.amount = round(secondValue.amount / exchangeRate.value, firstValue.currency);
+  firstValue.amount = new DecCoin(exchangeRate.value.multiply(secondValue.amount.amount), firstValue.currency);
 };
 
 
 watch(() => exchangeRate.value, () => {
-  secondValue.amount = round(firstValue.amount * exchangeRate.value, secondValue.currency);
+  secondValue.amount = new DecCoin(exchangeRate.value.multiply(firstValue.amount.amount), secondValue.currency);
 });
 
 watch(() => secondValue.currency, () => {
@@ -177,7 +180,7 @@ watch(() => secondValue.currency, () => {
         const c4eTOUSDT = usePublicSalesStore().getC4eToUSD;
 
         if(c4eTOUSDT != undefined) {
-          exchangeRate.value = c4eTOUSDT * requestedAmount / data.amount;
+          exchangeRate.value = c4eTOUSDT.multiply(requestedAmount).divide(data.amount);
         }
       });
   }
@@ -197,7 +200,7 @@ const onBuy = () => {
     router.push({name: 'signIn'});
   } else {
     transactionContextStore.setAmountToBuy(firstValue.amount);
-    transactionContextStore.setAmountToPay(round(secondValue.amount,secondValue.currency));
+    transactionContextStore.setAmountToPay(secondValue.amount);
     transactionContextStore.setPaymentCurrency(secondValue.currency);
     transactionContextStore.setExchangeRate(exchangeRate.value);
     emit('onBuy');
@@ -211,7 +214,7 @@ const round = (number: number, currency: Currency) => {
 };
 
 const minimumRequired = () => {
-  return firstValue.amount * usePublicSalesStore().getC4eToUSD >= 25 && firstValue.amount * usePublicSalesStore().getC4eToUSD <=10000 ;
+  return usePublicSalesStore().getC4eToUSD.multiply(firstValue.amount.amount).isBiggerThanOrEqualTo(25) && !usePublicSalesStore().getC4eToUSD.multiply(firstValue.amount.amount).isBiggerThanOrEqualTo(10000);
 };
 
 const flagSelector = {

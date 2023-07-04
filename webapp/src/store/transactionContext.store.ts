@@ -3,14 +3,16 @@ import {Currency} from "@/models/currency";
 import {KycTierEnum} from "@/models/user/kyc";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import {useConfigurationStore} from "@/store/configuration.store";
+import {BigDecimal} from "@/models/store/big.decimal";
+import {Coin, DecCoin} from "@/models/store/common";
 
 
 interface TransactionContextState {
   paymentCurrency?: Currency,
-  amountToPay: number,
-  amountToBuy: number,
+  amountToPay: DecCoin,
+  amountToBuy: DecCoin,
   orderId: number,
-  exchangeRate: number,
+  exchangeRate: BigDecimal,
   orderModalVisible: boolean
 }
 
@@ -20,18 +22,18 @@ export const useTransactionContextStore = defineStore({
   state: (): TransactionContextState => {
     return {
       paymentCurrency: undefined,
-      amountToBuy: 0,
-      amountToPay: 0,
+      amountToBuy: new DecCoin(new BigDecimal(0), ''),
+      amountToPay: new DecCoin(new BigDecimal(0), ''),
       orderId: 0,
-      exchangeRate: 0,
+      exchangeRate: new BigDecimal(0),
       orderModalVisible: false
     };
   },
   actions: {
-    setAmountToPay(amount: number) {
+    setAmountToPay(amount: DecCoin) {
       this.amountToPay = amount;
     },
-    setAmountToBuy(amount: number) {
+    setAmountToBuy(amount: DecCoin) {
       this.amountToBuy = amount;
     },
     setPaymentCurrency(currency: Currency) {
@@ -40,7 +42,7 @@ export const useTransactionContextStore = defineStore({
     setOrderId(id: number) {
       this.orderId = id;
     },
-    setExchangeRate(rate: number) {
+    setExchangeRate(rate: BigDecimal) {
       this.exchangeRate = rate;
     }
 
@@ -49,18 +51,18 @@ export const useTransactionContextStore = defineStore({
     getPaymentCurrency(): Currency | undefined {
       return this.paymentCurrency;
     },
-    getAmountToPay(): number {
+    getAmountToPay(): DecCoin {
       return this.amountToPay;
     },
-    getAmountToBuy(): number {
+    getAmountToBuy(): DecCoin {
       return this.amountToBuy;
     },
     getRequiredKycLevel(): KycTierEnum {
-      if(this.amountToBuy * usePublicSalesStore().getC4eToUSD > 10000) {
+      if(usePublicSalesStore().getC4eToUSD.multiply(this.amountToBuy.amount).isBiggerThanOrEqualTo(10000)) {
         return KycTierEnum.TIER_3;
-      } else if(this.amountToBuy * usePublicSalesStore().getC4eToUSD > 1000) {
+      } else if(usePublicSalesStore().getC4eToUSD.multiply(this.amountToBuy.amount).isBiggerThanOrEqualTo(1000)) {
         return KycTierEnum.TIER_2;
-      } else if(this.amountToBuy * usePublicSalesStore().getC4eToUSD > 100) {
+      } else if(usePublicSalesStore().getC4eToUSD.multiply(this.amountToBuy.amount).isBiggerThanOrEqualTo(100)) {
         return KycTierEnum.TIER_1;
       }
       return KycTierEnum.TIER_0;
@@ -75,7 +77,7 @@ export const useTransactionContextStore = defineStore({
       return undefined;
     },
     getAmountToBuyUc4e(): number {
-      return this.amountToBuy * useConfigurationStore().config.getViewDenomConversionFactor('uc4e');
+      return Number(this.amountToBuy.amount) * useConfigurationStore().config.getViewDenomConversionFactor('uc4e');
     }
   },
   persist: {

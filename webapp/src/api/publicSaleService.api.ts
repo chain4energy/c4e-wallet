@@ -25,7 +25,12 @@ import {
   InitPaymentSessionRequest,
   InitPaymentSessionResponse,
   ReserveTokensRequest,
-  ReserveTokensResponse, RoundInfo, RoundInfoResponse, TokenPaymentProofRequest, TokenReservationResponse
+  ReserveTokensResponse,
+  RoundInfo,
+  RoundInfoBlockchainInfo,
+  RoundInfoResponse,
+  TokenPaymentProofRequest,
+  TokenReservationResponse
 } from "@/models/saleServiceCommons";
 import {InitSessionResponse, KycStatusResponse, KycTier, SessionOverviewResponse} from "@/models/user/kyc";
 import {mapKycSteps} from "@/models/mapper/synaps.mapper";
@@ -183,8 +188,8 @@ export class PublicSaleServiceApi extends BaseApi {
     return this.publicSaleServiceGetCall<BlockchainInfo[], UserServiceErrData>(queries.publicSaleService.BLOCKCHAIN_INFO, lockscreen, "getBlockchainInfo");
   }
 
-  public async fetchRoundInfo(lockscreen: boolean): Promise<RequestResponse<RoundInfo, ErrorData<UserServiceErrData>>> {
-    const mapData = (roundInfo: RoundInfoResponse | undefined) => {
+  public async fetchRoundInfo(lockscreen: boolean): Promise<RequestResponse<RoundInfoBlockchainInfo, ErrorData<UserServiceErrData>>> {
+    const mapData = (roundInfo: RoundInfoResponse[] | undefined) => {
       return mapRoundInfo(roundInfo);
     };
     const messages = {
@@ -193,8 +198,8 @@ export class PublicSaleServiceApi extends BaseApi {
       errorResponseToast: 'RoundInfo data Error: ',
       mappingErrorMassage: 'RoundInfo data mapping error: ',
     };
-    const isResponseError = (response: RequestResponse<RoundInfoResponse, ErrorData<UserServiceErrData>>) => {return response.isError();};
-    return this.axiosWith200ErrorCall<RoundInfo, RoundInfoResponse, UserServiceErrData>({
+    const isResponseError = (response: RequestResponse<RoundInfoResponse[], ErrorData<UserServiceErrData>>) => {return response.isError();};
+    return this.axiosWith200ErrorCall<RoundInfoBlockchainInfo, RoundInfoResponse[], UserServiceErrData>({
         method: 'GET',
         url: useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.ROUND_INFO,
       },

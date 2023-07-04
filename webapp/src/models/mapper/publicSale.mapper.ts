@@ -1,9 +1,19 @@
-import {RoundInfo, RoundInfoResponse, TokenReservationResponse} from "@/models/saleServiceCommons";
+import {
+  RoundInfo,
+  RoundInfoBlockchainInfo,
+  RoundInfoResponse,
+  TokenReservationResponse
+} from "@/models/saleServiceCommons";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {Coin} from "@/models/store/common";
 import {paymentType, TokenReservation} from "@/store/publicSales.store";
+import {BigDecimal} from "@/models/store/big.decimal";
 
-export function mapRoundInfo(roundInfo: RoundInfoResponse | undefined): RoundInfo  {
+export function mapRoundInfo(roundInfoList: RoundInfoResponse[] | undefined): RoundInfoBlockchainInfo  {
+  let roundInfo;
+  if (roundInfoList) {
+    roundInfo = roundInfoList[0];
+  }
   if (roundInfo === undefined) {
     throw new Error('roundInfo is undefined');
   }
@@ -12,16 +22,19 @@ export function mapRoundInfo(roundInfo: RoundInfoResponse | undefined): RoundInf
   const soldTokens = roundInfo.soldTokens ? roundInfo.soldTokens : 0;
   const totalTokens = roundInfo.totalTokens ? roundInfo.totalTokens : 0;
 
-  return {
+  const storeRoundInfo: RoundInfo = {
+    name: roundInfo.name,
     availableTokens:  new Coin(BigInt( roundInfo.availableTokens), denom),
     reservedTokens: new Coin(BigInt(reservedTokens), denom),
     soldTokens: new Coin(BigInt(soldTokens), denom),
     totalTokens: new Coin(BigInt(totalTokens), denom),
-    uC4eToUsd: roundInfo.uC4eToUsd,
+    uC4eToUsd: new BigDecimal(roundInfo.uC4eToUsd.amount, roundInfo.uC4eToUsd.decimal),
     endDate: new Date(roundInfo.endDate),
     id:roundInfo.id,
     startDate: new Date(roundInfo.startDate)
   };
+
+  return {roundInfo: storeRoundInfo, blockchainInfo: roundInfo.blockchains};
 }
 
 export function mapTokenReservations(tokenReservations: TokenReservationResponse[] | undefined): TokenReservation[]  {
