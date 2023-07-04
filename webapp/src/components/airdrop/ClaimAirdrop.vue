@@ -10,16 +10,17 @@
           <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{$t('AIRDROP.TOTAL_HEADER')}}</h4>
           <div class="claimAirDrop__data claimAirDrop__basicText">
             <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText">
-              <CoinAmount :amount="fairdropPoolUsage.total" :show-denom="true" :precision="2"/>
+              <CoinAmount :amount="convertAmount(summary.totalAmount)" :show-denom="true" :show-tooltip="true" :precision="2"/>
            </ClaimInfo>
-            <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText" :percentage-vale="fairdropPoolUsage.claimedPercentage">
-              <CoinAmount :amount="fairdropPoolUsage.claimed" :show-denom="true" :precision="2"/>
+            <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText" :percentage-vale="summary.claimedPercent">
+              <CoinAmount :amount="convertAmount(summary.totalClaimed)" :show-denom="true" :show-tooltip="true" :precision="2"/>
             </ClaimInfo>
             <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText">
-              <CoinAmount :amount="fairdropPoolUsage.activeCampaigns" :show-denom="true" :precision="2"/>
+              <CoinAmount :amount="convertAmount(summary.activeCampaigns)" :show-denom="true" :show-tooltip="true" :precision="2"/>
             </ClaimInfo>
-            <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText" :percentage-vale="fairdropPoolUsage.toClaimePercentage">
-              <CoinAmount :amount="fairdropPoolUsage.toClaim" :show-denom="true" :precision="2"/>
+            <!-- :percentage-vale="summary.claimedPercentage" -->
+            <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText" :percentage-vale="summary.toClaimPercent">
+              <CoinAmount :amount="convertAmount(summary.toClaim)" :show-denom="true" :show-tooltip="true" :precision="2"/>
             </ClaimInfo>
           </div>
         </div>
@@ -103,6 +104,8 @@ import { MissionType } from "@/models/blockchain/airdrop";
 import router from "@/router";
 import ClaimingOptionsPopup from "@/components/airdrop/ClaimingOptionsPopup.vue";
 import {useI18n} from "vue-i18n";
+import {BigDecimal} from "@/models/store/big.decimal";
+import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 
 const percentsBar = ref();
 const i18n = useI18n();
@@ -131,8 +134,8 @@ watch(address, (next, prev)=>{
     useAirDropStore().fetchUsersCampaignData(address.value, true);
   }
 });
-const fairdropPoolUsage = computed(()=>{
-  return useAirDropStore().getFairdropPoolUsage;
+const summary = computed(()=>{
+  return useAirDropStore().getSummary;
 });
 
 const activeCampain = ref();
@@ -293,6 +296,14 @@ function isInitialMissionClaimed(campaign: Campaign) {
     return mission.mission_type === 'INITIAL_CLAIM';
   });
   return initialMission?.claimed;
+}
+
+function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
+  if( typeof amount === 'bigint'){
+    return new BigIntWrapper(amount);
+  } else {
+    return amount;
+  }
 }
 </script>
 

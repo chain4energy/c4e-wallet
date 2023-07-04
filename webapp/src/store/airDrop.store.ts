@@ -25,6 +25,15 @@ import {getDenomFromArray} from "@/utils/coins-utils";
 
 const logger = new StoreLogger(ServiceTypeEnum.AIR_DROP_STORE);
 
+interface ISummary {
+  totalAmount: bigint,
+  activeCampaigns: bigint,
+  totalClaimed: bigint,
+  toClaim: bigint,
+  claimedPercent?: BigDecimal,
+  toClaimPercent?: BigDecimal
+}
+
 interface airDropState {
   claimRecord: UserAirdropEntry,
   airDropMock: AirdropTotal,
@@ -32,6 +41,7 @@ interface airDropState {
   campaignIds: string[],
   fairdropPollUsage: FairdropPollUsage,
   airdropClaimingAddress: string,
+  summary: ISummary,
 }
 
 export const useAirDropStore = defineStore({
@@ -45,7 +55,13 @@ export const useAirDropStore = defineStore({
         new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
         new BigDecimal(0), new BigDecimal(0)),
       airdropClaimingAddress: '',
-      campaignIds: []
+      campaignIds: [],
+      summary: {
+        totalAmount: 0n,
+        activeCampaigns: 0n,
+        totalClaimed: 0n,
+        toClaim: 0n
+      }
     };
   },
   actions: {
@@ -57,7 +73,14 @@ export const useAirDropStore = defineStore({
       const pastSortedByMissions = Array<Campaign>();
 
       for (const el of this.campaigns) {
-          if (el.status === CampainStatus.Now) {
+        this.summary.totalAmount+=el.amount.amount;
+        el.missions.forEach(mission => {
+          if (mission.claimed) this.summary.totalClaimed+=(BigInt(mission.weightInPerc) * el.amount.amount / 100n);
+          if (el.status === CampainStatus.Now && !mission.claimed) this.summary.toClaim+=(BigInt(mission.weightInPerc) * el.amount.amount / 100n);
+        });
+
+        if (el.status === CampainStatus.Now) {
+            this.summary.activeCampaigns+=el.amount.amount;
             presentSortedByMissions.push(el);
           } else if (el.status === CampainStatus.Future) {
             futureSortedByMissions.push(el);
@@ -65,11 +88,14 @@ export const useAirDropStore = defineStore({
             pastSortedByMissions.push(el);
           }
       }
+
+      this.summary.toClaimPercent = getPercentage(this.summary.toClaim, this.summary.activeCampaigns);
+      this.summary.claimedPercent = getPercentage(this.summary.totalClaimed, this.summary.totalAmount);
+
       const present = await this.sortCampaigns(presentSortedByMissions);
       const past = await this.sortCampaigns(pastSortedByMissions);
       const future = await this.sortCampaigns(futureSortedByMissions);
 
-      console.log(present, future, past);
       if(present.length> 0){
         present.forEach((el) => {
           result.push(el);
@@ -299,6 +325,7 @@ export const useAirDropStore = defineStore({
     //   logger.logToConsole(LogLevel.DEBUG, JSON.stringify(result, (key, value) => typeof value === 'bigint' ? value.toString() : value, 2));
     //   this.campaigns = result;
     // },
+    /*
     async fetchAirdropPoolUsage(campaingIds: string[], lockscreen = true) {
 
       const distributions = new Coin(BigInt(0), "uc4e");
@@ -334,6 +361,8 @@ export const useAirDropStore = defineStore({
         getPercentage(distributions.amount, claimsLeft.amount));
     },
 
+     */
+
     async fetchUsersCampaignData(address: string, lockscreen = true){
       this.campaigns = Array<Campaign>();
       this.claimRecord = {} as UserAirdropEntry;
@@ -357,9 +386,12 @@ export const useAirDropStore = defineStore({
 
           forEachCampaign().then(this.sortEntries);
 
+          /*
           if (this.campaignIds.length > 0) {
             await this.fetchAirdropPoolUsage(this.campaignIds, true);
           }
+
+           */
         }
       });
     },
@@ -490,6 +522,9 @@ export const useAirDropStore = defineStore({
     },
     getFairdropPoolUsage(): FairdropPollUsage {
       return this.fairdropPollUsage;
+    },
+    getSummary(): ISummary {
+      return this.summary;
     }
   },
 });

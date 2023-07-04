@@ -1,5 +1,5 @@
 <template>
-  <span><FormattedNumber :amount="amount" :precision="precision" :remove-dec="removeDec"/> %</span>
+  <span><FormattedNumber :amount="amount" :precision="precision" :remove-dec="removeDec"/>%</span>
 </template>
 
 <script setup lang="ts">
