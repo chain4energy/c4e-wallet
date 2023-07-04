@@ -40,6 +40,7 @@ class DataService extends LoggedService {
 
   private static instance: DataService;
   private isOnline = navigator.onLine;
+  private onClaimAirdropView = false;
 
 
   public static getInstance(): DataService {
@@ -263,6 +264,9 @@ class DataService extends LoggedService {
     }
     // refresh spendables once logged in
     refreshSpendables();
+    if (this.onClaimAirdropView && userAddress) {
+        useAirDropStore().fetchUsersCampaignData(userAddress, true);
+    }
     if (onSuccess) {
       onSuccess();
     }
@@ -291,6 +295,9 @@ class DataService extends LoggedService {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
       });
+    }
+    if(useUserStore().getAccount.address && this.onClaimAirdropView){
+      useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
     }
   }
 
@@ -354,6 +361,19 @@ class DataService extends LoggedService {
   public onClaimAirdrop(address: string) {
     this.logToConsole(LogLevel.DEBUG, 'onClaimAirdrop');
     // useAirDropStore().fetchUsersCampaignData(address, true);
+  }
+
+  public enterClaimAirdrop() {
+    this.logToConsole(LogLevel.DEBUG, 'enterClaimAirdrop dupa');
+    this.onClaimAirdropView = true;
+    if(useUserStore().getAccount.address){
+      useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+    }
+  }
+
+  public leaveClaimAirdrop() {
+    this.logToConsole(LogLevel.DEBUG, 'leaveClaimAirdrop dupa');
+    this.onClaimAirdropView = false;
   }
 
   public async onProposalUpdateVotes(proposalId: number) {

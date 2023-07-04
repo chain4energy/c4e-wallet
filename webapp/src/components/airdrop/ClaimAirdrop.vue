@@ -115,7 +115,7 @@
 
 <script setup lang="ts">
 import { useAirDropStore } from "@/store/airDrop.store";
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, onMounted, onUnmounted, ref, watch} from "vue";
 import { useUserStore } from "@/store/user.store";
 import { CampainStatus } from "@/models/airdrop/airdrop";
 import { Campaign, Mission, MissionTypeSt } from "@/models/store/airdrop";
@@ -129,6 +129,7 @@ import {BigDecimal} from "@/models/store/big.decimal";
 import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import {ChevronDown, ChevronUp} from "lucide-vue-next";
+import dataService from "@/services/data.service";
 
 const percentsBar = ref();
 const i18n = useI18n();
@@ -148,15 +149,12 @@ const address = computed(() => {
 });
 
 onMounted(() => {
-  if(address.value){
-    useAirDropStore().fetchUsersCampaignData(address.value, true);
-  }
+  dataService.enterClaimAirdrop();
+
 });
 
-watch(address, (next)=>{
-  if(next){
-    useAirDropStore().fetchUsersCampaignData(address.value, true);
-  }
+onUnmounted(() => {
+  dataService.leaveClaimAirdrop();
 });
 
 const summary = computed(()=>{

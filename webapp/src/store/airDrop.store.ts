@@ -9,12 +9,19 @@ import {
   FairdropPollUsage,
   Mission
 } from "@/models/store/airdrop";
-import {CampainStatus} from "@/models/airdrop/airdrop";
+import {AllocationMapping, CampaignInfoDetails, CampainStatus} from "@/models/airdrop/airdrop";
 import {RequestResponse} from "@/models/request-response";
 import {ErrorData} from "@/api/base.api";
-import {AirdropErrData} from "@/models/blockchain/common";
+import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common";
 import {LogLevel} from "@/services/logger/log-level";
-import {AirdropEntry, MissionType, UserAirdropEntry} from "@/models/blockchain/airdrop";
+import {
+  AirdropEntry,
+  CampaignBc,
+  MissionBc,
+  MissionType,
+  UserAirdropEntry,
+  UserAirdropInfo
+} from "@/models/blockchain/airdrop";
 import {StoreLogger} from "@/services/logged.service";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {Coin} from "@/models/store/common";
@@ -67,6 +74,12 @@ export const useAirDropStore = defineStore({
   actions: {
     async sortEntries() {
       const result: Campaign[] = [];
+      this.summary = {
+        totalAmount: 0n,
+        activeCampaigns: 0n,
+        totalClaimed: 0n,
+        toClaim: 0n
+      }
 
       const presentSortedByMissions = Array<Campaign>();
       const futureSortedByMissions = Array<Campaign>();
@@ -205,12 +218,12 @@ export const useAirDropStore = defineStore({
       try {
         const response = await apiFactory.airDropApi().fetchAirdropsInfo(lockscreen);
         console.log(JSON.stringify(response));
-        const promises = Array<Promise<RequestResponse<any, ErrorData<AirdropErrData>>>>();
+        const promises = Array<Promise<RequestResponse<CampaignInfoDetails[], ErrorData<AirdropErrData>>>>();
         const campaignsList = Array<CampaignAllocation>();
         if (response.isSuccess() && response.data?.campaignInfoDetails) {
           const campaignInfoDetails = response.data.campaignInfoDetails;
           //create array with requests for particular airdrop
-          campaignInfoDetails.forEach((campaign) => {
+          campaignInfoDetails.forEach((campaign: CampaignInfoDetails) => {
             promises.push(apiFactory.airDropApi().fetchAirdrop(address, campaign.subfolder, lockscreen));
           });
           //wait for all requests
@@ -218,9 +231,12 @@ export const useAirDropStore = defineStore({
           for (let i = 0; i < campaignInfoDetails.length; i++) {
             const campaign = campaignInfoDetails[i];
             const allocations = new Array<AlocationsSt>();
-            campaign.allocationMapping.forEach((allocation) => {
+            campaign.allocationMapping.forEach((allocation: AllocationMapping) => {
               let mappedValue = 0;
-              if (responseList[i].isSuccess()) {
+              if (responseList && responseList[i].isSuccess()) {
+                // TODO: Fix the TS error
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 mappedValue = responseList[i].data[allocation.mapping] as number;
               } else {
                 console.log("Airdrop:\"" + campaign.name + "\" Allocation for address:" + address + " NOT FOUND.");
@@ -368,7 +384,7 @@ export const useAirDropStore = defineStore({
       this.claimRecord = {} as UserAirdropEntry;
 
       //TODO: Paging
-      await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(async (res) => {
+      await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(async (res: RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>) => {
         if (res.isSuccess() && res.data) {
         //  this.claimRecord = await this.sortEntries(res.data.user_entry);
           this.claimRecord = res.data.user_entry;
@@ -398,13 +414,13 @@ export const useAirDropStore = defineStore({
 
     async fetchCampaign(id: string, campaignData: AirdropEntry, lockscreen = true){
       let camp = {} as Campaign;
-      await apiFactory.airDropApi().fetchCampaign(id, lockscreen).then(async (res) => {
+      await apiFactory.airDropApi().fetchCampaign(id, lockscreen).then(async (res: RequestResponse<CampaignBc, ErrorData<BlockchainApiErrorData>>) => {
         if (res.isSuccess() && res.data) {
           const campaign = res.data.campaign;
           const missionsList = Array<Mission>();
           let initialMission = {} as Mission;
           const missions = await apiFactory.airDropApi().fetchCampaignMissions(id, lockscreen);
-          missions.data?.missions.forEach((el) =>{
+          missions.data?.missions.forEach((el: MissionBc) =>{
             const completed = campaignData.completedMissions.find((mission)=>{
               return mission == el.id;
             });
