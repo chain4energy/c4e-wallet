@@ -9,18 +9,19 @@
       <div class="claimAirDrop__total">
         <div class="claimAirDrop__container">
           <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{$t('AIRDROP.TOTAL_HEADER')}}</h4>
-          <div class="claimAirDrop__data claimAirDrop__basicText">
-            <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText">
+          <div class="claimAirDrop__summaryData claimAirDrop__basicText">
+            <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
               <CoinAmount :amount="convertAmount(summary.totalAmount)" :show-denom="true" :show-tooltip="true" :precision="2"/>
-           </ClaimInfo>
-            <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText" :percentage-vale="summary.claimedPercent">
+            </ClaimInfo>
+            <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.claimedPercent">
               <CoinAmount :amount="convertAmount(summary.totalClaimed)" :show-denom="true" :show-tooltip="true" :precision="2"/>
             </ClaimInfo>
-            <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText">
+            <div class="vl"/>
+            <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
               <CoinAmount :amount="convertAmount(summary.activeCampaigns)" :show-denom="true" :show-tooltip="true" :precision="2"/>
             </ClaimInfo>
             <!-- :percentage-vale="summary.claimedPercentage" -->
-            <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText" :percentage-vale="summary.toClaimPercent">
+            <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.toClaimPercent">
               <CoinAmount :amount="convertAmount(summary.toClaim)" :show-denom="true" :show-tooltip="true" :precision="2"/>
             </ClaimInfo>
           </div>
@@ -65,14 +66,22 @@
               </ClaimInfo>
             </div>
             <div class="claimAirDrop__body">
-              <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn claimAirDrop__basicText">{{ activeCampaign === campaignRecord ? $t('AIRDROP.HIDE_MISSIONS') : $t('AIRDROP.SHOW_MISSIONS') }}</button>
+              <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn claimAirDrop__basicText">
+                <ChevronDown :size="15" v-if="activeCampaign !== campaignRecord"/>
+                <ChevronUp :size="15" v-else/>
+                <p>{{ activeCampaign === campaignRecord ? $t('AIRDROP.HIDE_MISSIONS') : $t('AIRDROP.SHOW_MISSIONS') }}</p>
+              </button>
               <div v-if="activeCampaign === campaignRecord" class="claimAirDrop__missions">
                 <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
                   <div class="claimAirDrop__leftCol">
-                    <div class="claimAirDrop__smallTxt">{{ $t('AIRDROP.MISSION')}} {{`#${missions.id}`}} ({{missions.weightInPerc}}%)
+                    <div class="claimAirDrop__smallTxt">
+                      {{ $t('AIRDROP.MISSION')}} {{`#${missions.id}`}}
+                    </div>
+                    <div>
+                      {{missions.description === 'Initial mission - basic mission that must be claimed first' ? $t('AIRDROP.INITIAL') : missions.description}}
+                       ({{missions.weightInPerc}}%) -
                       <CoinAmount :amount="missions.weight" :show-denom="true" :precision="2"></CoinAmount>
                     </div>
-                    <div>{{missions.description === 'Initial mission - basic mission that must be claimed first' ? $t('AIRDROP.INITIAL') : missions.description}}</div>
                   </div>
 
                     <Button
@@ -95,9 +104,8 @@
       <div class="claimAirDrop__container">
         <div class="claimAirDrop__header claimAirDrop__mainTxt">
           <h4>{{$t('AIRDROP.CONNECT_INFO')}}</h4>
-          <Button v-if="!useUserStore().isLoggedIn" class="secondary h-3rem" @click="loginPopupStatus =! loginPopupStatus">{{
-              $t('COMMON.CONNECT')
-            }}
+          <Button v-if="!useUserStore().isLoggedIn" class="secondary h-3rem" @click="loginPopupStatus =! loginPopupStatus">
+            {{$t('COMMON.CONNECT') }}
           </Button>
         </div>
       </div>
@@ -120,6 +128,7 @@ import {useI18n} from "vue-i18n";
 import {BigDecimal} from "@/models/store/big.decimal";
 import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
+import {ChevronDown, ChevronUp} from "lucide-vue-next";
 
 const percentsBar = ref();
 const i18n = useI18n();
@@ -365,6 +374,16 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
       grid-area: 1 /1/ 1 / 9;
     }
   }
+  &__summaryData {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  &__summaryTile {
+    flex: 1 1;
+    margin: 0 5px;
+    height: 120px;
+  }
   &__data{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
@@ -399,17 +418,22 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
     background-color: transparent;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
   }
   &__showBtn{
+    width: 215px;
     background: transparent;
     border: none;
     margin-bottom: 17px;
     color: $header-text-color;
     font-weight: 400;
-    font-size: 13px;
-    line-height: 16px;
-    text-decoration: underline;
+    font-size: 18px;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    p {
+      margin: 0;
+    }
   }
   &__missions{
     transition: 2s ease-in-out;
@@ -493,5 +517,11 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
     padding: 15%;
 
   }
+}
+
+.vl {
+  height: 120px;
+  border: 1px solid white;
+  margin: 0 8px;
 }
 </style>
