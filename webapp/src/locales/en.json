@@ -433,7 +433,8 @@
     "INITIAL": "Initial mission - basic mission that must be claimed first",
     "SHOW_MISSIONS": "Show missions",
     "HIDE_MISSIONS": "Hide missions",
-    "MISSION": "Mission"
+    "MISSION": "Mission",
+    "CONNECT_INFO": "Connect to wallet to claim rewards!"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Campaign countdown",

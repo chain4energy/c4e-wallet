@@ -426,7 +426,8 @@
     "INITIAL": "Misja inicjująca - musi być odebrana jako pierwsza",
     "SHOW_MISSIONS": "Pokaż misje",
     "HIDE_MISSIONS": "Ukryj misje",
-    "MISSION": "Misja"
+    "MISSION": "Misja",
+    "CONNECT_INFO": "Połącz się z portfelem, by odbierać nagrody!"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Odliczanie kampanii",

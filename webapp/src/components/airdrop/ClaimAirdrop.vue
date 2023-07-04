@@ -1,5 +1,6 @@
 <template>
-    <div class="claimAirDrop" v-if="isLoggedIn && address">
+  <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
+  <div class="claimAirDrop" v-if="isLoggedIn && address">
       <ClaimingOptionsPopup
         :initial-claim="currentClaimIsInitial"
         :campaign-id="selectedCampaignId"
@@ -41,7 +42,7 @@
               :key="updateComponent"
               :amount="calculateProgress(campaignRecord.start_time, campaignRecord.end_time)"
               :status="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time)"
-              :time-to-pass="calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)"
+              :time-to-pass="calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)"
             />
             <div class="claimAirDrop__data">
               <ClaimInfo :header="$t('AIRDROP.CLAIMED')">
@@ -55,7 +56,7 @@
                 <p class="claimAirDrop__data-text">{{getAmountOfClaimedMissions(campaignRecord)}}/{{campaignRecord.missions.length}}</p>
               </ClaimInfo>
               <ClaimInfo :header="getTextForTimeColumn(campaignRecord)">
-                <p class="claimAirDrop__data-text">{{calculateTimeToPAss(campaignRecord.start_time, campaignRecord.end_time)}}</p>
+                <p class="claimAirDrop__data-text">{{calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)}}</p>
               </ClaimInfo>
               <ClaimInfo :header="$t('AIRDROP.TOTAL_DISTRIBUTION')">
                 <div class="claimAirDrop__data-text">
@@ -64,8 +65,8 @@
               </ClaimInfo>
             </div>
             <div class="claimAirDrop__body">
-              <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn claimAirDrop__basicText">{{activeCampain === campaignRecord? $t('AIRDROP.HIDE_MISSIONS') : $t('AIRDROP.SHOW_MISSIONS')}}</button>
-              <div v-if="activeCampain === campaignRecord" class="claimAirDrop__missions">
+              <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn claimAirDrop__basicText">{{ activeCampaign === campaignRecord ? $t('AIRDROP.HIDE_MISSIONS') : $t('AIRDROP.SHOW_MISSIONS') }}</button>
+              <div v-if="activeCampaign === campaignRecord" class="claimAirDrop__missions">
                 <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
                   <div class="claimAirDrop__leftCol">
                     <div class="claimAirDrop__smallTxt">{{ $t('AIRDROP.MISSION')}} {{`#${missions.id}`}} ({{missions.weightInPerc}}%)
@@ -89,26 +90,40 @@
         </div>
       </div>
     </div>
+  <div class="claimAirDrop" v-else>
+    <div class="claimAirDrop__total">
+      <div class="claimAirDrop__container">
+        <div class="claimAirDrop__header claimAirDrop__mainTxt">
+          <h4>{{$t('AIRDROP.CONNECT_INFO')}}</h4>
+          <Button v-if="!useUserStore().isLoggedIn" class="secondary h-3rem" @click="loginPopupStatus =! loginPopupStatus">{{
+              $t('COMMON.CONNECT')
+            }}
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { useAirDropStore } from "@/store/airDrop.store";
-import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import { useUserStore } from "@/store/user.store";
 import { CampainStatus } from "@/models/airdrop/airdrop";
 import { Campaign, Mission, MissionTypeSt } from "@/models/store/airdrop";
 import PercentageBar from "@/components/commons/PercentageBar.vue";
 import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
-import { MissionType } from "@/models/blockchain/airdrop";
 import router from "@/router";
 import ClaimingOptionsPopup from "@/components/airdrop/ClaimingOptionsPopup.vue";
 import {useI18n} from "vue-i18n";
 import {BigDecimal} from "@/models/store/big.decimal";
 import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
+import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 
 const percentsBar = ref();
 const i18n = useI18n();
+const loginPopupStatus = ref(false);
 
 // const currentLang = computed(() => {
 //   return i18n.global.locale;
@@ -129,21 +144,22 @@ onMounted(() => {
   }
 });
 
-watch(address, (next, prev)=>{
+watch(address, (next)=>{
   if(next){
     useAirDropStore().fetchUsersCampaignData(address.value, true);
   }
 });
+
 const summary = computed(()=>{
   return useAirDropStore().getSummary;
 });
 
-const activeCampain = ref();
-function setActiveCampaign(campain: Campaign){
-  if(campain !== activeCampain.value){
-    activeCampain.value = campain;
+const activeCampaign = ref();
+function setActiveCampaign(campaign: Campaign){
+  if(campaign !== activeCampaign.value){
+    activeCampaign.value = campaign;
   } else {
-    activeCampain.value = undefined;
+    activeCampaign.value = undefined;
   }
 }
 
@@ -170,7 +186,7 @@ const airdropClaimRecord = computed(() => {
   return airDropStore.getCampaigns;
 });
 
-function checkCampaignStatus(startTime: Date, endTime: Date) {
+function checkCampaignStatus(startTime: number | string, endTime: number | string) {
   if(new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime()> new Date(Date.now()).getTime()){
     return CampainStatus.Now;
   }else if(new Date(startTime).getTime() > new Date(Date.now()).getTime()){
@@ -180,7 +196,7 @@ function checkCampaignStatus(startTime: Date, endTime: Date) {
   }
 }
 
-function calculateProgress(startTime: Date, endTime: Date){
+function calculateProgress(startTime: number | string, endTime: number | string){
   if(new Date(startTime).getTime() < Date.now() && new Date(endTime).getTime()> Date.now()){
     const startEndDiff = new Date(endTime).getTime() - new Date(startTime).getTime();
     const difference = Date.now() - new Date(endTime).getTime();
@@ -190,53 +206,53 @@ function calculateProgress(startTime: Date, endTime: Date){
     return null;
   }
 }
-const childComponentRef = ref(null);
+
 const updateComponent = ref(false);
 
 function getTextForTimeColumn(campaign: Campaign){
-  const res = checkCampaignStatus(new Date(campaign.start_time), new Date(campaign.end_time));
+  const res = checkCampaignStatus(campaign.start_time, campaign.end_time);
   switch (res){
     case CampainStatus.Past: return i18n.t('AIRDROP.CAMPAIGN_PASSED');
     case CampainStatus.Now: return i18n.t('AIRDROP.CAMPAIGN_END');
     case CampainStatus.Future: return i18n.t('AIRDROP.CAMPAIGN_START');
   }
 }
-function calculateTimeToPAss(startDate: Date, endDate: Date){
+function calculateTimeToPass(startDate: number | string, endDate: number | string){
   if(new Date(startDate).getTime() < new Date(Date.now()).getTime() && new Date(endDate).getTime()> new Date(Date.now()).getTime()){
     const now = new Date(Date.now());
-    const diference = new Date(endDate).getTime() - now.getTime();
-    const days = Math.floor(diference / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diference % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diference % (1000 * 60)) / 1000);
+    const difference = new Date(endDate).getTime() - now.getTime();
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
     return `${days}D ${hours}H ${minutes}M ${seconds}S`;
   } else if(new Date(endDate).getTime()> new Date(Date.now()).getTime()){
     const now = new Date(Date.now());
-    const diference = new Date(startDate).getTime() - now.getTime();
-    const days = Math.floor(diference / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diference % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diference % (1000 * 60)) / 1000);
+    const difference = new Date(startDate).getTime() - now.getTime();
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
     return `${days}D ${hours}H ${minutes}M ${seconds}S`;
   } else {
     return '';
   }
 }
-const emit = defineEmits(['timeChanged'])
+
 setInterval(() => {
     updateComponent.value = !updateComponent.value;
 },1000);
 
-function getTextForMissionsBtn(mission: Mission, type: MissionType){
+function getTextForMissionsBtn(mission: Mission, type: MissionTypeSt){
   let text;
   switch (type){
-    case MissionType.INITIAL_CLAIM: text = i18n.t('AIRDROP.CLAIM');
+    case MissionTypeSt.INITIAL_CLAIM: text = i18n.t('AIRDROP.CLAIM');
     break;
-    case MissionType.DELEGATE: text = i18n.t('AIRDROP.DELEGATE');
+    case MissionTypeSt.DELEGATE: text = i18n.t('AIRDROP.DELEGATE');
     break;
-    case MissionType.VOTE: text = i18n.t('AIRDROP.VOTE');
+    case MissionTypeSt.VOTE: text = i18n.t('AIRDROP.VOTE');
     break;
-    case MissionType.CLAIM: text = i18n.t('AIRDROP.CLAIM');
+    case MissionTypeSt.CLAIM: text = i18n.t('AIRDROP.CLAIM');
     break;
   }
   if(mission.completed && !mission.claimed){
@@ -249,7 +265,7 @@ const selectedMissionId = ref();
 const selectedCampaignId = ref();
 const currentClaimIsInitial = ref();
 
-function redirectMission(campaign: Campaign, mission : Mission, type: MissionType) {
+function redirectMission(campaign: Campaign, mission : Mission, type: MissionTypeSt) {
   selectedCampaignId.value = campaign.id;
   selectedMissionId.value = mission.id;
 
@@ -265,10 +281,10 @@ function redirectMission(campaign: Campaign, mission : Mission, type: MissionTyp
       claimingProcessStarted.value = true;
     } else {
       switch (type) {
-        case MissionType.DELEGATE:
+        case MissionTypeSt.DELEGATE:
           router.push('staking');
           break;
-        case MissionType.VOTE:
+        case MissionTypeSt.VOTE:
           router.push('governance');
           break;
       }
@@ -281,7 +297,7 @@ function redirectMission(campaign: Campaign, mission : Mission, type: MissionTyp
 function isDisabled(campaignRec: Campaign, mission: Mission) {
   if (!campaignRec.enabled){
     return false;
-  } else if(checkCampaignStatus(new Date(campaignRec.start_time), new Date(campaignRec.end_time)) !== CampainStatus.Now){
+  } else if(checkCampaignStatus(campaignRec.start_time, campaignRec.end_time) !== CampainStatus.Now){
     return false;
   } else if(!isInitialMissionClaimed(campaignRec) && mission.mission_type !== MissionTypeSt.INITIAL_CLAIM){
     return false;
@@ -369,6 +385,9 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
     font-size: 31px;
     line-height: 38px;
     margin: 15px 10px 25px;
+    h4 {
+      margin: 0;
+    }
   }
   &__progressHeader{
     display: flex;
