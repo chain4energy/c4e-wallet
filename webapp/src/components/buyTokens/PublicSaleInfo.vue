@@ -16,12 +16,12 @@
       <div class="publicSaleInfo__infoBlock">
         <p>{{$t('BUY_TOKENS_VIEW.TIME_TO_START')}}</p>
         <p >{{timeToStart}}</p>
-        <p v-if="startDate" class="publicSaleInfo__dateText">({{startDate.toLocaleDateString('en-US')}})</p>
+        <p v-if="startDate" class="publicSaleInfo__dateText">({{startDate.toUTCString()}})</p>
       </div>
       <div class="publicSaleInfo__infoBlock">
         <p>{{$t('BUY_TOKENS_VIEW.TIME_TO_END')}}</p>
         <p>{{timeToEnd ? timeToEnd : 'The round has ended'}}</p>
-        <p v-if="endDate" class="publicSaleInfo__dateText">({{endDate.toLocaleDateString('en-US')}})</p>
+        <p v-if="endDate" class="publicSaleInfo__dateText">({{endDate.toUTCString()}})</p>
       </div>
     </div>
   </div>
