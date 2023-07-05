@@ -15,9 +15,7 @@ interface TransactionContextState {
   exchangeRate: BigDecimal,
   orderModalVisible: boolean
 }
-(BigInt.prototype as any).toJSON = function () {
-  return '!@#'+this.toString();
-};
+
 // const reviver = (key: any, value: any) => (key === "big" ? BigInt(value) : value);
 
 export const useTransactionContextStore = defineStore({
