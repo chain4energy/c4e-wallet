@@ -10,6 +10,15 @@
         <div>{{addressType()}} address:</div>
         <div>{{address}}</div>
       </div>
+      <div v-if="warning" class="connect_address__warning box-shadow">
+        <Icon style="height:110px; width:110px; color: red" name="AlertTriangle"/>
+        <div class="text">
+          During this activity your wallet address has been changed. Are you aware of it?
+        </div>
+        <div class="closeWarning" @click="usePublicSalesStore().toggleWarning(false)">
+          <X/>
+        </div>
+      </div>
       <div class="connect_address__warning box-shadow">
         <Icon style="height:110px; width:110px; color: red" name="AlertTriangle"/>
         <div v-if="props.addressType==AddressType.KEPLR" class="text">
@@ -35,6 +44,9 @@ import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useUserServiceStore} from "@/store/userService.store";
 import Dialog from "primevue/dialog";
 import {useRouter} from "vue-router";
+import { X } from 'lucide-vue-next';
+import DataService from "@/services/data.service";
+import {usePublicSalesStore} from "@/store/publicSales.store";
 
 const toast = useToast();
 const router = useRouter();
@@ -52,6 +64,10 @@ watch(() => props.display, (newVal, _) => {
 
 const usersEmail = computed(() => {
   return useUserServiceStore().getUserEmail;
+});
+
+const warning = computed(() => {
+  return usePublicSalesStore().getWarning;
 });
 
 const emit = defineEmits(['close', 'confirm']);
@@ -99,6 +115,7 @@ const getAddressType = () => {
     margin: 20px auto;
     width: 80%;
     padding: 20px;
+    align-items: center;
     .icon {
       width: 100px;
     }
@@ -106,5 +123,16 @@ const getAddressType = () => {
       margin-left: 15px;
     }
   }
+}
+
+.closeWarning {
+  padding: 5px;
+  transition: all 0.2s linear;
+  border-radius: 50%;
+}
+
+.closeWarning:hover {
+  background: #dedede;
+  cursor:pointer;
 }
 </style>

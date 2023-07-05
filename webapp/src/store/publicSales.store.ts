@@ -16,7 +16,8 @@ export interface PublicSalesState{
   endDate: Date | undefined,
   tokenReservations: TokenReservation[] | undefined,
   blockchainInfo: BlockchainInfo[],
-  roundInfo: RoundInfo | undefined
+  roundInfo: RoundInfo | undefined,
+  warning: boolean
 }
 export interface parts{
   sold: Coin,
@@ -75,7 +76,8 @@ export const usePublicSalesStore = defineStore({
       endDate: undefined,
       tokenReservations: undefined,
       blockchainInfo: [],
-      roundInfo: undefined
+      roundInfo: undefined,
+      warning: false
     };
   },
   actions: {
@@ -156,6 +158,9 @@ export const usePublicSalesStore = defineStore({
     },
     logOutAccount(){
       this.tokenReservations = [];
+    },
+    toggleWarning(value: boolean){
+      this.warning = value;
     }
   },
   getters:{
@@ -181,6 +186,9 @@ export const usePublicSalesStore = defineStore({
         return this.roundInfo.uC4eToUsd * useConfigurationStore().config.getViewDenomConversionFactor('uc4e');
       }
       return 9999;
+    },
+    getWarning(): boolean {
+      return this.warning;
     }
   }
 });
