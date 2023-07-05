@@ -34,7 +34,7 @@ import {
 } from "@/models/saleServiceCommons";
 import {InitSessionResponse, KycStatusResponse, KycTier, SessionOverviewResponse} from "@/models/user/kyc";
 import {mapKycSteps} from "@/models/mapper/synaps.mapper";
-import {mapRoundInfo, mapTokenReservations} from "@/models/mapper/publicSale.mapper";
+import {mapRoundInfo, mapRoundInfoList, mapTokenReservations} from "@/models/mapper/publicSale.mapper";
 import {TokenReservation} from "@/store/publicSales.store";
 
 export class PublicSaleServiceApi extends BaseApi {
@@ -138,8 +138,8 @@ export class PublicSaleServiceApi extends BaseApi {
     return this.publicSaleServicePostCall<MetamaskKeplrPairingReq, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.VERIFY_METAMASK_KEPLR, emailPairingVerification, lockscreen, "verifyPairingMetamaskKeplr");
   }
 
-  public async reserveTokens(amount: number, lockscreen: boolean): Promise<RequestResponse<ReserveTokensResponse, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServicePostCall<ReserveTokensRequest, ReserveTokensResponse, UserServiceErrData>(queries.publicSaleService.RESERVE_TOKENS, {amount: amount}, lockscreen, "reserveTokens");
+  public async reserveTokens(roundId: number, amount: number, lockscreen: boolean): Promise<RequestResponse<ReserveTokensResponse, ErrorData<UserServiceErrData>>> {
+    return this.publicSaleServicePostCall<ReserveTokensRequest, ReserveTokensResponse, UserServiceErrData>(queries.publicSaleService.RESERVE_TOKENS, {roundId: roundId, amount: amount}, lockscreen, "reserveTokens");
   }
 
   public async initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen: boolean): Promise<RequestResponse<InitPaymentSessionResponse, ErrorData<UserServiceErrData>>> {
@@ -188,8 +188,8 @@ export class PublicSaleServiceApi extends BaseApi {
     return this.publicSaleServiceGetCall<BlockchainInfo[], UserServiceErrData>(queries.publicSaleService.BLOCKCHAIN_INFO, lockscreen, "getBlockchainInfo");
   }
 
-  public async fetchRoundInfo(lockscreen: boolean): Promise<RequestResponse<RoundInfoBlockchainInfo, ErrorData<UserServiceErrData>>> {
-    const mapData = (roundInfo: RoundInfoResponse[] | undefined) => {
+  public async fetchRoundInfo(roundId: number,lockscreen: boolean): Promise<RequestResponse<RoundInfoBlockchainInfo, ErrorData<UserServiceErrData>>> {
+    const mapData = (roundInfo: RoundInfoResponse | undefined) => {
       return mapRoundInfo(roundInfo);
     };
     const messages = {
@@ -198,8 +198,33 @@ export class PublicSaleServiceApi extends BaseApi {
       errorResponseToast: 'RoundInfo data Error: ',
       mappingErrorMassage: 'RoundInfo data mapping error: ',
     };
+    const isResponseError = (response: RequestResponse<RoundInfoResponse, ErrorData<UserServiceErrData>>) => {return response.isError();};
+    return this.axiosWith200ErrorCall<RoundInfoBlockchainInfo, RoundInfoResponse, UserServiceErrData>({
+        method: 'GET',
+        url: useConfigurationStore().config.publicSaleServiceURL + formatString(queries.publicSaleService.ROUND_INFO, {roundId: roundId}),
+      },
+      mapData,
+      lockscreen,
+      null,
+      'fetchRoundInfo - ',
+      isResponseError,
+      true,
+      messages
+    );
+  }
+
+  public async fetchRoundInfoList(lockscreen: boolean): Promise<RequestResponse<Map<number, RoundInfoBlockchainInfo>, ErrorData<UserServiceErrData>>> {
+    const mapData = (roundInfo: RoundInfoResponse[] | undefined) => {
+      return mapRoundInfoList(roundInfo);
+    };
+    const messages = {
+      errorResponseName: 'RoundInfoList data Error',
+      errorResponseMassage: 'RoundInfoList data error received',
+      errorResponseToast: 'RoundInfoList data Error: ',
+      mappingErrorMassage: 'RoundInfoList data mapping error: ',
+    };
     const isResponseError = (response: RequestResponse<RoundInfoResponse[], ErrorData<UserServiceErrData>>) => {return response.isError();};
-    return this.axiosWith200ErrorCall<RoundInfoBlockchainInfo, RoundInfoResponse[], UserServiceErrData>({
+    return this.axiosWith200ErrorCall<Map<number, RoundInfoBlockchainInfo>, RoundInfoResponse[], UserServiceErrData>({
         method: 'GET',
         url: useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.ROUND_INFO,
       },

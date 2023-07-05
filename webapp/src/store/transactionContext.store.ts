@@ -4,7 +4,7 @@ import {KycTierEnum} from "@/models/user/kyc";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {BigDecimal} from "@/models/store/big.decimal";
-import {Coin, DecCoin} from "@/models/store/common";
+import {DecCoin} from "@/models/store/common";
 
 
 interface TransactionContextState {
@@ -15,11 +15,15 @@ interface TransactionContextState {
   exchangeRate: BigDecimal,
   orderModalVisible: boolean
 }
-
+(BigInt.prototype as any).toJSON = function () {
+  return '!@#'+this.toString();
+};
+// const reviver = (key: any, value: any) => (key === "big" ? BigInt(value) : value);
 
 export const useTransactionContextStore = defineStore({
   id: 'transactionContextStore',
   state: (): TransactionContextState => {
+
     return {
       paymentCurrency: undefined,
       amountToBuy: new DecCoin(new BigDecimal(0), ''),
@@ -58,6 +62,8 @@ export const useTransactionContextStore = defineStore({
       return this.amountToBuy;
     },
     getRequiredKycLevel(): KycTierEnum {
+      console.log(usePublicSalesStore().getC4eToUSD);
+      console.log(this.amountToBuy.amount)
       if(usePublicSalesStore().getC4eToUSD.multiply(this.amountToBuy.amount).isBiggerThanOrEqualTo(10000)) {
         return KycTierEnum.TIER_3;
       } else if(usePublicSalesStore().getC4eToUSD.multiply(this.amountToBuy.amount).isBiggerThanOrEqualTo(1000)) {

@@ -6,11 +6,11 @@
     <div class="confirm_container__body">
       <span>{{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.FIRST_LINE', {orderId: transactionContextStore.orderId})}}.</span><br />
       <span>{{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.SECOND_LINE')}}</span> <br />
-      <span>{{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.THIRD_LINE_1')}} <b>{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</b> {{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.THIRD_LINE_2')}}</span> <br />
+      <span>{{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.THIRD_LINE_1')}} <b>{{transactionContextStore.amountToPay.amount.toString()}} {{transactionContextStore.paymentCurrency}}</b> {{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.THIRD_LINE_2')}}</span> <br />
       <div style="text-align: center; margin:20px">
         <Button class="secondary" style="width: 40%; min-width:300px" @click="paymentModalVisible = true">
           <img style="height:30px;" src="@/assets/svg/MetaMaskIcon.svg">
-          {{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.PAY')}} {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}} {{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.THIRD_LINE_2')}}</Button> <br />
+          {{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.PAY')}} {{transactionContextStore.amountToPay.amount.toString()}} {{transactionContextStore.paymentCurrency}} {{$t('PAYMENT_CONFIRMATION_VIEW.SUMMARY.THIRD_LINE_2')}}</Button> <br />
         <span>or</span><br />
         <span @click="showManualPayment == true ? showManualPayment = false : warningModalVisibility = true" class="underline open">Provide TxHash manually</span>
       </div>
@@ -53,7 +53,7 @@
                 <div class="address">
                   {{ sourceAddress }}
                 </div>
-                <span>Please send <b>{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</b> to the address below:</span>
+                <span>Please send <b>{{transactionContextStore.amountToPay.amount.toString()}} {{transactionContextStore.paymentCurrency}}</b> to the address below:</span>
                 <div class="address" style="margin-bottom:20px">{{selectedToken?.c4eAddress}} <Icon class="address__copy" name="Copy" /> <br /></div>
 
               </div>
@@ -149,7 +149,7 @@ import WarningModal from "@/components/buyTokens/modals/WarningModal.vue";
 
 onBeforeMount(async () => {
   useUserStore().connectMetamask();
-  await publicSaleStore.fetchBlockchainInfo(false);
+  await publicSaleStore.fetchRoundInfo(false);
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const {chainId} = await provider.getNetwork();
   changeNetwork(chainId);
@@ -230,7 +230,7 @@ const onStartMetamaskTransaction = () => {
           orderId: transactionContextStore.orderId,
           blockchainAddress: selectedTokenIdentifier.value,
           coinDecimals: selectedToken.value.decimals,
-          c4eAddress: selectedToken.value.c4eAddress
+          c4eAddress: selectedToken.value.recipientAddress
         }, onSuccessStartMetamaskTransaction, onFail);
       }
     }

@@ -2,7 +2,8 @@ import {Coin} from "@/models/store/common";
 import {BigDecimal} from "@/models/store/big.decimal";
 
 export interface ReserveTokensRequest {
-  amount: number
+  roundId: number;
+  amount: number;
 }
 
 export interface ReserveTokensResponse {

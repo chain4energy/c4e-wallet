@@ -54,7 +54,7 @@ describe('public sale api tests', () => {
       data: createReservationToken()
     };
     mockedAxios.request.mockResolvedValue(reservation);
-    const result = await api.reserveTokens(10000, false);
+    const result = await api.reserveTokens(1, 10000, false);
     expect(result.isError()).toBe(false);
     expect(result.isSuccess()).toBe(true);
     expect(result.error).toBeUndefined();

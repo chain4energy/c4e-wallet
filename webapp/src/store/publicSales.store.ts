@@ -4,7 +4,7 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import factoryApi from "@/api/factory.api";
 import {
   BlockchainInfo,
-  InitPaymentSessionRequest, MetamaskPayInfo, RESERVATION_STATUS, RoundInfo,
+  InitPaymentSessionRequest, MetamaskPayInfo, RESERVATION_STATUS, RoundInfo, RoundInfoBlockchainInfo,
   TokenPaymentProofRequest,
   Transaction
 } from "@/models/saleServiceCommons";
@@ -17,7 +17,8 @@ export interface PublicSalesState{
   endDate: Date | undefined,
   tokenReservations: TokenReservation[] | undefined,
   blockchainInfo: BlockchainInfo[],
-  roundInfo: RoundInfo | undefined
+  roundInfo: RoundInfo | undefined,
+  roundInfoMap: Map<number, RoundInfoBlockchainInfo>
 }
 export interface parts{
   sold: Coin,
@@ -76,7 +77,8 @@ export const usePublicSalesStore = defineStore({
       endDate: undefined,
       tokenReservations: undefined,
       blockchainInfo: [],
-      roundInfo: undefined
+      roundInfo: undefined,
+      roundInfoMap: new Map<number, RoundInfoBlockchainInfo>()
     };
   },
   actions: {
@@ -101,7 +103,7 @@ export const usePublicSalesStore = defineStore({
       });
     },
     reserveTokens(amount: number, onSuccess: ((orderId: number) => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
-      return factoryApi.publicSaleServiceApi().reserveTokens(amount, lockscreen).then(res => {
+      return factoryApi.publicSaleServiceApi().reserveTokens(1, amount, lockscreen).then(res => {
         if(res.isSuccess() && res.data?.orderId) {
           onSuccess(res.data.orderId);
         } else {
@@ -122,10 +124,17 @@ export const usePublicSalesStore = defineStore({
       });
     },
     fetchRoundInfo(lockscreen = false) {
-      return factoryApi.publicSaleServiceApi().fetchRoundInfo(lockscreen).then(res => {
+      return factoryApi.publicSaleServiceApi().fetchRoundInfo(1, lockscreen).then(res => {
         if(res.isSuccess() && res.data) {
           this.roundInfo = res.data.roundInfo;
           this.blockchainInfo = res.data.blockchainInfo;
+        }
+      });
+    },
+    fetchRoundInfoList(lockscreen = false) {
+      return factoryApi.publicSaleServiceApi().fetchRoundInfoList( lockscreen).then(res => {
+        if(res.isSuccess() && res.data) {
+          this.roundInfoMap = res.data;
         }
       });
     },
