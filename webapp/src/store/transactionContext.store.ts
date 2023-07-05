@@ -60,8 +60,6 @@ export const useTransactionContextStore = defineStore({
       return this.amountToBuy;
     },
     getRequiredKycLevel(): KycTierEnum {
-      console.log(usePublicSalesStore().getC4eToUSD);
-      console.log(this.amountToBuy.amount)
       if(usePublicSalesStore().getC4eToUSD.multiply(this.amountToBuy.amount).isBiggerThanOrEqualTo(10000)) {
         return KycTierEnum.TIER_3;
       } else if(usePublicSalesStore().getC4eToUSD.multiply(this.amountToBuy.amount).isBiggerThanOrEqualTo(1000)) {

@@ -47,19 +47,19 @@
                 </div>
               </div>
             </div>
-            <div v-if="selectedToken?.c4eAddress" style="display: flex">
+            <div v-if="selectedToken?.recipientAddress" style="display: flex">
               <div style="margin-right: 20px;">
                 <span>The payment must be done from metamask address (source address)</span>
                 <div class="address">
                   {{ sourceAddress }}
                 </div>
                 <span>Please send <b>{{transactionContextStore.amountToPay.amount.toString()}} {{transactionContextStore.paymentCurrency}}</b> to the address below:</span>
-                <div class="address" style="margin-bottom:20px">{{selectedToken?.c4eAddress}} <Icon class="address__copy" name="Copy" /> <br /></div>
+                <div class="address" style="margin-bottom:20px">{{selectedToken?.recipientAddress}} <Icon class="address__copy" name="Copy" /> <br /></div>
 
               </div>
               <div style="margin-left: auto; margin-right: 20px">
                 <div style="margin-bottom: 10px">Recipient's address</div>
-                <QrcodeVue :value="selectedToken?.c4eAddress" size="200" :render-as="'svg'"></QrcodeVue>
+                <QrcodeVue :value="selectedToken?.recipientAddress" size="200" :render-as="'svg'"></QrcodeVue>
               </div>
             </div>
             <div class="flex justify-content-center">
@@ -76,7 +76,7 @@
       <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
         <div class="requirements_container">
           <div>Amount</div>
-          <div>{{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</div>
+          <div>{{transactionContextStore.amountToPay.amount.toString()}} {{transactionContextStore.paymentCurrency}}</div>
           <div :class="{'warning': addressNotMatch}" >Source address</div>
           <div :class="{'warning': addressNotMatch}" v-tooltip="{ value: sourceAddress, escape: true }">{{currentMetamaskAddress}}</div>
           <div></div>
@@ -89,7 +89,7 @@
            Please make sure that your metamask account is the same as source address
           </div>
           <div>Destination address</div>
-          <div v-tooltip="{ value: selectedToken?.c4eAddress ? selectedToken.c4eAddress : '', escape: true }">{{selectedToken?.c4eAddress}}</div>
+          <div v-tooltip="{ value: selectedToken?.recipientAddress ? selectedToken.recipientAddress : '', escape: true }">{{selectedToken?.recipientAddress}}</div>
 
         </div>
         <Form @submit="onStartMetamaskTransaction" :validation-schema="modalSchema" v-slot="{errors}" >
@@ -224,7 +224,7 @@ const onStartMetamaskTransaction = () => {
     } else {
       if(selectedBlockchain.value && selectedToken.value){
         usePublicSalesStore().payByMetamask({
-          amount: transactionContextStore.amountToPay.toString(),
+          amount: transactionContextStore.amountToPay.amount.toString(),
           blockchainID: selectedBlockchain.value.id,
           exchangeID: selectedToken.value.id,
           orderId: transactionContextStore.orderId,
