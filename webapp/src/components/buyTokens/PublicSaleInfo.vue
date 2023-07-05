@@ -20,7 +20,7 @@
       </div>
       <div class="publicSaleInfo__infoBlock">
         <p>{{$t('BUY_TOKENS_VIEW.TIME_TO_END')}}</p>
-        <p>{{timeToEnd}}</p>
+        <p>{{timeToEnd ? timeToEnd : 'The round has ended'}}</p>
         <p v-if="endDate" class="publicSaleInfo__dateText">({{endDate.toLocaleDateString('en-US')}})</p>
       </div>
     </div>
@@ -82,6 +82,7 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
 
     const now = new Date(Date.now());
     const diference = new Date(endDate).getTime() - now.getTime();
+    if (diference < 0) return null;
     const days = Math.floor(diference / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diference % (1000 * 60 * 60)) / (1000 * 60));

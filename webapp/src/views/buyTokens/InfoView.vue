@@ -12,9 +12,11 @@
       <span>{{$t('BUY_TOKENS_VIEW.TOKENOMICS')}}</span>
       <span>{{$t('BUY_TOKENS_VIEW.WHITE_PAPER')}}</span>
     </div>
-    <InvestmentCalculator @onBuy="onBuyClick" />
-    <div v-for="items in transactions" :key="items" class="userProfile__holder">
-      <AllocationInfo :transaction="items" @pay="onPay(items)"/>
+    <InvestmentCalculator @onBuy="onBuyClick" v-if="activeRound"/>
+    <div v-if="activeRound">
+      <div v-for="items in transactions" :key="items" class="userProfile__holder" >
+        <AllocationInfo :transaction="items" @pay="onPay(items)"/>
+      </div>
     </div>
   </div>
   <BuyTokensModal :visible="showModal"  @closeModal="showModal = false" @confirm="onPayReservation" :reservation="selectedReservation" />
@@ -270,6 +272,12 @@ const canConfirmOrder = computed(() => {
     return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != undefined && sourceAddress.value != undefined;
   }
   return isKycLevelRequired.value && isTermsAccepted.value && claimerAddress.value != undefined;
+});
+
+const activeRound = computed(() => {
+  if (publicSaleStore.roundInfo)
+    return (new Date() < publicSaleStore.roundInfo?.endDate);
+  else return false;
 });
 
 </script>
