@@ -39,6 +39,7 @@ export interface UserState {
 }
 
 const connectionInfoName = 'connectionInfo';
+const metamaskConnectionInfoName = 'metamaskConnectionInfo';
 
 
 export const useUserStore = defineStore({
@@ -53,7 +54,7 @@ export const useUserStore = defineStore({
       rewards: new Rewards(),
       delegations: new Delegations(),
       undelegations: new UnbondingDelegations(),
-      metamaskConnectionInfo: {address: '', networkId: -1}
+      [metamaskConnectionInfoName]: {address: '', networkId: -1}
     };
   },
   actions: {
@@ -67,6 +68,12 @@ export const useUserStore = defineStore({
         await this.connectCosmostation(onSuccess);
       } else if(this.connectionInfo.connectionType === ConnectionType.Leap){
         await this.connectLeap(onSuccess);
+      }
+    },
+    async reconnectMetamask(){
+      logger.logToConsole(LogLevel.DEBUG, 'reconnect: ', JSON.stringify(this.metamaskConnectionInfo));
+      if(this.metamaskConnectionInfo.address != '') {
+        this.connectMetamask();
       }
     },
     async connectKeplr(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
@@ -344,7 +351,7 @@ export const useUserStore = defineStore({
   persist: {
     enabled: true,
     strategies: [
-      { storage: sessionStorage, paths: [connectionInfoName] },
+      { storage: sessionStorage, paths: [connectionInfoName, metamaskConnectionInfoName] },
     ]
   }
 });

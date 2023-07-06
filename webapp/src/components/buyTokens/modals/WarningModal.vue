@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Dialog :visible="visible" @update:visible="emit('closeModal')" modal header="Warning" :baseZIndex="-100" :style="{ width: '600px' }">
+    <Dialog :visible="visible" @update:visible="emit('closeModal')" modal header="Warning" :baseZIndex="-100" :style="{ width: '700px' }">
       <div class="warning_container ">
         <img class="icon" src="@/assets/svg/warning-triangle.svg">
         <div class="text">

@@ -143,6 +143,7 @@ class DataService extends LoggedService {
   public onWindowLoad() {
     this.logToConsole(LogLevel.DEBUG, 'onWindowLoad');
     useUserStore().reconnect(this.onLoginSuccess);
+    useUserStore().reconnectMetamask();
   }
 
   public onKeplrLogIn(onSuccess?: () => void) {

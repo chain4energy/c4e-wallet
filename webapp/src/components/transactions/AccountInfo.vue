@@ -114,7 +114,8 @@
           <p v-else class="accountInfo__headTxt invalid">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
         </div>
         <div>
-          <Button
+          <Button v-if="useUserStore().metamaskConnectionInfo.address == '' &&sourceAddress==undefined" class="p-button p-component secondary accountInfo__btn" @click="connectMetamask">Connect MetaMask</Button>
+          <Button v-else
             :disabled="!isLogedInInService || sourceAddress != undefined"
             class="p-button p-component secondary accountInfo__btn"
             @click="provideSourceAddress">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button>
@@ -178,7 +179,9 @@ onMounted(() => {
 
 const showAddressInfoModal = ref(false);
 const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
-
+const connectMetamask = () => {
+  useUserStore().connectMetamask();
+};
 function provideClaimerAddress(){
   showAddressInfoModalAddressType.value = AddressType.KEPLR;
   showAddressInfoModal.value = true;

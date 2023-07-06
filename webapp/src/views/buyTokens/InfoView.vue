@@ -68,7 +68,9 @@
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE && sourceAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
-        <div v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE"><Button @click="provideSourceAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
+        <div v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE && useUserStore().metamaskConnectionInfo.address != ''"><Button @click="provideSourceAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
+        <Button v-else class="p-button p-component secondary-link button-w7" @click="connectMetamask">Connect MetaMask</Button>
+
       </div>
       <div style="display: flex">
         <Button class="p-button p-component cancel" @click="transactionContextStore.orderModalVisible=false">{{$t('BUTTONS.CANCEL_ORDER')}}</Button>
@@ -139,6 +141,9 @@ const kycModalVisible = ref(false);
 const loginPopupStatus = ref(false);
 
 const showApprovalModal = ref(false);
+const connectMetamask = () => {
+  useUserStore().connectMetamask();
+};
 const isLoggedIn = computed(() =>{
   return useUserStore().isLoggedIn;
 });

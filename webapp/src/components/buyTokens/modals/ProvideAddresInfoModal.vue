@@ -23,7 +23,7 @@
       </div>
     </div>
     <div style="text-align: center">
-      <Button class="p-button p-component secondary" @click="emit('confirm')">Confirm</Button>
+      <Button  class="p-button p-component secondary" @click="emit('confirm')">Confirm</Button>
     </div>
   </Dialog>
 </template>
@@ -35,6 +35,7 @@ import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useUserServiceStore} from "@/store/userService.store";
 import Dialog from "primevue/dialog";
 import {useRouter} from "vue-router";
+import {useUserStore} from "@/store/user.store";
 
 const toast = useToast();
 const router = useRouter();
@@ -54,7 +55,7 @@ const usersEmail = computed(() => {
   return useUserServiceStore().getUserEmail;
 });
 
-const emit = defineEmits(['close', 'confirm']);
+const emit = defineEmits(['close', 'confirm', ]);
 
 function confirm(){
   emit('confirm');
