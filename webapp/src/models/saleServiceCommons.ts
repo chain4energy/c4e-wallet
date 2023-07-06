@@ -112,7 +112,10 @@ export interface RoundInfo {
   id: number;
   name: string;
 }
-
+export interface RoundInfoListMapped {
+  activeRoundInfo: RoundInfoBlockchainInfo | undefined;
+  roundInfoMap: Map<number, RoundInfoBlockchainInfo>;
+}
 export interface RoundInfoBlockchainInfo {
   roundInfo: RoundInfo;
   blockchainInfo: BlockchainInfo[];

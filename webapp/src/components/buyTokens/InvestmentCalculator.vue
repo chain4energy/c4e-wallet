@@ -118,7 +118,7 @@ const props =  defineProps({
 const emit = defineEmits(['onBuy']);
 
 onBeforeMount(() => {
-  usePublicSalesStore().fetchRoundInfo(false).then(() => {
+  usePublicSalesStore().fetchRoundInfoList(false).then(() => {
     const rate =  usePublicSalesStore().getC4eToUSD;
     if(rate) {
       exchangeRate.value = rate;

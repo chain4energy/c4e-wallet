@@ -125,8 +125,8 @@ export const usePublicSalesStore = defineStore({
         }
       });
     },
-    fetchRoundInfo(lockscreen = false) {
-      return factoryApi.publicSaleServiceApi().fetchRoundInfo(1, lockscreen).then(res => {
+    fetchRoundInfo(roundId: number, lockscreen = false) {
+      return factoryApi.publicSaleServiceApi().fetchRoundInfo(roundId, lockscreen).then(res => {
         if(res.isSuccess() && res.data) {
           this.roundInfo = res.data.roundInfo;
           this.blockchainInfo = res.data.blockchainInfo;
@@ -136,7 +136,13 @@ export const usePublicSalesStore = defineStore({
     fetchRoundInfoList(lockscreen = false) {
       return factoryApi.publicSaleServiceApi().fetchRoundInfoList( lockscreen).then(res => {
         if(res.isSuccess() && res.data) {
-          this.roundInfoMap = res.data;
+          this.roundInfoMap = res.data.roundInfoMap;
+
+          if(res.data.activeRoundInfo) {
+            this.roundInfo = res.data.activeRoundInfo.roundInfo;
+            this.blockchainInfo = res.data.activeRoundInfo.blockchainInfo;
+          }
+
         }
       });
     },
@@ -196,7 +202,7 @@ export const usePublicSalesStore = defineStore({
       if(this.roundInfo?.uC4eToUsd) {
         return this.roundInfo.uC4eToUsd.multiply(useConfigurationStore().config.getViewDenomConversionFactor('uc4e'));
       }
-      return new BigDecimal(9999);
+      return new BigDecimal(0);
     },
     getWarning(): boolean {
       return this.warning;

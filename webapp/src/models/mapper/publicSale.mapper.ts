@@ -1,6 +1,6 @@
 import {
   RoundInfo,
-  RoundInfoBlockchainInfo,
+  RoundInfoBlockchainInfo, RoundInfoListMapped,
   RoundInfoResponse,
   TokenReservationResponse
 } from "@/models/saleServiceCommons";
@@ -34,13 +34,14 @@ export function mapRoundInfo(roundInfo: RoundInfoResponse | undefined): RoundInf
   return {roundInfo: storeRoundInfo, blockchainInfo: roundInfo.blockchains};
 }
 
-export function mapRoundInfoList(roundInfoList: RoundInfoResponse[] | undefined): Map<number, RoundInfoBlockchainInfo>  {
+export function mapRoundInfoList(roundInfoList: RoundInfoResponse[] | undefined): RoundInfoListMapped  {
 
   if (roundInfoList === undefined) {
     throw new Error('roundInfoList is undefined');
   }
 
   const denom = useConfigurationStore().config.tokenReservationDenom;
+  let activeRoundInfo;
 
   const roundInfoMap = new Map<number, RoundInfoBlockchainInfo>();
 
@@ -62,8 +63,11 @@ export function mapRoundInfoList(roundInfoList: RoundInfoResponse[] | undefined)
     };
     const roundInfoBlockchainInfo: RoundInfoBlockchainInfo = {roundInfo: storeRoundInfo, blockchainInfo: roundInfo.blockchains};
     roundInfoMap.set(roundInfo.id, roundInfoBlockchainInfo);
+    if(roundInfo.active) {
+      activeRoundInfo = {roundInfo: storeRoundInfo, blockchainInfo: roundInfo.blockchains};
+    }
   });
-  return roundInfoMap;
+  return {roundInfoMap: roundInfoMap, activeRoundInfo: activeRoundInfo};
 }
 
 export function mapTokenReservations(tokenReservations: TokenReservationResponse[] | undefined): TokenReservation[]  {

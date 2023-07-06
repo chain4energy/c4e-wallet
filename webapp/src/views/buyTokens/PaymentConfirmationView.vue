@@ -149,7 +149,7 @@ import WarningModal from "@/components/buyTokens/modals/WarningModal.vue";
 
 onBeforeMount(async () => {
   useUserStore().connectMetamask();
-  await publicSaleStore.fetchRoundInfo(false);
+  await publicSaleStore.fetchRoundInfoList(false);
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const {chainId} = await provider.getNetwork();
   changeNetwork(chainId);

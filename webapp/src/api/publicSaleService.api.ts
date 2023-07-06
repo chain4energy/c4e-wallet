@@ -27,7 +27,7 @@ import {
   ReserveTokensRequest,
   ReserveTokensResponse,
   RoundInfo,
-  RoundInfoBlockchainInfo,
+  RoundInfoBlockchainInfo, RoundInfoListMapped,
   RoundInfoResponse,
   TokenPaymentProofRequest,
   TokenReservationResponse
@@ -213,7 +213,7 @@ export class PublicSaleServiceApi extends BaseApi {
     );
   }
 
-  public async fetchRoundInfoList(lockscreen: boolean): Promise<RequestResponse<Map<number, RoundInfoBlockchainInfo>, ErrorData<UserServiceErrData>>> {
+  public async fetchRoundInfoList(lockscreen: boolean): Promise<RequestResponse<RoundInfoListMapped, ErrorData<UserServiceErrData>>> {
     const mapData = (roundInfo: RoundInfoResponse[] | undefined) => {
       return mapRoundInfoList(roundInfo);
     };
@@ -224,9 +224,9 @@ export class PublicSaleServiceApi extends BaseApi {
       mappingErrorMassage: 'RoundInfoList data mapping error: ',
     };
     const isResponseError = (response: RequestResponse<RoundInfoResponse[], ErrorData<UserServiceErrData>>) => {return response.isError();};
-    return this.axiosWith200ErrorCall<Map<number, RoundInfoBlockchainInfo>, RoundInfoResponse[], UserServiceErrData>({
+    return this.axiosWith200ErrorCall<RoundInfoListMapped, RoundInfoResponse[], UserServiceErrData>({
         method: 'GET',
-        url: useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.ROUND_INFO,
+        url: useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.ROUND_INFO_LIST,
       },
       mapData,
       lockscreen,
