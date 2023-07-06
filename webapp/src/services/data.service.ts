@@ -16,6 +16,7 @@ import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
 import {useI18n} from "vue-i18n";
 import {useUserServiceStore} from "@/store/userService.store";
 import * as net from "net";
+import {usePublicSalesStore} from "@/store/publicSales.store";
 const keplrKeyStoreChange = 'keplr_keystorechange';
 const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
 const leapKeyStoreChange = 'leap_keystorechange';
@@ -246,18 +247,21 @@ class DataService extends LoggedService {
 
   public onKeplrKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onKeplrKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
     useUserStore().connectKeplr();
   }
 
   public onCosmostationKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onCosmostationKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
     useUserStore().connectCosmostation();
   }
 
   public onLeapKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onLeapKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
     useUserStore().connectLeap();
   }
@@ -398,7 +402,6 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onClaimRewards');
     useUserStore().claimRewards();
   }
-
 }
 
 export default DataService.getInstance();
