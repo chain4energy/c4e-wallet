@@ -15,7 +15,8 @@ import WifiIcon from '@/components/features/WifiOnIcon.vue';
 import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
 import {useI18n} from "vue-i18n";
 const keplrKeyStoreChange = 'keplr_keystorechange';
-
+const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
+const leapKeyStoreChange = 'leap_keystorechange';
 class DataService extends LoggedService {
 
   private minBetweenRefreshmentsPeriod = 1000;
@@ -163,6 +164,8 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onLogOut');
     window.clearInterval(this.accountIntervalId);
     this.disableKeplrAccountChangeListener();
+    this.disableCosmostationAccountChangeListener();
+    this.disableLeapAccountChangeListener();
     // useValidatorsStore().clear();
     useProposalsStore().clearUserVote();
     useUserStore().logOut();
@@ -231,11 +234,29 @@ class DataService extends LoggedService {
     useUserStore().connectKeplr();
   }
 
+  public onCosmostationKeyStoreChange() {
+    this.logToConsole(LogLevel.DEBUG, 'onCosmostationKeyStoreChange');
+    useUserStore().logOut();
+    useUserStore().connectCosmostation();
+  }
+
+  public onLeapKeyStoreChange() {
+    this.logToConsole(LogLevel.DEBUG, 'onLeapKeyStoreChange');
+    useUserStore().logOut();
+    useUserStore().connectLeap();
+  }
+
   private onLoginSuccess(connetionInfo: ConnectionInfo, onSuccess?: () => void) {
     const instancce = DataService.getInstance();
     instancce.logToConsole(LogLevel.DEBUG, 'onLoginSuccess: ' + connetionInfo.isKeplr());
     if (connetionInfo.isKeplr()) {
       instancce.enableKeplrAccountChangeListener();
+    }
+    if (connetionInfo.isCosmostation()) {
+      instancce.enableCosmostationAccountChangeListener();
+    }
+    if (connetionInfo.isLeap()) {
+      instancce.enableLeapAccountChangeListener();
     }
     const now = new Date().getTime();
     instancce.lastAccountTimeout = now;
@@ -316,9 +337,29 @@ class DataService extends LoggedService {
     window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
   }
 
+  private enableCosmostationAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'enableCosmostationAccountChangeListener');
+    window.addEventListener(cosmostationKeyStoreChange, keystoreCosmostationChangeListener);
+  }
+
+  private enableLeapAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'enableLeapAccountChangeListener');
+    window.addEventListener(leapKeyStoreChange, keystoreLeapChangeListener);
+  }
+
   private disableKeplrAccountChangeListener() {
     this.logToConsole(LogLevel.DEBUG, 'disableKeplrAccountChangeListener');
     window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
+  }
+
+  private disableCosmostationAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'disableCosmostationAccountChangeListener');
+    window.removeEventListener(cosmostationKeyStoreChange, keystoreCosmostationChangeListener);
+  }
+
+  private disableLeapAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'disableLeapAccountChangeListener');
+    window.removeEventListener(leapKeyStoreChange, keystoreLeapChangeListener);
   }
 
   public onClaimAirdrop(address: string) {
@@ -341,6 +382,14 @@ export default DataService.getInstance();
 
 const keystoreChangeListener = () => {
   DataService.getInstance().onKeplrKeyStoreChange();
+};
+
+const keystoreCosmostationChangeListener = () => {
+  DataService.getInstance().onCosmostationKeyStoreChange();
+};
+
+const keystoreLeapChangeListener = () => {
+  DataService.getInstance().onLeapKeyStoreChange();
 };
 
 function refreshAccountData() {
