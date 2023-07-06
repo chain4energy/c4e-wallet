@@ -5,7 +5,7 @@
 <!--      <PublicSalesBar v-if="parts && total" :total="total" :values="parts"/>-->
 <!--    </div>-->
     <div class="publicSaleInfo__summary">
-      <div class="publicSaleInfo__infoBlock" style="background-color: #81CF1F">
+      <div class="publicSaleInfo__infoBlock green_background" >
         <p>{{$t('BUY_TOKENS_VIEW.PRICE')}}</p>
         <p>1 C4E = ${{currency}}</p>
       </div>
@@ -112,18 +112,21 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
 .publicSaleInfo{
   display: flex;
   flex-direction: column;
-  background: #0F3153;
+  //background: #0F3153;
   font-family: 'Inter',sans-serif;
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
   line-height: 24px;
-  padding: 10px 33px;
-  border-radius: 5px;
+  padding: 20px 33px;
+  border-radius: 10px;
   align-items: center;
+  background-color: $main-color;
+
   &__header{
     color: white;
-    margin: 6px 0;
+    margin-bottom: 20px;
+    font-weight: 900;
   }
   &__summary{
     width: 100%;
@@ -139,9 +142,9 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
     justify-content: center;
     font-family: 'Inter',sans-serif;
     color: white;
-    background: #0F3153;
+    background-color: $main-lighter-color;
     box-shadow: 0 0 2px 2px #02447A;
-    border-radius: 2px;
+    border-radius: 6px;
   }
   &__dateText{
     font-family: 'Inter',sans-serif;
@@ -150,5 +153,8 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
     font-size: 12px;
     line-height: 12px;
   }
+}
+.green_background {
+  background-color: $secondary-color;
 }
 </style>
