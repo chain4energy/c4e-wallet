@@ -178,6 +178,8 @@ function isMobile() {
         .icon {
           margin-left: 0;
           margin-right:0;
+          height: 24px;
+          width: 24px;
         }
       }
     }

@@ -1,12 +1,12 @@
 <template>
+  <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
   <div class="airDropTotal">
     <div class="airDropTotal__container">
       <div class="airDropTotal__login">
         <Button
-          @click="dataService.onKeplrLogIn()"
+          @click="loginPopupStatus =! loginPopupStatus"
           v-if="!userLoggedIn  && !isMobile"
           class="airDropTotal-btn">
-          <KeplrLogo :reverse-colors="true"/>
           {{ $t('AIRDROP.CONNECT') }}
         </Button>
         <hr class="airDropTotal__hr" v-if="!userLoggedIn  && !isMobile" :data-after="$t('AIRDROP.OR')"/>
@@ -97,6 +97,9 @@ import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import {useAirDropStore} from "@/store/airDrop.store";
 import dataService from "@/services/data.service";
 import deviceType from "@/utils/mobileCheck";
+import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
+
+const loginPopupStatus = ref(false);
 
 const address = ref<string>();
 let errorMessageType = '';

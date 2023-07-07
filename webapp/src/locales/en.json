@@ -389,7 +389,7 @@
     }
   },
   "AIRDROP": {
-    "CONNECT": "Connect with Keplr",
+    "CONNECT": "Connect to wallet",
     "OR": "or",
     "CONNECT_CHAINS": "Connect with COSM/C4E account",
     "C4E_HELP": "Provide C4E or COSMOS address",
