@@ -16,8 +16,8 @@ import {
   Registry,
   TxBodyEncodeObject
 } from '@cosmjs/proto-signing';
+import {Int53} from "@cosmjs/math";
 import {encodeSecp256k1Pubkey, StdFee, StdSignDoc, makeSignDoc as makeStdSignDoc, makeStdTx } from "@cosmjs/amino";
-import {Int53} from "@cosmjs/math"
 import {MsgSignData} from "@/types/tx";
 import {TxRaw} from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import {fromBase64} from "@cosmjs/encoding";
@@ -394,7 +394,6 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
 
       return new RequestResponse<string, TxBroadcastError>(undefined, signedData.signature);
     } catch (err) {
-      console.log(err);
       this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
       const error = err as Error;
       return this.createTxSignErrorResponseWithToast(

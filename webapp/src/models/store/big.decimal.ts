@@ -3,7 +3,7 @@ const ROUNDED = true;
 const SHIFT = BigInt("1" + "0".repeat(DECIMALS));
 
 interface BigDecimalConstructor {
-  new (value: bigint | number | BigDecimal | string): BigDecimal;
+  new (value: bigint | number | BigDecimal | string, decimals?: number): BigDecimal;
 }
 
 export interface BigDecimal {
@@ -30,9 +30,11 @@ class BigDecimalImpl implements BigDecimal {
 
   private value: bigint;
 
-  constructor(value: bigint | number | BigDecimal | string) {
+  constructor(value: bigint | number | BigDecimal | string, decimals?: number) {
     this.value = BigDecimalImpl.toInternalValue(value);
-
+    if(decimals) {
+      this.value = this.value / BigInt(10 ** ( decimals));
+    }
   }
 
   private toCompare(value: string | number | bigint | BigDecimal): BigDecimalImpl {

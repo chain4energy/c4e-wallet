@@ -3,7 +3,6 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { BigDecimal, divideBigInts } from "./big.decimal";
 import { VoteOption as CosmVoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
 import {StakingPool} from "@/models/store/tokens";
-import {useProposalsStore} from "@/store/proposals.store";
 import {useTokensStore} from "@/store/tokens.store";
 
 export enum ProposalStatus {

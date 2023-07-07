@@ -64,8 +64,9 @@ import {ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
+import {pattern} from "@/utils/passwordPattern";
 
-const pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/;
+
 const schema = object().shape({
   email:  Yup.string()
     .required( "This field is required"),

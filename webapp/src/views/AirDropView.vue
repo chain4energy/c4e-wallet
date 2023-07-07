@@ -21,7 +21,7 @@
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import AirDropTotal from "@/components/airdrop/AirDropTotal.vue";
-import ClaimAirDrop from "@/components/airdrop/ClaimAirdrop.vue";
+
 </script>
 
 <style scoped lang="scss">

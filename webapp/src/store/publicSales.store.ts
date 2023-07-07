@@ -4,13 +4,12 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import factoryApi from "@/api/factory.api";
 import {
   BlockchainInfo,
-  InitPaymentSessionRequest, MetamaskPayInfo, RESERVATION_STATUS, RoundInfo,
+  InitPaymentSessionRequest, MetamaskPayInfo, RESERVATION_STATUS, RoundInfo, RoundInfoBlockchainInfo,
   TokenPaymentProofRequest,
   Transaction
 } from "@/models/saleServiceCommons";
-import {clearAuthTokens} from "axios-jwt";
-import {LoginTypeEnum} from "@/store/userService.store";
 import apiFactory from "@/api/factory.api";
+import {BigDecimal} from "@/models/store/big.decimal";
 export interface PublicSalesState{
   total: Coin | undefined,
   parts: parts | undefined,
@@ -18,7 +17,9 @@ export interface PublicSalesState{
   endDate: Date | undefined,
   tokenReservations: TokenReservation[] | undefined,
   blockchainInfo: BlockchainInfo[],
-  roundInfo: RoundInfo | undefined
+  roundInfo: RoundInfo | undefined,
+  roundInfoMap: Map<number, RoundInfoBlockchainInfo>,
+  warning: boolean
 }
 export interface parts{
   sold: Coin,
@@ -77,14 +78,16 @@ export const usePublicSalesStore = defineStore({
       endDate: undefined,
       tokenReservations: undefined,
       blockchainInfo: [],
-      roundInfo: undefined
+      roundInfo: undefined,
+      roundInfoMap: new Map<number, RoundInfoBlockchainInfo>(),
+      warning: false
     };
   },
   actions: {
     setTotal(){
       const denom = useConfigurationStore().config.stakingDenom;
       this.total = new Coin(BigInt(250000000000000), denom);
-      this.startDate = new Date('2023-05-08T10:00:00')
+      this.startDate = new Date('2023-05-08T10:00:00');
       this.endDate = new Date('2023-05-09T22:50:00');
     },
     setParts(){
@@ -102,7 +105,7 @@ export const usePublicSalesStore = defineStore({
       });
     },
     reserveTokens(amount: number, onSuccess: ((orderId: number) => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
-      return factoryApi.publicSaleServiceApi().reserveTokens(amount, lockscreen).then(res => {
+      return factoryApi.publicSaleServiceApi().reserveTokens(1, amount, lockscreen).then(res => {
         if(res.isSuccess() && res.data?.orderId) {
           onSuccess(res.data.orderId);
         } else {
@@ -122,10 +125,24 @@ export const usePublicSalesStore = defineStore({
         }
       });
     },
-    fetchRoundInfo(lockscreen = false) {
-      return factoryApi.publicSaleServiceApi().fetchRoundInfo(lockscreen).then(res => {
+    fetchRoundInfo(roundId: number, lockscreen = false) {
+      return factoryApi.publicSaleServiceApi().fetchRoundInfo(roundId, lockscreen).then(res => {
         if(res.isSuccess() && res.data) {
-          this.roundInfo = res.data;
+          this.roundInfo = res.data.roundInfo;
+          this.blockchainInfo = res.data.blockchainInfo;
+        }
+      });
+    },
+    fetchRoundInfoList(lockscreen = false) {
+      return factoryApi.publicSaleServiceApi().fetchRoundInfoList( lockscreen).then(res => {
+        if(res.isSuccess() && res.data) {
+          this.roundInfoMap = res.data.roundInfoMap;
+
+          if(res.data.activeRoundInfo) {
+            this.roundInfo = res.data.activeRoundInfo.roundInfo;
+            this.blockchainInfo = res.data.activeRoundInfo.blockchainInfo;
+          }
+
         }
       });
     },
@@ -152,12 +169,15 @@ export const usePublicSalesStore = defineStore({
     },
     async sendMetamaskTransaction(amount: string, blockchainAddress: string, coinDecimals: number, c4eAddress: string) {
       return await apiFactory.accountApi().sendTransaction( amount, blockchainAddress, coinDecimals, c4eAddress).then(res => {
-        console.log(res)
+        console.log(res);
         return res;
       });
     },
     logOutAccount(){
       this.tokenReservations = [];
+    },
+    toggleWarning(value: boolean){
+      this.warning = value;
     }
   },
   getters:{
@@ -178,37 +198,15 @@ export const usePublicSalesStore = defineStore({
     getTransactions(): TokenReservation[] | undefined{
       return this.tokenReservations;
     },
-    getC4eToUSD(): number {
+    getC4eToUSD(): BigDecimal {
       if(this.roundInfo?.uC4eToUsd) {
-        return this.roundInfo.uC4eToUsd * useConfigurationStore().config.getViewDenomConversionFactor('uc4e');
+        return this.roundInfo.uC4eToUsd.multiply(useConfigurationStore().config.getViewDenomConversionFactor('uc4e'));
       }
-      return 9999;
+      return new BigDecimal(0);
+    },
+    getWarning(): boolean {
+      return this.warning;
     }
   }
 });
-
-function getFakeTransactionsData() {
-  return [
-    {
-      amount: '1000000000',
-      paymentType: 'Crypto',
-      status: 'Declared',
-      reservationEnd: "2023-05-12T20:45:20",
-    },
-    {
-      amount: '1000000000',
-      paymentType: 'StandardCurrency',
-      status: 'Paid',
-      txHash: 'tx-123123123123123123',
-      blockChainType: 'BSC or Ethereum',
-    },
-    {
-      amount: '1000000000',
-      paymentType: 'Crypto',
-      status: 'Error',
-      txHash: 'tx-123123123123123123',
-      blockChainType: 'BSC',
-    },
-  ];
-}
 

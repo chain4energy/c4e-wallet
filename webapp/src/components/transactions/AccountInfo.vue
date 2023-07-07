@@ -114,7 +114,8 @@
           <p v-else class="accountInfo__headTxt invalid">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
         </div>
         <div>
-          <Button
+          <Button v-if="useUserStore().metamaskConnectionInfo.address == '' &&sourceAddress==undefined" class="p-button p-component secondary accountInfo__btn" @click="connectMetamask">Connect MetaMask</Button>
+          <Button v-else
             :disabled="!isLogedInInService || sourceAddress != undefined"
             class="p-button p-component secondary accountInfo__btn"
             @click="provideSourceAddress">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button>
@@ -129,7 +130,7 @@
 
 <script setup lang="ts">
 
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {LoginTypeEnum, useUserServiceStore} from "@/store/userService.store";
 import {useRouter} from "vue-router";
@@ -137,11 +138,8 @@ import {useI18n} from "vue-i18n";
 import ProvideAddresInfoModal from "@/components/buyTokens/modals/ProvideAddresInfoModal.vue";
 import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useToast} from "vue-toastification";
-import {SignParingAddressResult} from "@/models/user/emailPairing";
-import {logger} from "ethers";
 import {useContextStore} from "@/store/context.store";
 import TooltipComponent from "@/components/TooltipComponent.vue";
-import dataService from "@/services/data.service";
 import Button from "primevue/button";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 
@@ -165,10 +163,6 @@ const isTermsAccepted = computed(() =>{
   return useUserServiceStore().isTermsAccepted;
 });
 
-const paired = computed(() => {
-  return useUserServiceStore().isPaired;
-})
-
 const usersWallet = computed(() => {
   return useUserStore().getAccount.address;
 });
@@ -185,7 +179,9 @@ onMounted(() => {
 
 const showAddressInfoModal = ref(false);
 const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
-
+const connectMetamask = () => {
+  useUserStore().connectMetamask();
+};
 function provideClaimerAddress(){
   showAddressInfoModalAddressType.value = AddressType.KEPLR;
   showAddressInfoModal.value = true;
@@ -226,11 +222,6 @@ const onSuccessConnect = () => {
   useContextStore().addressType = showAddressInfoModalAddressType.value;
   router.push({name: 'provideVerificationCode'});
 };
-
-function onSuccessAddressPairing(result: SignParingAddressResult){
-  console.log("!!!" + result);
-  router.push({name:'provideVerificationCode'});
-}
 
 function onFail(){
   toast.error("error");

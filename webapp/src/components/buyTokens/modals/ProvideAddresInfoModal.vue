@@ -10,8 +10,17 @@
         <div>{{addressType()}} address:</div>
         <div>{{address}}</div>
       </div>
+      <div v-if="warning" class="connect_address__warning box-shadow">
+        <Icon style="height:110px; width:110px; color: red" name="AlertTriangle"/>
+        <div class="text">
+          During this activity your wallet address has been changed. Are you aware of it?
+        </div>
+        <div class="closeWarning" @click="usePublicSalesStore().toggleWarning(false)">
+          <X/>
+        </div>
+      </div>
       <div class="connect_address__warning box-shadow">
-        <img class="icon" src="@/assets/svg/warning-triangle.svg">
+        <Icon style="height:110px; width:110px; color: red" name="AlertTriangle"/>
         <div v-if="props.addressType==AddressType.KEPLR" class="text">
           Verify if the claimer address is one you expect to be the address you will use to claim your tokens.<br>
           If this not expected address change to proper account in your wallet application.
@@ -23,7 +32,7 @@
       </div>
     </div>
     <div style="text-align: center">
-      <Button class="p-button p-component secondary" @click="emit('confirm')">Confirm</Button>
+      <Button  class="p-button p-component secondary" @click="emit('confirm')">Confirm</Button>
     </div>
   </Dialog>
 </template>
@@ -35,6 +44,10 @@ import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useUserServiceStore} from "@/store/userService.store";
 import Dialog from "primevue/dialog";
 import {useRouter} from "vue-router";
+import {useUserStore} from "@/store/user.store";
+import { X } from 'lucide-vue-next';
+import DataService from "@/services/data.service";
+import {usePublicSalesStore} from "@/store/publicSales.store";
 
 const toast = useToast();
 const router = useRouter();
@@ -55,6 +68,11 @@ const usersEmail = computed(() => {
 });
 
 const emit = defineEmits(['close', 'confirm']);
+
+const warning = computed(() => {
+  return usePublicSalesStore().getWarning;
+});
+
 
 function confirm(){
   emit('confirm');
@@ -99,6 +117,7 @@ const getAddressType = () => {
     margin: 20px auto;
     width: 80%;
     padding: 20px;
+    align-items: center;
     .icon {
       width: 100px;
     }
@@ -106,5 +125,16 @@ const getAddressType = () => {
       margin-left: 15px;
     }
   }
+}
+
+.closeWarning {
+  padding: 5px;
+  transition: all 0.2s linear;
+  border-radius: 50%;
+}
+
+.closeWarning:hover {
+  background: #dedede;
+  cursor:pointer;
 }
 </style>

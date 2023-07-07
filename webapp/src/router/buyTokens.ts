@@ -1,14 +1,7 @@
 import BuyTokensView from '@/views/BuyTokensView.vue';
-import AccountView from "@/views/buyTokens/AccountView.vue";
 import InfoView from "@/views/buyTokens/InfoView.vue";
-import EmailRegistrationvView from "@/views/buyTokens/EmailRegistrationvView.vue";
-import KeplrRegistrationView from "@/views/buyTokens/KeplrRegistrationView.vue";
-import MetamaskRegistrationvView from "@/views/buyTokens/MetamaskRegistrationvView.vue";
 import ActivateView from "@/views/buyTokens/ActivateView.vue";
-import EmailLoginView from "@/views/buyTokens/EmailLoginView.vue";
 import PaymentConfirmationView from "@/views/buyTokens/PaymentConfirmationView.vue";
-import SignInView from "@/views/buyTokens/SignInView.vue";
-import SignUpView from "@/views/buyTokens/SignUpView.vue";
 import FiatPaymentConfirmationView from "@/views/buyTokens/FiatPaymentConfirmationView.vue";
 
 const buyTokensRoutes = {

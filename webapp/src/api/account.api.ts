@@ -2,19 +2,14 @@ import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import TxBroadcastBaseApi, { TxData, TxBroadcastError } from "@/api/tx.broadcast.base.api";
 import { ErrorData } from "@/api/base.api";
 import { LogLevel } from '@/services/logger/log-level';
-
 import { RequestResponse } from "@/models/request-response";
 import { Account as StoreAccount } from "@/models/store/account";
 import { Coin } from "@/models/store/common";
-
 import { AccountResponse, BalanceResponse} from "@/models/blockchain/account";
-
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ConnectionInfo } from "@/api/wallet.connecton.api";
 import { mapAccount, createNonexistentAccount } from "@/models/mapper/account.mapper";
 import { formatString } from "@/utils/string-formatter";
-import queries from "./queries";
-
 import {
   MsgBeginRedelegate,
   MsgDelegate,
@@ -36,13 +31,8 @@ import { EncodeObject } from "@cosmjs/proto-signing";
 import { BigDecimal } from "@/models/store/big.decimal";
 import { VoteOption } from "@/models/store/proposal";
 import { BlockchainApiErrorData } from "@/models/blockchain/common";
-import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
 import {DataToSign} from "@/models/user/walletAuth";
 import {MsgSignData} from "@/types/tx";
-import {TransactionRequest} from "@ethersproject/abstract-provider";
-import {ethers} from "ethers";
-
-
 
 export class AccountApi extends TxBroadcastBaseApi {
 
