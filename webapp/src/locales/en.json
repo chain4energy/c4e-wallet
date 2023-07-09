@@ -424,7 +424,7 @@
     "CLAIMED": "Claimed",
     "MISSION_COMPLETED": "Missions completed",
     "TOTAL_DISTRIBUTION": "Total distribution",
-    "CAMPAIGN_PASSED": "The campaign has passed",
+    "CAMPAIGN_PASSED": "The campaign has finished",
     "CAMPAIGN_START": "Time to start the campaign",
     "CAMPAIGN_END": "Time to finish the campaign",
     "CLAIM": "Claim",
@@ -434,7 +434,8 @@
     "SHOW_MISSIONS": "Show missions",
     "HIDE_MISSIONS": "Hide missions",
     "MISSION": "Mission",
-    "CONNECT_INFO": "Connect to wallet to claim rewards!"
+    "CONNECT_INFO": "Connect to wallet to claim rewards!",
+    "SUCCESS": "You successfully claimed mission!"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Campaign countdown",

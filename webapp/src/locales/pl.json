@@ -427,7 +427,8 @@
     "SHOW_MISSIONS": "Pokaż misje",
     "HIDE_MISSIONS": "Ukryj misje",
     "MISSION": "Misja",
-    "CONNECT_INFO": "Połącz się z portfelem, by odbierać nagrody!"
+    "CONNECT_INFO": "Połącz się z portfelem, by odbierać nagrody!",
+    "SUCCESS": "Sukces! Misja wykonana pomyślnie"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Odliczanie kampanii",
