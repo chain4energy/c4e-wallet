@@ -380,7 +380,7 @@ export const useAirDropStore = defineStore({
      */
 
     async fetchUsersCampaignData(address: string, lockscreen = true){
-      this.campaigns = Array<Campaign>();
+      this.campaigns = [];
       this.claimRecord = {} as UserAirdropEntry;
 
       //TODO: Paging
