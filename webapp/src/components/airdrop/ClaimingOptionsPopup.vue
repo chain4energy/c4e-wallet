@@ -91,7 +91,7 @@ const addressSchema = object().shape({
     }),
     string().test('validate Address', i18n.global.t(errorMessageType), validateAddress)
   ])
-})
+});
 
 function claim(){
   if(props.initialClaim){

@@ -85,13 +85,22 @@
                   </div>
 
                     <Button
+                      v-if="!missions.claimed"
                       :disabled="!isDisabled(campaignRecord, missions)"
                       class="p-button p-component secondary claimAirDrop__missions-btn"
                       :label="getTextForMissionsBtn(missions, missions.mission_type)"
                       @click="redirectMission(campaignRecord, missions, missions.mission_type)"
-                    >
+                    />
 
+                  <Button
+                    v-else
+                    class="p-button p-component secondary claimAirDrop__missions-shareBtn"
+                    @click.prevent="() => {popupMission = missions; popupCampaign = campaignRecord; sharePopupStatus = true;}"
+                  >
+                    Share
                   </Button>
+
+
 
               </div>
             </div>
@@ -111,11 +120,26 @@
       </div>
     </div>
   </div>
+
+  <Dialog v-model:visible="sharePopupStatus" modal header="Congratulations!" :style="{ width: '50vw' }">
+    <div class="sharePopup">
+      <h3>Share this claim on your social media!</h3>
+      <p>{{socialMediaMessage()}}</p>
+      <a :href='`https://twitter.com/intent/tweet?text=${socialMediaMessage()}`' target="_blank">
+        <button>
+          <svg width="32" height="25" viewBox="0 0 32 25" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M31.2481 0C30.0294 0.723392 27.5842 1.70927 26.1468 1.99363C26.1046 2.00456 26.0702 2.01862 26.0296 2.02956C24.7594 0.776514 23.0189 0 21.0924 0C17.2099 0 14.0616 3.14824 14.0616 7.03081C14.0616 7.23548 14.0444 7.61202 14.0616 7.81201C8.82289 7.81201 4.83564 5.06843 1.97644 1.5624C1.66552 2.3436 1.52959 3.5779 1.52959 4.7372C1.52959 6.92613 3.24042 9.076 5.90432 10.4087C5.41372 10.5353 4.87313 10.6259 4.31067 10.6259C3.40291 10.6259 2.44204 10.3869 1.5624 9.6619C1.5624 9.68846 1.5624 9.71346 1.5624 9.74158C1.5624 12.8008 4.80907 14.8834 7.69639 15.4631C7.11049 15.8084 5.92932 15.8428 5.35279 15.8428C4.94657 15.8428 3.50916 15.6568 3.1248 15.585C3.92788 18.0926 6.82457 19.5019 9.58534 19.5519C7.4261 21.2455 5.92775 21.8736 1.50616 21.8736H0C2.79358 23.6641 6.35117 25 9.91657 25C21.5252 25 28.1232 16.1521 28.1232 7.81201C28.1232 7.67764 28.1201 7.39641 28.1154 7.11362C28.1154 7.08549 28.1232 7.05893 28.1232 7.03081C28.1232 6.98863 28.1107 6.948 28.1107 6.90582C28.1061 6.69333 28.1014 6.49491 28.0967 6.39179C29.331 5.50122 30.4012 4.39035 31.2481 3.1248C30.1153 3.6279 28.8998 3.96538 27.6233 4.11849C28.9263 3.33729 30.7778 1.47491 31.2481 0Z" fill="white"/>
+          </svg>
+          Tweet
+        </button>
+      </a>
+    </div>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
 import { useAirDropStore } from "@/store/airDrop.store";
-import {computed, onMounted, onUnmounted, ref, watch} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import { useUserStore } from "@/store/user.store";
 import { CampainStatus } from "@/models/airdrop/airdrop";
 import { Campaign, Mission, MissionTypeSt } from "@/models/store/airdrop";
@@ -130,11 +154,12 @@ import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import {ChevronDown, ChevronUp} from "lucide-vue-next";
 import dataService from "@/services/data.service";
+import Dialog from 'primevue/dialog';
 
 const percentsBar = ref();
 const i18n = useI18n();
 const loginPopupStatus = ref(false);
-
+const sharePopupStatus = ref(false);
 // const currentLang = computed(() => {
 //   return i18n.global.locale;
 // });
@@ -328,6 +353,14 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
     return amount;
   }
 }
+
+const popupMission = ref<Mission>();
+const popupCampaign = ref<Campaign>();
+
+const socialMediaMessage = () => {
+  console.log(popupMission);
+  return `I have completed mission ${popupMission.value?.name} with a value of ${Number(popupMission.value?.weight) / 1000000} C4E from campaign ${popupCampaign.value?.name} on Airdrop Allocation!`;
+};
 </script>
 
 <style scoped lang="scss">
@@ -467,6 +500,22 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
         }
       }
     }
+    &-shareBtn {
+      width: 130px;
+      max-height: 42px !important;
+      margin: 8px !important;
+      border-radius: 5px !important;
+      box-sizing: border-box !important;
+      color: $secondary-color !important;
+      border: $secondary-color 1px solid !important;
+      background-color: #002C50 !important;
+      transition: all 0.2s linear;
+      &:hover {
+        background-color: white !important;
+        color: #002C50 !important;
+      }
+    }
+
   }
   &__percents{
     width: 100%;
@@ -521,5 +570,21 @@ function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
   height: 120px;
   border: 1px solid white;
   margin: 0 8px;
+}
+
+.sharePopup {
+  padding: 15px 5%;
+  text-align: justify;
+  p {
+    margin: 20px 0;
+  }
+  button {
+    height: 50px;
+    padding: 10px 40px;
+    border-radius: 25px;
+    border: none;
+    background-color: #1DA1F2;
+    color: white;
+  }
 }
 </style>
