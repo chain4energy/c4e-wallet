@@ -344,7 +344,8 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
 
   protected async signDirect(
     connection: ConnectionInfo,
-    dataToSign: DataToSign,
+    dataToSign: string,
+    processId: string,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
     skipErrorToast = false
   ): Promise<RequestResponse<string, TxBroadcastError>>
@@ -380,7 +381,8 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         }
       }
 
-      const signedData = await keplr?.signArbitrary(useConfigurationStore().config.chainId, connection.account, dataToSign.randomString);
+      const signedData = await keplr?.signArbitrary(useConfigurationStore().config.chainId, connection.account, dataToSign);
+      console.log(useConfigurationStore().config.chainId);
 
       console.log(signedData);
 
@@ -392,7 +394,63 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         );
       }
 
-      return new RequestResponse<string, TxBroadcastError>(undefined, signedData.signature);
+      const utf8Encode = new TextEncoder();
+      const val: MsgSignData = {
+        signer: connection.account,
+        data: utf8Encode.encode(dataToSign)
+      };
+
+      const messages = [{typeUrl: '/sign' + '/MsgSignData', value: MsgSignData.fromPartial(val)}];
+
+      const connectionInfoPubKey = connection.pubKey != undefined ? connection.pubKey : new Uint8Array();
+      const pubkey = encodePubkey(encodeSecp256k1Pubkey(connectionInfoPubKey));
+
+
+      const txBodyEncodeObject: TxBodyEncodeObject = {
+        typeUrl: "/cosmos.tx.v1beta1.TxBody",
+        value: {
+          messages: messages,
+          memo: '',
+        },
+      };
+
+
+      const signMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
+
+      const myRegistry = new Registry(defaultRegistryTypes);
+      const signDataMsgTypeUrl =  '/sign' + '/MsgSignData';
+      myRegistry.register(signDataMsgTypeUrl, MsgSignData);
+      const txBodyBytes = myRegistry.encode(txBodyEncodeObject);
+      // const signedTxBodyBytes = utf8Encode.encode(JSON.stringify(signedTxBody));
+
+      const signedGasLimit = 0;
+      const signedSequence = 0;
+
+      const fee: StdFee = {
+        amount: [],
+        gas: "0",
+      };
+
+      const signedAuthInfoBytes = makeAuthInfoBytes(
+        [{ pubkey, sequence: signedSequence }],
+        fee.amount,
+        signedGasLimit,
+        undefined,
+        undefined,
+        signMode,
+      );
+      const txRaw = TxRaw.fromPartial({
+        bodyBytes: txBodyBytes,
+        authInfoBytes: signedAuthInfoBytes,
+        signatures: [fromBase64(signedData.signature)],
+      });
+      const txBytes = TxRaw.encode(txRaw).finish();
+
+      const b64EncodedTxBytes = _arrayBufferToBase64(txBytes);
+      const signedDataDto = JSON.stringify({processId: "test", signedData: b64EncodedTxBytes});
+      console.log(signedDataDto)
+
+      return new RequestResponse<string, TxBroadcastError>(undefined, signedDataDto);
     } catch (err) {
       this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
       const error = err as Error;

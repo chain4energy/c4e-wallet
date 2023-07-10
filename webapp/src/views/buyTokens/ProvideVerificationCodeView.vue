@@ -22,14 +22,17 @@ import apiFactory from "@/api/factory.api";
 import {useContextStore} from "@/store/context.store";
 import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useUserStore} from "@/store/user.store";
+import message from "@/config/message";
+import {formatString} from "@/utils/string-formatter";
 
 const activationCode = ref<string>('');
 const contextStore = useContextStore();
 const onActivateClick = () => {
-  let dataToSign = activationCode.value+'-'+contextStore.dataToSign?.dataToSign.randomString;
+
+  const dataToSign = formatString(message.LINKING_WALLET, {email: useUserServiceStore().userEmail, address: contextStore.dataToSign?.dataToSign.accountNumber,  activationCode: activationCode.value, randomString: contextStore.dataToSign?.dataToSign.randomString});
+
   const processID = contextStore.dataToSign?.processID;
   if(contextStore.addressType == AddressType.METAMASK) {
-    dataToSign = 'This message is for pairing your email with metamask/n' + dataToSign;
 
     if(processID)
       apiFactory.accountApi().signMetamask(dataToSign).then(signedDataResponse => {
@@ -42,9 +45,8 @@ const onActivateClick = () => {
     const accountNumber = contextStore.dataToSign?.dataToSign.accountNumber;
     const sequenceNumber = contextStore.dataToSign?.dataToSign.sequenceNumber;
     if(processID && accountNumber && sequenceNumber) {
-      dataToSign = 'This message is for pairing your email with keplr/n' + dataToSign;
-      console.log(dataToSign);
-      apiFactory.accountApi().sign(useUserStore().connectionInfo, {accountNumber: accountNumber, randomString: dataToSign, sequenceNumber:sequenceNumber }).then(signedDataResponse => {
+
+      apiFactory.accountApi().sign(useUserStore().connectionInfo, dataToSign, processID).then(signedDataResponse => {
 
         if(signedDataResponse.isSuccess() && signedDataResponse.data) {
 
