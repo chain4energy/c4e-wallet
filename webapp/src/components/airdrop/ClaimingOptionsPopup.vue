@@ -3,6 +3,7 @@
     <div class="claimingOptionsPopup__background" @click="$emit('close')"></div>
     <div class="claimingOptionsPopup__holder">
       <h3>Type an account to claim mission reward</h3>
+      <h4 class="m-4" v-if="isFinal">You are about to claim the final mission</h4>
       <div class="claimingOptionsPopup__content">
         <Form @submit="claim" :validation-schema="addressSchema" v-slot="{ errors }" class="loginEmail__body">
           <div class="loginEmail__description">
@@ -38,11 +39,12 @@ const props = defineProps<{
   initialClaim: boolean,
   campaignId: string,
   missionId: string,
+  isFinal: boolean
 }>();
 
 const address= ref(useUserStore().getAccount.address);
 
-const emit = defineEmits(['close', 'typeChange']);
+const emit = defineEmits(['close', 'typeChange','final']);
 
 let errorMessageType = '';
 
@@ -116,9 +118,11 @@ function claimOtherAirdrop(campaignId: string, missionId: string){
     dataService.onClaimAirdrop(useUserStore().getAccount.address);
     useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true).then(() => {
       useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
+      if (props.isFinal) useAirDropStore().justClaimedFinal = true;
     });
   });
   emit('close');
+
 }
 </script>
 

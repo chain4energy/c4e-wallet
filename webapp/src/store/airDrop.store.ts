@@ -49,6 +49,7 @@ interface airDropState {
   fairdropPollUsage: FairdropPollUsage,
   airdropClaimingAddress: string,
   summary: ISummary,
+  justClaimedFinal: boolean
 }
 
 export const useAirDropStore = defineStore({
@@ -68,7 +69,8 @@ export const useAirDropStore = defineStore({
         activeCampaigns: 0n,
         totalClaimed: 0n,
         toClaim: 0n
-      }
+      },
+      justClaimedFinal: false
     };
   },
   actions: {
@@ -79,7 +81,7 @@ export const useAirDropStore = defineStore({
         activeCampaigns: 0n,
         totalClaimed: 0n,
         toClaim: 0n
-      }
+      };
 
       const presentSortedByMissions = Array<Campaign>();
       const futureSortedByMissions = Array<Campaign>();
@@ -169,7 +171,6 @@ export const useAirDropStore = defineStore({
     //     //console.error(err);
     //   }
     // },
-
     // async fetchTestAirDropClaiming() {
     //   try {
     //     apiFactory.airDropApi().fetchUserAirdropEntries('', true).then((res) => {
@@ -541,6 +542,9 @@ export const useAirDropStore = defineStore({
     },
     getSummary(): ISummary {
       return this.summary;
+    },
+    getFinal(): boolean {
+      return this.justClaimedFinal;
     }
   },
 });
