@@ -446,9 +446,9 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       const txBytes = TxRaw.encode(txRaw).finish();
 
       const b64EncodedTxBytes = _arrayBufferToBase64(txBytes);
-      const signedDataDto = JSON.stringify({processId: processId, signedData: b64EncodedTxBytes});
+      // const signedDataDto = JSON.stringify({processId: processId, signedData: b64EncodedTxBytes});
 
-      return new RequestResponse<string, TxBroadcastError>(undefined, signedDataDto);
+      return new RequestResponse<string, TxBroadcastError>(undefined, b64EncodedTxBytes);
     } catch (err) {
       this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
       const error = err as Error;

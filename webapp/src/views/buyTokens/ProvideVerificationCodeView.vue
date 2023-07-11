@@ -29,7 +29,7 @@ const activationCode = ref<string>('');
 const contextStore = useContextStore();
 const onActivateClick = () => {
 
-  const dataToSign = formatString(message.LINKING_WALLET, {email: useUserServiceStore().userEmail, address: contextStore.dataToSign?.dataToSign.accountNumber,  activationCode: activationCode.value, randomString: contextStore.dataToSign?.dataToSign.randomString});
+  const dataToSign = formatString(message.LINKING_WALLET, {email: useUserServiceStore().userEmail, address: useUserStore().connectionInfo.account,  activationCode: activationCode.value, randomString: contextStore.dataToSign?.dataToSign.randomString});
 
   const processID = contextStore.dataToSign?.processID;
   if(contextStore.addressType == AddressType.METAMASK) {
@@ -42,9 +42,9 @@ const onActivateClick = () => {
       });
   } else if(contextStore.addressType == AddressType.KEPLR) {
 
-    const accountNumber = contextStore.dataToSign?.dataToSign.accountNumber;
-    const sequenceNumber = contextStore.dataToSign?.dataToSign.sequenceNumber;
-    if(processID && accountNumber && sequenceNumber) {
+    // const accountNumber = contextStore.dataToSign?.dataToSign.accountNumber;
+    // const sequenceNumber = contextStore.dataToSign?.dataToSign.sequenceNumber;
+    if(processID ) {
 
       apiFactory.accountApi().sign(useUserStore().connectionInfo, dataToSign, processID).then(signedDataResponse => {
 
