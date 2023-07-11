@@ -13,7 +13,6 @@ import queries from "@/api/queries";
 import {FaucetApi} from "@/api/faucet.api";
 import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
-import {AirDropApi} from "@/api/airDrop.api";
 
 let testfileName = '';
 
