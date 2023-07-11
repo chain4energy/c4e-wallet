@@ -382,7 +382,6 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       }
 
       const signedData = await keplr?.signArbitrary(useConfigurationStore().config.chainId, connection.account, dataToSign);
-      console.log(useConfigurationStore().config.chainId);
 
       console.log(signedData);
 
@@ -447,8 +446,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       const txBytes = TxRaw.encode(txRaw).finish();
 
       const b64EncodedTxBytes = _arrayBufferToBase64(txBytes);
-      const signedDataDto = JSON.stringify({processId: "test", signedData: b64EncodedTxBytes});
-      console.log(signedDataDto)
+      const signedDataDto = JSON.stringify({processId: processId, signedData: b64EncodedTxBytes});
 
       return new RequestResponse<string, TxBroadcastError>(undefined, signedDataDto);
     } catch (err) {
