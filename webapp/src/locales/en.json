@@ -323,7 +323,7 @@
   },
   "USER_DATA": {
     "TOTAL": "Total",
-    "AVAILABLE": "Available",
+    "AVAILABLE": "Balance",
     "STAKED": "Staked",
     "UNSTAKING": "Unstaking",
     "CLAIM_REWARDS": "Claim",
@@ -361,6 +361,23 @@
     "PRIVACY_POLICY": "Privacy policy",
     "TERMS_CONDITIONS": "Terms & conditions",
     "AIRDROP": "Airdrop",
+    "BUYTOKENS": "Buy tokens",
+    "PROFILE": "Profile",
+    "KYC": "KYC",
+    "PUBLICSALEINFO": "Buy tokens",
+    "ACCOUNTTYPE": "Sign in",
+    "EMAILREGISTRATION": "Email registration",
+    "KEPLRREGISTRATION": "Keplr registration",
+    "METAMASKREGISTRATION": "Metamask registration",
+    "EMAILLOGIN": "Email login",
+    "PAYMENTCONFIRMATION": "Payment confirmation",
+    "FIATPAYMENTCONFIRMATION": "Payment confirmation",
+    "USERPROFILETABS": "Profile",
+    "SIGNIN": "Sign in",
+    "SIGNUP": "Sign up",
+    "ACTIVATE": "Account activation",
+    "PROVIDEVERIFICATIONCODE": "Verification",
+    "PORTFOLIO": "Portfolio",
     "FAUCET": "Faucet"
   },
   "TOAST": {
@@ -389,7 +406,7 @@
     }
   },
   "AIRDROP": {
-    "CONNECT": "Connect with Keplr",
+    "CONNECT": "Connect to wallet",
     "OR": "or",
     "CONNECT_CHAINS": "Connect with COSM/C4E account",
     "C4E_HELP": "Provide C4E or COSMOS address",
@@ -399,10 +416,32 @@
     "CLAIM_AIRDROP": "Claim Airdrop",
     "FAIRDROP_ALLOCATION": "Total Fairdrop Allocation",
     "FOOTER_HEADER": "What's Next? Follow Us for Updates.",
-    "FOOTER_TEXT": "Connect with us to stay up-to-date on airdrop distribution and what's next for C4E."
+    "FOOTER_TEXT": "Connect with us to stay up-to-date on airdrop distribution and what's next for C4E.",
+    "DETAILS": "Details",
+    "TOTAL_HEADER": "Summary",
+    "TOTAL": "Total",
+    "TOTAL_CLAIMED": "Total claimed",
+    "ACTIVE": "Active campaigns",
+    "TO_CLAIM": "To claim",
+    "CLAIMED": "Claimed",
+    "MISSION_COMPLETED": "Missions completed",
+    "TOTAL_DISTRIBUTION": "Total distribution",
+    "CAMPAIGN_PASSED": "The campaign has finished",
+    "CAMPAIGN_START": "Time to start the campaign",
+    "CAMPAIGN_END": "Time to finish the campaign",
+    "CLAIM": "Claim",
+    "VOTE": "Vote",
+    "DELEGATE": "Delegate",
+    "INITIAL": "Initial mission - basic mission that must be claimed first",
+    "SHOW_MISSIONS": "Show missions",
+    "HIDE_MISSIONS": "Hide missions",
+    "MISSION": "Mission",
+    "CONNECT_INFO": "Connect to wallet to claim rewards!",
+    "SUCCESS": "You successfully claimed mission!"
   },
   "CLAIM_AIRDROP": {
-    "PROGRESS":"Campaign countdown"
+    "PROGRESS":"Campaign countdown",
+    "FINISHED" : "Campaign finished"
   },
   "COPY": {
     "ADDRESS": "Address has been copied to clipboard",
@@ -424,5 +463,110 @@
     "REQUEST_TOKENS": "Request Tokens",
     "INPUT_ADDRESS": "Input an address to request token",
     "TITLE": "C4E Faucet"
+  },
+  "ENUMS": {
+    "LOGIN_TYPE": {
+      "EMAIL": "Email",
+      "KEPLR": "Keplr",
+      "METAMASK": "Metamask",
+      "NONE": "Not logged in"
+    }
+  },
+  "PROFILE_VIEW": {
+    "TYPE": "Type",
+    "YOUR_ACCOUNT": "Your account",
+    "TERMS_ACCEPTANCE": "Terms acceptance",
+    "CLAIMER_ADDRESS": "Claimer address",
+    "SOURCE_ADDRESS": "Source address",
+    "NO_ADDRESS_PROVIDED": "No address provided",
+    "ACCOUNT_INFO": "Account info",
+    "TRANSACTIONS": "Transactions",
+    "KYC_LEVEL": "KYC Level",
+    "LEVEL": "Level",
+    "ACCEPTED": "Accepted",
+    "NOT_ACCEPTED": "Not accepted"
+  },
+  "BUTTONS": {
+    "START_KYC": "Start KYC",
+    "ACCEPT": "Accept",
+    "PROVIDE_ADDRESS": "Provide address",
+    "LOGOUT": "Logout",
+    "BUY": "Buy",
+    "CANCEL_ORDER": "Cancel order",
+    "CONFIRM_ORDER": "Confirm order"
+  },
+  "BUY_TOKENS_VIEW": {
+    "ROUND_INFO": "Public Sale Info: ROUND",
+    "TOTAL_RAISE": "Total Raise",
+    "PRICE": "Price",
+    "TIME_TO_START": "Time to start",
+    "TIME_TO_END": "Time to end",
+    "ALREADY_STARTED": "Already Started",
+    "CALCULATE_INVESTMENT": "Calculate investment",
+    "I_WANT_TO_BUY": "I want to buy",
+    "I_WANT_TO_INVEST": "I want to invest",
+    "REQUIREMENTS": "Requirements",
+    "ALLOCATION_INFO": "Allocation info",
+    "AMOUNT_REQUESTED": "Amount requested",
+    "REMAINING_RESERVATION_TIME": "Remaining reservation time",
+    "PAYMENT_TYPE": "Payment type",
+    "STATUS": "Status",
+    "PASS_KYC": "Pass KYC - Level",
+    "ACCEPT_SALE_TERMS": "Accept sale terms",
+    "PROVIDE_CLAIMER_ADDRESS": "Provide claimer address",
+    "PROVIDE_SOURCE_ADDRESS": "Provide source address",
+    "ORDER_SUMMARY": "Order summary",
+    "DESCRIPTION_FIRST_HEADER": "About C4E Tokens",
+    "DESCRIPTION_FIRST_CONTENT": "Chain4Energy (C4E) tokens play an integral role in our decentralized energy ecosystem. They serve as a medium of exchange, facilitating transactions within our platform, and enabling access to our suite of energy solutions.",
+    "DESCRIPTION_SECOND_HEADER": "Token Sale Details",
+    "DESCRIPTION_SECOND_CONTENT": "The C4E public token sale offers potential investors an opportunity to secure tokens at an attractive price of $0.085 per token. Post token generation event (TGE), investors can look forward to a 20% release, followed by a six-month vesting period.\n\nPayment for the tokens can be made in Fiat (PLN, USD, EUR), or in the stablecoins USDC and USDT. We accept payments through Ethereum, BNB Smart Chain, and Polygon. The need for KYC procedure depends on your investment level.",
+    "REQUIREMENTS_TIP": "Depending on the amount invested the different KYC (Know Your Customer) level can be applied.",
+    "TOKENOMICS": "Tokenomics",
+    "WHITE_PAPER": "White paper",
+    "YOU_INVEST": "You want to invest"
+
+  },
+  "PAYMENT_CONFIRMATION_VIEW": {
+    "CONFIRM_PAYMENT": "Confirm Your Payment",
+    "SUMMARY": {
+      "FIRST_LINE": "Your order no. {orderId} has been placed successfully",
+      "SECOND_LINE": "Your order have to be paid in 24 hours, after this time it will be automatically cancelled.",
+      "THIRD_LINE_1": "Please pay",
+      "THIRD_LINE_2": "by MetaMask wallet",
+      "PAY": "Pay"
+    }
+  },
+  "TOOLTIPS": {
+    "HINTS": {
+      "KYC": "KYC Level\nLevel 0 \n(No KYC)\nLevel 1\n(Proof of Identity)\nLevel 2\n(Proof of Residence)\nLevel 3 \n(Proof of Funds)",
+      "TERMS": "All the Public Sale terms are available at:",
+      "CLAIMER_ADDRESS": "Provide an address of the wallet you will use for claiming the tokens. It has to be an C4E wallet address. \nIf you don't have it follow this instructions with Keplr wallet:\nhttps://docs.c4e.io/usersGuide/auth.html",
+      "SOURCE_ADDRESS": "Please provide your EVM wallet address you will send your stablecoins from.\nPlease do not use a CEX exchange address."
+    }
+  },
+  "SIGN_IN_VIEW": {
+    "SIGN_UP": "Sign up",
+    "SIGN_IN": "Sign in",
+    "EMAIL": "E-mail address",
+    "PASSWORD": "Type your password",
+    "RETYPE": "Retype your password",
+    "REGISTER": "Register",
+    "TERMS": "Accept terms and conditions"
+  },
+  "PORTFOLIO_VIEW": {
+    "BALANCE": "Balance",
+    "SPENDABLE": "Spendable",
+    "LOCKED": "Locked",
+    "SEND": "Send",
+    "RECEIVE": "Receive",
+    "DETAILS": "Vesting details",
+    "START_DATE": "Start date",
+    "END_DATE": "End date",
+    "TIME": "Time remaining",
+    "HOURS": "h",
+    "MINS": "min",
+    "DAYS": "days",
+    "NO_ACTIVE": "You have no active vestings!",
+    "ADDRESS": "Your address:"
   }
 }

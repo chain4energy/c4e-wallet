@@ -18,14 +18,15 @@ module.exports = defineConfig({
     host: '',
     port: 9000,
     proxy: {
-      '/api/': {
-        target: 'http://10.0.14.76',
-        changeOrigin: true,
-      },
-      '/app': {
+      '^/app': {
         target: 'http://localhost',
         changeOrigin: true,
-      }
+      },
+      '^/api-devnet': {
+        target: 'http://198.244.154.101:31876',
+        changeOrigin: true,
+        pathRewrite: function (path, req) { return path.replace('/api-devnet', '') }
+      },
     }
   },
   configureWebpack: {

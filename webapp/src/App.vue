@@ -31,6 +31,7 @@ import AppFooter from "@/components/layout/AppFooter.vue";
 import dataService from './services/data.service';
 import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
 import { useRecaptchaProvider } from 'vue-recaptcha/head';
+import {usePublicSalesStore} from "@/store/publicSales.store";
 
 useRecaptchaProvider();
 const logger = inject<LoggerService>('logger') as LoggerService;

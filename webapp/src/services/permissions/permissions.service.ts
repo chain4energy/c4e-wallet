@@ -6,9 +6,9 @@ export class PermissionsService{
 
   sidebarElementOrder(): PagesEnum[]{
     if(this.faucetAvailable()) {
-      return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AirDrop, PagesEnum.FAUCET];
+      return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AIRDROP, PagesEnum.PORTFOLIO, PagesEnum.FAUCET];
     }
-    return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AirDrop];
+    return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AIRDROP];
   }
 
   faucetAvailable(): boolean {

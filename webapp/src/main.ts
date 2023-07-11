@@ -59,6 +59,10 @@ import Accordion from "primevue/accordion";
 import "./styles/toasts.scss";
 import SuccessIcon from "@/components/features/SuccessIcon.vue";
 import ErrorIcon from "@/components/features/ErrorIcon.vue";
+import "primeflex/primeflex.css";
+import "primevue/resources/themes/lara-light-blue/theme.css";
+import "primevue/resources/primevue.min.css";
+import "primeicons/primeicons.css";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { VueRecaptchaPlugin } from 'vue-recaptcha/head'

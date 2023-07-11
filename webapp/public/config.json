@@ -5,8 +5,10 @@
     "hasuraURL": "https://hasura.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -32,7 +34,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
@@ -60,8 +62,10 @@
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "publicSaleServiceURL": "/api-devnet",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -87,7 +91,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
@@ -115,8 +119,10 @@
     "hasuraURL": "http://10.0.7.86:8080/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -140,7 +146,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
@@ -168,8 +174,10 @@
     "hasuraURL": "https://hasura-testnet.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -193,7 +201,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
@@ -221,8 +229,10 @@
     "hasuraURL": "hasura",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -248,7 +258,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
@@ -275,8 +285,10 @@
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -302,7 +314,7 @@
       }
     ],
     "keplrGasPriceSteps": {
-      "low": 0.01,
+      "low": 0.00,
       "average": 0.025,
       "high": 0.03
     },
@@ -329,8 +341,10 @@
     "hasuraURL": "https://hasura-ev-testnet.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet-ev-testnet.c4e.io/staking",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "tokenReservationDenom": "C4E",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"

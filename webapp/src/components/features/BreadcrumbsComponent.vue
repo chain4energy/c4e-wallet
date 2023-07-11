@@ -1,6 +1,6 @@
 <template>
   <div class="breadcrumbs">
-    <Icon @click="router.push(permissionsService.getAfterLoginPage())" name="Home" style="height: 1em" />
+    <Icon @click="router.push('/')" name="Home" style="height: 1em" />
     <span v-for="(breadcrumbElement, index) of breadcrumbs" :key="breadcrumbElement.name">
       <span>/</span>
       <router-link :class="{disabled: index == breadcrumbs.length - 1}" :to="breadcrumbElement.path">{{getDisplayedName(breadcrumbElement)}}</router-link>

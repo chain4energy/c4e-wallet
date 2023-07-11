@@ -7,7 +7,7 @@ import { RequestResponse } from "@/models/request-response";
 import { Account as StoreAccount } from "@/models/store/account";
 import { Coin } from "@/models/store/common";
 
-import { AccountResponse, BalanceResponse} from "@/models/blockchain/account";
+import {AccountResponse, BalanceResponse, SpendableBalancesResponse} from "@/models/blockchain/account";
 
 import { useConfigurationStore } from "@/store/configuration.store";
 import { ConnectionInfo } from "@/api/wallet.connecton.api";
@@ -37,6 +37,11 @@ import { BigDecimal } from "@/models/store/big.decimal";
 import { VoteOption } from "@/models/store/proposal";
 import { BlockchainApiErrorData } from "@/models/blockchain/common";
 import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
+import {MsgClaim, MsgInitialClaim} from "../api/cfeclaim/tx"
+import {DataToSign} from "@/models/user/walletAuth";
+import {MsgSignData} from "@/types/tx";
+import {TransactionRequest} from "@ethersproject/abstract-provider";
+import {ethers} from "ethers";
 
 
 
@@ -80,6 +85,12 @@ export class AccountApi extends TxBroadcastBaseApi {
     const mapData = (bcData: BalanceResponse | undefined) => {return mapCoin(bcData?.balance, denom);};
     return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.BALANCE_URL, {address: address, denom: denom}),
       mapData, lockscreen, null, 'fetchBalance - ');
+  }
+
+  public async fetchSpendableBalances(address: string, lockscreen: boolean): Promise<RequestResponse<Coin[] | undefined, ErrorData<BlockchainApiErrorData>>>{
+    const mapData = (bcData: SpendableBalancesResponse | undefined) => {return bcData?.balances.map(el => mapCoin(el, el.denom));};
+    return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.SPENDABLE_BALANCES_URL, {address: address}),
+      mapData, lockscreen, null, 'fetchSpendableBalances - ');
   }
 
   public async fetchDelegations(address: string, lockscreen: boolean): Promise<RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>>{
@@ -279,15 +290,30 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
-  public async claimInitialAirDrop(connection: ConnectionInfo, campaignId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  public async claimInitialAirDrop(connection: ConnectionInfo, campaignId: string, extraAddress: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
 
     const getMessages = (): readonly EncodeObject[] => {
-      const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgInitialClaim';
-      const val = {
+      const typeUrl = '/chain4energy.c4echain.cfeclaim.MsgInitialClaim';
+      const val: MsgInitialClaim ={
         claimer: connection.account,
-        campaign_id: campaignId,
-        addressToClaim: '', //TODO Create optional UI
+        campaignId: Number(campaignId),
+        destinationAddress: extraAddress,
+      };
+      return [{ typeUrl: typeUrl, value: val }];
+    };
+    const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+  }
+  public async claimAirDropMissions(connection: ConnectionInfo, campaignId: string, missionId: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
+    const config = useConfigurationStore().config;
+
+    const getMessages = (): readonly EncodeObject[] => {
+      const typeUrl = '/chain4energy.c4echain.cfeclaim.MsgClaim';
+      const val: MsgClaim = {
+        claimer: connection.account,
+        campaignId: Number(campaignId),
+        missionId: Number(missionId),
       };
       return [{ typeUrl: typeUrl, value: val }];
     };
@@ -295,21 +321,37 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
-  public async claimAirDropMissions(connection: ConnectionInfo, campaignId: number, missionId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
-    const config = useConfigurationStore().config;
+  public async sign(connection: ConnectionInfo, dataToSign: DataToSign):Promise<RequestResponse<string, TxBroadcastError>> {
 
-    const getMessages = (): readonly EncodeObject[] => {
-      const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgInitialClaim';
+    const signDataMsgTypeUrl = '/' + 'sign' + '.MsgSignData';
+    const utf8Encode = new TextEncoder();
+    const messageToSign = utf8Encode.encode(dataToSign.randomString);
+
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = signDataMsgTypeUrl;
       const val = {
-        claimer: connection.account,
-        campaign_id: campaignId,
-        mission_id: missionId,
+        signer: connection.account,
+        data: messageToSign
       };
-      return [{ typeUrl: typeUrl, value: val }];
+
+      return [{ typeUrl: typeUrl, value: MsgSignData.fromPartial(val) }];
+
     };
+    const fee = this.createFee(0, 'uc4e');
 
-    const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
-    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+
+    return this.signDirect(connection, getMessages, dataToSign, fee, '', true, null);
   }
+  public async signMetamask(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 
+
+    return this.signWithMetamask(dataToSign, true, null);
+  }
+  public async sendTransaction(amount: string, blockchainAddress: string, coinDecimals: number,destinationAddress: string):Promise<RequestResponse<string, TxBroadcastError>> {
+
+    return this.sendTransactionWithMetamask(amount, blockchainAddress, coinDecimals, destinationAddress, true, null);
+  }
+  public async signMetamaskPairing(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
+    return this.signWithMetamaskPairing(dataToSign, true, null);
+  }
 }

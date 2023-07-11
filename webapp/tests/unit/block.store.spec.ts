@@ -11,7 +11,19 @@ import { Coin } from '@/models/store/common';
 import { ConnectionInfo, ConnectionType } from '@/api/wallet.connecton.api';
 import { createAveragetBlockTimeResponseData } from '../utils/average.block.time.hasura.data.util';
 
-jest.mock("axios");
+jest.mock('axios', () => {
+  return {
+    create: jest.fn(() => ({
+      get: jest.fn(),
+      interceptors: {
+        request: { use: jest.fn(), eject: jest.fn() },
+        response: { use: jest.fn(), eject: jest.fn() }
+      }
+    })),
+    request: jest.fn(),
+    AxiosError: jest.fn()
+  }
+})
 const mockedAxios = mockAxios();
 
 describe('block store tests', () => {

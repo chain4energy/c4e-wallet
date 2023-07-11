@@ -7,6 +7,7 @@ import {
   JsonQueries
 } from "../json/Configuration";
 import queriesDefaults from "@/api/queries";
+import { BigIntWrapper } from "@/models/store/common";
 export class Gas implements JsonGas {
   vote: number;
   delegate: number;
@@ -95,6 +96,7 @@ export class Queries implements JsonQueries{
   MISSIONS_URL: string;
   AIRDROP_DISTRIBUTIONS: string;
   AIRDROP_CLAIMS_LEFT: string;
+  SPENDABLE_BALANCES_URL: string;
 
   constructor (
     queries : JsonQueries | undefined
@@ -123,6 +125,7 @@ export class Queries implements JsonQueries{
     this.MISSIONS_URL = queries?.MISSIONS_URL ? queries.MISSIONS_URL : queriesDefaults.blockchain.MISSIONS_URL;
     this.AIRDROP_DISTRIBUTIONS = queries?.AIRDROP_DISTRIBUTIONS ? queries.AIRDROP_DISTRIBUTIONS : queriesDefaults.blockchain.AIRDROP_DISTRIBUTIONS;
     this.AIRDROP_CLAIMS_LEFT = queries?.AIRDROP_CLAIMS_LEFT ? queries.AIRDROP_CLAIMS_LEFT : queriesDefaults.blockchain.AIRDROP_CLAIMS_LEFT;
+    this.SPENDABLE_BALANCES_URL = queries?.SPENDABLE_BALANCES_URL ? queries.SPENDABLE_BALANCES_URL : queriesDefaults.blockchain.SPENDABLE_BALANCES_URL;
   }
 }
 
@@ -132,8 +135,10 @@ export class Configuration implements JsonConfiguration {
   hasuraURL: string;
   keybaseURL: string;
   stakingPageURL: string;
+  publicSaleServiceURL: string;
   addressPrefix: string;
   stakingDenom: string;
+  tokenReservationDenom: string;
   strategicPoolAddress: string[];
   airdropPoolAddress: string;
   chainId: string;
@@ -175,6 +180,7 @@ export class Configuration implements JsonConfiguration {
       this.hasuraURL = configuration.hasuraURL;
       this.keybaseURL = configuration.keybaseURL;
       this.stakingPageURL = configuration.stakingPageURL;
+      this.publicSaleServiceURL = configuration.publicSaleServiceURL;
       this.addressPrefix = configuration.addressPrefix;
       this.stakingDenom = configuration.stakingDenom;
       this.strategicPoolAddress = configuration.strategicPoolAddress;
@@ -210,13 +216,14 @@ export class Configuration implements JsonConfiguration {
       this.targetInflationAprMultiplier = configuration.targetInflationAprMultiplier;
       this.faucetURL = configuration.faucetURL;
       this.faucetAvailable = configuration.faucetAvailable;
-
+      this.tokenReservationDenom = configuration.tokenReservationDenom;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
       this.hasuraURL = '';
       this.keybaseURL = '';
       this.stakingPageURL = '';
+      this.publicSaleServiceURL = ' ';
       this.addressPrefix = '';
       this.stakingDenom = '';
       this.strategicPoolAddress = [''];
@@ -248,6 +255,7 @@ export class Configuration implements JsonConfiguration {
       this.targetInflationAprMultiplier = 1;
       this.faucetURL = '';
       this.faucetAvailable = false;
+      this.tokenReservationDenom = '';
     }
   }
 
@@ -290,7 +298,8 @@ export class Configuration implements JsonConfiguration {
         amount = this.bigintToConvertedAmount(origAmount, viewDenomConf.conversionFactor);
       } else if (typeof origAmount === 'number') {
         amount = (origAmount / viewDenomConf.conversionFactor);
-      } else {
+      }
+      else {
         amount = origAmount.divide( viewDenomConf.conversionFactor);
       }
       return amount;

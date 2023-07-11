@@ -24,7 +24,19 @@ import { useUserStore } from '@/store/user.store';
 import { ConnectionInfo, ConnectionType } from '@/api/wallet.connecton.api';
 import { Account, AccountType } from '@/models/store/account';
 
-jest.mock("axios");
+jest.mock('axios', () => {
+  return {
+    create: jest.fn(() => ({
+      get: jest.fn(),
+      interceptors: {
+        request: { use: jest.fn(), eject: jest.fn() },
+        response: { use: jest.fn(), eject: jest.fn() }
+      }
+    })),
+    request: jest.fn(),
+    AxiosError: jest.fn()
+  }
+})
 const mockedAxios = mockAxios();
 
 describe('proposals store tests', () => {

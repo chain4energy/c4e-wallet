@@ -1,12 +1,27 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {AirdropTotal, AlocationsSt, Campaign, CampaignAllocation, convertMissionType, FairdropPollUsage, findCampaign, findMission, Mission} from "@/models/store/airdrop";
-import {ClaimRecord} from "@/models/airdrop/airdrop";
+import {
+  AirdropTotal,
+  AlocationsSt,
+  Campaign,
+  CampaignAllocation,
+  convertMissionType,
+  FairdropPollUsage,
+  Mission
+} from "@/models/store/airdrop";
+import {AllocationMapping, CampaignInfoDetails, CampainStatus} from "@/models/airdrop/airdrop";
 import {RequestResponse} from "@/models/request-response";
 import {ErrorData} from "@/api/base.api";
-import {AirdropErrData} from "@/models/blockchain/common";
+import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common";
 import {LogLevel} from "@/services/logger/log-level";
-import {AirdropEntry, CampaignBc, CampaignsInfo, MissionBc, MissionsInfo, UserAirdropInfo} from "@/models/blockchain/airdrop";
+import {
+  AirdropEntry,
+  CampaignBc,
+  MissionBc,
+  MissionType,
+  UserAirdropEntry,
+  UserAirdropInfo
+} from "@/models/blockchain/airdrop";
 import {StoreLogger} from "@/services/logged.service";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {Coin} from "@/models/store/common";
@@ -17,28 +32,109 @@ import {getDenomFromArray} from "@/utils/coins-utils";
 
 const logger = new StoreLogger(ServiceTypeEnum.AIR_DROP_STORE);
 
+interface ISummary {
+  totalAmount: bigint,
+  activeCampaigns: bigint,
+  totalClaimed: bigint,
+  toClaim: bigint,
+  claimedPercent?: BigDecimal,
+  toClaimPercent?: BigDecimal
+}
+
 interface airDropState {
-  claimRecord: ClaimRecord,
+  claimRecord: UserAirdropEntry,
   airDropMock: AirdropTotal,
   campaigns: Campaign[],
+  campaignIds: string[],
   fairdropPollUsage: FairdropPollUsage,
   airdropClaimingAddress: string,
+  summary: ISummary,
+  justClaimedFinal: boolean
 }
 
 export const useAirDropStore = defineStore({
   id: 'airDropStore',
   state: (): airDropState => {
     return {
-      claimRecord: {} as ClaimRecord,
+      claimRecord: {} as UserAirdropEntry,
       airDropMock: Object(AirdropTotal),
       campaigns: Array<Campaign>(),
       fairdropPollUsage: new FairdropPollUsage(new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
         new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
         new BigDecimal(0), new BigDecimal(0)),
       airdropClaimingAddress: '',
+      campaignIds: [],
+      summary: {
+        totalAmount: 0n,
+        activeCampaigns: 0n,
+        totalClaimed: 0n,
+        toClaim: 0n
+      },
+      justClaimedFinal: false
     };
   },
   actions: {
+    async sortEntries() {
+      const result: Campaign[] = [];
+      this.summary = {
+        totalAmount: 0n,
+        activeCampaigns: 0n,
+        totalClaimed: 0n,
+        toClaim: 0n
+      };
+
+      const presentSortedByMissions = Array<Campaign>();
+      const futureSortedByMissions = Array<Campaign>();
+      const pastSortedByMissions = Array<Campaign>();
+
+      for (const el of this.campaigns) {
+        this.summary.totalAmount+=el.amount.amount;
+        el.missions.forEach(mission => {
+          if (mission.claimed) this.summary.totalClaimed+=(BigInt(mission.weightInPerc) * el.amount.amount / 100n);
+          if (el.status === CampainStatus.Now && !mission.claimed) this.summary.toClaim+=(BigInt(mission.weightInPerc) * el.amount.amount / 100n);
+        });
+
+        if (el.status === CampainStatus.Now) {
+            this.summary.activeCampaigns+=el.amount.amount;
+            presentSortedByMissions.push(el);
+          } else if (el.status === CampainStatus.Future) {
+            futureSortedByMissions.push(el);
+          } else if (el.status === CampainStatus.Past) {
+            pastSortedByMissions.push(el);
+          }
+      }
+
+      this.summary.toClaimPercent = getPercentage(this.summary.toClaim, this.summary.activeCampaigns);
+      this.summary.claimedPercent = getPercentage(this.summary.totalClaimed, this.summary.totalAmount);
+
+      const present = await this.sortCampaigns(presentSortedByMissions);
+      const past = await this.sortCampaigns(pastSortedByMissions);
+      const future = await this.sortCampaigns(futureSortedByMissions);
+
+      if(present.length> 0){
+        present.forEach((el) => {
+          result.push(el);
+        });
+      }
+      if(future.length> 0){
+        future.forEach((el) => {
+          result.push(el);
+        });
+      }
+      if(past.length> 0){
+        past.forEach((el) => {
+          result.push(el);
+        });
+      }
+
+     this.campaigns = result;
+
+    },
+    async sortCampaigns(list: Campaign[]): Promise<Campaign[]> {
+      return list.sort((a, b) => {
+          return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
+        });
+    },
     // async fetchAirdrop(address: string, lockscreen = true) {
     //   this.no_Drop = Boolean(false);
     //   try {
@@ -64,27 +160,26 @@ export const useAirDropStore = defineStore({
     //     this.no_Drop = false;
     //   }
     // },
-    async fetchAirdropClaimRecord(address: string, lockscreen = true) {
-      try {
-        apiFactory.airDropApi().fetchAirdropClaimRecord(address, lockscreen).then((resp) => {
-          if (resp.data) {
-            this.claimRecord = resp.data;
-          }
-        });
-      } catch (err) {
-        //console.error(err);
-      }
-    },
-
-    async fetchTestAirDropClaiming() {
-      try {
-        apiFactory.airDropApi().fetchUserAirdropEntries('', true).then((res) => {
-          console.log(res);
-        });
-      } catch (err) {
-        //console.error(err);
-      }
-    },
+    // async fetchAirdropClaimRecord(address: string, lockscreen = true) {
+    //   try {
+    //     apiFactory.airDropApi().fetchAirdropClaimRecord(address, lockscreen).then((resp) => {
+    //       if (resp.data) {
+    //         this.claimRecord = resp.data;
+    //       }
+    //     });
+    //   } catch (err) {
+    //     //console.error(err);
+    //   }
+    // },
+    // async fetchTestAirDropClaiming() {
+    //   try {
+    //     apiFactory.airDropApi().fetchUserAirdropEntries('', true).then((res) => {
+    //       console.log(res);
+    //     });
+    //   } catch (err) {
+    //     //console.error(err);
+    //   }
+    // },
     // async fetchAirdropTotalOld(address: string, lockscreen = true) {
     //   try {
     //     apiFactory.airDropApi().fetchAirdropMockData(address, lockscreen).then((resp) => {
@@ -108,26 +203,28 @@ export const useAirDropStore = defineStore({
     //     //console.error(err);
     //   }
     // },
-    async claimInitialAirdrop(campaignid: number) {
+    async claimInitialAirdrop(campaignId: string, extraAddress: string){
       const connectionInfo = useUserStore().connectionInfo;
-      await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignid);
-      await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignid);
+      if(!extraAddress || extraAddress === ''){
+        await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, useUserStore().account.address);
+      }else {
+        await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, extraAddress);
+      }
     },
-    async claimOtherAirdrop(campaignid: number, missionId: number) {
+    async claimOtherAirdrop(campaignId: string, missionId: string) {
       const connectionInfo = useUserStore().connectionInfo;
-      await apiFactory.accountApi().claimAirDropMissions(connectionInfo, campaignid, missionId);
+      await apiFactory.accountApi().claimAirDropMissions(connectionInfo, campaignId, missionId);
     },
     async fetchAirdropTotal(address: string, lockscreen = true) {
       try {
-
         const response = await apiFactory.airDropApi().fetchAirdropsInfo(lockscreen);
         console.log(JSON.stringify(response));
-        const promises = Array<Promise<RequestResponse<any, ErrorData<AirdropErrData>>>>();
+        const promises = Array<Promise<RequestResponse<CampaignInfoDetails[], ErrorData<AirdropErrData>>>>();
         const campaignsList = Array<CampaignAllocation>();
         if (response.isSuccess() && response.data?.campaignInfoDetails) {
           const campaignInfoDetails = response.data.campaignInfoDetails;
           //create array with requests for particular airdrop
-          campaignInfoDetails.forEach((campaign) => {
+          campaignInfoDetails.forEach((campaign: CampaignInfoDetails) => {
             promises.push(apiFactory.airDropApi().fetchAirdrop(address, campaign.subfolder, lockscreen));
           });
           //wait for all requests
@@ -135,9 +232,12 @@ export const useAirDropStore = defineStore({
           for (let i = 0; i < campaignInfoDetails.length; i++) {
             const campaign = campaignInfoDetails[i];
             const allocations = new Array<AlocationsSt>();
-            campaign.allocationMapping.forEach((allocation) => {
+            campaign.allocationMapping.forEach((allocation: AllocationMapping) => {
               let mappedValue = 0;
-              if (responseList[i].isSuccess()) {
+              if (responseList && responseList[i].isSuccess()) {
+                // TODO: Fix the TS error
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 mappedValue = responseList[i].data[allocation.mapping] as number;
               } else {
                 console.log("Airdrop:\"" + campaign.name + "\" Allocation for address:" + address + " NOT FOUND.");
@@ -155,97 +255,100 @@ export const useAirDropStore = defineStore({
         console.error(err);
       }
     },
-    async fetchCampaigns(address: string, lockscreen = true) {
-      logger.logToConsole(LogLevel.INFO, "fetchCampaigns:", address);
-      let userAirdropInfoLcd = {} as UserAirdropInfo;
-      let campaignsInfoLcd = {} as CampaignsInfo;
-      let missionsLcd = {} as MissionsInfo;
-      const result = Array<Campaign>();
-      await Promise.all([
-        apiFactory.airDropApi().fetchCampaigns(lockscreen).then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            campaignsInfoLcd = response.data;
-            console.log('------------------------------------------------------', campaignsInfoLcd);
-            this.fetchFairdropPoolUsage(campaignsInfoLcd.campaign.map((c: CampaignBc) => c.id), lockscreen);
-          } else {
-            const message = 'Error fetching campaigns data';
-            logger.logToConsole(LogLevel.ERROR, message);
-            // toast.error(message);
-          }
-        }),
-        apiFactory.airDropApi().fetchMissions(lockscreen).then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            missionsLcd = response.data;
-          } else {
-            const message = 'Error fetching missions data';
-            logger.logToConsole(LogLevel.ERROR, message);
-            // toast.error(message);
-          }
-        }),
-        apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(response => {
-          if (response.isSuccess() && response.data !== undefined) {
-            userAirdropInfoLcd = response.data;
-          } else {
-            const message = 'Error fetching user airdrop entries data';
-            logger.logToConsole(LogLevel.ERROR, message);
-            // toast.error(message);
-          }
-        })
-      ]);
-      campaignsInfoLcd?.campaign.forEach((entry: CampaignBc) => {
-        const campaign = new Campaign(Number(entry.id), entry.name, entry.description, entry.enabled, entry.start_time, entry.end_time, entry.lockup_period,
-          entry.vesting_period, entry.feegrant_amount, entry.initial_claim_free_amount
-        );
-        result.push(campaign);
-      });
+    // async fetchCampaigns(address: string, lockscreen = true) {
+    //   logger.logToConsole(LogLevel.INFO, "fetchCampaigns:", address);
+    //   let userAirdropInfoLcd = {} as UserAirdropInfo;
+    //   let campaignsInfoLcd = {} as CampaignsInfo;
+    //   let missionsLcd = {} as MissionsInfo;
+    //   const result = Array<Campaign>();
+    //   await Promise.all([
+    //     apiFactory.airDropApi().fetchCampaigns(lockscreen).then(response => {
+    //       if (response.isSuccess() && response.data !== undefined) {
+    //         campaignsInfoLcd = response.data;
+    //         console.log('------------------------------------------------------', campaignsInfoLcd);
+    //         this.fetchFairdropPoolUsage(campaignsInfoLcd.campaign.map((c: CampaignBc) => c.id), lockscreen);
+    //       } else {
+    //         const message = 'Error fetching campaigns data';
+    //         logger.logToConsole(LogLevel.ERROR, message);
+    //         // toast.error(message);
+    //       }
+    //     }),
+    //     apiFactory.airDropApi().fetchMissions(lockscreen).then(response => {
+    //       if (response.isSuccess() && response.data !== undefined) {
+    //         missionsLcd = response.data;
+    //       } else {
+    //         const message = 'Error fetching missions data';
+    //         logger.logToConsole(LogLevel.ERROR, message);
+    //         // toast.error(message);
+    //       }
+    //     }),
+    //     apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(response => {
+    //       if (response.isSuccess() && response.data !== undefined) {
+    //         userAirdropInfoLcd = response.data;
+    //       } else {
+    //         const message = 'Error fetching user airdrop entries data';
+    //         logger.logToConsole(LogLevel.ERROR, message);
+    //         // toast.error(message);
+    //       }
+    //     })
+    //   ]);
+    //   campaignsInfoLcd?.campaign.forEach((entry: CampaignBc) => {
+    //     const campaign = new Campaign(Number(entry.id), entry.name, entry.description, entry.enabled, entry.start_time, entry.end_time, entry.lockup_period,
+    //       entry.vesting_period, entry.feegrant_amount, entry.initial_claim_free_amount
+    //     );
+    //     result.push(campaign);
+    //   });
+    //
+    //   missionsLcd?.mission.forEach((entry: MissionBc) => {
+    //     const campaign = findCampaign(result, Number(entry.campaign_id));
+    //     if (campaign) {
+    //       campaign.missions.push(new Mission(entry.id, entry.name, entry.description, convertMissionType(entry.missionType), entry.weight, false, false, undefined));
+    //     } else {
+    //       logger.logToConsole(LogLevel.ERROR, "missions -> Campaign not found id:" + entry.campaign_id);
+    //     }
+    //   });
+    //
+    //   userAirdropInfoLcd?.userAirdropEntries.airdrop_entries.forEach((entry: AirdropEntry) => {
+    //     const campaign = findCampaign(result, Number(entry.campaign_id));
+    //     if (campaign) {
+    //       console.log(campaign);
+    //       console.log("entry:", entry);
+    //       // const totalAmount = new Coin(BigInt(0), "uc4e");
+    //       // totalAmount.add(getDenomFromArray(entry.airdrop_coins, useConfigurationStore().config.airdropDefaultDenom));
+    //       // campaign.amount = totalAmount;
+    //       campaign.amount = getDenomFromArray(entry.airdrop_coins, useConfigurationStore().config.airdropDefaultDenom);
+    //       entry.claimedMissions.forEach((missionId: string) => {
+    //         const claimedMission = findMission(campaign.missions, missionId);
+    //         if (claimedMission) {
+    //           claimedMission.claimed = true;
+    //         } else {
+    //           logger.logToConsole(LogLevel.ERROR, "claimedMission not found id:" + missionId);
+    //         }
+    //       });
+    //       entry.completedMissions.forEach((missionId: string) => {
+    //         const completedMission = findMission(campaign.missions, missionId);
+    //         if (completedMission) {
+    //           completedMission.completed = true;
+    //         } else {
+    //           logger.logToConsole(LogLevel.ERROR, "completedMission not found id:" + missionId);
+    //         }
+    //       });
+    //     } else {
+    //       logger.logToConsole(LogLevel.ERROR, "userAirdropEntries -> Campaign not found id:" + entry.campaign_id);
+    //     }
+    //
+    //   });
+    //
+    //   logger.logToConsole(LogLevel.DEBUG, JSON.stringify(result, (key, value) => typeof value === 'bigint' ? value.toString() : value, 2));
+    //   this.campaigns = result;
+    // },
+    /*
+    async fetchAirdropPoolUsage(campaingIds: string[], lockscreen = true) {
 
-      missionsLcd?.mission.forEach((entry: MissionBc) => {
-        const campaign = findCampaign(result, Number(entry.campaign_id));
-        if (campaign) {
-          campaign.missions.push(new Mission(entry.id, entry.name, entry.description, convertMissionType(entry.missionType), entry.weight, false, false, undefined));
-        } else {
-          logger.logToConsole(LogLevel.ERROR, "missions -> Campaign not found id:" + entry.campaign_id);
-        }
-      });
-
-      userAirdropInfoLcd?.userAirdropEntries.airdrop_entries.forEach((entry: AirdropEntry) => {
-        const campaign = findCampaign(result, Number(entry.campaign_id));
-        if (campaign) {
-          console.log(campaign);
-          console.log("entry:", entry);
-          // const totalAmount = new Coin(BigInt(0), "uc4e");
-          // totalAmount.add(getDenomFromArray(entry.airdrop_coins, useConfigurationStore().config.airdropDefaultDenom));
-          // campaign.amount = totalAmount;
-          campaign.amount = getDenomFromArray(entry.airdrop_coins, useConfigurationStore().config.airdropDefaultDenom);
-          entry.claimedMissions.forEach((missionId: string) => {
-            const claimedMission = findMission(campaign.missions, missionId);
-            if (claimedMission) {
-              claimedMission.claimed = true;
-            } else {
-              logger.logToConsole(LogLevel.ERROR, "claimedMission not found id:" + missionId);
-            }
-          });
-          entry.completedMissions.forEach((missionId: string) => {
-            const completedMission = findMission(campaign.missions, missionId);
-            if (completedMission) {
-              completedMission.completed = true;
-            } else {
-              logger.logToConsole(LogLevel.ERROR, "completedMission not found id:" + missionId);
-            }
-          });
-        } else {
-          logger.logToConsole(LogLevel.ERROR, "userAirdropEntries -> Campaign not found id:" + entry.campaign_id);
-        }
-
-      });
-
-      logger.logToConsole(LogLevel.DEBUG, JSON.stringify(result, (key, value) => typeof value === 'bigint' ? value.toString() : value, 2));
-      this.campaigns = result;
-    },
-    async fetchFairdropPoolUsage(campaingIds: string[], lockscreen = true) {
       const distributions = new Coin(BigInt(0), "uc4e");
       const claimsLeft = new Coin(BigInt(0), "uc4e");
       const promises = Array<Promise<void>>();
+
       campaingIds.forEach((id: string) => {
         promises.push(apiFactory.airDropApi().fetchAirdropDistributions(id, lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
@@ -275,9 +378,157 @@ export const useAirDropStore = defineStore({
         getPercentage(distributions.amount, claimsLeft.amount));
     },
 
+     */
+
+    async fetchUsersCampaignData(address: string, lockscreen = true){
+      this.campaigns = [];
+      this.claimRecord = {} as UserAirdropEntry;
+
+      //TODO: Paging
+      await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(async (res: RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>) => {
+        if (res.isSuccess() && res.data) {
+        //  this.claimRecord = await this.sortEntries(res.data.user_entry);
+          this.claimRecord = res.data.user_entry;
+
+          const campaignsList = this.claimRecord.claim_records;
+          this.campaignIds = campaignsList.map(el => el.campaign_id);
+
+          const forEachCampaign = async () =>
+          {
+            for (const el of campaignsList) {
+              const campaign = await this.fetchCampaign(el.campaign_id, el);
+              this.campaigns.push(campaign);
+            }
+          };
+
+          forEachCampaign().then(this.sortEntries);
+
+          /*
+          if (this.campaignIds.length > 0) {
+            await this.fetchAirdropPoolUsage(this.campaignIds, true);
+          }
+
+           */
+        }
+      });
+    },
+
+    async fetchCampaign(id: string, campaignData: AirdropEntry, lockscreen = true){
+      let camp = {} as Campaign;
+      await apiFactory.airDropApi().fetchCampaign(id, lockscreen).then(async (res: RequestResponse<CampaignBc, ErrorData<BlockchainApiErrorData>>) => {
+        if (res.isSuccess() && res.data) {
+          const campaign = res.data.campaign;
+          const missionsList = Array<Mission>();
+          let initialMission = {} as Mission;
+          const missions = await apiFactory.airDropApi().fetchCampaignMissions(id, lockscreen);
+          missions.data?.missions.forEach((el: MissionBc) =>{
+            const completed = campaignData.completedMissions.find((mission)=>{
+              return mission == el.id;
+            });
+            const claimed = campaignData.claimedMissions.find((mission)=>{
+              return mission == el.id;
+            });
+            if(el.missionType !== MissionType.INITIAL_CLAIM){
+              const weight = Number(campaignData.amount[0].amount) * (Number(el.weight));
+              const mission = new Mission(
+                el.id,
+                el.name,
+                el.description,
+                convertMissionType(el.missionType),
+                Number(el.weight) *100,
+                weight.toString(),
+                !!completed,
+                !!claimed,
+                el.claim_start_date
+              );
+              missionsList.push(mission);
+            } else {
+              initialMission = new Mission(
+                el.id,
+                el.name,
+                el.description,
+                convertMissionType(el.missionType),
+                Number(el.weight) *100,
+                '0',
+                !!completed,
+                !!claimed,
+                el.claim_start_date
+              );
+            }
+          });
+          let totalWeight = 0;
+          let totalWeightInPer = 0;
+          missionsList.forEach((element) => {
+            totalWeightInPer+= element.weightInPerc;
+            totalWeight += Number(element.weight);
+          });
+          initialMission.weight = (Number(campaignData.amount[0].amount) - totalWeight).toString();
+          initialMission.weightInPerc = (100 - totalWeightInPer);
+          missionsList.unshift(initialMission);
+          const status = await this.checkCampaignStatus(new Date(campaign.start_time), new Date(campaign.end_time));
+            camp = new Campaign(
+              campaign.id,
+              campaign.name,
+              campaign.description,
+              campaign.enabled,
+              campaign.start_time,
+              campaign.end_time,
+              campaign.lockup_period,
+              campaign.vesting_period,
+              campaign.feegrant_amount,
+              campaign.initial_claim_free_amount,
+              missionsList,
+              campaignData.amount[0].amount,
+              campaign.campaign_total_amount[0].amount,
+              status,
+            );
+        }
+      });
+      return camp;
+    },
+    checkCampaignStatus(startTime: Date, endTime: Date) {
+      if(new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime()> new Date(Date.now()).getTime()){
+        return CampainStatus.Now;
+      }else if(new Date(startTime).getTime() > new Date(Date.now()).getTime()){
+        return CampainStatus.Future;
+      } else {
+        return CampainStatus.Past;
+      }
+    },
+    // async fetchCampaigns(address: string, lockscreen = true){
+    //   //await this.getUsersCampaignData(address);
+    //     // let userAirdropInfoLcd = {} as UserAirdropInfo;
+    //     let campaignsInfoLcd = {} as CampaignsInfo;
+    //     // let missionsLcd = {} as MissionsInfo;
+    //   const campaignList = Array<Campaign>()
+    //   await apiFactory.airDropApi().fetchCampaigns(lockscreen).then(async response => {
+    //     if (response.isSuccess() && response.data) {
+    //       campaignsInfoLcd = response.data;
+    //       for (const el of campaignsInfoLcd.campaigns) {
+    //         await this.fetchMissions(el.id)
+    //         const campaign = new Campaign(
+    //           Number(el.id),
+    //           el.name,
+    //           el.description,
+    //           el.enabled,
+    //           el.start_time,
+    //           el.end_time,
+    //           el.lockup_period,
+    //           el.vesting_period,
+    //           el.feegrant_amount,
+    //           el.initial_claim_free_amount
+    //         );
+    //         campaignList.push(campaign)
+    //       }
+    //     }
+    //   });
+    //   // this.campaigns = campaignList;
+    // },
+
   },
+
   getters: {
-    getAirdropClaimRecord(): ClaimRecord {
+    getAirdropClaimRecord(): UserAirdropEntry {
       return this.claimRecord;
     },
     getAirDropTotal(): AirdropTotal {
@@ -288,6 +539,12 @@ export const useAirDropStore = defineStore({
     },
     getFairdropPoolUsage(): FairdropPollUsage {
       return this.fairdropPollUsage;
+    },
+    getSummary(): ISummary {
+      return this.summary;
+    },
+    getFinal(): boolean {
+      return this.justClaimedFinal;
     }
   },
 });
