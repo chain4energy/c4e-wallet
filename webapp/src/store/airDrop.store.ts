@@ -16,8 +16,8 @@ import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common
 
 import {
   AirdropEntry,
-  CampaignBc,
-  MissionBc,
+  CampaignBc, CampaignBcCampaign,
+  MissionBc, MissionsInfo,
   MissionType,
   UserAirdropEntry,
   UserAirdropInfo
@@ -83,20 +83,20 @@ export const useAirDropStore = defineStore({
       const pastSortedByMissions = Array<Campaign>();
 
       for (const el of this.campaigns) {
-        this.summary.totalAmount+=el.amount.amount;
+        this.summary.totalAmount += el.amount.amount;
         el.missions.forEach(mission => {
-          if (mission.claimed) this.summary.totalClaimed+=(BigInt(mission.weightInPerc) * el.amount.amount / 100n);
-          if (el.status === CampainStatus.Now && !mission.claimed) this.summary.toClaim+=(BigInt(mission.weightInPerc) * el.amount.amount / 100n);
+          if (mission.claimed) this.summary.totalClaimed += (BigInt(mission.weightInPerc) * el.amount.amount / 100n);
+          if (el.status === CampainStatus.Now && !mission.claimed) this.summary.toClaim += (BigInt(mission.weightInPerc) * el.amount.amount / 100n);
         });
 
         if (el.status === CampainStatus.Now) {
-            this.summary.activeCampaigns+=el.amount.amount;
-            presentSortedByMissions.push(el);
-          } else if (el.status === CampainStatus.Future) {
-            futureSortedByMissions.push(el);
-          } else if (el.status === CampainStatus.Past) {
-            pastSortedByMissions.push(el);
-          }
+          this.summary.activeCampaigns += el.amount.amount;
+          presentSortedByMissions.push(el);
+        } else if (el.status === CampainStatus.Future) {
+          futureSortedByMissions.push(el);
+        } else if (el.status === CampainStatus.Past) {
+          pastSortedByMissions.push(el);
+        }
       }
 
       this.summary.toClaimPercent = getPercentage(this.summary.toClaim, this.summary.activeCampaigns);
@@ -106,29 +106,29 @@ export const useAirDropStore = defineStore({
       const past = await this.sortCampaigns(pastSortedByMissions);
       const future = await this.sortCampaigns(futureSortedByMissions);
 
-      if(present.length> 0){
+      if (present.length > 0) {
         present.forEach((el) => {
           result.push(el);
         });
       }
-      if(future.length> 0){
+      if (future.length > 0) {
         future.forEach((el) => {
           result.push(el);
         });
       }
-      if(past.length> 0){
+      if (past.length > 0) {
         past.forEach((el) => {
           result.push(el);
         });
       }
 
-     this.campaigns = result;
+      this.campaigns = result;
 
     },
     async sortCampaigns(list: Campaign[]): Promise<Campaign[]> {
       return list.sort((a, b) => {
-          return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
-        });
+        return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
+      });
     },
     // async fetchAirdrop(address: string, lockscreen = true) {
     //   this.no_Drop = Boolean(false);
@@ -198,11 +198,11 @@ export const useAirDropStore = defineStore({
     //     //console.error(err);
     //   }
     // },
-    async claimInitialAirdrop(campaignId: string, extraAddress: string){
+    async claimInitialAirdrop(campaignId: string, extraAddress: string) {
       const connectionInfo = useUserStore().connectionInfo;
-      if(!extraAddress || extraAddress === ''){
+      if (!extraAddress || extraAddress === '') {
         await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, useUserStore().account.address);
-      }else {
+      } else {
         await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, extraAddress);
       }
     },
@@ -375,37 +375,48 @@ export const useAirDropStore = defineStore({
 
      */
 
-    async fetchUsersCampaignData(address: string, lockscreen = true){
-      this.campaigns = new Array<Campaign>();
+    async fetchUsersCampaignData(address: string, lockscreen = true) {
       this.claimRecord = {} as UserAirdropEntry;
-
       //TODO: Paging
       await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(async (res: RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>) => {
         if (res.isSuccess() && res.data) {
-        //  this.claimRecord = await this.sortEntries(res.data.user_entry);
           this.claimRecord = res.data.user_entry;
-
           const campaignsList = this.claimRecord.claim_records;
           this.campaignIds = campaignsList.map(el => el.campaign_id);
           const promisesArray: Promise<Campaign>[] = [];
-
           for (const el of campaignsList) {
             promisesArray.push(this.fetchCampaign(el.campaign_id, el));
           }
-
-          Promise.all(promisesArray).then(r => this.campaigns.push(...r)).then(this.sortEntries);
+          Promise.all(promisesArray).then(r => this.campaigns = r).then(this.sortEntries);
         }
       });
     },
 
-    async fetchCampaign(id: string, campaignData: AirdropEntry, lockscreen = true){
+    async fetchCampaign(id: string, campaignData: AirdropEntry, lockscreen = true) {
+      const checkCampaignStatus = (startTime: Date, endTime: Date) => {
+        if(new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime()> new Date(Date.now()).getTime()){
+          return CampainStatus.Now;
+        }else if(new Date(startTime).getTime() > new Date(Date.now()).getTime()){
+          return CampainStatus.Future;
+        } else {
+          return CampainStatus.Past;
+        }
+      };
+
       let camp = {} as Campaign;
-      await apiFactory.airDropApi().fetchCampaign(id, lockscreen).then(async (res: RequestResponse<CampaignBc, ErrorData<BlockchainApiErrorData>>) => {
-        if (res.isSuccess() && res.data) {
-          const campaign = res.data.campaign;
+      let campaign: CampaignBcCampaign;
+      let missions: RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>;
+
+      await Promise.all([
+        apiFactory.airDropApi().fetchCampaign(id, lockscreen).then(async (res: RequestResponse<CampaignBc, ErrorData<BlockchainApiErrorData>>) => {
+          if (res.isSuccess() && res.data) {
+            campaign = res.data.campaign;
+          }
+        }),
+        apiFactory.airDropApi().fetchCampaignMissions(id, lockscreen).then(r => missions = r)
+      ]).then(() => {
           const missionsList = Array<Mission>();
           let initialMission = {} as Mission;
-          const missions = await apiFactory.airDropApi().fetchCampaignMissions(id, lockscreen);
           missions.data?.missions.forEach((el: MissionBc) =>{
             const completed = campaignData.completedMissions.find((mission)=>{
               return mission == el.id;
@@ -450,7 +461,7 @@ export const useAirDropStore = defineStore({
           initialMission.weight = (Number(campaignData.amount[0].amount) - totalWeight).toString();
           initialMission.weightInPerc = (100 - totalWeightInPer);
           missionsList.unshift(initialMission);
-          const status = await this.checkCampaignStatus(new Date(campaign.start_time), new Date(campaign.end_time));
+          const status = checkCampaignStatus(new Date(campaign.start_time), new Date(campaign.end_time));
             camp = new Campaign(
               campaign.id,
               campaign.name,
@@ -467,18 +478,8 @@ export const useAirDropStore = defineStore({
               campaign.campaign_total_amount[0].amount,
               status,
             );
-        }
-      });
+        });
       return camp;
-    },
-    checkCampaignStatus(startTime: Date, endTime: Date) {
-      if(new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime()> new Date(Date.now()).getTime()){
-        return CampainStatus.Now;
-      }else if(new Date(startTime).getTime() > new Date(Date.now()).getTime()){
-        return CampainStatus.Future;
-      } else {
-        return CampainStatus.Past;
-      }
     },
     // async fetchCampaigns(address: string, lockscreen = true){
     //   //await this.getUsersCampaignData(address);

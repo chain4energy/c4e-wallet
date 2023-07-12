@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <div class="claimAirDrop__total claimAirDrop__basicText" v-for="campaignRecord in airdropClaimRecord" :key="campaignRecord.id">
+      <div class="claimAirDrop__total claimAirDrop__basicText" v-for="(campaignRecord, index) in airdropClaimRecord" :key="index">
           <div class="claimAirDrop__container">
             <h4 class="claimAirDrop__header">{{campaignRecord.name}}</h4>
             <hr class="claimAirDrop__hr"/>
@@ -60,7 +60,8 @@
                 <p class="claimAirDrop__data-text">{{getAmountOfClaimedMissions(campaignRecord)}}/{{campaignRecord.missions.length}}</p>
               </ClaimInfo>
               <ClaimInfo :header="getTextForTimeColumn(campaignRecord)">
-                <p class="claimAirDrop__data-text">{{calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)}}</p>
+                <p class="claimAirDrop__data-text" v-if="calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)">{{calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)}}</p>
+                <DateCommon :date="new Date(campaignRecord.end_time)" :show-time="false" :show-tooltip="true" v-else/>
               </ClaimInfo>
               <ClaimInfo :header="$t('AIRDROP.TOTAL_DISTRIBUTION')">
                 <div class="claimAirDrop__data-text">
@@ -158,6 +159,7 @@ import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import {ChevronDown, ChevronUp} from "lucide-vue-next";
 import dataService from "@/services/data.service";
 import Dialog from 'primevue/dialog';
+import DateCommon from "@/components/commons/DateCommon.vue";
 
 const percentsBar = ref();
 const i18n = useI18n();
