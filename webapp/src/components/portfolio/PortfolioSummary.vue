@@ -51,7 +51,6 @@
 <script setup lang="ts">
 import C4EIcon from "@/components/commons/C4EIcon.vue";
 import {useUserStore} from "@/store/user.store";
-import {usePublicSalesStore} from "@/store/publicSales.store";
 import {computed, onMounted, onUnmounted, ref} from "vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {BigDecimal} from "@/models/store/big.decimal";
@@ -65,7 +64,6 @@ import dataService from "@/services/data.service";
 // import FormattedNumber from "@/components/commons/FormattedNumber.vue"; - future USD ratio
 
 const userStore = useUserStore();
-const publicSalesStore = usePublicSalesStore();
 
 onMounted(() => {
     dataService.onPortfolioSelected();
@@ -84,8 +82,11 @@ const spendableBalance = computed(()=> {
   return userStore.getSpendableBalance || 0n;
 });
 
+/*
+Conversion to USD - change ratio return value to actual conversion ratio
+
 const ratio = computed(()=> {
-  return publicSalesStore.getConversionRatio;
+  return .....;
 });
 
 const amountToUSD = (amount: bigint) => {
@@ -95,6 +96,8 @@ const amountToUSD = (amount: bigint) => {
   else
     return converted * 0.085;
 };
+
+ */
 
 function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
   if( typeof amount === 'bigint'){
