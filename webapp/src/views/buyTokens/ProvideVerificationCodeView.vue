@@ -30,7 +30,7 @@ const contextStore = useContextStore();
 const onActivateClick = () => {
   const processID = contextStore.dataToSign?.processID;
   if(contextStore.addressType == AddressType.METAMASK) {
-    const dataToSign = formatString(message.LINKING_METAMASK_WALLET, {email: useUserServiceStore().userEmail, address: useUserStore().metamaskConnectionInfo.address,  activationCode: activationCode.value, randomString: contextStore.dataToSign?.dataToSign.randomString});
+    const dataToSign = formatString(message.PAIRING_EMAIL_METAMASK_WALLET_MESSAGE, {email: useUserServiceStore().userEmail, address: useUserStore().metamaskConnectionInfo.address,  activationCode: activationCode.value, randomString: contextStore.dataToSign?.dataToSign.randomString});
     if(processID)
       apiFactory.accountApi().signMetamask(dataToSign).then(signedDataResponse => {
         if(signedDataResponse.isSuccess() && signedDataResponse.data) {
@@ -39,8 +39,8 @@ const onActivateClick = () => {
       });
   } else if(contextStore.addressType == AddressType.KEPLR) {
     if(processID ) {
-      const dataToSign = formatString(message.LINKING_COSMOS_WALLET, {email: useUserServiceStore().userEmail, address: useUserStore().connectionInfo.account,  activationCode: activationCode.value, randomString: contextStore.dataToSign?.dataToSign.randomString});
-      apiFactory.accountApi().sign(useUserStore().connectionInfo, dataToSign, processID).then(signedDataResponse => {
+      const dataToSign = formatString(message.PAIRING_EMAIL_COSMOS_WALLET_MESSAGE, {email: useUserServiceStore().userEmail, address: useUserStore().connectionInfo.account,  activationCode: activationCode.value, randomString: contextStore.dataToSign?.dataToSign.randomString});
+      apiFactory.accountApi().sign(useUserStore().connectionInfo, dataToSign).then(signedDataResponse => {
 
         if(signedDataResponse.isSuccess() && signedDataResponse.data) {
 
