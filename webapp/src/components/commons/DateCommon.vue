@@ -24,14 +24,14 @@ const props = defineProps<{
 const trueDate = computed(()=> {
   let date = new Date(props.date);
   if(!props.showTime) {
-    return date.toLocaleDateString();
+    return date.toLocaleDateString('fr-CH');
   }
-  return date.toLocaleDateString() + ', ' + date.toLocaleTimeString();
+  return date.toLocaleDateString('fr-CH') + ', ' + date.toLocaleTimeString();
 });
 
 const retrieveConvertedTime = () => {
   let date = new Date(props.date);
-  return date.toLocaleDateString() + ', ' + date.toLocaleTimeString();
+  return date.toLocaleDateString('fr-CH') + ', ' + date.toLocaleTimeString();
 };
 </script>
 
