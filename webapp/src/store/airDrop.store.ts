@@ -387,23 +387,13 @@ export const useAirDropStore = defineStore({
 
           const campaignsList = this.claimRecord.claim_records;
           this.campaignIds = campaignsList.map(el => el.campaign_id);
+          const promisesArray: Promise<Campaign>[] = [];
 
-          const forEachCampaign = async () =>
-          {
-            for (const el of campaignsList) {
-              const campaign = await this.fetchCampaign(el.campaign_id, el);
-              this.campaigns.push(campaign);
-            }
-          };
-
-          forEachCampaign().then(this.sortEntries);
-
-          /*
-          if (this.campaignIds.length > 0) {
-            await this.fetchAirdropPoolUsage(this.campaignIds, true);
+          for (const el of campaignsList) {
+            promisesArray.push(this.fetchCampaign(el.campaign_id, el));
           }
 
-           */
+          Promise.all(promisesArray).then(r => this.campaigns.push(...r)).then(this.sortEntries);
         }
       });
     },
