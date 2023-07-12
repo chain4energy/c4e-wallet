@@ -142,7 +142,7 @@
 
 <script setup lang="ts">
 import { useAirDropStore } from "@/store/airDrop.store";
-import {computed, onMounted, onUnmounted, ref, watch} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import { useUserStore } from "@/store/user.store";
 import { CampainStatus } from "@/models/airdrop/airdrop";
 import { Campaign, Mission, MissionTypeSt } from "@/models/store/airdrop";
@@ -368,19 +368,12 @@ const socialMediaMessage = ref<string>();
 const generateSocialMediaMessage = () => {
   socialMediaMessage.value = `I have completed mission ${popupMission.value?.name} with a value of ${Number(popupMission.value?.weight) / 1000000} C4E from campaign ${popupCampaign.value?.name} on Airdrop Allocation!`;
 };
-const finalHandler = computed(() => {
-  return airDropStore.getFinal;
-});
 
-watch(finalHandler, () => {
-  if (finalHandler.value) handleFinal();
-});
 
 const handleFinal = () => {
   sharePopupStatus.value = true;
   socialMediaMessage.value = `I have completed the whole campaign ${selectedCampaignName.value}!`;
   isFinal.value = false;
-  airDropStore.justClaimedFinal = false;
 };
 
 </script>

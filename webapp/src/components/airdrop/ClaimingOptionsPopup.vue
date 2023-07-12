@@ -27,7 +27,7 @@ import {useAirDropStore} from "@/store/airDrop.store";
 import {useUserStore} from '@/store/user.store';
 import {ref, defineEmits} from "vue";
 import {Form, Field} from "vee-validate";
-import {object, setLocale, string} from "yup";
+import {object, string} from "yup";
 import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import i18n from "@/plugins/i18n";
 import {useConfigurationStore} from "@/store/configuration.store";
@@ -106,24 +106,34 @@ function claim(){
 function claimInitialAirdrop(id: string){
   useAirDropStore().claimInitialAirdrop(id, address.value).then(() =>{
     dataService.onClaimAirdrop(useUserStore().getAccount.address);
-    useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true).then(() => {
+    useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true) .then(() => {
       useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
-    });
+      if (props.isFinal) {
+        emit('final');
+      }
+    })
+      .finally(() => {
+        emit('close');
+      });
   });
-  emit('close');
 }
 
 function claimOtherAirdrop(campaignId: string, missionId: string){
   useAirDropStore().claimOtherAirdrop(campaignId, missionId).then(() =>{
     dataService.onClaimAirdrop(useUserStore().getAccount.address);
-    useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true).then(() => {
+    useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
+      .then(() => {
       useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
-      if (props.isFinal) useAirDropStore().justClaimedFinal = true;
-    });
+      if (props.isFinal) {
+        emit('final');
+      }
+      })
+      .finally(() => {
+        emit('close');
+      });
   });
-  emit('close');
-
 }
+
 </script>
 
 <style scoped lang="scss">
