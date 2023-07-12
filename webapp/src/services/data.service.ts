@@ -221,6 +221,18 @@ class DataService extends LoggedService {
 
   }
 
+  public onInfoView() {
+
+    usePublicSalesStore().fetchRoundInfoList();
+
+    if(useUserServiceStore().isLoggedIn()) {
+      useUserServiceStore().getAccount(()=>{console.log(1);}, ()=>{console.log(2);});
+      useUserServiceStore().getKycStatus();
+      usePublicSalesStore().fetchTokenReservations();
+    }
+
+  }
+
   public onProposalUnselected() {
     this.logToConsole(LogLevel.DEBUG, 'onProposalUnselected');
     useProposalsStore().clearProposal();

@@ -4,9 +4,7 @@ export interface EmailPairingRequest {
 export interface EmailPairingRes{
   processID: string,
   dataToSign:{
-    accountNumber : number,
     randomString: string,
-    sequenceNumber: number,
   }
 }
 export interface SignedEmailPairingRequest{

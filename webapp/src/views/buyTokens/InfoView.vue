@@ -125,10 +125,11 @@ import Button from "primevue/button";
 import SynapsVerify from '@synaps-io/vue3-verify';
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import {addDotsInsideTooLongString} from "@/utils/string-formatter";
+import dataService from "@/services/data.service";
 
 onBeforeMount(() => {
+  dataService.onInfoView();
 
-  publicSaleStore.fetchTokenReservations();
 });
 const router = useRouter();
 const toast = useToast();
