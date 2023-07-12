@@ -42,6 +42,24 @@ export interface CampaignBc {
   }
 }
 
+export interface CampaignBcCampaign {
+  id: string,
+    owner: string,
+  name: string,
+  description: string,
+  feegrant_amount: string,
+  initial_claim_free_amount: string,
+  enabled: boolean,
+  // denom: string,
+  start_time: string,
+  end_time: string,
+  lockup_period: string,
+  vesting_period: string,
+  vestingPoolName: string,
+  campaign_total_amount: Coin[],
+  campaign_current_amount: Coin[],
+}
+
 export interface CampaignsInfo {
   campaigns: CampaignBc[],
   pagination: Pagination
