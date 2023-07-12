@@ -48,11 +48,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Misc Improvements
 
+## [1.1.9](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.9) - 2022-07-12
+
+### Features
+* Leap wallet support
+* Faucet for testnet
+
 ## [1.1.8](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.8) - 2022-04-13
 
 ### Misc Improvements
 * Configuration update - Strategic Reserve poll
-* 
+
 ## [1.1.7](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.7) - 2022-04-12
 
 ### Misc Improvements
