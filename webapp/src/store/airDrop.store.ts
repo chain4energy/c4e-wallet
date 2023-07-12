@@ -13,7 +13,7 @@ import {AllocationMapping, CampaignInfoDetails, CampainStatus} from "@/models/ai
 import {RequestResponse} from "@/models/request-response";
 import {ErrorData} from "@/api/base.api";
 import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common";
-import {LogLevel} from "@/services/logger/log-level";
+
 import {
   AirdropEntry,
   CampaignBc,
@@ -22,15 +22,12 @@ import {
   UserAirdropEntry,
   UserAirdropInfo
 } from "@/models/blockchain/airdrop";
-import {StoreLogger} from "@/services/logged.service";
-import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
+
+
 import {Coin} from "@/models/store/common";
 import {useUserStore} from "@/store/user.store";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
-import {useConfigurationStore} from "@/store/configuration.store";
-import {getDenomFromArray} from "@/utils/coins-utils";
 
-const logger = new StoreLogger(ServiceTypeEnum.AIR_DROP_STORE);
 
 interface ISummary {
   totalAmount: bigint,
@@ -49,7 +46,6 @@ interface airDropState {
   fairdropPollUsage: FairdropPollUsage,
   airdropClaimingAddress: string,
   summary: ISummary,
-  justClaimedFinal: boolean
 }
 
 export const useAirDropStore = defineStore({
@@ -70,7 +66,6 @@ export const useAirDropStore = defineStore({
         totalClaimed: 0n,
         toClaim: 0n
       },
-      justClaimedFinal: false
     };
   },
   actions: {
@@ -381,7 +376,7 @@ export const useAirDropStore = defineStore({
      */
 
     async fetchUsersCampaignData(address: string, lockscreen = true){
-      this.campaigns = [];
+      this.campaigns = new Array<Campaign>();
       this.claimRecord = {} as UserAirdropEntry;
 
       //TODO: Paging
@@ -392,23 +387,13 @@ export const useAirDropStore = defineStore({
 
           const campaignsList = this.claimRecord.claim_records;
           this.campaignIds = campaignsList.map(el => el.campaign_id);
+          const promisesArray: Promise<Campaign>[] = [];
 
-          const forEachCampaign = async () =>
-          {
-            for (const el of campaignsList) {
-              const campaign = await this.fetchCampaign(el.campaign_id, el);
-              this.campaigns.push(campaign);
-            }
-          };
-
-          forEachCampaign().then(this.sortEntries);
-
-          /*
-          if (this.campaignIds.length > 0) {
-            await this.fetchAirdropPoolUsage(this.campaignIds, true);
+          for (const el of campaignsList) {
+            promisesArray.push(this.fetchCampaign(el.campaign_id, el));
           }
 
-           */
+          Promise.all(promisesArray).then(r => this.campaigns.push(...r)).then(this.sortEntries);
         }
       });
     },
@@ -543,9 +528,6 @@ export const useAirDropStore = defineStore({
     getSummary(): ISummary {
       return this.summary;
     },
-    getFinal(): boolean {
-      return this.justClaimedFinal;
-    }
   },
 });
 
