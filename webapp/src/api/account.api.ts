@@ -305,10 +305,10 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
-  public async sign(connection: ConnectionInfo, dataToSign: string, processId: string):Promise<RequestResponse<string, TxBroadcastError>> {
+  public async sign(connection: ConnectionInfo, dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 
 
-    return this.signDirect(connection, dataToSign, processId, true, null);
+    return this.signDirect(connection, dataToSign, true, null);
   }
   public async signMetamask(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 

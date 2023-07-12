@@ -91,7 +91,7 @@ export const useUserServiceStore = defineStore({
     async authWalletInit(initWalletAuthRequest: InitWalletAuthRequest,onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
        const initWalletAuthResponse = await apiFactory.publicSaleServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
        if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
-         await apiFactory.accountApi().sign(useUserStore().connectionInfo, initWalletAuthResponse.data.dataToSign.randomString, '').then(signedDataResponse => {
+         await apiFactory.accountApi().sign(useUserStore().connectionInfo, initWalletAuthResponse.data.dataToSign.randomString).then(signedDataResponse => {
            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
            // @ts-ignore
            this.authWalletKeplr({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data}, onSuccess, onFail);
@@ -214,7 +214,7 @@ export const useUserServiceStore = defineStore({
       });
     },
     async signPairingEmailKeplr(responseData: EmailPairingRes){
-     return await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign.randomString, responseData.processID).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
+     return await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign.randomString).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
        if(signedDataResponse.isSuccess() && signedDataResponse.data){
          await this.approveSignedDataParingEmailKeplr(signedDataResponse.data, responseData.processID);
          return signedDataResponse;
@@ -298,7 +298,7 @@ export const useUserServiceStore = defineStore({
       let metamaskResp = '';
       let keplrResp = '';
       try{
-        await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign.randomString, responseData.processID).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
+        await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign.randomString).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
           if(signedDataResponse.isSuccess() && signedDataResponse.data){
             keplrResp = signedDataResponse.data;
             await apiFactory.accountApi().signMetamaskPairing(signedDataResponse.data).then(async (signedDataResponseMetamask: RequestResponse<string, TxBroadcastError>)=>{

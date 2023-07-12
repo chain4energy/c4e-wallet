@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-bottom: 60px;">
+  <div style="margin-top:100px;padding-bottom: 60px;">
     <div class="login_container box-shadow">
       <div class="login_container__header">
         <h1 style="font-weight: 900; padding-top: 20px;">{{$t("SIGN_IN_VIEW.SIGN_IN")}}</h1>

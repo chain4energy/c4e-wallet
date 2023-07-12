@@ -345,7 +345,6 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
   protected async signDirect(
     connection: ConnectionInfo,
     dataToSign: string,
-    processId: string,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
     skipErrorToast = false
   ): Promise<RequestResponse<string, TxBroadcastError>>
