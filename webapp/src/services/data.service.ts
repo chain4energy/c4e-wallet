@@ -14,6 +14,7 @@ import {useToast} from "vue-toastification";
 import WifiIcon from '@/components/features/WifiOnIcon.vue';
 import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
 import {useI18n} from "vue-i18n";
+
 const keplrKeyStoreChange = 'keplr_keystorechange';
 
 class DataService extends LoggedService {
@@ -188,7 +189,12 @@ class DataService extends LoggedService {
       useTokensStore().clear();
       useValidatorsStore().clear();
       this.clearIntervals();
-      this.onInit();
+      this.onInit().then( () => {
+          if (this.onClaimAirdropView && useUserStore().getAccount.address) {
+            useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+          }
+        }
+      );
       if (refreshProposals) {
         useProposalsStore().fetchProposals(true);
       }
@@ -200,8 +206,7 @@ class DataService extends LoggedService {
   public onPortfolioSelected() {
     this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected refreshs');
 
-    const now = new Date().getTime();
-    this.lastSpendablesTimeout = now;
+    this.lastSpendablesTimeout = new Date().getTime();
     this.spendablesIntervalId = window.setInterval(refreshSpendables, this.spendableTimeout);
   }
 
@@ -254,8 +259,7 @@ class DataService extends LoggedService {
     if (connetionInfo.isKeplr()) {
       instancce.enableKeplrAccountChangeListener();
     }
-    const now = new Date().getTime();
-    instancce.lastAccountTimeout = now;
+    instancce.lastAccountTimeout = new Date().getTime();
     instancce.accountIntervalId = window.setInterval(refreshAccountData, instancce.accountTimeout);
     const propId = useProposalsStore().proposal;
     const userAddress = useUserStore().getAccount.address;
@@ -295,10 +299,11 @@ class DataService extends LoggedService {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
       });
+      if(useUserStore().getAccount.address && this.onClaimAirdropView){
+        useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+      }
     }
-    if(useUserStore().getAccount.address && this.onClaimAirdropView){
-      useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
-    }
+
   }
 
   public refreshSpendables() {
@@ -358,13 +363,8 @@ class DataService extends LoggedService {
     window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
   }
 
-  public onClaimAirdrop(address: string) {
-    this.logToConsole(LogLevel.DEBUG, 'onClaimAirdrop');
-    // useAirDropStore().fetchUsersCampaignData(address, true);
-  }
-
   public enterClaimAirdrop() {
-    this.logToConsole(LogLevel.DEBUG, 'enterClaimAirdrop dupa');
+    this.logToConsole(LogLevel.DEBUG, 'enterClaimAirdrop');
     this.onClaimAirdropView = true;
     if(useUserStore().getAccount.address){
       useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
@@ -372,7 +372,7 @@ class DataService extends LoggedService {
   }
 
   public leaveClaimAirdrop() {
-    this.logToConsole(LogLevel.DEBUG, 'leaveClaimAirdrop dupa');
+    this.logToConsole(LogLevel.DEBUG, 'leaveClaimAirdrop');
     this.onClaimAirdropView = false;
   }
 
