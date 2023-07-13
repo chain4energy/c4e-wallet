@@ -68,7 +68,7 @@
           <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
 
           <div class="profileMenu" @focusout="closeProfileDropdown" tabindex="0" @click="toggleProfileDropdown()" >
-            <div class="profileMenu-icon">    <UserIcon :style="useUserServiceStore().isLoggedIn() ? 'color: #81CF1F' : ''" /></div>
+            <div class="profileMenu-icon"> <UserIcon :style="useUserServiceStore().isLoggedIn() ? 'color: #81CF1F' : ''" /></div>
             <div class="profileMenu__dropdown" v-if="profileDropdown">
 
               <div v-if="!useUserServiceStore().isLoggedIn()">

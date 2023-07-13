@@ -441,11 +441,7 @@ export const useUserServiceStore = defineStore({
     },
     isTermsAccepted():boolean{
       return this.termsAccepted;
-    },
-    isLoggedIn2():boolean {
-      console.log('asdasdasdasdasdasd')
-      return isLoggedIn();
-    },
+    }
   },
   persist: {
     enabled: true

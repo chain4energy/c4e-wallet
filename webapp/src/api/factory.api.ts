@@ -15,6 +15,7 @@ import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
 import {useRoute, useRouter} from "vue-router";
 import Router from '../router';
+import {useUserServiceStore} from "@/store/userService.store";
 
 let testfileName = '';
 
@@ -50,6 +51,7 @@ class ApiFactory {
     } catch (error) {
 
       if(Router.currentRoute.value.meta.requiresAuth) {
+        useUserServiceStore().logOutAccount();
         await Router.push('/buyTokens/signIn');
       }
 
