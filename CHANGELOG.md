@@ -48,6 +48,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Misc Improvements
 
+## [1.1.11](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.11) - 2023-07-13
+
+### Misc Improvements
+* Configuration change - Set GasPriceStep Low to 0 
+
 ## [1.1.10](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.10) - 2023-07-12
 
 ### Bug fixes
