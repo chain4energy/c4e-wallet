@@ -15,7 +15,7 @@
     </div>
 
     <div class="userProfile__extra">
-      <Button v-if="useUserServiceStore().isLoggedIn()"
+      <Button v-if="useUserServiceStore().isLoggedIn"
         class="p-button p-component secondary userProfile__btn"
         @click="useUserServiceStore().logOutAccount()">{{$t('BUTTONS.LOGOUT')}}</Button>
     </div>

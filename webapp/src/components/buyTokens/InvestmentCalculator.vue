@@ -195,7 +195,7 @@ const transactionContextStore = useTransactionContextStore();
 const router = useRouter();
 
 const onBuy = () => {
-  if(!useUserServiceStore().isLoggedIn()) {
+  if(!useUserServiceStore().isLoggedIn) {
     router.push({name: 'signIn'});
   } else {
     transactionContextStore.setAmountToBuy(firstValue.amount);

@@ -15,7 +15,7 @@ export function createRouterBeforeEach (logger: LoggerService) {
     }
 
     if (to.matched.some(record => record.meta.requiresAuth)) {
-      if (useUserServiceStore().isLoggedIn()) {
+      if (useUserServiceStore().isLoggedIn) {
         next();
         return;
       }

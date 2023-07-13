@@ -156,7 +156,7 @@ const isLoggedIn = computed(() =>{
 });
 
 const isLogedInInService = computed(() => {
-  return useUserServiceStore().isLoggedIn();
+  return useUserServiceStore().isLoggedIn;
 });
 
 const isTermsAccepted = computed(() =>{

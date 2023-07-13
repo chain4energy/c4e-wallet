@@ -27,7 +27,8 @@ interface UserServiceState {
   ethereumAddress?: string,
   claimAddress?: string,
   kycServiceState: Map<KycStepName, KycProgressStatus>,
-  kycLevel: number
+  kycLevel: number,
+  loggedIn: boolean
 }
 
 export enum LoginTypeEnum {
@@ -51,7 +52,8 @@ export const useUserServiceStore = defineStore({
       ethereumAddress: undefined,
       claimAddress: undefined,
       kycServiceState: new Map<KycStepName, KycProgressStatus>(),
-      kycLevel: 0
+      kycLevel: 0,
+      loggedIn: false
     };
   },
   actions: {
@@ -177,6 +179,7 @@ export const useUserServiceStore = defineStore({
       if (responseDate.isSuccess()) {
         // save tokens to storage
         if(responseDate.data){
+          this.loggedIn = true;
           setAuthTokens({
             accessToken: responseDate.data.access_token.token,
             refreshToken: responseDate.data.refresh_token.token
@@ -354,12 +357,10 @@ export const useUserServiceStore = defineStore({
       this.claimAddress= undefined;
       this.kycServiceState= new Map<KycStepName, KycProgressStatus>();
       this.kycLevel= 0;
-      window.location.reload();
+      this.loggedIn = false;
+      // window.location.reload();
 
-    },
-    isLoggedIn():boolean {
-      return isLoggedIn();
-    },
+    }
   },
   getters: {
 
@@ -441,7 +442,10 @@ export const useUserServiceStore = defineStore({
     },
     isTermsAccepted():boolean{
       return this.termsAccepted;
-    }
+    },
+    isLoggedIn():boolean {
+      return this.loggedIn;
+    },
   },
   persist: {
     enabled: true

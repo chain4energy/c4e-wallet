@@ -225,7 +225,7 @@ class DataService extends LoggedService {
 
     usePublicSalesStore().fetchRoundInfoList();
 
-    if(useUserServiceStore().isLoggedIn()) {
+    if(useUserServiceStore().isLoggedIn) {
       useUserServiceStore().getAccount(()=>{console.log(1);}, ()=>{console.log(2);});
       useUserServiceStore().getKycStatus();
       usePublicSalesStore().fetchTokenReservations();
