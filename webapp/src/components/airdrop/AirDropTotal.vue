@@ -82,7 +82,6 @@
 </template>
 
 <script setup lang="ts">
-import KeplrLogo from "@/components/commons/KeplrLogo.vue";
 import Button from 'primevue/button';
 import {computed, onMounted, ref, watch} from "vue";
 import {useUserStore} from "@/store/user.store";
@@ -114,10 +113,6 @@ const isMobile = computed(() => {
 
 const airDrops = computed(() => {
   return useAirDropStore().getAirDropTotal;
-});
-
-const totalSum = computed(() => {
-  return 0;
 });
 
 async function validateAddress(address: string | undefined) {
@@ -178,8 +173,7 @@ async function submit() {
       addressC4E = address.value;
     }
   }
-  dataService.refreshAccountData()
-  dataService.onClaimAirdrop(useUserStore().getAccount.address);
+  dataService.refreshAccountData();
   await useAirDropStore().fetchAirdropTotal(addressC4E);
 }
 
@@ -241,7 +235,7 @@ watch(userLoggedIn, () => {
       margin-top: -16px;
       margin-left: -20px;
       background-color: $main-color;
-      padding: 0px 10px;
+      padding: 0 10px;
     }
   }
 
@@ -390,7 +384,6 @@ watch(userLoggedIn, () => {
   &__footer {
     width: 90%;
     margin: 15px 0;
-    width: 90%;
     display: flex;
     align-items: center;
     flex-direction: column;

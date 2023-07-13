@@ -32,7 +32,6 @@ import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import i18n from "@/plugins/i18n";
 import {useConfigurationStore} from "@/store/configuration.store";
 import * as bench32 from "bech32";
-import dataService from "@/services/data.service";
 import {useToast} from "vue-toastification";
 
 const props = defineProps<{
@@ -105,7 +104,6 @@ function claim(){
 
 function claimInitialAirdrop(id: string){
   useAirDropStore().claimInitialAirdrop(id, address.value).then(() =>{
-    dataService.onClaimAirdrop(useUserStore().getAccount.address);
     useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true) .then(() => {
       useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
       if (props.isFinal) {
@@ -120,7 +118,6 @@ function claimInitialAirdrop(id: string){
 
 function claimOtherAirdrop(campaignId: string, missionId: string){
   useAirDropStore().claimOtherAirdrop(campaignId, missionId).then(() =>{
-    dataService.onClaimAirdrop(useUserStore().getAccount.address);
     useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
       .then(() => {
       useToast().success(i18n.global.t('AIRDROP.SUCCESS'));

@@ -389,6 +389,10 @@ export const useAirDropStore = defineStore({
           }
           Promise.all(promisesArray).then(r => this.campaigns = r).then(this.sortEntries);
         }
+        else {
+          this.campaigns = new Array<Campaign>();
+          await this.sortEntries();
+        }
       });
     },
 
