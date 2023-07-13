@@ -28,6 +28,7 @@
         {{$t("PORTFOLIO_VIEW.RECEIVE")}}
       </Button>
       <Button class="secondary portfolioSummary__button"
+              @click.prevent="() => sendDialogVisible = true"
               :disabled = '!userStore.getAccount.address'>
         {{$t("PORTFOLIO_VIEW.SEND")}}
       </Button>
@@ -46,6 +47,39 @@
     </div>
   </Dialog>
 
+  <Dialog v-model:visible="sendDialogVisible" modal :header='$t("PORTFOLIO_VIEW.SEND")' :style="{ width: '95vw', 'max-width': '600px'}">
+    <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;">
+      <h3>{{ $t("PORTFOLIO_VIEW.SEND") }}</h3>
+      <div class="field">
+        <Field
+          v-model="targetAddress"
+          name="targetAddress"
+          placeholder=" "
+          type="text"
+          class="form-control"
+          style="width: 100%;"
+        />
+        <span style="text-transform: capitalize">{{ $t('COMMON.INPUT.ADDRESS') }}</span>
+      </div>
+      <div class="field">
+        <Field
+          v-model="amount"
+          name="amount"
+          placeholder=" "
+          type="number"
+          class="form-control"
+          style="width: 100%;"
+          />
+        <span style="text-transform: capitalize">{{ $t('COMMON.INPUT.AMOUNT') }}</span>
+        <div class="validationPopup__btn">
+          <button type="button" @click.prevent="">Max</button>
+          <p>C4E</p>
+        </div>
+      </div>
+      <Button class="secondary">{{$t("PORTFOLIO_VIEW.SEND")}}</Button>
+    </div>
+  </Dialog>
+
 </template>
 
 <script setup lang="ts">
@@ -61,6 +95,7 @@ import {useToast} from "vue-toastification";
 import i18n from "@/plugins/i18n";
 import { Copy } from 'lucide-vue-next';
 import dataService from "@/services/data.service";
+import {Field} from "vee-validate";
 // import FormattedNumber from "@/components/commons/FormattedNumber.vue"; - future USD ratio
 
 const userStore = useUserStore();
@@ -113,6 +148,11 @@ function copyTxt(){
 }
 
 const receiveDialogVisible = ref(false);
+const sendDialogVisible = ref(false);
+
+const targetAddress = ref('');
+const amount = ref(0);
+
 </script>
 
 <style scoped lang="scss">
@@ -180,6 +220,35 @@ const receiveDialogVisible = ref(false);
 .copy_button:hover {
   cursor: pointer;
   color: #8be955;
+}
+
+.validationPopup__btn {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  max-height: 100%;
+  align-items: baseline;
+  text-align: center;
+  top: 0;
+  bottom: 0;
+  right: 5%;
+
+  button {
+    background-color: #72BF44;
+    color: white;
+    border: 0;
+    width: 58px;
+    -webkit-appearance: none;
+    margin-right: 10px;
+    border-radius: 10px;
+    padding: 5px;
+
+    &:hover {
+      background-color: #72BF44;
+      color: #FFFFFF;
+    }
+  }
 }
 
 @media screen and (width<1024px) {
