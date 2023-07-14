@@ -29,7 +29,7 @@
             <Button class="p-button p-component secondary" style="width: 40%" type="submit">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</Button>
           </div>
           <div style="padding: 5px">
-            <RouterLink class="register" to="/buyTokens/signUp">{{ $t('SIGN_IN_VIEW.REGISTER') }}</RouterLink>
+            <RouterLink class="register" :to="useRoute().path.includes('buyTokens') ? '/buyTokens/signUp' : '/profile/signUp'">{{ $t('SIGN_IN_VIEW.REGISTER') }}</RouterLink>
           </div>
         </Form>
       </div>
@@ -41,13 +41,12 @@
 
 <script setup lang="ts">
 
-import Password from "primevue/password";
 import {Field, Form} from "vee-validate";
-import {object, string} from "yup";
+import {object} from "yup";
 import * as Yup from "yup";
 import {ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 
 

@@ -41,9 +41,7 @@ const menu = computed(() => {
 
 
 const selected = computed(()=> {
-  console.log('dupa', menu.value);
-  console.log('dupa', router.currentRoute);
-  return menu.value.findIndex(element => element.href == router.currentRoute.value.path);
+  return menu.value.findIndex(element => router.currentRoute.value.path.includes(element.href));
 });
 
 

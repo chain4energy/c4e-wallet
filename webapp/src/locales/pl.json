@@ -372,7 +372,9 @@
     "SIGNIN": "Logowanie",
     "SIGNUP": "Rejestracja",
     "ACTIVATE": "Aktywacja konta",
-    "PROVIDEVERIFICATIONCODE": "Weryfikacja"
+    "PROVIDEVERIFICATIONCODE": "Weryfikacja",
+    "SIGNIN-PROFILE": "Logowanie",
+    "SIGNUP-PROFILE": "Rejestracja"
   },
   "TOAST": {
     "SUCCESS": {

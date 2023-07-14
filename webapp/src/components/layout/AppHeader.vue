@@ -73,7 +73,7 @@
             <div class="profileMenu__dropdown" v-if="profileDropdown">
 
               <div v-if="!useUserServiceStore().isLoggedIn">
-                <div class="option grid_container"  @click="router.push({name: 'signIn'});">
+                <div class="option grid_container"  @click="router.push({name: 'signIn-profile'});">
                   <Icon name="LogIn" />
                   Login to profile
                 </div>
@@ -169,7 +169,6 @@ import {SideBarIconType} from "@/services/permissions/sidebar.config";
 import {useConfigurationStore} from '@/store/configuration.store';
 import {changeTitle} from "@/utils/title-changer";
 import {useRoute, useRouter} from 'vue-router';
-import {useGlobalFilterStore} from "@/store/global-filter.store";
 import {computed, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {PermissionsService} from "@/services/permissions/permissions.service";
@@ -180,7 +179,6 @@ import {useUserServiceStore} from "@/store/userService.store";
 import UserIcon from "@/components/features/UserIcon.vue";
 
 const router = useRouter();
-const globalFilter = useGlobalFilterStore();
 const loginPopupStatus = ref(false);
 const logoutPopupStatus = ref(false);
 const dropdown = ref(false);
@@ -402,7 +400,7 @@ nav a.router-link-exact-active {
 }
 
 .keplr-logo {
-  padding: 0px 5px;
+  padding: 0 5px;
   background-color: rgba(255, 255, 255);
 }
 

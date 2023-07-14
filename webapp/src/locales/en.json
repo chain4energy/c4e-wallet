@@ -379,7 +379,8 @@
     "ACTIVATE": "Account activation",
     "PROVIDEVERIFICATIONCODE": "Verification",
     "PORTFOLIO": "Portfolio",
-    "FAUCET": "Faucet"
+    "SIGNIN-PROFILE": "Sign in",
+    "SIGNUP-PROFILE": "Sign up"
   },
   "TOAST": {
     "SUCCESS": {

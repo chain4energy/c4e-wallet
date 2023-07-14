@@ -14,7 +14,6 @@ import profileRoutes from "@/router/profile";
 import KycView from "@/views/KycView.vue";
 import SignInView from "@/views/buyTokens/SignInView.vue";
 import SignUpView from "@/views/buyTokens/SignUpView.vue";
-import PortfolioView from "@/views/PortfolioView.vue";
 import ProvideVerificationCodeView from "@/views/buyTokens/ProvideVerificationCodeView.vue";
 import {portfolioRoutes} from "@/router/portfolioRoutes";
 
@@ -102,6 +101,16 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/buyTokens/signUp',
     name: 'signUp',
+    component: SignUpView
+  },
+  {
+    path: '/profile/signIn',
+    name: 'signIn-profile',
+    component: SignInView
+  },
+  {
+    path: '/profile/signUp',
+    name: 'signUp-profile',
     component: SignUpView
   },
   {
