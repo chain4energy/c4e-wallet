@@ -9,44 +9,127 @@ import {
   FairdropPollUsage,
   Mission
 } from "@/models/store/airdrop";
-import {ClaimRecord} from "@/models/airdrop/airdrop";
+import {AllocationMapping, CampaignInfoDetails, CampainStatus} from "@/models/airdrop/airdrop";
 import {RequestResponse} from "@/models/request-response";
 import {ErrorData} from "@/api/base.api";
-import {AirdropErrData} from "@/models/blockchain/common";
-import {LogLevel} from "@/services/logger/log-level";
-import {AirdropEntry, MissionType} from "@/models/blockchain/airdrop";
-import {StoreLogger} from "@/services/logged.service";
-import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
+import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common";
+
+import {
+  AirdropEntry,
+  CampaignBc, CampaignBcCampaign,
+  MissionBc, MissionsInfo,
+  MissionType,
+  UserAirdropEntry,
+  UserAirdropInfo
+} from "@/models/blockchain/airdrop";
+
+
 import {Coin} from "@/models/store/common";
 import {useUserStore} from "@/store/user.store";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
-import {useConfigurationStore} from "@/store/configuration.store";
-import {getDenomFromArray} from "@/utils/coins-utils";
 
-const logger = new StoreLogger(ServiceTypeEnum.AIR_DROP_STORE);
+
+interface ISummary {
+  totalAmount: bigint,
+  activeCampaigns: bigint,
+  totalClaimed: bigint,
+  toClaim: bigint,
+  claimedPercent?: BigDecimal,
+  toClaimPercent?: BigDecimal
+}
 
 interface airDropState {
-  claimRecord: ClaimRecord,
+  claimRecord: UserAirdropEntry,
   airDropMock: AirdropTotal,
   campaigns: Campaign[],
+  campaignIds: string[],
   fairdropPollUsage: FairdropPollUsage,
   airdropClaimingAddress: string,
+  summary: ISummary,
 }
 
 export const useAirDropStore = defineStore({
   id: 'airDropStore',
   state: (): airDropState => {
     return {
-      claimRecord: {} as ClaimRecord,
+      claimRecord: {} as UserAirdropEntry,
       airDropMock: Object(AirdropTotal),
       campaigns: Array<Campaign>(),
       fairdropPollUsage: new FairdropPollUsage(new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
         new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
         new BigDecimal(0), new BigDecimal(0)),
       airdropClaimingAddress: '',
+      campaignIds: [],
+      summary: {
+        totalAmount: 0n,
+        activeCampaigns: 0n,
+        totalClaimed: 0n,
+        toClaim: 0n
+      },
     };
   },
   actions: {
+    async sortEntries() {
+      const result: Campaign[] = [];
+      this.summary = {
+        totalAmount: 0n,
+        activeCampaigns: 0n,
+        totalClaimed: 0n,
+        toClaim: 0n
+      };
+
+      const presentSortedByMissions = Array<Campaign>();
+      const futureSortedByMissions = Array<Campaign>();
+      const pastSortedByMissions = Array<Campaign>();
+
+      for (const el of this.campaigns) {
+        this.summary.totalAmount += el.amount.amount;
+        el.missions.forEach(mission => {
+          if (mission.claimed) this.summary.totalClaimed += (BigInt(mission.weightInPerc) * el.amount.amount / 100n);
+          if (el.status === CampainStatus.Now && !mission.claimed) this.summary.toClaim += (BigInt(mission.weightInPerc) * el.amount.amount / 100n);
+        });
+
+        if (el.status === CampainStatus.Now) {
+          this.summary.activeCampaigns += el.amount.amount;
+          presentSortedByMissions.push(el);
+        } else if (el.status === CampainStatus.Future) {
+          futureSortedByMissions.push(el);
+        } else if (el.status === CampainStatus.Past) {
+          pastSortedByMissions.push(el);
+        }
+      }
+
+      this.summary.toClaimPercent = getPercentage(this.summary.toClaim, this.summary.activeCampaigns);
+      this.summary.claimedPercent = getPercentage(this.summary.totalClaimed, this.summary.totalAmount);
+
+      const present = await this.sortCampaigns(presentSortedByMissions);
+      const past = await this.sortCampaigns(pastSortedByMissions);
+      const future = await this.sortCampaigns(futureSortedByMissions);
+
+      if (present.length > 0) {
+        present.forEach((el) => {
+          result.push(el);
+        });
+      }
+      if (future.length > 0) {
+        future.forEach((el) => {
+          result.push(el);
+        });
+      }
+      if (past.length > 0) {
+        past.forEach((el) => {
+          result.push(el);
+        });
+      }
+
+      this.campaigns = result;
+
+    },
+    async sortCampaigns(list: Campaign[]): Promise<Campaign[]> {
+      return list.sort((a, b) => {
+        return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
+      });
+    },
     // async fetchAirdrop(address: string, lockscreen = true) {
     //   this.no_Drop = Boolean(false);
     //   try {
@@ -83,7 +166,6 @@ export const useAirDropStore = defineStore({
     //     //console.error(err);
     //   }
     // },
-
     // async fetchTestAirDropClaiming() {
     //   try {
     //     apiFactory.airDropApi().fetchUserAirdropEntries('', true).then((res) => {
@@ -116,11 +198,11 @@ export const useAirDropStore = defineStore({
     //     //console.error(err);
     //   }
     // },
-    async claimInitialAirdrop(campaignId: string, extraAddress: string){
+    async claimInitialAirdrop(campaignId: string, extraAddress: string) {
       const connectionInfo = useUserStore().connectionInfo;
-      if(!extraAddress || extraAddress === ''){
+      if (!extraAddress || extraAddress === '') {
         await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, useUserStore().account.address);
-      }else {
+      } else {
         await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, extraAddress);
       }
     },
@@ -130,15 +212,14 @@ export const useAirDropStore = defineStore({
     },
     async fetchAirdropTotal(address: string, lockscreen = true) {
       try {
-
         const response = await apiFactory.airDropApi().fetchAirdropsInfo(lockscreen);
         console.log(JSON.stringify(response));
-        const promises = Array<Promise<RequestResponse<any, ErrorData<AirdropErrData>>>>();
+        const promises = Array<Promise<RequestResponse<CampaignInfoDetails[], ErrorData<AirdropErrData>>>>();
         const campaignsList = Array<CampaignAllocation>();
         if (response.isSuccess() && response.data?.campaignInfoDetails) {
           const campaignInfoDetails = response.data.campaignInfoDetails;
           //create array with requests for particular airdrop
-          campaignInfoDetails.forEach((campaign) => {
+          campaignInfoDetails.forEach((campaign: CampaignInfoDetails) => {
             promises.push(apiFactory.airDropApi().fetchAirdrop(address, campaign.subfolder, lockscreen));
           });
           //wait for all requests
@@ -146,9 +227,12 @@ export const useAirDropStore = defineStore({
           for (let i = 0; i < campaignInfoDetails.length; i++) {
             const campaign = campaignInfoDetails[i];
             const allocations = new Array<AlocationsSt>();
-            campaign.allocationMapping.forEach((allocation) => {
+            campaign.allocationMapping.forEach((allocation: AllocationMapping) => {
               let mappedValue = 0;
-              if (responseList[i].isSuccess()) {
+              if (responseList && responseList[i].isSuccess()) {
+                // TODO: Fix the TS error
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 mappedValue = responseList[i].data[allocation.mapping] as number;
               } else {
                 console.log("Airdrop:\"" + campaign.name + "\" Allocation for address:" + address + " NOT FOUND.");
@@ -253,10 +337,13 @@ export const useAirDropStore = defineStore({
     //   logger.logToConsole(LogLevel.DEBUG, JSON.stringify(result, (key, value) => typeof value === 'bigint' ? value.toString() : value, 2));
     //   this.campaigns = result;
     // },
-    async fetchFairdropPoolUsage(campaingIds: string[], lockscreen = true) {
+    /*
+    async fetchAirdropPoolUsage(campaingIds: string[], lockscreen = true) {
+
       const distributions = new Coin(BigInt(0), "uc4e");
       const claimsLeft = new Coin(BigInt(0), "uc4e");
       const promises = Array<Promise<void>>();
+
       campaingIds.forEach((id: string) => {
         promises.push(apiFactory.airDropApi().fetchAirdropDistributions(id, lockscreen).then(response => {
           if (response.isSuccess() && response.data !== undefined) {
@@ -285,30 +372,56 @@ export const useAirDropStore = defineStore({
         getPercentage(this.fairdropPollUsage.total.amount, this.fairdropPollUsage.claimed.amount),
         getPercentage(distributions.amount, claimsLeft.amount));
     },
-    async fetchUsersCampaignData(address: string, lockscreen = true){
-      this.campaigns = Array<Campaign>();
-      const campaignsIds = Array<string>();
-      await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then((res) => {
-        if(res.isSuccess() && res.data){
-          const campaignsList = res.data.user_entry.claim_records;
-          campaignsList.forEach(async (el) => {
-            await this.fetchCampaign(el.campaign_id, el);
-            campaignsIds.push(el.campaign_id);
-          });
-          if(campaignsIds.length > 0){
-            this.fetchFairdropPoolUsage(campaignsIds, true);
+
+     */
+
+    async fetchUsersCampaignData(address: string, lockscreen = true) {
+      this.claimRecord = {} as UserAirdropEntry;
+      //TODO: Paging
+      await apiFactory.airDropApi().fetchUserAirdropEntries(address, lockscreen).then(async (res: RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>) => {
+        if (res.isSuccess() && res.data) {
+          this.claimRecord = res.data.user_entry;
+          const campaignsList = this.claimRecord.claim_records;
+          this.campaignIds = campaignsList.map(el => el.campaign_id);
+          const promisesArray: Promise<Campaign>[] = [];
+          for (const el of campaignsList) {
+            promisesArray.push(this.fetchCampaign(el.campaign_id, el));
           }
+          Promise.all(promisesArray).then(r => this.campaigns = r).then(this.sortEntries);
+        }
+        else {
+          this.campaigns = new Array<Campaign>();
+          await this.sortEntries();
         }
       });
     },
-    async fetchCampaign(id: string, campaignData: AirdropEntry, lockscreen = true){
-      await apiFactory.airDropApi().fetchCampaign(id, lockscreen).then(async (res) => {
-        if (res.isSuccess() && res.data) {
-          const campaign = res.data.campaign;
+
+    async fetchCampaign(id: string, campaignData: AirdropEntry, lockscreen = true) {
+      const checkCampaignStatus = (startTime: Date, endTime: Date) => {
+        if(new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime()> new Date(Date.now()).getTime()){
+          return CampainStatus.Now;
+        }else if(new Date(startTime).getTime() > new Date(Date.now()).getTime()){
+          return CampainStatus.Future;
+        } else {
+          return CampainStatus.Past;
+        }
+      };
+
+      let camp = {} as Campaign;
+      let campaign: CampaignBcCampaign;
+      let missions: RequestResponse<MissionsInfo, ErrorData<BlockchainApiErrorData>>;
+
+      await Promise.all([
+        apiFactory.airDropApi().fetchCampaign(id, lockscreen).then(async (res: RequestResponse<CampaignBc, ErrorData<BlockchainApiErrorData>>) => {
+          if (res.isSuccess() && res.data) {
+            campaign = res.data.campaign;
+          }
+        }),
+        apiFactory.airDropApi().fetchCampaignMissions(id, lockscreen).then(r => missions = r)
+      ]).then(() => {
           const missionsList = Array<Mission>();
           let initialMission = {} as Mission;
-          const missions = await apiFactory.airDropApi().fetchCampaignMissions(id, lockscreen);
-          missions.data?.missions.forEach((el) =>{
+          missions.data?.missions.forEach((el: MissionBc) =>{
             const completed = campaignData.completedMissions.find((mission)=>{
               return mission == el.id;
             });
@@ -352,7 +465,8 @@ export const useAirDropStore = defineStore({
           initialMission.weight = (Number(campaignData.amount[0].amount) - totalWeight).toString();
           initialMission.weightInPerc = (100 - totalWeightInPer);
           missionsList.unshift(initialMission);
-            this.campaigns.push(new Campaign(
+          const status = checkCampaignStatus(new Date(campaign.start_time), new Date(campaign.end_time));
+            camp = new Campaign(
               campaign.id,
               campaign.name,
               campaign.description,
@@ -365,10 +479,11 @@ export const useAirDropStore = defineStore({
               campaign.initial_claim_free_amount,
               missionsList,
               campaignData.amount[0].amount,
-              campaign.campaign_total_amount[0].amount
-            ));
-        }
-      });
+              campaign.campaign_total_amount[0].amount,
+              status,
+            );
+        });
+      return camp;
     },
     // async fetchCampaigns(address: string, lockscreen = true){
     //   //await this.getUsersCampaignData(address);
@@ -399,10 +514,11 @@ export const useAirDropStore = defineStore({
     //   });
     //   // this.campaigns = campaignList;
     // },
+
   },
 
   getters: {
-    getAirdropClaimRecord(): ClaimRecord {
+    getAirdropClaimRecord(): UserAirdropEntry {
       return this.claimRecord;
     },
     getAirDropTotal(): AirdropTotal {
@@ -413,7 +529,10 @@ export const useAirDropStore = defineStore({
     },
     getFairdropPoolUsage(): FairdropPollUsage {
       return this.fairdropPollUsage;
-    }
+    },
+    getSummary(): ISummary {
+      return this.summary;
+    },
   },
 });
 

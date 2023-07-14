@@ -85,6 +85,6 @@ export interface Configuration {
   airdropDefaultDenom: string;
   targetInflationAprMultiplier: number;
   faucetURL: string;
-  tokenReservationDenom: string;
   faucetAvailable: boolean;
+  tokenReservationDenom: string;
 }

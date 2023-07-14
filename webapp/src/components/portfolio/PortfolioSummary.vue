@@ -28,6 +28,7 @@
         {{$t("PORTFOLIO_VIEW.RECEIVE")}}
       </Button>
       <Button class="secondary portfolioSummary__button"
+              @click.prevent="() => sendDialogVisible = true"
               :disabled = '!userStore.getAccount.address'>
         {{$t("PORTFOLIO_VIEW.SEND")}}
       </Button>
@@ -46,41 +47,58 @@
     </div>
   </Dialog>
 
+  <Dialog v-model:visible="sendDialogVisible" modal :header='$t("PORTFOLIO_VIEW.SEND")' :style="{ width: '95vw', 'max-width': '600px'}">
+    <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;">
+      <h3>{{ $t("PORTFOLIO_VIEW.SEND") }}</h3>
+      <div class="field">
+        <Field
+          v-model="targetAddress"
+          name="targetAddress"
+          placeholder=" "
+          type="text"
+          class="form-control"
+          style="width: 100%;"
+        />
+        <span style="text-transform: capitalize">{{ $t('COMMON.INPUT.ADDRESS') }}</span>
+      </div>
+      <div class="field">
+        <Field
+          v-model="amount"
+          name="amount"
+          placeholder=" "
+          type="number"
+          class="form-control"
+          style="width: 100%;"
+          />
+        <span style="text-transform: capitalize">{{ $t('COMMON.INPUT.AMOUNT') }}</span>
+        <div class="validationPopup__btn">
+          <button type="button" @click.prevent="">Max</button>
+          <p>C4E</p>
+        </div>
+      </div>
+      <Button class="secondary">{{$t("PORTFOLIO_VIEW.SEND")}}</Button>
+    </div>
+  </Dialog>
+
 </template>
 
 <script setup lang="ts">
 import C4EIcon from "@/components/commons/C4EIcon.vue";
 import {useUserStore} from "@/store/user.store";
-import {usePublicSalesStore} from "@/store/publicSales.store";
-import {computed, onBeforeMount, onMounted, onUnmounted, ref, watch} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {BigDecimal} from "@/models/store/big.decimal";
 import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
-import {useBlockStore} from "@/store/block.store";
 import Dialog from "primevue/dialog";
 import QrcodeVue from "qrcode.vue";
 import {useToast} from "vue-toastification";
 import i18n from "@/plugins/i18n";
 import { Copy } from 'lucide-vue-next';
 import dataService from "@/services/data.service";
-// import {VestingPeriods} from "@/models/store/account";
+import {Field} from "vee-validate";
 // import FormattedNumber from "@/components/commons/FormattedNumber.vue"; - future USD ratio
 
 const userStore = useUserStore();
-const publicSalesStore = usePublicSalesStore();
-const blockStore = useBlockStore();
-
-// latest block watcher for updating the spendable balance
-/*
-const latestBlock = computed(() => {
-  return blockStore.getLatestBlock.time;
-});
-watch(latestBlock, () => {
-  if (userStore.getAccount.address)
-    userStore.updateSpendables();
-});
-
- */
 
 onMounted(() => {
     dataService.onPortfolioSelected();
@@ -99,8 +117,11 @@ const spendableBalance = computed(()=> {
   return userStore.getSpendableBalance || 0n;
 });
 
+/*
+Conversion to USD - change ratio return value to actual conversion ratio
+
 const ratio = computed(()=> {
-  return publicSalesStore.getConversionRatio;
+  return .....;
 });
 
 const amountToUSD = (amount: bigint) => {
@@ -110,6 +131,8 @@ const amountToUSD = (amount: bigint) => {
   else
     return converted * 0.085;
 };
+
+ */
 
 function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
   if( typeof amount === 'bigint'){
@@ -125,6 +148,11 @@ function copyTxt(){
 }
 
 const receiveDialogVisible = ref(false);
+const sendDialogVisible = ref(false);
+
+const targetAddress = ref('');
+const amount = ref(0);
+
 </script>
 
 <style scoped lang="scss">
@@ -192,6 +220,35 @@ const receiveDialogVisible = ref(false);
 .copy_button:hover {
   cursor: pointer;
   color: #8be955;
+}
+
+.validationPopup__btn {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  max-height: 100%;
+  align-items: baseline;
+  text-align: center;
+  top: 0;
+  bottom: 0;
+  right: 5%;
+
+  button {
+    background-color: #72BF44;
+    color: white;
+    border: 0;
+    width: 58px;
+    -webkit-appearance: none;
+    margin-right: 10px;
+    border-radius: 10px;
+    padding: 5px;
+
+    &:hover {
+      background-color: #72BF44;
+      color: #FFFFFF;
+    }
+  }
 }
 
 @media screen and (width<1024px) {

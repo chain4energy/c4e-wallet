@@ -112,12 +112,12 @@ export function expectBlockchainInfo(
   for (let i = 0; i < list.length; i++){
     expect(list[i].chainId).toBe(expectedData[i].chainId);
     expect(list[i].chainName).toBe(expectedData[i].chainName);
-    for(let a = 0; a < list[i].availableTokens.length; a++){
-      expect(list[i].availableTokens[a].c4eAddress).toBe(expectedData[i].availableTokens[a].c4eAddress);
-      expect(list[i].availableTokens[a].coinIdentifier).toBe(expectedData[i].availableTokens[a].coinIdentifier);
-      expect(list[i].availableTokens[a].exchangeRate).toBe(expectedData[i].availableTokens[a].exchangeRate);
-      expect(list[i].availableTokens[a].id).toBe(expectedData[i].availableTokens[a].id);
-      expect(list[i].availableTokens[a].name).toBe(expectedData[i].availableTokens[a].name);
+    for(let a = 0; a < list[i].tokenExchanges.length; a++){
+      expect(list[i].tokenExchanges[a].recipientAddress).toBe(expectedData[i].availableTokens[a].c4eAddress);
+      expect(list[i].tokenExchanges[a].coinIdentifier).toBe(expectedData[i].availableTokens[a].coinIdentifier);
+      expect(list[i].tokenExchanges[a].exchangeRate).toBe(expectedData[i].availableTokens[a].exchangeRate);
+      expect(list[i].tokenExchanges[a].id).toBe(expectedData[i].availableTokens[a].id);
+      expect(list[i].tokenExchanges[a].name).toBe(expectedData[i].availableTokens[a].name);
     }
   }
 }

@@ -2,7 +2,6 @@ import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import TxBroadcastBaseApi, { TxData, TxBroadcastError } from "@/api/tx.broadcast.base.api";
 import { ErrorData } from "@/api/base.api";
 import { LogLevel } from '@/services/logger/log-level';
-
 import { RequestResponse } from "@/models/request-response";
 import { Account as StoreAccount } from "@/models/store/account";
 import { Coin } from "@/models/store/common";
@@ -13,8 +12,6 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { ConnectionInfo } from "@/api/wallet.connecton.api";
 import { mapAccount, createNonexistentAccount } from "@/models/mapper/account.mapper";
 import { formatString } from "@/utils/string-formatter";
-import queries from "./queries";
-
 import {
   MsgBeginRedelegate,
   MsgDelegate,
@@ -40,10 +37,6 @@ import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
 import {MsgClaim, MsgInitialClaim} from "../api/cfeclaim/tx"
 import {DataToSign} from "@/models/user/walletAuth";
 import {MsgSignData} from "@/types/tx";
-import {TransactionRequest} from "@ethersproject/abstract-provider";
-import {ethers} from "ethers";
-
-
 
 export class AccountApi extends TxBroadcastBaseApi {
 
@@ -302,7 +295,7 @@ export class AccountApi extends TxBroadcastBaseApi {
       };
       return [{ typeUrl: typeUrl, value: val }];
     };
-    const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
+    const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
   public async claimAirDropMissions(connection: ConnectionInfo, campaignId: string, missionId: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
@@ -321,26 +314,10 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
-  public async sign(connection: ConnectionInfo, dataToSign: DataToSign):Promise<RequestResponse<string, TxBroadcastError>> {
-
-    const signDataMsgTypeUrl = '/' + 'sign' + '.MsgSignData';
-    const utf8Encode = new TextEncoder();
-    const messageToSign = utf8Encode.encode(dataToSign.randomString);
-
-    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
-      const typeUrl = signDataMsgTypeUrl;
-      const val = {
-        signer: connection.account,
-        data: messageToSign
-      };
-
-      return [{ typeUrl: typeUrl, value: MsgSignData.fromPartial(val) }];
-
-    };
-    const fee = this.createFee(0, 'uc4e');
+  public async sign(connection: ConnectionInfo, dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 
 
-    return this.signDirect(connection, getMessages, dataToSign, fee, '', true, null);
+    return this.signDirect(connection, dataToSign, true, null);
   }
   public async signMetamask(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 

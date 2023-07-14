@@ -18,15 +18,17 @@ import i18n from "@/plugins/i18n";
 import {useProposalsStore} from "./proposals.store";
 import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
-import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
-import {Signer} from "ethers";
-import {FaucetErrorEnum} from "@/models/faucet";
 import {Coin} from "@/models/store/common";
 import {calculateLockedVesting} from "@/utils/vesting-utils";
+import {FaucetErrorEnum} from "@/models/faucet";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
 
+export interface MetamaskConnectionInfo {
+  address: string;
+  networkId: number;
+}
 export interface UserState {
   connectionInfo: ConnectionInfo
   account: Account
@@ -35,10 +37,12 @@ export interface UserState {
   spendableBalance: Coin[],
   rewards: Rewards
   delegations: Delegations
-  undelegations: UnbondingDelegations
+  undelegations: UnbondingDelegations,
+  metamaskConnectionInfo: MetamaskConnectionInfo
 }
 
 const connectionInfoName = 'connectionInfo';
+const metamaskConnectionInfoName = 'metamaskConnectionInfo';
 
 
 export const useUserStore = defineStore({
@@ -53,7 +57,8 @@ export const useUserStore = defineStore({
       spendableBalance: [],
       rewards: new Rewards(),
       delegations: new Delegations(),
-      undelegations: new UnbondingDelegations()
+      undelegations: new UnbondingDelegations(),
+      [metamaskConnectionInfoName]: {address: '', networkId: -1}
     };
   },
   actions: {
@@ -67,6 +72,12 @@ export const useUserStore = defineStore({
         await this.connectCosmostation(onSuccess);
       } else if(this.connectionInfo.connectionType === ConnectionType.Leap){
         await this.connectLeap(onSuccess);
+      }
+    },
+    async reconnectMetamask(){
+      logger.logToConsole(LogLevel.DEBUG, 'reconnect: ', JSON.stringify(this.metamaskConnectionInfo));
+      if(this.metamaskConnectionInfo.address != '') {
+        this.connectMetamask();
       }
     },
     async connectKeplr(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
@@ -87,10 +98,15 @@ export const useUserStore = defineStore({
         onSuccess
       );
     },
-    async connectMetamask(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
+    async connectMetamask(onSuccess?: () => void) {
         return apiFactory.walletApi().connectMetamask().then(response => {
           if(response.isSuccess() && response.data != undefined){
-            return response.data;
+            this.metamaskConnectionInfo = response.data;
+            if(onSuccess) {
+              onSuccess();
+            }
+
+            return response.data.address;
           }
         });
     },
@@ -370,7 +386,7 @@ export const useUserStore = defineStore({
   persist: {
     enabled: true,
     strategies: [
-      { storage: sessionStorage, paths: [connectionInfoName] },
+      { storage: sessionStorage, paths: [connectionInfoName, metamaskConnectionInfoName] },
     ]
   }
 });

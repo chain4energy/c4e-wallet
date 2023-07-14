@@ -73,7 +73,7 @@ const leapConnect = () => {
   justify-content: center;
   width: 100%;
   height: 100vh;
-  z-index: 10;
+  z-index: 1100;
 
   p{
     margin-bottom: 0;

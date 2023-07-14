@@ -87,6 +87,24 @@ const toastOptions: PluginOptions = {
 
 };
 
+(BigInt.prototype as any).toJSON = function () {
+  return {value: this.toString(), type: "bigint"} ;
+};
+function reviver2(key:any, value:any) {
+  if (value && value.type == 'bigint') {
+    return BigInt(value.value);
+  }
+  return value;
+}
+const originalJSONParse = JSON.parse;
+JSON.parse = function parse(text: string, reviver?: (this: any, key: string, value: any) => any): any {
+  if(reviver) {
+    return originalJSONParse(text, reviver);
+  }
+
+  return originalJSONParse(text, reviver2);
+};
+
 
 const pinia = createPinia();
 pinia.use(piniaPersist);

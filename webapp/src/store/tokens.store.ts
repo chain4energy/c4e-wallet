@@ -3,7 +3,6 @@ import apiFactory from "@/api/factory.api";
 import {StakingPool} from "@/models/store/tokens";
 import {Coin, DecCoin} from "@/models/store/common";
 import {useConfigurationStore} from "./configuration.store";
-import {useToast} from "vue-toastification";
 import {StoreLogger} from "@/services/logged.service";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {LogLevel} from "@/services/logger/log-level";
@@ -11,7 +10,6 @@ import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import {ToastsService} from "@/services/toasts/toasts.service";
 import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";
 
-const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
 
 interface TokensState {

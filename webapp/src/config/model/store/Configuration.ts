@@ -254,8 +254,8 @@ export class Configuration implements JsonConfiguration {
       this.proposalVotingRefreshTimeout = 30000;
       this.targetInflationAprMultiplier = 1;
       this.faucetURL = '';
-      this.tokenReservationDenom = '';
       this.faucetAvailable = false;
+      this.tokenReservationDenom = '';
     }
   }
 

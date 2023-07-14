@@ -37,13 +37,13 @@ export interface CampaignRecord {
 //   claimRecords: ClaimRecord[];
 // }
 //
-// export interface ClaimRecord {
-//   campaignId: number;
-//   address: string;
-//   amount: Coin[];
-//   completedMissions: number[];
-//   claimedMissions: number[];
-// }
+export interface CampaignRecord {
+  campaignId: number;
+  address: string;
+  amount: Coin[];
+  completedMissions: number[];
+  claimedMissions: number[];
+}
 
 
 

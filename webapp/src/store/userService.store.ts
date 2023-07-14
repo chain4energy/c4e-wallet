@@ -9,14 +9,13 @@ import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
 // import {EmailPairingRequest, EmailPairingRes} from "@/models/user/emailPairing";
-import axios from "axios";
 import {EmailPairingRequest, EmailPairingRes, SignParingAddressResult} from "@/models/user/emailPairing";
 import {usePublicSalesStore} from "@/store/publicSales.store";
-import {KycProgressStatus, KycStep, KycStepInfo, KycStepName, KycTierEnum} from "@/models/user/kyc";
+import {KycProgressStatus, KycStepInfo, KycStepName, KycTierEnum} from "@/models/user/kyc";
 import {TxBroadcastError} from "@/api/tx.broadcast.base.api";
 import {ethers} from "ethers";
 import {useContextStore} from "@/store/context.store";
-import {useRouter} from "vue-router";
+
 
 interface UserServiceState {
   loginType: LoginTypeEnum,
@@ -28,7 +27,8 @@ interface UserServiceState {
   ethereumAddress?: string,
   claimAddress?: string,
   kycServiceState: Map<KycStepName, KycProgressStatus>,
-  kycLevel: number
+  kycLevel: number,
+  loggedIn: boolean
 }
 
 export enum LoginTypeEnum {
@@ -52,7 +52,8 @@ export const useUserServiceStore = defineStore({
       ethereumAddress: undefined,
       claimAddress: undefined,
       kycServiceState: new Map<KycStepName, KycProgressStatus>(),
-      kycLevel: 0
+      kycLevel: 0,
+      loggedIn: false
     };
   },
   actions: {
@@ -92,7 +93,7 @@ export const useUserServiceStore = defineStore({
     async authWalletInit(initWalletAuthRequest: InitWalletAuthRequest,onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
        const initWalletAuthResponse = await apiFactory.publicSaleServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
        if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
-         await apiFactory.accountApi().sign(useUserStore().connectionInfo, initWalletAuthResponse.data.dataToSign).then(signedDataResponse => {
+         await apiFactory.accountApi().sign(useUserStore().connectionInfo, initWalletAuthResponse.data.dataToSign.randomString).then(signedDataResponse => {
            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
            // @ts-ignore
            this.authWalletKeplr({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data}, onSuccess, onFail);
@@ -178,6 +179,7 @@ export const useUserServiceStore = defineStore({
       if (responseDate.isSuccess()) {
         // save tokens to storage
         if(responseDate.data){
+          this.loggedIn = true;
           setAuthTokens({
             accessToken: responseDate.data.access_token.token,
             refreshToken: responseDate.data.refresh_token.token
@@ -215,7 +217,7 @@ export const useUserServiceStore = defineStore({
       });
     },
     async signPairingEmailKeplr(responseData: EmailPairingRes){
-     return await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
+     return await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign.randomString).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
        if(signedDataResponse.isSuccess() && signedDataResponse.data){
          await this.approveSignedDataParingEmailKeplr(signedDataResponse.data, responseData.processID);
          return signedDataResponse;
@@ -232,7 +234,7 @@ export const useUserServiceStore = defineStore({
     },
 
     async verifyParingEmailKeplr(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().verifyPairingEmailKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, true).then(response => {
+      await apiFactory.publicSaleServiceApi().verifyPairingEmailKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, lockscreen).then(response => {
         if(response.isSuccess()){
           this.loginType = LoginTypeEnum.EMAIL;
           this.paired = true;
@@ -299,9 +301,9 @@ export const useUserServiceStore = defineStore({
       let metamaskResp = '';
       let keplrResp = '';
       try{
-        await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
+        await apiFactory.accountApi().sign(useUserStore().connectionInfo, responseData.dataToSign.randomString).then(async (signedDataResponse: RequestResponse<string, TxBroadcastError>) => {
           if(signedDataResponse.isSuccess() && signedDataResponse.data){
-            keplrResp = signedDataResponse.data
+            keplrResp = signedDataResponse.data;
             await apiFactory.accountApi().signMetamaskPairing(signedDataResponse.data).then(async (signedDataResponseMetamask: RequestResponse<string, TxBroadcastError>)=>{
               if(signedDataResponseMetamask.isSuccess() && signedDataResponseMetamask.data) {
                 metamaskResp = signedDataResponseMetamask.data;
@@ -332,9 +334,9 @@ export const useUserServiceStore = defineStore({
     },
 
     async approveTerms(onSuccess: (() => void), onFail: (() => void), lockscreen = true){
-      await apiFactory.publicSaleServiceApi().acceptTerms(true).then(res =>{
+      await apiFactory.publicSaleServiceApi().acceptTerms(lockscreen).then(res =>{
         if(res.isSuccess()){
-          this.getAccount(onSuccess, onFail, true)
+          this.getAccount(onSuccess, onFail, true);
         }
       });
 
@@ -344,7 +346,7 @@ export const useUserServiceStore = defineStore({
       useContextStore().$reset();
       usePublicSalesStore().logOutAccount();
       apiFactory.publicSaleServiceApi().logout(true).then(() => {
-        console.log()});
+        console.log();});
       this.loginType =  LoginTypeEnum.NONE;
       this.kycSessionId = '';
       this.paired= false;
@@ -355,12 +357,10 @@ export const useUserServiceStore = defineStore({
       this.claimAddress= undefined;
       this.kycServiceState= new Map<KycStepName, KycProgressStatus>();
       this.kycLevel= 0;
-      window.location.reload();
+      this.loggedIn = false;
+      // window.location.reload();
 
-    },
-    isLoggedIn():boolean {
-      return isLoggedIn();
-    },
+    }
   },
   getters: {
 
@@ -442,7 +442,10 @@ export const useUserServiceStore = defineStore({
     },
     isTermsAccepted():boolean{
       return this.termsAccepted;
-    }
+    },
+    isLoggedIn():boolean {
+      return this.loggedIn;
+    },
   },
   persist: {
     enabled: true

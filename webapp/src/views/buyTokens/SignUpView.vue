@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-bottom: 60px;">
+  <div style="padding-bottom: 60px; margin-top:100px;">
     <div style="min-height: 400px;" class="login_container box-shadow">
       <div class="login_container__header">
         <h1 style="font-weight: 900;">{{$t("SIGN_IN_VIEW.SIGN_UP")}}</h1>
@@ -64,16 +64,19 @@ import {ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
+import {pattern} from "@/utils/passwordPattern";
 
 
 const schema = object().shape({
   email:  Yup.string()
     .required( "This field is required"),
   password:  Yup.string()
-    .required( "This field is required"),
+    .required( "This field is required")
+    .matches(pattern,'FORMS.VALIDATION_ERRORS.PASSWORD_REGEX' ),
   passwordRetype: Yup.string().required("This field is required").oneOf([Yup.ref('password'), null], "Passwords don't match"),
   termsAccepted: Yup.bool().oneOf([true], "This field is required")
 });
+
 
 const email = ref<string>();
 const password = ref<string>();

@@ -378,7 +378,8 @@
     "SIGNUP": "Sign up",
     "ACTIVATE": "Account activation",
     "PROVIDEVERIFICATIONCODE": "Verification",
-    "PORTFOLIO": "Portfolio"
+    "PORTFOLIO": "Portfolio",
+    "FAUCET": "Faucet"
   },
   "TOAST": {
     "SUCCESS": {
@@ -406,7 +407,7 @@
     }
   },
   "AIRDROP": {
-    "CONNECT": "Connect with Keplr",
+    "CONNECT": "Connect to wallet",
     "OR": "or",
     "CONNECT_CHAINS": "Connect with COSM/C4E account",
     "C4E_HELP": "Provide C4E or COSMOS address",
@@ -416,10 +417,33 @@
     "CLAIM_AIRDROP": "Claim Airdrop",
     "FAIRDROP_ALLOCATION": "Total Fairdrop Allocation",
     "FOOTER_HEADER": "What's Next? Follow Us for Updates.",
-    "FOOTER_TEXT": "Connect with us to stay up-to-date on airdrop distribution and what's next for C4E."
+    "FOOTER_TEXT": "Connect with us to stay up-to-date on airdrop distribution and what's next for C4E.",
+    "DETAILS": "Details",
+    "TOTAL_HEADER": "Summary",
+    "TOTAL": "Total",
+    "TOTAL_CLAIMED": "Total claimed",
+    "ACTIVE": "Active campaigns",
+    "TO_CLAIM": "To claim",
+    "CLAIMED": "Claimed",
+    "MISSION_COMPLETED": "Missions completed",
+    "TOTAL_DISTRIBUTION": "Total distribution",
+    "CAMPAIGN_PASSED": "The campaign has finished",
+    "CAMPAIGN_START": "The campaign will start",
+    "CAMPAIGN_END": "Time to finish the campaign",
+    "CLAIM": "Claim",
+    "VOTE": "Vote",
+    "DELEGATE": "Delegate",
+    "INITIAL": "Initial mission - basic mission that must be claimed first",
+    "SHOW_MISSIONS": "Show missions",
+    "HIDE_MISSIONS": "Hide missions",
+    "MISSION": "Mission",
+    "CONNECT_INFO": "Connect to wallet to claim rewards!",
+    "SUCCESS": "You successfully claimed mission!",
+    "SOON": "Soon"
   },
   "CLAIM_AIRDROP": {
-    "PROGRESS":"Campaign countdown"
+    "PROGRESS":"Campaign countdown",
+    "FINISHED" : "Campaign finished"
   },
   "COPY": {
     "ADDRESS": "Address has been copied to clipboard",
@@ -530,6 +554,11 @@
     "RETYPE": "Retype your password",
     "REGISTER": "Register",
     "TERMS": "Accept terms and conditions"
+  },
+  "FORMS": {
+    "VALIDATION_ERRORS": {
+      "PASSWORD_REGEX": "The password must consist of min. 8 characters (Must contain one letter, one number, one special character)"
+    }
   },
   "PORTFOLIO_VIEW": {
     "BALANCE": "Balance",

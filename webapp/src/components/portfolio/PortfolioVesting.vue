@@ -42,16 +42,10 @@
 </template>
 
 <script setup lang="ts">
-
-/*
-
- */
-
 import PortfolioVestingLine from "@/components/portfolio/PortfolioVestingLine.vue";
 import {useUserStore} from "@/store/user.store";
 import {VestingPeriods} from "@/models/store/account";
 import {computed} from "vue";
-import {Coin} from "@/models/store/common";
 
 const userStore = useUserStore();
 
@@ -76,19 +70,6 @@ const filterVestingArray = (array: VestingPeriods[] | undefined) => {
     return new Date(element.endTime*1000).getTime() - Date.now() > 0;
   }).sort((a,b) => a.endTime - b.endTime);
 };
-
-
-const fakeVestings: VestingPeriods[] = [
-  {
-    startTime: 1687770000,
-    endTime: 1687857660,
-    amount: [
-      new Coin(30000n, 'uc4e')
-    ]
-  }
-];
-
-
 
 </script>
 

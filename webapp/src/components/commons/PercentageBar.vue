@@ -5,8 +5,11 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref,  nextTick } from "vue";
+import {onMounted, ref } from "vue";
 import {CampainStatus} from "@/models/airdrop/airdrop";
+import {useI18n} from "vue-i18n";
+
+const i18n = useI18n();
 const props = defineProps<{
   amount: number | null,
   status: CampainStatus;
@@ -33,17 +36,17 @@ function onResize() {
 }
 function changeStatus(){
   let text;
-  let fontStyle = '#ffffff';
+  let fontStyle = '#002C50';
   let backgroundColor;
   let progress;
   switch (props.status){
-    case CampainStatus.Future: text = `${props.timeToPass}`
+    case CampainStatus.Future: text = `${props.timeToPass}`;
       backgroundColor = '#9A9B9C';
       ctx.value.rect(0, 0, canva.value.width, canva.value.height);
       progress = false;
       break;
     case CampainStatus.Past:
-      text = 'The campaign has past';
+      text = i18n.t('AIRDROP.CAMPAIGN_PASSED');
       ctx.value.rect(0, 0, canva.value.width, canva.value.height);
       backgroundColor = '#9A9B9C';
       progress = false;
@@ -57,7 +60,7 @@ function changeStatus(){
     default: text = '';
       break;
   }
-  const fontsize = 12;
+  const fontsize = 14;
   ctx.value.font = `${fontsize}px sans-serif`;
   const textWidth = ctx.value.measureText(text ).width;
   const widthOfBar = ((canva.value.width /100) * props.amount) - textWidth/2;
@@ -112,14 +115,14 @@ onMounted(() => {
 
 .percentageBar {
   width: 100%;
-  height: 14px;
+  height: 25px;
   margin: 0 0 15px 0;
 
   canvas{
     border-radius: 3px;
     background-color: #ffffff;
     width: 100%;
-    height: 14px;
+    height: 25px;
   }
   &__status{
     z-index: 2;

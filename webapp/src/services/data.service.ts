@@ -14,7 +14,12 @@ import {useToast} from "vue-toastification";
 import WifiIcon from '@/components/features/WifiOnIcon.vue';
 import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
 import {useI18n} from "vue-i18n";
+import {useUserServiceStore} from "@/store/userService.store";
+import * as net from "net";
+import {usePublicSalesStore} from "@/store/publicSales.store";
 const keplrKeyStoreChange = 'keplr_keystorechange';
+const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
+const leapKeyStoreChange = 'leap_keystorechange';
 
 class DataService extends LoggedService {
 
@@ -40,6 +45,7 @@ class DataService extends LoggedService {
 
   private static instance: DataService;
   private isOnline = navigator.onLine;
+  private onClaimAirdropView = false;
 
 
   public static getInstance(): DataService {
@@ -87,6 +93,14 @@ class DataService extends LoggedService {
     window.addEventListener('blur', () => {
       this.clearIntervals();
     }, false);
+
+    window.ethereum.on('networkChanged', function(networkId: number){
+      useUserStore().metamaskConnectionInfo.networkId = networkId;
+    });
+
+    window.ethereum.on('accountsChanged', function (accounts: string[]) {
+      useUserStore().metamaskConnectionInfo.address = accounts[0];
+    });
   }
   private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');
@@ -135,6 +149,7 @@ class DataService extends LoggedService {
   public onWindowLoad() {
     this.logToConsole(LogLevel.DEBUG, 'onWindowLoad');
     useUserStore().reconnect(this.onLoginSuccess);
+    useUserStore().reconnectMetamask();
   }
 
   public onKeplrLogIn(onSuccess?: () => void) {
@@ -163,10 +178,17 @@ class DataService extends LoggedService {
     useUserStore().connectAsAddress(address, (connetionInfo: ConnectionInfo) => {this.onLoginSuccess(connetionInfo, onSuccess);});
   }
 
+  public async onMetamaskConnect(onSuccess?: () => void) {
+    this.logToConsole(LogLevel.DEBUG, 'onMetamaskConnect');
+    return useUserStore().connectMetamask(() => this.onMetamaskConnectSuccess(onSuccess));
+  }
+
   public onLogOut() {
     this.logToConsole(LogLevel.DEBUG, 'onLogOut');
     window.clearInterval(this.accountIntervalId);
     this.disableKeplrAccountChangeListener();
+    this.disableCosmostationAccountChangeListener();
+    this.disableLeapAccountChangeListener();
     // useValidatorsStore().clear();
     useProposalsStore().clearUserVote();
     useUserStore().logOut();
@@ -187,7 +209,12 @@ class DataService extends LoggedService {
       useTokensStore().clear();
       useValidatorsStore().clear();
       this.clearIntervals();
-      this.onInit();
+      this.onInit().then( () => {
+          if (this.onClaimAirdropView && useUserStore().getAccount.address) {
+            useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+          }
+        }
+      );
       if (refreshProposals) {
         useProposalsStore().fetchProposals(true);
       }
@@ -199,8 +226,7 @@ class DataService extends LoggedService {
   public onPortfolioSelected() {
     this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected refreshs');
 
-    const now = new Date().getTime();
-    this.lastSpendablesTimeout = now;
+    this.lastSpendablesTimeout = new Date().getTime();
     this.spendablesIntervalId = window.setInterval(refreshSpendables, this.spendableTimeout);
   }
 
@@ -215,6 +241,18 @@ class DataService extends LoggedService {
     useProposalsStore().fetchProposalsDetailsTally(proposeId).then(() => {
       useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
     });
+
+  }
+
+  public onInfoView() {
+
+    usePublicSalesStore().fetchRoundInfoList();
+
+    if(useUserServiceStore().isLoggedIn) {
+      useUserServiceStore().getAccount(()=>{console.log(1);}, ()=>{console.log(2);});
+      useUserServiceStore().getKycStatus();
+      usePublicSalesStore().fetchTokenReservations();
+    }
 
   }
 
@@ -243,8 +281,23 @@ class DataService extends LoggedService {
 
   public onKeplrKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onKeplrKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
     useUserStore().connectKeplr();
+  }
+
+  public onCosmostationKeyStoreChange() {
+    this.logToConsole(LogLevel.DEBUG, 'onCosmostationKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
+    useUserStore().logOut();
+    useUserStore().connectCosmostation();
+  }
+
+  public onLeapKeyStoreChange() {
+    this.logToConsole(LogLevel.DEBUG, 'onLeapKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
+    useUserStore().logOut();
+    useUserStore().connectLeap();
   }
 
   private onLoginSuccess(connetionInfo: ConnectionInfo, onSuccess?: () => void) {
@@ -253,8 +306,13 @@ class DataService extends LoggedService {
     if (connetionInfo.isKeplr()) {
       instancce.enableKeplrAccountChangeListener();
     }
-    const now = new Date().getTime();
-    instancce.lastAccountTimeout = now;
+    if (connetionInfo.isCosmostation()) {
+      instancce.enableCosmostationAccountChangeListener();
+    }
+    if (connetionInfo.isLeap()) {
+      instancce.enableLeapAccountChangeListener();
+    }
+    instancce.lastAccountTimeout = new Date().getTime();
     instancce.accountIntervalId = window.setInterval(refreshAccountData, instancce.accountTimeout);
     const propId = useProposalsStore().proposal;
     const userAddress = useUserStore().getAccount.address;
@@ -263,6 +321,16 @@ class DataService extends LoggedService {
     }
     // refresh spendables once logged in
     refreshSpendables();
+    if (this.onClaimAirdropView && userAddress) {
+        useAirDropStore().fetchUsersCampaignData(userAddress, true);
+    }
+    if (onSuccess) {
+      onSuccess();
+    }
+  }
+
+  private onMetamaskConnectSuccess(onSuccess?: () => void) {
+
     if (onSuccess) {
       onSuccess();
     }
@@ -291,7 +359,11 @@ class DataService extends LoggedService {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
       });
+      if(useUserStore().getAccount.address && this.onClaimAirdropView){
+        useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+      }
     }
+
   }
 
   public refreshSpendables() {
@@ -346,14 +418,47 @@ class DataService extends LoggedService {
     window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
   }
 
+  private enableCosmostationAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'enableCosmostationAccountChangeListener');
+    window.addEventListener(cosmostationKeyStoreChange, keystoreCosmostationChangeListener);
+  }
+
+  private enableLeapAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'enableLeapAccountChangeListener');
+    window.addEventListener(leapKeyStoreChange, keystoreLeapChangeListener);
+  }
+
   private disableKeplrAccountChangeListener() {
     this.logToConsole(LogLevel.DEBUG, 'disableKeplrAccountChangeListener');
     window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
   }
 
+  private disableCosmostationAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'disableCosmostationAccountChangeListener');
+    window.removeEventListener(cosmostationKeyStoreChange, keystoreCosmostationChangeListener);
+  }
+
+  private disableLeapAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'disableLeapAccountChangeListener');
+    window.removeEventListener(leapKeyStoreChange, keystoreLeapChangeListener);
+  }
+
   public onClaimAirdrop(address: string) {
     this.logToConsole(LogLevel.DEBUG, 'onClaimAirdrop');
     // useAirDropStore().fetchUsersCampaignData(address, true);
+  }
+
+  public enterClaimAirdrop() {
+    this.logToConsole(LogLevel.DEBUG, 'enterClaimAirdrop');
+    this.onClaimAirdropView = true;
+    if(useUserStore().getAccount.address){
+      useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+    }
+  }
+
+  public leaveClaimAirdrop() {
+    this.logToConsole(LogLevel.DEBUG, 'leaveClaimAirdrop');
+    this.onClaimAirdropView = false;
   }
 
   public async onProposalUpdateVotes(proposalId: number) {
@@ -364,13 +469,20 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onClaimRewards');
     useUserStore().claimRewards();
   }
-
 }
 
 export default DataService.getInstance();
 
 const keystoreChangeListener = () => {
   DataService.getInstance().onKeplrKeyStoreChange();
+};
+
+const keystoreCosmostationChangeListener = () => {
+  DataService.getInstance().onCosmostationKeyStoreChange();
+};
+
+const keystoreLeapChangeListener = () => {
+  DataService.getInstance().onLeapKeyStoreChange();
 };
 
 function refreshAccountData() {

@@ -10,11 +10,11 @@ export class SidebarConfig{
     this.config.set(PagesEnum.DASHBOARD, this.createDashboard());
     this.config.set(PagesEnum.STAKING, this.createStaking());
     this.config.set(PagesEnum.GOVERNANCE, this.createGovernance());
-    this.config.set(PagesEnum.FAUCET, this.createFaucet());
     this.config.set(PagesEnum.AIRDROP, this.createAirDrop());
+    this.config.set(PagesEnum.PORTFOLIO, this.createPortfolio());
     this.config.set(PagesEnum.BUYTOKENS, this.createBuyTokens());
     this.config.set(PagesEnum.PROFILE, this.createProfile());
-    this.config.set(PagesEnum.PORTFOLIO, this.createPortfolio());
+    this.config.set(PagesEnum.FAUCET, this.createFaucet());
   }
 
   getConfigForPage(page: PagesEnum): SidebarElement | undefined{
@@ -67,7 +67,7 @@ export class SidebarConfig{
 
   private createBuyTokens(): SidebarElement{
     const retVal = new SidebarElement();
-    retVal.id = 5;
+    retVal.id = 4;
     retVal.href = '/buyTokens';
     retVal.title = 'BuyTokens';
     retVal.icon = new SidebarIcon('ShoppingCart');
@@ -76,7 +76,7 @@ export class SidebarConfig{
 
   private createProfile(): SidebarElement{
     const retVal = new SidebarElement();
-    retVal.id = 6;
+    retVal.id = 5;
     retVal.href = '/profile';
     retVal.title = 'Profile';
     retVal.icon = new SidebarIcon('User');

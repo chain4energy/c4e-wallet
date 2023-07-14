@@ -1,7 +1,6 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {Proposal, ProposalDetailsTally, ProposalTallyResult, TallyParams, VoteOption} from "@/models/store/proposal";
-import { useToast} from "vue-toastification";
 import { Coin } from "@/models/store/common";
 import { useConfigurationStore } from "./configuration.store";
 import { StoreLogger } from "@/services/logged.service";
@@ -11,7 +10,7 @@ import { useUserStore } from "./user.store";
 import {ToastsService} from "@/services/toasts/toasts.service";
 import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";
 
-const toast = useToast();
+
 const logger = new StoreLogger(ServiceTypeEnum.PROPOSAL_STORE);
 
 interface ProposalsState {
@@ -238,7 +237,7 @@ export const useProposalsStore = defineStore({
           if(this.proposalDetailsTallyMap == undefined) {
             this.proposalDetailsTallyMap = response.data;
           } else {
-             this.proposalDetailsTallyMap = new Map([...this.proposalDetailsTallyMap, ...response.data])
+             this.proposalDetailsTallyMap = new Map([...this.proposalDetailsTallyMap, ...response.data]);
           }
         } else {
           const message = 'Error fetching proposals details tally list';

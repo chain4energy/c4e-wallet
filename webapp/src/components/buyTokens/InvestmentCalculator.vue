@@ -5,37 +5,74 @@
       <span style="float:right;  font-weight: 300;font-size: 19px;">{{$t('BUY_TOKENS_VIEW.REQUIREMENTS')}} <TooltipComponent :tooltipText="$t('BUY_TOKENS_VIEW.REQUIREMENTS_TIP')" /></span>
     </div>
     <div class="calculatorC4E__body">
-      <div style="width:100%; margin-right: 70px">
-        <div style="display: flex; width:100%; box-sizing: border-box">
-          <div style="width:50%; margin-right: 40px" class="calculatorC4E__inputContainer">
+      <div style=" flex: 1 1;">
+        <div style="display: flex; flex-wrap: wrap; box-sizing: border-box">
+          <div style=" flex: 1 1; margin: 0 20px;" class="calculatorC4E__inputContainer">
             <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_BUY')}}</p>
             <div>
-              <div style="display: flex">
-                <input @paste="onFirstInputChange" @keyup="onFirstInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" :disabled="firstInputBlocked" v-model="firstValue.amount">
-                <Dropdown v-model="firstValue.currency" :options="[Currency.C4E]"  placeholder="Select network" style="max-width:80px;" class="dropdown" />
+              <div style="display: flex; min-width:350px;">
+                <input @paste="onFirstInputChange" @keyup="onFirstInputChange"  style="width: 100%;" class="calculatorC4E__input" type="text" :disabled="firstInputBlocked" v-model="firstValue.amount.amount">
+                <Dropdown v-model="firstValue.currency" :options="[Currency.C4E]"  placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
+                  <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                      <div class="flag flex align-items-center">
+                        <C4EIcon size="30" icon="c4e-circle" />
+                      </div>
+                      <div>{{ slotProps.value}}</div>
+                    </div>
+                  </template>
+                  <template #option="slotProps">
+                    <div class="flex align-items-center">
+                      <div class="flag flex align-items-center">
+                        <C4EIcon size="30" icon="c4e-circle" />
+                      </div>
+                      <div>{{ slotProps.option }}</div>
+                    </div>
+                  </template>
+                </Dropdown>
               </div>
             </div>
           </div>
-
-          <div style="width:50%" class="calculatorC4E__inputContainer">
+          <div style="flex: 1 1; margin: 0 20px;" class="calculatorC4E__inputContainer">
             <div>
               <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_INVEST')}}</p>
-              <div style="display: flex">
-                <input @paste="onSecondInputChange"  @keyup="onSecondInputChange" style="width: 100%;" class="calculatorC4E__input" type="text" v-model="secondValue.amount">
-                <Dropdown v-model="secondValue.currency" :options="currencyList" placeholder="Select network" style="max-width:80px;" class="dropdown" />
+              <div style="display: flex; min-width:350px;">
+                <input @paste="onSecondInputChange"  @keyup="onSecondInputChange"  style="width: 100%;" class="calculatorC4E__input" type="text" v-model="secondValue.amount.amount">
+                <Dropdown v-model="secondValue.currency" :options="currencyList" placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
+                  <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                      <div class="flag">
+                        <CountryFlag v-if='slotProps.value !== Currency.STABLE'
+                                     :country="flagSelector[slotProps.value]"/>
+                        <img src="../../assets/stablecoin.png" alt="stablecoin symbol" class="h-full" v-else/>
+                      </div>
+                      <div>{{ slotProps.value}}</div>
+                    </div>
+                  </template>
+                  <template #option="slotProps">
+                    <div class="flex align-items-center">
+                      <div class="flag">
+                        <CountryFlag v-if='slotProps.option !== Currency.STABLE'
+                                       :country="flagSelector[slotProps.option]"/>
+                        <img src="../../assets/stablecoin.png" alt="stablecoin symbol" class="h-full" v-else/>
+                      </div>
+                      <div>{{ slotProps.option }}</div>
+                    </div>
+                  </template>
+                </Dropdown>
               </div>
             </div>
           </div>
         </div>
 
         <div style="margin-top:30px">
-          1 {{firstValue.currency}} = {{exchangeRate.toFixed(5)}} {{secondValue.currency}}
+          1 {{firstValue.currency}} = {{exchangeRate?.toString()}} {{secondValue.currency}}
         </div>
       </div>
 
       <div v-tooltip="{ value: 'You cannot invest less then $25 and more than $10000', disabled: minimumRequired()}" class="calculatorC4E__btnSection">
 
-        <Button class="p-button p-component secondary" :disabled="!minimumRequired()" style="width: 141px;" @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
+        <Button class="p-button p-component secondary" :disabled="!minimumRequired()" style="width: 141px; " @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
       </div>
 
     </div>
@@ -53,8 +90,11 @@ import {usePublicSalesStore} from "@/store/publicSales.store";
 import Dropdown from "primevue/dropdown";
 import {Currency} from "@/models/currency";
 import {useTransactionContextStore} from "@/store/transactionContext.store";
-import {useToast} from "vue-toastification";
 import TooltipComponent from "@/components/TooltipComponent.vue";
+import CountryFlag from 'vue-country-flag-next';
+import C4EIcon from "@/components/commons/C4EIcon.vue";
+import {BigDecimal} from "@/models/store/big.decimal";
+import {Coin, DecCoin} from "@/models/store/common"; // https://www.npmjs.com/package/vue-country-flag-next
 
 
 const props =  defineProps({
@@ -76,48 +116,47 @@ const props =  defineProps({
 });
 
 const emit = defineEmits(['onBuy']);
+
 onBeforeMount(() => {
-  usePublicSalesStore().fetchRoundInfo(false).then(() => {
+  usePublicSalesStore().fetchRoundInfoList(false).then(() => {
     const rate =  usePublicSalesStore().getC4eToUSD;
     if(rate) {
       exchangeRate.value = rate;
     }
   });
 });
-onMounted(() => {
 
-  firstValue.amount = props.firstInputDefaultValue;
+onMounted(() => {
+  firstValue.amount = new DecCoin(new BigDecimal(props.firstInputDefaultValue),Currency.C4E);
   if(useTransactionContextStore().orderModalVisible) {
     firstValue.amount = useTransactionContextStore().amountToBuy;
   }
   onFirstInputChange();
-
 });
 
 const firstValue = reactive({
-  amount: 0,
+  amount: new DecCoin(new BigDecimal(0),Currency.C4E),
   currency: Currency.C4E
 });
 
 const secondValue = reactive({
-  amount: 0,
+  amount: new DecCoin(new BigDecimal(0),props.disableStablecoin ? Currency.USD : Currency.STABLE),
   currency: props.disableStablecoin ? Currency.USD : Currency.STABLE
 });
 
-
-const exchangeRate = ref(1);
+const exchangeRate = ref<BigDecimal>(new BigDecimal(0));
 
 const onFirstInputChange = () => {
-  secondValue.amount = round(firstValue.amount * exchangeRate.value, secondValue.currency);
+  secondValue.amount = new DecCoin(exchangeRate.value.multiply(firstValue.amount.amount), secondValue.currency);
 };
 
 const onSecondInputChange = () => {
-  firstValue.amount = round(secondValue.amount / exchangeRate.value, firstValue.currency);
+  firstValue.amount = new DecCoin(exchangeRate.value.multiply(secondValue.amount.amount), firstValue.currency);
 };
 
 
 watch(() => exchangeRate.value, () => {
-  secondValue.amount = round(firstValue.amount * exchangeRate.value, secondValue.currency);
+  secondValue.amount = new DecCoin(exchangeRate.value.multiply(firstValue.amount.amount), secondValue.currency);
 });
 
 watch(() => secondValue.currency, () => {
@@ -140,7 +179,7 @@ watch(() => secondValue.currency, () => {
         const c4eTOUSDT = usePublicSalesStore().getC4eToUSD;
 
         if(c4eTOUSDT != undefined) {
-          exchangeRate.value = c4eTOUSDT * requestedAmount / data.amount;
+          exchangeRate.value = c4eTOUSDT.multiply(requestedAmount).divide(data.amount);
         }
       });
   }
@@ -156,27 +195,31 @@ const transactionContextStore = useTransactionContextStore();
 const router = useRouter();
 
 const onBuy = () => {
-  if(!useUserServiceStore().isLoggedIn()) {
+  if(!useUserServiceStore().isLoggedIn) {
     router.push({name: 'signIn'});
   } else {
     transactionContextStore.setAmountToBuy(firstValue.amount);
-    transactionContextStore.setAmountToPay(round(secondValue.amount,secondValue.currency));
+    transactionContextStore.setAmountToPay(secondValue.amount);
     transactionContextStore.setPaymentCurrency(secondValue.currency);
     transactionContextStore.setExchangeRate(exchangeRate.value);
     emit('onBuy');
   }
 };
 
-const toast = useToast();
-
-const round = (number: number, currency: string) => {
+const round = (number: number, currency: Currency) => {
   let decimals = 2;
-  if (currency === 'Stablecoin' || currency === 'C4E') decimals = 6;
+  if (currency === Currency.STABLE || currency === Currency.C4E) decimals = 6;
   return Math.ceil(number*10**decimals)/10**decimals;
 };
 
 const minimumRequired = () => {
-  return firstValue.amount * usePublicSalesStore().getC4eToUSD >= 25 && firstValue.amount * usePublicSalesStore().getC4eToUSD <=10000 ;
+  return usePublicSalesStore().getC4eToUSD.multiply(firstValue.amount.amount).isBiggerThanOrEqualTo(25) && !usePublicSalesStore().getC4eToUSD.multiply(firstValue.amount.amount).isBiggerThanOrEqualTo(10000);
+};
+
+const flagSelector = {
+  EUR: 'eu',
+  USD: 'us',
+  PLN: 'pl'
 };
 </script>
 
@@ -192,7 +235,7 @@ const minimumRequired = () => {
   font-weight: 700;
   font-size: 20px;
   line-height: 24px;
-  padding: 32px 33px 26px 116px;
+  padding: 32px 33px 26px 32px;
   border-radius: 5px;
   &__header{
     width: 100%;
@@ -205,8 +248,9 @@ const minimumRequired = () => {
   &__body{
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
   }
   &__inputContainer{
     text-align: start;
@@ -217,6 +261,8 @@ const minimumRequired = () => {
     display: flex;
     flex-direction: column;
     font-size: 16px;
+    flex: 1 1;
+    max-width: 160px;
   }
   &__input{
     height: 52px;
