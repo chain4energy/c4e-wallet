@@ -5,7 +5,7 @@ import {useConfigurationStore} from "@/store/configuration.store";
 export class PermissionsService{
 
   sidebarElementOrder(): PagesEnum[]{
-    const tempPagesEnum = [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AIRDROP, PagesEnum.PORTFOLIO];
+    const tempPagesEnum = [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AIRDROP, PagesEnum.PORTFOLIO, PagesEnum.BUYTOKENS, PagesEnum.PROFILE];
     if(this.faucetAvailable()) {
       tempPagesEnum.push(PagesEnum.FAUCET);
     }

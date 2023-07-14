@@ -180,35 +180,32 @@ export const usePublicSalesStore = defineStore({
       this.warning = value;
     }
   },
-  getters:{
-    getTotal(): Coin | undefined{
+  getters: {
+    getTotal(): Coin | undefined {
       return this.total;
     },
-    getParts(): parts | undefined{
-      if(this.roundInfo)
+    getParts(): parts | undefined {
+      if (this.roundInfo)
         return {sold: this.roundInfo.soldTokens, reserved: this.roundInfo.reservedTokens};
       return undefined;
     },
-    getStartDate(): Date | undefined{
+    getStartDate(): Date | undefined {
       return this.startDate;
     },
-    getEndDate(): Date | undefined{
+    getEndDate(): Date | undefined {
       return this.endDate;
     },
-    getTransactions(): TokenReservation[] | undefined{
+    getTransactions(): TokenReservation[] | undefined {
       return this.tokenReservations;
     },
     getC4eToUSD(): BigDecimal {
-      if(this.roundInfo?.uC4eToUsd) {
+      if (this.roundInfo?.uC4eToUsd) {
         return this.roundInfo.uC4eToUsd.multiply(useConfigurationStore().config.getViewDenomConversionFactor('uc4e'));
       }
       return new BigDecimal(0);
     },
     getWarning(): boolean {
       return this.warning;
-    },
-    getConversionRatio(): number | undefined {
-      return this.roundInfo?.c4eToUsd;
     }
   }
 });
