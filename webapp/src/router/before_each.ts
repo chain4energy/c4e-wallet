@@ -1,7 +1,6 @@
 import { useRouter } from 'vue-router';
 import { LogLevel } from '@/services/logger/log-level';
 import { ServiceTypeEnum } from '@/services/logger/service-type.enum';
-import { useUserStore } from '@/store/user.store';
 import { LoggerService } from '@/services/logger/logger.service';
 import {useConfigurationStore} from "@/store/configuration.store";
 import {useUserServiceStore} from "@/store/userService.store";
@@ -18,7 +17,7 @@ export function createRouterBeforeEach (logger: LoggerService) {
       next('/');
     }
     if (to.matched.some(record => record.meta.requiresAuth)) {
-      if (useUserServiceStore().isLoggedIn()) {
+      if (useUserServiceStore().isLoggedIn) {
         next();
         return;
       }

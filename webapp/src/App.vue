@@ -18,19 +18,16 @@
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import AppSidebar from '@/components/layout/AppSidebar.vue';
-import AppDisclaimer from '@/components/layout/AppDisclaimer.vue';
-
 import {inject, onMounted, ref} from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
 import {createRouterBeforeEach} from '@/router/before_each';
-
 import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
 import "primeicons/primeicons.css";
 import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import dataService from './services/data.service';
 import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
-import { useRecaptchaProvider } from 'vue-recaptcha/head';
+import {useRecaptchaProvider} from 'vue-recaptcha/head';
 import {usePublicSalesStore} from "@/store/publicSales.store";
 
 useRecaptchaProvider();
@@ -47,9 +44,9 @@ window.onload = async () =>{
   dataService.onWindowLoad();
 };
 
-function closeDisclaimer(){
-  disclaimerOpen.value = false;
-}
+// function closeDisclaimer(){
+//   disclaimerOpen.value = false;
+// }
 </script>
 
 <style lang="scss">

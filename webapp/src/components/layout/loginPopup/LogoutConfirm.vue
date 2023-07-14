@@ -150,8 +150,6 @@ const curentNetwork = computed(() => {
   return useConfigurationStore().getConfigName;
 });
 
-const latestBlock = computed(() => useBlockStore().getLatestBlock);
-
 function logout(){
   dataService.onLogOut();
   // useUserStore().logOut()

@@ -14,7 +14,6 @@ import profileRoutes from "@/router/profile";
 import KycView from "@/views/KycView.vue";
 import SignInView from "@/views/buyTokens/SignInView.vue";
 import SignUpView from "@/views/buyTokens/SignUpView.vue";
-import PortfolioView from "@/views/PortfolioView.vue";
 import ProvideVerificationCodeView from "@/views/buyTokens/ProvideVerificationCodeView.vue";
 import {portfolioRoutes} from "@/router/portfolioRoutes";
 

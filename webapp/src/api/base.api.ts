@@ -1,5 +1,4 @@
 import { useSplashStore } from '@/store/splash.store';
-import { useToast } from 'vue-toastification';
 import { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { RequestResponse } from '@/models/request-response';
 import { LogLevel } from '@/services/logger/log-level';
@@ -11,7 +10,6 @@ import { KeybaseErrorData, KeybaseResponse } from '@/models/keybase/keybase';
 import {AirdropErrData, BlockchainApiErrorData} from '@/models/blockchain/common';
 import { HasuraErrorData } from '@/models/hasura/error';
 
-const toast = useToast();
 
 export class BlockchainPagination {
   key?: string;

@@ -46,12 +46,11 @@
 </template>
 
 <script setup lang="ts">
-import {paymentType, TokenReservation, transactionStatus} from "@/store/publicSales.store";
+import {paymentType, TokenReservation} from "@/store/publicSales.store";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {onBeforeMount, onUnmounted, ref} from "vue";
 import {RESERVATION_STATUS} from "@/models/saleServiceCommons";
 
-const refreshDate = ref(false)
 
 const props = defineProps<{
   transaction: TokenReservation

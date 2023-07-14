@@ -109,7 +109,8 @@ export default {
     TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations',
     PROVIDE_TX_PAYMENT_PROOF: '/api/publicsale-service/token/tx',
     BLOCKCHAIN_INFO: '/api/publicsale-service/blockchain/info',
-    ROUND_INFO: '/api/publicsale-service/round/info',
+    ROUND_INFO: '/api/publicsale-service/round/info/{roundId}',
+    ROUND_INFO_LIST: '/api/publicsale-service/round/info',
     LOGOUT: '/api/publicsale-service/logout'
   },
   synaps: {

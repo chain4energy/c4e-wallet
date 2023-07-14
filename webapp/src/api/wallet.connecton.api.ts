@@ -7,6 +7,7 @@ import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { RequestResponse } from '@/models/request-response';
 import { LogLevel } from '@/services/logger/log-level';
 import {ethers, Signer} from "ethers";
+import {MetamaskConnectionInfo} from "@/store/user.store";
 
 
 const toast = useToast();
@@ -95,7 +96,7 @@ export default class WalletConnectionApi extends LoggedService {
   public connectLeap(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
     return this.connect(ConnectionType.Leap);
   }
-  public async connectMetamask(): Promise<RequestResponse<string, ConnectionError>> {
+  public async connectMetamask(): Promise<RequestResponse<MetamaskConnectionInfo, ConnectionError>> {
     const ethereum = window.ethereum;
     if (typeof window.ethereum !== 'undefined') {
       console.log('Eth wallet is installed!');
@@ -103,17 +104,20 @@ export default class WalletConnectionApi extends LoggedService {
     if (ethereum.isMetaMask) {
       console.log('MetaMask is installed!');
     }
-
+    window.ethereum.enable();
     const accounts = await ethereum.request({method: 'eth_requestAccounts'});
     const account = accounts[0];
     console.log('account is: ' + account);
 
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
+    const { chainId } = await provider.getNetwork();
 
     const address = await signer.getAddress();
 
-    return new RequestResponse<string, any>(undefined, address);
+    const metamaskConnectionInfo: MetamaskConnectionInfo = {address:address, networkId: chainId};
+
+    return new RequestResponse<MetamaskConnectionInfo, any>(undefined, metamaskConnectionInfo);
   }
   public async connect(connectionType: ConnectionType): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
     useSplashStore().increment();

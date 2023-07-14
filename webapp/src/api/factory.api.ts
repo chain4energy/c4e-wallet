@@ -13,6 +13,9 @@ import queries from "@/api/queries";
 import {FaucetApi} from "@/api/faucet.api";
 import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
+import {useRoute, useRouter} from "vue-router";
+import Router from '../router';
+import {useUserServiceStore} from "@/store/userService.store";
 
 let testfileName = '';
 
@@ -42,14 +45,26 @@ class ApiFactory {
     // Important! Do NOT use the axios instance that you supplied to applyAuthTokenInterceptor (in our case 'axiosInstance')
     // because this will result in an infinite loop when trying to refresh the token.
     // Use the global axios client or a different instance
-    const response = await axios.post(useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
+    try {
+      const response = await axios.post(useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
+      return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
+    } catch (error) {
+      useUserServiceStore().logOutAccount();
+      if(Router.currentRoute.value.meta.requiresAuth) {
+        await Router.push('/buyTokens/signIn');
+      }
+
+
+      throw error;
+    }
+
 
     // If your backend supports rotating refresh tokens, you may also choose to return an object containing both tokens:
     // return {
     //  accessToken: response.data.access_token,
     //  refreshToken: response.data.refresh_token
     //}
-    return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
+
   }
 
   private constructor() {

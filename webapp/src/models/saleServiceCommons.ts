@@ -1,7 +1,9 @@
 import {Coin} from "@/models/store/common";
+import {BigDecimal} from "@/models/store/big.decimal";
 
 export interface ReserveTokensRequest {
-  amount: number
+  roundId: number;
+  amount: number;
 }
 
 export interface ReserveTokensResponse {
@@ -73,37 +75,53 @@ export interface MetamaskPayInfo {
 }
 
 export interface BlockchainInfo {
-  availableTokens: TokenInfo[];
+  tokenExchanges: TokenInfo[];
   chainId: number;
   chainName: string;
   id: number;
 }
 export interface TokenInfo {
-  c4eAddress: string;
+  recipientAddress: string;
   coinIdentifier: string;
-  exchangeRate: number;
+  exchangeRate: uC4eToUsd;
   id: number;
   name: string;
   decimals: number;
 }
 export interface RoundInfoResponse {
-  availableTokens: number;
-  c4eToUsd: number;
+  active: boolean;
+  blockchains: BlockchainInfo[];
   endDate: string;
   startDate: string;
-  id: number;
+  availableTokens: number;
+  name: string;
   reservedTokens: number;
   soldTokens: number;
   totalTokens: number;
+  uC4eToUsd: uC4eToUsd;
+  id: number;
 }
 export interface RoundInfo {
   availableTokens: Coin;
-  c4eToUsd: number;
-  endDate: Date;
-  startDate: Date;
-  id: number;
   reservedTokens: Coin;
   soldTokens: Coin;
   totalTokens: Coin;
+  uC4eToUsd: BigDecimal;
+  endDate: Date;
+  startDate: Date;
+  id: number;
+  name: string;
+}
+export interface RoundInfoListMapped {
+  activeRoundInfo: RoundInfoBlockchainInfo | undefined;
+  roundInfoMap: Map<number, RoundInfoBlockchainInfo>;
+}
+export interface RoundInfoBlockchainInfo {
+  roundInfo: RoundInfo;
+  blockchainInfo: BlockchainInfo[];
 }
 
+export interface uC4eToUsd{
+  amount: number;
+  decimal: number;
+}

@@ -4,6 +4,6 @@ export enum Currency {
   C4E="C4E",
   USDT="USDT",
   USDC="USDC",
-  STABLE="Stablecoin",
+  STABLE="USDT/USDC",
   PLN="PLN"
 }

@@ -14,9 +14,13 @@ import {useToast} from "vue-toastification";
 import WifiIcon from '@/components/features/WifiOnIcon.vue';
 import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
 import {useI18n} from "vue-i18n";
+import {useUserServiceStore} from "@/store/userService.store";
+import * as net from "net";
+import {usePublicSalesStore} from "@/store/publicSales.store";
 const keplrKeyStoreChange = 'keplr_keystorechange';
 const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
 const leapKeyStoreChange = 'leap_keystorechange';
+
 class DataService extends LoggedService {
 
   private minBetweenRefreshmentsPeriod = 1000;
@@ -89,6 +93,14 @@ class DataService extends LoggedService {
     window.addEventListener('blur', () => {
       this.clearIntervals();
     }, false);
+
+    window.ethereum.on('networkChanged', function(networkId: number){
+      useUserStore().metamaskConnectionInfo.networkId = networkId;
+    });
+
+    window.ethereum.on('accountsChanged', function (accounts: string[]) {
+      useUserStore().metamaskConnectionInfo.address = accounts[0];
+    });
   }
   private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');
@@ -137,6 +149,7 @@ class DataService extends LoggedService {
   public onWindowLoad() {
     this.logToConsole(LogLevel.DEBUG, 'onWindowLoad');
     useUserStore().reconnect(this.onLoginSuccess);
+    useUserStore().reconnectMetamask();
   }
 
   public onKeplrLogIn(onSuccess?: () => void) {
@@ -163,6 +176,11 @@ class DataService extends LoggedService {
   public onAddressLogIn(address: string, onSuccess?: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onAddressLogIn');
     useUserStore().connectAsAddress(address, (connetionInfo: ConnectionInfo) => {this.onLoginSuccess(connetionInfo, onSuccess);});
+  }
+
+  public async onMetamaskConnect(onSuccess?: () => void) {
+    this.logToConsole(LogLevel.DEBUG, 'onMetamaskConnect');
+    return useUserStore().connectMetamask(() => this.onMetamaskConnectSuccess(onSuccess));
   }
 
   public onLogOut() {
@@ -226,6 +244,18 @@ class DataService extends LoggedService {
 
   }
 
+  public onInfoView() {
+
+    usePublicSalesStore().fetchRoundInfoList();
+
+    if(useUserServiceStore().isLoggedIn) {
+      useUserServiceStore().getAccount(()=>{console.log(1);}, ()=>{console.log(2);});
+      useUserServiceStore().getKycStatus();
+      usePublicSalesStore().fetchTokenReservations();
+    }
+
+  }
+
   public onProposalUnselected() {
     this.logToConsole(LogLevel.DEBUG, 'onProposalUnselected');
     useProposalsStore().clearProposal();
@@ -251,18 +281,21 @@ class DataService extends LoggedService {
 
   public onKeplrKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onKeplrKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
     useUserStore().connectKeplr();
   }
 
   public onCosmostationKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onCosmostationKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
     useUserStore().connectCosmostation();
   }
 
   public onLeapKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onLeapKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
     useUserStore().connectLeap();
   }
@@ -291,6 +324,13 @@ class DataService extends LoggedService {
     if (this.onClaimAirdropView && userAddress) {
         useAirDropStore().fetchUsersCampaignData(userAddress, true);
     }
+    if (onSuccess) {
+      onSuccess();
+    }
+  }
+
+  private onMetamaskConnectSuccess(onSuccess?: () => void) {
+
     if (onSuccess) {
       onSuccess();
     }
@@ -429,7 +469,6 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onClaimRewards');
     useUserStore().claimRewards();
   }
-
 }
 
 export default DataService.getInstance();

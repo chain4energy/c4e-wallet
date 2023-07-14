@@ -18,17 +18,17 @@ import {
   Registry,
   TxBodyEncodeObject
 } from '@cosmjs/proto-signing';
-import {encodeSecp256k1Pubkey, StdFee} from "@cosmjs/amino";
-import {Int53} from "@cosmjs/math"
+import {Int53} from "@cosmjs/math";
+import {encodeSecp256k1Pubkey, StdFee, StdSignDoc, makeSignDoc as makeStdSignDoc, makeStdTx } from "@cosmjs/amino";
 import {MsgSignData} from "@/types/tx";
 import {TxRaw} from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import {fromBase64} from "@cosmjs/encoding";
 import {DataToSign} from "@/models/user/walletAuth";
 import {_arrayBufferToBase64} from "@/utils/sign";
-import {useUserStore} from "@/store/user.store";
 import {ethers} from "ethers";
-import {TransactionRequest} from "@ethersproject/abstract-provider";
-import {FormatTypes, Interface} from "ethers/lib/utils";
+import {AminoMsg} from "@cosmjs/amino/build/signdoc";
+import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
+
 
 const toast = useToast();
 
@@ -257,6 +257,8 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       }
     }
   }
+
+
   private async getOfflineSignerExtensionBased(extension: Keplr | undefined, errorMessage: string) {
     if(extension) {
       const chainId = useConfigurationStore().config.chainId;
@@ -290,6 +292,9 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       }
       case ConnectionType.Cosmostation: {
         return this.getOfflineDirectSignerExtensionBased(window.cosmostation?.providers.keplr, 'Cosmostation not installed');
+      }
+      case ConnectionType.Leap: {
+        return this.getOfflineDirectSignerExtensionBased(window.leap, 'Leap not installed');
       }
       default: {
         throw new Error('No signer for connnection type: ' + connectionType);
@@ -353,10 +358,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
 
   protected async signDirect(
     connection: ConnectionInfo,
-    getMessages: (isLedger: boolean) => readonly EncodeObject[] | TxBroadcastError,
-    dataToSign: DataToSign,
-    fee: StdFee,
-    memo: string,
+    dataToSign: string,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
     skipErrorToast = false
   ): Promise<RequestResponse<string, TxBroadcastError>>
@@ -372,9 +374,31 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           !skipErrorToast
         );
       }
-      const { client, isLedger } = await this.createClient(connection.connectionType);
-      clientToDisconnect = client;
-      if (client === undefined) {
+
+      let keplr;
+      switch(connection.connectionType) {
+        case ConnectionType.Keplr: {
+        keplr = window.keplr;
+        break;
+        }
+        case ConnectionType.Cosmostation: {
+          keplr = window.cosmostation?.providers.keplr;
+          break;
+        }
+        case ConnectionType.Leap: {
+          keplr = window.leap;
+          break;
+        }
+        default: {
+          throw new Error('No signer for connnection type: ' + connection.connectionType);
+        }
+      }
+
+      const signedData = await keplr?.signArbitrary(useConfigurationStore().config.chainId, connection.account, dataToSign);
+
+      console.log(signedData);
+
+      if(signedData == undefined) {
         return this.createTxSignErrorResponseWithToast(
           new TxBroadcastError('Cannot get signing client'),
           'Sign direct error',
@@ -382,19 +406,17 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         );
       }
 
-      const messages = getMessages(isLedger);
-      if (messages instanceof TxBroadcastError) {
-        return new RequestResponse<string, TxBroadcastError>(messages);
-      }
+      const utf8Encode = new TextEncoder();
+      const val: MsgSignData = {
+        signer: connection.account,
+        data: utf8Encode.encode(dataToSign)
+      };
 
-      if (connection.pubKey === undefined) {
-        return this.createTxSignErrorResponseWithToast(
-          new TxBroadcastError('Cannot get signing client'),
-          'Sign direct error',
-          !skipErrorToast
-        );
-      }
-      const pubkey = encodePubkey(encodeSecp256k1Pubkey(connection.pubKey));
+      const messages = [{typeUrl: '/sign' + '/MsgSignData', value: MsgSignData.fromPartial(val)}];
+
+      const connectionInfoPubKey = connection.pubKey != undefined ? connection.pubKey : new Uint8Array();
+      const pubkey = encodePubkey(encodeSecp256k1Pubkey(connectionInfoPubKey));
+
 
       const txBodyEncodeObject: TxBodyEncodeObject = {
         typeUrl: "/cosmos.tx.v1beta1.TxBody",
@@ -404,31 +426,40 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         },
       };
 
+
+      const signMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
+
       const myRegistry = new Registry(defaultRegistryTypes);
-      const signDataMsgTypeUrl = '/' + 'sign' + '.MsgSignData';
+      const signDataMsgTypeUrl =  '/sign' + '/MsgSignData';
       myRegistry.register(signDataMsgTypeUrl, MsgSignData);
-
       const txBodyBytes = myRegistry.encode(txBodyEncodeObject);
-      const gasLimit = Int53.fromString(fee.gas).toNumber();
-      const sequence = dataToSign.sequenceNumber;
-      const authInfoBytes = makeAuthInfoBytes([{ pubkey, sequence }], fee.amount, gasLimit, undefined, undefined);
-      const accountNumber = dataToSign.accountNumber;
-      const signDoc = makeSignDoc(txBodyBytes, authInfoBytes, useConfigurationStore().config.chainId, accountNumber);
-      const offlineSigner = await this.getOfflineDirectSigner(connection.connectionType);
+      // const signedTxBodyBytes = utf8Encode.encode(JSON.stringify(signedTxBody));
 
-      const { signature, signed } = await offlineSigner.signer.signDirect(connection.account, signDoc);
+      const signedGasLimit = 0;
+      const signedSequence = 0;
 
+      const fee: StdFee = {
+        amount: [],
+        gas: "0",
+      };
+
+      const signedAuthInfoBytes = makeAuthInfoBytes(
+        [{ pubkey, sequence: signedSequence }],
+        fee.amount,
+        signedGasLimit,
+        undefined,
+        undefined,
+        signMode,
+      );
       const txRaw = TxRaw.fromPartial({
-        bodyBytes: signed.bodyBytes,
-        authInfoBytes: signed.authInfoBytes,
-        signatures: [fromBase64(signature.signature)],
+        bodyBytes: txBodyBytes,
+        authInfoBytes: signedAuthInfoBytes,
+        signatures: [fromBase64(signedData.signature)],
       });
       const txBytes = TxRaw.encode(txRaw).finish();
-      console.log("txBytes: " + txBytes);
-      console.log("txBytes size: " + txBytes.length);
-      console.log("txBytes byteLength: " + txBytes.byteLength);
 
       const b64EncodedTxBytes = _arrayBufferToBase64(txBytes);
+      // const signedDataDto = JSON.stringify({processId: processId, signedData: b64EncodedTxBytes});
 
       return new RequestResponse<string, TxBroadcastError>(undefined, b64EncodedTxBytes);
     } catch (err) {

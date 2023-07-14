@@ -15,7 +15,7 @@
     </div>
 
     <div class="userProfile__extra">
-      <Button v-if="useUserServiceStore().isLoggedIn()"
+      <Button v-if="useUserServiceStore().isLoggedIn"
         class="p-button p-component secondary userProfile__btn"
         @click="useUserServiceStore().logOutAccount()">{{$t('BUTTONS.LOGOUT')}}</Button>
     </div>
@@ -27,16 +27,10 @@
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import AccountInfo from "@/components/transactions/AccountInfo.vue";
-import { useUserStore } from "@/store/user.store";
-import InvestmentCalculator from "@/components/buyTokens/InvestmentCalculator.vue";
-import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
-import {computed, onBeforeMount, onMounted, ref, watchEffect} from "vue";
-import AllocationInfo from "@/components/transactions/AllocationInfo.vue";
-import PayModal from "@/components/buyTokens/PayModal.vue";
+import { usePublicSalesStore} from "@/store/publicSales.store";
+import { onBeforeMount, onMounted, ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
-import AddressModal from "@/components/buyTokens/modals/AddressModal.vue";
 import ApprovalModal from "@/components/buyTokens/modals/ApprovalModal.vue";
-import {useRouter} from "vue-router";
 
 const showAddressAdd = ref(false);
 const showApprovalModal = ref(false);
@@ -47,49 +41,19 @@ onBeforeMount(() => {
 });
 
 onMounted(() =>{
-  useUserServiceStore().getAccount(()=>{console.log(1)}, ()=>{console.log(2)});
+  useUserServiceStore().getAccount(()=>{console.log(1);}, ()=>{console.log(2);});
   useUserServiceStore().getKycStatus();
 });
-
-const showModal = ref<boolean>(false);
-const selectedReservation = ref();
-const transactions = computed(() => {
-  return usePublicSalesStore().getTransactions;
-});
-function submitEmail(){
-  hideAddAddress();
-}
 
 function showAddressAddModal(){
   showAddressAdd.value = true;
 }
-function hideAddAddress(){
-  showAddressAdd.value = false;
-}
-
 function showApprovalModalFunc(){
   showApprovalModal.value = true;
 }
 function hideApprovalModal(){
   showApprovalModal.value = false;
 }
-
-
-const onPay = (transaction: TokenReservation) => {
-  selectedReservation.value = transaction;
-  showModal.value = true;
-  // useSaleServiceStore().initPaymentSession({offeredAmount: Number(transaction.amount.amount), offeredCurrencyCode: '', orderId: 1})
-  //   .then(transactionId => {
-  //     if(transactionId)
-  //       window.dispatchEvent(
-  //         new CustomEvent('ari10-widget-start-commodities-payment-request', {
-  //           detail: {
-  //             transactionId: transactionId,
-  //           }
-  //         })
-  //       );
-  //   });
-};
 </script>
 
 <style scoped lang="scss">

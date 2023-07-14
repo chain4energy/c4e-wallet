@@ -69,10 +69,29 @@
           <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
 
           <div class="profileMenu" @focusout="closeProfileDropdown" tabindex="0" @click="toggleProfileDropdown()" >
-            <div class="profileMenu-icon">    <UserIcon :style="useUserServiceStore().isLoggedIn() ? 'color: #81CF1F' : ''" /></div>
+            <div class="profileMenu-icon"> <UserIcon :style="useUserServiceStore().isLoggedIn ? 'color: #81CF1F' : ''" /></div>
             <div class="profileMenu__dropdown" v-if="profileDropdown">
-              <div class="option" v-if="!useUserServiceStore().isLoggedIn()" @click="router.push({name: 'signIn'});">Login to profile</div>
-              <div class="option" @click="useUserServiceStore().logOutAccount();" v-else>Logout</div>
+
+              <div v-if="!useUserServiceStore().isLoggedIn">
+                <div class="option grid_container"  @click="router.push({name: 'signIn'});">
+                  <Icon name="LogIn" />
+                  Login to profile
+                </div>
+              </div>
+              <div v-else>
+                <div class="profileMenu__dropdown-info">{{useUserServiceStore().userEmail}}</div>
+                <div class="option grid_container"  @click="router.push({name: 'userProfileTabs'});">
+                  <div><Icon name="User" /></div>
+                  <div>My profile</div>
+                </div>
+                <div class="option grid_container" @click="useUserServiceStore().logOutAccount();">
+                  <Icon name="LogOut" />
+                  <div>
+                    Logout
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -423,22 +442,41 @@ nav a.router-link-exact-active {
     display: flex;
     flex-direction: column;
     position: absolute;
-    left: -120px;
     top:40px;
     min-width: 130px;
-    border-radius: 10px 0 10px 10px;
+    border-radius: 5px 0 5px 5px;
     overflow: hidden;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     z-index: 3;
     color: black;
-
+    background-color: #ffffff;
+    transform:translateX(-100%);
+    font-weight: bolder;
+    &-info {
+      padding: 15px 25px;
+    }
     .option {
-      padding: 15px;
-      background-color: #D9D9D9;
+      padding: 20px 15px;
+      background-color: #ffffff;
       width: 100%;
+      border-top: 1px #eeeeee solid;
+      white-space: nowrap;
       &:hover {
-        opacity: 0.7;
+        background-color: #b6b6b6;
       }
+    }
+    .grid_container {
+      text-align: left;
+      display: grid;
+      grid-template-columns: minmax(20px, auto) 1fr;
+      grid-template-rows: 1fr;
+      align-items: center;
+
+      grid-gap: 30px;
+      background-color: #f8f8f8;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      border-radius: 10px;
     }
   }
   &-icon {

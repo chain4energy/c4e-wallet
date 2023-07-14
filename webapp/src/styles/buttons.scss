@@ -9,7 +9,7 @@
   justify-content: center;
 }
 
-.p-button:not(.p-button-icon-only):not(.secondary):not(.outlined):not(.outlined-secondary):not(.preview):not(.delete) {
+.p-button:not(.p-button-icon-only):not(.secondary):not(.outlined):not(.outlined-secondary):not(.preview):not(.delete):not(.secondary-link):not(.cancel) {
   background-color: $main-color !important;
   color: $secondary-color !important;
   border-color: $main-color !important;
@@ -27,7 +27,31 @@
   &:hover {
     background-color: $secondary-darker-color !important;
   }
-} 
+}
+
+.secondary-link {
+  background-color:  $secondary-link !important;
+  color: white !important;
+  border-color:  $secondary-link !important;
+
+  &:hover {
+    background-color: $lighter-blue !important;
+    border-color:  $lighter-blue !important;
+  }
+
+}
+
+.cancel {
+  background-color:  $accents-light-grey !important;
+  color: black !important;
+  border-color:  $consumption-red !important;
+
+  &:hover {
+    background-color: $consumption-red !important;
+    border-color:  $consumption-red !important;
+  }
+
+}
 
 .outlined {
   background-color: transparent !important;

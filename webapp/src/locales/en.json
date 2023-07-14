@@ -336,7 +336,7 @@
     "OPEN": "Open",
     "BACK": "Back",
     "DISCONNECT": "Disconnect",
-    "CONNECT": "Connect",
+    "CONNECT": "Connect wallet",
     "DESCRIPTION": "Description",
     "THE": "The",
     "RETURN": "Return",
@@ -524,7 +524,7 @@
     "REQUIREMENTS_TIP": "Depending on the amount invested the different KYC (Know Your Customer) level can be applied.",
     "TOKENOMICS": "Tokenomics",
     "WHITE_PAPER": "White paper",
-    "YOU_INVEST": "You want to invest"
+    "YOU_INVEST": "You want to buy"
 
   },
   "PAYMENT_CONFIRMATION_VIEW": {
@@ -553,6 +553,11 @@
     "RETYPE": "Retype your password",
     "REGISTER": "Register",
     "TERMS": "Accept terms and conditions"
+  },
+  "FORMS": {
+    "VALIDATION_ERRORS": {
+      "PASSWORD_REGEX": "The password must consist of min. 8 characters (Must contain one letter, one number, one special character)"
+    }
   },
   "PORTFOLIO_VIEW": {
     "BALANCE": "Balance",

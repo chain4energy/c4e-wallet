@@ -1,47 +1,38 @@
 <template>
   <div class="publicSaleInfo">
     <h3 class="publicSaleInfo__header">{{$t('BUY_TOKENS_VIEW.ROUND_INFO')}} 1</h3>
-    <div style="width: 100%; height: 50px; padding: 0 20px;">
-      <PublicSalesBar v-if="parts && total" :total="total" :values="parts"/>
-    </div>
+<!--    <div style="width: 100%; height: 50px; padding: 0 20px;">-->
+<!--      <PublicSalesBar v-if="parts && total" :total="total" :values="parts"/>-->
+<!--    </div>-->
     <div class="publicSaleInfo__summary">
+      <div class="publicSaleInfo__infoBlock green_background" >
+        <p>{{$t('BUY_TOKENS_VIEW.PRICE')}}</p>
+        <p>1 C4E = ${{currency}}</p>
+      </div>
       <div class="publicSaleInfo__infoBlock">
         <p>Total Raise</p>
         <CoinAmount :amount="total ? total : 0" :show-denom="true" :precision="2" :reduce-big-number="false" />
       </div>
       <div class="publicSaleInfo__infoBlock">
-        <p>{{$t('BUY_TOKENS_VIEW.PRICE')}}</p>
-        <p>1 C4E = {{currency}} USDC</p>
-      </div>
-      <div class="publicSaleInfo__infoBlock">
         <p>{{$t('BUY_TOKENS_VIEW.TIME_TO_START')}}</p>
         <p >{{timeToStart}}</p>
-        <p v-if="startDate" class="publicSaleInfo__dateText">({{startDate.toLocaleDateString('en-US')}})</p>
+        <p v-if="startDate" class="publicSaleInfo__dateText">({{startDate.toUTCString()}})</p>
       </div>
       <div class="publicSaleInfo__infoBlock">
         <p>{{$t('BUY_TOKENS_VIEW.TIME_TO_END')}}</p>
-        <p>{{timeToEnd}}</p>
-        <p v-if="endDate" class="publicSaleInfo__dateText">({{endDate.toLocaleDateString('en-US')}})</p>
+        <p>{{timeToEnd ? timeToEnd : 'The round has ended'}}</p>
+        <p v-if="endDate" class="publicSaleInfo__dateText">({{endDate.toUTCString()}})</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import PublicSalesBar from "@/components/buyTokens/PublicSalesBar.vue";
 import { usePublicSalesStore } from "@/store/publicSales.store";
-import {computed, onBeforeMount, onUnmounted, ref, watch, watchEffect} from "vue";
-import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
+import {computed, onBeforeMount, onUnmounted, ref} from "vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
-import AmountView from "@/components/commons/AmountView.vue";
-import CalculatorC4E from "@/components/buyTokens/CalculatorC4E.vue";
 import {useI18n} from "vue-i18n";
 const publicSalesStore = usePublicSalesStore();
-// publicSalesStore.setParts();
-// publicSalesStore.setTotal();
-// publicSalesStore.setCurrentPrice();
-
-const refreshDate = ref(false)
 
 let startDateIntevalId = 0;
 let endDateIntervalId = 0;
@@ -66,12 +57,12 @@ const total = computed(() =>{
   return publicSalesStore.roundInfo?.totalTokens;
 });
 
-const parts = computed(() =>{
-  return publicSalesStore.getParts;
-});
+// const parts = computed(() =>{
+//   return publicSalesStore.getParts;
+// });
 
 const currency = computed(() => {
-  return publicSalesStore.roundInfo?.c4eToUsd;
+  return publicSalesStore.getC4eToUSD;
 });
 
 const startDate = computed(() => {
@@ -81,7 +72,6 @@ const endDate = computed(() => {
   return publicSalesStore.roundInfo?.endDate;
 });
 
-const timeToPass = ref();
 const i18n = useI18n();
 
 function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefined){
@@ -92,6 +82,7 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
 
     const now = new Date(Date.now());
     const diference = new Date(endDate).getTime() - now.getTime();
+    if (diference < 0) return null;
     const days = Math.floor(diference / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diference % (1000 * 60 * 60)) / (1000 * 60));
@@ -121,18 +112,21 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
 .publicSaleInfo{
   display: flex;
   flex-direction: column;
-  background: #0F3153;
+  //background: #0F3153;
   font-family: 'Inter',sans-serif;
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
   line-height: 24px;
-  padding: 10px 33px;
-  border-radius: 5px;
+  padding: 20px 33px;
+  border-radius: 10px;
   align-items: center;
+  background-color: $main-color;
+
   &__header{
     color: white;
-    margin: 6px 0;
+    margin-bottom: 20px;
+    font-weight: 900;
   }
   &__summary{
     width: 100%;
@@ -148,9 +142,9 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
     justify-content: center;
     font-family: 'Inter',sans-serif;
     color: white;
-    background: #0F3153;
+    background-color: $main-lighter-color;
     box-shadow: 0 0 2px 2px #02447A;
-    border-radius: 2px;
+    border-radius: 6px;
   }
   &__dateText{
     font-family: 'Inter',sans-serif;
@@ -159,5 +153,8 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
     font-size: 12px;
     line-height: 12px;
   }
+}
+.green_background {
+  background-color: $secondary-color;
 }
 </style>
