@@ -41,6 +41,7 @@
 
 <script setup lang="ts">
 
+import Password from "primevue/password";
 import {Field, Form} from "vee-validate";
 import {object} from "yup";
 import * as Yup from "yup";
