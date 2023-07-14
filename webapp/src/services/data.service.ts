@@ -15,7 +15,6 @@ import WifiIcon from '@/components/features/WifiOnIcon.vue';
 import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
 import {useI18n} from "vue-i18n";
 import {useUserServiceStore} from "@/store/userService.store";
-import * as net from "net";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 const keplrKeyStoreChange = 'keplr_keystorechange';
 const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
@@ -283,21 +282,23 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onKeplrKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectKeplr();
+    useUserStore().connectKeplr().then(refreshSpendables);
   }
 
   public onCosmostationKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onCosmostationKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectCosmostation();
+    useUserStore().connectCosmostation().then(refreshSpendables);
+
   }
 
   public onLeapKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onLeapKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectLeap();
+    useUserStore().connectLeap().then(refreshSpendables);
+
   }
 
   private onLoginSuccess(connetionInfo: ConnectionInfo, onSuccess?: () => void) {
@@ -370,11 +371,9 @@ class DataService extends LoggedService {
     // f-n refreshing spendable balances from API
     if (useUserStore().getAccount.address) {
       this.logToConsole(LogLevel.DEBUG, 'refreshSpendables');
-      if (!this.skipRefreshing(this.lastSpendablesTimeout)) {
         useUserStore().updateSpendables().then(() => {
           this.lastSpendablesTimeout = new Date().getTime();
-        });
-      }
+      });
     }
   }
 
@@ -441,11 +440,6 @@ class DataService extends LoggedService {
   private disableLeapAccountChangeListener() {
     this.logToConsole(LogLevel.DEBUG, 'disableLeapAccountChangeListener');
     window.removeEventListener(leapKeyStoreChange, keystoreLeapChangeListener);
-  }
-
-  public onClaimAirdrop(address: string) {
-    this.logToConsole(LogLevel.DEBUG, 'onClaimAirdrop');
-    // useAirDropStore().fetchUsersCampaignData(address, true);
   }
 
   public enterClaimAirdrop() {
