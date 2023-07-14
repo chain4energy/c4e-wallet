@@ -16,8 +16,7 @@ export class AirdropTotal {
     this.campaignAllocations.forEach((el) => {
       sumArr.push(el.getTotalForCampaign());
     });
-    const sum = sumArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    return sum;
+    return sumArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   }
 }
 
@@ -126,7 +125,8 @@ export enum MissionTypeSt {
   VOTE = 'VOTE',
   DELEGATE = 'DELEGATE',
   CLAIM = 'CLAIM',
-  UNDEFINED = 'UNDEFINED'
+  UNDEFINED = 'UNDEFINED',
+  TO_DEEFINE = 'TO_DEEFINE'
 }
 
 export function convertMissionType(missionTypeBc: MissionTypeBc): MissionTypeSt {

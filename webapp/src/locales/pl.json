@@ -418,7 +418,7 @@
     "MISSION_COMPLETED": "Ukończone misje",
     "TOTAL_DISTRIBUTION": "Łączna dystrybucja",
     "CAMPAIGN_PASSED": "Kampania zakończona",
-    "CAMPAIGN_START": "Do rozpoczęcia kampanii",
+    "CAMPAIGN_START": "Kampania rozpocznie się",
     "CAMPAIGN_END": "Do zakończenia kampanii",
     "CLAIM": "Odbierz",
     "VOTE": "Zagłosuj",
@@ -428,7 +428,8 @@
     "HIDE_MISSIONS": "Ukryj misje",
     "MISSION": "Misja",
     "CONNECT_INFO": "Połącz się z portfelem, by odbierać nagrody!",
-    "SUCCESS": "Sukces! Misja wykonana pomyślnie"
+    "SUCCESS": "Sukces! Misja wykonana pomyślnie",
+    "SOON": "Wkrótce"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Odliczanie kampanii",

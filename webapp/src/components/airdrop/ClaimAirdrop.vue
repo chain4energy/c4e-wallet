@@ -142,11 +142,11 @@
 </template>
 
 <script setup lang="ts">
-import { useAirDropStore } from "@/store/airDrop.store";
+import {useAirDropStore} from "@/store/airDrop.store";
 import {computed, onMounted, onUnmounted, ref} from "vue";
-import { useUserStore } from "@/store/user.store";
-import { CampainStatus } from "@/models/airdrop/airdrop";
-import { Campaign, Mission, MissionTypeSt } from "@/models/store/airdrop";
+import {useUserStore} from "@/store/user.store";
+import {CampainStatus} from "@/models/airdrop/airdrop";
+import {Campaign, Mission, MissionTypeSt} from "@/models/store/airdrop";
 import PercentageBar from "@/components/commons/PercentageBar.vue";
 import ClaimInfo from "@/components/airdrop/dropComponents/ClaimInfo.vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
@@ -265,13 +265,7 @@ function calculateTimeToPass(startDate: number | string, endDate: number | strin
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
     return `${days}D ${hours}H ${minutes}M ${seconds}S`;
   } else if(new Date(endDate).getTime()> new Date(Date.now()).getTime()){
-    const now = new Date(Date.now());
-    const difference = new Date(startDate).getTime() - now.getTime();
-    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-    return `${days}D ${hours}H ${minutes}M ${seconds}S`;
+    return i18n.t('AIRDROP.SOON');
   } else {
     return '';
   }
@@ -292,6 +286,8 @@ function getTextForMissionsBtn(mission: Mission, type: MissionTypeSt){
     break;
     case MissionTypeSt.CLAIM: text = i18n.t('AIRDROP.CLAIM');
     break;
+    case MissionTypeSt.TO_DEEFINE: text = 'To define';
+      break;
   }
   if(mission.completed && !mission.claimed){
     text = i18n.t('AIRDROP.CLAIM');
@@ -342,7 +338,7 @@ function isDisabled(campaignRec: Campaign, mission: Mission) {
     return false;
   } else if(!isInitialMissionClaimed(campaignRec) && mission.mission_type !== MissionTypeSt.INITIAL_CLAIM){
     return false;
-  } else if(mission.claimed){
+  } else if(mission.claimed || mission.mission_type === MissionTypeSt.TO_DEEFINE){
     return false;
   }
   return true;
