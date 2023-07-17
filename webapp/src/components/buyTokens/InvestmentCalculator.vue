@@ -116,7 +116,6 @@ const props =  defineProps({
 });
 
 const emit = defineEmits(['onBuy']);
-const test = ref();
 
 onBeforeMount(() => {
   usePublicSalesStore().fetchRoundInfoList(false).then(() => {
@@ -132,7 +131,9 @@ onMounted(() => {
   if(useTransactionContextStore().orderModalVisible) {
     firstValue.amount = useTransactionContextStore().amountToBuy;
   }
+  firstValueInput.value = firstValue.amount.amount;
   onFirstInputChange();
+
 });
 
 const firstValue = reactive({
@@ -145,8 +146,8 @@ const secondValue = reactive({
   currency: props.disableStablecoin ? Currency.USD : Currency.STABLE
 });
 
-const firstValueInput = ref(firstValue.amount.amount);
-const secondValueInput = ref(secondValue.amount.amount);
+const firstValueInput = ref();
+const secondValueInput = ref();
 
 const exchangeRate = ref<BigDecimal>(new BigDecimal(0));
 
@@ -165,6 +166,7 @@ const onSecondInputChange = () => {
 
 watch(() => exchangeRate.value, () => {
   secondValue.amount = new DecCoin(exchangeRate.value.multiply(firstValue.amount.amount), secondValue.currency);
+  secondValueInput.value = secondValue.amount.amount;
 });
 
 watch(() => secondValue.currency, () => {
