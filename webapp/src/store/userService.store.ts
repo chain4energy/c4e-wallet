@@ -15,7 +15,7 @@ import {KycProgressStatus, KycStepInfo, KycStepName, KycTierEnum} from "@/models
 import {TxBroadcastError} from "@/api/tx.broadcast.base.api";
 import {ethers} from "ethers";
 import {useContextStore} from "@/store/context.store";
-
+import Router from '../router';
 
 interface UserServiceState {
   loginType: LoginTypeEnum,
@@ -341,12 +341,13 @@ export const useUserServiceStore = defineStore({
       });
 
     },
-    logOutAccount(){
-      clearAuthTokens();
+    logOutAccount(redirect = true){
+      apiFactory.publicSaleServiceApi().logout(true).then(() => {
+        clearAuthTokens();
+      });
+
       useContextStore().$reset();
       usePublicSalesStore().logOutAccount();
-      apiFactory.publicSaleServiceApi().logout(true).then(() => {
-        console.log();});
       this.loginType =  LoginTypeEnum.NONE;
       this.kycSessionId = '';
       this.paired= false;
@@ -358,7 +359,9 @@ export const useUserServiceStore = defineStore({
       this.kycServiceState= new Map<KycStepName, KycProgressStatus>();
       this.kycLevel= 0;
       this.loggedIn = false;
-      // window.location.reload();
+      if(redirect) {
+        Router.push('/buyTokens/signIn');
+      }
 
     }
   },

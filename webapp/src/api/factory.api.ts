@@ -13,7 +13,6 @@ import queries from "@/api/queries";
 import {FaucetApi} from "@/api/faucet.api";
 import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
-import {useRoute, useRouter} from "vue-router";
 import Router from '../router';
 import {useUserServiceStore} from "@/store/userService.store";
 
@@ -49,7 +48,7 @@ class ApiFactory {
       const response = await axios.post(useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
       return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
     } catch (error) {
-      useUserServiceStore().logOutAccount();
+      useUserServiceStore().logOutAccount(false);
       if(Router.currentRoute.value.meta.requiresAuth) {
         await Router.push('/buyTokens/signIn');
       }
