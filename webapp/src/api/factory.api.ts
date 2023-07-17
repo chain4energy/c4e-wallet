@@ -13,8 +13,7 @@ import queries from "@/api/queries";
 import {FaucetApi} from "@/api/faucet.api";
 import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
-import {useRoute, useRouter} from "vue-router";
-import Router from '../router';
+import {useRouter} from "vue-router";
 import {useUserServiceStore} from "@/store/userService.store";
 
 let testfileName = '';
@@ -50,11 +49,9 @@ class ApiFactory {
       return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
     } catch (error) {
       useUserServiceStore().logOutAccount();
-      if(Router.currentRoute.value.meta.requiresAuth) {
-        await Router.push('/buyTokens/signIn');
+      if(useRouter().currentRoute.value.meta.requiresAuth) {
+        await useRouter().push('/buyTokens/signIn');
       }
-
-
       throw error;
     }
 
