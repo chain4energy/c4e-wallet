@@ -11,7 +11,7 @@
             <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_BUY')}}</p>
             <div>
               <div style="display: flex; min-width:350px;">
-                <input @paste="onFirstInputChange" @keyup="onFirstInputChange"  style="width: 100%;" class="calculatorC4E__input" type="text" :disabled="firstInputBlocked" v-model="firstValue.amount.amount">
+                <input @paste="onFirstInputChange" @keyup="onFirstInputChange"  style="width: 100%;" class="calculatorC4E__input" type="number" :disabled="firstInputBlocked" v-model="firstValueInput">
                 <Dropdown v-model="firstValue.currency" :options="[Currency.C4E]"  placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
                   <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
@@ -37,7 +37,7 @@
             <div>
               <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_INVEST')}}</p>
               <div style="display: flex; min-width:350px;">
-                <input @paste="onSecondInputChange"  @keyup="onSecondInputChange"  style="width: 100%;" class="calculatorC4E__input" type="text" v-model="secondValue.amount.amount">
+                <input @paste="onSecondInputChange"  @keyup="onSecondInputChange"  style="width: 100%;" class="calculatorC4E__input" type="number"  v-model="secondValueInput" >
                 <Dropdown v-model="secondValue.currency" :options="currencyList" placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
                   <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
@@ -116,6 +116,7 @@ const props =  defineProps({
 });
 
 const emit = defineEmits(['onBuy']);
+const test = ref();
 
 onBeforeMount(() => {
   usePublicSalesStore().fetchRoundInfoList(false).then(() => {
@@ -144,14 +145,21 @@ const secondValue = reactive({
   currency: props.disableStablecoin ? Currency.USD : Currency.STABLE
 });
 
+const firstValueInput = ref(firstValue.amount.amount);
+const secondValueInput = ref(secondValue.amount.amount);
+
 const exchangeRate = ref<BigDecimal>(new BigDecimal(0));
 
 const onFirstInputChange = () => {
+  firstValue.amount = new DecCoin(new BigDecimal(firstValueInput.value), firstValue.currency);
   secondValue.amount = new DecCoin(exchangeRate.value.multiply(firstValue.amount.amount), secondValue.currency);
+  secondValueInput.value = secondValue.amount.amount;
 };
 
 const onSecondInputChange = () => {
-  firstValue.amount = new DecCoin(exchangeRate.value.multiply(secondValue.amount.amount), firstValue.currency);
+  secondValue.amount= new DecCoin(new BigDecimal(secondValueInput.value), secondValue.currency);
+  firstValue.amount = new DecCoin(secondValue.amount.amount.divide(exchangeRate.value), firstValue.currency);
+  firstValueInput.value = firstValue.amount.amount;
 };
 
 
