@@ -8,7 +8,18 @@ import {
   expectUserEntry
 } from "../utils/airdrop.data.util";
 
-jest.mock("axios");
+jest.mock('axios', () => {
+  return {
+    create: jest.fn(() => ({
+      get: jest.fn(),
+      interceptors: {
+        request: { use: jest.fn(), eject: jest.fn() },
+        response: { use: jest.fn(), eject: jest.fn() }
+      }
+    })),
+    request: jest.fn(),
+  }
+})
 const mockedAxios = mockAxios();
 const api = apiFactory.airDropApi()
 const address = 'c4e17ncvyer9eemq36adyf6fex84nz9cvp2pmqja46';
