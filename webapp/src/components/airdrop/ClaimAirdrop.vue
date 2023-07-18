@@ -286,7 +286,7 @@ function getTextForMissionsBtn(mission: Mission, type: MissionTypeSt){
     break;
     case MissionTypeSt.CLAIM: text = i18n.t('AIRDROP.CLAIM');
     break;
-    case MissionTypeSt.TO_DEEFINE: text = 'To define';
+    case MissionTypeSt.TO_DEEFINE: text = i18n.t('AIRDROP.TO_DEEFINE');
       break;
   }
   if(mission.completed && !mission.claimed){

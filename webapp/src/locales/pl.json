@@ -433,7 +433,8 @@
     "MISSION": "Misja",
     "CONNECT_INFO": "Połącz się z portfelem, by odbierać nagrody!",
     "SUCCESS": "Sukces! Misja wykonana pomyślnie",
-    "SOON": "Wkrótce"
+    "SOON": "Wkrótce",
+    "TO_DEEFINE": "To define"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Odliczanie kampanii",

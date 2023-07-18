@@ -440,7 +440,8 @@
     "MISSION": "Mission",
     "CONNECT_INFO": "Connect to wallet to claim rewards!",
     "SUCCESS": "You successfully claimed mission!",
-    "SOON": "Soon"
+    "SOON": "Soon",
+    "TO_DEEFINE": "To define"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Campaign countdown",
