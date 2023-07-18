@@ -7,8 +7,8 @@
     <div class="payment_container__content">
       <h2>Your order info</h2>
       <div class="box-shadow summary">
-        <div>Amount of C4E: {{transactionContextStore.amountToBuy}}</div>
-        <div>Amount of {{transactionContextStore.paymentCurrency}}: {{transactionContextStore.amountToPay}} {{transactionContextStore.paymentCurrency}}</div>
+        <div>Amount of C4E: {{transactionContextStore.amountToBuy.amount}}</div>
+        <div>Amount of {{transactionContextStore.paymentCurrency}}: {{transactionContextStore.amountToPay.amount}} {{transactionContextStore.paymentCurrency}}</div>
         <div>Current exchange rate: 1 C4E = {{transactionContextStore.exchangeRate.toFixed(5)}} {{transactionContextStore.paymentCurrency}}</div>
       </div>
       <Button class="secondary" @click="onPay">
@@ -27,7 +27,7 @@ const transactionContextStore = useTransactionContextStore();
 
 const onPay = () => {
   if(transactionContextStore.paymentCurrency){
-    usePublicSalesStore().initPaymentSession({orderId: transactionContextStore.orderId, offeredCurrencyCode: transactionContextStore.paymentCurrency, offeredAmount: Number((Math.round(transactionContextStore.amountToPay * 100) / 100).toFixed(2))})
+    usePublicSalesStore().initPaymentSession({orderId: transactionContextStore.orderId, offeredCurrencyCode: transactionContextStore.paymentCurrency, offeredAmount: Number((Math.round(Number(transactionContextStore.amountToPay.amount.toString()) * 100) / 100).toFixed(2))})
       .then(transactionId => {
         if(transactionId) {
           window.dispatchEvent(
