@@ -83,11 +83,12 @@ export function mapTokenReservations(tokenReservations: TokenReservationResponse
     const storeReservation: TokenReservation = new TokenReservation(
       reservation.orderId,
       new Coin(BigInt(reservation.amountRequested), denom),
-      paymentType.Crypto,
       reservation.status,
       reservation.transactions,
       new Date(reservation.reservationEndTime),
-      new Date(reservation.orderEndTime)
+      new Date(reservation.orderEndTime),
+      reservation.roundId,
+      reservation.unconfirmed
     );
     tokenReservationList.push(storeReservation);
   });

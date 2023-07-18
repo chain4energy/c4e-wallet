@@ -21,12 +21,14 @@ export interface InitPaymentSessionResponse {
 }
 
 export interface TokenReservationResponse {
-  orderId: number;
-  status: RESERVATION_STATUS;
   amountRequested: number;
   orderEndTime: string;
+  orderId: number;
   reservationEndTime: string;
-  transactions: Transaction[]
+  roundId: number;
+  status: RESERVATION_STATUS;
+  transactions: Transaction[];
+  unconfirmed: boolean;
 }
 
 export enum RESERVATION_STATUS {
@@ -50,13 +52,28 @@ export enum TRANSACTION_STATUS {
   TX_UNSUCCESSFUL='TX_UNSUCCESSFUL',
   TX_NOT_CONFIRMED='TX_NOT_CONFIRMED'
 }
+
+export enum BLOCKCHAIN_STATUS {
+  UNCONFIRMED='UNCONFIRMED',
+  CONFIRMED='CONFIRMED'
+}
+export enum PAYMENT_TYPE {
+  COIN='COIN',
+  FIAT='FIAT'
+}
 export interface Transaction {
+  blockchainStatus: BLOCKCHAIN_STATUS;
+  status: string;
   txHash: string;
-  amount: string;
-  errorInfo: TRANSACTION_STATUS;
-  blockchain: string;
+  type: PAYMENT_TYPE;
+  blockchainTxs: BlockchainTx[];
 }
 
+export interface BlockchainTx {
+  amount: string;
+  coinIdentifier: string;
+  coinName: string;
+}
 export interface TokenPaymentProofRequest{
   blockchainID:	number;
   exchangeID:	number;
