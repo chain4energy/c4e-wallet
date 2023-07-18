@@ -27,7 +27,7 @@ export interface TokenReservationResponse {
   reservationEndTime: string;
   roundId: number;
   status: RESERVATION_STATUS;
-  transactions: Transaction[];
+  transactions?: Transaction[];
   unconfirmed: boolean;
 }
 
@@ -66,7 +66,10 @@ export interface Transaction {
   status: string;
   txHash: string;
   type: PAYMENT_TYPE;
-  blockchainTxs: BlockchainTx[];
+  blockchainTxs?: BlockchainTx[];
+  currencyCode: string;
+  amount: string;
+  blockchain: string;
 }
 
 export interface BlockchainTx {

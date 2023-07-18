@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
-import {Coin} from "@/models/store/common";
+import {Coin, DecCoin} from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import factoryApi from "@/api/factory.api";
 import {
-  BlockchainInfo,
-  InitPaymentSessionRequest, MetamaskPayInfo, RESERVATION_STATUS, RoundInfo, RoundInfoBlockchainInfo,
+  BLOCKCHAIN_STATUS,
+  BlockchainInfo, BlockchainTx,
+  InitPaymentSessionRequest, MetamaskPayInfo, PAYMENT_TYPE, RESERVATION_STATUS, RoundInfo, RoundInfoBlockchainInfo,
   TokenPaymentProofRequest,
   Transaction
 } from "@/models/saleServiceCommons";
@@ -41,20 +42,55 @@ export enum transactionStatus{
   Error,
 }
 
+export class BlockchainTxStore {
+
+  amount: number;
+  coinIdentifier: string;
+  coinName: string;
+
+  constructor(amount: number, coinIdentifier: string, coinName: string) {
+    this.amount = amount;
+    this.coinIdentifier = coinIdentifier;
+    this.coinName = coinName;
+  }
+}
+export class StoreTransaction {
+  blockchainStatus: BLOCKCHAIN_STATUS;
+  status: string;
+  txHash: string;
+  type: PAYMENT_TYPE;
+  blockchainTxs: BlockchainTxStore[];
+  currencyCode: string;
+  amount: string;
+  blockchain: string;
+  constructor(blockchainStatus: BLOCKCHAIN_STATUS, status: string, txHash: string, type: PAYMENT_TYPE, blockchainTxs: BlockchainTxStore[], currencyCode: string, amount: string, blockchain: string) {
+    this.blockchainStatus = blockchainStatus;
+    this.status = status;
+    this.txHash = txHash;
+    this.type = type;
+    this.blockchainTxs = blockchainTxs;
+    this.currencyCode = currencyCode;
+    this.amount = amount;
+    this.blockchain = blockchain;
+  }
+
+}
+
 export class TokenReservation {
-  amountRequested: Coin;
+  amountRequested: DecCoin;
   orderEndTime: Date;
   orderId: number;
   reservationEndTime: Date;
   roundId: number;
   status: RESERVATION_STATUS;
-  transactions: Transaction[];
+  transactions: StoreTransaction[];
   unconfirmed: boolean;
+
   constructor(
     orderId: number,
-    amountRequested: Coin,
+    amountRequested: DecCoin,
     status: RESERVATION_STATUS,
-    transactions: Transaction[],
+    transactions: StoreTransaction[],
     reservationEndTime: Date,
     orderEndTime: Date,
     roundId: number,
@@ -68,6 +104,17 @@ export class TokenReservation {
     this.orderEndTime = orderEndTime;
     this.roundId = roundId;
     this.unconfirmed = unconfirmed;
+  }
+
+  leftToPay() {
+    let sumOfPayments  = 0;
+    this.transactions.forEach(transaction => {
+      transaction.blockchainTxs.forEach(blockchainTx => {
+        sumOfPayments+=blockchainTx.amount;
+      });
+    });
+
+    return this.amountRequested.amount.subtract(new BigDecimal(sumOfPayments).divide(usePublicSalesStore().getuC4eToUSD));
   }
 }
 
@@ -204,6 +251,12 @@ export const usePublicSalesStore = defineStore({
     getC4eToUSD(): BigDecimal {
       if(this.roundInfo?.uC4eToUsd) {
         return this.roundInfo.uC4eToUsd.multiply(useConfigurationStore().config.getViewDenomConversionFactor('uc4e'));
+      }
+      return new BigDecimal(0);
+    },
+    getuC4eToUSD(): BigDecimal {
+      if (this.roundInfo?.uC4eToUsd) {
+        return this.roundInfo.uC4eToUsd;
       }
       return new BigDecimal(0);
     },
