@@ -49,8 +49,8 @@ class ApiFactory {
       return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
     } catch (error) {
       useUserServiceStore().logOutAccount(false);
-      if(Router.currentRoute.value.meta.requiresAuth) {
-        await Router.push('/buyTokens/signIn');
+      if(useRouter().currentRoute.value.meta.requiresAuth) {
+        await useRouter().push('/buyTokens/signIn');
       }
       throw error;
     }
