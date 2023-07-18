@@ -71,7 +71,7 @@
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE && useUserStore().metamaskConnectionInfo.address != ''"><Button @click="provideSourceAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
-        <Button v-else class="p-button p-component secondary-link button-w7" @click="connectMetamask">Connect MetaMask</Button>
+        <Button v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE" class="p-button p-component secondary-link button-w7" @click="connectMetamask">Connect MetaMask</Button>
 
       </div>
       <div style="display: flex">

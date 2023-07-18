@@ -48,7 +48,7 @@ class ApiFactory {
       const response = await axios.post(useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
       return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
     } catch (error) {
-      useUserServiceStore().logOutAccount();
+      useUserServiceStore().logOutAccount(false);
       if(useRouter().currentRoute.value.meta.requiresAuth) {
         await useRouter().push('/buyTokens/signIn');
       }
