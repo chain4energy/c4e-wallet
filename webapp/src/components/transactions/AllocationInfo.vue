@@ -46,7 +46,7 @@
     </table>
     <Button
       class="p-button p-component secondary accountInfo__btn allocationInfo__btn"
-      v-if="props.transaction.status === RESERVATION_STATUS.DECLARED"
+      v-if="props.transaction.status === RESERVATION_STATUS.DECLARED || props.transaction.status === RESERVATION_STATUS.PARTIALLY_PAID"
       @click="submit"
     >Pay</Button>
   </div>
