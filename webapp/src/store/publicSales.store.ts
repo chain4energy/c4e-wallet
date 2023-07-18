@@ -42,29 +42,32 @@ export enum transactionStatus{
 }
 
 export class TokenReservation {
+  amountRequested: Coin;
+  orderEndTime: Date;
   orderId: number;
-  amount: Coin;
-  paymentType: paymentType;
+  reservationEndTime: Date;
+  roundId: number;
   status: RESERVATION_STATUS;
   transactions: Transaction[];
-  reservationEnd: Date;
-  orderEndTime: Date;
+  unconfirmed: boolean;
   constructor(
     orderId: number,
-    amount: Coin,
-    paymentType: paymentType,
+    amountRequested: Coin,
     status: RESERVATION_STATUS,
     transactions: Transaction[],
-    reservationEnd: Date,
-    orderEndTime: Date
+    reservationEndTime: Date,
+    orderEndTime: Date,
+    roundId: number,
+    unconfirmed: boolean
   ) {
     this.orderId = orderId;
-    this.amount = amount;
-    this.paymentType = paymentType;
+    this.amountRequested = amountRequested;
     this.status = status;
     this.transactions = transactions;
-    this.reservationEnd = reservationEnd;
+    this.reservationEndTime = reservationEndTime;
     this.orderEndTime = orderEndTime;
+    this.roundId = roundId;
+    this.unconfirmed = unconfirmed;
   }
 }
 
