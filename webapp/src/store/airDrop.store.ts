@@ -201,14 +201,14 @@ export const useAirDropStore = defineStore({
     async claimInitialAirdrop(campaignId: string, extraAddress: string) {
       const connectionInfo = useUserStore().connectionInfo;
       if (!extraAddress || extraAddress === '') {
-        await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, useUserStore().account.address);
+        return await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, useUserStore().account.address);
       } else {
-        await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, extraAddress);
+        return await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, extraAddress);
       }
     },
     async claimOtherAirdrop(campaignId: string, missionId: string) {
       const connectionInfo = useUserStore().connectionInfo;
-      await apiFactory.accountApi().claimAirDropMissions(connectionInfo, campaignId, missionId);
+      return await apiFactory.accountApi().claimAirDropMissions(connectionInfo, campaignId, missionId);
     },
     async fetchAirdropTotal(address: string, lockscreen = true) {
       try {

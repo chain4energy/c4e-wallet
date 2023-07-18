@@ -103,31 +103,34 @@ function claim(){
 }
 
 function claimInitialAirdrop(id: string){
-  useAirDropStore().claimInitialAirdrop(id, address.value).then(() =>{
-    useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true) .then(() => {
-      useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
-      if (props.isFinal) {
-        emit('final');
-      }
-    })
-      .finally(() => {
-        emit('close');
-      });
+  useAirDropStore().claimInitialAirdrop(id, address.value).then((r) =>{
+    if (!r.error) {
+      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
+        .then(() => {
+          useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
+          if (props.isFinal) {
+            emit('final');
+          }
+        });
+    }
+  }).finally(() => {
+    emit('close');
   });
 }
 
 function claimOtherAirdrop(campaignId: string, missionId: string){
-  useAirDropStore().claimOtherAirdrop(campaignId, missionId).then(() =>{
+  useAirDropStore().claimOtherAirdrop(campaignId, missionId).then((r) =>{
+    if (!r.error) {
     useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
       .then(() => {
       useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
       if (props.isFinal) {
         emit('final');
       }
-      })
-      .finally(() => {
-        emit('close');
       });
+    }
+  }).finally(() => {
+    emit('close');
   });
 }
 

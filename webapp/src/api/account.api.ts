@@ -1,42 +1,38 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
-import TxBroadcastBaseApi, { TxData, TxBroadcastError } from "@/api/tx.broadcast.base.api";
-import { ErrorData } from "@/api/base.api";
-import { LogLevel } from '@/services/logger/log-level';
-import { RequestResponse } from "@/models/request-response";
-import { Account as StoreAccount } from "@/models/store/account";
-import { Coin } from "@/models/store/common";
+import TxBroadcastBaseApi, {TxBroadcastError, TxData} from "@/api/tx.broadcast.base.api";
+import {ErrorData} from "@/api/base.api";
+import {LogLevel} from '@/services/logger/log-level';
+import {RequestResponse} from "@/models/request-response";
+import {Account as StoreAccount} from "@/models/store/account";
+import {Coin} from "@/models/store/common";
 
 import {AccountResponse, BalanceResponse, SpendableBalancesResponse} from "@/models/blockchain/account";
 
-import { useConfigurationStore } from "@/store/configuration.store";
-import { ConnectionInfo } from "@/api/wallet.connecton.api";
-import { mapAccount, createNonexistentAccount } from "@/models/mapper/account.mapper";
-import { formatString } from "@/utils/string-formatter";
-import {
-  MsgBeginRedelegate,
-  MsgDelegate,
-  MsgUndelegate,
-} from "cosmjs-types/cosmos/staking/v1beta1/tx";
-import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
+import {useConfigurationStore} from "@/store/configuration.store";
+import {ConnectionInfo} from "@/api/wallet.connecton.api";
+import {createNonexistentAccount, mapAccount} from "@/models/mapper/account.mapper";
+import {formatString} from "@/utils/string-formatter";
+import {MsgBeginRedelegate, MsgDelegate, MsgUndelegate,} from "cosmjs-types/cosmos/staking/v1beta1/tx";
+import {MsgVote} from "cosmjs-types/cosmos/gov/v1beta1/tx";
 
+import {MsgWithdrawDelegatorReward} from "cosmjs-types/cosmos/distribution/v1beta1/tx";
+import {DelegationsResponse, UnbondigDelegationsResponse} from "@/models/blockchain/staking";
+import {Delegations, UnbondingDelegations} from "@/models/store/staking";
 import {
-  MsgWithdrawDelegatorReward
-} from "cosmjs-types/cosmos/distribution/v1beta1/tx";
-import { DelegationsResponse, UnbondigDelegationsResponse } from "@/models/blockchain/staking";
-import { Delegations, UnbondingDelegations } from "@/models/store/staking";
-import { mapAndAddDelegations, mapAndAddUnbondingDelegations, mapDelegations, mapUnbondingDelegations } from "@/models/mapper/staking.mapper";
-import { RewardsResponse } from "@/models/blockchain/distribution";
-import { Rewards } from "@/models/store/distribution";
-import { mapRewards } from "@/models/mapper/distribution.mapper";
-import { mapCoin } from "@/models/mapper/common.mapper";
-import { EncodeObject } from "@cosmjs/proto-signing";
-import { BigDecimal } from "@/models/store/big.decimal";
-import { VoteOption } from "@/models/store/proposal";
-import { BlockchainApiErrorData } from "@/models/blockchain/common";
-import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
-import {MsgClaim, MsgInitialClaim} from "../api/cfeclaim/tx"
-import {DataToSign} from "@/models/user/walletAuth";
-import {MsgSignData} from "@/types/tx";
+  mapAndAddDelegations,
+  mapAndAddUnbondingDelegations,
+  mapDelegations,
+  mapUnbondingDelegations
+} from "@/models/mapper/staking.mapper";
+import {RewardsResponse} from "@/models/blockchain/distribution";
+import {Rewards} from "@/models/store/distribution";
+import {mapRewards} from "@/models/mapper/distribution.mapper";
+import {mapCoin} from "@/models/mapper/common.mapper";
+import {EncodeObject} from "@cosmjs/proto-signing";
+import {BigDecimal} from "@/models/store/big.decimal";
+import {VoteOption} from "@/models/store/proposal";
+import {BlockchainApiErrorData} from "@/models/blockchain/common";
+import {MsgClaim, MsgInitialClaim} from "@/api/cfeclaim/tx";
 
 export class AccountApi extends TxBroadcastBaseApi {
 
@@ -313,6 +309,7 @@ export class AccountApi extends TxBroadcastBaseApi {
 
     const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+
   }
   public async sign(connection: ConnectionInfo, dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 
