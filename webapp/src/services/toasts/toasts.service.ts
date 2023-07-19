@@ -20,7 +20,7 @@ export class ToastsService {
     const lastToast = this.toastTypeMap.get(toastType);
 
     if(!lastToast || (lastToast && Math.abs(new Date().getTime() - lastToast.getTime()) > this.timeout)) {
-      // this.toast.error(message);
+      this.toast.error(message);
       this.toastTypeMap.set(toastType, new Date());
     }
   }

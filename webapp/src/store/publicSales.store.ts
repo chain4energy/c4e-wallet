@@ -3,6 +3,7 @@ import {Coin, DecCoin} from "@/models/store/common";
 import { useConfigurationStore } from "@/store/configuration.store";
 import factoryApi from "@/api/factory.api";
 import {
+  BLOCKCHAIN,
   BLOCKCHAIN_STATUS,
   BlockchainInfo, BlockchainTx,
   InitPaymentSessionRequest, MetamaskPayInfo, PAYMENT_TYPE, RESERVATION_STATUS, RoundInfo, RoundInfoBlockchainInfo,
@@ -62,8 +63,8 @@ export class StoreTransaction {
   blockchainTxs: BlockchainTxStore[];
   currencyCode: string;
   amount: string;
-  blockchain: string;
-  constructor(blockchainStatus: BLOCKCHAIN_STATUS, status: string, txHash: string, type: PAYMENT_TYPE, blockchainTxs: BlockchainTxStore[], currencyCode: string, amount: string, blockchain: string) {
+  blockchain: BLOCKCHAIN;
+  constructor(blockchainStatus: BLOCKCHAIN_STATUS, status: string, txHash: string, type: PAYMENT_TYPE, blockchainTxs: BlockchainTxStore[], currencyCode: string, amount: string, blockchain: BLOCKCHAIN) {
     this.blockchainStatus = blockchainStatus;
     this.status = status;
     this.txHash = txHash;
@@ -74,6 +75,16 @@ export class StoreTransaction {
     this.blockchain = blockchain;
   }
 
+  getTransactionLink() {
+    switch (this.blockchain) {
+      case BLOCKCHAIN.BSC:
+        return 'https://testnet.bscscan.com/tx/'+this.txHash;
+      case BLOCKCHAIN.POLYGON:
+        return 'https://mumbai.polygonscan.com/tx/'+this.txHash;
+      case BLOCKCHAIN.SEPOLIA:
+        return 'https://sepolia.etherscan.io/tx/'+this.txHash;
+    }
+  }
 }
 
 export class TokenReservation {

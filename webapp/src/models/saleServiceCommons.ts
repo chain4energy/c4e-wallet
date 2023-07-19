@@ -61,6 +61,12 @@ export enum PAYMENT_TYPE {
   COIN='COIN',
   FIAT='FIAT'
 }
+
+export enum BLOCKCHAIN {
+  SEPOLIA ='SEPOLIA',
+  BSC='BSC',
+  POLYGON='POLYGON'
+}
 export interface Transaction {
   blockchainStatus: BLOCKCHAIN_STATUS;
   status: string;
@@ -69,7 +75,7 @@ export interface Transaction {
   blockchainTxs?: BlockchainTx[];
   currencyCode: string;
   amount: string;
-  blockchain: string;
+  blockchain: BLOCKCHAIN;
 }
 
 export interface BlockchainTx {
