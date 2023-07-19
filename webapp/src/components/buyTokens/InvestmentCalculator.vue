@@ -108,10 +108,19 @@ const props =  defineProps({
     required: false,
     default: 10000
   },
+  secondInputDefaultValue: {
+    type: Number,
+    required: false
+  },
   disableStablecoin: {
     type: Boolean,
     required: false,
     default: false
+  },
+  isDeclaration: {
+    type: Boolean,
+    required: false,
+    default: true
   }
 });
 
@@ -128,12 +137,21 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-  firstValue.amount = new DecCoin(new BigDecimal(props.firstInputDefaultValue),Currency.C4E);
-  if(useTransactionContextStore().orderModalVisible) {
-    firstValue.amount = useTransactionContextStore().amountToBuy;
+  if(props.secondInputDefaultValue) {
+    secondValue.amount = new DecCoin(new BigDecimal(props.secondInputDefaultValue),Currency.STABLE);
+    secondValueInput.value = secondValue.amount.amount;
+    onSecondInputChange();
+  } else {
+    firstValue.amount = new DecCoin(new BigDecimal(props.firstInputDefaultValue),Currency.C4E);
+
+    if(useTransactionContextStore().orderModalVisible) {
+      firstValue.amount = useTransactionContextStore().amountToBuy;
+    }
+    firstValueInput.value = firstValue.amount.amount;
+
+    onFirstInputChange();
   }
-  firstValueInput.value = firstValue.amount.amount;
-  onFirstInputChange();
+
 
 });
 
@@ -154,19 +172,19 @@ const exchangeRate = ref<BigDecimal>(new BigDecimal(0));
 
 const onFirstInputChange = () => {
   firstValue.amount = new DecCoin(new BigDecimal(firstValueInput.value), firstValue.currency);
-  secondValue.amount = new DecCoin(exchangeRate.value.multiply(firstValue.amount.amount), secondValue.currency);
+  secondValue.amount = new DecCoin(ceilBigDecimal(exchangeRate.value.multiply(firstValue.amount.amount), secondValue.currency), secondValue.currency);
   secondValueInput.value = secondValue.amount.amount;
 };
 
 const onSecondInputChange = () => {
   secondValue.amount= new DecCoin(new BigDecimal(secondValueInput.value), secondValue.currency);
-  firstValue.amount = new DecCoin(secondValue.amount.amount.divide(exchangeRate.value), firstValue.currency);
+  firstValue.amount = new DecCoin(floorBigDecimal(secondValue.amount.amount.divide(exchangeRate.value), firstValue.currency), firstValue.currency);
   firstValueInput.value = firstValue.amount.amount;
 };
 
 
 watch(() => exchangeRate.value, () => {
-  secondValue.amount = new DecCoin(exchangeRate.value.multiply(firstValue.amount.amount), secondValue.currency);
+  secondValue.amount = new DecCoin(ceilBigDecimal(exchangeRate.value.multiply(firstValue.amount.amount), secondValue.currency), secondValue.currency);
   secondValueInput.value = secondValue.amount.amount;
 });
 
@@ -227,8 +245,19 @@ const round = (number: number, currency: Currency) => {
   return Math.ceil(number*10**decimals)/10**decimals;
 };
 
+const ceilBigDecimal = (number: BigDecimal, currency: Currency) => {
+  let decimals = 2;
+  if (currency === Currency.STABLE || currency === Currency.C4E) decimals = 6;
+  return number.ceil(decimals);
+};
+
+const floorBigDecimal = (number: BigDecimal, currency: Currency) => {
+  let decimals = 2;
+  if (currency === Currency.STABLE || currency === Currency.C4E) decimals = 6;
+  return number.floor(decimals);
+};
 const minimumRequired = () => {
-  return usePublicSalesStore().getC4eToUSD.multiply(firstValue.amount.amount).isBiggerThanOrEqualTo(25) && !usePublicSalesStore().getC4eToUSD.multiply(firstValue.amount.amount).isBiggerThanOrEqualTo(10000);
+  return (usePublicSalesStore().getC4eToUSD.multiply(firstValue.amount.amount).isBiggerThanOrEqualTo(25) && !usePublicSalesStore().getC4eToUSD.multiply(firstValue.amount.amount).isBiggerThanOrEqualTo(10000)) || !props.isDeclaration;
 };
 
 const flagSelector = {

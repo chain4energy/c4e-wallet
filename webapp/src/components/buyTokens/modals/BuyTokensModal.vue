@@ -2,8 +2,8 @@
   <div>
     <Dialog :visible="visible" @update:visible="emit('closeModal')" modal header="Payment" :baseZIndex="-100" :style="{ width: '80vw' }">
       <div>
-        <InvestmentCalculator @onBuy="onBuyClick" :disable-stablecoin="sourceAddress == undefined" :first-input-blocked="true"
-                              :first-input-default-value="Number(useConfigurationStore().config.getConvertedAmount(reservation.amountRequested.amount))" />
+        <InvestmentCalculator @onBuy="onBuyClick" :disable-stablecoin="sourceAddress == undefined" :first-input-blocked="true" :is-declaration="false"
+                              :second-input-default-value="Number(reservation.leftToPay())" />
       </div>
     </Dialog>
   </div>

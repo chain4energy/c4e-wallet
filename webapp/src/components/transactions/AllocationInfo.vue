@@ -14,15 +14,7 @@
             :reduce-big-number="false"
             :precision="2"/></th>
       </tr>
-      <tr>
-        <th class="allocationInfo__tableTabs">Left to pay</th>
-        <th class="allocationInfo__tableTabs">
-          <CoinAmount
-            :amount="transaction.leftToPay()"
-            :show-denom="true"
-            :reduce-big-number="false"
-            :precision="2"/></th>
-      </tr>
+
       <tr v-if="transaction.status === RESERVATION_STATUS.DECLARED && transaction.reservationEndTime">
         <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.REMAINING_RESERVATION_TIME')}}</th>
         <th class="allocationInfo__tableTabs">{{ timeToPass }}</th>

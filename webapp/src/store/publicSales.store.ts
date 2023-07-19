@@ -114,7 +114,7 @@ export class TokenReservation {
       });
     });
 
-    return this.amountRequested.amount.subtract(new BigDecimal(sumOfPayments).divide(usePublicSalesStore().getuC4eToUSD));
+    return this.amountRequested.amount.multiply(usePublicSalesStore().getuC4eToUSD).subtract(new BigDecimal(sumOfPayments));
   }
 }
 
