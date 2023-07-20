@@ -54,7 +54,7 @@
                   {{ sourceAddress }}
                 </div>
                 <span>Please send <b>{{transactionContextStore.amountToPay.amount.toString()}} {{transactionContextStore.paymentCurrency}}</b> to the address below:</span>
-                <div class="address" style="margin-bottom:20px">{{selectedToken?.recipientAddress}} <Icon class="address__copy" name="Copy" /> <br /></div>
+                <div class="address" style="margin-bottom:20px">{{selectedToken?.recipientAddress}} <Icon class="address__copy" name="Copy" @click="copyRecipientAddress()" /> <br /></div>
 
               </div>
               <div style="margin-left: auto; margin-right: 20px">
@@ -146,6 +146,7 @@ import Dialog from "primevue/dialog";
 import IconComponent from "@/components/features/IconComponent.vue";
 import {useUserStore} from "@/store/user.store";
 import WarningModal from "@/components/buyTokens/modals/WarningModal.vue";
+import i18n from "@/plugins/i18n";
 
 onBeforeMount(async () => {
   useUserStore().connectMetamask();
@@ -211,7 +212,12 @@ const onNetworkChange = () => {
 };
 
 const toast = useToast();
-
+function copyRecipientAddress(){
+  if(selectedToken.value?.recipientAddress) {
+    navigator.clipboard.writeText(selectedToken.value.recipientAddress);
+    useToast().success(i18n.global.t('COPY.ADDRESS'));
+  }
+}
 
 const onFail = () => {
   toast.error('An error occured');

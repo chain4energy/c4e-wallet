@@ -24,6 +24,10 @@ export interface BigDecimal {
 
   toFixed(fractionDigits?: number, rounded?: boolean): string;
 
+  ceil(decimals: number): BigDecimal;
+
+  floor(decimals: number): BigDecimal;
+
 }
 
 class BigDecimalImpl implements BigDecimal {
@@ -107,6 +111,21 @@ class BigDecimalImpl implements BigDecimal {
       return BigInt(ints + decis.padEnd(DECIMALS, '0').slice(0, DECIMALS))
         + BigInt(ROUNDED && decis[DECIMALS] >= '5');
     }
+  }
+
+  public ceil(decimals: number): BigDecimal {
+    const rest = this.value%BigInt(10**(DECIMALS-decimals));
+
+    let toAdd = 0n;
+    if(rest > 0n) {
+      toAdd = 1n;
+    }
+
+    return fromInternalValue((this.value/BigInt(10**(DECIMALS-decimals))+toAdd)*BigInt(10**(DECIMALS-decimals)));
+  }
+
+  public floor(decimals: number): BigDecimal {
+    return fromInternalValue((this.value/BigInt(10**(DECIMALS-decimals)))*BigInt(10**(DECIMALS-decimals)));
   }
 
 }

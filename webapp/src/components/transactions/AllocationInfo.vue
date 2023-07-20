@@ -14,6 +14,7 @@
             :reduce-big-number="false"
             :precision="2"/></th>
       </tr>
+
       <tr v-if="transaction.status === RESERVATION_STATUS.DECLARED && transaction.reservationEndTime">
         <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.REMAINING_RESERVATION_TIME')}}</th>
         <th class="allocationInfo__tableTabs">{{ timeToPass }}</th>
@@ -26,13 +27,17 @@
         <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.STATUS')}}</th>
         <th :style="{color: getStatusColor()}">{{ transaction.status }}</th>
       </tr>
-      <tr>
+      <tr v-if="transaction.unconfirmed">
         <th class="allocationInfo__tableTabs">Unconfirmed</th>
         <th class="allocationInfo__tableTabs">{{ transaction.unconfirmed }}</th>
       </tr>
       <tr>
         <th class="allocationInfo__tableTabs">Round</th>
         <th class="allocationInfo__tableTabs">{{ transaction.roundId }}</th>
+      </tr>
+      <tr v-if="transaction.transactions.length>0">
+        <th class="allocationInfo__tableTabs">Transactions</th>
+        <th class="allocationInfo__tableTabs"></th>
       </tr>
 <!--      <tr v-if="transaction.txHash">-->
 <!--        <th class="allocationInfo__tableTabs">Tx-hash</th>-->
@@ -51,10 +56,11 @@
     >Pay</Button>
   </div>
 
-  <Accordion :multiple="true">
-    <AccordionTab v-for="blockchainTransaction in transaction.transactions" :key="blockchainTransaction" :header="blockchainTransaction.txHash">
+  <Accordion :multiple="true" style="white-space: normal;">
+    <AccordionTab v-for="blockchainTransaction in transaction.transactions" :key="blockchainTransaction" :header="blockchainTransaction.blockchainStatus">
+
       <div class="allocationInfo__body">
-        <table style=" width: 90%">
+        <table style=" width: 90%;table-layout: fixed;  border-collapse: separate; border-spacing: 6px;">
 
           <tr>
             <th class="allocationInfo__tableTabs">Blockchain status</th>
@@ -68,14 +74,28 @@
             <th class="allocationInfo__tableTabs">Type</th>
             <th class="allocationInfo__tableTabs">{{ blockchainTransaction.type }}</th>
           </tr>
-          <tr>
-            <th class="allocationInfo__tableTabs">TxHash</th>
-            <th class="allocationInfo__tableTabs">{{ blockchainTransaction.txHash }}</th>
+          <tr v-if="blockchainTransaction.amount">
+            <th class="allocationInfo__tableTabs">Amount</th>
+            <th class="allocationInfo__tableTabs">{{ blockchainTransaction.amount }}</th>
           </tr>
-          <tr>
-            <th class="allocationInfo__tableTabs">Payments</th>
+          <tr v-if="blockchainTransaction.currencyCode">
+            <th class="allocationInfo__tableTabs">Currency</th>
+            <th class="allocationInfo__tableTabs">{{ blockchainTransaction.currencyCode }}</th>
+          </tr>
+          <tr v-if="blockchainTransaction.blockchain">
+            <th class="allocationInfo__tableTabs">Blockchain</th>
+            <th class="allocationInfo__tableTabs">{{ blockchainTransaction.blockchain }}</th>
+          </tr>
+          <tr v-if="blockchainTransaction.txHash">
+            <th class="allocationInfo__tableTabs">TxHash</th>
+            <th class="allocationInfo__tableTabs" style="font-size: 1em">
+              <a :href="blockchainTransaction.getTransactionLink()" target="_blank">{{ blockchainTransaction.txHash }}</a>
+            </th>
+          </tr>
+          <tr v-if="blockchainTransaction.blockchainTxs.length>0">
+            <th class="allocationInfo__tableTabs">Payments </th>
             <th>
-              <div style="display: flex; justify-content: center; margin-top:20px">
+              <div  style="display: flex; justify-content: center; margin-top:20px">
                 <table id="txs">
                   <tr>
                     <th style="width:10%">Number</th>
@@ -94,25 +114,6 @@
         </table>
       </div>
 
-
-
-<!--      <Accordion :multiple="true">-->
-<!--        <AccordionTab v-for="blockchainTx in blockchainTransaction.blockchainTxs" :key="blockchainTx" :header="blockchainTx.coinName">-->
-<!--          <div class="allocationInfo__body">-->
-<!--            <table style=" width: 90%">-->
-<!--              <tr>-->
-<!--                <th class="allocationInfo__tableTabs">Coin name</th>-->
-<!--                <th class="allocationInfo__tableTabs">{{ blockchainTx.coinName }}</th>-->
-<!--              </tr>-->
-<!--              <tr>-->
-<!--                <th class="allocationInfo__tableTabs">Amount</th>-->
-<!--                <th class="allocationInfo__tableTabs">{{ blockchainTx.amount }}</th>-->
-<!--              </tr>-->
-<!--            </table>-->
-<!--          </div>-->
-
-<!--        </AccordionTab>-->
-<!--      </Accordion>-->
     </AccordionTab>
   </Accordion>
 
@@ -185,6 +186,7 @@ function calculateTimeToPass(){
   background: #FFFFFF;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
+
   &__head{
     font-style: normal;
     font-weight: 700;
@@ -201,7 +203,8 @@ function calculateTimeToPass(){
     align-items: flex-end;
   }
   &__table{
-    width: 70%;
+    width: 100%;
+
   }
   &__tableTabs{
     font-style: normal;
@@ -212,7 +215,11 @@ function calculateTimeToPass(){
   }
   th{
     text-align: start;
-    width: 50%;
+    overflow-wrap: break-word;
+  }
+  th:first-child{
+    width: 300px;
+
   }
   &__btn{
     border-radius: 24px;
@@ -224,7 +231,7 @@ function calculateTimeToPass(){
 
 #txs {
   font-family: Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
+
   width: 100%;
 }
 
@@ -244,4 +251,25 @@ function calculateTimeToPass(){
   background-color: #002C50;
   color: white;
 }
+@media (max-width: 900px) {
+  .allocationInfo {
+    &__tableTabs{
+      font-size: 16px;
+    }
+    th:first-child{
+      width: 200px;
+
+    }
+  }
+}
+@media (max-width: 600px) {
+  .allocationInfo {
+
+    th:first-child{
+      width: 150px;
+
+    }
+  }
+}
+
 </style>

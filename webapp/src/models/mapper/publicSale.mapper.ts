@@ -1,12 +1,13 @@
 import {
+  BlockchainTx,
   RoundInfo,
   RoundInfoBlockchainInfo, RoundInfoListMapped,
   RoundInfoResponse,
   TokenReservationResponse
 } from "@/models/saleServiceCommons";
 import {useConfigurationStore} from "@/store/configuration.store";
-import {Coin} from "@/models/store/common";
-import {paymentType, TokenReservation} from "@/store/publicSales.store";
+import {Coin, DecCoin} from "@/models/store/common";
+import {BlockchainTxStore, paymentType, StoreTransaction, TokenReservation} from "@/store/publicSales.store";
 import {BigDecimal} from "@/models/store/big.decimal";
 
 export function mapRoundInfo(roundInfo: RoundInfoResponse | undefined): RoundInfoBlockchainInfo  {
@@ -80,11 +81,44 @@ export function mapTokenReservations(tokenReservations: TokenReservationResponse
 
   tokenReservations.forEach(reservation => {
 
+    const storeTransactions: StoreTransaction[] = [];
+
+    reservation.transactions?.forEach(reservation => {
+
+      const storeBlockchainTxs: BlockchainTxStore[] = [];
+
+      reservation.blockchainTxs?.forEach(blockchainTx => {
+
+        const storeBlockchainTx: BlockchainTxStore = new BlockchainTxStore(
+          Number(blockchainTx.amount),
+          blockchainTx.coinIdentifier,
+          blockchainTx.coinName
+        );
+
+        storeBlockchainTxs.push(storeBlockchainTx);
+
+      });
+
+      const storeTransaction: StoreTransaction = new StoreTransaction(
+        reservation.blockchainStatus,
+        reservation.status,
+        reservation.txHash,
+        reservation.type,
+        storeBlockchainTxs,
+        reservation.currencyCode,
+        reservation.amount,
+        reservation.blockchain
+      );
+
+      storeTransactions.push(storeTransaction);
+    });
+
+
     const storeReservation: TokenReservation = new TokenReservation(
       reservation.orderId,
-      new Coin(BigInt(reservation.amountRequested), denom),
+      new DecCoin(new BigDecimal(reservation.amountRequested), denom),
       reservation.status,
-      reservation.transactions,
+      storeTransactions,
       new Date(reservation.reservationEndTime),
       new Date(reservation.orderEndTime),
       reservation.roundId,
