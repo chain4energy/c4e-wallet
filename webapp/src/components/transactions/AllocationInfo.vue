@@ -35,7 +35,7 @@
         <th class="allocationInfo__tableTabs">Round</th>
         <th class="allocationInfo__tableTabs">{{ transaction.roundId }}</th>
       </tr>
-      <tr v-if="transaction.transactions">
+      <tr v-if="transaction.transactions.length>0">
         <th class="allocationInfo__tableTabs">Transactions</th>
         <th class="allocationInfo__tableTabs"></th>
       </tr>
