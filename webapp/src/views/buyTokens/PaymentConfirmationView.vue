@@ -147,10 +147,11 @@ import IconComponent from "@/components/features/IconComponent.vue";
 import {useUserStore} from "@/store/user.store";
 import WarningModal from "@/components/buyTokens/modals/WarningModal.vue";
 import i18n from "@/plugins/i18n";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 onBeforeMount(async () => {
   useUserStore().connectMetamask();
-  await publicSaleStore.fetchRoundInfoList(false);
+  await publicSaleStore.fetchRoundInfo(useConfigurationStore().config.currentPublicSaleRoundId,false);
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const {chainId} = await provider.getNetwork();
   changeNetwork(chainId);

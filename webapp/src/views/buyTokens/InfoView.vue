@@ -126,6 +126,7 @@ import SynapsVerify from '@synaps-io/vue3-verify';
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import {addDotsInsideTooLongString} from "@/utils/string-formatter";
 import dataService from "@/services/data.service";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 onBeforeMount(() => {
   dataService.onInfoView();
@@ -198,7 +199,7 @@ const onConfirm = () => {
     router.push({name: 'signIn'});
   } else {
     transactionContextStore.orderModalVisible = true;
-    publicSaleStore.reserveTokens(Number(transactionContextStore.getAmountToBuyUc4e), onSuccess, onFail);
+    publicSaleStore.reserveTokens(useConfigurationStore().config.currentPublicSaleRoundId,Number(transactionContextStore.getAmountToBuyUc4e), onSuccess, onFail);
   }
 };
 

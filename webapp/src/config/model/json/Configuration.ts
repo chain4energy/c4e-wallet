@@ -85,4 +85,5 @@ export interface Configuration {
   targetInflationAprMultiplier: number;
   faucetURL: string;
   tokenReservationDenom: string;
+  currentPublicSaleRoundId: number;
 }

@@ -224,6 +224,7 @@ class DataService extends LoggedService {
   public onInfoView() {
 
     usePublicSalesStore().fetchRoundInfoList();
+    usePublicSalesStore().fetchRoundInfo(useConfigurationStore().config.currentPublicSaleRoundId, false);
 
     if(useUserServiceStore().isLoggedIn) {
       useUserServiceStore().getAccount(()=>{console.log(1);}, ()=>{console.log(2);});

@@ -165,8 +165,8 @@ export const usePublicSalesStore = defineStore({
         }
       });
     },
-    reserveTokens(amount: number, onSuccess: ((orderId: number) => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
-      return factoryApi.publicSaleServiceApi().reserveTokens(1, amount, lockscreen).then(res => {
+    reserveTokens(roundId: number, amount: number, onSuccess: ((orderId: number) => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
+      return factoryApi.publicSaleServiceApi().reserveTokens(roundId, amount, lockscreen).then(res => {
         if(res.isSuccess() && res.data?.orderId) {
           onSuccess(res.data.orderId);
         } else {
@@ -199,10 +199,10 @@ export const usePublicSalesStore = defineStore({
         if(res.isSuccess() && res.data) {
           this.roundInfoMap = res.data.roundInfoMap;
 
-          if(res.data.activeRoundInfo) {
-            this.roundInfo = res.data.activeRoundInfo.roundInfo;
-            this.blockchainInfo = res.data.activeRoundInfo.blockchainInfo;
-          }
+          // if(res.data.activeRoundInfo) {
+          //   this.roundInfo = res.data.activeRoundInfo.roundInfo;
+          //   this.blockchainInfo = res.data.activeRoundInfo.blockchainInfo;
+          // }
 
         }
       });

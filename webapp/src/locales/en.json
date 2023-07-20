@@ -440,6 +440,12 @@
       "KEPLR": "Keplr",
       "METAMASK": "Metamask",
       "NONE": "Not logged in"
+    },
+    "BLOCKCHAIN_STATUS": {
+      "UNCONFIRMED": "Waiting for confirmation",
+      "CONFIRMED": "Confirmed",
+      "PREPARATION": "Preparation",
+      "NOT_VERIFIED": "Not verified"
     }
   },
   "PROFILE_VIEW": {

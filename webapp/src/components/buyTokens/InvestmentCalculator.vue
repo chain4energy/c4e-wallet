@@ -94,7 +94,8 @@ import TooltipComponent from "@/components/TooltipComponent.vue";
 import CountryFlag from 'vue-country-flag-next';
 import C4EIcon from "@/components/commons/C4EIcon.vue";
 import {BigDecimal} from "@/models/store/big.decimal";
-import {DecCoin} from "@/models/store/common"; // https://www.npmjs.com/package/vue-country-flag-next
+import {DecCoin} from "@/models/store/common";
+import {useConfigurationStore} from "@/store/configuration.store"; // https://www.npmjs.com/package/vue-country-flag-next
 
 
 const props =  defineProps({
@@ -127,7 +128,7 @@ const props =  defineProps({
 const emit = defineEmits(['onBuy']);
 
 onBeforeMount(() => {
-  usePublicSalesStore().fetchRoundInfoList(false).then(() => {
+  usePublicSalesStore().fetchRoundInfo(useConfigurationStore().config.currentPublicSaleRoundId,false).then(() => {
     const rate =  usePublicSalesStore().getC4eToUSD;
     if(rate) {
       exchangeRate.value = rate;

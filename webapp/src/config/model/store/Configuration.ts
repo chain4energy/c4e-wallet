@@ -163,8 +163,8 @@ export class Configuration implements JsonConfiguration {
   proposalVotingRefreshTimeout: number;
   airdropDefaultDenom: string;
   faucetURL: string;
-
   targetInflationAprMultiplier: number;
+  currentPublicSaleRoundId: number;
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -212,6 +212,7 @@ export class Configuration implements JsonConfiguration {
       this.targetInflationAprMultiplier = configuration.targetInflationAprMultiplier;
       this.faucetURL = configuration.faucetURL;
       this.tokenReservationDenom = configuration.tokenReservationDenom;
+      this.currentPublicSaleRoundId = configuration.currentPublicSaleRoundId;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -250,6 +251,7 @@ export class Configuration implements JsonConfiguration {
       this.targetInflationAprMultiplier = 1;
       this.faucetURL = '';
       this.tokenReservationDenom = '';
+      this.currentPublicSaleRoundId = 0;
     }
   }
 
