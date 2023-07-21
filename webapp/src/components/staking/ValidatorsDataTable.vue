@@ -30,7 +30,7 @@
             <span>{{ data.description.moniker }}</span>
           </template>
         </Column>
-        <Column v-if="isValidatorsTable()" field="status" :header="$t(`STAKING_VIEW.TABLE.STATUS`)" :sortable="true">
+        <Column v-if="isValidatorsTable() || isDelegationsTable()" field="status" :header="$t(`STAKING_VIEW.TABLE.STATUS`)" :sortable="true">
           <template #body="{data}">
             <ValidatorStatusBadge :validator="data"/>
           </template>
@@ -219,7 +219,7 @@ function createEagerLoadingConfig(): EagerLoadingConfig<Validator | ValidatorUns
   const validatorsList = isUndelegationsTable() ? getUnstakings(props.validators) : props.validators;
   const config = new EagerLoadingConfig<Validator | ValidatorUnstaking>(validatorsList);
   config.setFilters(filters.value);
-  return config;
+  return config
 }
 
 function onRowExpand(data: Validator) {
