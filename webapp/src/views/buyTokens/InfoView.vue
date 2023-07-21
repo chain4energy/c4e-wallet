@@ -346,17 +346,7 @@ const activeRound = computed(() => {
   }
 
 }
-:deep(.p-dropdown .p-dropdown-label) {
-  font-size: 18px;
-  font-weight: bold;
-}
-:deep(.p-dropdown .p-dropdown-trigger){
-  display: none !important;
-}
-::v-deep(.p-button:not(.p-button-icon-only)) {
-  border-radius: 5px !important;
 
-}
 .button {
   &-w7{
     width: 90%;
