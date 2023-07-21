@@ -102,18 +102,28 @@ export interface MetamaskPayInfo {
   c4eAddress: string;
 }
 
+export enum CHAIN_NAME {
+  SEPOLIA='SEPOLIA',
+  BSC='BSC',
+  POLYGON='POLYGON'
+}
 export interface BlockchainInfo {
   tokenExchanges: TokenInfo[];
   chainId: number;
-  chainName: string;
+  chainName: CHAIN_NAME;
   id: number;
+}
+
+export enum TOKEN_NAME {
+  USDC='USDC-PB',
+  USDT='USDT-PB'
 }
 export interface TokenInfo {
   recipientAddress: string;
   coinIdentifier: string;
   exchangeRate: uC4eToUsd;
   id: number;
-  name: string;
+  name: TOKEN_NAME;
   decimals: number;
 }
 export interface RoundInfoResponse {
