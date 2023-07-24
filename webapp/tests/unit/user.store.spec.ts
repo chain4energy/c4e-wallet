@@ -79,7 +79,7 @@ describe('user store tests', () => {
   });
 
   it('connects Keplr - base account exists', async () => {
-    testConnectBaseAccountExists(async () => {await useUserStore().connectKeplr();}, ConnectionType.Keplr);
+     testConnectBaseAccountExists(async () => {await useUserStore().connectKeplr();}, ConnectionType.Keplr);
   });
 
   it('connects Keplr - account does not exist', async () => {
@@ -110,6 +110,38 @@ describe('user store tests', () => {
     testConnectUndelegationError(async () => {await useUserStore().connectKeplr();});
   });
 
+  it('connects Cosmostation - base account exists', async () => {
+    testConnectBaseAccountExists(async () => {await useUserStore().connectCosmostation();}, ConnectionType.Cosmostation);
+  });
+
+  it('connects Cosmostation - account does not exist', async () => {
+    testConnectAccountDoesNotExist(async () => {await useUserStore().connectCosmostation();}, ConnectionType.Cosmostation);
+  });
+
+  it('connects Cosmostation - coninuous vesting account exists', async () => {
+    testConnectConinuousVestingAccountExists(async () => {await useUserStore().connectCosmostation();}, ConnectionType.Cosmostation);
+  });
+
+  it('connects Cosmostation - account error', async () => {
+    testConnectAccountError(async () => {await useUserStore().connectCosmostation();});
+  });
+
+  it('connects Cosmostation - balance error', async () => {
+    testConnectBalanceError(async () => {await useUserStore().connectCosmostation();});
+  });
+
+  it('connects Cosmostation - rewards error', async () => {
+    testConnectRewardsError(async () => {await useUserStore().connectCosmostation();});
+  });
+
+  it('connects Cosmostation - delegations error', async () => {
+    testConnectDelegationsError(async () => {await useUserStore().connectCosmostation();});
+  });
+
+  it('connects Cosmostation - undelegations error', async () => {
+    testConnectUndelegationError(async () => {await useUserStore().connectCosmostation();});
+  });
+
   it('connects Keplr - Keplr not installed', async () => {
     const balanceAmount = '49031887606805'
     const userStore = useUserStore();
@@ -133,6 +165,32 @@ describe('user store tests', () => {
       expectDisconnected();
     } finally {
       window.keplr = keplr;
+    }
+  });
+
+  it('connects Cosmostation - Cosmostation not installed', async () => {
+    const balanceAmount = '49031887606805'
+    const userStore = useUserStore();
+    userStore.logOut();
+    const account = { data: createBaseAccountResponseData(address) };
+    const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const rewards = { data: createRewardsResponseData() };
+    const delegations = { data: createDelegatorDelegationsResponseData(address) };
+    const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
+
+    mockedAxios.request.mockResolvedValueOnce(account);
+    mockedAxios.request.mockResolvedValueOnce(balance);
+    mockedAxios.request.mockResolvedValueOnce(rewards);
+    mockedAxios.request.mockResolvedValueOnce(delegations);
+    mockedAxios.request.mockResolvedValueOnce(undelegations);
+
+    const cosmostation = window.cosmostation;
+    window.cosmostation = undefined;
+    try {
+      await useUserStore().connectCosmostation();
+      expectDisconnected();
+    } finally {
+      window.cosmostation = cosmostation;
     }
   });
 

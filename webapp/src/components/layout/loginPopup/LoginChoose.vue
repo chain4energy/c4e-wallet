@@ -8,7 +8,7 @@
 
     <p>{{ $t('CONNECT.WELCOME_MESSAGE') }}</p>
     <div class="loginChoose__body">
-      <div class="box" @click="$emit('typeChange', LoginEmail)">
+      <div v-if="props.showAddressOption" class="box" @click="$emit('typeChange', LoginEmail)">
         <div class="iconContainer">
           <Icon class="icon" name="Globe"></Icon>
         </div>
@@ -24,6 +24,28 @@
           <img style="height:50px;;padding-top: 6px;" src="@/assets/keplrIcon2.png">
         </div>
         <span>{{ $t('CONNECT.CONNECT_KEPLR') }}</span>
+        <div style="margin-left:auto" class="nextStep">
+          <div class="iconContainer" style="background-color: #72bf44">
+            <Icon style="color:white" class="icon" name="ArrowRightCircle"></Icon>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 10px" class="box" @click="$emit('cosmostation')" v-if="!isMobile()">
+        <div style="margin-left: 25px; margin-right: 20px; ">
+          <img style="height:50px;;padding-top: 6px;" src="@/assets/cosmostationIcon.png">
+        </div>
+        <span>{{ $t('CONNECT.CONNECT_COSMOSTATION') }}</span>
+        <div style="margin-left:auto" class="nextStep">
+          <div class="iconContainer" style="background-color: #72bf44">
+            <Icon style="color:white" class="icon" name="ArrowRightCircle"></Icon>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 10px" class="box" @click="$emit('leap')" v-if="!isMobile()">
+        <div style="margin-left: 25px; margin-right: 20px; ">
+          <img style="height:50px;;padding-top: 6px;" src="@/assets/leapIcon.png">
+        </div>
+        <span>{{ $t('CONNECT.CONNECT_LEAP') }}</span>
         <div style="margin-left:auto" class="nextStep">
           <div class="iconContainer" style="background-color: #72bf44">
             <Icon style="color:white" class="icon" name="ArrowRightCircle"></Icon>
@@ -50,7 +72,16 @@
 <script setup lang="ts">
 import KeplrLogo from '@/components/commons/KeplrLogo.vue';
 import LoginEmail from '@/components/layout/loginPopup/LoginAddress.vue';
+import {Validator} from "@/models/store/validator";
+import {RedelegationDirection} from "@/components/staking/StakingRedelegate";
 
+const props = defineProps({
+  showAddressOption: {
+    type: Boolean,
+    default: true,
+    required: false
+  }
+});
 function isMobile() {
    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
      return true;
@@ -147,6 +178,8 @@ function isMobile() {
         .icon {
           margin-left: 0;
           margin-right:0;
+          height: 24px;
+          width: 24px;
         }
       }
     }

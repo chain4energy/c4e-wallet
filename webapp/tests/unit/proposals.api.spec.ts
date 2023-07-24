@@ -99,7 +99,7 @@ describe('test proposals API', () => {
     expect(result.error?.name).toBe(defaultErrorName);
     expect(result.error?.message).toBe('mapTallyParams - tally params is undefined');
     expect(result.error?.data).toBeUndefined();
-    
+
   });
 
   it('fetch tally params - error', async ()=> {
@@ -116,7 +116,7 @@ describe('test proposals API', () => {
     expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
-  
+
   });
 
 
@@ -152,7 +152,7 @@ describe('test proposals API', () => {
     expect(result.error?.name).toBe(defaultErrorName);
     expect(result.error?.message).toBe('mapDepositParams - deposit params is undefined');
     expect(result.error?.data).toBeUndefined();
-    
+
   });
 
   it('fetch deposit params - error', async ()=> {
@@ -169,22 +169,22 @@ describe('test proposals API', () => {
     expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
-  
+
   });
-  
-  
+
+
   it('fetch one proposal', async ()=> {
     const proposal = {
       data: createProposalResponseData()
     };
 
     mockedAxios.request.mockResolvedValue(proposal);
-    const result = await api.fetchProposalById(Number(proposal.data.proposal.proposal_id), false)
+    const result = await api.fetchProposalById(Number(proposal.data.proposal.id), false)
     expect(result.isError()).toBe(false)
     expect(result.isSuccess()).toBe(true)
     expect(result.error).toBeUndefined();
     expect(result.data).not.toBeUndefined();
-    expect(result.data?.proposal.proposalId).toEqual(Number(proposal.data.proposal.proposal_id))
+    expect(result.data?.proposal.proposalId).toEqual(Number(proposal.data.proposal.id))
   });
 
   it('fetch one proposal - wrong data', async ()=> {
@@ -201,7 +201,7 @@ describe('test proposals API', () => {
     expect(result.error?.name).toBe(defaultErrorName);
     expect(result.error?.message).toBe('Proposal is undefined');
     expect(result.error?.data).toBeUndefined();
-    
+
   });
 
   it('fetch one proposal - error', async ()=> {
@@ -218,7 +218,7 @@ describe('test proposals API', () => {
     expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
-  
+
   });
 
 
@@ -264,7 +264,7 @@ describe('test proposals API', () => {
     expect(result.error?.name).toBe(defaultErrorName);
     expect(result.error?.message).toBe('mapProposalTallyResult -tally is undefined');
     expect(result.error?.data).toBeUndefined();
-    
+
   });
 
   it('fetch tally result - error', async ()=> {
@@ -281,7 +281,7 @@ describe('test proposals API', () => {
     expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data?.code).toBe(3);
     expect(result.error?.data?.message).toBe(errorMessage);
-  
+
   });
 
 
@@ -327,7 +327,7 @@ describe('test proposals API', () => {
     expect(result.error?.data?.errors).not.toBeUndefined();
     expect(result.error?.data?.errors.length).toBe(1);
     expect(result.error?.data?.errors[0].message).toBe(errMessage);
-    
+
   });
 
   it('fetch user vote - wrong data', async ()=> {
@@ -342,7 +342,7 @@ describe('test proposals API', () => {
     expect(result.error?.name).toBe(defaultErrorName);
     expect(result.error?.message).toBe('mapProposalVoteResponse - proposal vote response data is undefined');
     expect(result.error?.data).toBeUndefined();
-    
+
   });
 
   it('fetch user vote - error', async ()=> {
@@ -356,6 +356,6 @@ describe('test proposals API', () => {
     expect(result.error?.name).toBe(defaultAxiosErrorName);
     expect(result.error?.message).toBe(axiosErrorMessagePrefix + status);
     expect(result.error?.data).toBeUndefined();
-  
+
   });
 });

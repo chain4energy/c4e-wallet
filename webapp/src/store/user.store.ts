@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {Account, AccountType} from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
+import factoryApi from "@/api/factory.api";
 import {ConnectionError, ConnectionInfo, ConnectionType} from "@/api/wallet.connecton.api";
 import {useToast} from "vue-toastification";
 import {RequestResponse} from '@/models/request-response';
@@ -17,7 +18,7 @@ import i18n from "@/plugins/i18n";
 import {useProposalsStore} from "./proposals.store";
 import {VoteOption} from "@/models/store/proposal";
 import TxToast from "@/components/commons/TxToast.vue";
-import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
+import {FaucetErrorEnum} from "@/models/faucet";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -57,6 +58,10 @@ export const useUserStore = defineStore({
         await this.connectKeplr(onSuccess);
       } else if(this.connectionInfo.connectionType === ConnectionType.Address){
         await this.connectAsAddress(this.connectionInfo.account, onSuccess);
+      } else if(this.connectionInfo.connectionType === ConnectionType.Cosmostation){
+        await this.connectCosmostation(onSuccess);
+      } else if(this.connectionInfo.connectionType === ConnectionType.Leap){
+        await this.connectLeap(onSuccess);
       }
     },
     async connectKeplr(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
@@ -64,6 +69,18 @@ export const useUserStore = defineStore({
         apiFactory.walletApi().connectKeplr(),
         onSuccess
         );
+    },
+    async connectCosmostation(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
+      await this.connect(
+        apiFactory.walletApi().connectCosmostation(),
+        onSuccess
+      );
+    },
+    async connectLeap(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
+      await this.connect(
+        apiFactory.walletApi().connectLeap(),
+        onSuccess
+      );
     },
     async connectAsAddress(address: string, onSuccess?: (connectionInfo: ConnectionInfo) => void) {
       await this.connect(
@@ -241,7 +258,23 @@ export const useUserStore = defineStore({
         toast.success(i18n.global.t('TOAST.SUCCESS.ADDRESS_DISCONNECTED', {address: address}));
       }
       logger.logToConsole(LogLevel.DEBUG, 'logOut after: ', JSON.stringify(this.connectionInfo));
-    }
+    },
+    async topUpAccount(address: string, recaptchaToken: string, successCallback: () => void , failCallback: (errorType: FaucetErrorEnum) => void){
+        await factoryApi.faucetApi().topUpAccount(address, recaptchaToken).then(res => {
+          if(res.isSuccess()) {
+            if(this.account.address) {
+              fetchBalance(this.connectionInfo, this, true);
+            }
+            successCallback();
+          } else {
+            let errorType: FaucetErrorEnum = FaucetErrorEnum.UNKNOWN;
+            if(res.error?.status == 429) {
+              errorType = FaucetErrorEnum.TOO_MANY_REQUESTS;
+            }
+            failCallback(errorType);
+          }
+        });
+    },
   },
   getters: {
     getConnectionType(): ConnectionType {
@@ -398,7 +431,7 @@ function onTxDeliverySuccess(tx?: TxData) {
         tx: tx
       },
     };
-    toast.success(content, {icon: true,});
+    toast.success(content);
   } else {
     logger.logToConsole(LogLevel.WARNING, `Tx delivered successfully but cannt get TX data`);
     toast.warning(`Tx delivered successfully but cannt get TX data`);

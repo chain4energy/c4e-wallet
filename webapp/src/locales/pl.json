@@ -6,6 +6,8 @@
     "CONNECT": "zaloguj",
     "CONNECT_ADDRESS": "Zaloguj się z adresem",
     "CONNECT_KEPLR": "Zaloguj się z Keplrem",
+    "CONNECT_LEAP": "Zaloguj się z Leap",
+    "CONNECT_COSMOSTATION": "Zaloguj się z Cosmostation",
     "ADDRESS_HELP": "Przeglądaj z dowolnym adresem",
     "VIEW_EXPLORER": "Zobacz w eksploratorze",
     "COPY": "Kopiuj",
@@ -100,7 +102,7 @@
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Oddelegowane tokeny",
-    "VALIDATORS": "Walidatory",
+    "VALIDATORS": "Walidatorzy",
     "LATEST_BLOCK": "Ostatni blok",
     "TOTAL_SUPPLY": "Całkowita podaż",
     "MAX_SUPPLY": "Maksymalna podaż",
@@ -308,7 +310,7 @@
         "REDELEGATE_FROM_VALIDATOR": "Redelegate from"
       }
     },
-    "VALIDATORS": "Walidatory",
+    "VALIDATORS": "Walidatorzy",
     "NO_VALIDATORS": "nie znaleziono walidatorów",
     "VALIDATORS_LOADING" : "Ładowanie danych walidatorów. Proszę czekać.",
     "USER_DELEGATIONS": "Your delegations",
@@ -319,7 +321,7 @@
     "AVAILABLE": "Do dyspozycji",
     "STAKED": "Oddelegowane",
     "UNSTAKING": "Odblokowywanie",
-    "CLAIM_REWARDS": "Odbierz nagrody",
+    "CLAIM_REWARDS": "Odbierz",
     "LOCKED": "Zablokowane",
     "VESTING_END": "Data uwolnienia",
     "CLAIM_HEADER": "Oczekująca nagroda"
@@ -353,7 +355,8 @@
     "FAQ": "FAQ",
     "PRIVACY_POLICY": "Polityka prywatności",
     "TERMS_CONDITIONS": "Zasady i warunki użytkowania",
-    "AIRDROP": "Airdrop"
+    "AIRDROP": "Airdrop",
+    "FAUCET": "Kranik"
   },
   "TOAST": {
     "SUCCESS": {
@@ -364,21 +367,33 @@
         "HASH": "Hash",
         "GAS_USED": "Gaz",
         "HEIGHT": "Blok"
-      }
+      },
+      "TOP_UP": "Doładowano konto"
     },
     "ERROR": {
       "TX_DELIVERY": {
         "TITLE": "Błąd transakcji!!!",
         "CODE": "Kod"
-      }
+      },
+      "TOP_UP": "Nie udało się doładować konta",
+      "TOO_MANY_REQUESTS": "Przekroczono limit doładowań. Spróbuj ponownie za 24 godziny"
+    },
+    "INTERNET_CONNECTION": {
+      "ONLINE": "Przywrócono połączenie z internetem",
+      "OFFLINE": "Jesteś teraz w trybie offline"
     }
   },
   "AIRDROP": {
-    "CONNECT": "zaloguj z Keplr",
+    "CONNECT": "Połącz się z portfelem",
     "OR": "lub",
     "C4E_HELP": "Wprowadź adres C4E lub COSMOS",
     "COSMOS_HELP": "Wprowadź adres cosmos",
-    "CHECK": "Check"
+    "CHECK": "Sprawdź",
+    "CHECK_ALLOCATION": "Sprawdź Alokację",
+    "CLAIM_AIRDROP": "Odbierz Airdrop",
+    "FAIRDROP_ALLOCATION": "Całkowita alokacja Fairdrop",
+    "FOOTER_HEADER": "Co dalej? Obserwuj nas, aby być na bieżąco z aktualizacjami.",
+    "FOOTER_TEXT": "Połącz się z nami, aby być na bieżąco z airdropem i nowościami w C4E."
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Odliczanie kampanii"
@@ -388,5 +403,20 @@
     "ADDRESS": "Adres został skopiowany do schowka",
     "TX_HASH": "Hash transakcji skopiowany do schowka"
   },
-  "NUMBER_FORMAT_LOCALE": "pl-PL"
+  "NUMBER_FORMAT_LOCALE": "pl-PL",
+  "FOOTER": {
+    "HELP": "Pomoc",
+    "TERMS": "Zasady i warunki",
+    "PRIVACY": "Polityka prywatności"
+  },
+  "HEADER": {
+    "TOP_UP_ACCOUNT": "Kranik",
+    "VERSION": "Wersja"
+  },
+  "FAUCET": {
+    "WELCOME": "Witamy w naszej sieci testowej! Szukasz tokenów na start?\nMożesz doładować swoje konto 100 C4E co 24 godziny",
+    "REQUEST_TOKENS": "Doładuj Tokeny",
+    "INPUT_ADDRESS": "Podaj adres na który zostaną doładowane tokeny",
+    "TITLE": "Kranik C4E"
+  }
 }

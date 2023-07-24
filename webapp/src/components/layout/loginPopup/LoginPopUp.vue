@@ -4,9 +4,12 @@
   <div class="loginPopup__holder">
     <transition v-bind="loginType" name="slide-fade" mode="out-in">
       <component @keplr="keplrConnect"
+                 @leap="leapConnect"
                  @back="loginType = LoginChoose"
                  @typeChange="(comp) => loginType = comp"
                  @close="$emit('close')"
+                 @cosmostation="cosmostationConnect"
+                 :showAddressOption="props.showAddressOption"
                  v-bind:is="loginType">
       </component>
     </transition>
@@ -19,6 +22,14 @@ import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue';
 
 import { onUnmounted, shallowRef } from "vue";
 import dataService from '@/services/data.service';
+
+const props = defineProps({
+  showAddressOption: {
+    type: Boolean,
+    default: true,
+    required: false
+  }
+});
 
 document.body.style.overflow = "hidden";
 onUnmounted(() => {
@@ -39,6 +50,13 @@ function keplrConnect(){
   //   }
   // });
 }
+function cosmostationConnect() {
+  dataService.onCosmostationLogIn(() => {emit('close');});
+}
+
+const leapConnect = () => {
+  dataService.onLeapLogIn(() => {emit('close');});
+};
 
 </script>
 

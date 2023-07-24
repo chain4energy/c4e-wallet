@@ -23,11 +23,11 @@ import {
 export class AirDropApi extends BaseApi {
 
   private AIRDROP_INFO_URL = queries.airdrop.AIRDROP_INFO;
-  private USER_AIRDROP_ENTRIES_URL = queries.blockchain.USER_AIRDROP_ENTRIES_URL;
-  private CAMPAIGNS_URL = queries.blockchain.CAMPAIGNS_URL;
-  private MISSIONS_URL = queries.blockchain.MISSIONS_URL;
-  private AIRDROP_DISTRIBUTIONS = queries.blockchain.AIRDROP_DISTRIBUTIONS;
-  private AIRDROP_CLAIMS_LEFT = queries.blockchain.AIRDROP_CLAIMS_LEFT
+  // private USER_AIRDROP_ENTRIES_URL = useConfigurationStore().config.queries.USER_AIRDROP_ENTRIES_URL;
+  // private CAMPAIGNS_URL = useConfigurationStore().config.queries.CAMPAIGNS_URL;
+  // private MISSIONS_URL = useConfigurationStore().config.queries.MISSIONS_URL;
+  // private AIRDROP_DISTRIBUTIONS = useConfigurationStore().config.queries.AIRDROP_DISTRIBUTIONS;
+  // private AIRDROP_CLAIMS_LEFT = useConfigurationStore().config.queries.AIRDROP_CLAIMS_LEFT
 
   private useMockData = false;
 
@@ -68,7 +68,7 @@ export class AirDropApi extends BaseApi {
       return bcData;
     };
 
-    return await this.axiosGetBlockchainApiCall(formatString(this.USER_AIRDROP_ENTRIES_URL, {address: address}),
+    return await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.USER_AIRDROP_ENTRIES_URL, {address: address}),
       mapData, lockscreen, null, 'fetchUserAirdropEntries - ');
 
   }
@@ -80,7 +80,7 @@ export class AirDropApi extends BaseApi {
       }
       return bcData;
     };
-      return await this.axiosGetBlockchainApiCall(this.CAMPAIGNS_URL,
+      return await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.CAMPAIGNS_URL,
         mapData, lockscreen, null, 'fetchCampaigns - ');
   }
 
@@ -92,7 +92,7 @@ export class AirDropApi extends BaseApi {
       return bcData;
     };
 
-    return await this.axiosGetBlockchainApiCall(this.MISSIONS_URL,
+    return await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.MISSIONS_URL,
       mapData, lockscreen, null, 'fetchMissions - ');
 
   }
@@ -104,7 +104,7 @@ export class AirDropApi extends BaseApi {
       }
       return bcData;
     };
-    return await this.axiosGetBlockchainApiCall(formatString(this.AIRDROP_DISTRIBUTIONS, {campaign_id: campaignId}),
+    return await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.AIRDROP_DISTRIBUTIONS, {campaign_id: campaignId}),
       mapData, lockscreen, null, 'fetchAirdropDistributions - ');
   }
 
@@ -115,7 +115,7 @@ export class AirDropApi extends BaseApi {
       }
       return bcData;
     };
-    return await this.axiosGetBlockchainApiCall(formatString(this.AIRDROP_CLAIMS_LEFT, {campaign_id: campaignId}),
+    return await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.AIRDROP_CLAIMS_LEFT, {campaign_id: campaignId}),
       mapData, lockscreen, null, 'fetchAirdropClaimsLeft - ');
   }
 

@@ -10,7 +10,10 @@ data:
          "stakingPageURL": "https://wallet.c4e.io/staking",
          "addressPrefix": "c4e",
          "stakingDenom": "uc4e",
-         "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+         "strategicPoolAddress": [
+          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+         ],
          "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
          "chainId": "perun-1",
          "networkName": "Mainnet(perun-1)",
@@ -30,10 +33,11 @@ data:
            }
          ],
          "keplrGasPriceSteps": {
-           "low": 0.01,
+           "low": 0,
            "average": 0.025,
            "high": 0.03
          },
+         "reservedCoinsAmount": 250000,
          "minPeriodBetweenDataRefresh": 1000,
          "blockDataRefreshTimeout": 30000,
          "dashboardDataRefreshTimeout": 300000,
@@ -47,7 +51,9 @@ data:
          "airdropBaseURL": "https://airdrop.c4e.io/",
          "airdropDefaultDenom": "uc4e",
          "proposalVotingRefreshTimeout": 30000,
-         "targetInflationAprMultiplier": 5
+         "targetInflationAprMultiplier": 5,
+         "faucetURL": "",
+         "faucetAvailable": false
        },
        "Testnet": {
          "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -57,10 +63,13 @@ data:
          "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
          "addressPrefix": "c4e",
          "stakingDenom": "uc4e",
-         "strategicPoolAddress": "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+         "strategicPoolAddress": [
+          "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+          "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+         ],
          "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-         "chainId": "veles-1",
-         "networkName": "Testnet(veles-1)",
+         "chainId": "babajaga-1",
+         "networkName": "Testnet(babajaga-1)",
          "keplrNetworkName": "Chain4Energy Testnet",
          "operationGas": {
            "vote": 72000,
@@ -77,10 +86,11 @@ data:
            }
          ],
          "keplrGasPriceSteps": {
-           "low": 0.01,
+           "low": 0,
            "average": 0.025,
            "high": 0.03
          },
+         "reservedCoinsAmount": 250000,
          "minPeriodBetweenDataRefresh": 1000,
          "blockDataRefreshTimeout": 30000,
          "dashboardDataRefreshTimeout": 300000,
@@ -94,7 +104,9 @@ data:
          "airdropBaseURL": "https://airdrop.c4e.io/",
          "airdropDefaultDenom": "uc4e",
          "proposalVotingRefreshTimeout": 30000,
-         "targetInflationAprMultiplier": 5
+         "targetInflationAprMultiplier": 5,
+         "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
+         "faucetAvailable": true
        }
      }
 kind: ConfigMap

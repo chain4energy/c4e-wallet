@@ -48,7 +48,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Misc Improvements
 
-## [1.1.4](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.4) - 2022-02-17
+## [1.1.12](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.12) - 2023-07-24
+
+### Misc Improvements
+* Styling corrections
+
+## [1.1.11](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.11) - 2023-07-13
+
+### Misc Improvements
+* Configuration change - Set GasPriceStep Low to 0 
+
+## [1.1.10](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.10) - 2023-07-12
+
+### Bug fixes
+* Airdrop - Check Allocation - Button function change to support all wallets
+
+## [1.1.9](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.9) - 2023-07-12
+
+### Features
+* Leap wallet support
+* Faucet for testnet
+
+## [1.1.8](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.8) - 2023-04-13
+
+### Misc Improvements
+* Configuration update - Strategic Reserve poll
+
+## [1.1.7](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.7) - 2023-04-12
+
+### Misc Improvements
+* Configuration update - Strategic Reserve poll - multiple addresses support
+
+## [1.1.6](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.6) - 2023-04-12
+
+### Features
+* Cosmostation wallet support
+* Cosmos-sdk version v0.46.10 support
+* Support for new proposals types
+
+### Bug fixes
+* Wallet details view css corrections 
+* Jailed voting power always 0% 
+* Delegation problem (4671)
+
+### Misc Improvements
+* Proposals view improvements 
+* Support for no internet access (4261)
+* Toasts styling
+
+## [1.1.5](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.5) - 2023-03-03
+
+### Bug fixes
+* fix mainnet config - reservedCoinsAmount set to 250000
+
+## [1.1.4](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.4) - 2023-02-17
 
 ### Bug fixes
 * Loading spinner debounce
@@ -61,7 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added total APR
 * Proposal chart shows quorum and threshold
 
-## [1.1.3](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.3) - 2022-02-03
+## [1.1.3](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.3) - 2023-02-03
 
 ### Bug fixes
 * Direct link to proposal  
@@ -69,15 +122,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Misc Improvements
 * Voting result auto refresh
 
-## [1.1.2](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.2) - 2022-02-03
+## [1.1.2](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.2) - 2023-02-03
 ### Bug fixes
 * External link to proposal correction (link to explorer)
 
-## [1.1.1](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.1) - 2022-02-03
+## [1.1.1](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.1) - 2023-02-03
 ### Bug fixes
 * Circulating supply algorithm correction
 
-## [1.1.0](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.0) - 2022-02-03
+## [1.1.0](https://github.com/chain4energy/c4e-wallet/releases/tag/1.1.0) - 2023-02-03
 
 ### Features
 * Airdrop allocation view

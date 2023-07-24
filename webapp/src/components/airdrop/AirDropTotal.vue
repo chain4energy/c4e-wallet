@@ -1,12 +1,12 @@
 <template>
+  <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
   <div class="airDropTotal">
     <div class="airDropTotal__container">
       <div class="airDropTotal__login">
         <Button
-          @click="dataService.onKeplrLogIn()"
+          @click="loginPopupStatus =! loginPopupStatus"
           v-if="!userLoggedIn  && !isMobile"
           class="airDropTotal-btn">
-          <KeplrLogo :reverse-colors="true"/>
           {{ $t('AIRDROP.CONNECT') }}
         </Button>
         <hr class="airDropTotal__hr" v-if="!userLoggedIn  && !isMobile" :data-after="$t('AIRDROP.OR')"/>
@@ -23,7 +23,7 @@
           <Button type="submit" class="airDropTotal__head-btn">{{ $t('AIRDROP.CHECK') }}</Button>
         </Form>
         <div class="airDropTotal__totalData">
-          <h4>Total Fairdrop Allocation</h4>
+          <h4>{{ $t('AIRDROP.FAIRDROP_ALLOCATION') }}</h4>
           <div class="airDropTotal__totalData-item">
             <div class="airDropTotal__totalData-image">
               <Image class="navbar-brand" :src="require('@/assets/c4elogo-new.svg')" alt="Image" height="58"/>
@@ -57,8 +57,8 @@
       </div>
       <hr class="airDropTotal__head-hr"/>
       <div class="airDropTotal__footer">
-        <h5 class="airDropTotal__footer-header">What's Next? Follow Us for Updates.</h5>
-        <p class="airDropTotal__footer-text">Connect with us to stay up-to-date on airdrop distribution and what's next for C4E.</p>
+        <h5 class="airDropTotal__footer-header">{{ $t('AIRDROP.FOOTER_HEADER') }}</h5>
+        <p class="airDropTotal__footer-text">{{ $t('AIRDROP.FOOTER_TEXT') }}</p>
         <div class="airDropTotal__footer-icons">
           <a href="https://t.me/chain4energy" target="_blank" class="airDropTotal__footerIcon">
             <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/telegram.svg" alt="example svg image"/>
@@ -97,6 +97,9 @@ import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import {useAirDropStore} from "@/store/airDrop.store";
 import dataService from "@/services/data.service";
 import deviceType from "@/utils/mobileCheck";
+import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
+
+const loginPopupStatus = ref(false);
 
 const address = ref<string>();
 let errorMessageType = '';

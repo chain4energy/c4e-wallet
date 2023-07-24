@@ -5,7 +5,7 @@
     "data": {"data":{"averageBlockTime":[{"averageTime":123.3758510313432835}]}}
   },
 
-  "api/cosmos/bank/v1beta1/supply/uc4e": {
+  "api/cosmos/bank/v1beta1/supply/by_denom?denom=uc4e": {
     "status": 200,
     "data": {
       "amount": {

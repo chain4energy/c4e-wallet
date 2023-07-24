@@ -11,8 +11,8 @@
         <div class="loginChoose__body">
           <div class="loginChoose__description">
             <div class="container" style="width: 100%; height: 100px;box-shadow: 0px 0px 24px 0px rgba(196, 203, 212, 1); border-radius: 20px 20px 20px 20px;">
-              <div class="logo">
-                <img style="padding-top: 6px" src="@/assets/keplrIcon.jpg">
+              <div class="logo" style="display: flex; align-items: center; justify-content:center">
+                <img style="width:50px; height: 50px" :src="logo">
               </div>
               <div class="address">
                 {{addDotsInsideTooLongString(useUserStore().getAccount.address, 35)}}
@@ -121,8 +121,10 @@ const props = defineProps({
 
 const logo = computed(() => {
   switch(props.logoutType){
-    case ConnectionType.Keplr: return '/keplrIcon.jpg';
+    case ConnectionType.Keplr: return require('@/assets/keplrIcon2.png');
     case ConnectionType.Address: return '/globe.svg';
+    case ConnectionType.Cosmostation: return require('@/assets/cosmostationIcon.png');
+    case ConnectionType.Leap: return require('@/assets/leapIcon.png');
     default : return 'Logout';
   }
 });

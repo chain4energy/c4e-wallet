@@ -11,7 +11,13 @@ const props = defineProps<{
 }>();
 
 function getProposalInfo() {
-  switch(props.proposal?.content?.type) {
+  let type = undefined;
+  if(props.proposal?.messages) {
+    type = props.proposal.messages.type;
+  } else {
+    type= props.proposal?.content?.type;
+  }
+  switch(type) {
     case '/cosmos.params.v1beta1.ParameterChangeProposal': {
       return i18n.global.t('GOVERNANCE_VIEW.PROPOSAL_TYPE.PARAMETER_CHANGE_PROPOSAL');
     }
@@ -31,7 +37,7 @@ function getProposalInfo() {
       return i18n.global.t('GOVERNANCE_VIEW.PROPOSAL_TYPE.SOFTWARE_UPGRADE_PROPOSAL');
     }
     default: {
-      return props.proposal?.content?.type;
+      return type;
     }
   }
 }

@@ -12,21 +12,21 @@
           <C4EIcon icon="c4e-circle" :size="30"/>
         </template>
       </AmountView>
-      <div class="vesting">
-        <div class="userdata__accountData-vesting-first" v-if="useUserStore().isContinuousVestingAccount">
-          <div>
-            <p>{{ $t('USER_DATA.LOCKED') }}</p>
-            <CoinAmount :amount="locked" :show-denom="true"/>
-          </div>
-        </div>
-        <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">
-          <div>
-            <p>{{ $t('USER_DATA.VESTING_END') }}</p>
-            <p><DateCommon :date="useUserStore().getAccount.continuousVestingData?.endTime"/></p>
-          </div>
-        </div>
-        <div class="userdata__amounts_last" v-if="!useUserStore().isContinuousVestingAccount"></div>
-      </div>
+<!--      <div class="vesting">-->
+<!--        <div class="userdata__accountData-vesting-first" v-if="useUserStore().isContinuousVestingAccount">-->
+<!--          <div>-->
+<!--            <p>{{ $t('USER_DATA.LOCKED') }}</p>-->
+<!--            <CoinAmount :amount="locked" :show-denom="true"/>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="userdata__accountData-vesting" v-if="useUserStore().isContinuousVestingAccount">-->
+<!--          <div>-->
+<!--            <p>{{ $t('USER_DATA.VESTING_END') }}</p>-->
+<!--            <p><DateCommon :date="useUserStore().getAccount.continuousVestingData?.endTime"/></p>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="userdata__amounts_last" v-if="!useUserStore().isContinuousVestingAccount"></div>-->
+<!--      </div>-->
   </div>
 
   </div>

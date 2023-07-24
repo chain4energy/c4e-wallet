@@ -8,6 +8,7 @@ import GovernanceDetailsView from '../views/GovernanceDetailsView.vue';
 import ProposalsList from '@/components/governance/ProposalsList.vue';
 import stakingRoutes from "@/router/stakingRoutes";
 import AirDropView from "@/views/AirDropView.vue";
+import FaucetView from "@/views/FaucetView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -66,6 +67,14 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/:pathMatch(.*)*',
     redirect: '/',
+  },
+  {
+    path: '/faucet',
+    name: 'faucet',
+    component: FaucetView,
+    meta: {
+      requiresNotMainNetwork: true
+    }
   }
 ];
 

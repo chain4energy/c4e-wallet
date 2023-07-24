@@ -6,6 +6,8 @@
     "CONNECT": "Connect",
     "CONNECT_ADDRESS": "Connect with address",
     "CONNECT_KEPLR": "Connect with Keplr wallet",
+    "CONNECT_LEAP": "Connect with Leap wallet",
+    "CONNECT_COSMOSTATION": "Connect with Cosmostation wallet",
     "ADDRESS_HELP": "Explore with any address",
     "VIEW_EXPLORER": "View on explorer",
     "COPY": "Copy",
@@ -324,7 +326,7 @@
     "AVAILABLE": "Available",
     "STAKED": "Staked",
     "UNSTAKING": "Unstaking",
-    "CLAIM_REWARDS": "Claim Rewards",
+    "CLAIM_REWARDS": "Claim",
     "LOCKED": "Locked",
     "VESTING_END": "Vesting end",
     "CLAIM_HEADER": "Pending Staking Reward"
@@ -346,7 +348,7 @@
   },
   "ERRORS": {
     "CONNECT": "You Have to be connected",
-    "CONNECT_WALLET": "You Have to be connected with Keplr"
+    "CONNECT_WALLET": "You Have to be connected to the wallet"
   },
   "SECTION_TITLES": {
     "STAKING": "Staking",
@@ -358,33 +360,46 @@
     "FAQ": "FAQ",
     "PRIVACY_POLICY": "Privacy policy",
     "TERMS_CONDITIONS": "Terms & conditions",
-    "AIRDROP": "Airdrop"
+    "AIRDROP": "Airdrop",
+    "FAUCET": "Faucet"
   },
   "TOAST": {
     "SUCCESS": {
       "ADDRESS_CONNECTED": "Address: '{address}' Connected",
       "ADDRESS_DISCONNECTED": "Address: '{address}' Disconnected",
       "TX_DELIVERY": {
-        "TITLE": "TX delivery: Success!!!",
+        "TITLE": "Transaction Successful",
         "HASH": "Hash",
         "GAS_USED": "Gas Used",
         "HEIGHT": "Height"
-      }
+      },
+      "TOP_UP": "Top up successful"
     },
     "ERROR": {
       "TX_DELIVERY": {
-        "TITLE": "TX delivery: Failure!!!",
+        "TITLE": "Transaction Failed",
         "CODE": "Code"
-      }
+      },
+      "TOP_UP": "Top up error",
+      "TOO_MANY_REQUESTS": "Top-up limit exceeded. Please come back in 24 hours."
+    },
+    "INTERNET_CONNECTION": {
+      "ONLINE": "Your internet connection was restored.",
+      "OFFLINE": "You are currently offline."
     }
   },
   "AIRDROP": {
-    "CONNECT": "Connect with Keplr",
+    "CONNECT": "Connect to wallet",
     "OR": "or",
     "CONNECT_CHAINS": "Connect with COSM/C4E account",
     "C4E_HELP": "Provide C4E or COSMOS address",
     "COSMOS_HELP": "Import COSMOS address",
-    "CHECK": "Check"
+    "CHECK": "Check",
+    "CHECK_ALLOCATION": "Check Allocation",
+    "CLAIM_AIRDROP": "Claim Airdrop",
+    "FAIRDROP_ALLOCATION": "Total Fairdrop Allocation",
+    "FOOTER_HEADER": "What's Next? Follow Us for Updates.",
+    "FOOTER_TEXT": "Connect with us to stay up-to-date on airdrop distribution and what's next for C4E."
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Campaign countdown"
@@ -394,5 +409,20 @@
     "TX_HASH": "TX hash has been copied to clipboard"
   },
   "DISCLAIMER": "The information provided on this website; web applications; mobile applications does not constitute investment advice, financial advice, trading advice, or any other sort of advice and you should not treat any of the content as such. Crescent Foundation Limited(”Crescent Foundation”) does not recommend that any cryptocurrency should be bought, sold, or held by you. Do conduct your own due diligence and consult your financial advisor before making any investment decisions. </br> Crescent Foundation will strive to ensure accuracy of information listed on this website; web applications; mobile applications although it will not hold any responsibility for any missing or wrong information. Crescent Foundation provides all information *as is.* You understand that you are using any and all information available here at your own risk.<br/>The appearance of third party advertisements and hyperlinks on this website; web applications; mobile applications does not constitute an endorsement, guarantee, warranty, or recommendation by Crescent Foundation. Do conduct your own due diligence before deciding to use any third party services.<br/>Before using our service, you should review the relevant <a href='https://docs.c4e.io/' target='_blank'>documentation</a> to make sure you understand how the service works.",
-  "NUMBER_FORMAT_LOCALE": "en-US"
+  "NUMBER_FORMAT_LOCALE": "en-US",
+  "FOOTER": {
+    "HELP": "Help",
+    "TERMS": "Terms & Conditions",
+    "PRIVACY": "Privacy Policy"
+  },
+  "HEADER": {
+    "TOP_UP_ACCOUNT": "Faucet",
+    "VERSION": "Version"
+  },
+  "FAUCET": {
+    "WELCOME": "Welcome to our testnet! Are you looking for some tokens to start?\nYou can top up your account with 100 C4E every 24 hours",
+    "REQUEST_TOKENS": "Request Tokens",
+    "INPUT_ADDRESS": "Input an address to request token",
+    "TITLE": "C4E Faucet"
+  }
 }

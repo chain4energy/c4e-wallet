@@ -11,6 +11,7 @@ export class SidebarConfig{
     this.config.set(PagesEnum.STAKING, this.createStaking());
     this.config.set(PagesEnum.GOVERNANCE, this.createGovernance());
     this.config.set(PagesEnum.AirDrop, this.createAirDrop());
+    this.config.set(PagesEnum.FAUCET, this.createFaucet());
   }
 
   getConfigForPage(page: PagesEnum): SidebarElement | undefined{
@@ -52,6 +53,14 @@ export class SidebarConfig{
     retVal.icon = new SidebarIcon('Award');
     return retVal;
   }
+  private createFaucet(): SidebarElement{
+    const retVal = new SidebarElement();
+    retVal.id = 4;
+    retVal.href = '/faucet';
+    retVal.title = 'Faucet';
+    retVal.icon = new SidebarIcon('', SideBarIconType.FAUCET);
+    return retVal;
+  }
 
 }
 
@@ -65,7 +74,8 @@ export class SidebarElement {
 
 export enum SideBarIconType {
   LUCIDE,
-  GOV
+  GOV,
+  FAUCET
 }
 export class SidebarIcon {
   element: string;

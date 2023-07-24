@@ -45,7 +45,7 @@
 
       <div class="container-fluid d-flex justify-content-between">
         <span class="d-flex" style="align-items: center">
-        <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36"/>
+        <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" @click="onLogoClick()" />
         <div class="bottom-container">
         <h2>{{ $t("SECTION_TITLES." + currentRouteName?.toUpperCase()) }}</h2>
           <breadcrumbs-component/>
@@ -55,7 +55,8 @@
         <div class="navbar-nav menu" style="align-items: center">
 
           <div @click="openAccInfo" class="acc-address" v-if="useUserStore().isLoggedIn">
-            <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
+            <KeplrLogo :letter="getLetter()" v-if="displayLogo"/>
+
             <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
             <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName }}: </span>
             {{ useUserStore().getAccount.address.slice(0, 8) }}...{{ useUserStore().getAccount.address.slice(-6) }}
@@ -140,13 +141,14 @@ import LogoutKeplr from "@/components/layout/loginPopup/LogoutConfirm.vue";
 import {SideBarIconType} from "@/services/permissions/sidebar.config";
 import {useConfigurationStore} from '@/store/configuration.store';
 import {changeTitle} from "@/utils/title-changer";
-import {useRouter} from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 import {useGlobalFilterStore} from "@/store/global-filter.store";
 import {computed, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {PermissionsService} from "@/services/permissions/permissions.service";
 import KeplrLogo from '../commons/KeplrLogo.vue';
 import * as GovernanceIcon from "@/components/commons/GovernanceIcon.vue";
+import dataService from "@/services/data.service";
 
 const router = useRouter();
 const globalFilter = useGlobalFilterStore();
@@ -183,6 +185,19 @@ const selected = computed(() => {
 const currentRouteName = computed(() => {
   return router.currentRoute.value.name;
 });
+const displayLogo = () => {
+  return useUserStore().connectionInfo.isKeplr() || useUserStore().connectionInfo.isLeap() || useUserStore().connectionInfo.isCosmostation();
+};
+
+const getLetter = () => {
+  if(useUserStore().connectionInfo.isCosmostation()) {
+    return 'C';
+  } else if(useUserStore().connectionInfo.isKeplr()) {
+    return 'K';
+  } else if(useUserStore().connectionInfo.isLeap()) {
+    return 'L';
+  }
+};
 
 function openAccInfo() {
   logoutPopupStatus.value = !logoutPopupStatus.value;
@@ -190,9 +205,17 @@ function openAccInfo() {
 
 function logout() {
   // const latestBlock = computed(() => useBlockStore().getLatestBlock);
-  useUserStore().logOut();
+  dataService.onLogOut();
 }
+const route= useRoute();
+const onLogoClick = () => {
 
+  if(route.name == 'Dashboard') {
+    window.location.reload();
+  } else {
+    router.push({name: 'Dashboard'});
+  }
+};
 </script>
 
 <style scoped lang="scss">

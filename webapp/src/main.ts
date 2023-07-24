@@ -22,7 +22,7 @@ import 'bootstrap/scss/bootstrap.scss';
 // import { library } from '@fortawesome/fontawesome-svg-core';
 // import { faCheck, faGlobe, faTimes } from '@fortawesome/free-solid-svg-icons';
 // import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'; // https://github.com/FortAwesome/vue-fontawesome
-import Toast, {PluginOptions, POSITION} from 'vue-toastification'; // https://openbase.com/js/vue-toastification
+import Toast, {PluginOptions, POSITION, TYPE} from 'vue-toastification'; // https://openbase.com/js/vue-toastification
 import 'vue-toastification/dist/index.css';
 // import vuetify from './plugins/vuetify';
 import i18n from '@/plugins/i18n';
@@ -56,6 +56,13 @@ import Tooltip from 'primevue/tooltip';
 import AccordionTab from "primevue/accordiontab";
 import Accordion from "primevue/accordion";
 // import {createI18n} from "vue-i18n";
+import "./styles/toasts.scss";
+import SuccessIcon from "@/components/features/SuccessIcon.vue";
+import ErrorIcon from "@/components/features/ErrorIcon.vue";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { VueRecaptchaPlugin } from 'vue-recaptcha/head'
+
 
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
@@ -64,17 +71,26 @@ import Accordion from "primevue/accordion";
 
 const toastOptions: PluginOptions = {
   // You can set your default options here
-  position: POSITION.BOTTOM_RIGHT
+  position: POSITION.BOTTOM_RIGHT,
+  toastDefaults: {
+    [TYPE.SUCCESS]: {
+      icon: SuccessIcon,
+    },
+    [TYPE.ERROR]: {
+      icon: ErrorIcon,
+    },
+  }
 
 };
 
-const app = createApp(App);
+
 const pinia = createPinia();
 pinia.use(piniaPersist);
 const logger = new LoggerService();
 // const i18n = createI18n({
 //   legacy: false
 // });
+const app = createApp(App);
 
 app.use(router)
   .use(pinia)
@@ -84,6 +100,9 @@ app.use(router)
   .use(PrimeVue)
   // .use(Vidle)
   .use(VueSvgInlinePlugin)
+  .use(VueRecaptchaPlugin, {
+    v2SiteKey: '6Lc2fTYmAAAAAEQSYDkeecH1xPPvVD3T1UrBbpac'
+   })
   .provide('logger', logger)
   .component('Button', Button)
   .component('InputText', InputText)

@@ -13,7 +13,9 @@ export function createRouterBeforeEach (logger: LoggerService) {
     if(!useConfigurationStore().getInitialized) {
       await waitTillCondition(() => useConfigurationStore().getInitialized);
     }
-
+    if(to.meta.requiresNotMainNetwork == true && !useConfigurationStore().config.faucetAvailable) {
+      next('/');
+    }
     if (to.matched.some(record => record.meta.requiresAuth)) {
       if (useUserStore().isLoggedIn) {
         next();

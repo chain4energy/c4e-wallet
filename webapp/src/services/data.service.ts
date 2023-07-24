@@ -10,9 +10,13 @@ import {LogLevel} from "./logger/log-level";
 import {ServiceTypeEnum} from "./logger/service-type.enum";
 import {ConnectionInfo} from "@/api/wallet.connecton.api";
 import {useAirDropStore} from "@/store/airDrop.store";
-
+import {useToast} from "vue-toastification";
+import WifiIcon from '@/components/features/WifiOnIcon.vue';
+import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
+import {useI18n} from "vue-i18n";
 const keplrKeyStoreChange = 'keplr_keystorechange';
-
+const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
+const leapKeyStoreChange = 'leap_keystorechange';
 class DataService extends LoggedService {
 
   private minBetweenRefreshmentsPeriod = 1000;
@@ -33,6 +37,7 @@ class DataService extends LoggedService {
   private onProposalDetailsError?: () => void;
 
   private static instance: DataService;
+  private isOnline = navigator.onLine;
 
   public static getInstance(): DataService {
     if (!DataService.instance) {
@@ -46,6 +51,18 @@ class DataService extends LoggedService {
   }
 
   public async onAppStart() {
+    const i18n = useI18n();
+    window.addEventListener('offline', () => {
+      this.isOnline = navigator.onLine;
+      useToast().error(i18n.t('TOAST.INTERNET_CONNECTION.OFFLINE'), {icon: WifiOffIcon, timeout: false});
+      this.clearIntervals();
+    });
+    window.addEventListener('online', () => {
+      this.isOnline = navigator.onLine;
+      useToast().clear();
+      useToast().error(i18n.t('TOAST.INTERNET_CONNECTION.ONLINE'), {icon: WifiIcon });
+      this.setIntervals();
+    });
     this.logToConsole(LogLevel.DEBUG, 'onAppStart');
     await useConfigurationStore().fetchConfigList().then(() => {
         const config = useConfigurationStore().getConfig;
@@ -57,38 +74,40 @@ class DataService extends LoggedService {
       }
     );
     window.addEventListener('focus', () => {
-      this.refreshBlocksData();
-      this.refreshDashboard();
-      this.refreshValidators();
-      this.setIntervals();
+      if(this.isOnline) {
+        this.refreshBlocksData();
+        this.refreshDashboard();
+        this.refreshValidators();
+        this.setIntervals();
+      }
     }, false);
     window.addEventListener('blur', () => {
       this.clearIntervals();
     }, false);
   }
-
   private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');
     const lockScreen = true;
     await this.waitTillCondition(() => useConfigurationStore().getInitialized);
+    if(this.isOnline) {
+      Promise.all([
+        useBlockStore().fetchLatestBlock(lockScreen),
+        useBlockStore().fetchAverageBlockTime(lockScreen),
+        useTokensStore().fetchPools(lockScreen),
+        useTokensStore().fetchTotalSupply(lockScreen),
+        useTokensStore().fetchStakingPool(lockScreen),
+        useTokensStore().fetchInflation(lockScreen),
+        useTokensStore().fetchLockedVesting(lockScreen),
+        useTokensStore().fetchDistributorParams(lockScreen),
+        useValidatorsStore().fetchValidators(lockScreen),
+        useValidatorsStore().fetchStackingParams(lockScreen),
+        useProposalsStore().fetchTallyParams(),
+        useProposalsStore().fetchDepositParams(),
 
-    Promise.all([
-      useBlockStore().fetchLatestBlock(lockScreen),
-      useBlockStore().fetchAverageBlockTime(lockScreen),
-      useTokensStore().fetchPools(lockScreen),
-      useTokensStore().fetchTotalSupply(lockScreen),
-      useTokensStore().fetchStakingPool(lockScreen),
-      useTokensStore().fetchInflation(lockScreen),
-      useTokensStore().fetchLockedVesting(lockScreen),
-      useTokensStore().fetchDistributorParams(lockScreen),
-      useValidatorsStore().fetchValidators(lockScreen),
-      useValidatorsStore().fetchStackingParams(lockScreen),
-      useProposalsStore().fetchTallyParams(),
-      useProposalsStore().fetchDepositParams(),
-
-    ]).then(() => {
+      ]).then(() => {
         this.setIntervals();
-    });
+      });
+    }
   }
   public setIntervals() {
     const now = new Date().getTime();
@@ -122,6 +141,20 @@ class DataService extends LoggedService {
     });
   }
 
+  public onCosmostationLogIn(onSuccess?: () => void) {
+    this.logToConsole(LogLevel.DEBUG, 'onCosmostationLogIn');
+    useUserStore().connectCosmostation((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo, onSuccess);
+    });
+  }
+
+  public onLeapLogIn(onSuccess?: () => void) {
+    this.logToConsole(LogLevel.DEBUG, 'onLeapLogIn');
+    useUserStore().connectLeap((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo, onSuccess);
+    });
+  }
+
   public onAddressLogIn(address: string, onSuccess?: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onAddressLogIn');
     useUserStore().connectAsAddress(address, (connetionInfo: ConnectionInfo) => {this.onLoginSuccess(connetionInfo, onSuccess);});
@@ -131,7 +164,9 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onLogOut');
     window.clearInterval(this.accountIntervalId);
     this.disableKeplrAccountChangeListener();
-    useValidatorsStore().clear();
+    this.disableCosmostationAccountChangeListener();
+    this.disableLeapAccountChangeListener();
+    // useValidatorsStore().clear();
     useProposalsStore().clearUserVote();
     useUserStore().logOut();
   }
@@ -199,11 +234,29 @@ class DataService extends LoggedService {
     useUserStore().connectKeplr();
   }
 
+  public onCosmostationKeyStoreChange() {
+    this.logToConsole(LogLevel.DEBUG, 'onCosmostationKeyStoreChange');
+    useUserStore().logOut();
+    useUserStore().connectCosmostation();
+  }
+
+  public onLeapKeyStoreChange() {
+    this.logToConsole(LogLevel.DEBUG, 'onLeapKeyStoreChange');
+    useUserStore().logOut();
+    useUserStore().connectLeap();
+  }
+
   private onLoginSuccess(connetionInfo: ConnectionInfo, onSuccess?: () => void) {
     const instancce = DataService.getInstance();
     instancce.logToConsole(LogLevel.DEBUG, 'onLoginSuccess: ' + connetionInfo.isKeplr());
     if (connetionInfo.isKeplr()) {
       instancce.enableKeplrAccountChangeListener();
+    }
+    if (connetionInfo.isCosmostation()) {
+      instancce.enableCosmostationAccountChangeListener();
+    }
+    if (connetionInfo.isLeap()) {
+      instancce.enableLeapAccountChangeListener();
     }
     const now = new Date().getTime();
     instancce.lastAccountTimeout = now;
@@ -284,9 +337,29 @@ class DataService extends LoggedService {
     window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
   }
 
+  private enableCosmostationAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'enableCosmostationAccountChangeListener');
+    window.addEventListener(cosmostationKeyStoreChange, keystoreCosmostationChangeListener);
+  }
+
+  private enableLeapAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'enableLeapAccountChangeListener');
+    window.addEventListener(leapKeyStoreChange, keystoreLeapChangeListener);
+  }
+
   private disableKeplrAccountChangeListener() {
     this.logToConsole(LogLevel.DEBUG, 'disableKeplrAccountChangeListener');
     window.removeEventListener(keplrKeyStoreChange, keystoreChangeListener);
+  }
+
+  private disableCosmostationAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'disableCosmostationAccountChangeListener');
+    window.removeEventListener(cosmostationKeyStoreChange, keystoreCosmostationChangeListener);
+  }
+
+  private disableLeapAccountChangeListener() {
+    this.logToConsole(LogLevel.DEBUG, 'disableLeapAccountChangeListener');
+    window.removeEventListener(leapKeyStoreChange, keystoreLeapChangeListener);
   }
 
   public onClaimAirdrop(address: string) {
@@ -311,6 +384,14 @@ const keystoreChangeListener = () => {
   DataService.getInstance().onKeplrKeyStoreChange();
 };
 
+const keystoreCosmostationChangeListener = () => {
+  DataService.getInstance().onCosmostationKeyStoreChange();
+};
+
+const keystoreLeapChangeListener = () => {
+  DataService.getInstance().onLeapKeyStoreChange();
+};
+
 function refreshAccountData() {
   DataService.getInstance().refreshAccountData();
 }
@@ -326,4 +407,3 @@ function refreshDashboard() {
 function refreshValidators() {
   DataService.getInstance().refreshValidators();
 }
-
