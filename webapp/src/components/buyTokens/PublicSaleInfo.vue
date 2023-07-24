@@ -1,27 +1,27 @@
 <template>
   <div class="publicSaleInfo">
-    <h3 class="publicSaleInfo__header">{{$t('BUY_TOKENS_VIEW.ROUND_INFO')}} 1</h3>
+    <h3 class="publicSaleInfo__header">{{$t('BUY_TOKENS_VIEW.ROUND_INFO')}} {{usePublicSalesStore().roundInfo?.name}}</h3>
 <!--    <div style="width: 100%; height: 50px; padding: 0 20px;">-->
 <!--      <PublicSalesBar v-if="parts && total" :total="total" :values="parts"/>-->
 <!--    </div>-->
     <div class="publicSaleInfo__summary">
       <div class="publicSaleInfo__infoBlock green_background" >
-        <p>{{$t('BUY_TOKENS_VIEW.PRICE')}}</p>
-        <p>1 C4E = ${{currency}}</p>
+        <span>{{$t('BUY_TOKENS_VIEW.PRICE')}}</span>
+        <span>1 C4E = ${{currency}}</span>
       </div>
       <div class="publicSaleInfo__infoBlock">
-        <p>Total Raise</p>
+        <span>Total Raise</span>
         <CoinAmount :amount="total ? total : 0" :show-denom="true" :precision="2" :reduce-big-number="false" />
       </div>
       <div class="publicSaleInfo__infoBlock">
-        <p>{{$t('BUY_TOKENS_VIEW.TIME_TO_START')}}</p>
-        <p >{{timeToStart}}</p>
-        <p v-if="startDate" class="publicSaleInfo__dateText">({{startDate.toUTCString()}})</p>
+        <span>{{$t('BUY_TOKENS_VIEW.TIME_TO_START')}}</span>
+        <soan>{{timeToStart}}</soan>
+        <span v-if="startDate" class="publicSaleInfo__dateText">({{startDate.toUTCString()}})</span>
       </div>
       <div class="publicSaleInfo__infoBlock">
-        <p>{{$t('BUY_TOKENS_VIEW.TIME_TO_END')}}</p>
-        <p>{{timeToEnd ? timeToEnd : 'The round has ended'}}</p>
-        <p v-if="endDate" class="publicSaleInfo__dateText">({{endDate.toUTCString()}})</p>
+        <span>{{$t('BUY_TOKENS_VIEW.TIME_TO_END')}}</span>
+        <span>{{timeToEnd ? timeToEnd : 'The round has ended'}}</span>
+        <span v-if="endDate" class="publicSaleInfo__dateText">({{endDate.toUTCString()}})</span>
       </div>
     </div>
   </div>
@@ -121,21 +121,26 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
   padding: 20px 33px;
   border-radius: 10px;
   align-items: center;
+
   background-color: $main-color;
 
   &__header{
+    margin-top:20px;
     color: white;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-weight: 900;
+    word-wrap:break-word;
+
   }
   &__summary{
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 24px;
+    margin: auto;
   }
   &__infoBlock{
-    padding: 10px 0 0 5px;
+    padding: 20px;
     display:flex;
     flex-direction: column;
     align-items: center;
@@ -145,6 +150,9 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
     background-color: $main-lighter-color;
     box-shadow: 0 0 2px 2px #02447A;
     border-radius: 6px;
+    span:first-child {
+      margin-bottom:10px;
+    }
   }
   &__dateText{
     font-family: 'Inter',sans-serif;
@@ -156,5 +164,14 @@ function calculateTimeToPAss(startDate: Date | undefined, endDate: Date | undefi
 }
 .green_background {
   background-color: $secondary-color;
+}
+
+@media screen and (max-width: 1324px) {
+  .publicSaleInfo {
+    &__summary {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+  }
 }
 </style>

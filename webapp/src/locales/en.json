@@ -472,7 +472,7 @@
     "CONFIRM_ORDER": "Confirm order"
   },
   "BUY_TOKENS_VIEW": {
-    "ROUND_INFO": "Public Sale Info: ROUND",
+    "ROUND_INFO": "Public Sale Info: ",
     "TOTAL_RAISE": "Total Raise",
     "PRICE": "Price",
     "TIME_TO_START": "Time to start",

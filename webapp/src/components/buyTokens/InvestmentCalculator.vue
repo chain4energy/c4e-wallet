@@ -2,13 +2,13 @@
   <div class="calculatorC4E">
     <div class="calculatorC4E__header">
       {{$t('BUY_TOKENS_VIEW.CALCULATE_INVESTMENT')}}
-      <span style="float:right;  font-weight: 300;font-size: 19px;">{{$t('BUY_TOKENS_VIEW.REQUIREMENTS')}} <TooltipComponent :tooltipText="$t('BUY_TOKENS_VIEW.REQUIREMENTS_TIP')" /></span>
+
     </div>
     <div class="calculatorC4E__body">
       <div style=" flex: 1 1;">
         <div style="display: flex; flex-wrap: wrap; box-sizing: border-box">
-          <div style=" flex: 1 1; margin: 0 20px;" class="calculatorC4E__inputContainer">
-            <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_BUY')}}</p>
+          <div class="calculatorC4E__inputContainer">
+            <span class="text">{{$t('BUY_TOKENS_VIEW.I_WANT_TO_BUY')}}</span>
             <div>
               <div style="display: flex; min-width:350px;">
                 <input @paste="onFirstInputChange" @keyup="onFirstInputChange"  style="width: 100%;" class="calculatorC4E__input" type="number" :disabled="firstInputBlocked" v-model="firstValueInput">
@@ -33,9 +33,9 @@
               </div>
             </div>
           </div>
-          <div style="flex: 1 1; margin: 0 20px;" class="calculatorC4E__inputContainer">
+          <div class="calculatorC4E__inputContainer">
             <div>
-              <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_INVEST')}}</p>
+              <span class="text">{{$t('BUY_TOKENS_VIEW.I_WANT_TO_INVEST')}}</span>
               <div style="display: flex; min-width:350px;">
                 <input @paste="onSecondInputChange"  @keyup="onSecondInputChange"  style="width: 100%;" class="calculatorC4E__input" type="number" :disabled="firstInputBlocked" v-model="secondValueInput" >
                 <Dropdown v-model="secondValue.currency" :options="currencyList" placeholder="Select network" style="max-width:200px; height: 52px; " class="dropdown flex align-items-center">
@@ -68,12 +68,15 @@
         <div style="margin-top:30px">
           1 {{firstValue.currency}} = {{exchangeRate?.toString()}} {{secondValue.currency}}
         </div>
+        <div class="calculatorC4E__btnSection">
+          <span style=" font-weight: 300;font-size: 19px;">{{$t('BUY_TOKENS_VIEW.REQUIREMENTS')}} <TooltipComponent :tooltipText="$t('BUY_TOKENS_VIEW.REQUIREMENTS_TIP')" /></span>
+          <div v-tooltip="{ value: 'You cannot invest less then $25 and more than $10000', disabled: minimumRequired()}" >
+
+            <Button class="p-button p-component secondary" :disabled="!minimumRequired()" style="width: 141px; " @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
+          </div>
+        </div>
       </div>
 
-      <div v-tooltip="{ value: 'You cannot invest less then $25 and more than $10000', disabled: minimumRequired()}" class="calculatorC4E__btnSection">
-
-        <Button class="p-button p-component secondary" :disabled="!minimumRequired()" style="width: 141px; " @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
-      </div>
 
     </div>
 
@@ -270,7 +273,6 @@ const flagSelector = {
 
 <style scoped lang="scss">
 .calculatorC4E{
-  margin-top: 29px;
   display: flex;
   flex-direction: column;
   background: #FFFFFF;
@@ -299,15 +301,24 @@ const flagSelector = {
   }
   &__inputContainer{
     text-align: start;
-    max-width:500px;
+    //max-width:500px;
+    flex: 1 1;
+    margin: 20px 20px 0px 20px;
 
+    .text {
+      font-size: 0.9em;
+    }
   }
   &__btnSection{
     display: flex;
-    flex-direction: column;
-    font-size: 16px;
-    flex: 1 1;
-    max-width: 160px;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 15px;
+
+    //flex-direction: column;
+    //font-size: 16px;
+    //flex: 1 1;
+    //max-width: 160px;
   }
   &__input{
     height: 52px;

@@ -1,18 +1,29 @@
 <template>
   <div class="info">
-    <PublicSaleInfo />
+    <div class="info__top">
+      <div>
+        <PublicSaleInfo />
+      </div>
+      <div>
+        <InvestmentCalculator @onBuy="onBuyClick" v-if="activeRound"/>
+      </div>
+    </div>
+
     <div class="info__details">
-      <h2>Chain4Energy token sale</h2>
-      <h3>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_FIRST_HEADER')}}</h3>
+      <div class="header">
+        <div style="display: inline-flex;">About C4E Tokens</div>
+        <div class="links">
+          <span>{{$t('BUY_TOKENS_VIEW.TOKENOMICS')}}</span>
+          <span>{{$t('BUY_TOKENS_VIEW.WHITE_PAPER')}}</span>
+        </div>
+      </div>
+<!--      <h3>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_FIRST_HEADER')}}</h3>-->
       <p>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_FIRST_CONTENT')}}</p>
-      <h3>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_SECOND_HEADER')}}</h3>
+<!--      <h3>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_SECOND_HEADER')}}</h3>-->
       <p>{{$t('BUY_TOKENS_VIEW.DESCRIPTION_SECOND_CONTENT')}}</p>
     </div>
-    <div class="info__links">
-      <span>{{$t('BUY_TOKENS_VIEW.TOKENOMICS')}}</span>
-      <span>{{$t('BUY_TOKENS_VIEW.WHITE_PAPER')}}</span>
-    </div>
-    <InvestmentCalculator @onBuy="onBuyClick" v-if="activeRound"/>
+
+
     <div v-if="activeRound">
       <div v-for="items in transactions" :key="items" class="userProfile__holder" >
         <AllocationInfo :transaction="items" @pay="onPay(items)"/>
@@ -159,11 +170,20 @@ const activeRound = computed(() => {
 <style scoped lang="scss">
 .info{
   padding: 25px 54px;
+  &__top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap:20px;
+    div {
+      height:100%;
+    }
+  }
   &__details{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 16px 36px;
+    margin-top: 15px;
     h2{
       font-family: 'Poppins',sans-serif;
       font-style: normal;
@@ -180,22 +200,34 @@ const activeRound = computed(() => {
       font-size: 16px;
       line-height: 24px;
     }
+    .header {
+      display: flex;
+      width:100%;
+      font-weight:800;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+
+      .links{
+        margin-right: 0;
+        margin-left:auto;
+        span {
+          padding: 0 15px;
+        }
+      }
+    }
   }
-  &__links{
-    display: inline-flex;
-    width: 100%;
-    justify-content: flex-end;
-    span {
-      padding: 10px 20px;
-      font-family: Poppins, sans-serif;
-      font-size: 18px;
+
+}
+
+@media screen and (max-width: 1024px) {
+  .info {
+    padding: 25px 5px;
+    &__top {
+      display: block;
     }
   }
 }
 
-@media screen and (max-width: 500px) {
-  .info {
-    padding: 25px 5px;
-  }
-}
+
+
 </style>
