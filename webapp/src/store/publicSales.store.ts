@@ -117,7 +117,7 @@ export class TokenReservation {
     this.unconfirmed = unconfirmed;
   }
 
-  leftToPay() {
+  leftToPayInUSDT() {
     let sumOfPayments  = 0;
     this.transactions.forEach(transaction => {
       transaction.blockchainTxs.forEach(blockchainTx => {

@@ -3,7 +3,7 @@
     <Dialog :visible="visible" @update:visible="emit('closeModal')" modal header="Payment" :baseZIndex="-100" :style="{ width: '80vw' }">
       <div>
         <InvestmentCalculator @onBuy="onBuyClick" :disable-stablecoin="sourceAddress == undefined" :first-input-blocked="true" :is-declaration="false"
-                              :second-input-default-value="Number(reservation.leftToPay())" />
+                              :second-input-default-value="Number(reservation.leftToPayInUSDT())" />
       </div>
     </Dialog>
   </div>
