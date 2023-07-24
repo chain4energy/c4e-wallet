@@ -48,7 +48,7 @@
         </div>
         <div v-else ><Button class="p-button p-component secondary-link button-w7" @click="showApprovalModalFunc">{{$t('BUTTONS.ACCEPT')}}</Button></div>
         <div>
-          {{$t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"/> <br>
+          <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')" :text="i18n.t('BUY_TOKENS_VIEW.PROVIDE_CLAIMER_ADDRESS')" tooltip-link="https://docs.c4e.io/usersGuide/auth.html" /> <br>
           <span v-if="claimerAddress" class="additional_info">{{addDotsInsideTooLongString(claimerAddress, 28)}}</span>
           <span v-else class="additional_info">Not provided</span>
         </div>
