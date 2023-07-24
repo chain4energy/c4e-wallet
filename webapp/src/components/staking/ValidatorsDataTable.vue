@@ -427,7 +427,6 @@ const filters = ref({
     .search-bar {
       width: 100%;
       transform: none;
-      z-index: 5;
       margin-bottom: 20px;
     }
 

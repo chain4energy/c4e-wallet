@@ -46,12 +46,12 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .footer {
-  width: 100%;
+  width: 90%;
   min-height: 50px;
   background-color: white;
   position: fixed;
   bottom: 0;
-
+  margin-left: 45px;
   padding: 20px 0 20px 8%;
 
   span {
