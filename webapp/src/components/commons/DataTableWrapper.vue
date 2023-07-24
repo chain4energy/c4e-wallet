@@ -321,4 +321,40 @@ function reload() {
 div.p-datatable-wrapper > table {
   border-collapse: separate;
 }
+
+.p-datatable-wrapper {
+  overflow: initial !important;
+}
+
+.p-datatable .p-datatable-tbody > tr > td > .p-column-title {
+  display: none;
+}
+
+@media screen and (max-width: 960px) {
+  .p-datatable .p-datatable-thead > tr > th,
+  .p-datatable .p-datatable-tfoot > tr > td {
+    display: none !important;
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td {
+    display: flex;
+    width: 100% !important;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td:not(:last-child) {
+    border: 0 none;
+  }
+
+  .p-datatable.p-datatable-gridlines .p-datatable-tbody > tr > td:last-child {
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td > .p-column-title {
+    display: block;
+  }
+}
 </style>
