@@ -122,7 +122,8 @@ export function mapTokenReservations(tokenReservations: TokenReservationResponse
       new Date(reservation.reservationEndTime),
       new Date(reservation.orderEndTime),
       reservation.roundId,
-      reservation.unconfirmed
+      reservation.unconfirmed,
+      new Date(reservation.timestamp)
     );
     tokenReservationList.push(storeReservation);
   });
