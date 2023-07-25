@@ -37,7 +37,6 @@ export interface TokenReservationResponse {
 
 export enum RESERVATION_STATUS {
   DECLARED="DECLARED",
-  PENDING='PENDING',
   PARTIALLY_PAID='PARTIALLY_PAID',
   OVERPAID='OVERPAID',
   COMPLETED='COMPLETED',
@@ -75,7 +74,7 @@ export enum BLOCKCHAIN {
 }
 export interface Transaction {
   blockchainStatus: BLOCKCHAIN_STATUS;
-  status: string;
+  status: TRANSACTION_STATUS;
   txHash: string;
   type: PAYMENT_TYPE;
   blockchainTxs?: BlockchainTx[];
@@ -87,7 +86,7 @@ export interface Transaction {
 export interface BlockchainTx {
   amount: string;
   coinIdentifier: string;
-  coinName: string;
+  coinName: TOKEN_NAME;
 }
 export interface TokenPaymentProofRequest{
   blockchainID:	number;

@@ -5,10 +5,18 @@ import factoryApi from "@/api/factory.api";
 import {
   BLOCKCHAIN,
   BLOCKCHAIN_STATUS,
-  BlockchainInfo, BlockchainTx,
-  InitPaymentSessionRequest, MetamaskPayInfo, PAYMENT_TYPE, RESERVATION_STATUS, RoundInfo, RoundInfoBlockchainInfo,
+  BlockchainInfo,
+  BlockchainTx,
+  InitPaymentSessionRequest,
+  MetamaskPayInfo,
+  PAYMENT_TYPE,
+  RESERVATION_STATUS,
+  RoundInfo,
+  RoundInfoBlockchainInfo,
+  TOKEN_NAME,
   TokenPaymentProofRequest,
-  Transaction
+  Transaction,
+  TRANSACTION_STATUS
 } from "@/models/saleServiceCommons";
 import apiFactory from "@/api/factory.api";
 import {BigDecimal} from "@/models/store/big.decimal";
@@ -47,24 +55,28 @@ export class BlockchainTxStore {
 
   amount: number;
   coinIdentifier: string;
-  coinName: string;
+  coinName: TOKEN_NAME;
 
-  constructor(amount: number, coinIdentifier: string, coinName: string) {
+  constructor(amount: number, coinIdentifier: string, coinName: TOKEN_NAME) {
     this.amount = amount;
     this.coinIdentifier = coinIdentifier;
     this.coinName = coinName;
   }
+
+  getInC4E() {
+    return new BigDecimal(this.amount).divide(usePublicSalesStore().getC4eToUSD);
+  }
 }
 export class StoreTransaction {
   blockchainStatus: BLOCKCHAIN_STATUS;
-  status: string;
+  status: TRANSACTION_STATUS;
   txHash: string;
   type: PAYMENT_TYPE;
   blockchainTxs: BlockchainTxStore[];
   currencyCode: string;
   amount: string;
   blockchain: BLOCKCHAIN;
-  constructor(blockchainStatus: BLOCKCHAIN_STATUS, status: string, txHash: string, type: PAYMENT_TYPE, blockchainTxs: BlockchainTxStore[], currencyCode: string, amount: string, blockchain: BLOCKCHAIN) {
+  constructor(blockchainStatus: BLOCKCHAIN_STATUS, status: TRANSACTION_STATUS, txHash: string, type: PAYMENT_TYPE, blockchainTxs: BlockchainTxStore[], currencyCode: string, amount: string, blockchain: BLOCKCHAIN) {
     this.blockchainStatus = blockchainStatus;
     this.status = status;
     this.txHash = txHash;
@@ -84,6 +96,23 @@ export class StoreTransaction {
       case BLOCKCHAIN.SEPOLIA:
         return 'https://sepolia.etherscan.io/tx/'+this.txHash;
     }
+  }
+
+  getSumOfPaymentsInStableCoin() {
+    let sumOfPayments  = 0;
+    this.blockchainTxs.forEach(tx => {
+      sumOfPayments += tx.amount;
+    });
+    return new BigDecimal(sumOfPayments);
+  }
+
+  getSumOfPayments(token: TOKEN_NAME) {
+    let sumOfPayments  = 0;
+    this.blockchainTxs.forEach(tx => {
+      if(tx.coinName == token)
+        sumOfPayments += tx.amount;
+    });
+    return new BigDecimal(sumOfPayments);
   }
 }
 
@@ -133,6 +162,16 @@ export class TokenReservation {
 
   leftToBuyC4E() {
     return this.leftToPayInStableCoin().divide(usePublicSalesStore().getC4eToUSD);
+  }
+
+  getSumOfPaymentsInStableCoin() {
+    let sumOfPayments  = 0;
+    this.transactions.forEach(transaction => {
+      transaction.blockchainTxs.forEach(blockchainTx => {
+        sumOfPayments+=blockchainTx.amount;
+      });
+    });
+    return new BigDecimal(sumOfPayments);
   }
 }
 
