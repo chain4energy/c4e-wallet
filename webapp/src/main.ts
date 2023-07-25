@@ -14,7 +14,7 @@
 
 import { createPinia } from 'pinia';
 // import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
-import { createApp } from 'vue';
+import {createApp, markRaw} from 'vue';
 import App from './App.vue';
 import router from '@/router';
 import 'bootstrap/scss/bootstrap.scss';
@@ -101,13 +101,15 @@ JSON.parse = function parse(text: string, reviver?: (this: any, key: string, val
   if(reviver) {
     return originalJSONParse(text, reviver);
   }
-
   return originalJSONParse(text, reviver2);
 };
 
-
 const pinia = createPinia();
 pinia.use(piniaPersist);
+pinia.use(({ store }) => {
+  store.router = markRaw(router);
+});
+
 const logger = new LoggerService();
 // const i18n = createI18n({
 //   legacy: false

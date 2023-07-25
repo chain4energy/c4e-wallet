@@ -182,7 +182,7 @@ class DataService extends LoggedService {
     return useUserStore().connectMetamask(() => this.onMetamaskConnectSuccess(onSuccess));
   }
 
-  public onLogOut() {
+  public onLogOutWallet() {
     this.logToConsole(LogLevel.DEBUG, 'onLogOut');
     window.clearInterval(this.accountIntervalId);
     this.disableKeplrAccountChangeListener();

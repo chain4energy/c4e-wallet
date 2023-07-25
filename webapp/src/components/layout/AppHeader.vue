@@ -66,7 +66,7 @@
 
           <Button v-if="!useUserStore().isLoggedIn" class="secondary" @click="loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
 
-          <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
+          <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logoutWallet">{{ $t('COMMON.DISCONNECT') }}</Button>
 
           <div class="profileMenu" @focusout="closeProfileDropdown" tabindex="0" @click="toggleProfileDropdown()" >
             <div class="profileMenu-icon"> <UserIcon :style="useUserServiceStore().isLoggedIn ? 'color: #81CF1F' : ''" /></div>
@@ -84,7 +84,7 @@
                   <div><Icon name="User" /></div>
                   <div>My profile</div>
                 </div>
-                <div class="option grid_container" @click="useUserServiceStore().logOutAccount();">
+                <div class="option grid_container" @click="logoutAccount();">
                   <Icon name="LogOut" />
                   <div>
                     Logout
@@ -119,7 +119,7 @@
         <span style="display: flex; flex-direction: column">
             <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName }}: </span>
             {{ useUserStore().getAccount.address.slice(0, 8) }}...{{ useUserStore().getAccount.address.slice(-6) }}
-            <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout(); toggleDropdown()">{{ $t('COMMON.DISCONNECT') }}</Button>
+            <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logoutWallet(); toggleDropdown()">{{ $t('COMMON.DISCONNECT') }}</Button>
           </span>
       </div>
       <Button style="width: 90%" v-if="!useUserStore().isLoggedIn" class="secondary" @click="toggleDropdown(); loginPopupStatus =! loginPopupStatus">{{
@@ -230,9 +230,14 @@ function openAccInfo() {
   logoutPopupStatus.value = !logoutPopupStatus.value;
 }
 
-function logout() {
+function logoutWallet() {
   // const latestBlock = computed(() => useBlockStore().getLatestBlock);
-  dataService.onLogOut();
+  dataService.onLogOutWallet();
+}
+
+function logoutAccount(){
+  useUserServiceStore().logoutAccount();
+  router.push('/buyTokens/signIn');
 }
 const route= useRoute();
 const onLogoClick = () => {

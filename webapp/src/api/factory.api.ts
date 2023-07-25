@@ -48,20 +48,18 @@ class ApiFactory {
       const response = await axios.post(useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
       return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
     } catch (error) {
-      useUserServiceStore().logOutAccount(false);
+      useUserServiceStore().logoutAccount(false);
       if(useRouter().currentRoute.value.meta.requiresAuth) {
         await useRouter().push('/buyTokens/signIn');
       }
       throw error;
     }
 
-
     // If your backend supports rotating refresh tokens, you may also choose to return an object containing both tokens:
     // return {
     //  accessToken: response.data.access_token,
     //  refreshToken: response.data.refresh_token
     //}
-
   }
 
   private constructor() {

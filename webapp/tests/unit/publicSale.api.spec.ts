@@ -9,6 +9,7 @@ import {
   expectReservationList,
   expectReserveTokens
 } from "../utils/publicSales.data.utils";
+import {EmptyResponse} from "@/models/request-response";
 
 jest.mock('axios', () => {
   return {
@@ -62,7 +63,10 @@ describe('public sale api tests', () => {
   });
 
   it('cancel reservation', async () =>{
-    mockedAxios.request.mockResolvedValue(null);
+    const returnVale = {
+      data: {} as EmptyResponse
+    };
+    mockedAxios.request.mockResolvedValue(returnVale);
     const result = await api.cancelReservation(1, false);
     expect(result.isError()).toBe(false);
     expect(result.isSuccess()).toBe(true);

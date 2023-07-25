@@ -243,7 +243,7 @@ export const usePublicSalesStore = defineStore({
         return res;
       });
     },
-    logOutAccount(){
+    logoutAccount(){
       this.tokenReservations = [];
     },
     toggleWarning(value: boolean){

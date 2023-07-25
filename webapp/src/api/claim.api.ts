@@ -2,31 +2,17 @@ import BaseApi, {ErrorData} from "@/api/base.api";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {RequestResponse} from "@/models/request-response";
 import {AirdropErrData, BlockchainApiErrorData} from "@/models/blockchain/common";
-import {CampaignsInfo, ClaimRecord, MissionStatus} from "@/models/airdrop/airdrop";
+import {CampaignsInfo} from "@/models/airdrop/airdrop";
 import queries from "@/api/queries";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {
   AirdropClaimsLeft,
   AirdropDistributions,
   CampaignBc,
-  CampaignsInfo as CampaignsInfoBc,
   MissionsInfo,
-  MissionType,
   UserAirdropInfo
 } from "@/models/blockchain/airdrop";
 import {formatString} from "@/utils/string-formatter";
-import {TxBroadcastError, TxData} from "@/api/tx.broadcast.base.api";
-import {EncodeObject} from "@cosmjs/proto-signing";
-import {
-  MsgBeginRedelegate,
-  MsgDelegate,
-  MsgUndelegate,
-} from "cosmjs-types/cosmos/staking/v1beta1/tx";
-import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
-
-import {
-  MsgWithdrawDelegatorReward
-} from "cosmjs-types/cosmos/distribution/v1beta1/tx";
 
 export class ClaimApi extends BaseApi {
 
