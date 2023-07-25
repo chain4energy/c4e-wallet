@@ -81,7 +81,7 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <div class="accountInfo__headMainTxt">
-            <p><TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')">{{$t('PROFILE_VIEW.CLAIMER_ADDRESS')}}</TooltipComponent></p>
+            <p><TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"  tooltip-link="https://docs.c4e.io/usersGuide/auth.html">{{$t('PROFILE_VIEW.CLAIMER_ADDRESS')}}</TooltipComponent></p>
           </div>
           <p v-if="claimAddress" class="accountInfo__headTxt">{{ claimAddress }}</p>
           <p v-else class="accountInfo__headTxt invalid">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>

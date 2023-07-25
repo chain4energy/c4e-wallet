@@ -25,9 +25,9 @@
             <div style="padding: 10px 30px;">
               <div >
                 <div class=" col-12">
-                  <Field v-slot="{ field }"  required name="selectedBlockchain"   >
+                  <Field v-model="selectedBlockchain" required name="selectedBlockchain"   >
 <!--                    <option v-for="network in blockchainNetworkList" :key="network.id" :value="network">{{network.chainName}}</option>-->
-                    <Dropdown v-bind="field" v-model="selectedBlockchain"  :options="blockchainNetworkList" placeholder="Select blockchain" style="height: 52px; " class="form-control dropdown flex align-items-center"
+                    <Dropdown v-model="selectedBlockchain"  :options="blockchainNetworkList" placeholder="Select blockchain" style="height: 52px; " class="form-control dropdown flex align-items-center"
                               :class="{'is-invalid': errors.selectedBlockchain}">
                       <template #value="slotProps">
                         <div v-if="slotProps.value" class="flex align-items-center">
@@ -55,8 +55,8 @@
                   <div class="invalid-feedback">{{ errors.selectedBlockchain ? $t(errors.selectedBlockchain) : '' }}</div>
                 </div>
                 <div class=" col-12">
-                  <Field v-slot="{ field }" required name="selectedToken" >
-                    <Dropdown v-bind="field"  v-model="selectedToken"  :options="selectedBlockchainTokens==undefined ? [] : selectedBlockchainTokens" placeholder="Select token" style=" height: 52px; " class="form-control dropdown flex align-items-center"
+                  <Field  v-model="selectedToken" required name="selectedToken" >
+                    <Dropdown v-model="selectedToken"  :options="selectedBlockchainTokens==undefined ? [] : selectedBlockchainTokens" placeholder="Select token" style=" height: 52px; " class="form-control dropdown flex align-items-center"
                               :class="{'is-invalid': errors.selectedToken}">
                       <template #value="slotProps">
                         <div v-if="slotProps.value" class="flex align-items-center">
@@ -257,10 +257,8 @@ import {useUserStore} from "@/store/user.store";
 import WarningModal from "@/components/buyTokens/modals/WarningModal.vue";
 import i18n from "@/plugins/i18n";
 import {useConfigurationStore} from "@/store/configuration.store";
-import {Currency} from "@/models/currency";
 import Dropdown from "primevue/dropdown";
 import {CHAIN_NAME, TOKEN_NAME} from "@/models/saleServiceCommons";
-import InputText from 'primevue/inputtext';
 
 onBeforeMount(async () => {
   useUserStore().connectMetamask();
