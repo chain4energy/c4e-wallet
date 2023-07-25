@@ -54,7 +54,8 @@
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
     "faucetURL": "",
-    "faucetAvailable": false
+    "faucetAvailable": false,
+    "currentPublicSaleRoundId": 1
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -111,7 +112,8 @@
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
-    "faucetAvailable": true
+    "faucetAvailable": true,
+    "currentPublicSaleRoundId": 1
   },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
@@ -166,7 +168,8 @@
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
-    "faucetAvailable": true
+    "faucetAvailable": true,
+    "currentPublicSaleRoundId": 1
   },
   "Testnet": {
     "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -221,7 +224,8 @@
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
-    "faucetAvailable": true
+    "faucetAvailable": true,
+    "currentPublicSaleRoundId": 1
   },
   "pbtest" :{
     "bcApiURL": "api",
@@ -277,7 +281,8 @@
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
-    "faucetAvailable": true
+    "faucetAvailable": true,
+    "currentPublicSaleRoundId": 1
   },
   "local":{
     "bcApiURL": "http://localhost:1317",
@@ -333,7 +338,8 @@
     "proposalVotingRefreshTimeout": 30000,
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
-    "faucetAvailable": true
+    "faucetAvailable": true,
+    "currentPublicSaleRoundId": 1
   },
   "EV-testnet":{
     "bcApiURL": "https://lcd-ev-testnet.c4e.io",
@@ -391,7 +397,8 @@
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
-    "faucetAvailable": true
+    "faucetAvailable": true,
+    "currentPublicSaleRoundId": 1
   },
   "docker-compose":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -448,6 +455,7 @@
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
-    "faucetAvailable": true
+    "faucetAvailable": true,
+    "currentPublicSaleRoundId": 1
   }
 }

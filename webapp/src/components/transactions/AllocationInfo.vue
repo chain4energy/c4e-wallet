@@ -33,7 +33,7 @@
       </tr>
       <tr>
         <th class="allocationInfo__tableTabs">Round</th>
-        <th class="allocationInfo__tableTabs">{{ transaction.roundId }}</th>
+        <th class="allocationInfo__tableTabs">{{ getRoundName(transaction.roundId) }}</th>
       </tr>
       <tr v-if="transaction.transactions.length>0">
         <th class="allocationInfo__tableTabs">Transactions</th>
@@ -57,8 +57,12 @@
   </div>
 
   <Accordion :multiple="true" style="white-space: normal;">
-    <AccordionTab v-for="blockchainTransaction in transaction.transactions" :key="blockchainTransaction" :header="blockchainTransaction.blockchainStatus">
-
+    <AccordionTab v-for="blockchainTransaction in transaction.transactions" :key="blockchainTransaction">
+      <template #header >
+        <div style="width:95%;overflow-wrap: break-word; word-wrap: break-word; text-align: left">
+          {{$t('ENUMS.BLOCKCHAIN_STATUS.'+blockchainTransaction.blockchainStatus)}} - {{blockchainTransaction.txHash}}
+        </div>
+      </template>
       <div class="allocationInfo__body">
         <table style=" width: 90%;table-layout: fixed;  border-collapse: separate; border-spacing: 6px;">
 
@@ -121,12 +125,13 @@
 </template>
 
 <script setup lang="ts">
-import {paymentType, TokenReservation} from "@/store/publicSales.store";
+import {paymentType, TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {onBeforeMount, onUnmounted, ref} from "vue";
 import {RESERVATION_STATUS} from "@/models/saleServiceCommons";
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
+import {useI18n} from "vue-i18n";
 
 const props = defineProps<{
   transaction: TokenReservation
@@ -135,7 +140,7 @@ const props = defineProps<{
 let timeToPassId = 0;
 
 const timeToPass = ref();
-
+const i18n = useI18n();
 
 onBeforeMount(() => {
   timeToPassId = window.setInterval(calculateTimeToPass, 1000);
@@ -161,6 +166,10 @@ function getStatusColor(){
   }
 }
 
+
+const getRoundName = (roundId: number) => {
+  return usePublicSalesStore().roundInfoMap.get(roundId)?.roundInfo.name;
+};
 function submit(){
   console.log('submit');
   emit('pay');

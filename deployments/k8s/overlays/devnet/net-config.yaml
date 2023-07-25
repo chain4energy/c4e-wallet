@@ -55,6 +55,7 @@ data:
       "proposalVotingRefreshTimeout": 30000,
       "targetInflationAprMultiplier": 5,
       "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
+      "currentPublicSaleRoundId": 1,
       "faucetAvailable": true
     },
       "Mainnet": {
@@ -110,6 +111,7 @@ data:
         "proposalVotingRefreshTimeout": 30000,
         "targetInflationAprMultiplier": 5,
         "faucetURL": "",
+        "currentPublicSaleRoundId": 1,
         "faucetAvailable": false
       },
       "Testnet": {
@@ -165,6 +167,7 @@ data:
         "proposalVotingRefreshTimeout": 30000,
         "targetInflationAprMultiplier": 5,
         "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
+        "currentPublicSaleRoundId": 1,
         "faucetAvailable": true
       },
       "EV-testnet":{
@@ -223,6 +226,7 @@ data:
         "airdropDefaultDenom": "uc4e",
         "targetInflationAprMultiplier": 5,
         "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
+        "currentPublicSaleRoundId": 1,
         "faucetAvailable": true
       }
     }

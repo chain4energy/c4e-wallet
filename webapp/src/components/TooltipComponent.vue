@@ -1,5 +1,7 @@
 <template>
-  <span class="tooltip-icon">
+  <span @click="onLinkClick()" class="tooltip-icon" :class="{ 'pointer': tooltipLink }">
+    {{text}}
+    <slot name="text"></slot>
     <span v-tooltip.left="{ value: tooltipText, escape: true }">
       <Icon name="HelpCircle"/>
     </span>
@@ -8,9 +10,26 @@
 
 <script setup lang="ts">
 
-const props = defineProps(["tooltipText"]);
+const props = defineProps({
+  tooltipText: String,
+  tooltipLink: {
+    type: String,
+    required: false
+  },
+  text: {
+    type: String,
+    required: false
+  }
+});
 
+const onLinkClick = () => {
+  if(props.tooltipLink) {
+    window.open(props.tooltipLink, '_blank');
+  }
+
+};
 </script>
+
 
 <style scoped lang="scss">
 
@@ -20,5 +39,8 @@ const props = defineProps(["tooltipText"]);
 .tooltip{
   z-index: 1003 !important;
 
+}
+.pointer {
+  cursor: pointer;
 }
 </style>

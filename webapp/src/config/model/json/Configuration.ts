@@ -87,4 +87,5 @@ export interface Configuration {
   faucetURL: string;
   faucetAvailable: boolean;
   tokenReservationDenom: string;
+  currentPublicSaleRoundId: number;
 }

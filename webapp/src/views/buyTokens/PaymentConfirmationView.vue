@@ -24,21 +24,62 @@
           <Form @submit="onConfirmPayment" :validation-schema="schema" v-slot="{errors}" >
             <div style="padding: 10px 30px;">
               <div >
-                <div class="field col-12">
-                  <Field v-model="selectedBlockchainNetworkId" required name="selectedBlockchainNetwork" as="select" class="form-control"
-                         :class="{'is-invalid': errors.selectedBlockchainNetwork}" >
-                    <option v-for="network in blockchainNetworkList" :key="network.id" :value="network.chainId">{{network.chainName}}</option>
+                <div class=" col-12">
+                  <Field v-slot="{ field }"  required name="selectedBlockchain"   >
+<!--                    <option v-for="network in blockchainNetworkList" :key="network.id" :value="network">{{network.chainName}}</option>-->
+                    <Dropdown v-bind="field" v-model="selectedBlockchain"  :options="blockchainNetworkList" placeholder="Select blockchain" style="height: 52px; " class="form-control dropdown flex align-items-center"
+                              :class="{'is-invalid': errors.selectedBlockchain}">
+                      <template #value="slotProps">
+                        <div v-if="slotProps.value" class="flex align-items-center">
+                          <div class="flag">
+                            <img v-if="slotProps.value.chainName == CHAIN_NAME.SEPOLIA" src="../../assets/sepoliaIcon.svg" alt="stablecoin symbol" class="h-full"/>
+                            <img v-if="slotProps.value.chainName == CHAIN_NAME.BSC" src="../../assets/BSCIcon.png" alt="stablecoin symbol" class="h-full"/>
+                            <img v-if="slotProps.value.chainName == CHAIN_NAME.POLYGON" src="../../assets/PolygonIcon.png" alt="stablecoin symbol" class="h-full"/>
+                          </div>
+
+                          <div>{{ slotProps.value.chainName}}</div>
+                        </div>
+                      </template>
+                      <template #option="slotProps">
+                        <div class="flex align-items-center">
+                          <div class="flag">
+                            <img v-if="slotProps.option.chainName == CHAIN_NAME.SEPOLIA" src="../../assets/sepoliaIcon.svg" alt="stablecoin symbol" class="h-full"/>
+                            <img v-if="slotProps.option.chainName == CHAIN_NAME.BSC" src="../../assets/BSCIcon.png" alt="stablecoin symbol" class="h-full"/>
+                            <img v-if="slotProps.option.chainName == CHAIN_NAME.POLYGON" src="../../assets/PolygonIcon.png" alt="stablecoin symbol" class="h-full"/>
+                          </div>
+                          <div>{{ slotProps.option.chainName }}</div>
+                        </div>
+                      </template>
+                    </Dropdown>
                   </Field>
-                  <span>Network</span>
-                  <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
+                  <div class="invalid-feedback">{{ errors.selectedBlockchain ? $t(errors.selectedBlockchain) : '' }}</div>
                 </div>
-                <div class="field col-12">
-                  <Field v-model="selectedTokenIdentifier" required name="selectedTokenIdentifier" as="select" class="form-control"
-                         :class="{'is-invalid': errors.selectedTokenIdentifier}">
-                    <option v-for="token in selectedBlockchainTokens" :key="token" :value="token.coinIdentifier">{{token.name}}</option>
+                <div class=" col-12">
+                  <Field v-slot="{ field }" required name="selectedToken" >
+                    <Dropdown v-bind="field"  v-model="selectedToken"  :options="selectedBlockchainTokens==undefined ? [] : selectedBlockchainTokens" placeholder="Select token" style=" height: 52px; " class="form-control dropdown flex align-items-center"
+                              :class="{'is-invalid': errors.selectedToken}">
+                      <template #value="slotProps">
+                        <div v-if="slotProps.value" class="flex align-items-center">
+                          <div class="flag">
+                            <img v-if="slotProps.value.name == TOKEN_NAME.USDC" src="../../assets/USDC-icon.png" alt="stablecoin symbol" class="h-full"/>
+                            <img v-if="slotProps.value.name == TOKEN_NAME.USDT" src="../../assets/USDT-icon.png" alt="stablecoin symbol" class="h-full"/>
+                          </div>
+
+                          <div>{{ slotProps.value.name}}</div>
+                        </div>
+                      </template>
+                      <template #option="slotProps">
+                        <div class="flex align-items-center">
+                          <div class="flag">
+                            <img v-if="slotProps.option.name == TOKEN_NAME.USDC" src="../../assets/USDC-icon.png" alt="stablecoin symbol" class="h-full"/>
+                            <img v-if="slotProps.option.name == TOKEN_NAME.USDT" src="../../assets/USDT-icon.png" alt="stablecoin symbol" class="h-full"/>
+                          </div>
+                          <div>{{ slotProps.option.name }}</div>
+                        </div>
+                      </template>
+                    </Dropdown>
                   </Field>
-                  <span>Token</span>
-                  <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
+                  <div class="invalid-feedback">{{ errors.selectedToken ? $t(errors.selectedToken) : '' }}</div>
                 </div>
                 <div class="field col-12">
                   <Field style="width:100%" v-model="txHash" placeholder="TxHash" name="txHash" type="text" class="form-control"
@@ -90,37 +131,105 @@
           </div>
           <div>Destination address</div>
           <div v-tooltip="{ value: selectedToken?.recipientAddress ? selectedToken.recipientAddress : '', escape: true }">{{selectedToken?.recipientAddress}}</div>
+          <div>Blockchain</div>
+          <div style="display: flex">
+            <Dropdown @change="onNetworkChange" v-model="selectedBlockchain"  :options="blockchainNetworkList" placeholder="Select blockchain" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
+              <template #value="slotProps">
+                <div v-if="slotProps.value" class="flex align-items-center">
+                  <div class="flag">
+                    <img v-if="slotProps.value.chainName == CHAIN_NAME.SEPOLIA" src="../../assets/sepoliaIcon.svg" alt="stablecoin symbol" class="h-full"/>
+                    <img v-if="slotProps.value.chainName == CHAIN_NAME.BSC" src="../../assets/BSCIcon.png" alt="stablecoin symbol" class="h-full"/>
+                    <img v-if="slotProps.value.chainName == CHAIN_NAME.POLYGON" src="../../assets/PolygonIcon.png" alt="stablecoin symbol" class="h-full"/>
+                  </div>
 
-        </div>
-        <Form @submit="onStartMetamaskTransaction" :validation-schema="modalSchema" v-slot="{errors}" >
-          <div style="padding: 10px 30px;">
-            <div >
-              <div class="field col-12">
-                <Field v-model="selectedBlockchainNetworkId" required name="selectedBlockchainNetwork" as="select" class="form-control"
-                       :class="{'is-invalid': errors.selectedBlockchainNetwork}" @change="onNetworkChange">
-                  <option v-for="network in blockchainNetworkList" :key="network" :value="network.chainId">{{network.chainName}}</option>
-                </Field>
-                <span>Network</span>
-                <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
-              </div>
-
-              <div class="field col-12">
-                <Field v-model="selectedTokenIdentifier" required name="selectedTokenIdentifier" as="select" class="form-control"
-                       :class="{'is-invalid': errors.selectedTokenIdentifier}">
-                     <option v-for="token in selectedBlockchainTokens" :key="token" :value="token.coinIdentifier">{{token.name}}</option>
-                </Field>
-                <span>Token</span>
-                <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>
-              </div>
+                  <div>{{ slotProps.value.chainName}}</div>
+                </div>
+              </template>
+              <template #option="slotProps">
+                <div class="flex align-items-center">
+                  <div class="flag">
+                    <img v-if="slotProps.option.chainName == CHAIN_NAME.SEPOLIA" src="../../assets/sepoliaIcon.svg" alt="stablecoin symbol" class="h-full"/>
+                    <img v-if="slotProps.option.chainName == CHAIN_NAME.BSC" src="../../assets/BSCIcon.png" alt="stablecoin symbol" class="h-full"/>
+                    <img v-if="slotProps.option.chainName == CHAIN_NAME.POLYGON" src="../../assets/PolygonIcon.png" alt="stablecoin symbol" class="h-full"/>
+                  </div>
+                  <div>{{ slotProps.option.chainName }}</div>
+                </div>
+              </template>
+            </Dropdown>
+            <div v-if="!selectedBlockchain" class="warning" style="margin: auto 15px">
+              Not selected
             </div>
           </div>
 
-          <div class="flex justify-content-center">
-            <Button class="p-button p-component secondary" @click="paymentModalVisible=false">Close</Button>
-            <Button class="p-button p-component secondary" style="white-space: nowrap;"  type="submit" :disabled="addressNotMatch" >Start MetaMask transaction</Button>
+          <div>Token</div>
+          <div style="display: flex">
+            <Dropdown  v-model="selectedToken"  :options="selectedBlockchainTokens==undefined ? [] : selectedBlockchainTokens" placeholder="Select token" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
+              <template #value="slotProps">
+                <div v-if="slotProps.value" class="flex align-items-center">
+                  <div class="flag">
+                    <img v-if="slotProps.value.name == TOKEN_NAME.USDC" src="../../assets/USDC-icon.png" alt="stablecoin symbol" class="h-full"/>
+                    <img v-if="slotProps.value.name == TOKEN_NAME.USDT" src="../../assets/USDT-icon.png" alt="stablecoin symbol" class="h-full"/>
+                  </div>
+
+                  <div>{{ slotProps.value.name}}</div>
+                </div>
+              </template>
+              <template #option="slotProps">
+                <div class="flex align-items-center">
+                  <div class="flag">
+                    <img v-if="slotProps.option.name == TOKEN_NAME.USDC" src="../../assets/USDC-icon.png" alt="stablecoin symbol" class="h-full"/>
+                    <img v-if="slotProps.option.name == TOKEN_NAME.USDT" src="../../assets/USDT-icon.png" alt="stablecoin symbol" class="h-full"/>
+                  </div>
+                  <div>{{ slotProps.option.name }}</div>
+                </div>
+              </template>
+            </Dropdown>
+            <div v-if="!selectedToken" class="warning" style="margin: auto 15px">
+              Not selected
+            </div>
+
           </div>
 
-        </Form>
+        </div>
+
+
+        <div class="flex justify-content-center">
+          <Button class="p-button p-component secondary" @click="paymentModalVisible=false">Close</Button>
+          <Button class="p-button p-component secondary" style="white-space: nowrap;"  @click="onStartMetamaskTransaction()" :disabled="addressNotMatch || !blockchainAndTokenSelected()" >Start MetaMask transaction</Button>
+        </div>
+
+
+
+
+<!--        <Form @submit="onStartMetamaskTransaction" :validation-schema="modalSchema" v-slot="{errors}" >-->
+<!--          <div style="padding: 10px 30px;">-->
+<!--            <div >-->
+<!--              <div class="field col-12">-->
+<!--                <Field v-model="selectedBlockchainNetworkId" required name="selectedBlockchainNetwork" as="select" class="form-control"-->
+<!--                       :class="{'is-invalid': errors.selectedBlockchainNetwork}" @change="onNetworkChange">-->
+<!--                  <option v-for="network in blockchainNetworkList" :key="network" :value="network.chainId">{{network.chainName}}</option>-->
+<!--                </Field>-->
+<!--                <span>Network</span>-->
+<!--                <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>-->
+<!--              </div>-->
+
+<!--              <div class="field col-12">-->
+<!--                <Field v-model="selectedTokenIdentifier" required name="selectedTokenIdentifier" as="select" class="form-control"-->
+<!--                       :class="{'is-invalid': errors.selectedTokenIdentifier}">-->
+<!--                     <option v-for="token in selectedBlockchainTokens" :key="token" :value="token.coinIdentifier">{{token.name}}</option>-->
+<!--                </Field>-->
+<!--                <span>Token</span>-->
+<!--                <div class="invalid-feedback">{{ errors.selectedBlockchainNetwork ? $t(errors.selectedBlockchainNetwork) : '' }}</div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--          <div class="flex justify-content-center">-->
+<!--            <Button class="p-button p-component secondary" @click="paymentModalVisible=false">Close</Button>-->
+<!--            <Button class="p-button p-component secondary" style="white-space: nowrap;"  type="submit" :disabled="addressNotMatch" >Start MetaMask transaction</Button>-->
+<!--          </div>-->
+
+<!--        </Form>-->
       </div>
 
     </Dialog>
@@ -131,7 +240,7 @@
 <script setup lang="ts">
 
 import {useTransactionContextStore} from "@/store/transactionContext.store";
-import {computed, onBeforeMount, ref} from "vue";
+import {computed, onBeforeMount, ref, watch} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import {useToast} from "vue-toastification";
 import {usePublicSalesStore} from "@/store/publicSales.store";
@@ -147,10 +256,15 @@ import IconComponent from "@/components/features/IconComponent.vue";
 import {useUserStore} from "@/store/user.store";
 import WarningModal from "@/components/buyTokens/modals/WarningModal.vue";
 import i18n from "@/plugins/i18n";
+import {useConfigurationStore} from "@/store/configuration.store";
+import {Currency} from "@/models/currency";
+import Dropdown from "primevue/dropdown";
+import {CHAIN_NAME, TOKEN_NAME} from "@/models/saleServiceCommons";
+import InputText from 'primevue/inputtext';
 
 onBeforeMount(async () => {
   useUserStore().connectMetamask();
-  await publicSaleStore.fetchRoundInfoList(false);
+  await publicSaleStore.fetchRoundInfo(useConfigurationStore().config.currentPublicSaleRoundId,false);
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const {chainId} = await provider.getNetwork();
   changeNetwork(chainId);
@@ -169,17 +283,24 @@ const showManualPayment = ref<boolean>(false);
 
 const warningModalVisibility = ref(false);
 
+
+const blockchainAndTokenSelected = () => {
+  return selectedToken.value && selectedBlockchain.value;
+};
 const addressNotMatch = computed(() => {
   return useUserStore().metamaskConnectionInfo.address.toLowerCase() != useUserServiceStore().ethereumAddress?.toLowerCase();
 });
 const schema = object().shape({
   txHash:  Yup.string()
     .required( "This field is required"),
+  selectedBlockchain:  Yup.object().required( "This field is required"),
+  selectedToken:  Yup.object()
+    .required( "This field is required"),
 
 });
 
 const modalSchema = object().shape({
-  selectedBlockchainNetwork:  Yup.string()
+  selectedBlockchain:  Yup.string()
     .required( "This field is required"),
 
 });
@@ -187,28 +308,27 @@ const blockchainNetworkList = computed(() => {
   return publicSaleStore.blockchainInfo;
 });
 
-const selectedTokenIdentifier = ref();
-const selectedBlockchainNetworkId = ref();
+const selectedToken = ref();
+// const selectedBlockchainNetworkId = ref();
 const selectedBlockchainTokens = computed(() => {
   return blockchainNetworkList.value.find(blockchain => {
-    return blockchain.chainId == selectedBlockchainNetworkId.value;
+    return blockchain.chainId == selectedBlockchain.value?.chainId;
   })?.tokenExchanges;
 });
-const selectedBlockchain = computed(() => {
-  return blockchainNetworkList.value.find(blockchain => {
-    return blockchain.chainId == selectedBlockchainNetworkId.value;
-  });
-});
-const selectedToken = computed(() => {
-  if(selectedBlockchainTokens.value) {
-    return selectedBlockchainTokens.value.find(token => {
-      return token.coinIdentifier == selectedTokenIdentifier.value;
-    });
-  }
-  return undefined;
-});
+const selectedBlockchain = ref();
+
+// const selectedToken = computed(() => {
+//   if(selectedBlockchainTokens.value) {
+//     return selectedBlockchainTokens.value.find(token => {
+//       return token.coinIdentifier == selectedTokenIdentifier.value;
+//     });
+//   }
+//   return undefined;
+// });
 const onNetworkChange = () => {
-  useUserServiceStore().switchBlockchain(selectedBlockchainNetworkId.value);
+
+  useUserServiceStore().switchBlockchain( selectedBlockchain.value.chainId);
+  changeNetwork(selectedBlockchain.value.chainId);
 };
 
 const toast = useToast();
@@ -234,7 +354,7 @@ const onStartMetamaskTransaction = () => {
           blockchainID: selectedBlockchain.value.id,
           exchangeID: selectedToken.value.id,
           orderId: transactionContextStore.orderId,
-          blockchainAddress: selectedTokenIdentifier.value,
+          blockchainAddress: selectedToken.value.coinIdentifier,
           coinDecimals: selectedToken.value.decimals,
           c4eAddress: selectedToken.value.recipientAddress
         }, onSuccessStartMetamaskTransaction, onFail);
@@ -248,22 +368,37 @@ const onSuccessStartMetamaskTransaction = () => {
   router.push({name: 'publicSaleInfo'});
 };
 const changeNetwork = (networkId: number) => {
+
+  let isNetworkCorrect = false;
   blockchainNetworkList.value.forEach((network) => {
     if(network.chainId == networkId) {
-      selectedBlockchainNetworkId.value = network.chainId;
-      selectedTokenIdentifier.value = network.tokenExchanges[0].coinIdentifier;
+      isNetworkCorrect = true;
+      selectedBlockchain.value = network;
+      if (selectedBlockchainTokens.value)
+        selectedToken.value = selectedBlockchainTokens.value[0];
     }
   });
-};
-window.addEventListener("load", function() {
-  if (window.ethereum) {
-
-    window.ethereum.enable();
-
-    window.ethereum.on('networkChanged', function(networkId: number){
-      changeNetwork(networkId);
-    });
+  if(!isNetworkCorrect) {
+    selectedBlockchain.value = undefined;
+    selectedToken.value = undefined;
   }
+};
+// window.addEventListener("load", function() {
+//   console.log('co jest asdasdasd')
+//   if (window.ethereum) {
+//
+//     window.ethereum.enable();
+//
+//     window.ethereum.on('networkChanged', function(networkId: number){
+//       console.log('asdasdasd')
+//       console.log(networkId)
+//
+//     });
+//   }
+// });
+
+watch(() => useUserStore().metamaskConnectionInfo.networkId, () => {
+  changeNetwork(useUserStore().metamaskConnectionInfo.networkId);
 });
 
 const onConfirmPayment = () => {

@@ -12,7 +12,7 @@
             <div>
               <div style="display: flex; min-width:350px;">
                 <input @paste="onFirstInputChange" @keyup="onFirstInputChange"  style="width: 100%;" class="calculatorC4E__input" type="number" :disabled="firstInputBlocked" v-model="firstValueInput">
-                <Dropdown v-model="firstValue.currency" :options="[Currency.C4E]"  placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
+                <Dropdown v-model="firstValue.currency" :options="[Currency.C4E]" :disabled="true"  placeholder="Select network" style="max-width:200px; height: 52px; " class="dropdown flex align-items-center">
                   <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
                       <div class="flag flex align-items-center">
@@ -38,7 +38,7 @@
               <p>{{$t('BUY_TOKENS_VIEW.I_WANT_TO_INVEST')}}</p>
               <div style="display: flex; min-width:350px;">
                 <input @paste="onSecondInputChange"  @keyup="onSecondInputChange"  style="width: 100%;" class="calculatorC4E__input" type="number" :disabled="firstInputBlocked" v-model="secondValueInput" >
-                <Dropdown v-model="secondValue.currency" :options="currencyList" placeholder="Select network" style="max-width:180px; height: 52px; " class="dropdown flex align-items-center">
+                <Dropdown v-model="secondValue.currency" :options="currencyList" placeholder="Select network" style="max-width:200px; height: 52px; " class="dropdown flex align-items-center">
                   <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
                       <div class="flag">
@@ -94,7 +94,8 @@ import TooltipComponent from "@/components/TooltipComponent.vue";
 import CountryFlag from 'vue-country-flag-next';
 import C4EIcon from "@/components/commons/C4EIcon.vue";
 import {BigDecimal} from "@/models/store/big.decimal";
-import {DecCoin} from "@/models/store/common"; // https://www.npmjs.com/package/vue-country-flag-next
+import {DecCoin} from "@/models/store/common";
+import {useConfigurationStore} from "@/store/configuration.store"; // https://www.npmjs.com/package/vue-country-flag-next
 
 
 const props =  defineProps({
@@ -127,7 +128,7 @@ const props =  defineProps({
 const emit = defineEmits(['onBuy']);
 
 onBeforeMount(() => {
-  usePublicSalesStore().fetchRoundInfoList(false).then(() => {
+  usePublicSalesStore().fetchRoundInfo(useConfigurationStore().config.currentPublicSaleRoundId,false).then(() => {
     const rate =  usePublicSalesStore().getC4eToUSD;
     if(rate) {
       exchangeRate.value = rate;
@@ -341,9 +342,9 @@ const flagSelector = {
   font-size: 18px;
   font-weight: bold;
 }
-:deep(.p-dropdown .p-dropdown-trigger){
-  display: none !important;
-}
+//:deep(.p-dropdown .p-dropdown-trigger){
+//  display: none !important;
+//}
 ::v-deep(.p-button:not(.p-button-icon-only)) {
   border-radius: 5px !important;
 

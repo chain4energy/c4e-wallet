@@ -467,6 +467,12 @@
       "KEPLR": "Keplr",
       "METAMASK": "Metamask",
       "NONE": "Nie zalogowano"
+    },
+    "ENUMS": {
+      "UNCONFIRMED": "Oczekiwanie na potwierdzenie",
+      "CONFIRMED": "Potwierdzony",
+      "PREPARATION": "Przygotowywanie",
+      "NOT_VERIFIED": "Nie zweryfikowano"
     }
   },
   "PROFILE_VIEW": {

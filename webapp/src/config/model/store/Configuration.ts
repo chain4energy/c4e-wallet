@@ -167,8 +167,8 @@ export class Configuration implements JsonConfiguration {
   airdropDefaultDenom: string;
   faucetURL: string;
   faucetAvailable: boolean;
-
   targetInflationAprMultiplier: number;
+  currentPublicSaleRoundId: number;
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -217,6 +217,7 @@ export class Configuration implements JsonConfiguration {
       this.faucetURL = configuration.faucetURL;
       this.faucetAvailable = configuration.faucetAvailable;
       this.tokenReservationDenom = configuration.tokenReservationDenom;
+      this.currentPublicSaleRoundId = configuration.currentPublicSaleRoundId;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -256,6 +257,7 @@ export class Configuration implements JsonConfiguration {
       this.faucetURL = '';
       this.faucetAvailable = false;
       this.tokenReservationDenom = '';
+      this.currentPublicSaleRoundId = 0;
     }
   }
 
@@ -298,8 +300,7 @@ export class Configuration implements JsonConfiguration {
         amount = this.bigintToConvertedAmount(origAmount, viewDenomConf.conversionFactor);
       } else if (typeof origAmount === 'number') {
         amount = (origAmount / viewDenomConf.conversionFactor);
-      }
-      else {
+      } else {
         amount = origAmount.divide( viewDenomConf.conversionFactor);
       }
       return amount;
