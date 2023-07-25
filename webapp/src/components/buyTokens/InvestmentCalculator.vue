@@ -2,7 +2,7 @@
   <div class="calculatorC4E">
     <div class="calculatorC4E__header">
       {{$t('BUY_TOKENS_VIEW.CALCULATE_INVESTMENT')}}
-      <span style="float:right;  font-weight: 300;font-size: 19px;">{{$t('BUY_TOKENS_VIEW.REQUIREMENTS')}} <TooltipComponent :tooltipText="$t('BUY_TOKENS_VIEW.REQUIREMENTS_TIP')" /></span>
+      <span style="float:right;  font-weight: 300;font-size: 19px;"><TooltipComponent :tooltipText="$t('BUY_TOKENS_VIEW.REQUIREMENTS_TIP')">{{$t('BUY_TOKENS_VIEW.REQUIREMENTS')}}</TooltipComponent></span>
     </div>
     <div class="calculatorC4E__body">
       <div style=" flex: 1 1;">

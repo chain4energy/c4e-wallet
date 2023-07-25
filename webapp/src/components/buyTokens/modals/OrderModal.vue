@@ -1,11 +1,10 @@
 <template>
-  <Dialog v-model:visible="transactionContextStore.orderModalVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '600px', 'z-index': 500}">
+  <Dialog v-model:visible="transactionContextStore.orderModalVisible" closeIcon="false" modal :header="i18n.t('BUY_TOKENS_VIEW.ORDER_SUMMARY')" :baseZIndex="-100" :style="{ width: '95vw', 'max-width': '800px', 'z-index': 500}">
     <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;  color: black;  font-weight: 600;">
       <h5 style="font-weight:700">{{$t('BUY_TOKENS_VIEW.YOU_INVEST')}} {{transactionContextStore.amountToBuy.amount.toString()}} C4E</h5>
       <div class="requirements_container">
         <div>
-          {{$t('BUY_TOKENS_VIEW.PASS_KYC')}} {{transactionContextStore.getRequiredKycLevel}}
-          <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.KYC')"/> <br>
+          <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.KYC')">{{$t('BUY_TOKENS_VIEW.PASS_KYC')}} {{transactionContextStore.getRequiredKycLevel}}</TooltipComponent><br>
           <span class="additional_info">Level {{useUserServiceStore().kycLevel}} - verified</span> <br>
           <span v-if="!isKycLevelRequired" class="additional_info">Level {{transactionContextStore.getRequiredKycLevel}} - required</span>
         </div>
@@ -17,7 +16,7 @@
           <Button @click="onKycStart" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.START_KYC')}} - level {{transactionContextStore.getRequiredKycLevel}}</Button>
         </div>
         <div>
-          {{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')"/> <br>
+          <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')">{{$t('BUY_TOKENS_VIEW.ACCEPT_SALE_TERMS')}}</TooltipComponent> <br>
           <span v-if="isTermsAccepted" class="additional_info">Accepted</span>
           <span v-else class="additional_info">Not accepted</span>
         </div>
@@ -41,7 +40,7 @@
         </div>
         <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">
-          {{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}} <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')"/><br>
+          <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}}</TooltipComponent><br>
           <span v-if="sourceAddress" class="additional_info">{{addDotsInsideTooLongString(sourceAddress, 28)}}</span>
           <span v-else class="additional_info">Not provided</span>
         </div>

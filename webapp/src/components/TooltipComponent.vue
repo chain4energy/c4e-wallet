@@ -1,9 +1,9 @@
 <template>
   <span @click="onLinkClick()" class="tooltip-icon" :class="{ 'pointer': tooltipLink }">
-    {{text}}
-    <slot name="text"></slot>
     <span v-tooltip.left="{ value: tooltipText, escape: true }">
-      <Icon name="HelpCircle"/>
+      {{text}}
+      <slot/>
+      <Icon name="HelpCircle" style="margin-left: 5px;"/>
     </span>
   </span>
 </template>

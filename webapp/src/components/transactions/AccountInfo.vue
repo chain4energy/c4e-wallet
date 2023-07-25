@@ -52,8 +52,7 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <div class="accountInfo__headMainTxt">
-            <p>{{$t('PROFILE_VIEW.KYC_LEVEL')}}</p>
-            <TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.KYC')"/>
+            <p><TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.KYC')">{{$t('PROFILE_VIEW.KYC_LEVEL')}}</TooltipComponent></p>
           </div>
           <p class="accountInfo__headTxt">{{$t('PROFILE_VIEW.LEVEL')}} {{useUserServiceStore().getKycTier}}</p>
         </div>
@@ -67,8 +66,7 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <div class="accountInfo__headMainTxt">
-            <p>{{$t('PROFILE_VIEW.TERMS_ACCEPTANCE')}}</p>
-            <TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')"/>
+            <p><TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')">{{$t('PROFILE_VIEW.TERMS_ACCEPTANCE')}}</TooltipComponent></p>
           </div>
           <p class="accountInfo__headTxt" :class="{invalid: !isTermsAccepted }" >{{ isTermsAccepted ? $t('PROFILE_VIEW.ACCEPTED') : $t('PROFILE_VIEW.NOT_ACCEPTED') }}</p>
         </div>
@@ -83,8 +81,7 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <div class="accountInfo__headMainTxt">
-            <p>{{$t('PROFILE_VIEW.CLAIMER_ADDRESS')}}</p>
-            <TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"/>
+            <p><TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')">{{$t('PROFILE_VIEW.CLAIMER_ADDRESS')}}</TooltipComponent></p>
           </div>
           <p v-if="claimAddress" class="accountInfo__headTxt">{{ claimAddress }}</p>
           <p v-else class="accountInfo__headTxt invalid">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
@@ -107,8 +104,7 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <div class="accountInfo__headMainTxt">
-            <p>{{$t('PROFILE_VIEW.SOURCE_ADDRESS')}}</p>
-            <TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')"/>
+            <p><TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')">{{$t('PROFILE_VIEW.SOURCE_ADDRESS')}}</TooltipComponent></p>
           </div>
           <p v-if="sourceAddress" class="accountInfo__headTxt">{{ sourceAddress }}</p>
           <p v-else class="accountInfo__headTxt invalid">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
