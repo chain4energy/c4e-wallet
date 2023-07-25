@@ -23,7 +23,10 @@
                   :reduce-big-number="false"
                   :precision="2"/></th>
             </tr>
-
+            <tr>
+              <th class="allocationInfo__tableTabs">Date</th>
+              <th class="allocationInfo__tableTabs">{{ formattedDate(transaction.timestamp) }}</th>
+            </tr>
             <tr v-if="transaction.status === RESERVATION_STATUS.DECLARED && transaction.reservationEndTime">
               <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.REMAINING_RESERVATION_TIME')}}</th>
               <th class="allocationInfo__tableTabs">{{ timeToPass }}</th>
@@ -57,14 +60,14 @@
               <th class="allocationInfo__tableTabs">Left to pay</th>
               <th class="allocationInfo__tableTabs">
                 <img src="../../assets/stablecoin.png" alt="stablecoin symbol" style="width: 23px; margin-right:8px;"/>
-                100 USDT
+                {{ transaction.leftToPayInStableCoin().toFixed(6) }} USDT
               </th>
             </tr>
             <tr >
               <th class="allocationInfo__tableTabs">Left to buy</th>
               <th class="allocationInfo__tableTabs">
                 <img style="width: 23px; margin-right:8px;" src="@/assets/svg/C4E.svg">
-                100 C4E
+                {{ transaction.leftToBuyC4E().toFixed(6) }} C4E
               </th>
             </tr>
             <tr>
@@ -166,6 +169,7 @@ import {RESERVATION_STATUS, TRANSACTION_STATUS} from "@/models/saleServiceCommon
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import {useI18n} from "vue-i18n";
+import moment from "moment/moment";
 
 const props = defineProps<{
   transaction: TokenReservation
@@ -256,6 +260,10 @@ function calculateTimeToPass(){
   const seconds = Math.floor((diference % (1000 * 60)) / 1000);
   timeToPass.value = `${days}D ${hours}H ${minutes}M ${seconds}S`;
 }
+
+const formattedDate = (value: Date) => {
+  return moment(value).format('DD.MM.YYYY HH:mm:ss');
+};
 </script>
 
 <style scoped lang="scss">
@@ -287,7 +295,7 @@ function calculateTimeToPass(){
     .payment-status {
       float: right;
       height: 50px;
-      width: 150px;
+      width: 180px;
       padding: 15px 0px;
       margin-left: auto;
       margin-right: auto;
