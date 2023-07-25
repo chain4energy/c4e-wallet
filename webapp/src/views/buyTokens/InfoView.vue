@@ -31,7 +31,7 @@
     </div>
   </div>
   <BuyTokensModal :visible="showModal"  @closeModal="showModal = false" @confirm="onPayReservation" :reservation="selectedReservation" />
-  <OrderModal />
+  <OrderModal @onConnect="loginPopupStatus=true" @onAcceptTerms="showApprovalModalFunc" @on-kyc-start="onKycStart" @onProvideClaimerAddress="provideClaimerAddress" @onProvideSourceAddress="provideSourceAddress" />
 
 
   <ApprovalModal @close="hideApprovalModal" @submit="hideApprovalModal" v-if="showApprovalModal"/>
@@ -93,6 +93,23 @@ const kycModalVisible = ref(false);
 const loginPopupStatus = ref(false);
 
 const showApprovalModal = ref(false);
+
+const onKycStart = () => {
+  useUserServiceStore().initKycSession(true).then(() => {
+    kycModalVisible.value = true;
+    // router.push({name: 'kyc'});
+  });
+
+};
+function provideClaimerAddress(){
+  showAddressInfoModalAddressType.value = AddressType.KEPLR;
+  showAddressInfoModal.value = true;
+}
+function provideSourceAddress(){
+  showAddressInfoModalAddressType.value = AddressType.METAMASK;
+  useUserStore().connectMetamask();
+  showAddressInfoModal.value = true;
+}
 function hideApprovalModal(){
   showApprovalModal.value = false;
 }
@@ -126,6 +143,9 @@ const onPayReservation = () => {
     router.push({name: 'paymentConfirmation'});
   }
 };
+function showApprovalModalFunc(){
+  showApprovalModal.value = true;
+}
 
 const onFail = (errorMessage?: string) => {
   let toastMessage = 'An error occurred \n';
