@@ -96,6 +96,7 @@ export class TokenReservation {
   status: RESERVATION_STATUS;
   transactions: StoreTransaction[];
   unconfirmed: boolean;
+  timestamp: Date;
 
   constructor(
     orderId: number,
@@ -105,7 +106,8 @@ export class TokenReservation {
     reservationEndTime: Date,
     orderEndTime: Date,
     roundId: number,
-    unconfirmed: boolean
+    unconfirmed: boolean,
+    timestamp: Date
   ) {
     this.orderId = orderId;
     this.amountRequested = amountRequested;
@@ -115,9 +117,10 @@ export class TokenReservation {
     this.orderEndTime = orderEndTime;
     this.roundId = roundId;
     this.unconfirmed = unconfirmed;
+    this.timestamp = timestamp;
   }
 
-  leftToPay() {
+  leftToPayInStableCoin() {
     let sumOfPayments  = 0;
     this.transactions.forEach(transaction => {
       transaction.blockchainTxs.forEach(blockchainTx => {
@@ -126,6 +129,10 @@ export class TokenReservation {
     });
 
     return this.amountRequested.amount.multiply(usePublicSalesStore().getuC4eToUSD).subtract(new BigDecimal(sumOfPayments));
+  }
+
+  leftToBuyC4E() {
+    return this.leftToPayInStableCoin().divide(usePublicSalesStore().getC4eToUSD);
   }
 }
 

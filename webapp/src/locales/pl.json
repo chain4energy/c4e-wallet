@@ -465,7 +465,7 @@
     "CONFIRM_ORDER": "Potwierdź zamówienie"
   },
   "BUY_TOKENS_VIEW": {
-    "ROUND_INFO": "Public Sale Info: RUNDA",
+    "ROUND_INFO": "Public Sale Info:",
     "TOTAL_RAISE": "Total Raise",
     "PRICE": "Cena",
     "TIME_TO_START": "Czas do startu",

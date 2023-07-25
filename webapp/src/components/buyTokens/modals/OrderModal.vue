@@ -33,7 +33,7 @@
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
         <div v-else-if="!isLoggedIn && claimerAddress == undefined">
-          <Button @click="loginPopupStatus=true"
+          <Button @click="emit('onConnect')"
                   class="p-button p-component secondary-link button-w7">
             {{ $t('COMMON.CONNECT') }}
           </Button>
@@ -74,8 +74,10 @@ import {usePublicSalesStore} from "@/store/publicSales.store";
 import {useTransactionContextStore} from "@/store/transactionContext.store";
 import {useI18n} from "vue-i18n";
 import {computed, ref} from "vue";
-import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useConfigurationStore} from "@/store/configuration.store";
+
+const emit = defineEmits(["onKycStart", 'onAcceptTerms',
+  'onProvideClaimerAddress', 'onProvideSourceAddress', 'onConnect']);
 
 const router = useRouter();
 const toast = useToast();
@@ -83,13 +85,9 @@ const publicSaleStore = usePublicSalesStore();
 const transactionContextStore = useTransactionContextStore();
 
 const i18n = useI18n();
-const showAddressInfoModal = ref(false);
-const showAddressInfoModalAddressType = ref(AddressType.KEPLR);
 
-const kycModalVisible = ref(false);
 const loginPopupStatus = ref(false);
 
-const showApprovalModal = ref(false);
 const connectMetamask = () => {
   useUserStore().connectMetamask();
 };
@@ -97,7 +95,7 @@ const isLoggedIn = computed(() =>{
   return useUserStore().isLoggedIn;
 });
 function showApprovalModalFunc(){
-  showApprovalModal.value = true;
+  emit('onAcceptTerms');
 }
 
 const claimerAddress = computed(() => {
@@ -143,21 +141,14 @@ const onFail = (errorMessage?: string) => {
 };
 
 const onKycStart = () => {
-  useUserServiceStore().initKycSession(true).then(() => {
-    kycModalVisible.value = true;
-    // router.push({name: 'kyc'});
-  });
-
+  emit('onKycStart');
 };
 
-function provideClaimerAddress(){
-  showAddressInfoModalAddressType.value = AddressType.KEPLR;
-  showAddressInfoModal.value = true;
+function provideClaimerAddress() {
+  emit('onProvideClaimerAddress');
 }
 function provideSourceAddress(){
-  showAddressInfoModalAddressType.value = AddressType.METAMASK;
-  useUserStore().connectMetamask();
-  showAddressInfoModal.value = true;
+  emit('onProvideSourceAddress');
 }
 
 

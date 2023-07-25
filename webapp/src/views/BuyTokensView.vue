@@ -1,6 +1,6 @@
 <template>
   <div class="box-shadow buy-tokens-container">
-    <div class="back_container" >
+    <div v-if="showBackButton()" class="back_container" >
       <span @click="onBackClick">
         <Icon name="ArrowLeft"></Icon> Back
       </span>
@@ -20,6 +20,10 @@ import {useRoute, useRouter} from "vue-router";
 const router = useRouter();
 const route = useRoute();
 
+const showBackButton = () => {
+  return route.name != 'publicSaleInfo';
+
+};
 const onBackClick = () => {
     switch (route.name){
       case 'accountType': {
@@ -47,7 +51,7 @@ const onBackClick = () => {
         break;
       }
       default: {
-        router.push({name:'publicSaleInfo'});
+       return undefined;
       }
     }
 };
