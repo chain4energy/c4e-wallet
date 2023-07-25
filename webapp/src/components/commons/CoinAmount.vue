@@ -24,7 +24,7 @@ import {PropType} from "vue";
 
 const props =  defineProps({
   amount: {
-    type:  [BigIntWrapper, Number, BigDecimal, Coin, DecCoin] as PropType<BigIntWrapper | number | BigDecimal | Coin | DecCoin>,
+    type:  [BigIntWrapper, Number, BigDecimal, Coin, DecCoin, String] as PropType<BigIntWrapper | number | BigDecimal | Coin | DecCoin | string>,
     required: true,
   },
   precision: {
@@ -59,6 +59,8 @@ function retrieveConvertedAmount(): number | BigDecimal {
     return useConfigurationStore().config.getConvertedAmount(props.amount.amount, props.amount.denom);
   } else if(props.amount instanceof BigIntWrapper){
     return useConfigurationStore().config.getConvertedAmount(props.amount.value);
+  } else if(typeof (props.amount) === 'string'){
+    return useConfigurationStore().config.getConvertedAmount(Number(props.amount));
   }
   else {
     return useConfigurationStore().config.getConvertedAmount(props.amount);

@@ -55,7 +55,8 @@
         <div class="navbar-nav menu" style="align-items: center">
 
           <div @click="openAccInfo" class="acc-address" v-if="useUserStore().isLoggedIn">
-            <KeplrLogo v-if="useUserStore().connectionInfo.isKeplr()"/>
+            <KeplrLogo :letter="getLetter()" v-if="displayLogo"/>
+
             <Icon v-if="useUserStore().connectionInfo.isAddress()" style="margin-right: 10px;" name="Globe"></Icon>
             <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName }}: </span>
             {{ useUserStore().getAccount.address.slice(0, 8) }}...{{ useUserStore().getAccount.address.slice(-6) }}
@@ -72,7 +73,7 @@
             <div class="profileMenu__dropdown" v-if="profileDropdown">
 
               <div v-if="!useUserServiceStore().isLoggedIn">
-                <div class="option grid_container"  @click="router.push({name: 'signIn'});">
+                <div class="option grid_container"  @click="router.push({name: 'signIn-profile'});">
                   <Icon name="LogIn" />
                   Login to profile
                 </div>
@@ -168,7 +169,6 @@ import {SideBarIconType} from "@/services/permissions/sidebar.config";
 import {useConfigurationStore} from '@/store/configuration.store';
 import {changeTitle} from "@/utils/title-changer";
 import {useRoute, useRouter} from 'vue-router';
-import {useGlobalFilterStore} from "@/store/global-filter.store";
 import {computed, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {PermissionsService} from "@/services/permissions/permissions.service";
@@ -179,7 +179,6 @@ import {useUserServiceStore} from "@/store/userService.store";
 import UserIcon from "@/components/features/UserIcon.vue";
 
 const router = useRouter();
-const globalFilter = useGlobalFilterStore();
 const loginPopupStatus = ref(false);
 const logoutPopupStatus = ref(false);
 const dropdown = ref(false);
@@ -213,6 +212,19 @@ const selected = computed(() => {
 const currentRouteName = computed(() => {
   return router.currentRoute.value.name;
 });
+const displayLogo = () => {
+  return useUserStore().connectionInfo.isKeplr() || useUserStore().connectionInfo.isLeap() || useUserStore().connectionInfo.isCosmostation();
+};
+
+const getLetter = () => {
+  if(useUserStore().connectionInfo.isCosmostation()) {
+    return 'C';
+  } else if(useUserStore().connectionInfo.isKeplr()) {
+    return 'K';
+  } else if(useUserStore().connectionInfo.isLeap()) {
+    return 'L';
+  }
+};
 
 function openAccInfo() {
   logoutPopupStatus.value = !logoutPopupStatus.value;
@@ -388,11 +400,11 @@ nav a.router-link-exact-active {
 }
 
 .keplr-logo {
-  padding: 0px 5px;
+  padding: 0 5px;
   background-color: rgba(255, 255, 255);
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 700px), (max-height: 640px) {
   .menu {
     display: none;
   }

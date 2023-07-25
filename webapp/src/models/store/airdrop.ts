@@ -2,6 +2,7 @@ import {Coin} from "@/models/store/common";
 import {MissionType as MissionTypeBc} from "@/models/blockchain/airdrop";
 import {BigDecimal} from "@/models/store/big.decimal";
 import {useConfigurationStore} from "@/store/configuration.store";
+import {CampainStatus} from "@/models/airdrop/airdrop";
 
 export class AirdropTotal {
   campaignAllocations: CampaignAllocation[]
@@ -15,8 +16,7 @@ export class AirdropTotal {
     this.campaignAllocations.forEach((el) => {
       sumArr.push(el.getTotalForCampaign());
     });
-    const sum = sumArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    return sum;
+    return sumArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   }
 }
 
@@ -61,7 +61,7 @@ export class AlocationsSt {
 }
 
 export class Campaign{
-  id : number;
+  id : string;
   name : string;
   description : string;
   enabled: boolean;
@@ -69,13 +69,15 @@ export class Campaign{
   end_time: string;
   lockup_period: string;
   vesting_period: string;
-  feegrant_amount: string;
+  feegrant_amount: Coin;
   initial_claim_free_amount: string;
   amount: Coin;
   missions: Mission[];
+  totalDistribution: Coin;
+  status: CampainStatus;
 
 
-  constructor(id: number, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, feegrant_amount: string, initial_claim_free_amount:string) {
+  constructor(id: string, name: string, description: string, enabled: boolean, start_time: string, end_time: string, lockup_period: string, vesting_period: string, feegrant_amount: string, initial_claim_free_amount:string, missions: Mission[], amount: string, totalDistribution: string, status: CampainStatus) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -84,10 +86,12 @@ export class Campaign{
     this.end_time = end_time;
     this.lockup_period = lockup_period;
     this.vesting_period = vesting_period;
-    this.feegrant_amount = feegrant_amount;
+    this.feegrant_amount = new Coin(BigInt(feegrant_amount), getDefaultDenom());
     this.initial_claim_free_amount = initial_claim_free_amount;
-    this.amount = new Coin(BigInt(0), getDefaultDenom());
-    this.missions = new Array<Mission>();
+    this.amount = new Coin(BigInt(amount), getDefaultDenom());
+    this.missions = missions;
+    this.totalDistribution = new Coin(BigInt(totalDistribution), getDefaultDenom());
+    this.status = status;
   }
 }
 
@@ -96,18 +100,19 @@ export class Mission {
   name : string;
   description : string;
   mission_type : MissionTypeSt;
-
-  weight: number;
+  weightInPerc: number;
+  weight: string;
   completed : boolean;
   claimed : boolean;
   claimed_time : string | undefined
 
 
-  constructor(id: string, name: string, description: string, mission_type: MissionTypeSt, weight: number, completed: boolean, claimed: boolean, claimed_time: string | undefined) {
+  constructor(id: string, name: string, description: string, mission_type: MissionTypeSt,weightInPerc: number, weight: string, completed: boolean, claimed: boolean, claimed_time: string | undefined) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.mission_type = mission_type;
+    this.weightInPerc = weightInPerc;
     this.weight = weight;
     this.completed = completed;
     this.claimed = claimed;
@@ -119,7 +124,9 @@ export enum MissionTypeSt {
   INITIAL_CLAIM = 'INITIAL_CLAIM',
   VOTE = 'VOTE',
   DELEGATE = 'DELEGATE',
-  UNDEFINED = 'UNDEFINED'
+  CLAIM = 'CLAIM',
+  UNDEFINED = 'UNDEFINED',
+  TO_DEEFINE = 'TO_DEEFINE'
 }
 
 export function convertMissionType(missionTypeBc: MissionTypeBc): MissionTypeSt {
@@ -131,6 +138,8 @@ export function convertMissionType(missionTypeBc: MissionTypeBc): MissionTypeSt 
         return MissionTypeSt.INITIAL_CLAIM;
       case MissionTypeBc.VOTE:
         return MissionTypeSt.VOTE;
+      case MissionTypeBc.CLAIM:
+        return MissionTypeSt.CLAIM;
     }
   } else {
     console.log("missionTypeBc not defined");
@@ -144,7 +153,7 @@ export function findMission(missions: Mission[], missionId: string): Mission | u
   });
 }
 
-export function findCampaign(campaigns: Campaign[], campaignId: number): Campaign | undefined {
+export function findCampaign(campaigns: Campaign[], campaignId: string): Campaign | undefined {
   return campaigns.find(d => {
     return d.id == campaignId;
   });

@@ -7,31 +7,34 @@
 <script setup lang="ts">
 import {computed} from "vue";
 
-const props = defineProps<{
-  date: Date,
+const props = defineProps({
+  date: {
+    type: [Date, Number],
+    required: true
+  },
   showTime: {
-    type: boolean,
+    type: Boolean,
     default: true,
     required: false
   },
   showTooltip: {
-    type : boolean,
+    type: Boolean,
     required: false,
     default: false
-  },
-}>();
+  }
+});
 
 const trueDate = computed(()=> {
   let date = new Date(props.date);
   if(!props.showTime) {
-    return date.toLocaleDateString();
+    return date.toLocaleDateString('fr-CH');
   }
-  return date.toLocaleDateString() + ', ' + date.toLocaleTimeString();
+  return date.toLocaleDateString('fr-CH') + ', ' + date.toLocaleTimeString();
 });
 
 const retrieveConvertedTime = () => {
   let date = new Date(props.date);
-  return date.toLocaleDateString() + ', ' + date.toLocaleTimeString();
+  return date.toLocaleDateString('fr-CH') + ', ' + date.toLocaleTimeString();
 };
 </script>
 

@@ -63,6 +63,11 @@ import "primeflex/primeflex.css";
 import "primevue/resources/themes/lara-light-blue/theme.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { VueRecaptchaPlugin } from 'vue-recaptcha/head'
+
+
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
 
@@ -117,6 +122,9 @@ app.use(router)
   .use(PrimeVue)
   // .use(Vidle)
   .use(VueSvgInlinePlugin)
+  .use(VueRecaptchaPlugin, {
+    v2SiteKey: '6Lc2fTYmAAAAAEQSYDkeecH1xPPvVD3T1UrBbpac'
+   })
   .provide('logger', logger)
   .component('Button', Button)
   .component('InputText', InputText)

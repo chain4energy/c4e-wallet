@@ -54,6 +54,7 @@ data:
       "proposalVotingRefreshTimeout": 30000,
       "targetInflationAprMultiplier": 5,
       "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
+      "faucetAvailable": true,
       "currentPublicSaleRoundId": 1
     },
       "Mainnet": {
@@ -108,7 +109,8 @@ data:
         "proposalVotingRefreshTimeout": 30000,
         "targetInflationAprMultiplier": 5,
         "faucetURL": "",
-        "currentPublicSaleRoundId": 1
+        "currentPublicSaleRoundId": 1,
+        "faucetAvailable": false
       }
     }
 kind: ConfigMap

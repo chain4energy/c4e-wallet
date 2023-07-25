@@ -13,14 +13,17 @@ export function createRouterBeforeEach (logger: LoggerService) {
     if(!useConfigurationStore().getInitialized) {
       await waitTillCondition(() => useConfigurationStore().getInitialized);
     }
-
+    if(to.meta.requiresNotMainNetwork == true && !useConfigurationStore().config.faucetAvailable) {
+      next('/');
+    }
     if (to.matched.some(record => record.meta.requiresAuth)) {
       if (useUserServiceStore().isLoggedIn) {
         next();
         return;
       }
       logger.logToConsole(LogLevel.INFO, ServiceTypeEnum.ROUTER, 'user not logged in, redirecting to login page');
-      next('/buyTokens/signIn');
+      if (from.redirectedFrom?.fullPath.includes('/buyTokens')) next('/buyTokens/signIn');
+      else next('/profile/signIn');
     } else {
       logger.logToConsole(LogLevel.INFO, ServiceTypeEnum.ROUTER, 'requiresAuth not defined or FALSE. Route: ' + JSON.stringify(to.name));
       next();

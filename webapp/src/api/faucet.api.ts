@@ -11,11 +11,14 @@ export class FaucetApi extends BaseApi {
         return ServiceTypeEnum.FAUCET_API;
     }
 
-    public topUpAccount(accountAddress:string): Promise<RequestResponse<FaucetResponse, ErrorData<FaucetResponse>>> {
+    public topUpAccount(accountAddress:string, recaptchaToken: string): Promise<RequestResponse<FaucetResponse, ErrorData<FaucetResponse>>> {
         const url = formatString(useConfigurationStore().config.faucetURL ,{address: accountAddress});
         return this.axiosCall({
             method: 'GET',
             url: url,
+          headers: {
+              'recaptcha-response': recaptchaToken
+          }
         }, true, null, false, 'topUpAccount');
     }
 }

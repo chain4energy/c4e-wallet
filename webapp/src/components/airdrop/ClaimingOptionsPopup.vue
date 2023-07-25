@@ -3,6 +3,7 @@
     <div class="claimingOptionsPopup__background" @click="$emit('close')"></div>
     <div class="claimingOptionsPopup__holder">
       <h3>Type an account to claim mission reward</h3>
+      <h4 class="m-4" v-if="isFinal">You are about to claim the final mission</h4>
       <div class="claimingOptionsPopup__content">
         <Form @submit="claim" :validation-schema="addressSchema" v-slot="{ errors }" class="loginEmail__body">
           <div class="loginEmail__description">
@@ -26,26 +27,27 @@ import {useAirDropStore} from "@/store/airDrop.store";
 import {useUserStore} from '@/store/user.store';
 import {ref, defineEmits} from "vue";
 import {Form, Field} from "vee-validate";
-import {object, setLocale, string} from "yup";
+import {object, string} from "yup";
 import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import i18n from "@/plugins/i18n";
 import {useConfigurationStore} from "@/store/configuration.store";
 import * as bench32 from "bech32";
+import {useToast} from "vue-toastification";
 
 const props = defineProps<{
   initialClaim: boolean,
-  campaignId: number,
-  missionId: number,
+  campaignId: string,
+  missionId: string,
+  isFinal: boolean
 }>();
 
 const address= ref(useUserStore().getAccount.address);
 
-const emit = defineEmits(['close', 'typeChange']);
+const emit = defineEmits(['close', 'typeChange','final']);
 
 let errorMessageType = '';
 
 async function validateAddress(address: string | undefined){
-  console.log('validateAddress: ' + address);
   if (!address) {
     errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.EMPTY');
     return false;
@@ -63,7 +65,6 @@ async function validateAddress(address: string | undefined){
 }
 
 function onWrongAddress(address: string, err: string) {
-  console.log(err.slice(7));
   switch (err.slice(7)){
     case address + ' too short' || 'Data too short':
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.TOO_SHORT');
@@ -91,7 +92,7 @@ const addressSchema = object().shape({
     }),
     string().test('validate Address', i18n.global.t(errorMessageType), validateAddress)
   ])
-})
+});
 
 function claim(){
   if(props.initialClaim){
@@ -101,15 +102,38 @@ function claim(){
   }
 }
 
-function claimInitialAirdrop(id: number){
-  useAirDropStore().claimInitialAirdrop(id);
-  emit('close');
+function claimInitialAirdrop(id: string){
+  useAirDropStore().claimInitialAirdrop(id, address.value).then((r) =>{
+    if (!r.error) {
+      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
+        .then(() => {
+          useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
+          if (props.isFinal) {
+            emit('final');
+          }
+        });
+    }
+  }).finally(() => {
+    emit('close');
+  });
 }
 
-function claimOtherAirdrop(campaignId: number, missionId: number){
-  useAirDropStore().claimOtherAirdrop(campaignId, missionId);
-  emit('close');
+function claimOtherAirdrop(campaignId: string, missionId: string){
+  useAirDropStore().claimOtherAirdrop(campaignId, missionId).then((r) =>{
+    if (!r.error) {
+    useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
+      .then(() => {
+      useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
+      if (props.isFinal) {
+        emit('final');
+      }
+      });
+    }
+  }).finally(() => {
+    emit('close');
+  });
 }
+
 </script>
 
 <style scoped lang="scss">
