@@ -2,11 +2,14 @@
 <div class="allocationInfo">
   <div class="allocationInfo__head">
     <span class="title">Allocation info</span>
-
-    <div class="payment-status payment-status-completed" :class="getReservationStatusClass(transaction.status)">
+    <div class="payment-status payment-status-completed" style="float: right;" :class="getReservationStatusClass(transaction.status)">
       <Icon :name="getReservationIcon(transaction.status)"></Icon> &nbsp;
       {{ i18n.t('ENUMS.RESERVATION_STATUS.'+transaction.status)  }}
     </div>
+    <span v-if="transaction.unconfirmed" class="title" style="float: right;">
+      <Icon style="width:30px; height:30px; margin-bottom:2px" name="Clock" />
+      Waiting for confirmation
+    </span>
   </div>
   <div class="allocationInfo__container">
     <div class="allocationInfo__body">
@@ -35,10 +38,10 @@
             <!--        <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.PAYMENT_TYPE')}}</th>-->
             <!--        <th class="allocationInfo__tableTabs">{{ getPaymentType() }}</th>-->
             <!--      </tr>-->
-            <tr v-if="transaction.unconfirmed">
-              <th class="allocationInfo__tableTabs">Unconfirmed</th>
-              <th class="allocationInfo__tableTabs">{{ transaction.unconfirmed }}</th>
-            </tr>
+<!--            <tr v-if="transaction.unconfirmed">-->
+<!--              <th class="allocationInfo__tableTabs">Unconfirmed</th>-->
+<!--              <th class="allocationInfo__tableTabs">{{ transaction.unconfirmed }}</th>-->
+<!--            </tr>-->
             <tr>
               <th class="allocationInfo__tableTabs">Round</th>
               <th class="allocationInfo__tableTabs">{{ getRoundName(transaction.roundId) }}</th>
@@ -47,7 +50,7 @@
           </table>
         </div>
         <div class="table__second_column">
-          <table cellspacing="0" cellpadding="0" class="allocationInfo__table smaller">
+          <table v-if="transaction.status == RESERVATION_STATUS.DECLARED || transaction.status == RESERVATION_STATUS.PARTIALLY_PAID" cellspacing="0" cellpadding="0" class="allocationInfo__table smaller">
             <tr >
               <th class="allocationInfo__tableTabs">Left to pay</th>
               <th class="allocationInfo__tableTabs">
@@ -132,7 +135,7 @@
 <!--              <th class="allocationInfo__tableTabs">{{ blockchainTransaction.currencyCode }}</th>-->
 <!--            </tr>-->
 
-            <tr v-if="blockchainTransaction.blockchainTxs.length>0">
+            <tr v-if="blockchainTransaction.blockchainTxs.length>0 && blockchainTransaction.type == PAYMENT_TYPE.COIN">
               <th class="allocationInfo__tableTabs">Payments </th>
               <th>
                 <div style="display:flex; align-items:center" v-for="blockchainTx in blockchainTransaction.blockchainTxs" :key="blockchainTx">
@@ -142,21 +145,16 @@
                   <i class="gg-arrow-long-right"></i>
                   <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~{{blockchainTx.getInC4E().toFixed(2)}} C4E
                 </div>
-<!--                <div  style="display: flex; justify-content: center; margin-top:20px">-->
-
-<!--                  <table id="txs">-->
-<!--                    <tr>-->
-<!--                      <th style="width:10%">Number</th>-->
-<!--                      <th>Amount</th>-->
-<!--                      <th>Currency</th>-->
-<!--                    </tr>-->
-<!--                    <tr v-for="blockchainTx in blockchainTransaction.blockchainTxs" :key="blockchainTx">-->
-<!--                      <td >1</td>-->
-<!--                      <td>{{blockchainTx.amount}}</td>-->
-<!--                      <td>{{blockchainTx.coinName}}</td>-->
-<!--                    </tr>-->
-<!--                  </table>-->
-<!--                </div>-->
+              </th>
+            </tr>
+            <tr v-if="blockchainTransaction.type == PAYMENT_TYPE.FIAT">
+              <th class="allocationInfo__tableTabs">Payments </th>
+              <th>
+                <div style="display:flex; align-items:center" >
+                  {{blockchainTransaction.amount}} {{blockchainTransaction.currencyCode}}
+                  <i class="gg-arrow-long-right"></i>
+                  <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~x C4E
+                </div>
               </th>
             </tr>
           </table>
@@ -176,7 +174,13 @@
 import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {onBeforeMount, onUnmounted, ref} from "vue";
-import {CHAIN_NAME, RESERVATION_STATUS, TOKEN_NAME, TRANSACTION_STATUS} from "@/models/saleServiceCommons";
+import {
+  CHAIN_NAME,
+  PAYMENT_TYPE,
+  RESERVATION_STATUS,
+  TOKEN_NAME,
+  TRANSACTION_STATUS
+} from "@/models/saleServiceCommons";
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import {useI18n} from "vue-i18n";
