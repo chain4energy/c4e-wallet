@@ -468,11 +468,31 @@
       "METAMASK": "Metamask",
       "NONE": "Nie zalogowano"
     },
-    "ENUMS": {
+    "BLOCKCHAIN_STATUS": {
       "UNCONFIRMED": "Oczekiwanie na potwierdzenie",
       "CONFIRMED": "Potwierdzony",
       "PREPARATION": "Przygotowywanie",
       "NOT_VERIFIED": "Nie zweryfikowano"
+    },
+    "TRANSACTION_STATUS": {
+      "NOT_VERIFIED": "Entered",
+      "OK": "OK",
+      "NO_CORRECT_TOKEN": "No expected token transfer found",
+      "NOT_FOUND": "Transaction not found",
+      "INVALID_TX_HASH": "Invalid transaction hash",
+      "INVALID_TX": "nvalid transaction",
+      "TRANSFER_SOURCE_ADDRESS_UNRECOGNIZED": "Wrong transaction signer address",
+      "TRANSFER_RECIPIENT_ADDRESS_INCORRECT": "Tokens not sent to C4E address",
+      "FAILED": "Failed transaction",
+      "PGW_FAILED": "Failed transaction"
+    },
+    "RESERVATION_STATUS": {
+      "DECLARED": "Declared",
+      "PARTIALLY_PAID": "Partially paid",
+      "OVERPAID": "Overpaid",
+      "COMPLETED": "Paid",
+      "REJECTED": "Rejected",
+      "CANCELED": "Canceled"
     }
   },
   "PROFILE_VIEW": {
