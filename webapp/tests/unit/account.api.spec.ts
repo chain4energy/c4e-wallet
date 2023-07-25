@@ -257,6 +257,37 @@ describe('account api tests', () => {
 
   });
 
+  it('gets spendable balance', async () => {
+    const amount = 942541981n;
+
+    const fakeResponse = {
+      data: {
+        balances: [
+          {
+            denom:"uc4e",
+            amount:"942541981"
+          }
+        ],
+        pagination: {
+          "next_key": null,
+          total: "1"
+        }
+      }
+    };
+
+
+    mockedAxios.request.mockResolvedValue(fakeResponse);
+
+    const result = await api.fetchSpendableBalances(address, false);
+
+    expect(result.isError()).toBe(false)
+    expect(result.isSuccess()).toBe(true)
+    expect(result.error).toBeUndefined()
+    expect(result.data).toBeDefined()
+    //@ts-ignore
+    expect(result.data[0].amount).toBe(amount)
+  });
+
   it('gets delegator delegations - delegations exist', async () => {
     const delegations = {
       data: createDelegatorDelegationsResponseData(address)

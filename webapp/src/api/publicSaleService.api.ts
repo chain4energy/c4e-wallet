@@ -2,7 +2,7 @@ import BaseApi, {ErrorData} from "@/api/base.api";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import { AccountRequest, CreateAccountRequest, PasswordAuthenticateRequest } from "@/models/user/passwordAuth";
 import {useConfigurationStore} from "@/store/configuration.store";
-import {RequestResponse} from "@/models/request-response";
+import {EmptyResponse, RequestResponse} from "@/models/request-response";
 import {AccountInfo} from "@/models/user/accountInfo";
 import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import queries from "@/api/queries";
@@ -21,7 +21,7 @@ import {
 } from "@/models/user/emailPairing";
 import {formatString} from "@/utils/string-formatter";
 import {
-  BlockchainInfo,
+  BlockchainInfo, CancelReservationRequest,
   InitPaymentSessionRequest,
   InitPaymentSessionResponse,
   ReserveTokensRequest,
@@ -140,6 +140,10 @@ export class PublicSaleServiceApi extends BaseApi {
 
   public async reserveTokens(roundId: number, amount: number, lockscreen: boolean): Promise<RequestResponse<ReserveTokensResponse, ErrorData<UserServiceErrData>>> {
     return this.publicSaleServicePostCall<ReserveTokensRequest, ReserveTokensResponse, UserServiceErrData>(queries.publicSaleService.RESERVE_TOKENS, {roundId: roundId, amount: amount}, lockscreen, "reserveTokens");
+  }
+
+  public async cancelReservation(orderId: number, lockscreen: boolean): Promise<RequestResponse<EmptyResponse, ErrorData<UserServiceErrData>>> {
+    return this.publicSaleServicePostCall<CancelReservationRequest, EmptyResponse, UserServiceErrData>(queries.publicSaleService.CANCEL_RESERVATION, {orderId: orderId}, lockscreen, "cancelReservation");
   }
 
   public async initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen: boolean): Promise<RequestResponse<InitPaymentSessionResponse, ErrorData<UserServiceErrData>>> {

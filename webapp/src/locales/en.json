@@ -323,7 +323,7 @@
   },
   "USER_DATA": {
     "TOTAL": "Total",
-    "AVAILABLE": "Available",
+    "AVAILABLE": "Balance",
     "STAKED": "Staked",
     "UNSTAKING": "Unstaking",
     "CLAIM_REWARDS": "Claim",
@@ -361,6 +361,7 @@
     "PRIVACY_POLICY": "Privacy policy",
     "TERMS_CONDITIONS": "Terms & conditions",
     "AIRDROP": "Airdrop",
+    "FAUCET": "Faucet",
     "BUYTOKENS": "Buy tokens",
     "PROFILE": "Profile",
     "KYC": "KYC",
@@ -377,7 +378,9 @@
     "SIGNUP": "Sign up",
     "ACTIVATE": "Account activation",
     "PROVIDEVERIFICATIONCODE": "Verification",
-    "PORTFOLIO": "Portfolio"
+    "PORTFOLIO": "Portfolio",
+    "SIGNIN-PROFILE": "Sign in",
+    "SIGNUP-PROFILE": "Sign up"
   },
   "TOAST": {
     "SUCCESS": {
@@ -396,7 +399,8 @@
         "TITLE": "Transaction Failed",
         "CODE": "Code"
       },
-      "TOP_UP": "Top up error"
+      "TOP_UP": "Top up error",
+      "TOO_MANY_REQUESTS": "Top-up limit exceeded. Please come back in 24 hours."
     },
     "INTERNET_CONNECTION": {
       "ONLINE": "Your internet connection was restored.",
@@ -404,7 +408,7 @@
     }
   },
   "AIRDROP": {
-    "CONNECT": "Connect with Keplr",
+    "CONNECT": "Connect to wallet",
     "OR": "or",
     "CONNECT_CHAINS": "Connect with COSM/C4E account",
     "C4E_HELP": "Provide C4E or COSMOS address",
@@ -414,10 +418,34 @@
     "CLAIM_AIRDROP": "Claim Airdrop",
     "FAIRDROP_ALLOCATION": "Total Fairdrop Allocation",
     "FOOTER_HEADER": "What's Next? Follow Us for Updates.",
-    "FOOTER_TEXT": "Connect with us to stay up-to-date on airdrop distribution and what's next for C4E."
+    "FOOTER_TEXT": "Connect with us to stay up-to-date on airdrop distribution and what's next for C4E.",
+    "DETAILS": "Details",
+    "TOTAL_HEADER": "Summary",
+    "TOTAL": "Total",
+    "TOTAL_CLAIMED": "Total claimed",
+    "ACTIVE": "Active campaigns",
+    "TO_CLAIM": "To claim",
+    "CLAIMED": "Claimed",
+    "MISSION_COMPLETED": "Missions completed",
+    "TOTAL_DISTRIBUTION": "Total distribution",
+    "CAMPAIGN_PASSED": "The campaign has finished",
+    "CAMPAIGN_START": "The campaign will start",
+    "CAMPAIGN_END": "Time to finish the campaign",
+    "CLAIM": "Claim",
+    "VOTE": "Vote",
+    "DELEGATE": "Delegate",
+    "INITIAL": "Initial mission - basic mission that must be claimed first",
+    "SHOW_MISSIONS": "Show missions",
+    "HIDE_MISSIONS": "Hide missions",
+    "MISSION": "Mission",
+    "CONNECT_INFO": "Connect to wallet to claim rewards!",
+    "SUCCESS": "You successfully claimed mission!",
+    "SOON": "Soon",
+    "TO_DEEFINE": "To define"
   },
   "CLAIM_AIRDROP": {
-    "PROGRESS":"Campaign countdown"
+    "PROGRESS":"Campaign countdown",
+    "FINISHED" : "Campaign finished"
   },
   "COPY": {
     "ADDRESS": "Address has been copied to clipboard",
@@ -433,6 +461,12 @@
   "HEADER": {
     "TOP_UP_ACCOUNT": "Faucet",
     "VERSION": "Version"
+  },
+  "FAUCET": {
+    "WELCOME": "Welcome to our testnet! Are you looking for some tokens to start?\nYou can top up your account with 100 C4E every 24 hours",
+    "REQUEST_TOKENS": "Request Tokens",
+    "INPUT_ADDRESS": "Input an address to request token",
+    "TITLE": "C4E Faucet"
   },
   "ENUMS": {
     "LOGIN_TYPE": {
@@ -533,5 +567,21 @@
     "VALIDATION_ERRORS": {
       "PASSWORD_REGEX": "The password must consist of min. 8 characters (Must contain one letter, one number, one special character)"
     }
+  },
+  "PORTFOLIO_VIEW": {
+    "BALANCE": "Balance",
+    "SPENDABLE": "Spendable",
+    "LOCKED": "Locked",
+    "SEND": "Send",
+    "RECEIVE": "Receive",
+    "DETAILS": "Vesting details",
+    "START_DATE": "Start date",
+    "END_DATE": "End date",
+    "TIME": "Time remaining",
+    "HOURS": "h",
+    "MINS": "min",
+    "DAYS": "days",
+    "NO_ACTIVE": "You have no active vestings!",
+    "ADDRESS": "Your address:"
   }
 }

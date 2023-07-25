@@ -19,11 +19,14 @@ export default {
     STAKING_PARAMS_URL: '/cosmos/staking/v1beta1/params',
     VESTINGS_SUM_URL: '/c4e/vesting/v1beta1/summary',
     DISTRIBUTOR_PARAMS_URL: '/c4e/distributor/v1beta1/params',
-    USER_AIRDROP_ENTRIES_URL: '/c4e/airdrop/v1beta1/user_airdrop_entries/{address}',
-    CAMPAIGNS_URL: '/c4e/airdrop/v1beta1/campaigns',
-    MISSIONS_URL: '/c4e/airdrop/v1beta1/mission',
-    AIRDROP_DISTRIBUTIONS: '/c4e/airdrop/v1beta1/airdrop_distributions/{campaign_id}',
-    AIRDROP_CLAIMS_LEFT: '/c4e/airdrop/v1beta1/airdrop_claims_left/{campaign_id}',
+    USER_AIRDROP_ENTRIES_URL: '/c4e/claim/v1beta1/user_entry/{address}',
+    CAMPAIGNS_URL: '/c4e/claim/v1beta1/campaigns',
+    CAMPAIGN_URL: '/c4e/claim/v1beta1/campaign/{campaign_id}',
+    MISSIONS_URL: '/c4e/claim/v1beta1/missions',
+    CAMPAIGN_MISSIONS_URL: '/c4e/claim/v1beta1/missions/{campaign_id}',
+    AIRDROP_DISTRIBUTIONS: '/c4e/claim/v1beta1/airdrop_distributions/{campaign_id}', //total
+    AIRDROP_CLAIMS_LEFT: '/c4e/claim/v1beta1/airdrop_claims_left/{campaign_id}', //delete
+    SPENDABLE_BALANCES_URL: '/cosmos/bank/v1beta1/spendable_balances/{address}'
   },
   hasura: {
     AVERAGE_BLOCK_TIME_QUERY: 'query AverageBlockTime {' +
@@ -103,6 +106,7 @@ export default {
     REFRESH_TOKEN: '/api/publicsale-service/refresh',
     EMAIL_CREATE_ACCOUNT: '/api/publicsale-service/register',
     RESERVE_TOKENS: '/api/publicsale-service/token/reservation',
+    CANCEL_RESERVATION: '/api/publicsale-service/token/cancelReservation',
     TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations',
     PROVIDE_TX_PAYMENT_PROOF: '/api/publicsale-service/token/tx',
     BLOCKCHAIN_INFO: '/api/publicsale-service/blockchain/info',

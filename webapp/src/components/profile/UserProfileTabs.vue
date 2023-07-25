@@ -17,7 +17,7 @@
     <div class="userProfile__extra">
       <Button v-if="useUserServiceStore().isLoggedIn"
         class="p-button p-component secondary userProfile__btn"
-        @click="useUserServiceStore().logOutAccount()">{{$t('BUTTONS.LOGOUT')}}</Button>
+        @click="logOutAccount()">{{$t('BUTTONS.LOGOUT')}}</Button>
     </div>
 <!--    <PayModal v-model:display="showModal" v-model:reservation="selectedReservation" @close="showModal = false" />-->
   </div>
@@ -31,10 +31,11 @@ import { usePublicSalesStore} from "@/store/publicSales.store";
 import { onBeforeMount, onMounted, ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import ApprovalModal from "@/components/buyTokens/modals/ApprovalModal.vue";
+import {useRouter} from "vue-router";
 
 const showAddressAdd = ref(false);
 const showApprovalModal = ref(false);
-
+const router = useRouter();
 
 onBeforeMount(() => {
   usePublicSalesStore().fetchTokenReservations();
@@ -45,6 +46,11 @@ onMounted(() =>{
   useUserServiceStore().getKycStatus();
 });
 
+
+function logOutAccount(){
+  useUserServiceStore().logoutAccount();
+  router.push('/buyTokens/signIn');
+}
 function showAddressAddModal(){
   showAddressAdd.value = true;
 }

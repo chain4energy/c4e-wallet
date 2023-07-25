@@ -146,7 +146,7 @@ export default class WalletConnectionApi extends LoggedService {
         const key = await extension.getKey(chainInfo.chainId);
         const offlineSigner = extension.getOfflineSigner(chainInfo.chainId);
         const account = await offlineSigner.getAccounts();
-
+        console.log(account);
         const connection: ConnectionInfo = new ConnectionInfo(
           account[0].address,
           true,

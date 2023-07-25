@@ -45,6 +45,7 @@ export interface JsonQueries {
   MISSIONS_URL: string;
   AIRDROP_DISTRIBUTIONS: string;
   AIRDROP_CLAIMS_LEFT: string;
+  SPENDABLE_BALANCES_URL: string;
 }
 
 
@@ -84,6 +85,7 @@ export interface Configuration {
   airdropDefaultDenom: string;
   targetInflationAprMultiplier: number;
   faucetURL: string;
+  faucetAvailable: boolean;
   tokenReservationDenom: string;
   currentPublicSaleRoundId: number;
 }

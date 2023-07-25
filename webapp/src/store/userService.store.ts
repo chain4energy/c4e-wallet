@@ -8,14 +8,13 @@ import {RequestResponse} from "@/models/request-response";
 import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
-// import {EmailPairingRequest, EmailPairingRes} from "@/models/user/emailPairing";
 import {EmailPairingRequest, EmailPairingRes, SignParingAddressResult} from "@/models/user/emailPairing";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import {KycProgressStatus, KycStepInfo, KycStepName, KycTierEnum} from "@/models/user/kyc";
 import {TxBroadcastError} from "@/api/tx.broadcast.base.api";
 import {ethers} from "ethers";
 import {useContextStore} from "@/store/context.store";
-import Router from '../router';
+import {useRouter} from "vue-router";
 
 interface UserServiceState {
   loginType: LoginTypeEnum,
@@ -341,13 +340,13 @@ export const useUserServiceStore = defineStore({
       });
 
     },
-    logOutAccount(redirect = true){
+    logoutAccount(redirect = true){
       apiFactory.publicSaleServiceApi().logout(true).then(() => {
         clearAuthTokens();
       });
 
       useContextStore().$reset();
-      usePublicSalesStore().logOutAccount();
+      usePublicSalesStore().logoutAccount();
       this.loginType =  LoginTypeEnum.NONE;
       this.kycSessionId = '';
       this.paired= false;
@@ -359,9 +358,9 @@ export const useUserServiceStore = defineStore({
       this.kycServiceState= new Map<KycStepName, KycProgressStatus>();
       this.kycLevel= 0;
       this.loggedIn = false;
-      if(redirect) {
-        Router.push('/buyTokens/signIn');
-      }
+      // if(redirect) {
+      //   useRouter().push('/buyTokens/signIn');
+      // }
 
     }
   },

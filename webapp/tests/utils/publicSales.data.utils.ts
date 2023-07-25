@@ -27,6 +27,8 @@ export function createReservationToken(){
     orderId: 1
   }
 }
+
+
 export function createBlockchainInfo(){
   return{
     availableTokens: [

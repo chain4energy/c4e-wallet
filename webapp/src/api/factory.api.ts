@@ -6,14 +6,14 @@ import {AccountApi} from "@/api/account.api";
 import WalletConnectionApi from "./wallet.connecton.api";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
 import { KeybaseApi } from "./keybase.api";
-import {AirDropApi} from "@/api/airDrop.api";
+import {ClaimApi} from "@/api/claim.api";
 import {applyAuthTokenInterceptor, getBrowserSessionStorage, IAuthTokens, TokenRefreshRequest} from "axios-jwt";
 import { useConfigurationStore } from "@/store/configuration.store";
 import queries from "@/api/queries";
 import {FaucetApi} from "@/api/faucet.api";
 import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
-import Router from '../router';
+import {useRouter} from "vue-router";
 import {useUserServiceStore} from "@/store/userService.store";
 
 let testfileName = '';
@@ -32,7 +32,7 @@ class ApiFactory {
   private readonly _accountApi = new AccountApi(() => this._axios);
   private readonly _walletApi = new WalletConnectionApi();
   private readonly _keybaseApi = new KeybaseApi(() => this._axios);
-  private readonly _airDropApi = new AirDropApi(() => this._axios);
+  private readonly _airDropApi = new ClaimApi(() => this._axios);
   private readonly _publicSaleServiceApi = new PublicSaleServiceApi(() => this._axiosJwt);
   private readonly _faucetApi = new FaucetApi(() => this._axios)
 
@@ -48,22 +48,18 @@ class ApiFactory {
       const response = await axios.post(useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
       return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
     } catch (error) {
-      useUserServiceStore().logOutAccount(false);
-      if(Router.currentRoute.value.meta.requiresAuth) {
-        await Router.push('/buyTokens/signIn');
+      useUserServiceStore().logoutAccount(false);
+      if(useRouter().currentRoute.value.meta.requiresAuth) {
+        await useRouter().push('/buyTokens/signIn');
       }
-
-
       throw error;
     }
-
 
     // If your backend supports rotating refresh tokens, you may also choose to return an object containing both tokens:
     // return {
     //  accessToken: response.data.access_token,
     //  refreshToken: response.data.refresh_token
     //}
-
   }
 
   private constructor() {
@@ -101,7 +97,7 @@ class ApiFactory {
   public keybaseApi(): KeybaseApi{
     return this._keybaseApi;
   }
-  public airDropApi(): AirDropApi{
+  public airDropApi(): ClaimApi{
     return this._airDropApi;
   }
   public publicSaleServiceApi(): PublicSaleServiceApi {

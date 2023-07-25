@@ -14,7 +14,7 @@
 
 import { createPinia } from 'pinia';
 // import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
-import { createApp } from 'vue';
+import {createApp, markRaw} from 'vue';
 import App from './App.vue';
 import router from '@/router';
 import 'bootstrap/scss/bootstrap.scss';
@@ -63,6 +63,11 @@ import "primeflex/primeflex.css";
 import "primevue/resources/themes/lara-light-blue/theme.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { VueRecaptchaPlugin } from 'vue-recaptcha/head'
+
+
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
 
@@ -96,13 +101,15 @@ JSON.parse = function parse(text: string, reviver?: (this: any, key: string, val
   if(reviver) {
     return originalJSONParse(text, reviver);
   }
-
   return originalJSONParse(text, reviver2);
 };
 
-
 const pinia = createPinia();
 pinia.use(piniaPersist);
+pinia.use(({ store }) => {
+  store.router = markRaw(router);
+});
+
 const logger = new LoggerService();
 // const i18n = createI18n({
 //   legacy: false
@@ -117,6 +124,9 @@ app.use(router)
   .use(PrimeVue)
   // .use(Vidle)
   .use(VueSvgInlinePlugin)
+  .use(VueRecaptchaPlugin, {
+    v2SiteKey: '6Lc2fTYmAAAAAEQSYDkeecH1xPPvVD3T1UrBbpac'
+   })
   .provide('logger', logger)
   .component('Button', Button)
   .component('InputText', InputText)

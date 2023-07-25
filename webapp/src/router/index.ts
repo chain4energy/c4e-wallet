@@ -8,6 +8,7 @@ import GovernanceDetailsView from '../views/GovernanceDetailsView.vue';
 import ProposalsList from '@/components/governance/ProposalsList.vue';
 import stakingRoutes from "@/router/stakingRoutes";
 import AirDropView from "@/views/AirDropView.vue";
+import FaucetView from "@/views/FaucetView.vue";
 import buyTokensRoutes from "@/router/buyTokens";
 import profileRoutes from "@/router/profile";
 import KycView from "@/views/KycView.vue";
@@ -82,6 +83,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:pathMatch(.*)*',
     redirect: '/',
   },
+  {
+    path: '/faucet',
+    name: 'faucet',
+    component: FaucetView,
+    meta: {
+      requiresNotMainNetwork: true
+    }
+  },
   buyTokensRoutes,
   profileRoutes,
   {
@@ -92,6 +101,16 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/buyTokens/signUp',
     name: 'signUp',
+    component: SignUpView
+  },
+  {
+    path: '/profile/signIn',
+    name: 'signIn-profile',
+    component: SignInView
+  },
+  {
+    path: '/profile/signUp',
+    name: 'signUp-profile',
     component: SignUpView
   },
   {

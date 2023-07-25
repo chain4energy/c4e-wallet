@@ -181,6 +181,15 @@ export const usePublicSalesStore = defineStore({
         }
       });
     },
+    cancelReservation(orderId: number, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
+      return factoryApi.publicSaleServiceApi().cancelReservation(orderId, lockscreen).then(res => {
+        if(res.isSuccess()) {
+          onSuccess();
+        } else {
+          onFail(res.error?.data?.errorMessage);
+        }
+      });
+    },
     initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen = true) {
       return factoryApi.publicSaleServiceApi().initPaymentSession(initPaymentSessionRequest, lockscreen).then(res => {
         return res.data?.transactionId;
@@ -241,33 +250,33 @@ export const usePublicSalesStore = defineStore({
         return res;
       });
     },
-    logOutAccount(){
+    logoutAccount(){
       this.tokenReservations = [];
     },
     toggleWarning(value: boolean){
       this.warning = value;
     }
   },
-  getters:{
-    getTotal(): Coin | undefined{
+  getters: {
+    getTotal(): Coin | undefined {
       return this.total;
     },
-    getParts(): parts | undefined{
-      if(this.roundInfo)
+    getParts(): parts | undefined {
+      if (this.roundInfo)
         return {sold: this.roundInfo.soldTokens, reserved: this.roundInfo.reservedTokens};
       return undefined;
     },
-    getStartDate(): Date | undefined{
+    getStartDate(): Date | undefined {
       return this.startDate;
     },
-    getEndDate(): Date | undefined{
+    getEndDate(): Date | undefined {
       return this.endDate;
     },
-    getTransactions(): TokenReservation[] | undefined{
+    getTransactions(): TokenReservation[] | undefined {
       return this.tokenReservations;
     },
     getC4eToUSD(): BigDecimal {
-      if(this.roundInfo?.uC4eToUsd) {
+      if (this.roundInfo?.uC4eToUsd) {
         return this.roundInfo.uC4eToUsd.multiply(useConfigurationStore().config.getViewDenomConversionFactor('uc4e'));
       }
       return new BigDecimal(0);

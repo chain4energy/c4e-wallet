@@ -151,7 +151,7 @@ const curentNetwork = computed(() => {
 });
 
 function logout(){
-  dataService.onLogOut();
+  dataService.onLogOutWallet();
   // useUserStore().logOut()
   emit('close');
 }

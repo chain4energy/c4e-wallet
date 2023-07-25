@@ -7,6 +7,7 @@ import {
   JsonQueries
 } from "../json/Configuration";
 import queriesDefaults from "@/api/queries";
+import { BigIntWrapper } from "@/models/store/common";
 export class Gas implements JsonGas {
   vote: number;
   delegate: number;
@@ -95,6 +96,7 @@ export class Queries implements JsonQueries{
   MISSIONS_URL: string;
   AIRDROP_DISTRIBUTIONS: string;
   AIRDROP_CLAIMS_LEFT: string;
+  SPENDABLE_BALANCES_URL: string;
 
   constructor (
     queries : JsonQueries | undefined
@@ -123,6 +125,7 @@ export class Queries implements JsonQueries{
     this.MISSIONS_URL = queries?.MISSIONS_URL ? queries.MISSIONS_URL : queriesDefaults.blockchain.MISSIONS_URL;
     this.AIRDROP_DISTRIBUTIONS = queries?.AIRDROP_DISTRIBUTIONS ? queries.AIRDROP_DISTRIBUTIONS : queriesDefaults.blockchain.AIRDROP_DISTRIBUTIONS;
     this.AIRDROP_CLAIMS_LEFT = queries?.AIRDROP_CLAIMS_LEFT ? queries.AIRDROP_CLAIMS_LEFT : queriesDefaults.blockchain.AIRDROP_CLAIMS_LEFT;
+    this.SPENDABLE_BALANCES_URL = queries?.SPENDABLE_BALANCES_URL ? queries.SPENDABLE_BALANCES_URL : queriesDefaults.blockchain.SPENDABLE_BALANCES_URL;
   }
 }
 
@@ -163,6 +166,7 @@ export class Configuration implements JsonConfiguration {
   proposalVotingRefreshTimeout: number;
   airdropDefaultDenom: string;
   faucetURL: string;
+  faucetAvailable: boolean;
   targetInflationAprMultiplier: number;
   currentPublicSaleRoundId: number;
   public static readonly emptyConfiguration = new Configuration();
@@ -211,6 +215,7 @@ export class Configuration implements JsonConfiguration {
       this.proposalVotingRefreshTimeout = configuration.proposalVotingRefreshTimeout;
       this.targetInflationAprMultiplier = configuration.targetInflationAprMultiplier;
       this.faucetURL = configuration.faucetURL;
+      this.faucetAvailable = configuration.faucetAvailable;
       this.tokenReservationDenom = configuration.tokenReservationDenom;
       this.currentPublicSaleRoundId = configuration.currentPublicSaleRoundId;
     } else {
@@ -250,6 +255,7 @@ export class Configuration implements JsonConfiguration {
       this.proposalVotingRefreshTimeout = 30000;
       this.targetInflationAprMultiplier = 1;
       this.faucetURL = '';
+      this.faucetAvailable = false;
       this.tokenReservationDenom = '';
       this.currentPublicSaleRoundId = 0;
     }

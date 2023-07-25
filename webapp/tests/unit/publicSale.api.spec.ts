@@ -9,7 +9,7 @@ import {
   expectReservationList,
   expectReserveTokens
 } from "../utils/publicSales.data.utils";
-import {TokenReservationResponse} from "@/models/saleServiceCommons";
+import {EmptyResponse} from "@/models/request-response";
 
 jest.mock('axios', () => {
   return {
@@ -21,8 +21,8 @@ jest.mock('axios', () => {
       }
     })),
     request: jest.fn(),
-  }
-})
+  };
+});
 const mockedAxios = mockAxiosJWT();
 const api = apiFactory.publicSaleServiceApi();
 
@@ -49,6 +49,7 @@ describe('public sale api tests', () => {
     expect(result.error).toBeUndefined();
     expectReservationList(result);
   });
+
   it('fetch reservation token', async () =>{
     const reservation = {
       data: createReservationToken()
@@ -60,6 +61,18 @@ describe('public sale api tests', () => {
     expect(result.error).toBeUndefined();
     expectReserveTokens(result);
   });
+
+  it('cancel reservation', async () =>{
+    const returnVale = {
+      data: {} as EmptyResponse
+    };
+    mockedAxios.request.mockResolvedValue(returnVale);
+    const result = await api.cancelReservation(1, false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+  });
+
   it('fetchBlockchainInfo', async ()=>{
     const blockChainInfo = {
       data: createBlockchainInfo()
