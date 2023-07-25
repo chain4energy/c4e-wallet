@@ -167,3 +167,13 @@ export interface uC4eToUsd{
   amount: number;
   decimal: number;
 }
+
+export interface AppError{
+  code: number,
+  name: string,
+  codespace: string,
+  message: string,
+  data: Date,
+  causeMessage: string,
+  causeAppError: AppError
+}

@@ -15,7 +15,7 @@
       </div>
       <div class="publicSaleInfo__infoBlock">
         <span>{{$t('BUY_TOKENS_VIEW.TIME_TO_START')}}</span>
-        <soan>{{timeToStart}}</soan>
+        <span>{{timeToStart}}</span>
         <span v-if="startDate" class="publicSaleInfo__dateText">({{startDate.toUTCString()}})</span>
       </div>
       <div class="publicSaleInfo__infoBlock">
