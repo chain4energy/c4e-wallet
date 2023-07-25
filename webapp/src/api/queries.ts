@@ -103,6 +103,7 @@ export default {
     REFRESH_TOKEN: '/api/publicsale-service/refresh',
     EMAIL_CREATE_ACCOUNT: '/api/publicsale-service/register',
     RESERVE_TOKENS: '/api/publicsale-service/token/reservation',
+    CANCEL_RESERVATION: '/api/publicsale-service/token/cancelReservation',
     TOKEN_RESERVATION_LIST: '/api/publicsale-service/token/reservations',
     PROVIDE_TX_PAYMENT_PROOF: '/api/publicsale-service/token/tx',
     BLOCKCHAIN_INFO: '/api/publicsale-service/blockchain/info',

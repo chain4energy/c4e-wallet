@@ -174,6 +174,15 @@ export const usePublicSalesStore = defineStore({
         }
       });
     },
+    cancelReservation(orderId: number, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
+      return factoryApi.publicSaleServiceApi().cancelReservation(orderId, lockscreen).then(res => {
+        if(res.isSuccess()) {
+          onSuccess();
+        } else {
+          onFail(res.error?.data?.errorMessage);
+        }
+      });
+    },
     initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen = true) {
       return factoryApi.publicSaleServiceApi().initPaymentSession(initPaymentSessionRequest, lockscreen).then(res => {
         return res.data?.transactionId;

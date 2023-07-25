@@ -9,6 +9,9 @@ export interface ReserveTokensRequest {
 export interface ReserveTokensResponse {
   orderId: number
 }
+export interface CancelReservationRequest{
+  orderId: number
+}
 
 export interface InitPaymentSessionRequest {
   orderId: number;
