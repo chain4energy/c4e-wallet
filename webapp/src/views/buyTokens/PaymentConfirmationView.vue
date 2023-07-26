@@ -361,6 +361,7 @@ const onStartMetamaskTransaction = () => {
   });
 };
 const onSuccessStartMetamaskTransaction = () => {
+  usePublicSalesStore().fetchTokenReservations();
   paymentModalVisible.value = false;
   toast.success('Transaction complete');
   router.push({name: 'publicSaleInfo'});
@@ -410,6 +411,7 @@ const onConfirmPayment = () => {
   }
 };
 const onSuccessConfirmPayment = () => {
+  usePublicSalesStore().fetchTokenReservations();
   toast.success('Payment confimed');
   router.push({name: 'publicSaleInfo'});
 };

@@ -72,13 +72,20 @@ export enum BLOCKCHAIN {
   BSC='BSC',
   POLYGON='POLYGON'
 }
+
+export enum TRANSACTION_CURRENCY {
+  PLN='PLN',
+  EUR='EUR',
+  USD='USD'
+}
+
 export interface Transaction {
   blockchainStatus: BLOCKCHAIN_STATUS;
   status: TRANSACTION_STATUS;
   txHash: string;
   type: PAYMENT_TYPE;
   blockchainTxs?: BlockchainTx[];
-  currencyCode: string;
+  currencyCode: TRANSACTION_CURRENCY;
   amount: string;
   blockchain: BLOCKCHAIN;
 }

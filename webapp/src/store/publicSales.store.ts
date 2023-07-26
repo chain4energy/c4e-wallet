@@ -1,12 +1,12 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import {Coin, DecCoin} from "@/models/store/common";
-import { useConfigurationStore } from "@/store/configuration.store";
+import {useConfigurationStore} from "@/store/configuration.store";
 import factoryApi from "@/api/factory.api";
+import apiFactory from "@/api/factory.api";
 import {
   BLOCKCHAIN,
   BLOCKCHAIN_STATUS,
   BlockchainInfo,
-  BlockchainTx,
   InitPaymentSessionRequest,
   MetamaskPayInfo,
   PAYMENT_TYPE,
@@ -14,12 +14,11 @@ import {
   RoundInfo,
   RoundInfoBlockchainInfo,
   TOKEN_NAME,
-  TokenPaymentProofRequest,
-  Transaction,
+  TokenPaymentProofRequest, TRANSACTION_CURRENCY,
   TRANSACTION_STATUS
 } from "@/models/saleServiceCommons";
-import apiFactory from "@/api/factory.api";
 import {BigDecimal} from "@/models/store/big.decimal";
+
 export interface PublicSalesState{
   total: Coin | undefined,
   parts: parts | undefined,
@@ -73,10 +72,10 @@ export class StoreTransaction {
   txHash: string;
   type: PAYMENT_TYPE;
   blockchainTxs: BlockchainTxStore[];
-  currencyCode: string;
+  currencyCode: TRANSACTION_CURRENCY;
   amount: string;
   blockchain: BLOCKCHAIN;
-  constructor(blockchainStatus: BLOCKCHAIN_STATUS, status: TRANSACTION_STATUS, txHash: string, type: PAYMENT_TYPE, blockchainTxs: BlockchainTxStore[], currencyCode: string, amount: string, blockchain: BLOCKCHAIN) {
+  constructor(blockchainStatus: BLOCKCHAIN_STATUS, status: TRANSACTION_STATUS, txHash: string, type: PAYMENT_TYPE, blockchainTxs: BlockchainTxStore[], currencyCode: TRANSACTION_CURRENCY, amount: string, blockchain: BLOCKCHAIN) {
     this.blockchainStatus = blockchainStatus;
     this.status = status;
     this.txHash = txHash;
@@ -162,6 +161,14 @@ export class TokenReservation {
 
   leftToBuyC4E() {
     return this.leftToPayInStableCoin().divide(usePublicSalesStore().getC4eToUSD);
+  }
+
+  getOverpaid() {
+    if(this.status != RESERVATION_STATUS.OVERPAID) {
+      return new BigDecimal(0);
+    }
+
+    return this.getSumOfPaymentsInStableCoin().subtract(this.amountRequested.amount.multiply(usePublicSalesStore().getuC4eToUSD));
   }
 
   getSumOfPaymentsInStableCoin() {

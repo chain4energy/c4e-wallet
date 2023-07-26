@@ -8,7 +8,9 @@ export function formatString(str: string, params: any) {
   return str;
 }
 
-export function addDotsInsideTooLongString(text: string, maxLength: number) {
+export function addDotsInsideTooLongString(text: string | undefined, maxLength: number) {
+  if(text== undefined)
+    return '';
   if (text.length > maxLength) {
     return text.substring(0, maxLength - 6) + "..." + text.substring(text.length - 5);
   }

@@ -6,7 +6,7 @@
       <Icon :name="getReservationIcon(transaction.status)"></Icon> &nbsp;
       {{ i18n.t('ENUMS.RESERVATION_STATUS.'+transaction.status)  }}
     </div>
-    <span v-if="transaction.unconfirmed" class="title" style="float: right;">
+    <span v-if="transaction.unconfirmed" class="title" style="float: right; text-align: center">
       <Icon style="width:30px; height:30px; margin-bottom:2px" name="Clock" />
       Waiting for confirmation
     </span>
@@ -50,22 +50,29 @@
           </table>
         </div>
         <div class="table__second_column">
-          <table v-if="transaction.status == RESERVATION_STATUS.DECLARED || transaction.status == RESERVATION_STATUS.PARTIALLY_PAID" cellspacing="0" cellpadding="0" class="allocationInfo__table smaller">
-            <tr >
+          <table v-if="transaction.status == RESERVATION_STATUS.DECLARED || transaction.status == RESERVATION_STATUS.PARTIALLY_PAID || transaction.status == RESERVATION_STATUS.OVERPAID" cellspacing="0" cellpadding="0" class="allocationInfo__table smaller">
+            <tr v-if="transaction.status == RESERVATION_STATUS.DECLARED || transaction.status == RESERVATION_STATUS.PARTIALLY_PAID">
               <th class="allocationInfo__tableTabs">Left to pay</th>
               <th class="allocationInfo__tableTabs">
                 <img src="../../assets/stablecoin.png" alt="stablecoin symbol" style="width: 23px; margin-right:8px;"/>
-                {{ transaction.leftToPayInStableCoin().toFixed(6) }} USDT
+                {{ transaction.leftToPayInStableCoin().toFixed(6) }} USDC/USDT
               </th>
             </tr>
-            <tr >
+            <tr v-if="transaction.status == RESERVATION_STATUS.DECLARED || transaction.status == RESERVATION_STATUS.PARTIALLY_PAID">
               <th class="allocationInfo__tableTabs">Left to buy</th>
               <th class="allocationInfo__tableTabs">
                 <img style="width: 23px; margin-right:8px;" src="@/assets/svg/C4E.svg">
                 {{ transaction.leftToBuyC4E().toFixed(6) }} C4E
               </th>
             </tr>
-            <tr>
+            <tr v-if="transaction.status == RESERVATION_STATUS.OVERPAID">
+              <th class="allocationInfo__tableTabs">Overpaid</th>
+              <th class="allocationInfo__tableTabs">
+                <img style="width: 23px; margin-right:8px;" src="@/assets/svg/C4E.svg">
+                {{ transaction.getOverpaid().toFixed(6) }} USDC/USDT
+              </th>
+            </tr>
+            <tr v-if="transaction.status == RESERVATION_STATUS.DECLARED || transaction.status == RESERVATION_STATUS.PARTIALLY_PAID">
               <th></th>
               <th>
                 <Button
@@ -88,28 +95,46 @@
     <Accordion :multiple="true" style="white-space: normal;">
       <AccordionTab v-for="blockchainTransaction in transaction.transactions" :key="blockchainTransaction">
         <template #header >
-          <div style="width:95%;overflow-wrap: break-word; word-wrap: break-word; text-align: left;">
-<!--            {{$t('ENUMS.BLOCKCHAIN_STATUS.'+blockchainTransaction.blockchainStatus)}} - {{blockchainTransaction.txHash}}-->
-            <a style="margin-right:10px" :href="blockchainTransaction.getTransactionLink()" target="_blank">TX: {{ addDotsInsideTooLongString(blockchainTransaction.txHash, 18) }}</a>
-            <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.SEPOLIA" style="width: 23px; margin-right:4px;" src="../../assets/sepoliaIcon.svg" alt="stablecoin symbol" />
-            <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.BSC" style="width: 23px; margin-right:4px;" src="../../assets/BSCIcon.png" alt="stablecoin symbol" />
-            <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.POLYGON" style="width: 23px; margin-right:4px;" src="../../assets/PolygonIcon.png" alt="stablecoin symbol" />
-            <span style="margin-left:40px; margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC).toFixed(2)}}</span>
-            <img style="width: 23px; margin-right:4px;" src="../../assets/USDC-icon.png" alt="stablecoin symbol" />
-            <span style="margin-left:40px; margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT).toFixed(2)}}</span>
-            <img style="width: 23px; margin-right:4px;"  src="../../assets/USDT-icon.png" alt="stablecoin symbol"/>
+          <div class="accordion_container" >
+            <div class="accordion_container__content" style="max-width:70%">
+              <div style=" text-align: left; " v-if="blockchainTransaction.type ==PAYMENT_TYPE.COIN">
+                <!--            {{$t('ENUMS.BLOCKCHAIN_STATUS.'+blockchainTransaction.blockchainStatus)}} - {{blockchainTransaction.txHash}}-->
+                <a style="margin-right:10px" :href="blockchainTransaction.getTransactionLink()" target="_blank">TX: {{ addDotsInsideTooLongString(blockchainTransaction.txHash, 10) }}</a>
+                <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.SEPOLIA" style="width: 23px; margin-right:4px;" src="../../assets/sepoliaIcon.svg" alt="stablecoin symbol" />
+                <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.BSC" style="width: 23px; margin-right:4px;" src="../../assets/BSCIcon.png" alt="stablecoin symbol" />
+                <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.POLYGON" style="width: 23px; margin-right:4px;" src="../../assets/PolygonIcon.png" alt="stablecoin symbol" />
+              </div>
+              <div style="white-space: nowrap; padding:0 30px" v-if="blockchainTransaction.blockchainStatus == BLOCKCHAIN_STATUS.CONFIRMED && blockchainTransaction.type ==PAYMENT_TYPE.COIN">
+                <span style=" margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC).toFixed(2)}}</span>
+                <img style="width: 23px; margin-right:4px;" src="../../assets/USDC-icon.png" alt="stablecoin symbol" />
+                <span style="margin-left:40px; margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT).toFixed(2)}}</span>
+                <img style="width: 23px; margin-right:4px;"  src="../../assets/USDT-icon.png" alt="stablecoin symbol"/>
+              </div>
+              <div style=" text-align: left; " v-if="blockchainTransaction.type ==PAYMENT_TYPE.FIAT">
+                <CountryFlag :country="getFlagSelector(blockchainTransaction.currencyCode)"/>
+                <a style="margin-right:10px; margin-left: 10px;" :href="blockchainTransaction.getTransactionLink()" target="_blank">{{blockchainTransaction.currencyCode}} Payment</a>
+              </div>
+              <div v-if="blockchainTransaction.blockchainStatus == BLOCKCHAIN_STATUS.UNCONFIRMED" style="padding:0 30px">
+              <span  class="title" style="float: right;">
+                <Icon style="width:30px; height:30px; margin-bottom:2px" name="Clock" />
+                Waiting for confirmation
+              </span>
+              </div>
+            </div>
+
+
+            <div class="transaction_status transaction_status-completed" :class="getTransactionStatusClass(blockchainTransaction.status)"  >
+              {{ i18n.t('ENUMS.TRANSACTION_STATUS.'+blockchainTransaction.status) }}
+            </div>
           </div>
 
-          <div class="transaction_status transaction_status-completed" :class="getTransactionStatusClass(blockchainTransaction.status)"  >
-            {{ i18n.t('ENUMS.TRANSACTION_STATUS.'+blockchainTransaction.status) }}
-          </div>
         </template>
-        <div class="allocationInfo__body">
-          <table style=" width: 90%;table-layout: fixed;  border-collapse: separate; border-spacing: 6px;">
+        <div class="reservation_table">
+          <table style=" width: 100%; table-layout: fixed;  border-collapse: separate; border-spacing: 6px;">
 
             <tr v-if="blockchainTransaction.blockchain">
-              <th class="allocationInfo__tableTabs">Blockchain</th>
-              <th class="allocationInfo__tableTabs">
+              <th class="reservation_table__tab">Blockchain</th>
+              <th class="reservation_table__tab">
                 <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.SEPOLIA" style="width: 23px; margin-right:4px;" src="../../assets/sepoliaIcon.svg" alt="stablecoin symbol" />
                 <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.BSC" style="width: 23px; margin-right:4px;" src="../../assets/BSCIcon.png" alt="stablecoin symbol" />
                 <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.POLYGON" style="width: 23px; margin-right:4px;" src="../../assets/PolygonIcon.png" alt="stablecoin symbol" />
@@ -117,47 +142,70 @@
               </th>
             </tr>
             <tr v-if="blockchainTransaction.txHash">
-              <th class="allocationInfo__tableTabs">TxHash</th>
-              <th class="allocationInfo__tableTabs">
+              <th class="reservation_table__tab">TxHash</th>
+              <th class="reservation_table__tab">
                 <a :href="blockchainTransaction.getTransactionLink()" target="_blank">{{ addDotsInsideTooLongString(blockchainTransaction.txHash, 28) }}</a>
               </th>
             </tr>
-            <tr>
-              <th class="allocationInfo__tableTabs">Type</th>
-              <th class="allocationInfo__tableTabs">{{ blockchainTransaction.type }}</th>
-            </tr>
+<!--            <tr>-->
+<!--              <th class="reservation_table__tab">Type</th>-->
+<!--              <th class="reservation_table__tab">{{ blockchainTransaction.type }}</th>-->
+<!--            </tr>-->
 <!--            <tr v-if="blockchainTransaction.amount">-->
-<!--              <th class="allocationInfo__tableTabs">Amount</th>-->
-<!--              <th class="allocationInfo__tableTabs">{{ blockchainTransaction.amount }}</th>-->
+<!--              <th class="reservation_table__tab">Amount</th>-->
+<!--              <th class="reservation_table__tab">{{ blockchainTransaction.amount }}</th>-->
 <!--            </tr>-->
 <!--            <tr v-if="blockchainTransaction.currencyCode">-->
-<!--              <th class="allocationInfo__tableTabs">Currency</th>-->
-<!--              <th class="allocationInfo__tableTabs">{{ blockchainTransaction.currencyCode }}</th>-->
+<!--              <th class="reservation_table__tab">Currency</th>-->
+<!--              <th class="reservation_table__tab">{{ blockchainTransaction.currencyCode }}</th>-->
 <!--            </tr>-->
 
             <tr v-if="blockchainTransaction.blockchainTxs.length>0 && blockchainTransaction.type == PAYMENT_TYPE.COIN">
-              <th class="allocationInfo__tableTabs">Payments </th>
-              <th>
-                <div style="display:flex; align-items:center" v-for="blockchainTx in blockchainTransaction.blockchainTxs" :key="blockchainTx">
-                  <img style="width: 23px; margin-right:4px;" v-if="blockchainTx.coinName == TOKEN_NAME.USDC" src="../../assets/USDC-icon.png" alt="stablecoin symbol" />
+              <th class="reservation_table__tab">Payments </th>
+              <th class="row_visible">
+                <div style="display:flex; align-items:center; width:100%" v-for="blockchainTx in blockchainTransaction.blockchainTxs" :key="blockchainTx">
+                  <span class="no_wrap">
+                            <img style="width: 23px; margin-right:4px;" v-if="blockchainTx.coinName == TOKEN_NAME.USDC" src="../../assets/USDC-icon.png" alt="stablecoin symbol" />
                   <img style="width: 23px; margin-right:4px;" v-if="blockchainTx.coinName == TOKEN_NAME.USDT" src="../../assets/USDT-icon.png" alt="stablecoin symbol"/>
                   {{blockchainTx.amount}} {{blockchainTx.coinName}}
+                  </span>
+
                   <i class="gg-arrow-long-right"></i>
-                  <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~{{blockchainTx.getInC4E().toFixed(2)}} C4E
+                  <span class="no_wrap">
+                          <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~{{blockchainTx.getInC4E().toFixed(2)}} C4E
+                  </span>
+
                 </div>
               </th>
             </tr>
-            <tr v-if="blockchainTransaction.type == PAYMENT_TYPE.FIAT">
-              <th class="allocationInfo__tableTabs">Payments </th>
-              <th>
+            <tr  v-if="blockchainTransaction.type == PAYMENT_TYPE.FIAT">
+              <th class="reservation_table__tab">Payments </th>
+              <th class="row_visible">
                 <div style="display:flex; align-items:center" >
+                  <CountryFlag :country="getFlagSelector(blockchainTransaction.currencyCode)"/> &nbsp;
                   {{blockchainTransaction.amount}} {{blockchainTransaction.currencyCode}}
                   <i class="gg-arrow-long-right"></i>
                   <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~x C4E
                 </div>
               </th>
             </tr>
+
           </table>
+          <div v-if="blockchainTransaction.type == PAYMENT_TYPE.COIN">
+            <div class="under_table_visible" v-for="blockchainTx in blockchainTransaction.blockchainTxs" :key="blockchainTx">
+              <img style="width: 23px; margin-right:4px;" v-if="blockchainTx.coinName == TOKEN_NAME.USDC" src="../../assets/USDC-icon.png" alt="stablecoin symbol" />
+              <img style="width: 23px; margin-right:4px;" v-if="blockchainTx.coinName == TOKEN_NAME.USDT" src="../../assets/USDT-icon.png" alt="stablecoin symbol"/>
+              {{blockchainTx.amount}} {{blockchainTx.coinName}}
+              <i class="gg-arrow-long-right"></i>
+              <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~{{blockchainTx.getInC4E().toFixed(2)}} C4E
+            </div>
+          </div>
+        </div>
+        <div class="under_table_visible" v-if="blockchainTransaction.type == PAYMENT_TYPE.FIAT">
+          <CountryFlag :country="getFlagSelector(blockchainTransaction.currencyCode)"/> &nbsp;
+          {{blockchainTransaction.amount}} {{blockchainTransaction.currencyCode}}
+          <i class="gg-arrow-long-right"></i>
+          <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~x C4E
         </div>
 
       </AccordionTab>
@@ -175,10 +223,11 @@ import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {onBeforeMount, onUnmounted, ref} from "vue";
 import {
+  BLOCKCHAIN_STATUS,
   CHAIN_NAME,
   PAYMENT_TYPE,
   RESERVATION_STATUS,
-  TOKEN_NAME,
+  TOKEN_NAME, TRANSACTION_CURRENCY,
   TRANSACTION_STATUS
 } from "@/models/saleServiceCommons";
 import Accordion from 'primevue/accordion';
@@ -186,7 +235,8 @@ import AccordionTab from 'primevue/accordiontab';
 import {useI18n} from "vue-i18n";
 import {addDotsInsideTooLongString} from "@/utils/string-formatter";
 import moment from "moment/moment";
-
+import {Currency} from "@/models/currency";
+import CountryFlag from "vue-country-flag-next";
 const props = defineProps<{
   transaction: TokenReservation
 }>();
@@ -207,7 +257,7 @@ onUnmounted(() => {
 const getReservationStatusClass = (status: RESERVATION_STATUS) => {
   switch (status) {
     case RESERVATION_STATUS.DECLARED:
-      return 'payment-status-paid';
+      return 'payment-status-declared';
     case RESERVATION_STATUS.CANCELED:
       return 'payment-status-cancelled';
     case RESERVATION_STATUS.PARTIALLY_PAID:
@@ -269,7 +319,16 @@ function getStatusColor(){
   }
 }
 
-
+const getFlagSelector = (currency: TRANSACTION_CURRENCY) => {
+  switch (currency) {
+    case TRANSACTION_CURRENCY.PLN:
+      return 'pl';
+    case TRANSACTION_CURRENCY.EUR:
+      return 'eu';
+    case TRANSACTION_CURRENCY.USD:
+      return 'us';
+  }
+};
 const getRoundName = (roundId: number) => {
   return usePublicSalesStore().roundInfoMap.get(roundId)?.roundInfo.name;
 };
@@ -325,7 +384,7 @@ const formattedDate = (value: Date) => {
       width: 180px;
       padding: 15px 0px;
       margin-left: auto;
-      margin-right: auto;
+      margin-right: 0;
       border-radius: 0 10px 0 10px;
       display: flex;
       align-items: center;
@@ -435,15 +494,17 @@ const formattedDate = (value: Date) => {
   padding:10px;
   color: black;
   float: right;
-  height: 45px;
-  width: 180px;
+  height: 100%;
+  width: 30%;
+  max-width: 180px;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 0;
   border-radius: 0 10px 10px 0;
   display: flex;
   align-items: center;
   justify-content: center;
-
+  position: absolute;
+  right:0;
   &-ok {
     background-color: $primary-green-color;
   }
@@ -454,7 +515,28 @@ const formattedDate = (value: Date) => {
     background-color: $processing;
   }
 }
+.no_wrap {
+  white-space: nowrap;
+}
+.accordion_container {
+  width:100%;
+  display: flex;
+  align-items: center;
 
+  &__content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+  }
+}
+.row_visible {
+  display: block;
+}
+.under_table_visible {
+  display: none;
+}
 #txs tr:nth-child(even){background-color: #f2f2f2;}
 
 #txs tr:hover {background-color: #ddd;}
@@ -466,6 +548,18 @@ const formattedDate = (value: Date) => {
   background-color: #002C50;
   color: white;
 }
+
+.reservation_table {
+  width:100%;
+  &__tab {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 28px;
+    color: #858585;
+  }
+}
+
 @media (max-width: 1200px) {
   .allocationInfo {
     &__tableTabs{
@@ -476,12 +570,52 @@ const formattedDate = (value: Date) => {
 
     }
   }
+  .reservation_table {
+
+    &__tab {
+      font-size: 16px;
+    }
+    th:first-child{
+      width: 150px !important;
+
+    }
+  }
+}
+@media (max-width: 750px) {
+  .row_visible {
+    display: none;
+  }
+  .under_table_visible {
+    display:flex;
+    width:100%;
+    align-items:center;
+    justify-content: center;
+  }
 }
 @media (max-width: 600px) {
   .allocationInfo {
 
     th:first-child{
-      width: 150px !important;
+      width: 180px !important;
+
+    }
+
+    &__head {
+
+      .title {
+        font-size: 1.2em;
+      }
+      .payment-status {
+        font-size: 1.1em;
+        width:130px;
+
+      }
+    }
+  }
+
+  .reservation_table {
+    th:first-child{
+      width: 100px !important;
 
     }
   }
@@ -496,7 +630,7 @@ const formattedDate = (value: Date) => {
   border-top: 2px solid transparent;
   border-bottom: 2px solid transparent;
   box-shadow: inset 0 0 0 2px;
-  width: 124px;
+  width: 114px;
   height: 6px
 }
 .gg-arrow-long-right::after {
@@ -512,6 +646,8 @@ const formattedDate = (value: Date) => {
   right: 0;
   bottom: -2px
 }
+
+
 </style>
 <style lang="css">
 .p-accordion .p-accordion-tab:first-child .p-accordion-header .p-accordion-header-link,
@@ -521,5 +657,11 @@ const formattedDate = (value: Date) => {
   padding-left:10px;
   border-radius:10px;
 }
-
+.p-accordion .p-accordion-tab .p-accordion-content {
+  padding: 10px;
+}
+.accordion_container {
+  position: relative;
+  min-height: 50px;
+}
 </style>

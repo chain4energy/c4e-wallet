@@ -81,6 +81,7 @@ onBeforeMount(() => {
   dataService.onInfoView();
 
 });
+
 const router = useRouter();
 const toast = useToast();
 const publicSaleStore = usePublicSalesStore();
