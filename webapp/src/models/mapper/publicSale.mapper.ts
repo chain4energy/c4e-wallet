@@ -106,7 +106,7 @@ export function mapTokenReservations(tokenReservations: TokenReservationResponse
         reservation.type,
         storeBlockchainTxs,
         reservation.currencyCode,
-        reservation.amount,
+        Number(reservation.amount),
         reservation.blockchain
       );
 

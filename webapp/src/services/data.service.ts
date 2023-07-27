@@ -323,7 +323,8 @@ class DataService extends LoggedService {
     }
     // refresh spendables once logged in
     refreshSpendables();
-    if (this.onClaimAirdropView && userAddress) {
+
+    if (instancce.onClaimAirdropView && userAddress) {
         useAirDropStore().fetchUsersCampaignData(userAddress, true);
     }
     if (onSuccess) {

@@ -2,7 +2,7 @@
 <div class="allocationInfo">
   <div class="allocationInfo__head">
     <span class="title">Allocation info</span>
-    <div class="payment-status payment-status-completed" style="float: right;" :class="getReservationStatusClass(transaction.status)">
+    <div class="payment-status" style="float: right; text-align:center" :class="getReservationStatusClass(transaction.status)">
       <Icon :name="getReservationIcon(transaction.status)"></Icon> &nbsp;
       {{ i18n.t('ENUMS.RESERVATION_STATUS.'+transaction.status)  }}
     </div>
@@ -114,6 +114,11 @@
                 <CountryFlag :country="getFlagSelector(blockchainTransaction.currencyCode)"/>
                 <a style="margin-right:10px; margin-left: 10px;" :href="blockchainTransaction.getTransactionLink()" target="_blank">{{blockchainTransaction.currencyCode}} Payment</a>
               </div>
+              <div style="white-space: nowrap; padding:0 60px" v-if="blockchainTransaction.type ==PAYMENT_TYPE.FIAT">
+                <span style=" margin-right:5px">{{blockchainTransaction.amount}}</span>
+                <CountryFlag :country="getFlagSelector(blockchainTransaction.currencyCode)"/>
+
+              </div>
               <div v-if="blockchainTransaction.blockchainStatus == BLOCKCHAIN_STATUS.UNCONFIRMED" style="padding:0 30px">
               <span  class="title" style="float: right;">
                 <Icon style="width:30px; height:30px; margin-bottom:2px" name="Clock" />
@@ -172,7 +177,7 @@
 
                   <i class="gg-arrow-long-right"></i>
                   <span class="no_wrap">
-                          <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~{{blockchainTx.getInC4E().toFixed(2)}} C4E
+                          <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~{{blockchainTx.getInC4E().toFixed(6)}} C4E
                   </span>
 
                 </div>
@@ -185,7 +190,7 @@
                   <CountryFlag :country="getFlagSelector(blockchainTransaction.currencyCode)"/> &nbsp;
                   {{blockchainTransaction.amount}} {{blockchainTransaction.currencyCode}}
                   <i class="gg-arrow-long-right"></i>
-                  <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~x C4E
+                  <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~{{blockchainTransaction.amount*exchangeRateMap.get(blockchainTransaction.currencyCode)?.toFixed(6)}} C4E
                 </div>
               </th>
             </tr>
@@ -197,7 +202,7 @@
               <img style="width: 23px; margin-right:4px;" v-if="blockchainTx.coinName == TOKEN_NAME.USDT" src="../../assets/USDT-icon.png" alt="stablecoin symbol"/>
               {{blockchainTx.amount}} {{blockchainTx.coinName}}
               <i class="gg-arrow-long-right"></i>
-              <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~{{blockchainTx.getInC4E().toFixed(2)}} C4E
+              <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~{{blockchainTx.getInC4E().toFixed(6)}} C4E
             </div>
           </div>
         </div>
@@ -205,7 +210,7 @@
           <CountryFlag :country="getFlagSelector(blockchainTransaction.currencyCode)"/> &nbsp;
           {{blockchainTransaction.amount}} {{blockchainTransaction.currencyCode}}
           <i class="gg-arrow-long-right"></i>
-          <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~x C4E
+          <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~{{blockchainTransaction.amount*exchangeRateMap.get(blockchainTransaction.currencyCode)?.toFixed(6)}} C4E
         </div>
 
       </AccordionTab>
@@ -237,6 +242,7 @@ import {addDotsInsideTooLongString} from "@/utils/string-formatter";
 import moment from "moment/moment";
 import {Currency} from "@/models/currency";
 import CountryFlag from "vue-country-flag-next";
+import {BigDecimal} from "@/models/store/big.decimal";
 const props = defineProps<{
   transaction: TokenReservation
 }>();
@@ -248,12 +254,22 @@ const i18n = useI18n();
 
 onBeforeMount(() => {
   timeToPassId = window.setInterval(calculateTimeToPass, 1000);
+
+  const values = Object.values(TRANSACTION_CURRENCY);
+
+  values.forEach((value, _) => {
+    calculateC4EAmount(value).then(res => {
+      exchangeRateMap.set(value, res);
+    });
+  });
+
 });
 
 onUnmounted(() => {
   window.clearInterval(timeToPassId);
 });
 
+const exchangeRateMap = new Map<TRANSACTION_CURRENCY, BigDecimal>();
 const getReservationStatusClass = (status: RESERVATION_STATUS) => {
   switch (status) {
     case RESERVATION_STATUS.DECLARED:
@@ -350,6 +366,27 @@ function calculateTimeToPass(){
 const formattedDate = (value: Date) => {
   return moment(value).format('DD.MM.YYYY HH:mm:ss');
 };
+
+const calculateC4EAmount = async (currency: TRANSACTION_CURRENCY): Promise<BigDecimal> => {
+  const amountInFiat = 100;
+    const requestOptions = {
+    method: "POST",
+    headers: {"Content-Type": "application/json", "Ari10-Widget-Id": "41875703-9ee2-4729-9d51-e574c61467c3"},
+    body: JSON.stringify({"offeredCurrencyCode": currency, "offeredAmount": amountInFiat})
+  };
+  let amount = new BigDecimal(0);
+  await fetch("https://xqkzzpmim7.eu-west-1.awsapprunner.com/currencies/USDT/calculate", requestOptions)
+    .then(response => response.json())
+    .then(data => {
+      const c4eTOUSDT = usePublicSalesStore().getC4eToUSD;
+
+      if (c4eTOUSDT != undefined) {
+
+        amount = new BigDecimal(data.amount).divide(c4eTOUSDT).divide(new BigDecimal(amountInFiat));
+      }
+    });
+  return amount;
+};
 </script>
 
 <style scoped lang="scss">
@@ -393,7 +430,7 @@ const formattedDate = (value: Date) => {
       &-completed {
         background-color: $primary-green-color;
       }
-      &-partialy_paid {
+      &-partially_paid {
         background-color: #FDDB2A;
       }
       &-overpaid {

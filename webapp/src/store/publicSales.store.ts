@@ -73,9 +73,9 @@ export class StoreTransaction {
   type: PAYMENT_TYPE;
   blockchainTxs: BlockchainTxStore[];
   currencyCode: TRANSACTION_CURRENCY;
-  amount: string;
+  amount: number;
   blockchain: BLOCKCHAIN;
-  constructor(blockchainStatus: BLOCKCHAIN_STATUS, status: TRANSACTION_STATUS, txHash: string, type: PAYMENT_TYPE, blockchainTxs: BlockchainTxStore[], currencyCode: TRANSACTION_CURRENCY, amount: string, blockchain: BLOCKCHAIN) {
+  constructor(blockchainStatus: BLOCKCHAIN_STATUS, status: TRANSACTION_STATUS, txHash: string, type: PAYMENT_TYPE, blockchainTxs: BlockchainTxStore[], currencyCode: TRANSACTION_CURRENCY, amount: number, blockchain: BLOCKCHAIN) {
     this.blockchainStatus = blockchainStatus;
     this.status = status;
     this.txHash = txHash;
