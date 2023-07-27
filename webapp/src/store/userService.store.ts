@@ -388,33 +388,22 @@ export const useUserServiceStore = defineStore({
         if(kycTier == KycTierEnum.TIER_1) {
           return [
             {
+              name: KycStepName.LIVENESS,
+              state: this.getStepStatus(KycStepName.LIVENESS)
+            },
+            {
               name: KycStepName.IDENTITY,
               state: this.getStepStatus(KycStepName.IDENTITY)
             }];
         } else if(kycTier == KycTierEnum.TIER_2) {
           return [
             {
-              name: KycStepName.IDENTITY,
-              state: this.getStepStatus(KycStepName.IDENTITY)
-            },
-            {
               name: KycStepName.LIVENESS,
               state: this.getStepStatus(KycStepName.LIVENESS)
             },
             {
-              name: KycStepName.RESIDENCY,
-              state: this.getStepStatus(KycStepName.RESIDENCY)
-            },
-          ];
-        } else if(kycTier == KycTierEnum.TIER_3) {
-          return [
-            {
               name: KycStepName.IDENTITY,
               state: this.getStepStatus(KycStepName.IDENTITY)
-            },
-            {
-              name: KycStepName.LIVENESS,
-              state: this.getStepStatus(KycStepName.LIVENESS)
             },
             {
               name: KycStepName.RESIDENCY,
