@@ -76,6 +76,9 @@ function hideApprovalModal(){
   padding: 25px 46px;
   border-radius: 5px;
   align-items: flex-end;
+  @media (max-width: 1024px) {
+    padding: 0;
+  }
   &__holder{
     width: 100%;
     align-items: center;

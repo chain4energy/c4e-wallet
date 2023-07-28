@@ -11,7 +11,7 @@
       <div class="accountInfo__closedItem">
         <div class="accountInfo__closedHeader">
           <div class="accountInfo__headMainTxt">KYC level</div>
-          <TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="'aaa'"/>
+          <TooltipComponent style="z-index:50;" :tooltip-text="'aaa'"/>
         </div>
         <div class="accountInfo__headTxt">Level {{useUserServiceStore().getKycTier}}</div>
       </div>
@@ -52,7 +52,7 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <div class="accountInfo__headMainTxt">
-            <p><TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.KYC')">{{$t('PROFILE_VIEW.KYC_LEVEL')}}</TooltipComponent></p>
+            <p><TooltipComponent style=" z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.KYC')">{{$t('PROFILE_VIEW.KYC_LEVEL')}}</TooltipComponent></p>
           </div>
           <p class="accountInfo__headTxt">{{$t('PROFILE_VIEW.LEVEL')}} {{useUserServiceStore().getKycTier}}</p>
         </div>
@@ -66,7 +66,7 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <div class="accountInfo__headMainTxt">
-            <p><TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')">{{$t('PROFILE_VIEW.TERMS_ACCEPTANCE')}}</TooltipComponent></p>
+            <p><TooltipComponent style="z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.TERMS')">{{$t('PROFILE_VIEW.TERMS_ACCEPTANCE')}}</TooltipComponent></p>
           </div>
           <p class="accountInfo__headTxt" :class="{invalid: !isTermsAccepted }" >{{ isTermsAccepted ? $t('PROFILE_VIEW.ACCEPTED') : $t('PROFILE_VIEW.NOT_ACCEPTED') }}</p>
         </div>
@@ -81,9 +81,11 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <div class="accountInfo__headMainTxt">
-            <p><TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"  tooltip-link="https://docs.c4e.io/usersGuide/auth.html">{{$t('PROFILE_VIEW.CLAIMER_ADDRESS')}}</TooltipComponent></p>
+            <p><TooltipComponent style=" z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.CLAIMER_ADDRESS')"  tooltip-link="https://docs.c4e.io/usersGuide/auth.html">{{$t('PROFILE_VIEW.CLAIMER_ADDRESS')}}</TooltipComponent></p>
           </div>
-          <p v-if="claimAddress" class="accountInfo__headTxt">{{ claimAddress }}</p>
+          <p style="white-space: nowrap" v-if="claimAddress" class="accountInfo__headTxt">{{ addDotsInsideTooLongString(claimAddress, 12) }}
+            <IconComponent @click="onCopy(claimAddress)" name="Copy" class="copy" style="margin-left: 5px" />
+          </p>
           <p v-else class="accountInfo__headTxt invalid">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
         </div>
         <div>
@@ -104,9 +106,10 @@
       <div class="accountInfo__body">
         <div class="accountInfo__head">
           <div class="accountInfo__headMainTxt">
-            <p><TooltipComponent style="margin-left:10px; z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')">{{$t('PROFILE_VIEW.SOURCE_ADDRESS')}}</TooltipComponent></p>
+            <p><TooltipComponent style="z-index:50;" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')">{{$t('PROFILE_VIEW.SOURCE_ADDRESS')}}</TooltipComponent></p>
           </div>
-          <p v-if="sourceAddress" class="accountInfo__headTxt">{{ sourceAddress }}</p>
+          <p style="white-space: nowrap" v-if="sourceAddress" class="accountInfo__headTxt">{{ addDotsInsideTooLongString(sourceAddress, 12) }}
+            <IconComponent @click="onCopy(sourceAddress)" class="copy" name="Copy" style="margin-left: 5px" /></p>
           <p v-else class="accountInfo__headTxt invalid">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
         </div>
         <div>
@@ -138,6 +141,8 @@ import {useContextStore} from "@/store/context.store";
 import TooltipComponent from "@/components/TooltipComponent.vue";
 import Button from "primevue/button";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
+import {addDotsInsideTooLongString} from "../../utils/string-formatter";
+import IconComponent from "@/components/features/IconComponent.vue";
 
 const emit = defineEmits(['openModal', 'openApproval']);
 
@@ -254,6 +259,10 @@ const getLoginType = () => {
   }
   return i18n.t('ENUMS.LOGIN_TYPE.NONE');
 };
+
+function onCopy(txt: string){
+  navigator.clipboard.writeText(txt);
+}
 </script>
 
 <style scoped lang="scss">
@@ -270,6 +279,9 @@ const getLoginType = () => {
   line-height: 24px;
   padding: 32px 33px 26px 116px;
   border-radius: 5px;
+  @media (max-width: 1024px) {
+    padding: 20px;
+  }
   &__closedBar{
     transition: .4s linear ;
     width: 100%;
@@ -294,18 +306,31 @@ const getLoginType = () => {
   &__headMainTxt{
     font-family: 'Work Sans',sans-serif;
     font-weight: 500;
-    font-size: 24px;
+    font-size: 1.2em;
     line-height: 28px;
     color: black;
     display: inline-flex;
+    text-align: left;
+    @media (max-width: 1024px) {
+      font-size: 1.1em;
+    }
+    @media (max-width: 700px) {
+      font-size: 1.05em;
+    }
   }
   &__headTxt{
     font-family: 'Work Sans',sans-serif;
     font-style: normal;
     font-weight: 500;
-    font-size: 19px;
+    font-size: 1em;
     line-height: 22px;
     color: #858585;
+    @media (max-width: 1024px) {
+      font-size: 0.95em;
+    }
+    @media (max-width: 700px) {
+      font-size: 0.85em;
+    }
   }
   &__body{
     width: 100%;
@@ -323,6 +348,11 @@ const getLoginType = () => {
     width: 161px;
     min-height: 40px;
     font-family: 'Work Sans',sans-serif;
+
+    @media (max-width: 1024px) {
+      width:120px;
+    }
+
   }
   &__arrow{
     align-items: center;
@@ -335,5 +365,8 @@ const getLoginType = () => {
 
 .invalid {
   color: red;
+}
+.copy:hover {
+  cursor: pointer;
 }
 </style>
