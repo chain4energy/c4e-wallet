@@ -7,7 +7,6 @@ import {
   JsonQueries
 } from "../json/Configuration";
 import queriesDefaults from "@/api/queries";
-import { BigIntWrapper } from "@/models/store/common";
 export class Gas implements JsonGas {
   vote: number;
   delegate: number;
@@ -169,6 +168,7 @@ export class Configuration implements JsonConfiguration {
   faucetAvailable: boolean;
   targetInflationAprMultiplier: number;
   currentPublicSaleRoundId: number;
+  transferDenom: string;
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -218,6 +218,7 @@ export class Configuration implements JsonConfiguration {
       this.faucetAvailable = configuration.faucetAvailable;
       this.tokenReservationDenom = configuration.tokenReservationDenom;
       this.currentPublicSaleRoundId = configuration.currentPublicSaleRoundId;
+      this.transferDenom = configuration.transferDenom;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -230,8 +231,8 @@ export class Configuration implements JsonConfiguration {
       this.strategicPoolAddress = [''];
       this.airdropPoolAddress = '';
       this.chainId = '';
-      this.networkName = '',
-      this.keplrNetworkName = '',
+      this.networkName = '';
+      this.keplrNetworkName = '';
       this.operationGas = new Gas(undefined);
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
@@ -258,6 +259,7 @@ export class Configuration implements JsonConfiguration {
       this.faucetAvailable = false;
       this.tokenReservationDenom = '';
       this.currentPublicSaleRoundId = 0;
+      this.transferDenom = '';
     }
   }
 

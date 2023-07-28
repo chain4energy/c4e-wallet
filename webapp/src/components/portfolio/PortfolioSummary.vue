@@ -72,11 +72,11 @@
           />
         <span style="text-transform: capitalize">{{ $t('COMMON.INPUT.AMOUNT') }}</span>
         <div class="validationPopup__btn">
-          <button type="button" @click.prevent="">Max</button>
+          <button type="button" @click.prevent="simulate">Max</button>
           <p>C4E</p>
         </div>
       </div>
-      <Button class="secondary">{{$t("PORTFOLIO_VIEW.SEND")}}</Button>
+      <Button class="secondary" @click="handleSend">{{$t("PORTFOLIO_VIEW.SEND")}}</Button>
     </div>
   </Dialog>
 
@@ -96,6 +96,7 @@ import i18n from "@/plugins/i18n";
 import { Copy } from 'lucide-vue-next';
 import dataService from "@/services/data.service";
 import {Field} from "vee-validate";
+import {useConfigurationStore} from "@/store/configuration.store";
 // import FormattedNumber from "@/components/commons/FormattedNumber.vue"; - future USD ratio
 
 const userStore = useUserStore();
@@ -152,6 +153,34 @@ const sendDialogVisible = ref(false);
 
 const targetAddress = ref('');
 const amount = ref(0);
+
+const freeMultiplier = 1.2;
+const usedGas = ref (0);
+const fee = ref(0);
+
+
+
+const handleSend = () => {
+  useUserStore().sendTokens(targetAddress.value, amount.value, usedGas.value);
+};
+
+async function simulate(){
+  const spendables = useUserStore().getSpendableBalance;
+  if (targetAddress.value && spendables) {
+    await useUserStore().simulateSending(targetAddress.value, Number(useConfigurationStore().config.getConvertedAmount(spendables))).then((res) => {
+      console.log("predicted gas usage:" + res);
+      usedGas.value = Number(Number(Number(res)  * freeMultiplier).toFixed(6));
+      usedGas.value *= 1.1;
+      console.log("predicted usedGas multiplied:" + usedGas.value);
+      fee.value = Number((usedGas.value * useConfigurationStore().config.getGasPrise()).toFixed(6));
+      console.log("fee:" + fee.value);
+      amount.value = Number(useConfigurationStore().config.getConvertedAmount(spendables)) - fee.value/1000000;
+      amount.value = Math.floor(amount.value * 1000000)/1000000;
+    });
+  } else {
+    fee.value = 0;
+  }
+}
 
 </script>
 

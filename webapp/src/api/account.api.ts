@@ -14,6 +14,7 @@ import {createNonexistentAccount, mapAccount} from "@/models/mapper/account.mapp
 import {formatString} from "@/utils/string-formatter";
 import {MsgBeginRedelegate, MsgDelegate, MsgUndelegate,} from "cosmjs-types/cosmos/staking/v1beta1/tx";
 import {MsgVote} from "cosmjs-types/cosmos/gov/v1beta1/tx";
+import {MsgSend} from "cosmjs-types/cosmos/bank/v1beta1/tx";
 
 import {MsgWithdrawDelegatorReward} from "cosmjs-types/cosmos/distribution/v1beta1/tx";
 import {DelegationsResponse, UnbondigDelegationsResponse} from "@/models/blockchain/staking";
@@ -101,6 +102,59 @@ export class AccountApi extends TxBroadcastBaseApi {
     return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.REWARDS_URL, {address: address}),
       mapData, lockscreen, null, 'fetchRewards - ');
   }
+
+  public async sendTokens(connection: ConnectionInfo, target: string, amount: number, reservedFee?: number | undefined): Promise<RequestResponse<TxData, TxBroadcastError>> {
+    const config = useConfigurationStore().config;
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.bank.v1beta1.MsgSend';
+      const val = {
+        fromAddress: connection.account,
+        toAddress: target,
+        amount: [{
+          denom: config.stakingDenom,
+          amount: bcAmount,
+        }]
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }];
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgSend.fromPartial(val) }];
+      }
+    };
+    let fee;
+    if(reservedFee){
+      fee=this.createFee(Math.ceil(reservedFee), config.stakingDenom);
+    } else {
+      fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
+    }
+    console.log(fee);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+  }
+
+  public async simulateSending(connection: ConnectionInfo, target: string, amount: number){
+    const config = useConfigurationStore().config;
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.bank.v1beta1.MsgSend';
+      const val = {
+        fromAddress: connection.account,
+        toAddress: target,
+        amount: [{
+          denom: config.stakingDenom,
+          amount: bcAmount,
+        }]
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }];
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgSend.fromPartial(val) }];
+      }
+    };
+    const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
+    return await this.simulateDelegation(connection, getMessages, fee, '', true, null);
+  }
+
   public async delegate(connection: ConnectionInfo, validator: string, amount: number, reservedFee?: number | undefined): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
     const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);

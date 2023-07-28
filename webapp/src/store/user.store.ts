@@ -208,9 +208,33 @@ export const useUserStore = defineStore({
         }
       });
     },
+    async sendTokens(target: string, amount: number, fee?: number | undefined) {
+      const connectionInfo = this.connectionInfo;
+      await apiFactory.accountApi().sendTokens(connectionInfo, target, amount, fee).then(async (resp) => {
+        if (resp.isError()) {
+          await onTxDeliveryFailure(connectionInfo, this, resp, 'Transfer of ' + amount + useConfigurationStore().config.stakingDenom  + ' to ' + target + ' failed');
+        } else {
+          const allResults = await Promise.all([
+            fetchBalance(connectionInfo, this, true),
+            fetchSpendableBalances(connectionInfo, this, true),
+            fetchRewards(connectionInfo, this, true),
+            fetchDelegations(connectionInfo, this, true),
+          ]);
+          onTxDeliverySuccess(resp.data);
+          onRefreshingError(allResults);
+
+        }
+      });
+    },
     async simulateDelegation(validator: string, amount: number){
       const connectionInfo = this.connectionInfo;
       const response = await apiFactory.accountApi().simulate(connectionInfo, validator, amount);
+      console.log(response);
+      return response;
+    },
+    async simulateSending(target: string, amount: number){
+      const connectionInfo = this.connectionInfo;
+      const response = await apiFactory.accountApi().simulateSending(connectionInfo, target, amount);
       console.log(response);
       return response;
     },
