@@ -220,7 +220,7 @@ const onSuccessConnect = () => {
 };
 
 function onFail(){
-  toast.error("error");
+//
 }
 
 const open = ref(false);

@@ -135,9 +135,9 @@ const onSuccess = (orderId: number) => {
 };
 
 const onFail = (errorMessage?: string) => {
-  let toastMessage = 'An error occurred \n';
-  if (errorMessage) toastMessage+=errorMessage;
-  toast.error(toastMessage);
+  // let toastMessage = 'An error occurred \n';
+  // if (errorMessage) toastMessage+=errorMessage;
+  // toast.error(toastMessage);
 };
 
 const onKycStart = () => {

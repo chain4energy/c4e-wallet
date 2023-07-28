@@ -24,13 +24,6 @@ export class TokensApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
     return ServiceTypeEnum.TOKENS_API;
   }
-
-  // private STAKING_POOL_URL = useConfigurationStore().config.queries.STAKING_POOL_URL;
-  // private TOTAL_SUPPLY_URL = useConfigurationStore().config.queries.TOTAL_SUPPLY_URL;
-  // private COMMUNITY_POOL_URL = useConfigurationStore().config.queries.COMMUNITY_POOL_URL;
-  // private VESTINGS_SUM_URL = useConfigurationStore().config.queries.VESTINGS_SUM_URL;
-  // private DISTRIBUTOR_PARAMS_URL = useConfigurationStore().config.queries.DISTRIBUTOR_PARAMS_URL;
-
   public async fetchStakingPool(lockscreen: boolean): Promise<RequestResponse<StakingPool, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: StakingPoolResponse | undefined) => { return mapStakingPool(bcData?.pool); };
     return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.STAKING_POOL_URL,
@@ -51,7 +44,7 @@ export class TokensApi extends BaseApi {
       return Number(inflation.inflation);
     };
     return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.INFLATION_URL,
-      mapData, lockscreen, null, 'fetchInflation - ', undefined, undefined, true); // TODO remove skip toast when inflation on testnet
+      mapData, lockscreen, null, 'fetchInflation - ', undefined, undefined);
   }
 
   public async fetchCommunityPoolByDenom(denom: string, lockscreen: boolean): Promise<RequestResponse<DecCoin, ErrorData<BlockchainApiErrorData>>> {

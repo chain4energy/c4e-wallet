@@ -148,10 +148,10 @@ function showApprovalModalFunc(){
   showApprovalModal.value = true;
 }
 
-const onFail = (errorMessage?: string) => {
-  let toastMessage = 'An error occurred \n';
-  if (errorMessage) toastMessage+=errorMessage;
-  toast.error(toastMessage);
+const onFail = () => {
+  // let toastMessage = 'An error occurred \n';
+  // if (errorMessage) toastMessage+=errorMessage;
+  // toast.error(toastMessage);
 };
 const usersWallet = computed(() => {
   return useUserStore().getAccount.address;

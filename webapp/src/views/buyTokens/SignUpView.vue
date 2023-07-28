@@ -86,7 +86,8 @@ const termsAccepted = ref<boolean>(false);
 function register(){
 
   if(email.value && password.value) {
-    useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccessEmailSend, onFail);
+    useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccessEmailSend);
+
   }
 }
 
@@ -96,9 +97,7 @@ const onSuccessEmailSend = () => {
   toast.success('The message has been sent to the e-mail address provided');
   router.push({name: 'activate'});
 };
-const onFail = () => {
-  toast.error('An error occured');
-};
+
 
 </script>
 

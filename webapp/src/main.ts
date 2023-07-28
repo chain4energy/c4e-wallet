@@ -110,7 +110,7 @@ pinia.use(({ store }) => {
   store.router = markRaw(router);
 });
 
-const logger = new LoggerService();
+const logger = LoggerService.getInstance();
 // const i18n = createI18n({
 //   legacy: false
 // });

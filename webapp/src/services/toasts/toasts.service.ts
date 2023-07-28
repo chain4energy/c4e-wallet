@@ -16,10 +16,10 @@ export class ToastsService {
     return ToastsService.instance;
   }
 
-  public errorToast(toastType: ToastsTypeEnum, message: string) {
+  public errorToast(toastType: ToastsTypeEnum, message: string, retention?: number) {
     const lastToast = this.toastTypeMap.get(toastType);
 
-    if(!lastToast || (lastToast && Math.abs(new Date().getTime() - lastToast.getTime()) > this.timeout)) {
+    if(!lastToast || (lastToast && Math.abs(new Date().getTime() - lastToast.getTime()) > (retention ? retention * 1000 : this.timeout))) {
       this.toast.error(message);
       this.toastTypeMap.set(toastType, new Date());
     }

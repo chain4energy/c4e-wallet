@@ -1,5 +1,6 @@
 import {Coin} from "@/models/store/common";
 import {BigDecimal} from "@/models/store/big.decimal";
+import {BackendAppError} from "@/models/request-response";
 
 export interface ReserveTokensRequest {
   roundId: number;
@@ -174,12 +175,40 @@ export interface uC4eToUsd{
   decimal: number;
 }
 
-export interface AppError{
+export interface SaleServiceApplicationError {
   code: number,
   name: string,
-  codespace: string,
+  codespace: SaleServiceApplicationErrorCodespace,
   message: string,
   data: Date,
   causeMessage: string,
-  causeAppError: AppError
+  causeAppError: SaleServiceApplicationError
+}
+
+export enum SaleServiceApplicationErrorCodespace {
+  API='api',
+  AUTH='auth',
+  CACHE='cache',
+  ETH_CLIENT='eth-client',
+  KYC_PROVIDER='kyc-provider',
+  NOTIFIER='notifier',
+  PAYMENT_GW='payment-gw',
+  PERSISTENCE='persistence',
+  SERVICE='service',
+  SIGNATURE='signature'
+}
+
+export enum SaleServiceApplicationErrorName{
+
+  AUTH_PASSWORD_TOO_SHORT='AUTH_PASSWORD_TOO_SHORT',
+  AUTH_PASSWORD_NO_DIGIT='AUTH_PASSWORD_NO_DIGIT',
+  AUTH_PASSWORD_NO_LETTER='AUTH_PASSWORD_NO_LETTER',
+  AUTH_PASSWORD_NO_LOWERCASE='AUTH_PASSWORD_NO_LOWERCASE',
+  AUTH_PASSWORD_NO_UPPERCASE='AUTH_PASSWORD_NO_UPPERCASE',
+  AUTH_PASSWORD_NO_SPECIAL_CHAR='AUTH_PASSWORD_NO_SPECIAL_CHAR',
+  SERVICE_LOGIN_FAILED='SERVICE_LOGIN_FAILED',
+  SERVICE_ACCOUNT_ALREADY_EXISTS = 'SERVICE_ACCOUNT_ALREADY_EXISTS',
+  SERVICE_ACCOUNT_INACTIVE='SERVICE_ACCOUNT_INACTIVE',
+  SERVICE_ACCOUNT_ACTIVATION_TIME_EXPIRED='SERVICE_ACCOUNT_ACTIVATION_TIME_EXPIRED',
+  SERVICE_ACCOUNT_PAIRING_TIME_EXPIRED='SERVICE_ACCOUNT_PAIRING_TIME_EXPIRED'
 }

@@ -3,9 +3,21 @@ import { LogLevel } from '@/services/logger/log-level';
 import { ServiceTypeEnum } from '@/services/logger/service-type.enum';
 
 export class LoggerService {
-  numberOfLogsToRemember = 20;
-  logs: LogInfo[] = [];
-  disableConsoleLogsVisible = false;
+  private numberOfLogsToRemember = 20;
+  private logs: LogInfo[] = [];
+  private disableConsoleLogsVisible = false;
+  private static instance: LoggerService;
+
+  public static getInstance(): LoggerService {
+    if (!LoggerService.instance) {
+      LoggerService.instance = new LoggerService();
+    }
+    return LoggerService.instance;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private constructor() {
+  }
 
   logToConsole (logLevel: LogLevel, objectType: ServiceTypeEnum, message: string, ...data: string[]) {
     const logInfo = new LogInfo(logLevel, objectType, message, ...data);

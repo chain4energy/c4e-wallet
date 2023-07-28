@@ -18,6 +18,7 @@ import {
   TRANSACTION_STATUS
 } from "@/models/saleServiceCommons";
 import {BigDecimal} from "@/models/store/big.decimal";
+import {PublicSaleErrorHandler} from "@/store/errorsHandlers/publicSaleErrorHandler";
 
 export interface PublicSalesState{
   total: Coin | undefined,
@@ -212,81 +213,101 @@ export const usePublicSalesStore = defineStore({
       };
     },
     fetchTokenReservations(lockscreen = true){
-      return factoryApi.publicSaleServiceApi().fetchReservationList(lockscreen).then(res => {
-        if(res.isSuccess() && res.data) {
-          this.tokenReservations = res.data;
-        }
-      });
-    },
-    reserveTokens(roundId: number, amount: number, onSuccess: ((orderId: number) => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
-      return factoryApi.publicSaleServiceApi().reserveTokens(roundId, amount, lockscreen).then(res => {
-        if(res.isSuccess() && res.data?.orderId) {
-          onSuccess(res.data.orderId);
+      return factoryApi.publicSaleServiceApi().fetchReservationList(lockscreen).then(response => {
+        if(response.isSuccess() && response.data) {
+          this.tokenReservations = response.data;
         } else {
-          onFail(res.error?.data?.errorMessage);
+          PublicSaleErrorHandler.getInstance().handleError(response.error);
+          // onFail?.();
         }
       });
     },
-    cancelReservation(orderId: number, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
-      return factoryApi.publicSaleServiceApi().cancelReservation(orderId, lockscreen).then(res => {
-        if(res.isSuccess()) {
+    reserveTokens(roundId: number, amount: number, onSuccess: ((orderId: number) => void), onFail?: (() => void), lockscreen = true) {
+      return factoryApi.publicSaleServiceApi().reserveTokens(roundId, amount, lockscreen).then(response => {
+        if(response.isSuccess() && response.data?.orderId) {
+          onSuccess(response.data.orderId);
+        } else {
+          PublicSaleErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
+        }
+      });
+    },
+    cancelReservation(orderId: number, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
+      return factoryApi.publicSaleServiceApi().cancelReservation(orderId, lockscreen).then(response => {
+        if(response.isSuccess()) {
           onSuccess();
         } else {
-          onFail(res.error?.data?.errorMessage);
+          // onFail(res.error?.data?.message);
+          PublicSaleErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
-    initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen = true) {
-      return factoryApi.publicSaleServiceApi().initPaymentSession(initPaymentSessionRequest, lockscreen).then(res => {
-        return res.data?.transactionId;
-      });
-    },
-    fetchBlockchainInfo(lockscreen = false) {
-      return factoryApi.publicSaleServiceApi().fetchBlockchainInfo(lockscreen).then(res => {
-        if(res.isSuccess() && res.data) {
-          this.blockchainInfo = res.data;
+    initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, onFail?: (() => void), lockscreen = true) {
+      return factoryApi.publicSaleServiceApi().initPaymentSession(initPaymentSessionRequest, lockscreen).then(response => {
+        if(response.isSuccess() && response.data){
+          return response.data?.transactionId;
+        }else{
+          PublicSaleErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
-    fetchRoundInfo(roundId: number, lockscreen = false) {
-      return factoryApi.publicSaleServiceApi().fetchRoundInfo(roundId, lockscreen).then(res => {
-        if(res.isSuccess() && res.data) {
-          this.roundInfo = res.data.roundInfo;
-          this.blockchainInfo = res.data.blockchainInfo;
+    fetchBlockchainInfo(onFail?: (() => void), lockscreen = false) {
+      return factoryApi.publicSaleServiceApi().fetchBlockchainInfo(lockscreen).then(response => {
+        if(response.isSuccess() && response.data) {
+          this.blockchainInfo = response.data;
+        }else{
+          PublicSaleErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
-    fetchRoundInfoList(lockscreen = false) {
-      return factoryApi.publicSaleServiceApi().fetchRoundInfoList( lockscreen).then(res => {
-        if(res.isSuccess() && res.data) {
-          this.roundInfoMap = res.data.roundInfoMap;
+    fetchRoundInfo(roundId: number, onFail?: (() => void), lockscreen = false) {
+      return factoryApi.publicSaleServiceApi().fetchRoundInfo(roundId, lockscreen).then(response => {
+        if(response.isSuccess() && response.data) {
+          this.roundInfo = response.data.roundInfo;
+          this.blockchainInfo = response.data.blockchainInfo;
+        } else {
+          PublicSaleErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
+        }
+      });
+    },
+    fetchRoundInfoList(onFail?: (() => void), lockscreen = false) {
+      return factoryApi.publicSaleServiceApi().fetchRoundInfoList( lockscreen).then(response => {
+        if(response.isSuccess() && response.data) {
+          this.roundInfoMap = response.data.roundInfoMap;
 
           // if(res.data.activeRoundInfo) {
           //   this.roundInfo = res.data.activeRoundInfo.roundInfo;
           //   this.blockchainInfo = res.data.activeRoundInfo.blockchainInfo;
           // }
 
+        } else {
+          PublicSaleErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
-    async provideTxPaymentProof(txPaymentProofRequest: TokenPaymentProofRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().provideTxPaymentProof( txPaymentProofRequest, lockscreen).then(res => {
-        if(res.isSuccess()) {
+    async provideTxPaymentProof(txPaymentProofRequest: TokenPaymentProofRequest, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().provideTxPaymentProof( txPaymentProofRequest, lockscreen).then(response => {
+        if(response.isSuccess()) {
           onSuccess();
         } else {
-          onFail();
+          PublicSaleErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
-        console.log(res);
       });
     },
-    async payByMetamask(payInfo: MetamaskPayInfo, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async payByMetamask(payInfo: MetamaskPayInfo, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
       this.sendMetamaskTransaction(payInfo.amount, payInfo.blockchainAddress, payInfo.coinDecimals, payInfo.c4eAddress).then(res => {
         if (res.isSuccess() && res.data){
           this.provideTxPaymentProof({
             blockchainID: payInfo.blockchainID, exchangeID: payInfo.exchangeID, orderID: payInfo.orderId, txHashes: [res.data]
           }, onSuccess, onFail, lockscreen);
         } else {
-          onFail();
+          onFail?.();
         }
       });
     },

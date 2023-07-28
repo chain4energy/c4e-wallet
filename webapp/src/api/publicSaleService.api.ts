@@ -28,7 +28,7 @@ import {
   ReserveTokensResponse,
   RoundInfo,
   RoundInfoBlockchainInfo, RoundInfoListMapped,
-  RoundInfoResponse,
+  RoundInfoResponse, SaleServiceApplicationError,
   TokenPaymentProofRequest,
   TokenReservationResponse
 } from "@/models/saleServiceCommons";
@@ -50,7 +50,6 @@ export class PublicSaleServiceApi extends BaseApi {
       },
       lockscreen,
       null,
-      true,
       logPrefix
     );
   }
@@ -61,7 +60,6 @@ export class PublicSaleServiceApi extends BaseApi {
       },
       lockscreen,
       null,
-      true,
         logPrefix
     );
   }
@@ -73,84 +71,83 @@ export class PublicSaleServiceApi extends BaseApi {
       },
       lockscreen,
       null,
-      true,
       logPrefix
     );
   }
-  public async getAccount(lockscreen: boolean): Promise<RequestResponse<AccountRequest, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServiceGetCall<AccountRequest, UserServiceErrData>(queries.publicSaleService.GET_ACCOUNT_INFO, lockscreen, "getAccount");
+  public async getAccount(lockscreen: boolean): Promise<RequestResponse<AccountRequest, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServiceGetCall<AccountRequest, SaleServiceApplicationError>(queries.publicSaleService.GET_ACCOUNT_INFO, lockscreen, "getAccount");
   }
-  public async acceptTerms(lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServicePostEmptyCall<PasswordAuthenticateRequest, AccountInfo, UserServiceErrData>(queries.publicSaleService.ACCEPT_TERMS, lockscreen, "acceptTerms");
-  }
-
-  public async logout(lockscreen: boolean): Promise<RequestResponse<undefined, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServiceGetCall<undefined, UserServiceErrData>(queries.publicSaleService.LOGOUT, lockscreen, "logout");
-  }
-  public async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServicePostCall<PasswordAuthenticateRequest, AccountInfo, UserServiceErrData>(queries.publicSaleService.EMAIL_CREATE_ACCOUNT, createAccountRequest, lockscreen, "createEmailAccount");
+  public async acceptTerms(lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServicePostEmptyCall<PasswordAuthenticateRequest, AccountInfo, SaleServiceApplicationError>(queries.publicSaleService.ACCEPT_TERMS, lockscreen, "acceptTerms");
   }
 
-  public async authEmailAccount(emailAccount: PasswordAuthenticateRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServicePostCall<PasswordAuthenticateRequest, Jwt, UserServiceErrData>(queries.publicSaleService.AUTHENTICATE_EMAIL, emailAccount, lockscreen, "authEmailAccount");
+  public async logout(lockscreen: boolean): Promise<RequestResponse<undefined, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServiceGetCall<undefined, SaleServiceApplicationError>(queries.publicSaleService.LOGOUT, lockscreen, "logout");
+  }
+  public async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServicePostCall<PasswordAuthenticateRequest, AccountInfo, SaleServiceApplicationError>(queries.publicSaleService.EMAIL_CREATE_ACCOUNT, createAccountRequest, lockscreen, "createEmailAccount");
   }
 
-  public async authWalletInit(initWalletAuth: InitWalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<InitWalletAuthResponse, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServicePostCall<InitWalletAuthRequest, InitWalletAuthResponse, UserServiceErrData>(queries.publicSaleService.INIT_WALLET_AUTH, initWalletAuth, lockscreen, "authWalletInit");
-  }
-  public async authWalletKeplr(walletAuth: WalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServicePostCall<WalletAuthRequest, Jwt, UserServiceErrData>(queries.publicSaleService.AUTHENTICATE_KEPLR, walletAuth, lockscreen, "authWalletKeplr");
-  }
-  public async authWalletMetamask(walletAuth: WalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServicePostCall<WalletAuthRequest, Jwt, UserServiceErrData>(queries.publicSaleService.AUTHENTICATE_METAMASK, walletAuth, lockscreen, "authWalletMetamask");
+  public async authEmailAccount(emailAccount: PasswordAuthenticateRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServicePostCall<PasswordAuthenticateRequest, Jwt, SaleServiceApplicationError>(queries.publicSaleService.AUTHENTICATE_EMAIL, emailAccount, lockscreen, "authEmailAccount");
   }
 
-  public async activateEmailAccount(code: string, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServiceGetCall<Jwt, UserServiceErrData>(formatString(queries.publicSaleService.ACTIVATE_ACCOUNT, {activationCode: code}), lockscreen, "activateEmailAccount");
+  public async authWalletInit(initWalletAuth: InitWalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<InitWalletAuthResponse, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServicePostCall<InitWalletAuthRequest, InitWalletAuthResponse, SaleServiceApplicationError>(queries.publicSaleService.INIT_WALLET_AUTH, initWalletAuth, lockscreen, "authWalletInit");
   }
-  public initPairEmailKeplr(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
-    return this.publicSaleServicePostCall<EmailPairingRequest, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.INIT_PAIR_EMAIL_KEPLR, emailPairing, lockscreen ,"initPairEmailKeplr");
+  public async authWalletKeplr(walletAuth: WalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServicePostCall<WalletAuthRequest, Jwt, SaleServiceApplicationError>(queries.publicSaleService.AUTHENTICATE_KEPLR, walletAuth, lockscreen, "authWalletKeplr");
   }
-  public confirmEmailPairingKeplr(emailPairing: SignedEmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
-    return this.publicSaleServicePostCall<SignedEmailPairingRequest, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.CONFIRM_SIGNED_EMAIL_KEPLR_DATA, emailPairing, lockscreen, "confirmEmailPairingKeplr");
-  }
-  public verifyPairingEmailKeplr(emailPairingVerification: EmailPairingConfirmationReq, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
-    return this.publicSaleServicePostCall< EmailPairingConfirmationReq, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.VERIFY_EMAIL_KEPLR, emailPairingVerification, lockscreen, "verifyPairingEmailKeplr");
+  public async authWalletMetamask(walletAuth: WalletAuthRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServicePostCall<WalletAuthRequest, Jwt, SaleServiceApplicationError>(queries.publicSaleService.AUTHENTICATE_METAMASK, walletAuth, lockscreen, "authWalletMetamask");
   }
 
-  public emailKeplrPairingDataVerify(emailPairingVerification: SignParingAddressResult, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>>{
-    return this.publicSaleServicePostCall< SignParingAddressResult, Jwt, UserServiceErrData>(queries.publicSaleService.VERIFY_EMAIL_KEPLR, emailPairingVerification, lockscreen, "emailKeplrPairingDataVerify");
+  public async activateEmailAccount(code: string, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServiceGetCall<Jwt, SaleServiceApplicationError>(formatString(queries.publicSaleService.ACTIVATE_ACCOUNT, {activationCode: code}), lockscreen, "activateEmailAccount");
+  }
+  public initPairEmailKeplr(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<SaleServiceApplicationError>>>{
+    return this.publicSaleServicePostCall<EmailPairingRequest, EmailPairingRes, SaleServiceApplicationError>(queries.publicSaleService.INIT_PAIR_EMAIL_KEPLR, emailPairing, lockscreen ,"initPairEmailKeplr");
+  }
+  public confirmEmailPairingKeplr(emailPairing: SignedEmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<SaleServiceApplicationError>>>{
+    return this.publicSaleServicePostCall<SignedEmailPairingRequest, EmailPairingRes, SaleServiceApplicationError>(queries.publicSaleService.CONFIRM_SIGNED_EMAIL_KEPLR_DATA, emailPairing, lockscreen, "confirmEmailPairingKeplr");
+  }
+  public verifyPairingEmailKeplr(emailPairingVerification: EmailPairingConfirmationReq, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<SaleServiceApplicationError>>>{
+    return this.publicSaleServicePostCall< EmailPairingConfirmationReq, EmailPairingRes, SaleServiceApplicationError>(queries.publicSaleService.VERIFY_EMAIL_KEPLR, emailPairingVerification, lockscreen, "verifyPairingEmailKeplr");
   }
 
-  public initEmailMetamaskPairing(emailPairingVerification: EmailMetamaskPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
-    return this.publicSaleServicePostCall< EmailMetamaskPairingRequest, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.INIT_PAIR_EMAIL_METAMASK, emailPairingVerification, lockscreen, "initEmailMetamaskPairing");
+  public emailKeplrPairingDataVerify(emailPairingVerification: SignParingAddressResult, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<SaleServiceApplicationError>>>{
+    return this.publicSaleServicePostCall< SignParingAddressResult, Jwt, SaleServiceApplicationError>(queries.publicSaleService.VERIFY_EMAIL_KEPLR, emailPairingVerification, lockscreen, "emailKeplrPairingDataVerify");
   }
 
-  public initPairMetamaskKeplr(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
-    return this.publicSaleServicePostCall<EmailPairingRequest, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.INIT_PAIR_METAMASK_KEPLR, emailPairing, lockscreen, "initPairMetamaskKeplr");
+  public initEmailMetamaskPairing(emailPairingVerification: EmailMetamaskPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<SaleServiceApplicationError>>>{
+    return this.publicSaleServicePostCall< EmailMetamaskPairingRequest, EmailPairingRes, SaleServiceApplicationError>(queries.publicSaleService.INIT_PAIR_EMAIL_METAMASK, emailPairingVerification, lockscreen, "initEmailMetamaskPairing");
   }
 
-  public emailMetamaskPairingDataVerify(signedData: SignedEmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<UserServiceErrData>>>{
-    return this.publicSaleServicePostCall<SignedEmailPairingRequest, Jwt, UserServiceErrData>(queries.publicSaleService.VERIFY_EMAIL_METAMASK, signedData, lockscreen, "emailMetamaskPairingDataVerify");
+  public initPairMetamaskKeplr(emailPairing: EmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<SaleServiceApplicationError>>>{
+    return this.publicSaleServicePostCall<EmailPairingRequest, EmailPairingRes, SaleServiceApplicationError>(queries.publicSaleService.INIT_PAIR_METAMASK_KEPLR, emailPairing, lockscreen, "initPairMetamaskKeplr");
   }
 
-  public verifyPairingMetamaskKeplr(emailPairingVerification: MetamaskKeplrPairingReq, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<UserServiceErrData>>>{
-    return this.publicSaleServicePostCall<MetamaskKeplrPairingReq, EmailPairingRes, UserServiceErrData>(queries.publicSaleService.VERIFY_METAMASK_KEPLR, emailPairingVerification, lockscreen, "verifyPairingMetamaskKeplr");
+  public emailMetamaskPairingDataVerify(signedData: SignedEmailPairingRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<SaleServiceApplicationError>>>{
+    return this.publicSaleServicePostCall<SignedEmailPairingRequest, Jwt, SaleServiceApplicationError>(queries.publicSaleService.VERIFY_EMAIL_METAMASK, signedData, lockscreen, "emailMetamaskPairingDataVerify");
   }
 
-  public async reserveTokens(roundId: number, amount: number, lockscreen: boolean): Promise<RequestResponse<ReserveTokensResponse, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServicePostCall<ReserveTokensRequest, ReserveTokensResponse, UserServiceErrData>(queries.publicSaleService.RESERVE_TOKENS, {roundId: roundId, amount: amount}, lockscreen, "reserveTokens");
+  public verifyPairingMetamaskKeplr(emailPairingVerification: MetamaskKeplrPairingReq, lockscreen: boolean): Promise<RequestResponse<EmailPairingRes, ErrorData<SaleServiceApplicationError>>>{
+    return this.publicSaleServicePostCall<MetamaskKeplrPairingReq, EmailPairingRes, SaleServiceApplicationError>(queries.publicSaleService.VERIFY_METAMASK_KEPLR, emailPairingVerification, lockscreen, "verifyPairingMetamaskKeplr");
   }
 
-  public async cancelReservation(orderId: number, lockscreen: boolean): Promise<RequestResponse<EmptyResponse, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServicePostCall<CancelReservationRequest, EmptyResponse, UserServiceErrData>(queries.publicSaleService.CANCEL_RESERVATION, {orderId: orderId}, lockscreen, "cancelReservation");
+  public async reserveTokens(roundId: number, amount: number, lockscreen: boolean): Promise<RequestResponse<ReserveTokensResponse, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServicePostCall<ReserveTokensRequest, ReserveTokensResponse, SaleServiceApplicationError>(queries.publicSaleService.RESERVE_TOKENS, {roundId: roundId, amount: amount}, lockscreen, "reserveTokens");
   }
 
-  public async initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen: boolean): Promise<RequestResponse<InitPaymentSessionResponse, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServicePostCall<InitPaymentSessionRequest, InitPaymentSessionResponse, UserServiceErrData>(queries.publicSaleService.INIT_PAYMENT_SESSION, initPaymentSessionRequest, lockscreen, "initPaymentSession");
+  public async cancelReservation(orderId: number, lockscreen: boolean): Promise<RequestResponse<EmptyResponse, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServicePostCall<CancelReservationRequest, EmptyResponse, SaleServiceApplicationError>(queries.publicSaleService.CANCEL_RESERVATION, {orderId: orderId}, lockscreen, "cancelReservation");
   }
 
-  public async fetchReservationList(lockscreen: boolean): Promise<RequestResponse<TokenReservation[], ErrorData<UserServiceErrData>>> {
+  public async initPaymentSession(initPaymentSessionRequest: InitPaymentSessionRequest, lockscreen: boolean): Promise<RequestResponse<InitPaymentSessionResponse, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServicePostCall<InitPaymentSessionRequest, InitPaymentSessionResponse, SaleServiceApplicationError>(queries.publicSaleService.INIT_PAYMENT_SESSION, initPaymentSessionRequest, lockscreen, "initPaymentSession");
+  }
+
+  public async fetchReservationList(lockscreen: boolean): Promise<RequestResponse<TokenReservation[], ErrorData<SaleServiceApplicationError>>> {
     const mapData = (tokenReservationList: TokenReservationResponse[] | undefined) => {
       return mapTokenReservations(tokenReservationList);
     };
@@ -160,8 +157,8 @@ export class PublicSaleServiceApi extends BaseApi {
       errorResponseToast: 'Token reservation data Error: ',
       mappingErrorMassage: 'Token reservation data mapping error: ',
     };
-    const isResponseError = (response: RequestResponse<TokenReservationResponse[], ErrorData<UserServiceErrData>>) => {return response.isError();};
-    return this.axiosWith200ErrorCall<TokenReservation[], TokenReservationResponse[], UserServiceErrData>({
+    const isResponseError = (response: RequestResponse<TokenReservationResponse[], ErrorData<SaleServiceApplicationError>>) => {return response.isError();};
+    return this.axiosWith200ErrorCall<TokenReservation[], TokenReservationResponse[], SaleServiceApplicationError>({
         method: 'GET',
         url: useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.TOKEN_RESERVATION_LIST
       },
@@ -170,29 +167,28 @@ export class PublicSaleServiceApi extends BaseApi {
       null,
       'fetchReservationList - ',
       isResponseError,
-      true,
       messages
     );
   //  return this.publicSaleServiceGetCall<TokenReservationResponse[], UserServiceErrData>(queries.publicSaleService.TOKEN_RESERVATION_LIST, lockscreen, "fetchReservationList");
   }
 
-  public async initKycSession(lockscreen: boolean): Promise<RequestResponse<InitSessionResponse, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServiceGetCall<InitSessionResponse, UserServiceErrData>(queries.publicSaleService.KYC_INIT_SESSION, lockscreen, "initKycSession");
+  public async initKycSession(lockscreen: boolean): Promise<RequestResponse<InitSessionResponse, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServiceGetCall<InitSessionResponse, SaleServiceApplicationError>(queries.publicSaleService.KYC_INIT_SESSION, lockscreen, "initKycSession");
   }
 
-  public async getKycStatus(lockscreen: boolean): Promise<RequestResponse<KycStatusResponse, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServiceGetCall<KycStatusResponse, UserServiceErrData>(queries.publicSaleService.GET_KYC_STATUS, lockscreen, "getKycStatus");
+  public async getKycStatus(lockscreen: boolean): Promise<RequestResponse<KycStatusResponse, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServiceGetCall<KycStatusResponse, SaleServiceApplicationError>(queries.publicSaleService.GET_KYC_STATUS, lockscreen, "getKycStatus");
   }
 
-  public async provideTxPaymentProof(txPaymentProof: TokenPaymentProofRequest,lockscreen: boolean): Promise<RequestResponse<null, ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServicePostCall<TokenPaymentProofRequest, null, UserServiceErrData>(queries.publicSaleService.PROVIDE_TX_PAYMENT_PROOF, txPaymentProof,lockscreen, "provideTxPaymentProof");
+  public async provideTxPaymentProof(txPaymentProof: TokenPaymentProofRequest,lockscreen: boolean): Promise<RequestResponse<null, ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServicePostCall<TokenPaymentProofRequest, null, SaleServiceApplicationError>(queries.publicSaleService.PROVIDE_TX_PAYMENT_PROOF, txPaymentProof,lockscreen, "provideTxPaymentProof");
   }
 
-  public async fetchBlockchainInfo(lockscreen: boolean): Promise<RequestResponse<BlockchainInfo[], ErrorData<UserServiceErrData>>> {
-    return this.publicSaleServiceGetCall<BlockchainInfo[], UserServiceErrData>(queries.publicSaleService.BLOCKCHAIN_INFO, lockscreen, "getBlockchainInfo");
+  public async fetchBlockchainInfo(lockscreen: boolean): Promise<RequestResponse<BlockchainInfo[], ErrorData<SaleServiceApplicationError>>> {
+    return this.publicSaleServiceGetCall<BlockchainInfo[], SaleServiceApplicationError>(queries.publicSaleService.BLOCKCHAIN_INFO, lockscreen, "getBlockchainInfo");
   }
 
-  public async fetchRoundInfo(roundId: number,lockscreen: boolean): Promise<RequestResponse<RoundInfoBlockchainInfo, ErrorData<UserServiceErrData>>> {
+  public async fetchRoundInfo(roundId: number,lockscreen: boolean): Promise<RequestResponse<RoundInfoBlockchainInfo, ErrorData<SaleServiceApplicationError>>> {
     const mapData = (roundInfo: RoundInfoResponse | undefined) => {
       return mapRoundInfo(roundInfo);
     };
@@ -202,8 +198,8 @@ export class PublicSaleServiceApi extends BaseApi {
       errorResponseToast: 'RoundInfo data Error: ',
       mappingErrorMassage: 'RoundInfo data mapping error: ',
     };
-    const isResponseError = (response: RequestResponse<RoundInfoResponse, ErrorData<UserServiceErrData>>) => {return response.isError();};
-    return this.axiosWith200ErrorCall<RoundInfoBlockchainInfo, RoundInfoResponse, UserServiceErrData>({
+    const isResponseError = (response: RequestResponse<RoundInfoResponse, ErrorData<SaleServiceApplicationError>>) => {return response.isError();};
+    return this.axiosWith200ErrorCall<RoundInfoBlockchainInfo, RoundInfoResponse, SaleServiceApplicationError>({
         method: 'GET',
         url: useConfigurationStore().config.publicSaleServiceURL + formatString(queries.publicSaleService.ROUND_INFO, {roundId: roundId}),
       },
@@ -212,12 +208,11 @@ export class PublicSaleServiceApi extends BaseApi {
       null,
       'fetchRoundInfo - ',
       isResponseError,
-      true,
       messages
     );
   }
 
-  public async fetchRoundInfoList(lockscreen: boolean): Promise<RequestResponse<RoundInfoListMapped, ErrorData<UserServiceErrData>>> {
+  public async fetchRoundInfoList(lockscreen: boolean): Promise<RequestResponse<RoundInfoListMapped, ErrorData<SaleServiceApplicationError>>> {
     const mapData = (roundInfo: RoundInfoResponse[] | undefined) => {
       return mapRoundInfoList(roundInfo);
     };
@@ -227,8 +222,8 @@ export class PublicSaleServiceApi extends BaseApi {
       errorResponseToast: 'RoundInfoList data Error: ',
       mappingErrorMassage: 'RoundInfoList data mapping error: ',
     };
-    const isResponseError = (response: RequestResponse<RoundInfoResponse[], ErrorData<UserServiceErrData>>) => {return response.isError();};
-    return this.axiosWith200ErrorCall<RoundInfoListMapped, RoundInfoResponse[], UserServiceErrData>({
+    const isResponseError = (response: RequestResponse<RoundInfoResponse[], ErrorData<SaleServiceApplicationError>>) => {return response.isError();};
+    return this.axiosWith200ErrorCall<RoundInfoListMapped, RoundInfoResponse[], SaleServiceApplicationError>({
         method: 'GET',
         url: useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.ROUND_INFO_LIST,
       },
@@ -237,12 +232,11 @@ export class PublicSaleServiceApi extends BaseApi {
       null,
       'fetchRoundInfo - ',
       isResponseError,
-      true,
       messages
     );
   }
 
-  public async synapsFetchSessionDetails(sessionId: string, lockscreen: boolean): Promise<RequestResponse<KycTier, ErrorData<UserServiceErrData>>> {
+  public async synapsFetchSessionDetails(sessionId: string, lockscreen: boolean): Promise<RequestResponse<KycTier, ErrorData<SaleServiceApplicationError>>> {
     const mapData = (hasureData: SessionOverviewResponse | undefined) => {
       return mapKycSteps(hasureData);
     };
@@ -252,8 +246,8 @@ export class PublicSaleServiceApi extends BaseApi {
       errorResponseToast: 'Synaps data Error: ',
       mappingErrorMassage: 'Synaps data mapping error: ',
     };
-    const isResponseError = (response: RequestResponse<SessionOverviewResponse, ErrorData<UserServiceErrData>>) => {return response.isError();};
-    return this.axiosWith200ErrorCall<KycTier, SessionOverviewResponse, UserServiceErrData>({
+    const isResponseError = (response: RequestResponse<SessionOverviewResponse, ErrorData<SaleServiceApplicationError>>) => {return response.isError();};
+    return this.axiosWith200ErrorCall<KycTier, SessionOverviewResponse, SaleServiceApplicationError>({
         method: 'GET',
         url: queries.synaps.OVERVIEW,
       headers: {
@@ -265,7 +259,6 @@ export class PublicSaleServiceApi extends BaseApi {
       null,
       'synapsFetchSessionDetails - ',
       isResponseError,
-      true,
       messages
     );
   }

@@ -64,7 +64,7 @@ const password = ref<string>();
 function login(){
 
   if(email.value && password.value) {
-    useUserServiceStore().authEmailAccount({login: email.value, password: password.value}, onSuccessAuth, onFail, true);
+    useUserServiceStore().authEmailAccount({login: email.value, password: password.value}, onSuccessAuth);
   }
 }
 
@@ -73,9 +73,6 @@ const toast = useToast();
 const onSuccessAuth = () => {
   toast.success('Successfully logged in');
   router.push({name: 'publicSaleInfo'});
-};
-const onFail = () => {
-  toast.error('An error occured');
 };
 
 </script>

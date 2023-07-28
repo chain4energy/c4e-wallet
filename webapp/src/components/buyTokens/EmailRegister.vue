@@ -70,9 +70,9 @@ function loginOrRegister(){
 
   if(email.value && password.value) {
     if(props.isRegister) {
-      useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccessEmailSend, onFail);
+      useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccessEmailSend);
     } else {
-      useUserServiceStore().authEmailAccount({login: email.value, password: password.value}, onSuccessAuth, onFail, true);
+      useUserServiceStore().authEmailAccount({login: email.value, password: password.value}, onSuccessAuth);
     }
   }
 }
@@ -87,9 +87,7 @@ const onSuccessAuth = () => {
   toast.success('Successfully logged in');
   router.push({name: 'publicSaleInfo'});
 };
-const onFail = () => {
-  toast.error('An error occured');
-};
+
 </script>
 
 <style scoped lang="scss">

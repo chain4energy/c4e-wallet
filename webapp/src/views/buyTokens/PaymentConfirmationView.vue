@@ -338,7 +338,7 @@ function copyRecipientAddress(){
 }
 
 const onFail = () => {
-  toast.error('An error occured');
+  // toast.error('An error occured');
 };
 
 const onStartMetamaskTransaction = () => {

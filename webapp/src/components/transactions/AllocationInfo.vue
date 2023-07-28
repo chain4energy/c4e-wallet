@@ -314,7 +314,7 @@ const getReservationIcon = (status: RESERVATION_STATUS) => {
     case RESERVATION_STATUS.COMPLETED:
       return 'CheckSquare';
     default:
-      return ''
+      return '';
 
   }
 };

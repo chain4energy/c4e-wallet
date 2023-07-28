@@ -1,11 +1,10 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
-import {clearAuthTokens, setAuthTokens, isLoggedIn} from "axios-jwt";
+import {clearAuthTokens, setAuthTokens} from "axios-jwt";
 import {InitWalletAuthRequest, WalletAuthRequest} from "@/models/user/walletAuth";
 import {useUserStore} from "@/store/user.store";
 import {RequestResponse} from "@/models/request-response";
-import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {Jwt} from "@/models/user/jwt";
 import {EmailPairingRequest, EmailPairingRes, SignParingAddressResult} from "@/models/user/emailPairing";
@@ -14,7 +13,8 @@ import {KycProgressStatus, KycStepInfo, KycStepName, KycTierEnum} from "@/models
 import {TxBroadcastError} from "@/api/tx.broadcast.base.api";
 import {ethers} from "ethers";
 import {useContextStore} from "@/store/context.store";
-import {useRouter} from "vue-router";
+import {SaleServiceApplicationError} from "@/models/saleServiceCommons";
+import {UserServiceContext, UserServiceErrorHandler} from "@/store/errorsHandlers/userServiceErrorHandler";
 
 interface UserServiceState {
   loginType: LoginTypeEnum,
@@ -56,24 +56,25 @@ export const useUserServiceStore = defineStore({
     };
   },
   actions: {
-    async getAccount(onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().getAccount(lockscreen).then(responseDate => {
-        if(responseDate.isSuccess() && responseDate.data) {
-          this.termsAccepted = responseDate.data.terms;
-          this.loginType = responseDate.data.accountType;
-          this.userEmail = responseDate.data.login;
-          this.ethereumAddress = responseDate.data.ethereumAddress == '' ? undefined : responseDate.data.ethereumAddress;
-          this.claimAddress = responseDate.data?.claimAddress == '' ? undefined : responseDate.data.claimAddress;
-          this.kycLevel = responseDate.data.kycInfo.kycLevel;
+    async getAccount(onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().getAccount(lockscreen).then(response => {
+        if(response.isSuccess() && response.data) {
+          this.termsAccepted = response.data.terms;
+          this.loginType = response.data.accountType;
+          this.userEmail = response.data.login;
+          this.ethereumAddress = response.data.ethereumAddress == '' ? undefined : response.data.ethereumAddress;
+          this.claimAddress = response.data?.claimAddress == '' ? undefined : response.data.claimAddress;
+          this.kycLevel = response.data.kycInfo.kycLevel;
           const map = new Map<KycStepName, KycProgressStatus>();
-          for(const [key, value] of Object.entries(responseDate.data.kycInfo.kycServiceState)) {
+          for(const [key, value] of Object.entries(response.data.kycInfo.kycServiceState)) {
             map.set(key as KycStepName, value as KycProgressStatus);
           }
           this.kycServiceState = map;
 
           onSuccess();
         } else {
-          onFail();
+          UserServiceErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
@@ -86,10 +87,13 @@ export const useUserServiceStore = defineStore({
           }
           this.kycServiceState = map;
           this.kycLevel = response.data.kycLevel;
+        } else {
+          UserServiceErrorHandler.getInstance().handleError(response.error);
+          // onFail?.();
         }
       });
     },
-    async authWalletInit(initWalletAuthRequest: InitWalletAuthRequest,onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async authWalletInit(initWalletAuthRequest: InitWalletAuthRequest,onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
        const initWalletAuthResponse = await apiFactory.publicSaleServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
        if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
          await apiFactory.accountApi().sign(useUserStore().connectionInfo, initWalletAuthResponse.data.dataToSign.randomString).then(signedDataResponse => {
@@ -98,11 +102,12 @@ export const useUserServiceStore = defineStore({
            this.authWalletKeplr({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data}, onSuccess, onFail);
          });
        } else {
-         onFail();
+         UserServiceErrorHandler.getInstance().handleError(initWalletAuthResponse.error);
+         onFail?.();
        }
     },
 
-    async authMetamaskWalletInit(initWalletAuthRequest: InitWalletAuthRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async authMetamaskWalletInit(initWalletAuthRequest: InitWalletAuthRequest, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
       const initWalletAuthResponse = await apiFactory.publicSaleServiceApi().authWalletInit(initWalletAuthRequest, lockscreen);
       if(initWalletAuthResponse.isSuccess() && initWalletAuthResponse.data) {
         await apiFactory.accountApi().signMetamask(initWalletAuthResponse.data.dataToSign.randomString).then(signedDataResponse => {
@@ -111,72 +116,78 @@ export const useUserServiceStore = defineStore({
           this.authWalletMetamask({processID: initWalletAuthResponse.data.processID, signedData: signedDataResponse.data}, onSuccess, onFail);
         });
       } else {
-        onFail();
+        UserServiceErrorHandler.getInstance().handleError(initWalletAuthResponse.error);
+        onFail?.();
       }
     },
-    async createEmailAccount(createAccountRequest: CreateAccountRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async createEmailAccount(createAccountRequest: CreateAccountRequest, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
       return await apiFactory.publicSaleServiceApi().createEmailAccount(createAccountRequest, lockscreen).then(res => {
         if(res.isSuccess()) {
           onSuccess();
         } else {
-          onFail();
+          UserServiceErrorHandler.getInstance().handleError( res.error, UserServiceContext.CREATE_ACCOUNT);
+          onFail?.();
         }
       });
     },
-    async authWalletKeplr(walletAuthData: WalletAuthRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true, ) {
-      return await apiFactory.publicSaleServiceApi().authWalletKeplr(walletAuthData, lockscreen).then(responseDate => {
-        if(responseDate.isSuccess()) {
+    async authWalletKeplr(walletAuthData: WalletAuthRequest, onSuccess: (() => void), onFail?: (() => void), lockscreen = true, ) {
+      return await apiFactory.publicSaleServiceApi().authWalletKeplr(walletAuthData, lockscreen).then(response => {
+        if(response.isSuccess()) {
+          this.setTokens(response);
           onSuccess();
-          this.setTokens(responseDate);
         } else {
-          onFail();
+          UserServiceErrorHandler.getInstance().handleError( response.error, UserServiceContext.LOG_IN);
+          onFail?.();
         }
       });
     },
     async authWalletMetamask(walletAuthData: WalletAuthRequest,  onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().authWalletMetamask(walletAuthData, lockscreen).then(responseDate => {
-        if(responseDate.isSuccess()) {
-          this.setTokens(responseDate);
+      await apiFactory.publicSaleServiceApi().authWalletMetamask(walletAuthData, lockscreen).then(response => {
+        if(response.isSuccess()) {
+          this.setTokens(response);
           onSuccess();
         } else {
-          onFail();
+          UserServiceErrorHandler.getInstance().handleError( response.error, UserServiceContext.LOG_IN);
+          onFail?.();
         }
       });
     },
-    async authEmailAccount(emailAccount: PasswordAuthenticateRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async authEmailAccount(emailAccount: PasswordAuthenticateRequest, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
           this.userEmail = emailAccount.login;
           onSuccess();
         } else {
-          onFail();
+          UserServiceErrorHandler.getInstance().handleError(responseDate.error, UserServiceContext.LOG_IN);
+          onFail?.();
         }
       });
     },
-    async activateEmailAccount(code: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+    async activateEmailAccount(code: string, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().activateEmailAccount(code, lockscreen).then(responseDate => {
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
           this.loginType = LoginTypeEnum.EMAIL;
           onSuccess();
         } else {
-          onFail();
+          UserServiceErrorHandler.getInstance().handleError(responseDate.error, UserServiceContext.ACTIVATE_EMAIL_ACCOUNT);
+          onFail?.();
         }
       });
     },
-    async initKycSession(lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().initKycSession(lockscreen).then(responseDate => {
-        console.log(responseDate);
-        if(responseDate.isSuccess() && responseDate.data) {
-          this.kycSessionId = responseDate.data.session_id;
+    async initKycSession(lockscreen = true, onFail?: (() => void)) {
+      await apiFactory.publicSaleServiceApi().initKycSession(lockscreen).then(response => {
+        console.log(response);
+        if(response.isSuccess() && response.data) {
+          this.kycSessionId = response.data.session_id;
+        } else {
+          UserServiceErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
-
       });
     },
-    setTokens(responseDate: RequestResponse<Jwt, ErrorData<UserServiceErrData>>){
-      if (responseDate.isSuccess()) {
-        // save tokens to storage
+    setTokens(responseDate: RequestResponse<Jwt, ErrorData<SaleServiceApplicationError>>){
         if(responseDate.data){
           this.loggedIn = true;
           setAuthTokens({
@@ -186,32 +197,29 @@ export const useUserServiceStore = defineStore({
         } else {
           //TODO: toast - log in error
         }
-      } else {
-        //TODO: toast - log in error
-      }
     },
-    async initEmailKeplrPairing(claimedAddress: string, onSuccess: (() => void), onFail: (() => void), lockscreen=true) {
-      await apiFactory.publicSaleServiceApi().initPairEmailKeplr({claimedAddress: claimedAddress}, lockscreen).then(async (responseData) => {
-        if (responseData.isSuccess() && responseData.data) {
-          useContextStore().dataToSign = responseData.data;
+    async initEmailKeplrPairing(claimedAddress: string, onSuccess: (() => void), onFail?: (() => void), lockscreen=true) {
+      await apiFactory.publicSaleServiceApi().initPairEmailKeplr({claimedAddress: claimedAddress}, lockscreen).then(async (response) => {
+        if (response.isSuccess() && response.data) {
+          useContextStore().dataToSign = response.data;
           onSuccess();
         } else {
-          onFail();
+          UserServiceErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
-    async provideKeplrAddress(emailAccount: EmailPairingRequest, onSuccess: ((response: SignParingAddressResult) => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().initPairEmailKeplr(emailAccount, lockscreen).then(async (responseData) => {
-        if (responseData.isSuccess() && responseData.data) {
-          await this.signPairingEmailKeplr(responseData.data).then(resp=>{
-            // console.log('!!!!');
-            // console.log(resp);
-            if(responseData.data && resp.data) {
-              onSuccess({processID: responseData.data?.processID, signedData: resp.data});
+    async provideKeplrAddress(emailAccount: EmailPairingRequest, onSuccess: ((response: SignParingAddressResult) => void), onFail?: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().initPairEmailKeplr(emailAccount, lockscreen).then(async (response) => {
+        if (response.isSuccess() && response.data) {
+          await this.signPairingEmailKeplr(response.data).then(resp=>{
+            if(response.data && resp.data) {
+              onSuccess({processID: response.data?.processID, signedData: resp.data});
             }
           });
         } else {
-          onFail();
+          UserServiceErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
@@ -232,7 +240,7 @@ export const useUserServiceStore = defineStore({
       });
     },
 
-    async verifyParingEmailKeplr(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
+    async verifyParingEmailKeplr(processID: string, pairingCode: string, signedData: string, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().verifyPairingEmailKeplr({pairingCode: pairingCode, processId: processID, signedData: signedData}, lockscreen).then(response => {
         if(response.isSuccess()){
           this.loginType = LoginTypeEnum.EMAIL;
@@ -240,7 +248,8 @@ export const useUserServiceStore = defineStore({
           this.verificationNeeded = false;
           onSuccess();
         }else {
-          onFail(response.error?.data?.errorMessage);
+          UserServiceErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
@@ -258,45 +267,51 @@ export const useUserServiceStore = defineStore({
         console.error('Error switching the blockchain network:', error);
       }
     },
-    pairMetamaskAddress: async function(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().initPairMetamaskKeplr(emailAccount, lockscreen).then(async responseData => {
-        if (responseData.isSuccess() && responseData.data) {
-          await this.signPairingMatamaskKeplr(responseData.data, onSuccess, onFail, true);
+    pairMetamaskAddress: async function(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().initPairMetamaskKeplr(emailAccount, lockscreen).then(async response => {
+        if (response.isSuccess() && response.data) {
+          await this.signPairingMatamaskKeplr(response.data, onSuccess, onFail, true);
           // this.setIsLoggedIn();
           // this.loginType = LoginTypeEnum.EMAIL;
           // this.paired = true;
+        } else {
+          UserServiceErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
-    async initEmailMetamaskPairing(paymentAddress: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen=true){
-      await apiFactory.publicSaleServiceApi().initEmailMetamaskPairing({paymentAddress: paymentAddress}, lockscreen).then((res) => {
-        if(res.isSuccess() && res.data) {
-          useContextStore().dataToSign = res.data;
+    async initEmailMetamaskPairing(paymentAddress: string, onSuccess: (() => void), onFail?: (() => void), lockscreen=true){
+      await apiFactory.publicSaleServiceApi().initEmailMetamaskPairing({paymentAddress: paymentAddress}, lockscreen).then((response) => {
+        if(response.isSuccess() && response.data) {
+          useContextStore().dataToSign = response.data;
           onSuccess();
         } else {
-          onFail(res.error?.data?.errorMessage);
+          UserServiceErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
-    async emailMetamaskPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().emailMetamaskPairingDataVerify({processID: processID, signedData: signedData}, lockscreen).then((res) => {
-        if(res.isSuccess()) {
+    async emailMetamaskPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().emailMetamaskPairingDataVerify({processID: processID, signedData: signedData}, lockscreen).then((response) => {
+        if(response.isSuccess()) {
           onSuccess();
         } else {
-          onFail(res.error?.data?.errorMessage);
+          UserServiceErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
-    async emailKeplrPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: ((errorMessage?: string) => void), lockscreen = true) {
-      await apiFactory.publicSaleServiceApi().emailKeplrPairingDataVerify({processID: processID, signedData: signedData}, lockscreen).then((res) => {
-        if(res.isSuccess()) {
+    async emailKeplrPairingDataVerify(processID: string, signedData: string, onSuccess: (() => void), onFail: (() => void), lockscreen = true) {
+      await apiFactory.publicSaleServiceApi().emailKeplrPairingDataVerify({processID: processID, signedData: signedData}, lockscreen).then((response) => {
+        if(response.isSuccess()) {
           onSuccess();
         } else {
-          onFail(res.error?.data?.errorMessage);
+          UserServiceErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
     },
-    async signPairingMatamaskKeplr(responseData: EmailPairingRes, onSuccess: (() => void), onFail: (() => void), lockscreen = true){
+    async signPairingMatamaskKeplr(responseData: EmailPairingRes, onSuccess: (() => void), onFail?: (() => void), lockscreen = true){
       let metamaskResp = '';
       let keplrResp = '';
       try{
@@ -319,28 +334,30 @@ export const useUserServiceStore = defineStore({
               keplrSignedData: keplrResp,
               metamaskSignedData: metamaskResp,
               processID: responseData.processID,
-            }, true).then((res)=>{
-            if(res.isSuccess()){
+            }, true).then((response)=>{
+            if(response.isSuccess()){
               this.loginType = LoginTypeEnum.METAMASK;
               this.paired = true;
               this.verificationNeeded = false;
+            } else {
+              UserServiceErrorHandler.getInstance().handleError(response.error);
             }
           });
-
         }
       }
-
     },
 
-    async approveTerms(onSuccess: (() => void), onFail: (() => void), lockscreen = true){
-      await apiFactory.publicSaleServiceApi().acceptTerms(lockscreen).then(res =>{
-        if(res.isSuccess()){
+    async approveTerms(onSuccess: (() => void), onFail?: (() => void), lockscreen = true){
+      await apiFactory.publicSaleServiceApi().acceptTerms(lockscreen).then(response =>{
+        if(response.isSuccess()){
           this.getAccount(onSuccess, onFail, true);
+        } else {
+          UserServiceErrorHandler.getInstance().handleError(response.error);
+          onFail?.();
         }
       });
-
     },
-    logoutAccount(redirect = true){
+    logoutAccount(){
       apiFactory.publicSaleServiceApi().logout(true).then(() => {
         clearAuthTokens();
       });
@@ -358,9 +375,6 @@ export const useUserServiceStore = defineStore({
       this.kycServiceState= new Map<KycStepName, KycProgressStatus>();
       this.kycLevel= 0;
       this.loggedIn = false;
-      // if(redirect) {
-      //   useRouter().push('/buyTokens/signIn');
-      // }
 
     }
   },
