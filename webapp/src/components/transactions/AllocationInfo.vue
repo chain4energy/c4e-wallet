@@ -82,6 +82,16 @@
                 >Pay</Button>
               </th>
             </tr>
+            <tr v-if="transaction.status == RESERVATION_STATUS.DECLARED">
+              <th></th>
+              <th>
+                <Button
+                  class="p-button p-component  accountInfo__btn allocationInfo__btn"
+                  @click="cancelAllocation"
+                  severity="danger"
+                >Delete</Button>
+              </th>
+            </tr>
           </table>
         </div>
 
@@ -319,7 +329,7 @@ const getReservationIcon = (status: RESERVATION_STATUS) => {
   }
 };
 
-const emit = defineEmits(['pay']);
+const emit = defineEmits(['pay', 'cancelAllocation']);
 // function getPaymentType(){
 //   switch (props.transaction.paymentType){
 //     case paymentType.Crypto: return 'Crypto';
@@ -352,6 +362,10 @@ function submit(){
   console.log('submit');
   emit('pay');
 }
+
+const cancelAllocation = () => {
+  emit('cancelAllocation');
+};
 
 function calculateTimeToPass(){
   const now = new Date(Date.now());

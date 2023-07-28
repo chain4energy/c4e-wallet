@@ -1,6 +1,6 @@
 {
   "TITLE": "Chain4Energy {'|'} Portfel C4E{addInfo}",
-  "CONNECT" : {
+  "CONNECT": {
     "WELCOME": "Witamy",
     "WELCOME_MESSAGE": "W sieci blockchain zabezpieczającej zdecentralizowany rynek energii",
     "CONNECT": "zaloguj",
@@ -32,7 +32,7 @@
     }
   },
   "SIDEBAR_MENU": {
-    "TITLE" : "Menu_EN"
+    "TITLE": "Menu_EN"
   },
   "GOVERNANCE_VIEW": {
     "PROPOSAL_STATUS_PASSED": "Zaakceptowany",
@@ -124,10 +124,8 @@
   },
   "FAQ_VIEW": {
     "TITLES": {
-
     },
     "DESCRIPTIONS": {
-
     }
   },
   "TERMS_CONDITIONS_VIEW": {
@@ -218,7 +216,7 @@
       "how_is_your_data_collected_2": "You provide additional personal information to us which we may request from you from time to time following on from any contact you have made with us through the C4E Website. Such information may be necessary or unnecessary (optional) for the provision of services on this Website as indicated in any particular case. In no event, however, are you requested to provide confidential or sensitive personal data about you or other persons. Please avoid sending us such types of data.",
       "how_is_your_data_collected_3": "If you access the C4E Website or use services available via the C4E Website, your connection data will be collected by our servers and/or through cookies that may be placed in your computer (see below). Our servers will store your IP address in log files by which your computer can be identified as well as certain other connection data (e.g. time and amount of transferred data, product and release information from your Internet browser).",
       "use_of_cookies": "C4E uses tracking technology such as cookies to gather connection data and to understand how users use the C4E Website. A cookie is an element of data that a website can send to your computer’s browser so that this computer will be recognized by the site on the user’s return. Cookies allow the web server to recognize your computer on connection to our Website, which in turn allows the server to make downloading of pages faster than on first viewing. Also cookies may be used to establish statistics about the use of this Website by gathering and analyzing various data (e.g. most visited pages, time spent by users on visited pages, etc.). Cookies will not be used to monitor website visits of a particular individual. Cookies placed on your computer will not be kept longer than necessary for the purposes indicated. It is possible to set the browser on your computer to notify you when a cookie is being recorded on your computer’s hard drive. It is generally also possible to set the browser to prevent cookies from being recorded on your computer. For the optimal use of this Website, however, we recommend that you do not block the recording of cookies on your computer. The procedure for refusal of cookies may differ depending on the software product. You may check with your software helpdesk or software supplier if you wish to refuse cookies. If you choose not to receive cookies, you may not be able to use certain functionalities or pages of this Website.\n",
-      "how_is_your_data_used":{
+      "how_is_your_data_used": {
         "head": "The user data collected over the C4E Website is processed for the following purposes:",
         "1": "We will use your connection data for statistical purposes and to manage and improve the usability of the C4E Website by means of particular software (e.g. Google analytics) or cookies (see use of cookies).\n",
         "2": "We will use your contact data to (i) answer any queries you have about this Website and to notify you of any changes to this Website; (ii) provide you with information you have requested (subscription functionality); and (iii) inform you about C4E and events that may be of interest to you (marketing activities), unless you inform us that you wish not to receive any promotion material from C4E (see Terms of Use).\n",
@@ -229,7 +227,7 @@
       "data_storage": "Any data you send over the Internet to the C4E Website is stored and processed in a decentralized way and is processed according to applicable data protection and privacy laws. Some data will also be stored on servers of the C4E Company.",
       "data_storage_2": "Accordingly, your personal data will be transferred to and processed in locations outside the country in which you are viewing this Website (the “User Country”). Any data or material sent or uploaded by you will be accessible in countries outside the User Country. If your User Country is within the European Economic Area (“EEA”) or is Switzerland or another country providing an adequate level of data protection, please note that your personal data will also be accessible and processed in countries with a lower level of data protection. In these situations C4E will ensure (by entering into a written agreement or otherwise) that an adequate level of data protection is maintained by the recipients of your data in accordance with applicable data protection law.",
       "storage_of_emails": "All incoming and outgoing e-mail messages are automatically stored in the C4E Electronic Message Repository for the purpose of preserving the evidential weight of e-mails. The e-mails are protected by legal, technical and organizational measures and are processed according to applicable data protection and privacy laws. They may only be accessed in justified cases in accordance with applicable laws and regulations (e.g. court order, suspicion of criminal conduct, breach of regulatory obligations, material breach of employment contract). Access is only granted to employees of the C4E  in defined functions (e.g. litigation, legal, compliance, risk). The process steps as well as the search criteria used are pre-defined. All e-mails are disposed of after a pre-determined period of time and according to legal requirements. If you do not wish the retention of private e-mails by the C4E , we strongly advise you not to send private, non-business related e-mails to C4E e-mail accounts.",
-      "data_security_1":"C4E applies and ensures that service providers apply technical and organizational security measures that are appropriate to protect personal data against accidental or unlawful destruction or accidental loss, alteration, unauthorized disclosure or access and against all other unlawful forms of processing.\n",
+      "data_security_1": "C4E applies and ensures that service providers apply technical and organizational security measures that are appropriate to protect personal data against accidental or unlawful destruction or accidental loss, alteration, unauthorized disclosure or access and against all other unlawful forms of processing.\n",
       "data_security_2": "The accessing and entering of information on the C4E Website by users take place over the Internet which is an open and unprotected network. This data transfer takes place in non-encrypted form. Therefore, we are not able to guarantee the security of your data during the transfer to the Website. You confirm to be aware of the risks of unencrypted transmission of data via the Internet. C4E shall not be liable for any damage caused by such transfer. For this reason, please do not send us any confidential or sensitive personal data.",
       "data_security_3": "You may communicate with us by e-mail. E-mail messages sent over the Internet are neither confidential nor secure. They may be viewed by third parties, lost, intercepted or altered. E-mails may be transferred across national borders, even if both sender and recipient are located in the same country. C4E or any company of the C4E  will not be liable for any damages suffered in connection with the use of e-mails or any other electronic messaging system when communicating with us.\n",
       "retained_data": "C4E retains the personal information collected over the C4E Website for as long as required or permitted by law and regulations. Comments that you provide to us using the commenting functionality of the C4E Website are generally deleted after one year, unless C4E has a particular business interest in such information in which case the comments are retained for a longer period of time, subject to applicable data protection law.\n",
@@ -317,14 +315,14 @@
     }
   },
   "USER_DATA": {
-      "TOTAL": "Całkowity",
-      "AVAILABLE": "Balans",
-      "STAKED": "Oddelegowane",
-      "UNSTAKING": "Odblokowywanie",
-      "CLAIM_REWARDS": "Odbierz",
-      "LOCKED": "Zablokowane",
-      "VESTING_END": "Data uwolnienia",
-      "CLAIM_HEADER": "Oczekująca nagroda"
+    "TOTAL": "Całkowity",
+    "AVAILABLE": "Balans",
+    "STAKED": "Oddelegowane",
+    "UNSTAKING": "Odblokowywanie",
+    "CLAIM_REWARDS": "Odbierz",
+    "LOCKED": "Zablokowane",
+    "VESTING_END": "Data uwolnienia",
+    "CLAIM_HEADER": "Oczekująca nagroda"
   },
   "COMMON": {
     "CLOSE": "Zamknij",
@@ -437,8 +435,8 @@
     "TO_DEEFINE": "To define"
   },
   "CLAIM_AIRDROP": {
-    "PROGRESS":"Odliczanie kampanii",
-    "FINISHED" : "Kampania zakończona"
+    "PROGRESS": "Odliczanie kampanii",
+    "FINISHED": "Kampania zakończona"
   },
   "DISCLAIMER": "The information provided on this website; web applications; mobile applications does not constitute investment advice, financial advice, trading advice, or any other sort of advice and you should not treat any of the content as such. Crescent Foundation Limited(”Crescent Foundation”) does not recommend that any cryptocurrency should be bought, sold, or held by you. Do conduct your own due diligence and consult your financial advisor before making any investment decisions. </br> Crescent Foundation will strive to ensure accuracy of information listed on this website; web applications; mobile applications although it will not hold any responsibility for any missing or wrong information. Crescent Foundation provides all information *as is.* You understand that you are using any and all information available here at your own risk.<br/>The appearance of third party advertisements and hyperlinks on this website; web applications; mobile applications does not constitute an endorsement, guarantee, warranty, or recommendation by Crescent Foundation. Do conduct your own due diligence before deciding to use any third party services.<br/>Before using our service, you should review the relevant <a href='https://docs.c4e.io/' target='_blank'>documentation</a> to make sure you understand how the service works.",
   "COPY": {
@@ -547,7 +545,6 @@
     "TOKENOMICS": "Tokenomics",
     "WHITE_PAPER": "White paper",
     "YOU_INVEST": "Chcesz zainwestować"
-
   },
   "PAYMENT_CONFIRMATION_VIEW": {
     "CONFIRM_PAYMENT": "Confirm Your Payment",
@@ -564,7 +561,8 @@
       "KYC": "Poziom KYC\nPoziom 0\n(Brak KYC)\nPoziom 1\n(Profil tożsamości)\nPoziom 2\n(Profil zamieszkania)\nPoziom 3\n(Profil dochodów)",
       "TERMS": "Wszystkie warunki dotyczące sprzedaży publicznej są dostępne pod adresem:",
       "CLAIMER_ADDRESS": "Podaj adres portfela, z którego będziesz korzystać do odbioru tokenów. Musi to być adres portfela C4E. \nJeśli go nie masz, postępuj zgodnie z instrukcjami dotyczącymi portfela Keplr:\nhttps://docs.c4e.io/usersGuide/auth.html",
-      "SOURCE_ADDRESS": "Podaj swój adres portfela EVM, z którego będziesz wysyłać swoje stabilne kryptowaluty.\nProsimy, nie używaj adresu giełdy kryptowalutowej (CEX)."}
+      "SOURCE_ADDRESS": "Podaj swój adres portfela EVM, z którego będziesz wysyłać swoje stabilne kryptowaluty.\nProsimy, nie używaj adresu giełdy kryptowalutowej (CEX)."
+    }
   },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Rejestracja",
@@ -595,6 +593,17 @@
     "DAYS": "dni",
     "NO_ACTIVE": "Nie masz aktywnych vestingów!",
     "ADDRESS": "Twój adres:"
+  },
+  "MODAL": {
+    "ACCEPT_CONFIRMATION": "Na pewno chcesz zaakceptować umowę?",
+    "CONFIRMATION": ",Potwierdzenie",
+    "CONFIRMATION_HEADER": "Prośba o potwierdzenie",
+    "CONFIRMATION_MESSAGE_REMOVE_ELEMENT": "Czy jesteś pewien, że chcesz usunąć wybrany element?"
+  },
+  "POPUPS": {
+    "GENERAL": {
+      "yes": "Tak",
+      "no": "Nie"
+    }
   }
-
 }

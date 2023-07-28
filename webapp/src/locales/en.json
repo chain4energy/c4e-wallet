@@ -603,5 +603,17 @@
     "DAYS": "days",
     "NO_ACTIVE": "You have no active vestings!",
     "ADDRESS": "Your address:"
+  },
+  "MODAL": {
+    "ACCEPT_CONFIRMATION": "Do you want to accept the contract? ",
+    "CONFIRMATION": "Confirmation",
+    "CONFIRMATION_HEADER": "Confirmation",
+    "CONFIRMATION_MESSAGE_REMOVE_ELEMENT": "Are you sure you want to delete the selected item?"
+  },
+  "POPUPS": {
+    "GENERAL": {
+      "yes": "Yes",
+      "no": "No"
+    }
   }
 }

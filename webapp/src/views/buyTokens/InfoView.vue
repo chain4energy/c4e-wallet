@@ -26,7 +26,7 @@
 
     <div v-if="activeRound">
       <div v-for="items in transactions" :key="items" class="userProfile__holder" >
-        <AllocationInfo :transaction="items" @pay="onPay(items)"/>
+        <AllocationInfo :transaction="items" @pay="onPay(items)" @cancel-allocation="onCancelAllocation(items.orderId)"/>
       </div>
     </div>
   </div>
@@ -51,6 +51,7 @@
 
   </Dialog>
   <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
+  <ConfirmDialogYesNo @accepted="cancelAllocation" ref="confirmDialogYesNoRef"></ConfirmDialogYesNo>
 </template>
 
 <script lang="ts" setup>
@@ -76,6 +77,7 @@ import SynapsVerify from '@synaps-io/vue3-verify';
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import dataService from "@/services/data.service";
 import OrderModal from "@/components/buyTokens/modals/OrderModal.vue";
+import ConfirmDialogYesNo from "@/components/utils/ConfirmDialogYesNo.vue";
 
 onBeforeMount(() => {
   dataService.onInfoView();
@@ -94,6 +96,7 @@ const kycModalVisible = ref(false);
 const loginPopupStatus = ref(false);
 
 const showApprovalModal = ref(false);
+const confirmDialogYesNoRef = ref<typeof ConfirmDialogYesNo>();
 
 const onKycStart = () => {
   useUserServiceStore().initKycSession(true).then(() => {
@@ -101,6 +104,17 @@ const onKycStart = () => {
     // router.push({name: 'kyc'});
   });
 
+};
+const onCancelAllocation = (orderId: number) => {
+  console.log('Cancel Allocation');
+  confirmDialogYesNoRef.value?.confirmRequired(orderId);
+};
+
+const cancelAllocation = (orderId: number) => {
+  usePublicSalesStore().cancelReservation(orderId, () => {
+      usePublicSalesStore().fetchTokenReservations(false);
+    }, () => {
+    console.log('Error');});
 };
 function provideClaimerAddress(){
   showAddressInfoModalAddressType.value = AddressType.KEPLR;

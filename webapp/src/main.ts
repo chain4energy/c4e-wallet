@@ -65,8 +65,8 @@ import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { VueRecaptchaPlugin } from 'vue-recaptcha/head'
-
+import { VueRecaptchaPlugin } from 'vue-recaptcha/head';
+import ConfirmationService from 'primevue/confirmationservice';
 
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
@@ -122,6 +122,7 @@ app.use(router)
   .use(Toast, toastOptions)
   // .use(vuetify)
   .use(PrimeVue)
+  .use(ConfirmationService)
   // .use(Vidle)
   .use(VueSvgInlinePlugin)
   .use(VueRecaptchaPlugin, {
