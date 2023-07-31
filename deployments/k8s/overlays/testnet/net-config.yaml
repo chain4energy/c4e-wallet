@@ -10,6 +10,7 @@ data:
       "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
       "addressPrefix": "c4e",
       "stakingDenom": "uc4e",
+      "transferDenom": "uc4e",
       "tokenReservationDenom": "uc4e",
       "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
@@ -24,7 +25,8 @@ data:
         "delegate": 300000,
         "undelegate": 220000,
         "redelegate": 310000,
-        "claimRewards": 400000
+        "claimRewards": 400000,
+        "transfer": 250000
       },
       "viewDenoms": [
         {
@@ -65,6 +67,7 @@ data:
         "stakingPageURL": "https://wallet.c4e.io/staking",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
+        "transferDenom": "uc4e",
         "tokenReservationDenom": "uc4e",
         "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
@@ -79,7 +82,8 @@ data:
           "delegate": 175000,
           "undelegate": 220000,
           "redelegate": 310000,
-          "claimRewards": 400000
+          "claimRewards": 400000,
+          "transfer": 250000
         },
         "viewDenoms": [
           {

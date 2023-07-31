@@ -112,7 +112,7 @@ export class AccountApi extends TxBroadcastBaseApi {
         fromAddress: connection.account,
         toAddress: target,
         amount: [{
-          denom: config.stakingDenom,
+          denom: config.transferDenom,
           amount: bcAmount,
         }]
       };
@@ -124,9 +124,9 @@ export class AccountApi extends TxBroadcastBaseApi {
     };
     let fee;
     if(reservedFee){
-      fee=this.createFee(Math.ceil(reservedFee), config.stakingDenom);
+      fee=this.createFee(Math.ceil(reservedFee), config.transferDenom);
     } else {
-      fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
+      fee = this.createFee(config.operationGas.transfer, config.transferDenom);
     }
     console.log(fee);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
@@ -141,7 +141,7 @@ export class AccountApi extends TxBroadcastBaseApi {
         fromAddress: connection.account,
         toAddress: target,
         amount: [{
-          denom: config.stakingDenom,
+          denom: config.transferDenom,
           amount: bcAmount,
         }]
       };
@@ -151,7 +151,7 @@ export class AccountApi extends TxBroadcastBaseApi {
         return [{ typeUrl: typeUrl, value: MsgSend.fromPartial(val) }];
       }
     };
-    const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
+    const fee = this.createFee(config.operationGas.transfer, config.transferDenom);
     return await this.simulateDelegation(connection, getMessages, fee, '', true, null);
   }
 

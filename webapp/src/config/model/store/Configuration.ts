@@ -13,6 +13,7 @@ export class Gas implements JsonGas {
   undelegate: number;
   redelegate: number;
   claimRewards: number;
+  transfer: number;
 
   constructor (
     gas: JsonGas | undefined
@@ -23,12 +24,16 @@ export class Gas implements JsonGas {
       this.undelegate = gas.undelegate;
       this.redelegate = gas.redelegate;
       this.claimRewards = gas.claimRewards;
+      this.transfer = gas.transfer;
+
     } else {
       this.vote = 0;
       this.delegate = 0;
       this.undelegate = 0;
       this.redelegate = 0;
       this.claimRewards = 0;
+      this.transfer = 0;
+
     }
   }
 

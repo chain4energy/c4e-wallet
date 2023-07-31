@@ -26,7 +26,8 @@ data:
         "delegate": 300000,
         "undelegate": 220000,
         "redelegate": 310000,
-        "claimRewards": 400000
+        "claimRewards": 400000,
+        "transfer": 250000
       },
       "viewDenoms": [
         {
@@ -83,7 +84,8 @@ data:
           "delegate": 300000,
           "undelegate": 220000,
           "redelegate": 310000,
-          "claimRewards": 400000
+          "claimRewards": 400000,
+          "transfer": 250000
         },
         "viewDenoms": [
           {
@@ -140,7 +142,8 @@ data:
           "delegate": 300000,
           "undelegate": 220000,
           "redelegate": 310000,
-          "claimRewards": 400000
+          "claimRewards": 400000,
+          "transfer": 250000
         },
         "viewDenoms": [
           {
@@ -200,7 +203,8 @@ data:
           "delegate": 250000,
           "undelegate": 250000,
           "redelegate": 250000,
-          "claimRewards": 250000
+          "claimRewards": 250000,
+          "transfer": 250000
         },
         "viewDenoms": [
           {

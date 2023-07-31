@@ -6,6 +6,7 @@ export interface Gas {
   undelegate: number,
   redelegate: number,
   claimRewards: number,
+  transfer: number
 }
 
 export interface KeplrGasPriceSteps {

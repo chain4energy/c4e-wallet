@@ -8,6 +8,7 @@
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
@@ -24,7 +25,8 @@
       "delegate": 250000,
       "undelegate": 250000,
       "redelegate": 250000,
-      "claimRewards": 250000
+      "claimRewards": 250000,
+      "transfer": 250000
     },
     "viewDenoms": [
       {
@@ -66,6 +68,7 @@
     "publicSaleServiceURL": "/api-devnet",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
@@ -82,7 +85,9 @@
       "delegate": 250000,
       "undelegate": 250000,
       "redelegate": 250000,
-      "claimRewards": 250000
+      "claimRewards": 250000,
+      "transfer": 250000
+
     },
     "viewDenoms": [
       {
@@ -124,6 +129,7 @@
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
@@ -138,7 +144,8 @@
       "delegate": 1300000,
       "undelegate": 1400000,
       "redelegate": 1500000,
-      "claimRewards": 2500000
+      "claimRewards": 2500000,
+      "transfer": 250000
     },
     "viewDenoms": [
       {
@@ -180,6 +187,7 @@
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
@@ -194,7 +202,8 @@
       "delegate": 300000,
       "undelegate": 400000,
       "redelegate": 500000,
-      "claimRewards": 2500000
+      "claimRewards": 2500000,
+      "transfer": 250000
     },
     "viewDenoms": [
       {
@@ -236,6 +245,7 @@
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
@@ -252,7 +262,8 @@
       "delegate": 250000,
       "undelegate": 250000,
       "redelegate": 250000,
-      "claimRewards": 250000
+      "claimRewards": 250000,
+      "transfer": 250000
     },
     "viewDenoms": [
       {
@@ -293,6 +304,7 @@
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
@@ -309,7 +321,8 @@
       "delegate": 250000,
       "undelegate": 250000,
       "redelegate": 250000,
-      "claimRewards": 250000
+      "claimRewards": 250000,
+      "transfer": 250000
     },
     "viewDenoms": [
       {
@@ -350,6 +363,7 @@
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
@@ -367,7 +381,8 @@
       "delegate": 250000,
       "undelegate": 250000,
       "redelegate": 250000,
-      "claimRewards": 250000
+      "claimRewards": 250000,
+      "transfer": 250000
     },
     "viewDenoms": [
       {
@@ -409,6 +424,7 @@
     "publicSaleServiceURL": "http://localhost:8200",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
@@ -425,7 +441,8 @@
       "delegate": 250000,
       "undelegate": 250000,
       "redelegate": 250000,
-      "claimRewards": 250000
+      "claimRewards": 250000,
+      "transfer": 250000
     },
     "viewDenoms": [
       {
