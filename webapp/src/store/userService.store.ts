@@ -406,8 +406,8 @@ export const useUserServiceStore = defineStore({
               state: this.getStepStatus(KycStepName.LIVENESS)
             },
             {
-              name: KycStepName.IDENTITY,
-              state: this.getStepStatus(KycStepName.IDENTITY)
+              name: KycStepName.ID_DOCUMENT,
+              state: this.getStepStatus(KycStepName.ID_DOCUMENT)
             }];
         } else if(kycTier == KycTierEnum.TIER_2) {
           return [
@@ -416,12 +416,12 @@ export const useUserServiceStore = defineStore({
               state: this.getStepStatus(KycStepName.LIVENESS)
             },
             {
-              name: KycStepName.IDENTITY,
-              state: this.getStepStatus(KycStepName.IDENTITY)
+              name: KycStepName.ID_DOCUMENT,
+              state: this.getStepStatus(KycStepName.ID_DOCUMENT)
             },
             {
-              name: KycStepName.RESIDENCY,
-              state: this.getStepStatus(KycStepName.RESIDENCY)
+              name: KycStepName.PROOF_OF_ADDRESS,
+              state: this.getStepStatus(KycStepName.PROOF_OF_ADDRESS)
             },
           ];
         }

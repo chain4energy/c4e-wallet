@@ -11,9 +11,9 @@
     <div class="list">
 
       <div v-for="step in listOfSteps" :key="step" style="margin-top: 15px; padding:5px;border-bottom: 1px solid rgba(143,143,143,0.2);">
-        <Icon v-if="step.state == KycProgressStatus.VALIDATED" style="color: #72bf44; width: 35px; height: 35px" name="Check" />
+        <Icon v-if="step.state == KycProgressStatus.APPROVED" style="color: #72bf44; width: 35px; height: 35px" name="Check" />
         <Icon v-else-if="step.state == KycProgressStatus.REJECTED" style="color: #ff2500; width: 35px; height: 35px" name="X" />
-        <Icon v-else-if="step.state == KycProgressStatus.SUBMITTED" style="color: #002C50; width: 35px; height: 35px" name="RotateCw" />
+        <Icon v-else-if="step.state == KycProgressStatus.PENDING_VERIFICATION" style="color: #002C50; width: 35px; height: 35px" name="RotateCw" />
         <Icon v-else style="color: #ff2500; width: 35px; height: 35px" name="X" />
         {{getStepName(step.name)}}
       </div>
@@ -42,13 +42,13 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['verify']);
 const getStepName = (name: KycStepName): string => {
-  if(name == KycStepName.IDENTITY)
+  if(name == KycStepName.ID_DOCUMENT)
     return 'Identity document';
   if(name == KycStepName.LIVENESS)
     return 'Personal information';
   if(name == KycStepName.PHONE)
     return 'Phone number';
-  if(name == KycStepName.RESIDENCY)
+  if(name == KycStepName.PROOF_OF_ADDRESS)
     return 'Proof of residency';
   return '';
 };
@@ -56,7 +56,7 @@ const getStepName = (name: KycStepName): string => {
 const isVerified = (): boolean => {
   let verified = true;
   props.listOfSteps.forEach(step => {
-    if(step.state != KycProgressStatus.VALIDATED)
+    if(step.state != KycProgressStatus.APPROVED)
       verified = false;
   });
   return verified;
