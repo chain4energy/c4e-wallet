@@ -328,6 +328,7 @@
     "CLOSE": "Zamknij",
     "OPEN": "Otwórz",
     "BACK": "Cofnij",
+    "NEXT": "Dalej",
     "DISCONNECT": "Rozłącz",
     "CONNECT": "Połącz portfel",
     "DESCRIPTION": "Opis",
@@ -372,7 +373,11 @@
     "ACTIVATE": "Aktywacja konta",
     "PROVIDEVERIFICATIONCODE": "Weryfikacja",
     "SIGNIN-PROFILE": "Logowanie",
-    "SIGNUP-PROFILE": "Rejestracja"
+    "SIGNUP-PROFILE": "Rejestracja",
+    "RESETPASSWORD": "Reset hasła",
+    "RESETPASSWORD1": "Reset hasła - krok 1",
+    "RESETPASSWORD2": "Reset hasła - krok 2",
+    "RESETPASSWORD3": "Reset hasła - krok 3"
   },
   "TOAST": {
     "SUCCESS": {

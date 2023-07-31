@@ -6,7 +6,7 @@
       </div>
       <div class="login_container__body">
         <Form @submit="login" :validation-schema="schema" v-slot="{errors}" >
-          <div style="padding: 10px 30px;">
+          <div style="padding: 10px 30px 0;">
             <div >
               <div class="field col-12">
                 <Field style="width:100%" v-model="email" :placeholder="$t('SIGN_IN_VIEW.EMAIL')" name="email" type="text" class="form-control"
@@ -23,7 +23,7 @@
             </div>
 
           </div>
-
+          <p class="forgot" @click="router.push('/profile/reset')">Forgot password?</p>
           <div class="flex justify-content-center">
 
             <Button class="p-button p-component secondary" style="width: 40%" type="submit">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</Button>
@@ -108,5 +108,14 @@ const onSuccessAuth = () => {
 ::v-deep(.p-button:not(.p-button-icon-only)) {
   border-radius: 5px !important;
 
+}
+
+.forgot {
+  text-align: right;
+  padding: 0 35px;
+  margin: 5px auto 20px;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>
