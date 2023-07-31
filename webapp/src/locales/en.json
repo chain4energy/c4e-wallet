@@ -335,6 +335,7 @@
     "CLOSE": "Close",
     "OPEN": "Open",
     "BACK": "Back",
+    "NEXT": "Next",
     "DISCONNECT": "Disconnect",
     "CONNECT": "Connect wallet",
     "DESCRIPTION": "Description",
@@ -380,7 +381,11 @@
     "PROVIDEVERIFICATIONCODE": "Verification",
     "PORTFOLIO": "Portfolio",
     "SIGNIN-PROFILE": "Sign in",
-    "SIGNUP-PROFILE": "Sign up"
+    "SIGNUP-PROFILE": "Sign up",
+    "RESETPASSWORD": "Reset password",
+    "RESETPASSWORD1": "Reset password - step 1",
+    "RESETPASSWORD2": "Reset password - step 2",
+    "RESETPASSWORD3": "Reset password - step 3"
   },
   "TOAST": {
     "SUCCESS": {
