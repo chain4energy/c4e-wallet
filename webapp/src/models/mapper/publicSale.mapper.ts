@@ -79,7 +79,7 @@ export function mapTokenReservations(tokenReservations: TokenReservationResponse
 
   const tokenReservationList: TokenReservation[] = [];
 
-  tokenReservations.forEach(reservation => {
+  tokenReservations?.forEach(reservation => {
 
     const storeTransactions: StoreTransaction[] = [];
 

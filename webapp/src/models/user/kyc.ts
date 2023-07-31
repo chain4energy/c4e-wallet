@@ -9,7 +9,10 @@ export interface KycStatusResponse {
 
 export enum KycProgressStatus {
   VALIDATED='VALIDATED',
-  PENDING='PENDING',
+  SUBMITTED='SUBMITTED',
+  REJECTED='REJECTED',
+  FINAL_REJECTED='FINAL_REJECTED',
+  KYC_RESET='KYC_RESET'
 }
 
 export enum KycStepName {
