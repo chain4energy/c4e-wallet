@@ -30,7 +30,7 @@
               <th class="allocationInfo__tableTabs">Date</th>
               <th class="allocationInfo__tableTabs">{{ formattedDate(transaction.timestamp) }}</th>
             </tr>
-            <tr v-if="transaction.status === RESERVATION_STATUS.DECLARED && transaction.reservationEndTime">
+            <tr v-if="transaction.status === RESERVATION_STATUS.DECLARED && transaction.status === RESERVATION_STATUS.PARTIALLY_PAID && transaction.reservationEndTime">
               <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.REMAINING_RESERVATION_TIME')}}</th>
               <th class="allocationInfo__tableTabs">{{ timeToPass }}</th>
             </tr>
@@ -115,10 +115,10 @@
                 <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.POLYGON" style="width: 23px; margin-right:4px;" src="../../assets/PolygonIcon.png" alt="stablecoin symbol" />
               </div>
               <div style="white-space: nowrap; padding:0 30px" v-if="blockchainTransaction.type ==PAYMENT_TYPE.COIN">
-                <span v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC) >0" style=" margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC).toFixed(2)}}</span>
-                <img v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC) >0" style="width: 23px; margin-right:4px;" src="../../assets/USDC-icon.png" alt="stablecoin symbol" />
-                <span v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT) >0" style="margin-left:40px; margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT).toFixed(2)}}</span>
-                <img v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT) >0" style="width: 23px; margin-right:4px;"  src="../../assets/USDT-icon.png" alt="stablecoin symbol"/>
+                <span v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC).isBiggerThan(0)" style=" margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC).toFixed(2)}}</span>
+                <img v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC).isBiggerThan(0)" style="width: 23px; margin-right:4px;" src="../../assets/USDC-icon.png" alt="stablecoin symbol" />
+                <span v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT).isBiggerThan(0)" style="margin-left:40px; margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT).toFixed(2)}}</span>
+                <img v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT).isBiggerThan(0)" style="width: 23px; margin-right:4px;"  src="../../assets/USDT-icon.png" alt="stablecoin symbol"/>
               </div>
               <div style=" text-align: left; " v-if="blockchainTransaction.type ==PAYMENT_TYPE.FIAT">
                 <CountryFlag :country="getFlagSelector(blockchainTransaction.currencyCode)"/>

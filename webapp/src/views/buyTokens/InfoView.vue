@@ -50,7 +50,7 @@
     </div>
 
   </Dialog>
-  <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
+  <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus" @connected="onShowInfoModal(AddressType.KEPLR)"/>
   <ConfirmDialogYesNo @accepted="cancelAllocation" ref="confirmDialogYesNoRef"></ConfirmDialogYesNo>
 </template>
 
@@ -116,14 +116,29 @@ const cancelAllocation = (orderId: number) => {
     }, () => {
     console.log('Error');});
 };
+const isLoggedIn = computed(() =>{
+  return useUserStore().isLoggedIn;
+});
 function provideClaimerAddress(){
-  showAddressInfoModalAddressType.value = AddressType.KEPLR;
-  showAddressInfoModal.value = true;
+  if(!isLoggedIn.value) {
+    loginPopupStatus.value = true;
+  } else {
+    onShowInfoModal(AddressType.KEPLR);
+  }
 }
-function provideSourceAddress(){
-  showAddressInfoModalAddressType.value = AddressType.METAMASK;
-  useUserStore().connectMetamask();
+
+const onShowInfoModal = (addressType: AddressType) => {
+  showAddressInfoModalAddressType.value = addressType;
   showAddressInfoModal.value = true;
+};
+function provideSourceAddress(){
+  if(useUserStore().metamaskConnectionInfo.address == '') {
+    useUserStore().connectMetamask(() => {
+      onShowInfoModal(AddressType.METAMASK);
+    });
+  } else {
+    onShowInfoModal(AddressType.METAMASK);
+  }
 }
 function hideApprovalModal(){
   showApprovalModal.value = false;

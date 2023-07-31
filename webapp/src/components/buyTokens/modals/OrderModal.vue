@@ -32,13 +32,13 @@
         <div v-if="claimerAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
-        <div v-else-if="!isLoggedIn && claimerAddress == undefined">
-          <Button @click="emit('onConnect')"
-                  class="p-button p-component secondary-link button-w7">
-            {{ $t('COMMON.CONNECT') }}
-          </Button>
-        </div>
-        <div v-else><Button @click="provideClaimerAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
+<!--        <div v-else-if="!isLoggedIn && claimerAddress == undefined">-->
+<!--          <Button @click="emit('onConnect')"-->
+<!--                  class="p-button p-component secondary-link button-w7">-->
+<!--            {{ $t('COMMON.CONNECT') }}-->
+<!--          </Button>-->
+<!--        </div>-->
+        <div v-if="claimerAddress==undefined"><Button @click="provideClaimerAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE">
           <TooltipComponent style="margin-left:10px" :tooltip-text="i18n.t('TOOLTIPS.HINTS.SOURCE_ADDRESS')">{{$t('BUY_TOKENS_VIEW.PROVIDE_SOURCE_ADDRESS')}}</TooltipComponent><br>
           <span v-if="sourceAddress" class="additional_info">{{addDotsInsideTooLongString(sourceAddress, 28)}}</span>
@@ -47,8 +47,7 @@
         <div v-if="transactionContextStore.paymentCurrency==Currency.STABLE && sourceAddress != undefined">
           <IconComponent style="color: #72bf44; height: 35px; width: 35px" name="Check" />
         </div>
-        <div v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE && useUserStore().metamaskConnectionInfo.address != ''"><Button @click="provideSourceAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
-        <Button v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE" class="p-button p-component secondary-link button-w7" @click="connectMetamask">Connect MetaMask</Button>
+        <div v-else-if="transactionContextStore.paymentCurrency==Currency.STABLE"><Button @click="provideSourceAddress" class="p-button p-component secondary-link button-w7">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button></div>
 
       </div>
       <div style="display: flex">

@@ -36,12 +36,12 @@ onUnmounted(() => {
   document.body.style.overflow = "auto";
 });
 
-const emit = defineEmits(['close', 'typeChange']);
+const emit = defineEmits(['close', 'typeChange', 'connected']);
 
 const loginType = shallowRef(LoginChoose);
 
 function keplrConnect(){
-  dataService.onKeplrLogIn(() => {emit('close');});
+  dataService.onKeplrLogIn(() => {emit('close');emit('connected');});
   // useUserStore().connectKeplr().then(() => {
   //   if (useUserStore().isLoggedIn){
   //     emit('close')
@@ -51,11 +51,11 @@ function keplrConnect(){
   // });
 }
 function cosmostationConnect() {
-  dataService.onCosmostationLogIn(() => {emit('close');});
+  dataService.onCosmostationLogIn(() => {emit('close');emit('connected');});
 }
 
 const leapConnect = () => {
-  dataService.onLeapLogIn(() => {emit('close');});
+  dataService.onLeapLogIn(() => {emit('close');emit('connected');});
 };
 
 </script>

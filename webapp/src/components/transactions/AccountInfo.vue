@@ -95,14 +95,7 @@
         </div>
         <div>
           <Button
-            v-if="!isLoggedIn && claimAddress == undefined"
-            @click="loginPopupStatus=true"
-                  class="p-button p-component secondary accountInfo__btn">
-            {{ $t('COMMON.CONNECT') }}
-          </Button>
-          <Button
-            v-else
-            :disabled="!isLoggedIn || !isLogedInInService || claimAddress != undefined"
+            :disabled="!isLogedInInService || claimAddress != undefined"
             class="p-button p-component secondary accountInfo__btn"
             @click="provideClaimerAddress">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button>
         </div>
@@ -118,8 +111,7 @@
           <p v-else class="accountInfo__headTxt invalid">{{$t('PROFILE_VIEW.NO_ADDRESS_PROVIDED')}}</p>
         </div>
         <div>
-          <Button v-if="useUserStore().metamaskConnectionInfo.address == '' &&sourceAddress==undefined" class="p-button p-component secondary accountInfo__btn" @click="connectMetamask">Connect MetaMask</Button>
-          <Button v-else
+          <Button
             :disabled="!isLogedInInService || sourceAddress != undefined"
             class="p-button p-component secondary accountInfo__btn"
             @click="provideSourceAddress">{{$t('BUTTONS.PROVIDE_ADDRESS')}}</Button>
@@ -128,7 +120,7 @@
     </div>
 
   </div>
-  <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
+  <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus" @connected="onShowInfoModal(AddressType.KEPLR)"/>
   <ProvideAddresInfoModal :address-type="showAddressInfoModalAddressType" :address="showAddressInfoModalAddressType == AddressType.METAMASK ? useUserStore().metamaskConnectionInfo.address : c4eAddress" :display="showAddressInfoModal" @confirm="addressConfirmed" @close="closeProvideAddressModalClose"/>
 </template>
 
@@ -189,17 +181,29 @@ const connectMetamask = () => {
   useUserStore().connectMetamask();
 };
 function provideClaimerAddress(){
-  showAddressInfoModalAddressType.value = AddressType.KEPLR;
-  showAddressInfoModal.value = true;
+  if(!isLoggedIn.value && claimAddress.value == undefined) {
+    loginPopupStatus.value = true;
+  } else {
+    onShowInfoModal(AddressType.KEPLR);
+  }
 }
+
+const onShowInfoModal = (addressType: AddressType) => {
+  showAddressInfoModalAddressType.value = addressType;
+  showAddressInfoModal.value = true;
+};
 
 function closeProvideAddressModalClose(){
   showAddressInfoModal.value = false;
 }
 function provideSourceAddress(){
-  showAddressInfoModalAddressType.value = AddressType.METAMASK;
-  useUserStore().connectMetamask();
-  showAddressInfoModal.value = true;
+  if(useUserStore().metamaskConnectionInfo.address == '') {
+    useUserStore().connectMetamask(() => {
+      onShowInfoModal(AddressType.METAMASK);
+    });
+  } else {
+    onShowInfoModal(AddressType.METAMASK);
+  }
 }
 
 
