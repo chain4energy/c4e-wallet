@@ -385,7 +385,8 @@
     "RESETPASSWORD": "Reset password",
     "RESETPASSWORD1": "Reset password - step 1",
     "RESETPASSWORD2": "Reset password - step 2",
-    "RESETPASSWORD3": "Reset password - step 3"
+    "RESETPASSWORD3": "Reset password - step 3",
+    "CHANGEPASSWORD": "Change password"
   },
   "TOAST": {
     "SUCCESS": {
@@ -528,7 +529,8 @@
     "LOGOUT": "Logout",
     "BUY": "Buy",
     "CANCEL_ORDER": "Cancel order",
-    "CONFIRM_ORDER": "Confirm order"
+    "CONFIRM_ORDER": "Confirm order",
+    "CHANGE_PASSWORD": "Change password"
   },
   "BUY_TOKENS_VIEW": {
     "ROUND_INFO": "Public Sale Info: ",
@@ -583,10 +585,13 @@
     "SIGN_UP": "Sign up",
     "SIGN_IN": "Sign in",
     "EMAIL": "E-mail address",
+    "OLD_PASSWORD": "Type your old password",
     "PASSWORD": "Type your password",
     "RETYPE": "Retype your password",
     "REGISTER": "Register",
-    "TERMS": "Accept terms and conditions"
+    "TERMS": "Accept terms and conditions",
+    "CHANGE_PASSWORD": "Change password",
+    "CHANGE_HEADER": "Changing password of: "
   },
   "FORMS": {
     "VALIDATION_ERRORS": {

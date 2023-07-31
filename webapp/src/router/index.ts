@@ -123,7 +123,7 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   portfolioRoutes,
-  resetPasswordRoutes
+  ...resetPasswordRoutes
 ];
 
 const router = createRouter({

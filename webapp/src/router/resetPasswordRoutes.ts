@@ -2,8 +2,9 @@ import ForgotPasswordView from "@/views/forgotPassword/ForgotPasswordView.vue";
 import ForgotPasswordStep1 from "@/views/forgotPassword/ForgotPasswordStep1.vue";
 import ForgotPasswordStep2 from "@/views/forgotPassword/ForgotPasswordStep2.vue";
 import ForgotPasswordStep3 from "@/views/forgotPassword/ForgotPasswordStep3.vue";
+import ChangePassword from "@/views/forgotPassword/ChangePassword.vue";
 
-export const resetPasswordRoutes =
+export const resetPasswordRoutes = [
   {
     path: '/profile/reset',
     name: 'resetPassword',
@@ -37,4 +38,13 @@ export const resetPasswordRoutes =
         },
       }
     ]
-  };
+  },
+  {
+    path: '/profile/changepassword',
+    name: 'changePassword',
+    component: ChangePassword,
+    meta: {
+      requiresAuth: true
+    }
+  }
+  ];

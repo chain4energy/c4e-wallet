@@ -377,7 +377,8 @@
     "RESETPASSWORD": "Reset hasła",
     "RESETPASSWORD1": "Reset hasła - krok 1",
     "RESETPASSWORD2": "Reset hasła - krok 2",
-    "RESETPASSWORD3": "Reset hasła - krok 3"
+    "RESETPASSWORD3": "Reset hasła - krok 3",
+    "CHANGEPASSWORD": "Zmiana hasła"
   },
   "TOAST": {
     "SUCCESS": {
@@ -519,7 +520,8 @@
     "LOGOUT": "Wyloguj",
     "BUY": "Kup",
     "CANCEL_ORDER": "Anuluj zamówienie",
-    "CONFIRM_ORDER": "Potwierdź zamówienie"
+    "CONFIRM_ORDER": "Potwierdź zamówienie",
+    "CHANGE_PASSWORD": "Zmień hasło"
   },
   "BUY_TOKENS_VIEW": {
     "ROUND_INFO": "Public Sale Info:",
@@ -574,9 +576,13 @@
     "SIGN_IN": "Logowanie",
     "EMAIL": "Adres e-mail",
     "PASSWORD": "Podaj hasło",
+    "OLD_PASSWORD": "Podaj dotychczasowe hasło",
     "RETYPE": "Powtórz hasło",
     "REGISTER": "Załóż konto",
-    "TERMS": "Akceptuję zasady i warunki"
+    "TERMS": "Akceptuję zasady i warunki",
+    "CHANGE_PASSWORD": "Zmiana hasła",
+    "CHANGE_HEADER": "Zmiana hasła konta: "
+
   },
   "FORMS": {
     "VALIDATION_ERRORS": {

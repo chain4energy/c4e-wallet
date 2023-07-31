@@ -41,6 +41,11 @@
           <p class="accountInfo__headTxt">{{$t('PROFILE_VIEW.TYPE')}}: {{getLoginType()}}</p>
           <p class="accountInfo__headTxt">Email: {{useUserServiceStore().userEmail}}</p>
         </div>
+        <div>
+          <Button
+            class="p-button p-component secondary accountInfo__btn"
+            @click="router.push('/profile/changepassword')">{{$t('BUTTONS.CHANGE_PASSWORD')}}</Button>
+        </div>
         <div v-if="showClosedTab" @click="open = !open" class="accountInfo__closedItem accountInfo__arrow accountInfo__arrow-rotate" >
           <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M7.5 11.25L15 18.75L22.5 11.25" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -141,7 +146,7 @@ import {useContextStore} from "@/store/context.store";
 import TooltipComponent from "@/components/TooltipComponent.vue";
 import Button from "primevue/button";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
-import {addDotsInsideTooLongString} from "../../utils/string-formatter";
+import {addDotsInsideTooLongString} from "@/utils/string-formatter";
 import IconComponent from "@/components/features/IconComponent.vue";
 
 const emit = defineEmits(['openModal', 'openApproval']);
