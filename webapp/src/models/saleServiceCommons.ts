@@ -131,8 +131,8 @@ export interface BlockchainInfo {
 }
 
 export enum TOKEN_NAME {
-  USDC = 'USDC-PB',
-  USDT = 'USDT-PB'
+  USDC = 'USDC',
+  USDT = 'USDT'
 }
 
 export interface TokenInfo {
