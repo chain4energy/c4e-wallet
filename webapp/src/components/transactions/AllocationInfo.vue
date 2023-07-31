@@ -114,11 +114,11 @@
                 <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.BSC" style="width: 23px; margin-right:4px;" src="../../assets/BSCIcon.png" alt="stablecoin symbol" />
                 <img v-if="blockchainTransaction.blockchain == CHAIN_NAME.POLYGON" style="width: 23px; margin-right:4px;" src="../../assets/PolygonIcon.png" alt="stablecoin symbol" />
               </div>
-              <div style="white-space: nowrap; padding:0 30px" v-if="blockchainTransaction.blockchainStatus == BLOCKCHAIN_STATUS.CONFIRMED && blockchainTransaction.type ==PAYMENT_TYPE.COIN">
-                <span style=" margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC).toFixed(2)}}</span>
-                <img style="width: 23px; margin-right:4px;" src="../../assets/USDC-icon.png" alt="stablecoin symbol" />
-                <span style="margin-left:40px; margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT).toFixed(2)}}</span>
-                <img style="width: 23px; margin-right:4px;"  src="../../assets/USDT-icon.png" alt="stablecoin symbol"/>
+              <div style="white-space: nowrap; padding:0 30px" v-if="blockchainTransaction.type ==PAYMENT_TYPE.COIN">
+                <span v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC) >0" style=" margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC).toFixed(2)}}</span>
+                <img v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDC) >0" style="width: 23px; margin-right:4px;" src="../../assets/USDC-icon.png" alt="stablecoin symbol" />
+                <span v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT) >0" style="margin-left:40px; margin-right:5px">{{blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT).toFixed(2)}}</span>
+                <img v-if="blockchainTransaction.getSumOfPayments(TOKEN_NAME.USDT) >0" style="width: 23px; margin-right:4px;"  src="../../assets/USDT-icon.png" alt="stablecoin symbol"/>
               </div>
               <div style=" text-align: left; " v-if="blockchainTransaction.type ==PAYMENT_TYPE.FIAT">
                 <CountryFlag :country="getFlagSelector(blockchainTransaction.currencyCode)"/>
