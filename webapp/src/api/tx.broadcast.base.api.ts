@@ -14,19 +14,15 @@ import {
   EncodeObject,
   encodePubkey,
   makeAuthInfoBytes,
-  makeSignDoc,
   Registry,
   TxBodyEncodeObject
 } from '@cosmjs/proto-signing';
-import {Int53} from "@cosmjs/math";
-import {encodeSecp256k1Pubkey, StdFee, StdSignDoc, makeSignDoc as makeStdSignDoc, makeStdTx } from "@cosmjs/amino";
+import {encodeSecp256k1Pubkey, StdFee } from "@cosmjs/amino";
 import {MsgSignData} from "@/types/tx";
 import {TxRaw} from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import {fromBase64} from "@cosmjs/encoding";
-import {DataToSign} from "@/models/user/walletAuth";
 import {_arrayBufferToBase64} from "@/utils/sign";
 import {ethers} from "ethers";
-import {AminoMsg} from "@cosmjs/amino/build/signdoc";
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
 
 
@@ -230,7 +226,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     myRegistry.register(MsgClaimTypeUrl, MsgClaim);
 
     // myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
-    console.log(myRegistry)
+    console.log(myRegistry);
     //myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
     const rpc = useConfigurationStore().config.bcRpcURL;
     const client = await SigningStargateClient.connectWithSigner(

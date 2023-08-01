@@ -229,7 +229,7 @@ function createEagerLoadingConfig(): EagerLoadingConfig<Validator | ValidatorUns
   const validatorsList = isUndelegationsTable() ? getUnstakings(props.validators) : props.validators;
   const config = new EagerLoadingConfig<Validator | ValidatorUnstaking>(validatorsList);
   config.setFilters(filters.value);
-  return config
+  return config;
 }
 
 function onRowExpand(data: Validator) {

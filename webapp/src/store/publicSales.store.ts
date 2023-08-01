@@ -340,7 +340,7 @@ export const usePublicSalesStore = defineStore({
       return this.endDate;
     },
     getTransactions(): TokenReservation[] | undefined {
-      return this.tokenReservations;
+      return this.tokenReservations?.sort((a, b) => b.orderEndTime.getTime() - a.orderEndTime.getTime());
     },
     getC4eToUSD(): BigDecimal {
       if (this.roundInfo?.uC4eToUsd) {

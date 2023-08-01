@@ -297,11 +297,11 @@ const schema = object().shape({
 
 });
 
-const modalSchema = object().shape({
-  selectedBlockchain:  Yup.string()
-    .required( "This field is required"),
-
-});
+// const modalSchema = object().shape({
+//   selectedBlockchain:  Yup.string()
+//     .required( "This field is required"),
+//
+// });
 const blockchainNetworkList = computed(() => {
   return publicSaleStore.blockchainInfo;
 });

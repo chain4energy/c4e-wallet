@@ -26,7 +26,6 @@
 <script setup lang="ts">
 
 import {useToast} from "vue-toastification";
-import Icon from "~/components/features/Icon.vue";
 import {computed, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {useUserStore} from "@/store/user.store";
@@ -48,7 +47,7 @@ const isMainNetwork = computed(() => {
   return useConfigurationStore().config.isMainNetwork;
 });
 function topup() {
-    console.log('topup')
+    console.log('topup');
     useUserStore().topUpAccount(
         () => {
             toast.success(i18n.t('TOAST.SUCCESS.TOP_UP'));

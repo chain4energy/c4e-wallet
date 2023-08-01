@@ -85,11 +85,11 @@ const transactionContextStore = useTransactionContextStore();
 
 const i18n = useI18n();
 
-const loginPopupStatus = ref(false);
+// const loginPopupStatus = ref(false);
 
-const connectMetamask = () => {
-  useUserStore().connectMetamask();
-};
+// const connectMetamask = () => {
+//   useUserStore().connectMetamask();
+// };
 const isLoggedIn = computed(() =>{
   return useUserStore().isLoggedIn;
 });
@@ -133,7 +133,7 @@ const onSuccess = (orderId: number) => {
   }
 };
 
-const onFail = (errorMessage?: string) => {
+const onFail = () => {
   // let toastMessage = 'An error occurred \n';
   // if (errorMessage) toastMessage+=errorMessage;
   // toast.error(toastMessage);

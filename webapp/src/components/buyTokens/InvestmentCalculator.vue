@@ -69,9 +69,8 @@
           1 {{firstValue.currency}} = {{exchangeRate?.toString()}} {{secondValue.currency}}
         </div>
         <div class="calculatorC4E__btnSection">
-          <span style=" font-weight: 300;font-size: 19px;">{{$t('BUY_TOKENS_VIEW.REQUIREMENTS')}} <TooltipComponent :tooltipText="$t('BUY_TOKENS_VIEW.REQUIREMENTS_TIP')" /></span>
+<!--          <span style=" font-weight: 300;font-size: 19px;">{{$t('BUY_TOKENS_VIEW.REQUIREMENTS')}} <TooltipComponent :tooltipText="$t('BUY_TOKENS_VIEW.REQUIREMENTS_TIP')" /></span>-->
           <div v-tooltip="{ value: 'You cannot invest less then $25 and more than $10000', disabled: minimumRequired()}" >
-
             <Button class="p-button p-component secondary" :disabled="!minimumRequired()" style="width: 141px; " @click="onBuy">{{$t('BUTTONS.BUY')}}</Button>
           </div>
         </div>
@@ -131,7 +130,7 @@ const props =  defineProps({
 const emit = defineEmits(['onBuy']);
 
 onBeforeMount(() => {
-  usePublicSalesStore().fetchRoundInfo(useConfigurationStore().config.currentPublicSaleRoundId,false).then(() => {
+  usePublicSalesStore().fetchRoundInfo(useConfigurationStore().config.currentPublicSaleRoundId).then(() => {
     const rate =  usePublicSalesStore().getC4eToUSD;
     if(rate) {
       exchangeRate.value = rate;
@@ -243,11 +242,11 @@ const onBuy = () => {
   }
 };
 
-const round = (number: number, currency: Currency) => {
-  let decimals = 2;
-  if (currency === Currency.STABLE || currency === Currency.C4E) decimals = 6;
-  return Math.ceil(number*10**decimals)/10**decimals;
-};
+// const round = (number: number, currency: Currency) => {
+//   let decimals = 2;
+//   if (currency === Currency.STABLE || currency === Currency.C4E) decimals = 6;
+//   return Math.ceil(number*10**decimals)/10**decimals;
+// };
 
 const ceilBigDecimal = (number: BigDecimal, currency: Currency) => {
   let decimals = 2;

@@ -74,7 +74,6 @@
 
 <script setup lang="ts">
 
-import moment from "moment";
 import {useProposalsStore} from "@/store/proposals.store";
 import {Proposal, ProposalStatus} from "@/models/store/proposal";
 import { VoteOption } from "@/models/store/proposal";
@@ -95,9 +94,9 @@ onMounted(() => {
 
 const proposalsStore = useProposalsStore();
 const url = useConfigurationStore().config.explorerUrl + "/proposals/" + props.proposal?.proposalId;
-const formattedDate = (value: Date) => {
-  return moment(value).format('DD MMMM YYYY HH:mm:ss');
-};
+// const formattedDate = (value: Date) => {
+//   return moment(value).format('DD MMMM YYYY HH:mm:ss');
+// };
 
 const voted = computed(() => {
   return useProposalsStore().userVote;

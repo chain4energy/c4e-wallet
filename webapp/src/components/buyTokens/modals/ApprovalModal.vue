@@ -74,7 +74,7 @@
 import {onMounted, onUnmounted, reactive, ref} from "vue";
 import { useUserServiceStore } from "@/store/userService.store";
 import { useToast } from "vue-toastification";
-import {Field,Form} from "vee-validate";
+import {Field } from "vee-validate";
 
 const toast = useToast();
 
@@ -88,15 +88,15 @@ onMounted(()=>{
 });
 
 function closePopup(){
-  emit('close')
+  emit('close');
   terms.value.removeEventListener('scroll', checkScrollBar );
 }
 function checkScrollBar(){
-  const clientHeight = terms.value.clientHeight
-  const scrollHeight = terms.value.scrollHeight
-  const scrollTop = terms.value.scrollTop
+  const clientHeight = terms.value.clientHeight;
+  const scrollHeight = terms.value.scrollHeight;
+  const scrollTop = terms.value.scrollTop;
   const res = (scrollTop / (scrollHeight - clientHeight)) * 100;
-  const percents = res.toFixed(0)
+  const percents = res.toFixed(0);
   if (percents != 100) {
     return;
   }
@@ -106,7 +106,7 @@ document.body.style.overflow = "hidden";
 onUnmounted(() => {
   document.body.style.overflow = "auto";
 });
-
+//TODO: check this metchod
 function submit(){
   useUserServiceStore().approveTerms(onSuccessPairing, onFail, true).then((res)=>{
     terms.value.removeEventListener('scroll', checkScrollBar );

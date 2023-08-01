@@ -1,6 +1,5 @@
 import {Coin} from "@/models/store/common";
 import {BigDecimal} from "@/models/store/big.decimal";
-import {BackendAppError} from "@/models/request-response";
 
 export interface ReserveTokensRequest {
   roundId: number;

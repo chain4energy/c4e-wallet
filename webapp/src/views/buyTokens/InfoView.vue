@@ -5,7 +5,7 @@
         <PublicSaleInfo />
       </div>
       <div>
-        <InvestmentCalculator @onBuy="onBuyClick" v-if="activeRound"/>
+        <InvestmentCalculator @onBuy="onBuyClick" disabled="!activeRound"/>
       </div>
     </div>
 
@@ -24,7 +24,7 @@
     </div>
 
 
-    <div v-if="activeRound">
+    <div>
       <div v-for="items in transactions" :key="items" class="userProfile__holder" >
         <AllocationInfo :transaction="items" @pay="onPay(items)" @cancel-allocation="onCancelAllocation(items.orderId)"/>
       </div>

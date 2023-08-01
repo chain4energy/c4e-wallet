@@ -1,5 +1,4 @@
 import {
-  BlockchainTx,
   RoundInfo,
   RoundInfoBlockchainInfo, RoundInfoListMapped,
   RoundInfoResponse,
@@ -7,7 +6,7 @@ import {
 } from "@/models/saleServiceCommons";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {Coin, DecCoin} from "@/models/store/common";
-import {BlockchainTxStore, paymentType, StoreTransaction, TokenReservation} from "@/store/publicSales.store";
+import {BlockchainTxStore, StoreTransaction, TokenReservation} from "@/store/publicSales.store";
 import {BigDecimal} from "@/models/store/big.decimal";
 
 export function mapRoundInfo(roundInfo: RoundInfoResponse | undefined): RoundInfoBlockchainInfo  {

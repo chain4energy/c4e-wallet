@@ -1,7 +1,6 @@
 import { useConfigurationStore } from "@/store/configuration.store";
 import { Coin, findByDenom } from "./common";
 import {calculateLockedVesting} from "@/utils/vesting-utils";
-import {ContinuousVestingPeriod} from "@/api/periodicContinousVestingAccount/vesting_account";
 
 export enum AccountType {
   Disconnected,

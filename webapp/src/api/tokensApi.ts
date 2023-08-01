@@ -11,7 +11,6 @@ import {
 import {mapStakingPool} from "@/models/mapper/tokens.mapper";
 import {Coin, DecCoin} from "@/models/store/common";
 import {findByDenomAndMapDecCoin, mapCoin} from "@/models/mapper/common.mapper";
-import queries from "./queries";
 import {formatString} from "@/utils/string-formatter";
 import {BlockchainApiErrorData} from "@/models/blockchain/common";
 import { Vestings } from "@/models/blockchain/c4e.vesting";

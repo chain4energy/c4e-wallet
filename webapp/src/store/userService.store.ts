@@ -270,7 +270,7 @@ export const useUserServiceStore = defineStore({
     pairMetamaskAddress: async function(emailAccount: EmailPairingRequest, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
       await apiFactory.publicSaleServiceApi().initPairMetamaskKeplr(emailAccount, lockscreen).then(async response => {
         if (response.isSuccess() && response.data) {
-          await this.signPairingMatamaskKeplr(response.data, onSuccess, onFail, true);
+          await this.signPairingMatamaskKeplr(response.data, onSuccess, onFail);
           // this.setIsLoggedIn();
           // this.loginType = LoginTypeEnum.EMAIL;
           // this.paired = true;
@@ -311,7 +311,7 @@ export const useUserServiceStore = defineStore({
         }
       });
     },
-    async signPairingMatamaskKeplr(responseData: EmailPairingRes, onSuccess: (() => void), onFail?: (() => void), lockscreen = true){
+    async signPairingMatamaskKeplr(responseData: EmailPairingRes, onSuccess: (() => void), onFail?: (() => void)){
       let metamaskResp = '';
       let keplrResp = '';
       try{

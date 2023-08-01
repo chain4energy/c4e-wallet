@@ -241,19 +241,19 @@ function transferAllAmount() {
 
 }
 
-function getPercents(amount: bigint | number | BigDecimal) {
-
-  if (typeof amount === 'number') {
-    if (isNaN(amount)) {
-      return Number.NaN;
-    }
-    return amount * 100;
-  } else if (typeof amount === 'bigint') {
-    return amount * 100n;
-  } else {
-    return amount.multiply(100);
-  }
-}
+// function getPercents(amount: bigint | number | BigDecimal) {
+//
+//   if (typeof amount === 'number') {
+//     if (isNaN(amount)) {
+//       return Number.NaN;
+//     }
+//     return amount * 100;
+//   } else if (typeof amount === 'bigint') {
+//     return amount * 100n;
+//   } else {
+//     return amount.multiply(100);
+//   }
+// }
 
 function checkValue(value: string | undefined, check: (value: string) => boolean): boolean {
   if (!value) {
@@ -388,10 +388,10 @@ watch(stakingAction, (next, prev) => {
   showReserveCheckbox.value = false;
 });
 
-function reserveCoinsForFee(reserved: number, increase: boolean) {
-  const reserve = Number(Number(Number(amount.value) - reserved).toFixed(6));
-  amount.value = reserve;
-}
+// function reserveCoinsForFee(reserved: number, increase: boolean) {
+//   const reserve = Number(Number(Number(amount.value) - reserved).toFixed(6));
+//   amount.value = reserve;
+// }
 
 async function undelegate() {
   const dst = getValidatorDst();

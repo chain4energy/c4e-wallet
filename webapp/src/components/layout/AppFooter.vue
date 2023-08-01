@@ -16,7 +16,6 @@
 <script setup lang="ts">
 import {useConfigurationStore} from "@/store/configuration.store";
 import {onBeforeMount, onMounted, ref} from "vue";
-import {loadFonts} from "@/plugins/webfontloader";
 import TopMenu from "@/components/commons/TopMenu.vue";
 
 

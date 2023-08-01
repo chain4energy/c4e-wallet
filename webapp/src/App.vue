@@ -19,7 +19,6 @@
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import AppSidebar from '@/components/layout/AppSidebar.vue';
-import AppDisclaimer from '@/components/layout/AppDisclaimer.vue';
 
 import {inject, onMounted, ref} from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
@@ -31,7 +30,6 @@ import "primevue/resources/primevue.min.css";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import dataService from './services/data.service';
 import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
-import {usePublicSalesStore} from "@/store/publicSales.store";
 import { useRecaptchaProvider } from 'vue-recaptcha/head';
 
 useRecaptchaProvider();
@@ -48,9 +46,6 @@ window.onload = async () =>{
   dataService.onWindowLoad();
 };
 
-function closeDisclaimer(){
-  disclaimerOpen.value = false;
-}
 </script>
 
 <style lang="scss">

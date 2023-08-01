@@ -42,7 +42,7 @@ export class ClaimApi extends BaseApi {
       }
       return bcData;
     };
-    return await this.axiosAirdropCall(useConfigurationStore().config.airdropBaseURL + this.AIRDROP_INFO_URL, mapData, lockscreen, null, 'fetchAirdropsInfo - ', false);
+    return await this.axiosAirdropCall(useConfigurationStore().config.airdropBaseURL + this.AIRDROP_INFO_URL, mapData, lockscreen, null, 'fetchAirdropsInfo - ');
   }
 
   public async fetchAirdrop(address: string, airdropLocation: string, lockscreen: boolean): Promise<RequestResponse<any, ErrorData<AirdropErrData>>> {
@@ -53,7 +53,7 @@ export class ClaimApi extends BaseApi {
       return bcData;
     };
     const localUrl = useConfigurationStore().config.airdropBaseURL + airdropLocation + "/" + address + '.json';
-    return await this.axiosAirdropCall(localUrl, mapData, lockscreen, null, 'fetchAirdrop - ', true);
+    return await this.axiosAirdropCall(localUrl, mapData, lockscreen, null, 'fetchAirdrop - ');
   }
 
   public async fetchUserAirdropEntries(address: string, lockscreen: boolean): Promise<RequestResponse<UserAirdropInfo, ErrorData<BlockchainApiErrorData>>> {

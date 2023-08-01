@@ -4,7 +4,6 @@ import { AccountRequest, CreateAccountRequest, PasswordAuthenticateRequest } fro
 import {useConfigurationStore} from "@/store/configuration.store";
 import {EmptyResponse, RequestResponse} from "@/models/request-response";
 import {AccountInfo} from "@/models/user/accountInfo";
-import {UserServiceErrData} from "@/models/user/userServiceCommons";
 import queries from "@/api/queries";
 import {Jwt} from "@/models/user/jwt";
 import {
@@ -26,7 +25,6 @@ import {
   InitPaymentSessionResponse,
   ReserveTokensRequest,
   ReserveTokensResponse,
-  RoundInfo,
   RoundInfoBlockchainInfo, RoundInfoListMapped,
   RoundInfoResponse, SaleServiceApplicationError,
   TokenPaymentProofRequest,

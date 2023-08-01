@@ -1,7 +1,7 @@
 <template>
 <div class="allocationInfo">
   <div class="allocationInfo__head">
-    <span class="title">Allocation info</span>
+    <span class="title">Allocation info ({{ getRoundName(transaction.roundId) }})</span>
     <div class="payment-status" style="float: right; text-align:center" :class="getReservationStatusClass(transaction.status)">
       <Icon :name="getReservationIcon(transaction.status)"></Icon> &nbsp;
       {{ i18n.t('ENUMS.RESERVATION_STATUS.'+transaction.status)  }}
@@ -30,7 +30,7 @@
               <th class="allocationInfo__tableTabs">Date</th>
               <th class="allocationInfo__tableTabs">{{ formattedDate(transaction.timestamp) }}</th>
             </tr>
-            <tr v-if="transaction.status === RESERVATION_STATUS.DECLARED && transaction.status === RESERVATION_STATUS.PARTIALLY_PAID && transaction.reservationEndTime">
+            <tr v-if="(transaction.status === RESERVATION_STATUS.DECLARED || transaction.status === RESERVATION_STATUS.PARTIALLY_PAID) && transaction.reservationEndTime">
               <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.REMAINING_RESERVATION_TIME')}}</th>
               <th class="allocationInfo__tableTabs">{{ timeToPass }}</th>
             </tr>
@@ -82,14 +82,14 @@
                 >Pay</Button>
               </th>
             </tr>
-            <tr v-if="transaction.status == RESERVATION_STATUS.DECLARED">
+            <tr v-if="showAllocationButton(transaction)">
               <th></th>
               <th>
                 <Button
                   class="p-button p-component  accountInfo__btn allocationInfo__btn"
                   @click="cancelAllocation"
                   severity="danger"
-                >Delete</Button>
+                >Cancel</Button>
               </th>
             </tr>
           </table>
@@ -187,7 +187,8 @@
 
                   <i class="gg-arrow-long-right"></i>
                   <span class="no_wrap">
-                          <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg">~{{blockchainTx.getInC4E().toFixed(6)}} C4E
+<!--                          <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg"> &#8773; {{blockchainTx.getInC4E().toFixed(6)}} C4E-->
+                     <img style="width: 23px; margin-right:4px;" src="@/assets/svg/C4E.svg"> &#8776; {{blockchainTx.getInC4E().toFixed(6)}} C4E
                   </span>
 
                 </div>
@@ -237,22 +238,15 @@
 import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {onBeforeMount, onUnmounted, ref} from "vue";
-import {
-  BLOCKCHAIN_STATUS,
-  CHAIN_NAME,
-  PAYMENT_TYPE,
-  RESERVATION_STATUS,
-  TOKEN_NAME, TRANSACTION_CURRENCY,
-  TRANSACTION_STATUS
-} from "@/models/saleServiceCommons";
+import {BLOCKCHAIN_STATUS, CHAIN_NAME, PAYMENT_TYPE, RESERVATION_STATUS, TOKEN_NAME, TRANSACTION_CURRENCY, TRANSACTION_STATUS} from "@/models/saleServiceCommons";
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import {useI18n} from "vue-i18n";
 import {addDotsInsideTooLongString} from "@/utils/string-formatter";
 import moment from "moment/moment";
-import {Currency} from "@/models/currency";
 import CountryFlag from "vue-country-flag-next";
 import {BigDecimal} from "@/models/store/big.decimal";
+
 const props = defineProps<{
   transaction: TokenReservation
 }>();
@@ -337,13 +331,13 @@ const emit = defineEmits(['pay', 'cancelAllocation']);
 //     case paymentType.updating: return '';
 //   }
 // }
-function getStatusColor(){
-  switch (props.transaction.status){
-    case RESERVATION_STATUS.DECLARED: return `#858585`;
-    case RESERVATION_STATUS.COMPLETED: return `#19B15D`;
-    case RESERVATION_STATUS.CANCELED: return `#E02626`;
-  }
-}
+// function getStatusColor(){
+//   switch (props.transaction.status){
+//     case RESERVATION_STATUS.DECLARED: return `#858585`;
+//     case RESERVATION_STATUS.COMPLETED: return `#19B15D`;
+//     case RESERVATION_STATUS.CANCELED: return `#E02626`;
+//   }
+// }
 
 const getFlagSelector = (currency: TRANSACTION_CURRENCY) => {
   switch (currency) {
@@ -366,6 +360,10 @@ function submit(){
 const cancelAllocation = () => {
   emit('cancelAllocation');
 };
+
+function showAllocationButton(transaction: TokenReservation) : boolean{
+  return transaction.status == RESERVATION_STATUS.DECLARED && transaction.transactions?.length == 0;
+}
 
 function calculateTimeToPass(){
   const now = new Date(Date.now());

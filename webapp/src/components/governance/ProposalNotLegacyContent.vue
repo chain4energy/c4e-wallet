@@ -15,7 +15,7 @@
 </template>
 <script setup lang="ts">
 
-import {Proposal, ProposalsChanges} from "@/models/store/proposal";
+import {Proposal } from "@/models/store/proposal";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 const props = defineProps<{

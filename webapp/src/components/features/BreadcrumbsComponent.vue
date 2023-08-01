@@ -19,7 +19,7 @@ import { PermissionsService } from "@/services/permissions/permissions.service";
 
 const router = useRouter();
 const i18n = useI18n();
-const permissionsService = new PermissionsService();
+// const permissionsService = new PermissionsService();
 
 const breadcrumbs = computed(() => {
   const breadcrumbsArray:Breadcrumb[] = [];

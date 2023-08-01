@@ -13,7 +13,6 @@
 <script setup lang="ts">
 
 import {ProposalContent} from "@/models/store/proposal";
-import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 const props = defineProps<{
   proposalContent?: ProposalContent

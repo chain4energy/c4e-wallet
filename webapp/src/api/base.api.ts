@@ -1,6 +1,6 @@
 import { useSplashStore } from '@/store/splash.store';
 import { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
-import {BackendAppError, RequestResponse} from '@/models/request-response';
+ import { RequestResponse} from '@/models/request-response';
 import { LogLevel } from '@/services/logger/log-level';
 import { LoggedService } from '@/services/logged.service';
 import { LocalSpinner } from "@/services/model/localSpinner";
@@ -204,8 +204,7 @@ export default abstract class BaseApi extends LoggedService {
     mapData: (hasureData: H | undefined) => T,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
-    logPrefix: string,
-    skipErrorToast = false
+    logPrefix: string
   ): Promise<RequestResponse<T, ErrorData<HasuraErrorData>>>
   {
     const config = {
@@ -313,8 +312,7 @@ export default abstract class BaseApi extends LoggedService {
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
     logPrefix = '',
-    displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean,
-    skipErrorToast = false): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
+    displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
   {
     let data: T | undefined = undefined;
     let nextKey: string | null | undefined = undefined;
@@ -408,8 +406,7 @@ export default abstract class BaseApi extends LoggedService {
     mapData: (data: H | undefined) => T,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
-    logPrefix: string,
-    skipErrorToast = false
+    logPrefix: string
   ): Promise<RequestResponse<T, ErrorData<AirdropErrData>>> {
     const config = {
       method: 'GET',

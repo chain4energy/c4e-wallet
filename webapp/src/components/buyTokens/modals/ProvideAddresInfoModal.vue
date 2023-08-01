@@ -44,9 +44,7 @@ import {AddressType} from "@/components/buyTokens/modals/AddressType";
 import {useUserServiceStore} from "@/store/userService.store";
 import Dialog from "primevue/dialog";
 import {useRouter} from "vue-router";
-import {useUserStore} from "@/store/user.store";
 import { X } from 'lucide-vue-next';
-import DataService from "@/services/data.service";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 
 const toast = useToast();

@@ -6,7 +6,7 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { RequestResponse } from '@/models/request-response';
 import { LogLevel } from '@/services/logger/log-level';
-import {ethers, Signer} from "ethers";
+import {ethers } from "ethers";
 import {MetamaskConnectionInfo} from "@/store/user.store";
 
 

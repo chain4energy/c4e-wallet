@@ -131,7 +131,7 @@ onBeforeMount(async () => {
 if(props.proposal?.status === ProposalStatus.VOTING_PERIOD) {
   setInterval(() => {
     updateVotes();
-  },useConfigurationStore().getConfig.proposalVotingRefreshTimeout)
+  },useConfigurationStore().getConfig.proposalVotingRefreshTimeout);
 }
 
 const childRef = ref<InstanceType<typeof ProgressBarComponent>>();
@@ -157,7 +157,7 @@ const sumOfVotes = computed(() => {
 
 const updateVotes = async () => {
   if(props.proposal?.proposalId) {
-    console.log('refresh')
+    console.log('refresh');
     await dataService.onProposalUpdateVotes(props.proposal.proposalId);
   }
   childRef.value?.startFillingBar();

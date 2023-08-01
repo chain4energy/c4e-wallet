@@ -130,19 +130,18 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
+import {computed, ref} from "vue";
 import {BarChart} from "echarts/charts";
 import { use } from "echarts/core";
 import {SVGRenderer} from "echarts/renderers";
 import {LegendComponent, TitleComponent, TooltipComponent, GridComponent} from "echarts/components";
 import {useRouter} from "vue-router";
-import {Proposal, ProposalStatus, ProposalType} from "@/models/store/proposal";
+import {Proposal, ProposalStatus } from "@/models/store/proposal";
 import { createProposalListChartData } from '@/charts/governance';
 import { useProposalsStore } from '@/store/proposals.store';
 import CoinAmount from '../commons/CoinAmount.vue';
 import PercentsView from "@/components/commons/PercentsView";
 import DateCommon from "@/components/commons/DateCommon.vue";
-import { useConfigurationStore } from '@/store/configuration.store';
 import {BigIntWrapper} from "@/models/store/common";
 import {BigDecimal} from "@/models/store/big.decimal";
 
@@ -248,10 +247,10 @@ const noWithVetoPercentage = computed(() => {
   return noWithVetoPercentage != undefined ? noWithVetoPercentage : new BigDecimal(0);
 });
 
-const notVotedPercentage = computed(() => {
-  const notVotedPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNotVotedPercentage();
-  return notVotedPercentage != undefined ? notVotedPercentage : new BigDecimal(0);
-});
+// const notVotedPercentage = computed(() => {
+//   const notVotedPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNotVotedPercentage();
+//   return notVotedPercentage != undefined ? notVotedPercentage : new BigDecimal(0);
+// });
 
 const yesPercentageChart = computed(() => {
   const yesPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYesPercentageChart();

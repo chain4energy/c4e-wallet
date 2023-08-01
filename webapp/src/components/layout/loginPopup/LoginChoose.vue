@@ -70,10 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import KeplrLogo from '@/components/commons/KeplrLogo.vue';
 import LoginEmail from '@/components/layout/loginPopup/LoginAddress.vue';
-import {Validator} from "@/models/store/validator";
-import {RedelegationDirection} from "@/components/staking/StakingRedelegate";
 
 const props = defineProps({
   showAddressOption: {

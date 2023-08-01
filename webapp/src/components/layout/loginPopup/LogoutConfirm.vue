@@ -108,7 +108,6 @@ import {computed} from "vue";
 import {useToast} from "vue-toastification";
 import dataService from '@/services/data.service';
 import {useConfigurationStore} from '@/store/configuration.store';
-import {useBlockStore} from "@/store/block.store";
 import {changeTitle} from "@/utils/title-changer";
 import i18n from "@/plugins/i18n";
 
@@ -129,13 +128,13 @@ const logo = computed(() => {
   }
 });
 
-const showKeplrLogo = computed(() => {
-  if(props.logoutType == ConnectionType.Keplr) {
-    return true;
-  } else {
-    return false;
-  }
-});
+// const showKeplrLogo = computed(() => {
+//   if(props.logoutType == ConnectionType.Keplr) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// });
 
 const emit = defineEmits(['close']);
 
