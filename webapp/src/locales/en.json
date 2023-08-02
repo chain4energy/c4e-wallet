@@ -505,7 +505,8 @@
       "OVERPAID": "Overpaid",
       "COMPLETED": "Paid",
       "REJECTED": "Rejected",
-      "CANCELED": "Canceled"
+      "CANCELED": "Canceled",
+      "EXPIRED": "Expired"
     }
   },
   "PROFILE_VIEW": {
@@ -546,6 +547,7 @@
     "ALLOCATION_INFO": "Allocation info",
     "AMOUNT_REQUESTED": "Amount requested",
     "REMAINING_RESERVATION_TIME": "Remaining reservation time",
+    "EXPIRATION_DATE": "Expired date",
     "PAYMENT_TYPE": "Payment type",
     "STATUS": "Status",
     "PASS_KYC": "Pass KYC - Level",
