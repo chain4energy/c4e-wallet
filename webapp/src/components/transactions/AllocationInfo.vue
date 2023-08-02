@@ -2,9 +2,9 @@
 <div class="allocationInfo">
   <div class="allocationInfo__head">
     <span class="title">Allocation info ({{ getRoundName(transaction.roundId) }})</span>
-    <div class="payment-status" style="float: right; text-align:center" :class="getReservationStatusClass(transaction.status)">
-      <Icon :name="getReservationIcon(transaction.status)"></Icon> &nbsp;
-      {{ i18n.t('ENUMS.RESERVATION_STATUS.'+transaction.status)  }}
+    <div class="payment-status" style="float: right; text-align:center" :class="getReservationStatusClass(transaction, remainingTime)">
+      <Icon :name="getReservationIcon(transaction, remainingTime)"></Icon> &nbsp;
+      {{getAllocationInfoStatus(transaction, remainingTime)}}
     </div>
     <span v-if="transaction.unconfirmed" class="title" style="float: right; text-align: center">
       <Icon style="width:30px; height:30px; margin-bottom:2px" name="Clock" />
@@ -30,18 +30,14 @@
               <th class="allocationInfo__tableTabs">Date</th>
               <th class="allocationInfo__tableTabs">{{ formattedDate(transaction.timestamp) }}</th>
             </tr>
-            <tr v-if="(transaction.status === RESERVATION_STATUS.DECLARED || transaction.status === RESERVATION_STATUS.PARTIALLY_PAID) && transaction.reservationEndTime">
+            <tr v-if="showRemainingTime(transaction, remainingTime)">
               <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.REMAINING_RESERVATION_TIME')}}</th>
-              <th class="allocationInfo__tableTabs">{{ timeToPass }}</th>
+              <th class="allocationInfo__tableTabs">{{ formatRemainingTime(remainingTime) }}</th>
             </tr>
-            <!--      <tr>-->
-            <!--        <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.PAYMENT_TYPE')}}</th>-->
-            <!--        <th class="allocationInfo__tableTabs">{{ getPaymentType() }}</th>-->
-            <!--      </tr>-->
-<!--            <tr v-if="transaction.unconfirmed">-->
-<!--              <th class="allocationInfo__tableTabs">Unconfirmed</th>-->
-<!--              <th class="allocationInfo__tableTabs">{{ transaction.unconfirmed }}</th>-->
-<!--            </tr>-->
+            <tr v-if="showExpirationDate(transaction, remainingTime)">
+              <th class="allocationInfo__tableTabs">{{$t('BUY_TOKENS_VIEW.EXPIRATION_DATE')}}</th>
+              <th class="allocationInfo__tableTabs">{{ formattedDate(transaction.reservationEndTime)}}</th>
+            </tr>
             <tr>
               <th class="allocationInfo__tableTabs">Round</th>
               <th class="allocationInfo__tableTabs">{{ getRoundName(transaction.roundId) }}</th>
@@ -72,7 +68,7 @@
                 {{ transaction.getOverpaid().toFixed(6) }} USDC/USDT
               </th>
             </tr>
-            <tr v-if="transaction.status == RESERVATION_STATUS.DECLARED || transaction.status == RESERVATION_STATUS.PARTIALLY_PAID">
+            <tr v-if="(transaction.status == RESERVATION_STATUS.DECLARED || transaction.status == RESERVATION_STATUS.PARTIALLY_PAID) && !isExpired(remainingTime)">
               <th></th>
               <th>
                 <Button
@@ -82,7 +78,7 @@
                 >Pay</Button>
               </th>
             </tr>
-            <tr v-if="showAllocationButton(transaction)">
+            <tr v-if="showAllocationCancelButton(transaction, remainingTime)">
               <th></th>
               <th>
                 <Button
@@ -238,7 +234,7 @@
 import {TokenReservation, usePublicSalesStore} from "@/store/publicSales.store";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {onBeforeMount, onUnmounted, ref} from "vue";
-import {BLOCKCHAIN_STATUS, CHAIN_NAME, PAYMENT_TYPE, RESERVATION_STATUS, TOKEN_NAME, TRANSACTION_CURRENCY, TRANSACTION_STATUS} from "@/models/saleServiceCommons";
+import {BLOCKCHAIN_STATUS, CHAIN_NAME, PAYMENT_TYPE, RESERVATION_STATUS, TOKEN_NAME, Transaction, TRANSACTION_CURRENCY, TRANSACTION_STATUS} from "@/models/saleServiceCommons";
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import {useI18n} from "vue-i18n";
@@ -246,6 +242,7 @@ import {addDotsInsideTooLongString} from "@/utils/string-formatter";
 import moment from "moment/moment";
 import CountryFlag from "vue-country-flag-next";
 import {BigDecimal} from "@/models/store/big.decimal";
+import {bool} from "yup";
 
 const props = defineProps<{
   transaction: TokenReservation
@@ -253,20 +250,18 @@ const props = defineProps<{
 
 let timeToPassId = 0;
 
-const timeToPass = ref();
+const remainingTime = ref(-1);
 const i18n = useI18n();
 
 onBeforeMount(() => {
-  timeToPassId = window.setInterval(calculateTimeToPass, 1000);
-
+  calculateRemainingTime();
+  timeToPassId = window.setInterval(calculateRemainingTime, 1000);
   const values = Object.values(TRANSACTION_CURRENCY);
-
   values.forEach((value, _) => {
     calculateC4EAmount(value).then(res => {
       exchangeRateMap.set(value, res);
     });
   });
-
 });
 
 onUnmounted(() => {
@@ -274,13 +269,19 @@ onUnmounted(() => {
 });
 
 const exchangeRateMap = new Map<TRANSACTION_CURRENCY, BigDecimal>();
-const getReservationStatusClass = (status: RESERVATION_STATUS) => {
-  switch (status) {
+const getReservationStatusClass = (transaction: TokenReservation, remainingTime: number) => {
+  switch (transaction.status) {
     case RESERVATION_STATUS.DECLARED:
+      if(remainingTime < 0 ){
+        return 'payment-status-expired';
+      }
       return 'payment-status-declared';
     case RESERVATION_STATUS.CANCELED:
       return 'payment-status-cancelled';
     case RESERVATION_STATUS.PARTIALLY_PAID:
+      if(remainingTime < 0 ){
+        return 'payment-status-expired';
+      }
       return 'payment-status-partially_paid';
     case RESERVATION_STATUS.REJECTED:
       return 'payment-status-rejected';
@@ -303,18 +304,24 @@ const getTransactionStatusClass = (status: TRANSACTION_STATUS) => {
   }
 };
 
-const getReservationIcon = (status: RESERVATION_STATUS) => {
-  switch (status) {
+const getReservationIcon = (transaction: TokenReservation, remainingTime: number) => {
+  switch (transaction.status) {
     case RESERVATION_STATUS.DECLARED:
-      return 'CheckSquare';
+      if(remainingTime < 0 ){
+        return 'AlarmClockOff';
+      }
+      return 'PlusSquare';
     case RESERVATION_STATUS.CANCELED:
       return 'XCircle';
     case RESERVATION_STATUS.PARTIALLY_PAID:
-      return 'CheckSquare';
+      if(remainingTime < 0 ){
+        return 'AlarmClockOff';
+      }
+      return 'ArrowDownSquare';
     case RESERVATION_STATUS.REJECTED:
       return 'XCircle';
     case RESERVATION_STATUS.OVERPAID:
-      return 'CheckSquare';
+      return 'ArrowUpSquare';
     case RESERVATION_STATUS.COMPLETED:
       return 'CheckSquare';
     default:
@@ -361,18 +368,48 @@ const cancelAllocation = () => {
   emit('cancelAllocation');
 };
 
-function showAllocationButton(transaction: TokenReservation) : boolean{
-  return transaction.status == RESERVATION_STATUS.DECLARED && transaction.transactions?.length == 0;
+// function isExpiredAllocation(transaction: TokenReservation, remainingTime : number):boolean{
+//
+// }
+
+function showAllocationCancelButton(transaction: TokenReservation, reminingTime : number) : boolean{
+  return transaction.status == RESERVATION_STATUS.DECLARED && transaction.transactions?.length == 0  && !isExpired(reminingTime);
 }
 
-function calculateTimeToPass(){
+function showRemainingTime(transaction: TokenReservation, remainingTime : number): boolean {
+  return ((transaction.status === RESERVATION_STATUS.DECLARED || transaction.status === RESERVATION_STATUS.PARTIALLY_PAID) && transaction.reservationEndTime) && !isExpired(remainingTime);
+}
+function showExpirationDate(transaction: TokenReservation, remainingTime : number): boolean{
+  return ((transaction.status === RESERVATION_STATUS.DECLARED || transaction.status === RESERVATION_STATUS.PARTIALLY_PAID) && transaction.reservationEndTime) && isExpired(remainingTime);
+}
+
+function getAllocationInfoStatus(transaction: TokenReservation, remainingTime : number){
+  console.log("getAllocationInfoStatus: " + JSON.stringify(transaction) + "  " + JSON.stringify(remainingTime) );
+  if( (transaction.status === RESERVATION_STATUS.DECLARED || transaction.status === RESERVATION_STATUS.PARTIALLY_PAID)  && transaction.reservationEndTime && isExpired(remainingTime)){
+    return i18n.t('ENUMS.RESERVATION_STATUS.EXPIRED');
+  } else {
+    return i18n.t('ENUMS.RESERVATION_STATUS.' + transaction.status);
+  }
+}
+
+function isExpired(remainingTime : number){
+  return remainingTime < 0;
+}
+
+function calculateRemainingTime(){
   const now = new Date(Date.now());
-  const diference = props.transaction.reservationEndTime.getTime() - now.getTime();
-  const days = Math.floor(diference / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diference % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diference % (1000 * 60)) / 1000);
-  timeToPass.value = `${days}D ${hours}H ${minutes}M ${seconds}S`;
+  remainingTime.value = props.transaction.reservationEndTime.getTime() - now.getTime();
+}
+
+function formatRemainingTime(remainingTime : number){
+  if(remainingTime == undefined){
+    return "";
+  }
+  const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+  return `${days}D ${hours}H ${minutes}M ${seconds}S`;
 }
 
 const formattedDate = (value: Date) => {
@@ -456,6 +493,9 @@ const calculateC4EAmount = async (currency: TRANSACTION_CURRENCY): Promise<BigDe
       }
       &-declared {
         background-color: $processing;
+      }
+      &-expired {
+        background-color: #985757;
       }
     }
   }
