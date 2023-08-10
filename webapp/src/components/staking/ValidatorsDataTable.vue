@@ -1,6 +1,7 @@
 <template>
   <span>
-    <StakingPopup v-if="!isUndelegationsTable() && popupOpened" :validator="currentValidator" @success="transactionSuccess" @close="checkBTN" :redelegation-direction="getRedelegationDirection()"/>
+<!--    <StakingPopup v-if="!isUndelegationsTable() && popupOpened" :validator="currentValidator" @success="transactionSuccess" @close="checkBTN" :redelegation-direction="getRedelegationDirection()"/>-->
+    <StakingPopupModal v-if="!isUndelegationsTable()" :visible="popupOpened" :validator="currentValidator" @success="transactionSuccess" @close="checkBTN" :redelegation-direction="getRedelegationDirection()" />
     <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick" :paginator="false">
       <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>
       <template #header>
@@ -176,6 +177,7 @@ import DateCommon from "@/components/commons/DateCommon.vue";
 import ValidatorStatusBadge from "./ValidatorStatusBadge.vue";
 import { UnbondingDelegationEntry } from "@/models/store/staking";
 import {BigIntWrapper} from "@/models/store/common";
+import StakingPopupModal from "@/components/staking/StakingPopupModal.vue";
 
 function getRedelegationDirection() {
   if (isValidatorsTable()) {
