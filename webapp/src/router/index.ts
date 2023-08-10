@@ -77,7 +77,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'kyc',
     component: KycView,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      isPublicSale: true
     },
   },
   {
@@ -97,29 +98,42 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/buyTokens/signIn',
     name: 'signIn',
-    component: SignInView
+    component: SignInView,
+    meta: {
+      isPublicSale: true
+    }
   },
   {
     path: '/buyTokens/signUp',
     name: 'signUp',
-    component: SignUpView
+    component: SignUpView,
+    meta: {
+      isPublicSale: true
+    }
   },
   {
     path: '/profile/signIn',
     name: 'signIn-profile',
-    component: SignInView
+    component: SignInView,
+    meta: {
+      isPublicSale: true
+    }
   },
   {
     path: '/profile/signUp',
     name: 'signUp-profile',
-    component: SignUpView
+    component: SignUpView,
+    meta: {
+      isPublicSale: true
+    }
   },
   {
     path: '/profile/provideVerificationCode',
     name: 'provideVerificationCode',
     component: ProvideVerificationCodeView,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      isPublicSale: true
     },
   },
   portfolioRoutes,
