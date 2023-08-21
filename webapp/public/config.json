@@ -57,7 +57,8 @@
     "targetInflationAprMultiplier": 5,
     "faucetURL": "",
     "faucetAvailable": false,
-    "currentPublicSaleRoundId": 1
+    "currentPublicSaleRoundId": 1,
+    "publicSaleVisible": true
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -118,7 +119,8 @@
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
     "faucetAvailable": true,
-    "currentPublicSaleRoundId": 1
+    "currentPublicSaleRoundId": 1,
+    "publicSaleVisible": true
   },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
@@ -176,7 +178,8 @@
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
     "faucetAvailable": true,
-    "currentPublicSaleRoundId": 1
+    "currentPublicSaleRoundId": 1,
+    "publicSaleVisible": true
   },
   "Testnet": {
     "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -234,7 +237,8 @@
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
     "faucetAvailable": true,
-    "currentPublicSaleRoundId": 1
+    "currentPublicSaleRoundId": 1,
+    "publicSaleVisible": true
   },
   "pbtest" :{
     "bcApiURL": "api",
@@ -293,7 +297,8 @@
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
     "faucetAvailable": true,
-    "currentPublicSaleRoundId": 1
+    "currentPublicSaleRoundId": 1,
+    "publicSaleVisible": true
   },
   "local":{
     "bcApiURL": "http://localhost:1317",
@@ -352,7 +357,8 @@
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
     "faucetAvailable": true,
-    "currentPublicSaleRoundId": 1
+    "currentPublicSaleRoundId": 1,
+    "publicSaleVisible": true
   },
   "EV-testnet":{
     "bcApiURL": "https://lcd-ev-testnet.c4e.io",
@@ -413,7 +419,8 @@
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
     "faucetAvailable": true,
-    "currentPublicSaleRoundId": 1
+    "currentPublicSaleRoundId": 1,
+    "publicSaleVisible": true
   },
   "docker-compose":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -473,6 +480,7 @@
     "targetInflationAprMultiplier": 5,
     "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
     "faucetAvailable": true,
-    "currentPublicSaleRoundId": 1
+    "currentPublicSaleRoundId": 1,
+    "publicSaleVisible": true
   }
 }

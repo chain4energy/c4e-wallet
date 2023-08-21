@@ -90,4 +90,5 @@ export interface Configuration {
   tokenReservationDenom: string;
   currentPublicSaleRoundId: number;
   transferDenom: string;
+  publicSaleVisible: boolean;
 }

@@ -174,6 +174,7 @@ export class Configuration implements JsonConfiguration {
   targetInflationAprMultiplier: number;
   currentPublicSaleRoundId: number;
   transferDenom: string;
+  publicSaleVisible: boolean;
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -224,6 +225,7 @@ export class Configuration implements JsonConfiguration {
       this.tokenReservationDenom = configuration.tokenReservationDenom;
       this.currentPublicSaleRoundId = configuration.currentPublicSaleRoundId;
       this.transferDenom = configuration.transferDenom;
+      this.publicSaleVisible=configuration.publicSaleVisible;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -265,6 +267,7 @@ export class Configuration implements JsonConfiguration {
       this.tokenReservationDenom = '';
       this.currentPublicSaleRoundId = 0;
       this.transferDenom = '';
+      this.publicSaleVisible=false;
     }
   }
 

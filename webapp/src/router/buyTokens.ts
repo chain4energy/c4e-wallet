@@ -8,6 +8,9 @@ const buyTokensRoutes = {
   path: '/buyTokens',
   name: 'buyTokens',
   component: BuyTokensView,
+  meta: {
+    isPublicSale: true
+  },
   children: [
     {
       path: '',
@@ -43,16 +46,25 @@ const buyTokensRoutes = {
       path: 'activate',
       name: 'activate',
       component: ActivateView,
+      meta: {
+        isPublicSale: true
+      }
     },
     {
       path: 'confirmation',
       name: 'paymentConfirmation',
-      component: PaymentConfirmationView
+      component: PaymentConfirmationView,
+      meta: {
+        isPublicSale: true
+      }
     },
     {
       path: 'fiatConfirmation',
       name: 'fiatPaymentConfirmation',
-      component: FiatPaymentConfirmationView
+      component: FiatPaymentConfirmationView,
+      meta: {
+        isPublicSale: true
+      }
     }
   ]
 };
