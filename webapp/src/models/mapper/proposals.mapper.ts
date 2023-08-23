@@ -41,6 +41,10 @@ export function mapProposalByID(proposal: BcProposal | undefined): { proposal: S
   }
   const result = mapProposal(proposal);
 
+  if (result === undefined) {
+    throw new Error('Proposal is undefined');
+  }
+
   return { proposal: result};
 }
 
@@ -55,9 +59,11 @@ function mapAndAddProposalsToArray(array: StoreProposal[], bcValidators: BcPropo
   let active = 0;
   bcValidators.forEach(proposal => {
     const mapped = mapProposal(proposal);
-    array.push(mapped);
-    if (mapped.status === ProposalStatus.PASSED) {
-      active++;
+    if(mapped!=undefined) {
+      array.push(mapped);
+      if (mapped.status === ProposalStatus.PASSED) {
+        active++;
+      }
     }
   });
   return active;
@@ -79,7 +85,7 @@ export function mapProposalTallyResult(tally?: Tally): ProposalTallyResult {
     BigInt(tally.no_count),
     BigInt(tally.no_with_veto_count));
 }
-export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
+export function mapProposal(proposal: BcProposal | undefined): StoreProposal | undefined  {
   if (proposal === undefined) {
     throw new Error('proposal is undefined');
   }
@@ -88,7 +94,8 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal  {
   const totalDeposit = proposal.total_deposit.map((el)=> {
     return mapCoin(el, el.denom);
   });
-
+  if(proposal.messages.length == 0)
+    return undefined;
  if(proposal.messages[0]['@type'] === ProposalType.LEGACY_CONTENT) {
 
     let changes = undefined;
