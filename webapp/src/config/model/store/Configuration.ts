@@ -13,6 +13,7 @@ export class Gas implements JsonGas {
   undelegate: number;
   redelegate: number;
   claimRewards: number;
+  transfer: number;
 
   constructor (
     gas: JsonGas | undefined
@@ -23,12 +24,16 @@ export class Gas implements JsonGas {
       this.undelegate = gas.undelegate;
       this.redelegate = gas.redelegate;
       this.claimRewards = gas.claimRewards;
+      this.transfer = gas.transfer;
+
     } else {
       this.vote = 0;
       this.delegate = 0;
       this.undelegate = 0;
       this.redelegate = 0;
       this.claimRewards = 0;
+      this.transfer = 0;
+
     }
   }
 
@@ -95,6 +100,7 @@ export class Queries implements JsonQueries{
   MISSIONS_URL: string;
   AIRDROP_DISTRIBUTIONS: string;
   AIRDROP_CLAIMS_LEFT: string;
+  SPENDABLE_BALANCES_URL: string;
 
   constructor (
     queries : JsonQueries | undefined
@@ -123,6 +129,7 @@ export class Queries implements JsonQueries{
     this.MISSIONS_URL = queries?.MISSIONS_URL ? queries.MISSIONS_URL : queriesDefaults.blockchain.MISSIONS_URL;
     this.AIRDROP_DISTRIBUTIONS = queries?.AIRDROP_DISTRIBUTIONS ? queries.AIRDROP_DISTRIBUTIONS : queriesDefaults.blockchain.AIRDROP_DISTRIBUTIONS;
     this.AIRDROP_CLAIMS_LEFT = queries?.AIRDROP_CLAIMS_LEFT ? queries.AIRDROP_CLAIMS_LEFT : queriesDefaults.blockchain.AIRDROP_CLAIMS_LEFT;
+    this.SPENDABLE_BALANCES_URL = queries?.SPENDABLE_BALANCES_URL ? queries.SPENDABLE_BALANCES_URL : queriesDefaults.blockchain.SPENDABLE_BALANCES_URL;
   }
 }
 
@@ -132,8 +139,10 @@ export class Configuration implements JsonConfiguration {
   hasuraURL: string;
   keybaseURL: string;
   stakingPageURL: string;
+  publicSaleServiceURL: string;
   addressPrefix: string;
   stakingDenom: string;
+  tokenReservationDenom: string;
   strategicPoolAddress: string[];
   airdropPoolAddress: string;
   chainId: string;
@@ -162,8 +171,10 @@ export class Configuration implements JsonConfiguration {
   airdropDefaultDenom: string;
   faucetURL: string;
   faucetAvailable: boolean;
-
   targetInflationAprMultiplier: number;
+  currentPublicSaleRoundId: number;
+  transferDenom: string;
+  publicSaleVisible: boolean;
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -175,6 +186,7 @@ export class Configuration implements JsonConfiguration {
       this.hasuraURL = configuration.hasuraURL;
       this.keybaseURL = configuration.keybaseURL;
       this.stakingPageURL = configuration.stakingPageURL;
+      this.publicSaleServiceURL = configuration.publicSaleServiceURL;
       this.addressPrefix = configuration.addressPrefix;
       this.stakingDenom = configuration.stakingDenom;
       this.strategicPoolAddress = configuration.strategicPoolAddress;
@@ -210,20 +222,24 @@ export class Configuration implements JsonConfiguration {
       this.targetInflationAprMultiplier = configuration.targetInflationAprMultiplier;
       this.faucetURL = configuration.faucetURL;
       this.faucetAvailable = configuration.faucetAvailable;
-
+      this.tokenReservationDenom = configuration.tokenReservationDenom;
+      this.currentPublicSaleRoundId = configuration.currentPublicSaleRoundId;
+      this.transferDenom = configuration.transferDenom;
+      this.publicSaleVisible=configuration.publicSaleVisible;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
       this.hasuraURL = '';
       this.keybaseURL = '';
       this.stakingPageURL = '';
+      this.publicSaleServiceURL = ' ';
       this.addressPrefix = '';
       this.stakingDenom = '';
       this.strategicPoolAddress = [''];
       this.airdropPoolAddress = '';
       this.chainId = '';
-      this.networkName = '',
-      this.keplrNetworkName = '',
+      this.networkName = '';
+      this.keplrNetworkName = '';
       this.operationGas = new Gas(undefined);
       const viewDenoms = Array<ViewDenom>();
       this.viewDenoms = viewDenoms;
@@ -248,6 +264,10 @@ export class Configuration implements JsonConfiguration {
       this.targetInflationAprMultiplier = 1;
       this.faucetURL = '';
       this.faucetAvailable = false;
+      this.tokenReservationDenom = '';
+      this.currentPublicSaleRoundId = 0;
+      this.transferDenom = '';
+      this.publicSaleVisible=false;
     }
   }
 

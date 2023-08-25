@@ -150,7 +150,7 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal | u
    }
 
    let subDistributor = undefined;
-   const bcSubDistributor = proposal.messages[0].sub_distributor
+   const bcSubDistributor = proposal.messages[0].sub_distributor;
    if(bcSubDistributor) {
      const destinations = new Destinations(bcSubDistributor.destinations.burn_share, bcSubDistributor.destinations.primary_share, bcSubDistributor.destinations.shares);
      subDistributor = new SubDistributor(bcSubDistributor.name,

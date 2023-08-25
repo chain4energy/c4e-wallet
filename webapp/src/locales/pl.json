@@ -1,6 +1,6 @@
 {
   "TITLE": "Chain4Energy {'|'} Portfel C4E{addInfo}",
-  "CONNECT" : {
+  "CONNECT": {
     "WELCOME": "Witamy",
     "WELCOME_MESSAGE": "W sieci blockchain zabezpieczającej zdecentralizowany rynek energii",
     "CONNECT": "zaloguj",
@@ -10,7 +10,7 @@
     "CONNECT_COSMOSTATION": "Zaloguj się z Cosmostation",
     "ADDRESS_HELP": "Przeglądaj z dowolnym adresem",
     "VIEW_EXPLORER": "View on explorer",
-    "COPY": "Copy",
+    "COPY": "Kopiuj",
     "COPIED": "Adres został skopiowany do schowka (Correct? )",
     "ADDRESS_VALIDATION": {
       "EMPTY": "Adres jest wymagany",
@@ -32,7 +32,7 @@
     }
   },
   "SIDEBAR_MENU": {
-    "TITLE" : "Menu_EN"
+    "TITLE": "Menu_EN"
   },
   "GOVERNANCE_VIEW": {
     "PROPOSAL_STATUS_PASSED": "Zaakceptowany",
@@ -51,7 +51,7 @@
       "NOT_VOTED": "Brak głosu"
     },
     "ERRORS": {
-      "NO_STAKED": "Your voice will not be counted (only staked amount is counting in vote but you have '0')"
+      "NO_STAKED": "Twój głos nie będzie brany pod uwagę (liczy się tylko stawka w głosowaniu, a ty masz '0')."
     },
     "TOTAL": "Total",
     "TOTAL_VOTED": "Zagłosowało",
@@ -124,71 +124,69 @@
   },
   "FAQ_VIEW": {
     "TITLES": {
-
     },
     "DESCRIPTIONS": {
-
     }
   },
   "TERMS_CONDITIONS_VIEW": {
     "TITLES": {
-      "terms_conditions": "C4E Wallet - Terms and Conditions",
-      "rights_obligations": "Rights and obligations",
-      "product": "Product",
-      "obligations_warranties": "Primary obligations and warranties",
-      "compliance_audit": "Compliance and audit",
-      "service_limitations": "Service limitations and modifications",
-      "intellectual_property_rights": "Intellectual property rights",
-      "termination": "Termination",
-      "limitation_of_liability": "Limitation of liability",
-      "restrictions": "Restrictions",
-      "indemnification": "Indemnification",
-      "no_class_proceedings": "No class proceedings",
-      "third_party_rights": "Third-party rights",
-      "entire_agreement": "Entire agreement",
-      "severability": "Severability and waiver",
-      "assignment": "Assignment",
-      "no_partnership": "No partnership",
-      "force_majeure": "Force majeure",
-      "law_jurisdiction": "Law and jurisdiction",
-      "contact": "Contact"
+      "terms_conditions": "Warunki i postanowienia - Portfel C4E",
+      "rights_obligations": "Prawa i obowiązki",
+      "product": "Produkt",
+      "obligations_warranties": "Podstawowe zobowiązania i gwarancje",
+      "compliance_audit": "Zgodność i audyt",
+      "service_limitations": "Ograniczenia usługi i modyfikacje",
+      "intellectual_property_rights": "Prawa własności intelektualnej",
+      "termination": "Rozwiązanie",
+      "limitation_of_liability": "Ograniczenie odpowiedzialności",
+      "restrictions": "Ograniczenia",
+      "indemnification": "Zabezpieczenie",
+      "no_class_proceedings": "Brak postępowań zbiorowych",
+      "third_party_rights": "Prawa osób trzecich",
+      "entire_agreement": "Całkowita umowa",
+      "severability": "Dzielność i zrzeczenie się",
+      "assignment": "Przeniesienie",
+      "no_partnership": "Brak partnerstwa",
+      "force_majeure": "Siła wyższa",
+      "law_jurisdiction": "Prawo i jurysdykcja",
+      "contact": "Kontakt"
     },
     "DESCRIPTIONS": {
-      "terms_conditions_1": "Last update:  August 24th, 2022",
-      "terms_conditions_2": "Please review the terms and conditions contained herein carefully. By clicking “I agree” or accessing and/or using any C4E Product (the “Product”) on the C4E Website at https://wallet.c4e.io  (the “Website”), provided by C4E DAO AG, You have read, understood, and accepted all of the following terms, as well as all of the terms which are incorporated herein by reference.",
-      "rights_obligations": "The following terms and conditions (the “Terms”) constitute a binding agreement between C4E DAO AG, a company duly incorporated under the laws of Switzerland, with registered office at Dammstrasse 16, 6300 Zug, hereinafter referred to as “The Company”, and the person, persons, or entity (“You” or “Your”) accessing and/or using C4E Platform. The platform includes code licensed under third-party license agreements, including open source made available or provided with the software.\nBy accessing and/or using the C4E Platform, You have read, understood, and accepted all of the following Terms and agree to be legally bound by these Terms, in their most recent version; You further represent and warrant that: You have the right, power and authority to enter into these Terms on behalf of such corporation, governmental organization or other legal entity and to legally bind it to these Terms.\nYour access and/or use of the Product is contingent upon Your acceptance of these Terms.\nThe Company may amend these Terms at any time. Amendments will be effective 24 (twentyfour) hours after the modified terms and conditions have been posted on C4E’s Website and/or Sent via e-mail to You, except for amendments that relate to new features or made for legal reasons, which will become effective immediately. If You do not agree to such modified terms, You should discontinue Your use of the Product.",
-      "product": "The Product is a free, open-source, client-side software interface that allows You to interact directly with the CHain4Energy blockchain (the “Blockchain”), while remaining in full control of Your keys and assets.\nWhen You access certain features of the Services, you will be able to create a wallet and/or access a wallet to perform a variety of transactions. By creating a wallet, You will receive a key and set up a password, but no account will be set up on the Website. All Your assets are on the Blockchain itself, and the Company has no control over them, neither the Company has access to Your wallet’s keys and/or passwords. No data leaves Your device or Your browser. The Company does not collect or hold any information on Your wallet or your activity. The Company cannot access wallets; recover keys, passwords, or other information; reset passwords; or reverse transactions. You are solely responsible for Your use of the Product, including without limitation for storing, backing-up, and maintaining the confidentiality of Your keys, passwords, and information, and for the security of any transactions You perform using the Website. You expressly relieve and release the Company from any and all liability and/or loss arising from your use of the Product.\n",
-      "obligations_warranties_1": "By using the Product, You warrant that:",
-      "obligations_warranties_2": "You are 18 years of age or older and that You agree to abide by this Terms and Condition.",
-      "obligations_warranties_3": "You will only use the Product for Permitted Use.",
-      "obligations_warranties_4": "Except for the open source contents of the Website, You will not modify, adapt, translate, reverse engineer, decompile, disassemble, or create derivative works in whole or in part with respect to the Product.",
-      "obligations_warranties_5": "You will not do anything to harm The Company’s reputation including C4E’s Products or Services. Including any representations about the Product provided.",
-      "obligations_warranties_6": "The Product is provided \"as is,\" without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and non infringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.",
-      "compliance_audit": "You must only access and use the Product for a bona fide and Lawful business use. You shall in connection with the use of the Product comply with all legislation, regulations, and other rules having equivalent force which are applicable to that party, including the Privacy Laws and all other Laws, rules and regulations that relate to the privacy, protection, use or disclosure of Personal Information, and any subordinate or associated regulations. You must comply with all Privacy Laws in relation to Personal Information.",
-      "service_limitations": "The Company will make reasonable efforts to keep the Product operational. However, certain technical difficulties or maintenance may, from time to time, result in temporary interruptions. To the extent permissible under applicable law, The Company reserves the right, periodically and at any time, to modify or discontinue, temporarily or permanently, functions and features of the Product, with or without notice, without liability to You, for any interruption, modification, or discontinuation of the Services or any function or feature thereof.",
-      "intellectual_property_rights": "You acknowledge and agree that, except for the open source contents, the Product is the property of The Company or its licensors. Subject to Your compliance with these Terms, The Company grants You a license access and/or use of the Product. The right to access and/or use the Product is a non-exclusive, non-transferable, revocable, limited license, and it is subject to the limitations and obligations contained herein. Nothing in these Terms gives You any license (other than as set out in this section), right, title, or ownership of, in, or to any of the Product.\nYou acknowledge and agree that The Company retains all rights, title, and interest in and to all copyrights, trademarks, trade secrets, patents, and any other proprietary rights in the Product, the software and application programming interfaces (APIs) comprising the Product, and all content therein. You acknowledge and agree that “C4E”, its trademark, service mark, logo and graphics are the registered trademarks or trademarks of The Company.\nUpon Client’s consent, The Company may use the Client's name, logo, and related trademarks in any of The Company's publicity or marketing materials (whether in printed or electronic form) for the purpose of highlighting that the Client uses the The Company Product and Services and alongside any testimonials that the Client has agreed to give. The Client grants The Company such rights as are necessary to use its name, logo, related trademarks and testimonials for the purpose of this clause.",
-      "termination": "The Company may terminate these Terms or suspend Your use to the product at any time, including, without limitation, in the event of Your alleged or actual misuse of the Product or breach of these Terms.\n",
-      "limitation_of_liability_1": "In no event will The Company, its officers, shareholders, employees, agents, directors, subsidiaries, affiliates, successors, assigns, suppliers, or licensors be liable for any loss or damages, including without limitation, direct, indirect, special, consequential, or punitive loss or damages, arising from or related to Your use of the Services, whether in an action of contract, tort or otherwise, and regardless of whether such damages were foreseeable and whether or not The Company was advised of the possibility of such damages.",
-      "limitation_of_liability_2": "Without limiting the generality of the foregoing, The Company takes no responsibility for and will not be liable for any financial or other loss or damages arising from or related to the use of the C4E product.",
-      "limitation_of_liability_3": "The Product is integrated with third-party services. The Company takes no responsibility for any third-party services and will not be liable for any loss or damages caused by such third-party services.",
-      "limitation_of_liability_4": "The Product is provided on an “as is” and “as available” basis without any representation or warranty of any kind, whether express or implied, to the maximum extent permitted by applicable laws. The Company disclaims any implied warranties of title, merchantability, fitness for a particular purpose and/or non-infringement.",
-      "limitation_of_liability_5": "In no event will the aggregate liability of The Company, arising out of or related to these Terms and/or the Services, exceed the amount of CHF 100 (one hundred).",
-      "restrictions_1": "By accessing and/or using the Product, You acknowledge and agree that You shall not use the Product if applicable laws, based on Your country of location, residency and/or citizenship, prohibit You from doing so in accordance with these Terms",
-      "restrictions_2": "By accessing and/or using the Product, You acknowledge and agree that You shall not use, or assist third parties to use, the Services in any way which may constitute a contravention of applicable laws or which may contradict the purposes or hinder the operations of the Product or hinder the operations of other users of the Product.\n",
-      "restrictions_3": "Without limitation to the foregoing, You acknowledge and agree that You shall not use, or assist third parties to use the Product to, without limitation, avoid taxes, or engage in activities that may amount to market abuse (including, without limitation, front-running, wash trades, etc.), engage into illegal gambling, frauds, money laundering or terrorist activities.\n",
-      "indemnification_1": "To the fullest extent permitted under applicable laws, You agree to hold harmless and indemnify The Company, its officers, shareholders, employees, agents, directors, subsidiaries, affiliates, successors, assigns, suppliers, or licensors from and against all third-party claims and all liabilities, damages, assessments, losses, costs, or expenses (including reasonable attorney fees) resulting from or arising out of \n",
-      "indemnification_2": "I - Your alleged or actual breach of these Terms, including, without limitation, Your express representations and warranties; \n ",
-      "indemnification_3": "II - Your alleged or actual use or misuse of the Product; and  ",
-      "indemnification_4": "III - Your alleged or actual infringement or violation of any laws or of the rights of a third party.",
-      "no_class_proceedings": "You will only be permitted to pursue claims against The Company on an individual basis, not as a plaintiff or class member in any class or representative action or proceeding, and You will only be permitted to seek relief (including monetary, injunctive, and declaratory relief) on an individual basis.",
-      "third_party_rights": "Other than as expressly stated in the Agreement, a person who is not a party to this Agreement may not enforce any of its terms.",
-      "entire_agreement": "These Terms constitute all the terms and conditions agreed upon between You and The Company and supersede any prior agreements in relation to the subject matter of these Terms, whether written or oral.",
-      "severability": "Unless as otherwise stated in these Terms, should any provision of these Terms be held totally or partially invalid or unenforceable, such invalidity or unenforceability shall not in any manner affect or render invalid or unenforceable the remaining provisions of these Terms, and the application of that provision shall be enforced to the extent permitted by applicable laws.\nThe failure of The Company to exercise or enforce any of the rights or provisions of these Terms shall not be considered as a waiver of The Company’s rights to do so.",
-      "assignment": "The Company may assign these Terms and/or delegate any of its obligations hereunder, in whole or in part. You may not assign these Terms or any part of them, nor transfer or sub-license Your rights under these Terms to any third party.",
-      "no_partnership": "Nothing contained in this Agreement shall be deemed or construed to create a principal and agent, partnership or joint venture relationship between You and The Company.",
-      "force_majeure": "The Company will not be deemed in default of these Terms to the extent that performance of its obligations is delayed or prevented by reason of any external force including, without limitation, war, insurrections, bank failures, telecommunications failure, Internet failure, strikes, fires, floods, earthquakes, labour disputes, epidemics, governmental regulations, freight embargoes, natural disaster, an act of government or any other cause beyond The Company ’s reasonable control. Notwithstanding the foregoing, nothing in this clause shall excuse the Client from any payment obligation under the Agreement.",
-      "law_jurisdiction": "The Agreement shall be governed by, and construed in accordance with Swiss law to the exclusion of Swiss international private law and any international treaties. All disputes arising from or under these Terms shall be subject to the exclusive jurisdiction of the competent courts of Zug, Switzerland.",
-      "CONTACTS": "If You have any questions regarding these Terms, please contact us at \"info@chain4energy.org\""
+      "terms_conditions_1": "Ostatnia aktualizacja: 24 sierpnia 2022",
+      "terms_conditions_2": "Prosimy dokładnie zapoznać się z zawartymi tutaj warunkami i zasadami. Klikając przycisk „Zgadzam się” lub korzystając z jakiegokolwiek produktu C4E („Produkt”) na stronie internetowej C4E pod adresem https://wallet.c4e.io („Strona internetowa”), dostarczanego przez C4E DAO AG, potwierdzasz, że przeczytałeś, zrozumiałeś i akceptujesz wszystkie poniższe warunki, a także wszystkie warunki tu zawarte przez odniesienie.",
+      "rights_obligations": "Niniejsze warunki („Warunki”) stanowią wiążącą umowę między C4E DAO AG, spółką zarejestrowaną zgodnie z prawem Szwajcarii, mającą siedzibę przy Dammstrasse 16, 6300 Zug, zwanej dalej „Spółką”, a osobą, osobami lub podmiotem („Ty” lub „Twój”), korzystającym z platformy C4E. Platforma zawiera kod licencjonowany na podstawie umów licencyjnych stron trzecich, w tym oprogramowanie open source udostępniane lub dostarczane wraz z oprogramowaniem.\nKorzystając z platformy C4E, oświadczasz, że przeczytałeś, zrozumiałeś i akceptujesz wszystkie poniższe Warunki i zobowiązujesz się do przestrzegania ich, w ich najnowszej wersji; Ponadto oświadczasz i gwarantujesz, że: Masz prawo, moc i upoważnienie do zawarcia tych Warunków w imieniu korporacji, organizacji rządowej lub innego podmiotu prawnego i jesteś upoważniony do zawarcia wiążącej go prawnie umowy zgodnie z tymi Warunkami.\nTwój dostęp i/lub korzystanie z Produktu zależy od Twojej akceptacji tych Warunków.\nSpółka może zmieniać te Warunki w dowolnym momencie. Zmiany będą obowiązywać po upływie 24 (dwadzieścia cztery) godzin od opublikowania zmienionych warunków na stronie internetowej C4E i/lub wysłania ich drogą mailową do Ciebie, z wyjątkiem zmian dotyczących nowych funkcji lub zmian dokonanych ze względów prawnych, które wchodzą w życie natychmiast. Jeśli nie zgadzasz się na tak zmienione warunki, powinieneś zaprzestać korzystania z Produktu.",
+      "product": "Produkt jest bezpłatnym, open-sourceowym interfejsem oprogramowania po stronie klienta, który umożliwia bezpośrednią interakcję z łańcuchem bloków. Produkt pozwala na przeglądanie salda swojego portfela, wysyłanie i odbieranie tokenów, a także korzystanie z innych funkcji dostępnych w ramach Platformy C4E.",
+      "obligations_warranties_1": "Korzystając z Produktu, oświadczasz, że:",
+      "obligations_warranties_2": "Masz ukończone 18 lat i zgadzasz się przestrzegać niniejszych Warunków i Zasad.",
+      "obligations_warranties_3": "Będziesz używać Produktu wyłącznie w celu dozwolonym.",
+      "obligations_warranties_4": "Z wyjątkiem treści open source znajdujących się na stronie internetowej, nie będziesz modyfikować, adaptować, tłumaczyć, dokonywać inżynierii wstecznej, dekompilować, rozkładać na części ani tworzyć utworów pochodnych w całości lub częściowo w odniesieniu do Produktu.",
+      "obligations_warranties_5": "Nie będziesz podejmować żadnych działań szkodzących reputacji Spółki, w tym produktów lub usług firmy C4E. Dotyczy to również wszelkich przedstawień dotyczących Produktu.",
+      "obligations_warranties_6": "Produkt jest dostarczany 'w stanie, w jakim się znajduje', bez żadnej gwarancji, wyraźnej lub dorozumianej, w tym gwarancji handlowej, przydatności do określonego celu i nienaruszenia praw. W żadnym przypadku autorzy ani posiadacze praw autorskich nie ponoszą odpowiedzialności za jakiekolwiek roszczenia, szkody lub inne odpowiedzialności, czy to na podstawie umowy, deliktu lub w inny sposób, wynikające z, związane z oprogramowaniem lub korzystaniem lub innymi działaniami związanych z oprogramowaniem.",
+      "compliance_audit": "Musisz uzyskiwać dostęp do Produktu i korzystać z niego wyłącznie w celu prowadzenia rzetelnego i legalnego biznesu. W związku z korzystaniem z Produktu, musisz przestrzegać wszystkich obowiązujących ustaw, regulacji i innych przepisów o równoważnej sile, które mają zastosowanie do danej strony, w tym przepisów dotyczących ochrony prywatności oraz wszelkich innych praw, regulacji i przepisów dotyczących prywatności, ochrony, używania lub ujawniania informacji osobowych, a także wszelkich przepisów podrzędnych lub powiązanych. Musisz przestrzegać wszystkich przepisów dotyczących ochrony prywatności w odniesieniu do informacji osobowych.",
+      "service_limitations": "Firma będzie podejmować rozsądne działania w celu zapewnienia działania Produktu. Jednakże, pewne trudności techniczne lub prace konserwacyjne mogą czasami powodować tymczasowe przerwy. Na ile to dozwolone na mocy obowiązującego prawa, Firma zastrzega sobie prawo do okresowych i dowolnych modyfikacji lub zaprzestania czasowego lub trwałego funkcji i cech Produktu, bez wcześniejszego powiadomienia, bez odpowiedzialności wobec Ciebie za jakąkolwiek przerwę, modyfikację lub zaprzestanie usług lub jakiejkolwiek funkcji czy cechy z nimi związanej.",
+      "intellectual_property_rights": "Zgadzasz się i przyjmujesz do wiadomości, że, z wyjątkiem treści open source, Produkt jest własnością Firmy lub jej licencjodawców. Zgodnie z przestrzeganiem niniejszych Warunków, Firma udziela Ci licencji na dostęp i/lub korzystanie z Produktu. Prawo do dostępu i/lub korzystania z Produktu jest niewyłączną, nieprzenoszalną, odwoływalną i ograniczoną licencją, podlegającą ograniczeniom i obowiązkom określonym w niniejszym dokumencie. Nic w niniejszych Warunkach nie przyznaje Ci żadnej licencji (oprócz określonej w tym dziale), prawa, tytułu ani własności w stosunku do Produktu.\nZgadzasz się i przyjmujesz do wiadomości, że Firma zachowuje wszystkie prawa, tytuły i interesy w zakresie praw autorskich, znaków towarowych, tajemnic handlowych, patentów i innych praw własnościowych w zakresie Produktu, oprogramowania i interfejsów programowania aplikacji (API) stanowiących Produkt, a także wszelkich treści zawartych w nich. Zgadzasz się i przyjmujesz do wiadomości, że „C4E”, jej znak towarowy, marka usługowa, logo i grafika są zarejestrowanymi znakami towarowymi lub znakami towarowymi Firmy.\nZgodnie z zgodą Klienta, Firma może korzystać z nazwy Klienta, logo i powiązanych znaków towarowych we wszelkich materiałach publicystycznych lub marketingowych Firmy (w formie drukowanej lub elektronicznej) w celu podkreślenia, że Klient korzysta z Produktu i Usług Firmy, obok ewentualnych referencji, których Klient udzielił zgody. Klient udziela Firmie takich praw, jakie są niezbędne do korzystania z nazwy Klienta, logo, powiązanych znaków towarowych i referencji w celu realizacji tej klauzuli.",
+      "termination": "Firma może w dowolnym momencie zakończyć niniejsze Warunki lub zawiesić Twoje korzystanie z Produktu, w tym w przypadku rzekomego lub rzeczywistego nadużycia Produktu przez Ciebie lub naruszenia tych Warunków.",
+      "limitation_of_liability_1": "W żadnym przypadku Spółka, jej dyrektorzy, udziałowcy, pracownicy, agenci, dyrektorzy, filie, afiliacje, następcy praw, cesjonariusze, dostawcy ani licencjodawcy nie będą ponosić odpowiedzialności za jakąkolwiek stratę lub szkody, w tym, ale nie tylko, bezpośrednie, pośrednie, specjalne, następcze lub karne straty lub szkody wynikające z Twojego korzystania z Usług, niezależnie od tego, czy roszczenie jest oparte na umowie, delikcie lub innej podstawie prawnej, i niezależnie od tego, czy takie szkody były przewidywalne oraz czy Firma została poinformowana o możliwości wystąpienia takich szkód.",
+      "limitation_of_liability_2": "Bez uszczerbku dla ogólności powyższego, Firma nie ponosi odpowiedzialności i nie będzie odpowiadać za jakiekolwiek straty finansowe lub inne szkody wynikające z korzystania z produktu C4E.",
+      "limitation_of_liability_3": "Produkt jest zintegrowany z usługami firm trzecich. Firma nie ponosi odpowiedzialności za żadne usługi firm trzecich i nie będzie odpowiadać za żadne straty lub szkody spowodowane przez takie usługi firm trzecich.",
+      "limitation_of_liability_4": "Produkt jest dostarczany w stanie „jako jest” i „w dostępności”, bez jakiejkolwiek gwarancji, wyraźnych lub domniemanych, w zakresie dozwolonym przez obowiązujące prawo. Firma wyłącza wszelkie domniemane gwarancje tytułu, handlowości, przydatności do określonego celu i/lub niezakłócania praw osób trzecich.",
+      "limitation_of_liability_5": "W żadnym przypadku łączna odpowiedzialność Firmy wynikająca z niniejszych Warunków i/lub Usług nie przekroczy kwoty 100 CHF (sto).",
+      "restrictions_1": "Korzystając z Produktu, przyznajesz się i zgadzasz, że nie będziesz korzystać z Produktu, jeśli obowiązujące prawa, w oparciu o Twój kraj pobytu, zamieszkania i/lub obywatelstwa, zabraniają Ci tego zgodnie z niniejszymi Warunkami.",
+      "restrictions_2": "Korzystając z Produktu, przyznajesz się i zgadzasz, że nie będziesz używać, ani pomagać osobom trzecim w używaniu Usług w sposób, który może stanowić naruszenie obowiązującego prawa lub który może przeciwdziałać celom lub utrudniać działanie Produktu lub utrudniać działanie innym użytkownikom Produktu.",
+      "restrictions_3": "Bez ograniczania powyższego, przyznajesz się i zgadzasz, że nie będziesz używać, ani pomagać osobom trzecim w używaniu Produktu w celu, między innymi, unikania płacenia podatków lub podejmowania działań mogących stanowić nadużycie na rynku (w tym, między innymi, front-running, transakcje zmywające itp.), zaangażowania się w nielegalne hazard, oszustwa, pranie brudnych pieniędzy lub działalność terrorystyczną.",
+      "indemnification_1": "W najszerszym zakresie dozwolonym przez obowiązujące prawo, zgadzasz się zwolnić z odpowiedzialności i zobowiązujesz się do ochrony Spółki, jej dyrektorów, udziałowców, pracowników, agentów, dyrektorów, filii, afiliacji, następców praw, cesjonariuszy, dostawców ani licencjodawców od wszelkich roszczeń osób trzecich oraz od wszelkich zobowiązań, szkód, ocen, strat, kosztów lub wydatków (w tym rozsądnych opłat adwokackich), wynikających z lub związanych z:",
+      "indemnification_2": "I - rzekomym lub faktycznym naruszeniem niniejszych Warunków, w tym, między innymi, Twoich wyraźnych oświadczeń i gwarancji;",
+      "indemnification_3": "II - rzekomym lub faktycznym użyciem lub nadużyciem Produktu; i",
+      "indemnification_4": "III - rzekomym lub faktycznym naruszeniem lub pogwałceniem jakichkolwiek przepisów prawa lub praw osób trzecich.",
+      "no_class_proceedings": "Będziesz uprawniony do dochodzenia roszczeń przeciwko Spółce wyłącznie na indywidualnej podstawie, nie jako powód lub członek grupy w jakiejkolwiek akcji zbiorowej lub reprezentacyjnej, i będziesz uprawniony do żądania odszkodowania (w tym odszkodowania pieniężnego, nakazowego i deklaratywnego) wyłącznie na indywidualnej podstawie.",
+      "third_party_rights": "Oprócz wyraźnie określonych postanowień w Umowie, osoba niebędąca stroną niniejszej Umowy nie może dochodzić żadnych jej postanowień.",
+      "entire_agreement": "Niniejsze Warunki stanowią wszystkie uzgodnione warunki pomiędzy Tobą a Spółką i zastępują wszelkie wcześniejsze umowy dotyczące przedmiotu niniejszych Warunków, niezależnie od tego, czy były one zawarte na piśmie czy ustnie.",
+      "severability": "O ile nie jest inaczej określone w niniejszych Warunkach, jeśli jakiekolwiek postanowienie niniejszych Warunków zostanie uznane za całkowicie lub częściowo nieważne lub niewykonalne, taka nieważność lub niewykonalność nie wpłynie w żadnym stopniu na ważność lub wykonalność pozostałych postanowień niniejszych Warunków, a zastosowanie tego postanowienia będzie egzekwowane w zakresie dozwolonym przez obowiązujące prawo.\nNieuznanie przez Spółkę któregokolwiek z praw lub postanowień niniejszych Warunków lub ich niewyegzekwowanie nie będzie uważane za zrzeczenie się praw Spółki do jego wykonania.",
+      "assignment": "Spółka może przekazać niniejsze Warunki i/lub delegować swoje zobowiązania wynikające z niniejszych Warunków w całości lub w części. Nie możesz przekazać niniejszych Warunków lub ich części, ani przenosić ani sublicencjonować swoich praw wynikających z niniejszych Warunków na żadną osobę trzecią.",
+      "no_partnership": "Nic zawartego w niniejszej Umowie nie będzie uważane za tworzenie relacji głównej, agentury, partnerstwa ani spółki jawnej między Tobą a Spółką.",
+      "force_majeure": "Spółka nie będzie uważana za naruszającą niniejsze Warunki w zakresie, w jakim wykonanie jej zobowiązań jest opóźnione lub uniemożliwione z powodu zewnętrznej siły, w tym, między innymi, wojny, zamieszek, upadłości banków, awarii telekomunikacyjnych, awarii Internetu, strajków, pożarów, powodzi, trzęsień ziemi, sporów pracowniczych, epidemii, przepisów rządowych, embarga na transport towarów, klęsk żywiołowych, działania rządu lub innych przyczyn leżących poza rozsądną kontrolą Spółki. Niemniej jednak, nic w tym postanowieniu nie zwalnia Klienta z jakiejkolwiek zobowiązania płatniczego wynikającego z Umowy.",
+      "law_jurisdiction": "Umowa podlega prawu szwajcarskiemu i będzie interpretowana zgodnie z nim, z wyłączeniem szwajcarskiego prawa międzynarodowego i wszelkich międzynarodowych traktatów. Wszelkie spory wynikające z niniejszych Warunków podlegają wyłącznej jurysdykcji właściwych sądów w Zug, w Szwajcarii.",
+      "CONTACTS": "Jeśli masz jakiekolwiek pytania dotyczące niniejszych Warunków, skontaktuj się z nami pod adresem „info@chain4energy.org”."
     }
   },
   "PRIVACY_POLICY_VIEW": {
@@ -218,7 +216,7 @@
       "how_is_your_data_collected_2": "You provide additional personal information to us which we may request from you from time to time following on from any contact you have made with us through the C4E Website. Such information may be necessary or unnecessary (optional) for the provision of services on this Website as indicated in any particular case. In no event, however, are you requested to provide confidential or sensitive personal data about you or other persons. Please avoid sending us such types of data.",
       "how_is_your_data_collected_3": "If you access the C4E Website or use services available via the C4E Website, your connection data will be collected by our servers and/or through cookies that may be placed in your computer (see below). Our servers will store your IP address in log files by which your computer can be identified as well as certain other connection data (e.g. time and amount of transferred data, product and release information from your Internet browser).",
       "use_of_cookies": "C4E uses tracking technology such as cookies to gather connection data and to understand how users use the C4E Website. A cookie is an element of data that a website can send to your computer’s browser so that this computer will be recognized by the site on the user’s return. Cookies allow the web server to recognize your computer on connection to our Website, which in turn allows the server to make downloading of pages faster than on first viewing. Also cookies may be used to establish statistics about the use of this Website by gathering and analyzing various data (e.g. most visited pages, time spent by users on visited pages, etc.). Cookies will not be used to monitor website visits of a particular individual. Cookies placed on your computer will not be kept longer than necessary for the purposes indicated. It is possible to set the browser on your computer to notify you when a cookie is being recorded on your computer’s hard drive. It is generally also possible to set the browser to prevent cookies from being recorded on your computer. For the optimal use of this Website, however, we recommend that you do not block the recording of cookies on your computer. The procedure for refusal of cookies may differ depending on the software product. You may check with your software helpdesk or software supplier if you wish to refuse cookies. If you choose not to receive cookies, you may not be able to use certain functionalities or pages of this Website.\n",
-      "how_is_your_data_used":{
+      "how_is_your_data_used": {
         "head": "The user data collected over the C4E Website is processed for the following purposes:",
         "1": "We will use your connection data for statistical purposes and to manage and improve the usability of the C4E Website by means of particular software (e.g. Google analytics) or cookies (see use of cookies).\n",
         "2": "We will use your contact data to (i) answer any queries you have about this Website and to notify you of any changes to this Website; (ii) provide you with information you have requested (subscription functionality); and (iii) inform you about C4E and events that may be of interest to you (marketing activities), unless you inform us that you wish not to receive any promotion material from C4E (see Terms of Use).\n",
@@ -229,7 +227,7 @@
       "data_storage": "Any data you send over the Internet to the C4E Website is stored and processed in a decentralized way and is processed according to applicable data protection and privacy laws. Some data will also be stored on servers of the C4E Company.",
       "data_storage_2": "Accordingly, your personal data will be transferred to and processed in locations outside the country in which you are viewing this Website (the “User Country”). Any data or material sent or uploaded by you will be accessible in countries outside the User Country. If your User Country is within the European Economic Area (“EEA”) or is Switzerland or another country providing an adequate level of data protection, please note that your personal data will also be accessible and processed in countries with a lower level of data protection. In these situations C4E will ensure (by entering into a written agreement or otherwise) that an adequate level of data protection is maintained by the recipients of your data in accordance with applicable data protection law.",
       "storage_of_emails": "All incoming and outgoing e-mail messages are automatically stored in the C4E Electronic Message Repository for the purpose of preserving the evidential weight of e-mails. The e-mails are protected by legal, technical and organizational measures and are processed according to applicable data protection and privacy laws. They may only be accessed in justified cases in accordance with applicable laws and regulations (e.g. court order, suspicion of criminal conduct, breach of regulatory obligations, material breach of employment contract). Access is only granted to employees of the C4E  in defined functions (e.g. litigation, legal, compliance, risk). The process steps as well as the search criteria used are pre-defined. All e-mails are disposed of after a pre-determined period of time and according to legal requirements. If you do not wish the retention of private e-mails by the C4E , we strongly advise you not to send private, non-business related e-mails to C4E e-mail accounts.",
-      "data_security_1":"C4E applies and ensures that service providers apply technical and organizational security measures that are appropriate to protect personal data against accidental or unlawful destruction or accidental loss, alteration, unauthorized disclosure or access and against all other unlawful forms of processing.\n",
+      "data_security_1": "C4E applies and ensures that service providers apply technical and organizational security measures that are appropriate to protect personal data against accidental or unlawful destruction or accidental loss, alteration, unauthorized disclosure or access and against all other unlawful forms of processing.\n",
       "data_security_2": "The accessing and entering of information on the C4E Website by users take place over the Internet which is an open and unprotected network. This data transfer takes place in non-encrypted form. Therefore, we are not able to guarantee the security of your data during the transfer to the Website. You confirm to be aware of the risks of unencrypted transmission of data via the Internet. C4E shall not be liable for any damage caused by such transfer. For this reason, please do not send us any confidential or sensitive personal data.",
       "data_security_3": "You may communicate with us by e-mail. E-mail messages sent over the Internet are neither confidential nor secure. They may be viewed by third parties, lost, intercepted or altered. E-mails may be transferred across national borders, even if both sender and recipient are located in the same country. C4E or any company of the C4E  will not be liable for any damages suffered in connection with the use of e-mails or any other electronic messaging system when communicating with us.\n",
       "retained_data": "C4E retains the personal information collected over the C4E Website for as long as required or permitted by law and regulations. Comments that you provide to us using the commenting functionality of the C4E Website are generally deleted after one year, unless C4E has a particular business interest in such information in which case the comments are retained for a longer period of time, subject to applicable data protection law.\n",
@@ -262,10 +260,10 @@
       "JAILED": "Ukarany"
     },
     "TABLE_BUTTONS": {
-      "MANAGE_BTN": "Zarządzać"
+      "MANAGE_BTN": "Zarządzaj"
     },
     "INDICATOR": {
-      "STAKE": "delegacja",
+      "STAKE": "Delegacja",
       "UNSTAKING": "Twoje odblokowywanie",
       "REWARDS": "Nagrody"
     },
@@ -278,47 +276,47 @@
       "DELEGATED": "Oddelegowane",
       "UNDELEGATED": "W trakcie wycofywania",
       "REDELEGATED": "Redelegowane",
-      "AVAILABLE_TO_DELEGATE": "Available to delegate",
-      "WEBSITE": "Website",
-      "COMMISSION": "Commission",
+      "AVAILABLE_TO_DELEGATE": "Dostępne do delegacji",
+      "WEBSITE": "Witryna",
+      "COMMISSION": "Prowizja",
       "AMOUNT": {
-        "REQUIRED": "Amount is required",
-        "NUMBER": "Amount must be a number with max {decimal} decimal places",
-        "MIN": "Amount must be more than 0",
-        "MAX": "Max amount exceeded. Available amount {max}"
+        "REQUIRED": "Podaj liczbę tokenów",
+        "NUMBER": "Wartość musi być liczbą z max {decimal} miejscami po przecinku",
+        "MIN": "Wartość musi być większa od 0",
+        "MAX": "Wartość maksymalna przekroczona. Dopuszczalna wartość to: {max}"
       },
       "WARNINGS": {
         "DELEGATIONS": {
-          "HEADER": "Staking will lock your funds for {timeToComplete} days",
-          "TEXT": "You will need to undelegate in order for your staked assets to be liquid again. This proccess will take {timeToComplete} days to complete"
+          "HEADER": "Delegacja zablokuje Twoje środki na {timeToComplete} dni",
+          "TEXT": "Będziesz musiał wycofać delegację by ponownie upłynnić środki. Proces zajmie do {timeToComplete} dni"
         },
         "UNDELEGATIONS": {
-          "HEADER": "Once the unbonding period begins you will:",
+          "HEADER": "Po rozpoczęciu wycofywania środków::",
           "TEXTS": [
-            "not receive staking rewards",
-            "not be able to cancel the unbonding",
-            "need to wait {timeToComplete} day for the amount to be liquid"
+            "nie otrzymasz nagród",
+            "nie możesz anulować procesu",
+            "musisz poczekać {timeToComplete} dni, by upłynnić środki"
           ]
         }
       },
       "VALIDATOR": {
-        "REQUIRED": "Validator selection is required"
+        "REQUIRED": "Wybór walidatora jest wymagany"
       },
-      "VALIDATOR_NOT_DEFINED": "this field is required",
+      "VALIDATOR_NOT_DEFINED": "To pole jest wymagane",
       "INPUT": {
-        "REDELEGATE_VALIDATOR": "Redelegate to",
-        "REDELEGATE_FROM_VALIDATOR": "Redelegate from"
-      }
-    },
-    "VALIDATORS": "Walidatorzy",
-    "NO_VALIDATORS": "nie znaleziono walidatorów",
-    "VALIDATORS_LOADING" : "Ładowanie danych walidatorów. Proszę czekać.",
-    "USER_DELEGATIONS": "Your delegations",
-    "USER_UNDELEGATIONS": "Your undelegations"
+        "REDELEGATE_VALIDATOR": "Redeleguj do",
+        "REDELEGATE_FROM_VALIDATOR": "Redeleguj z"
+      },
+      "VALIDATORS": "Walidatorzy",
+      "NO_VALIDATORS": "nie znaleziono walidatorów",
+      "VALIDATORS_LOADING": "Ładowanie danych walidatorów. Proszę czekać.",
+      "USER_DELEGATIONS": "Twoje delegacje",
+      "USER_UNDELEGATIONS": "Twoje wycofane delegacje"
+    }
   },
   "USER_DATA": {
     "TOTAL": "Całkowity",
-    "AVAILABLE": "Do dyspozycji",
+    "AVAILABLE": "Balans",
     "STAKED": "Oddelegowane",
     "UNSTAKING": "Odblokowywanie",
     "CLAIM_REWARDS": "Odbierz",
@@ -327,11 +325,12 @@
     "CLAIM_HEADER": "Oczekująca nagroda"
   },
   "COMMON": {
-    "CLOSE": "Zamkij",
+    "CLOSE": "Zamknij",
     "OPEN": "Otwórz",
-    "BACK": "Cfnij",
+    "BACK": "Cofnij",
+    "NEXT": "Dalej",
     "DISCONNECT": "Rozłącz",
-    "CONNECT": "Połącz",
+    "CONNECT": "Połącz portfel",
     "DESCRIPTION": "Opis",
     "THE": "The",
     "RETURN": "Wróć",
@@ -356,7 +355,30 @@
     "PRIVACY_POLICY": "Polityka prywatności",
     "TERMS_CONDITIONS": "Zasady i warunki użytkowania",
     "AIRDROP": "Airdrop",
-    "FAUCET": "Kranik"
+    "BUYTOKENS": "Kup tokeny",
+    "PROFILE": "Profil",
+    "FAUCET": "Kranik",
+    "KYC": "KYC",
+    "PUBLICSALEINFO": "Kup tokeny",
+    "ACCOUNTTYPE": "Logowanie",
+    "EMAILREGISTRATION": "Rejestracja emailem",
+    "KEPLRREGISTRATION": "Rejestracja Kerplrem",
+    "METAMASKREGISTRATION": "Rejestracja Metamaskiem",
+    "EMAILLOGIN": "Logowanie emailem",
+    "PAYMENTCONFIRMATION": "Potwierdzenie płatności",
+    "FIATPAYMENTCONFIRMATION": "Potwierdzenie płatności",
+    "USERPROFILETABS": "Profil",
+    "SIGNIN": "Logowanie",
+    "SIGNUP": "Rejestracja",
+    "ACTIVATE": "Aktywacja konta",
+    "PROVIDEVERIFICATIONCODE": "Weryfikacja",
+    "SIGNIN-PROFILE": "Logowanie",
+    "SIGNUP-PROFILE": "Rejestracja",
+    "RESETPASSWORD": "Reset hasła",
+    "RESETPASSWORD1": "Reset hasła - krok 1",
+    "RESETPASSWORD2": "Reset hasła - krok 2",
+    "RESETPASSWORD3": "Reset hasła - krok 3",
+    "CHANGEPASSWORD": "Zmiana hasła"
   },
   "TOAST": {
     "SUCCESS": {
@@ -389,14 +411,38 @@
     "C4E_HELP": "Wprowadź adres C4E lub COSMOS",
     "COSMOS_HELP": "Wprowadź adres cosmos",
     "CHECK": "Sprawdź",
-    "CHECK_ALLOCATION": "Sprawdź Alokację",
+    "CHECK_ALLOCATION": "Sprawdź alokację",
     "CLAIM_AIRDROP": "Odbierz Airdrop",
-    "FAIRDROP_ALLOCATION": "Całkowita alokacja Fairdrop",
+    "FAIRDROP_ALLOCATION": "Całkowita alokacja Airdrop",
     "FOOTER_HEADER": "Co dalej? Obserwuj nas, aby być na bieżąco z aktualizacjami.",
-    "FOOTER_TEXT": "Połącz się z nami, aby być na bieżąco z airdropem i nowościami w C4E."
+    "FOOTER_TEXT": "Połącz się z nami, aby być na bieżąco z airdropem i nowościami w C4E.",
+    "DETAILS": "Szczegóły",
+    "TOTAL_HEADER": "Podsumowanie",
+    "TOTAL": "Razem",
+    "TOTAL_CLAIMED": "Odebrane",
+    "ACTIVE": "Aktywne kampanie",
+    "TO_CLAIM": "Do odebrania",
+    "CLAIMED": "Odebrane",
+    "MISSION_COMPLETED": "Ukończone misje",
+    "TOTAL_DISTRIBUTION": "Łączna dystrybucja",
+    "CAMPAIGN_PASSED": "Kampania zakończona",
+    "CAMPAIGN_START": "Kampania rozpocznie się",
+    "CAMPAIGN_END": "Do zakończenia kampanii",
+    "CLAIM": "Odbierz",
+    "VOTE": "Zagłosuj",
+    "DELEGATE": "Oddeleguj",
+    "INITIAL": "Misja inicjująca - musi być odebrana jako pierwsza",
+    "SHOW_MISSIONS": "Pokaż misje",
+    "HIDE_MISSIONS": "Ukryj misje",
+    "MISSION": "Misja",
+    "CONNECT_INFO": "Połącz się z portfelem, by odbierać nagrody!",
+    "SUCCESS": "Sukces! Misja wykonana pomyślnie",
+    "SOON": "Wkrótce",
+    "TO_DEEFINE": "To define"
   },
   "CLAIM_AIRDROP": {
-    "PROGRESS":"Odliczanie kampanii"
+    "PROGRESS": "Odliczanie kampanii",
+    "FINISHED": "Kampania zakończona"
   },
   "DISCLAIMER": "The information provided on this website; web applications; mobile applications does not constitute investment advice, financial advice, trading advice, or any other sort of advice and you should not treat any of the content as such. Crescent Foundation Limited(”Crescent Foundation”) does not recommend that any cryptocurrency should be bought, sold, or held by you. Do conduct your own due diligence and consult your financial advisor before making any investment decisions. </br> Crescent Foundation will strive to ensure accuracy of information listed on this website; web applications; mobile applications although it will not hold any responsibility for any missing or wrong information. Crescent Foundation provides all information *as is.* You understand that you are using any and all information available here at your own risk.<br/>The appearance of third party advertisements and hyperlinks on this website; web applications; mobile applications does not constitute an endorsement, guarantee, warranty, or recommendation by Crescent Foundation. Do conduct your own due diligence before deciding to use any third party services.<br/>Before using our service, you should review the relevant <a href='https://docs.c4e.io/' target='_blank'>documentation</a> to make sure you understand how the service works.",
   "COPY": {
@@ -418,5 +464,159 @@
     "REQUEST_TOKENS": "Doładuj Tokeny",
     "INPUT_ADDRESS": "Podaj adres na który zostaną doładowane tokeny",
     "TITLE": "Kranik C4E"
+  },
+  "ENUMS": {
+    "LOGIN_TYPE": {
+      "EMAIL": "Email",
+      "KEPLR": "Keplr",
+      "METAMASK": "Metamask",
+      "NONE": "Nie zalogowano"
+    },
+    "BLOCKCHAIN_STATUS": {
+      "UNCONFIRMED": "Oczekiwanie na potwierdzenie",
+      "CONFIRMED": "Potwierdzony",
+      "PREPARATION": "Przygotowywanie",
+      "NOT_VERIFIED": "Nie zweryfikowano"
+    },
+    "TRANSACTION_STATUS": {
+      "NOT_VERIFIED": "Entered",
+      "OK": "OK",
+      "NO_CORRECT_TOKEN": "No expected token transfer found",
+      "NOT_FOUND": "Transaction not found",
+      "INVALID_TX_HASH": "Invalid transaction hash",
+      "INVALID_TX": "nvalid transaction",
+      "TRANSFER_SOURCE_ADDRESS_UNRECOGNIZED": "Wrong transaction signer address",
+      "TRANSFER_RECIPIENT_ADDRESS_INCORRECT": "Tokens not sent to C4E address",
+      "FAILED": "Failed transaction",
+      "PGW_FAILED": "Failed transaction"
+    },
+    "RESERVATION_STATUS": {
+      "DECLARED": "Declared",
+      "PARTIALLY_PAID": "Partially paid",
+      "OVERPAID": "Overpaid",
+      "COMPLETED": "Paid",
+      "REJECTED": "Rejected",
+      "CANCELED": "Canceled",
+      "EXPIRED": "Expired"
+    }
+  },
+  "PROFILE_VIEW": {
+    "TYPE": "Typ logowania",
+    "YOUR_ACCOUNT": "Twoje konto",
+    "TERMS_ACCEPTANCE": "Akceptacja warunków",
+    "CLAIMER_ADDRESS": "Adres odbiorczy",
+    "SOURCE_ADDRESS": "Adres źródłowy",
+    "NO_ADDRESS_PROVIDED": "Brak adresu",
+    "ACCOUNT_INFO": "Informacje o koncie",
+    "TRANSACTIONS": "Transakcje",
+    "KYC_LEVEL": "Poziom KYC",
+    "LEVEL": "Poziom",
+    "ACCEPTED": "Zaakceptowano",
+    "NOT_ACCEPTED": "Nie zaakceptowano"
+  },
+  "BUTTONS": {
+    "START_KYC": "Przejdź do KYC",
+    "ACCEPT": "Akceptuj",
+    "PROVIDE_ADDRESS": "Podaj adres",
+    "LOGOUT": "Wyloguj",
+    "BUY": "Kup",
+    "CANCEL_ORDER": "Anuluj zamówienie",
+    "CONFIRM_ORDER": "Potwierdź zamówienie",
+    "CHANGE_PASSWORD": "Zmień hasło"
+  },
+  "BUY_TOKENS_VIEW": {
+    "ROUND_INFO": "Public Sale Info:",
+    "TOTAL_RAISE": "Total Raise",
+    "PRICE": "Cena",
+    "TIME_TO_START": "Czas do startu",
+    "TIME_TO_END": "Czas do końca",
+    "ALREADY_STARTED": "Wystartowało",
+    "CALCULATE_INVESTMENT": "Kalkulator inwestycyjny",
+    "I_WANT_TO_BUY": "Kupuję",
+    "I_WANT_TO_INVEST": "Inwestuję",
+    "REQUIREMENTS": "Wymagania",
+    "ALLOCATION_INFO": "Informacje o alokacji",
+    "AMOUNT_REQUESTED": "Żądana ilość",
+    "REMAINING_RESERVATION_TIME": "Pozostaly czas rezerwacji",
+    "EXPIRATION_DATE": "Data wygaśniećia rezerwacji",
+    "PAYMENT_TYPE": "Typ płatności",
+    "STATUS": "Status",
+    "PASS_KYC": "Uzyskaj KYC - Poziom",
+    "ACCEPT_SALE_TERMS": "Zaakceptuj warunki sprzedaży",
+    "PROVIDE_CLAIMER_ADDRESS": "Podaj adres odbiorczy",
+    "PROVIDE_SOURCE_ADDRESS": "Podaj adres źródłowy",
+    "ORDER_SUMMARY": "Podsumowanie zamówienia",
+    "DESCRIPTION_FIRST_HEADER": "O Tokenach C4E",
+    "DESCRIPTION_FIRST_CONTENT": "Tokeny Chain4Energy (C4E) odgrywają kluczową rolę w naszym zdecentralizowanym ekosystemie energetycznym. Służą jako środek wymiany, umożliwiając transakcje w ramach naszej platformy i zapewniając dostęp do naszego zestawu rozwiązań energetycznych.",
+    "DESCRIPTION_SECOND_HEADER": "Szczegóły dotyczące Sprzedaży Tokenów",
+    "DESCRIPTION_SECOND_CONTENT": "Publiczna sprzedaż tokenów C4E oferuje potencjalnym inwestorom możliwość nabycia tokenów po atrakcyjnej cenie 0,085 USD za token. Po wygenerowaniu tokenów (TGE), inwestorzy mogą oczekiwać uwolnienia 20% środków, a następnie sześciomiesięcznego okresu blokady.\n\nPłatności za tokeny można dokonać w walucie Fiat (PLN, USD, EUR) lub w stabilnych kryptowalutach USDC i USDT. Akceptujemy płatności za pośrednictwem Ethereum, BNB Smart Chain i Polygon. Konieczność przeprowadzenia procedury KYC zależy od poziomu inwestycji.",
+    "REQUIREMENTS_TIP": "W zależności od zainwestowanej kwoty, może zostać zastosowany różny poziom procesu identyfikacji klienta (KYC - Know Your Customer).",
+    "TOKENOMICS": "Tokenomics",
+    "WHITE_PAPER": "White paper",
+    "YOU_INVEST": "Chcesz zainwestować"
+  },
+  "PAYMENT_CONFIRMATION_VIEW": {
+    "CONFIRM_PAYMENT": "Confirm Your Payment",
+    "SUMMARY": {
+      "FIRST_LINE": "Your order no. {orderId} has been placed successfully",
+      "SECOND_LINE": "Your order have to be paid in 24 hours, after this time it will be automatically cancelled.",
+      "THIRD_LINE_1": "Please pay",
+      "THIRD_LINE_2": "by MetaMask wallet",
+      "PAY": "Pay"
+    }
+  },
+  "TOOLTIPS": {
+    "HINTS": {
+      "KYC": "Poziom KYC\nPoziom 0\n(Brak KYC)\nPoziom 1\n(Profil tożsamości)\nPoziom 2\n(Profil zamieszkania)\nPoziom 3\n(Profil dochodów)",
+      "TERMS": "Wszystkie warunki dotyczące sprzedaży publicznej są dostępne pod adresem:",
+      "CLAIMER_ADDRESS": "Podaj adres portfela, z którego będziesz korzystać do odbioru tokenów. Musi to być adres portfela C4E. \nJeśli go nie masz, postępuj zgodnie z instrukcjami dotyczącymi portfela Keplr:\nhttps://docs.c4e.io/usersGuide/auth.html",
+      "SOURCE_ADDRESS": "Podaj swój adres portfela EVM, z którego będziesz wysyłać swoje stabilne kryptowaluty.\nProsimy, nie używaj adresu giełdy kryptowalutowej (CEX)."
+    }
+  },
+  "SIGN_IN_VIEW": {
+    "SIGN_UP": "Rejestracja",
+    "SIGN_IN": "Logowanie",
+    "EMAIL": "Adres e-mail",
+    "PASSWORD": "Podaj hasło",
+    "OLD_PASSWORD": "Podaj dotychczasowe hasło",
+    "RETYPE": "Powtórz hasło",
+    "REGISTER": "Załóż konto",
+    "TERMS": "Akceptuję zasady i warunki",
+    "CHANGE_PASSWORD": "Zmiana hasła",
+    "CHANGE_HEADER": "Zmiana hasła konta: "
+
+  },
+  "FORMS": {
+    "VALIDATION_ERRORS": {
+      "PASSWORD_REGEX": "Hasło musi składać się z min. 8 znaków (Musi zawierać jedną literę, jedną cyfrę, jeden znak specjalny)"
+    }
+  },
+  "PORTFOLIO_VIEW": {
+    "BALANCE": "Balans",
+    "SPENDABLE": "Dostępne",
+    "LOCKED": "Zablokowane",
+    "SEND": "Wyślij",
+    "RECEIVE": "Odbierz",
+    "DETAILS": "Szczegóły vestingu",
+    "START_DATE": "Data rozpoczęcia",
+    "END_DATE": "Data zakończenia",
+    "TIME": "Pozostały czas",
+    "HOURS": "godz.",
+    "MINS": "min.",
+    "DAYS": "dni",
+    "NO_ACTIVE": "Nie masz aktywnych vestingów!",
+    "ADDRESS": "Twój adres:"
+  },
+  "MODAL": {
+    "ACCEPT_CONFIRMATION": "Na pewno chcesz zaakceptować umowę?",
+    "CONFIRMATION": ",Potwierdzenie",
+    "CONFIRMATION_HEADER": "Prośba o potwierdzenie",
+    "CONFIRMATION_MESSAGE_REMOVE_ELEMENT": "Czy jesteś pewien, że chcesz usunąć wybrany element?"
+  },
+  "POPUPS": {
+    "GENERAL": {
+      "yes": "Tak",
+      "no": "Nie"
+    }
   }
 }

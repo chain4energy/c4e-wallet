@@ -44,7 +44,7 @@
           <div class="airDropTotal__content-items" v-if="!campaign.hideCampaign()">
             <div class="airDropTotal__content-header">
               <h5>{{ campaign.name }}</h5>
-              <a class="airDropTotal__content-details" :href="campaign.details_url" target="_blank">details</a>
+              <a class="airDropTotal__content-details" :href="campaign.details_url" target="_blank">{{$t('AIRDROP.DETAILS')}}</a>
             </div>
             <div class="airDropTotal__info">
               <div class="airDropTotal__content-content" v-for="allocations in campaign.allocations" :key="allocations">
@@ -82,7 +82,6 @@
 </template>
 
 <script setup lang="ts">
-import KeplrLogo from "@/components/commons/KeplrLogo.vue";
 import Button from 'primevue/button';
 import {computed, onMounted, ref, watch} from "vue";
 import {useUserStore} from "@/store/user.store";
@@ -116,12 +115,7 @@ const airDrops = computed(() => {
   return useAirDropStore().getAirDropTotal;
 });
 
-const totalSum = computed(() => {
-  return 0;
-});
-
 async function validateAddress(address: string | undefined) {
-  console.log('validateAddress: ' + address);
   if (!address) {
     errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.EMPTY');
     return false;
@@ -129,7 +123,6 @@ async function validateAddress(address: string | undefined) {
   try {
     const words = bench32.decode(address);
     if (words?.prefix !== useConfigurationStore().config.addressPrefix && words?.prefix !== 'cosm') {
-      console.log('validateAddress: ' + address);
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.NOT_THIS_NETWORK', {prefix: `${useConfigurationStore().config.addressPrefix} or cosm`});
     }
     return true;
@@ -180,6 +173,7 @@ async function submit() {
       addressC4E = address.value;
     }
   }
+  dataService.refreshAccountData();
   await useAirDropStore().fetchAirdropTotal(addressC4E);
 }
 
@@ -200,8 +194,8 @@ watch(userLoggedIn, () => {
 @import '../../styles/variables.scss';
 
 .airDropTotal {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(calc(100% / 4), 1fr));
+  width: 60%;
+  margin: 0 auto;
   font-family: 'Inter', sans-serif;
 
 
@@ -241,7 +235,7 @@ watch(userLoggedIn, () => {
       margin-top: -16px;
       margin-left: -20px;
       background-color: $main-color;
-      padding: 0px 10px;
+      padding: 0 10px;
     }
   }
 
@@ -390,7 +384,6 @@ watch(userLoggedIn, () => {
   &__footer {
     width: 90%;
     margin: 15px 0;
-    width: 90%;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -445,5 +438,6 @@ watch(userLoggedIn, () => {
   }
 
 }
+
 
 </style>

@@ -1,7 +1,9 @@
 <template>
 
   <div class="footer">
-    <span>FAQ</span>
+    <a href="https://c4e.io/faq/" target="_blank">
+      <span>FAQ</span>
+    </a>
     <a href="https://docs.c4e.io/usersGuide/walletBasics.html" target="_blank">
       <span>{{$t('FOOTER.HELP')}}</span>
     </a>
@@ -14,7 +16,6 @@
 <script setup lang="ts">
 import {useConfigurationStore} from "@/store/configuration.store";
 import {onBeforeMount, onMounted, ref} from "vue";
-import {loadFonts} from "@/plugins/webfontloader";
 import TopMenu from "@/components/commons/TopMenu.vue";
 
 
@@ -46,12 +47,12 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .footer {
-  width: 100%;
+  width: 90%;
   min-height: 50px;
   background-color: white;
   position: fixed;
   bottom: 0;
-
+  margin-left: 45px;
   padding: 20px 0 20px 8%;
 
   span {

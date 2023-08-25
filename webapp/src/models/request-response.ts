@@ -16,3 +16,13 @@ export class RequestResponse<T, E> {
   }
 
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface EmptyResponse{
+  //this is empty response
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface BackendAppError{
+
+}

@@ -25,10 +25,13 @@ const props = defineProps<{
 
 .claimInfo {
   background-color: #013C6C;
-  padding: 3.5px 13px;
+  padding: 1rem;
   box-shadow: 0px 0px 2px 2px #02447A;
   border-radius: 2px;
-  width: 150px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   &__slot {
     margin: 0;
@@ -36,9 +39,11 @@ const props = defineProps<{
 
   p {
     font-weight: 400;
-    font-size: 12px;
-    line-height: 15px
+    font-size: 18px;
+    line-height: 20px;
   }
+
+
 }
 
 </style>

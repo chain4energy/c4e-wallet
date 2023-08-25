@@ -1,44 +1,39 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
-import TxBroadcastBaseApi, { TxData, TxBroadcastError } from "@/api/tx.broadcast.base.api";
-import { ErrorData } from "@/api/base.api";
-import { LogLevel } from '@/services/logger/log-level';
+import TxBroadcastBaseApi, {TxBroadcastError, TxData} from "@/api/tx.broadcast.base.api";
+import {ErrorData} from "@/api/base.api";
+import {LogLevel} from '@/services/logger/log-level';
+import {RequestResponse} from "@/models/request-response";
+import {Account as StoreAccount} from "@/models/store/account";
+import {Coin} from "@/models/store/common";
 
-import { RequestResponse } from "@/models/request-response";
-import { Account as StoreAccount } from "@/models/store/account";
-import { Coin } from "@/models/store/common";
+import {AccountResponse, BalanceResponse, SpendableBalancesResponse} from "@/models/blockchain/account";
 
-import { AccountResponse, BalanceResponse} from "@/models/blockchain/account";
+import {useConfigurationStore} from "@/store/configuration.store";
+import {ConnectionInfo} from "@/api/wallet.connecton.api";
+import {createNonexistentAccount, mapAccount} from "@/models/mapper/account.mapper";
+import {formatString} from "@/utils/string-formatter";
+import {MsgBeginRedelegate, MsgDelegate, MsgUndelegate,} from "cosmjs-types/cosmos/staking/v1beta1/tx";
+import {MsgVote} from "cosmjs-types/cosmos/gov/v1beta1/tx";
+import {MsgSend} from "cosmjs-types/cosmos/bank/v1beta1/tx";
 
-import { useConfigurationStore } from "@/store/configuration.store";
-import { ConnectionInfo } from "@/api/wallet.connecton.api";
-import { mapAccount, createNonexistentAccount } from "@/models/mapper/account.mapper";
-import { formatString } from "@/utils/string-formatter";
-import queries from "./queries";
-
+import {MsgWithdrawDelegatorReward} from "cosmjs-types/cosmos/distribution/v1beta1/tx";
+import {DelegationsResponse, UnbondigDelegationsResponse} from "@/models/blockchain/staking";
+import {Delegations, UnbondingDelegations} from "@/models/store/staking";
 import {
-  MsgBeginRedelegate,
-  MsgDelegate,
-  MsgUndelegate,
-} from "cosmjs-types/cosmos/staking/v1beta1/tx";
-import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
-
-import {
-  MsgWithdrawDelegatorReward
-} from "cosmjs-types/cosmos/distribution/v1beta1/tx";
-import { DelegationsResponse, UnbondigDelegationsResponse } from "@/models/blockchain/staking";
-import { Delegations, UnbondingDelegations } from "@/models/store/staking";
-import { mapAndAddDelegations, mapAndAddUnbondingDelegations, mapDelegations, mapUnbondingDelegations } from "@/models/mapper/staking.mapper";
-import { RewardsResponse } from "@/models/blockchain/distribution";
-import { Rewards } from "@/models/store/distribution";
-import { mapRewards } from "@/models/mapper/distribution.mapper";
-import { mapCoin } from "@/models/mapper/common.mapper";
-import { EncodeObject } from "@cosmjs/proto-signing";
-import { BigDecimal } from "@/models/store/big.decimal";
-import { VoteOption } from "@/models/store/proposal";
-import { BlockchainApiErrorData } from "@/models/blockchain/common";
-import {isNotNullOrUndefined} from "@vue/test-utils/dist/utils";
-
-
+  mapAndAddDelegations,
+  mapAndAddUnbondingDelegations,
+  mapDelegations,
+  mapUnbondingDelegations
+} from "@/models/mapper/staking.mapper";
+import {RewardsResponse} from "@/models/blockchain/distribution";
+import {Rewards} from "@/models/store/distribution";
+import {mapRewards} from "@/models/mapper/distribution.mapper";
+import {mapCoin} from "@/models/mapper/common.mapper";
+import {EncodeObject} from "@cosmjs/proto-signing";
+import {BigDecimal} from "@/models/store/big.decimal";
+import {VoteOption} from "@/models/store/proposal";
+import {BlockchainApiErrorData} from "@/models/blockchain/common";
+import {MsgClaim, MsgInitialClaim} from "@/api/cfeclaim/tx";
 
 export class AccountApi extends TxBroadcastBaseApi {
 
@@ -82,6 +77,12 @@ export class AccountApi extends TxBroadcastBaseApi {
       mapData, lockscreen, null, 'fetchBalance - ');
   }
 
+  public async fetchSpendableBalances(address: string, lockscreen: boolean): Promise<RequestResponse<Coin[] | undefined, ErrorData<BlockchainApiErrorData>>>{
+    const mapData = (bcData: SpendableBalancesResponse | undefined) => {return bcData?.balances.map(el => mapCoin(el, el.denom));};
+    return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.SPENDABLE_BALANCES_URL, {address: address}),
+      mapData, lockscreen, null, 'fetchSpendableBalances - ');
+  }
+
   public async fetchDelegations(address: string, lockscreen: boolean): Promise<RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: DelegationsResponse | undefined) => {return mapDelegations(bcData?.delegation_responses);};
     const mapAndAddData = (data: Delegations, bcData: DelegationsResponse | undefined) => {return mapAndAddDelegations(data, bcData?.delegation_responses);};
@@ -101,6 +102,59 @@ export class AccountApi extends TxBroadcastBaseApi {
     return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.REWARDS_URL, {address: address}),
       mapData, lockscreen, null, 'fetchRewards - ');
   }
+
+  public async sendTokens(connection: ConnectionInfo, target: string, amount: number, reservedFee?: number | undefined): Promise<RequestResponse<TxData, TxBroadcastError>> {
+    const config = useConfigurationStore().config;
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.bank.v1beta1.MsgSend';
+      const val = {
+        fromAddress: connection.account,
+        toAddress: target,
+        amount: [{
+          denom: config.transferDenom,
+          amount: bcAmount,
+        }]
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }];
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgSend.fromPartial(val) }];
+      }
+    };
+    let fee;
+    if(reservedFee){
+      fee=this.createFee(Math.ceil(reservedFee), config.transferDenom);
+    } else {
+      fee = this.createFee(config.operationGas.transfer, config.transferDenom);
+    }
+    console.log(fee);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+  }
+
+  public async simulateSending(connection: ConnectionInfo, target: string, amount: number){
+    const config = useConfigurationStore().config;
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
+    const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
+      const typeUrl = '/cosmos.bank.v1beta1.MsgSend';
+      const val = {
+        fromAddress: connection.account,
+        toAddress: target,
+        amount: [{
+          denom: config.transferDenom,
+          amount: bcAmount,
+        }]
+      };
+      if (isLedger) {
+        return [{ typeUrl: typeUrl, value: val }];
+      } else {
+        return [{ typeUrl: typeUrl, value: MsgSend.fromPartial(val) }];
+      }
+    };
+    const fee = this.createFee(config.operationGas.transfer, config.transferDenom);
+    return await this.simulateDelegation(connection, getMessages, fee, '', true, null);
+  }
+
   public async delegate(connection: ConnectionInfo, validator: string, amount: number, reservedFee?: number | undefined): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
     const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
@@ -279,37 +333,53 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
-  public async claimInitialAirDrop(connection: ConnectionInfo, campaignId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  public async claimInitialAirDrop(connection: ConnectionInfo, campaignId: string, extraAddress: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
 
     const getMessages = (): readonly EncodeObject[] => {
-      const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgInitialClaim';
-      const val = {
+      const typeUrl = '/chain4energy.c4echain.cfeclaim.MsgInitialClaim';
+      const val: MsgInitialClaim ={
         claimer: connection.account,
-        campaign_id: campaignId,
-        addressToClaim: '', //TODO Create optional UI
+        campaignId: Number(campaignId),
+        destinationAddress: extraAddress,
+      };
+      return [{ typeUrl: typeUrl, value: val }];
+    };
+    const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+  }
+  public async claimAirDropMissions(connection: ConnectionInfo, campaignId: string, missionId: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
+    const config = useConfigurationStore().config;
+
+    const getMessages = (): readonly EncodeObject[] => {
+      const typeUrl = '/chain4energy.c4echain.cfeclaim.MsgClaim';
+      const val: MsgClaim = {
+        claimer: connection.account,
+        campaignId: Number(campaignId),
+        missionId: Number(missionId),
       };
       return [{ typeUrl: typeUrl, value: val }];
     };
 
-    const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
+    const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+
   }
-  public async claimAirDropMissions(connection: ConnectionInfo, campaignId: number, missionId: number): Promise<RequestResponse<TxData, TxBroadcastError>> {
-    const config = useConfigurationStore().config;
+  public async sign(connection: ConnectionInfo, dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 
-    const getMessages = (): readonly EncodeObject[] => {
-      const typeUrl = '/chain4energy.c4echain.cfeairdrop.MsgInitialClaim';
-      const val = {
-        claimer: connection.account,
-        campaign_id: campaignId,
-        mission_id: missionId,
-      };
-      return [{ typeUrl: typeUrl, value: val }];
-    };
 
-    const fee = this.createFee(config.operationGas.vote, config.stakingDenom);
-    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+    return this.signDirect(connection, dataToSign, true, null);
   }
+  public async signMetamask(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 
+
+    return this.signWithMetamask(dataToSign, true, null);
+  }
+  public async sendTransaction(amount: string, blockchainAddress: string, coinDecimals: number,destinationAddress: string):Promise<RequestResponse<string, TxBroadcastError>> {
+
+    return this.sendTransactionWithMetamask(amount, blockchainAddress, coinDecimals, destinationAddress, true, null);
+  }
+  public async signMetamaskPairing(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
+    return this.signWithMetamaskPairing(dataToSign, true, null);
+  }
 }

@@ -13,7 +13,19 @@ import {
 import { axiosErrorMessagePrefix, defaultAxiosErrorName, createErrorResponse, defaultErrorName, defaultDenom, expectCoin, expectDecCoin } from '../utils/common.blockchain.data.util';
 import { BigDecimal } from '@/models/store/big.decimal';
 
-jest.mock("axios");
+jest.mock('axios', () => {
+  return {
+    create: jest.fn(() => ({
+      get: jest.fn(),
+      interceptors: {
+        request: { use: jest.fn(), eject: jest.fn() },
+        response: { use: jest.fn(), eject: jest.fn() }
+      }
+    })),
+    request: jest.fn(),
+    AxiosError: jest.fn()
+  }
+})
 const mockedAxios = mockAxios();
 const api = apiFactory.tokensApi()
 

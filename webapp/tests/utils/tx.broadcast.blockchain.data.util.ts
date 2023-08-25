@@ -1,6 +1,6 @@
 import { DeliverTxResponse } from "@cosmjs/stargate";
 
-export const defaultMemo = ''
+export const defaultMemo = '';
 
 export const defaultGas = {
   vote: 10000,
@@ -8,6 +8,7 @@ export const defaultGas = {
   undelegate: 3000,
   redelegate: 40000,
   claimRewards: 50000,
+  transfer: 25000
 };
 
 export const defaultTxSuccessResponse = {
@@ -18,7 +19,7 @@ export const defaultTxSuccessResponse = {
   data: undefined,
   gasUsed: 34,
   gasWanted: 22
-} as unknown as DeliverTxResponse
+} as unknown as DeliverTxResponse;
 
 export const defaultTxErrorResponse = {
   height: '67812',
@@ -28,10 +29,10 @@ export const defaultTxErrorResponse = {
   data: undefined,
   gasUsed: 11,
   gasWanted: 44
-} as unknown as DeliverTxResponse
+} as unknown as DeliverTxResponse;
 
 export const msgDelegateTypeUrl = '/cosmos.staking.v1beta1.MsgDelegate';
 export const msgUndelegateTypeUrl = '/cosmos.staking.v1beta1.MsgUndelegate';
-export const msgBeginRedelegateTypeUrl = '/cosmos.staking.v1beta1.MsgBeginRedelegate'
-export const msgVoteTypeUrl = '/cosmos.gov.v1beta1.MsgVote'
-export const msgWithdrawDelegatorRewardTypeUrl = '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward'
+export const msgBeginRedelegateTypeUrl = '/cosmos.staking.v1beta1.MsgBeginRedelegate';
+export const msgVoteTypeUrl = '/cosmos.gov.v1beta1.MsgVote';
+export const msgWithdrawDelegatorRewardTypeUrl = '/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward';

@@ -24,11 +24,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import {computed} from "vue";
 import Icon from "../features/IconComponent.vue";
 import {PermissionsService} from "@/services/permissions/permissions.service";
-import { useRouter } from "vue-router";
-import { SideBarIconType } from "@/services/permissions/sidebar.config";
+import {useRouter} from "vue-router";
+import {SideBarIconType} from "@/services/permissions/sidebar.config";
 import GovernanceIcon from "../commons/GovernanceIcon.vue";
 import {toUpperCase} from "uri-js/dist/esnext/util";
 import FaucetIcon from "@/components/commons/FaucetIcon.vue";
@@ -41,8 +41,7 @@ const menu = computed(() => {
 
 
 const selected = computed(()=> {
-  let current = menu.value.find(element => element.href == router.currentRoute.value.path);
-    return current?.id;
+  return menu.value.findIndex(element => router.currentRoute.value.path.includes(element.href));
 });
 
 

@@ -3,12 +3,17 @@ import axios from "axios";
 import { Keplr } from "@keplr-wallet/types";
 import { OfflineDirectSigner, OfflineSigner } from '@cosmjs/proto-signing';
 import { OfflineAminoSigner } from '@cosmjs/amino';
-// import { OfflineSigner } from '@cosmjs/launchpad';
 import { SigningStargateClient, DeliverTxResponse, HttpEndpoint, SigningStargateClientOptions } from "@cosmjs/stargate";
 
 export function mockAxios() {
   const mockedAxios = axios as jest.Mocked<typeof axios>;
   apiFactory.setAxiosInstance(mockedAxios);
+  return mockedAxios;
+}
+
+export function mockAxiosJWT() {
+  const mockedAxios = axios as jest.Mocked<typeof axios>;
+  apiFactory.setAxiosJWTInstance(mockedAxios);
   return mockedAxios;
 }
 

@@ -11,6 +11,7 @@
     <app-footer class="footer"/>
     <CurrentBlockchain></CurrentBlockchain>
     <app-sidebar/>
+    <div class="ari10-widget-wrapper" data-widget-id='41875703-9ee2-4729-9d51-e574c61467c3'></div>
   </div>
 </template>
 
@@ -18,7 +19,6 @@
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import AppSidebar from '@/components/layout/AppSidebar.vue';
-import AppDisclaimer from '@/components/layout/AppDisclaimer.vue';
 
 import {inject, onMounted, ref} from "vue";
 import {LoggerService} from '@/services/logger/logger.service';
@@ -46,9 +46,6 @@ window.onload = async () =>{
   dataService.onWindowLoad();
 };
 
-function closeDisclaimer(){
-  disclaimerOpen.value = false;
-}
 </script>
 
 <style lang="scss">

@@ -14,7 +14,7 @@
 
 import { createPinia } from 'pinia';
 // import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
-import { createApp } from 'vue';
+import {createApp, markRaw} from 'vue';
 import App from './App.vue';
 import router from '@/router';
 import 'bootstrap/scss/bootstrap.scss';
@@ -59,10 +59,14 @@ import Accordion from "primevue/accordion";
 import "./styles/toasts.scss";
 import SuccessIcon from "@/components/features/SuccessIcon.vue";
 import ErrorIcon from "@/components/features/ErrorIcon.vue";
+import "primeflex/primeflex.css";
+import "primevue/resources/themes/lara-light-blue/theme.css";
+import "primevue/resources/primevue.min.css";
+import "primeicons/primeicons.css";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { VueRecaptchaPlugin } from 'vue-recaptcha/head'
-
+import { VueRecaptchaPlugin } from 'vue-recaptcha/head';
+import ConfirmationService from 'primevue/confirmationservice';
 
 // Lucide Icons
 // https://github.com/lucide-icons/lucide/tree/master/packages/lucide-vue-next#lucide-vue-next
@@ -83,10 +87,30 @@ const toastOptions: PluginOptions = {
 
 };
 
+(BigInt.prototype as any).toJSON = function () {
+  return {value: this.toString(), type: "bigint"} ;
+};
+function reviver2(key:any, value:any) {
+  if (value && value.type == 'bigint') {
+    return BigInt(value.value);
+  }
+  return value;
+}
+const originalJSONParse = JSON.parse;
+JSON.parse = function parse(text: string, reviver?: (this: any, key: string, value: any) => any): any {
+  if(reviver) {
+    return originalJSONParse(text, reviver);
+  }
+  return originalJSONParse(text, reviver2);
+};
 
 const pinia = createPinia();
 pinia.use(piniaPersist);
-const logger = new LoggerService();
+pinia.use(({ store }) => {
+  store.router = markRaw(router);
+});
+
+const logger = LoggerService.getInstance();
 // const i18n = createI18n({
 //   legacy: false
 // });
@@ -98,6 +122,7 @@ app.use(router)
   .use(Toast, toastOptions)
   // .use(vuetify)
   .use(PrimeVue)
+  .use(ConfirmationService)
   // .use(Vidle)
   .use(VueSvgInlinePlugin)
   .use(VueRecaptchaPlugin, {

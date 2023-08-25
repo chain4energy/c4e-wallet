@@ -142,7 +142,6 @@ import {computed, onUnmounted, ref, watch} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {Validator} from "@/models/store/validator";
 import {object, setLocale, string} from "yup";
-import dataService from '@/services/data.service';
 import {BigDecimal} from "@/models/store/big.decimal";
 import {useConfigurationStore} from "@/store/configuration.store";
 import i18n from "@/plugins/i18n";
@@ -150,7 +149,6 @@ import ValidatorLogo from "../commons/ValidatorLogo.vue";
 import {Field, Form} from "vee-validate";
 import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import StakeManagementIcon from "../commons/StakeManagementIcon.vue";
-import KeplrLogo from "../commons/KeplrLogo.vue";
 import StakingActionVue from "./StakingAction.vue";
 import {StakingAction} from "@/components/staking/StakingAction.ts";
 import StakingRedelegate from "./StakingRedelegate.vue";
@@ -186,7 +184,6 @@ const canModify = computed<boolean>(() => {
 
 const amount = ref(0);
 const usedGas = ref (0);
-const amountWithCommission = ref(0);
 const showReserveCheckbox = ref(false);
 const reservedCoins = useConfigurationStore().config.getConvertedAmount(useConfigurationStore().config.getReservedCoinsAmount());
 const freeMultiplier = 1.2;
@@ -244,19 +241,19 @@ function transferAllAmount() {
 
 }
 
-function getPercents(amount: bigint | number | BigDecimal) {
-
-  if (typeof amount === 'number') {
-    if (isNaN(amount)) {
-      return Number.NaN;
-    }
-    return amount * 100;
-  } else if (typeof amount === 'bigint') {
-    return amount * 100n;
-  } else {
-    return amount.multiply(100);
-  }
-}
+// function getPercents(amount: bigint | number | BigDecimal) {
+//
+//   if (typeof amount === 'number') {
+//     if (isNaN(amount)) {
+//       return Number.NaN;
+//     }
+//     return amount * 100;
+//   } else if (typeof amount === 'bigint') {
+//     return amount * 100n;
+//   } else {
+//     return amount.multiply(100);
+//   }
+// }
 
 function checkValue(value: string | undefined, check: (value: string) => boolean): boolean {
   if (!value) {
@@ -391,10 +388,10 @@ watch(stakingAction, (next, prev) => {
   showReserveCheckbox.value = false;
 });
 
-function reserveCoinsForFee(reserved: number, increase: boolean) {
-  const reserve = Number(Number(Number(amount.value) - reserved).toFixed(6));
-  amount.value = reserve;
-}
+// function reserveCoinsForFee(reserved: number, increase: boolean) {
+//   const reserve = Number(Number(Number(amount.value) - reserved).toFixed(6));
+//   amount.value = reserve;
+// }
 
 async function undelegate() {
   const dst = getValidatorDst();

@@ -1,7 +1,6 @@
 import { useSplashStore } from '@/store/splash.store';
-import { useToast } from 'vue-toastification';
 import { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
-import { RequestResponse } from '@/models/request-response';
+ import { RequestResponse} from '@/models/request-response';
 import { LogLevel } from '@/services/logger/log-level';
 import { LoggedService } from '@/services/logged.service';
 import { LocalSpinner } from "@/services/model/localSpinner";
@@ -11,7 +10,6 @@ import { KeybaseErrorData, KeybaseResponse } from '@/models/keybase/keybase';
 import {AirdropErrData, BlockchainApiErrorData} from '@/models/blockchain/common';
 import { HasuraErrorData } from '@/models/hasura/error';
 
-const toast = useToast();
 
 export class BlockchainPagination {
   key?: string;
@@ -67,14 +65,13 @@ export default abstract class BaseApi extends LoggedService {
     this.getAxiosInstance = axiosInstanceProvider;
   }
 
-  private async axiosWith200ErrorCall<T, H, E>(
+  protected async axiosWith200ErrorCall<T, H, E>(
     config: AxiosRequestConfig,
     mapData: (hasureData: H | undefined) => T,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
     logPrefix: string,
     isResponseError: (data: RequestResponse<H, ErrorData<E>>) => boolean,
-    skipErrorToast = false,
     messages: {
       errorResponseName: string,
       errorResponseMassage: string,
@@ -90,7 +87,6 @@ export default abstract class BaseApi extends LoggedService {
       config,
       lockScreen,
       localSpinner,
-      skipErrorToast,
       logPrefix,
       undefined,
       errorDataToInfo
@@ -101,7 +97,7 @@ export default abstract class BaseApi extends LoggedService {
     const asError = result.data as unknown as E;
     if (isResponseError(result)) {
       const errorResp = new ErrorData<E>(messages.errorResponseName, messages.errorResponseMassage, 200, asError, errorDataToInfo);
-      return this.createErrorResponseWithToast(errorResp, messages.errorResponseToast, !skipErrorToast);
+      return this.createErrorResponse(errorResp);
     }
     try {
       const mappedData = mapData(result.data);
@@ -109,7 +105,7 @@ export default abstract class BaseApi extends LoggedService {
     } catch (err) {
       const error = err as Error;
       this.logToConsole(LogLevel.ERROR, logPrefix + messages.mappingErrorMassage + this.getServiceType(), error.message);
-      return this.createErrorResponseWithToast(new ErrorData<E>(error.name, error.message), messages.mappingErrorMassage, !skipErrorToast);
+      return this.createErrorResponse(new ErrorData<E>(error.name, error.message));
     }
 
   }
@@ -119,8 +115,7 @@ export default abstract class BaseApi extends LoggedService {
     mapData: (hasureData: H | undefined) => T,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
-    logPrefix: string,
-    skipErrorToast = false
+    logPrefix: string
   ): Promise<RequestResponse<T, ErrorData<KeybaseErrorData>>>
   {
     const config = {
@@ -154,7 +149,6 @@ export default abstract class BaseApi extends LoggedService {
       localSpinner,
       logPrefix,
       isResponseError,
-      skipErrorToast,
       messages,
       errorDataToInfo
     );
@@ -210,8 +204,7 @@ export default abstract class BaseApi extends LoggedService {
     mapData: (hasureData: H | undefined) => T,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
-    logPrefix: string,
-    skipErrorToast = false
+    logPrefix: string
   ): Promise<RequestResponse<T, ErrorData<HasuraErrorData>>>
   {
     const config = {
@@ -251,7 +244,6 @@ export default abstract class BaseApi extends LoggedService {
       localSpinner,
       logPrefix,
       isResponseError,
-      skipErrorToast,
       messages,
       errorDataToInfo
     );
@@ -264,21 +256,20 @@ export default abstract class BaseApi extends LoggedService {
     localSpinner: LocalSpinner | null,
     logPrefix = '',
     displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean,
-    handleError?: (errorResponse: RequestResponse<BC, ErrorData<BlockchainApiErrorData>>) => RequestResponse<T, ErrorData<BlockchainApiErrorData>>,
-    skipErrorToast = false): Promise<{ response: RequestResponse<T, ErrorData<BlockchainApiErrorData>>, nextKey: string | null }>
+    handleError?: (errorResponse: RequestResponse<BC, ErrorData<BlockchainApiErrorData>>) => RequestResponse<T, ErrorData<BlockchainApiErrorData>>
+  ): Promise<{ response: RequestResponse<T, ErrorData<BlockchainApiErrorData>>, nextKey: string | null }>
   {
     let nextKey: string | null = null;
     const func = async (): Promise<RequestResponse<BC, ErrorData<BlockchainApiErrorData>>> => {
       const result: RequestResponse<BC, ErrorData<BlockchainApiErrorData>> = await this.axiosGetBlockchainDataPaginatedCall(
-        url, pagination, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast
-      );
+        url, pagination, lockScreen, localSpinner, logPrefix, displayAsError );
       if (result.data !== undefined) {
         nextKey = result.data.pagination.next_key;
       }
       return result;
     };
 
-    return { response: await this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError, skipErrorToast), nextKey: nextKey };
+    return { response: await this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError), nextKey: nextKey };
   }
 
   protected async axiosGetBlockchainApiCall<T, BC>(
@@ -288,14 +279,13 @@ export default abstract class BaseApi extends LoggedService {
     localSpinner: LocalSpinner | null,
     logPrefix = '',
     displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean,
-    handleError?: (errorResponse: RequestResponse<BC, ErrorData<BlockchainApiErrorData>>) => RequestResponse<T, ErrorData<BlockchainApiErrorData>>,
-    skipErrorToast = false): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
+    handleError?: (errorResponse: RequestResponse<BC, ErrorData<BlockchainApiErrorData>>) => RequestResponse<T, ErrorData<BlockchainApiErrorData>>): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
   {
     const func = (): Promise<RequestResponse<BC, ErrorData<BlockchainApiErrorData>>> => { return this.axiosBlockchainApiCall({
       method: 'GET',
       url: useConfigurationStore().config.bcApiURL + url
-    }, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);};
-    return this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError, skipErrorToast);
+    }, lockScreen, localSpinner, logPrefix, displayAsError);};
+    return this.axiosGetBlockchainApiCallGeneric(mapData, func, logPrefix, handleError);
   }
 
   // protected async axiosAirDropCall<T, BC>(
@@ -322,15 +312,14 @@ export default abstract class BaseApi extends LoggedService {
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
     logPrefix = '',
-    displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean,
-    skipErrorToast = false): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
+    displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
   {
     let data: T | undefined = undefined;
     let nextKey: string | null | undefined = undefined;
     do {
       const pagination = nextKey ? new BlockchainPagination(nextKey) : null;
       const result: RequestResponse<BC, ErrorData<BlockchainApiErrorData>>
-        = await this.axiosGetBlockchainDataPaginatedCall<BC>(url, pagination, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);
+        = await this.axiosGetBlockchainDataPaginatedCall<BC>(url, pagination, lockScreen, localSpinner, logPrefix, displayAsError);
       if (result.isError()) {
         return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(result.error);
       }
@@ -344,7 +333,7 @@ export default abstract class BaseApi extends LoggedService {
       } catch (err) {
         const error = err as Error;
         this.logToConsole(LogLevel.ERROR, logPrefix + 'mapping error: ' + this.getServiceType(), error.message);
-        return this.createErrorResponseWithToast(new ErrorData<BlockchainApiErrorData>(error.name, error.message), 'Mapping error: ', !skipErrorToast);
+        return this.createErrorResponse(new ErrorData<BlockchainApiErrorData>(error.name, error.message));
       }
     } while (data === undefined || (nextKey !== null && nextKey !== undefined));
     return new RequestResponse<T, ErrorData<BlockchainApiErrorData>>(undefined, data);
@@ -354,8 +343,7 @@ export default abstract class BaseApi extends LoggedService {
     mapData: (bcData: BC | undefined) => T,
     getFunction: () => Promise<RequestResponse<BC, ErrorData<BlockchainApiErrorData>>>,
     logPrefix: string,
-    handleError: ((errorResponse: RequestResponse<BC, ErrorData<BlockchainApiErrorData>>) => RequestResponse<T, ErrorData<BlockchainApiErrorData>>) | undefined,
-    skipErrorToast: boolean): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
+    handleError: ((errorResponse: RequestResponse<BC, ErrorData<BlockchainApiErrorData>>) => RequestResponse<T, ErrorData<BlockchainApiErrorData>>) | undefined): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
   {
     const result: RequestResponse<BC, ErrorData<BlockchainApiErrorData>> = await getFunction();
     if (result.isError()) {
@@ -372,7 +360,7 @@ export default abstract class BaseApi extends LoggedService {
     } catch (err) {
       const error = err as Error;
       this.logToConsole(LogLevel.ERROR, logPrefix + 'mapping error: ' + this.getServiceType(), error.message);
-      return this.createErrorResponseWithToast(new ErrorData<BlockchainApiErrorData>(error.name, error.message), 'Mapping error: ', !skipErrorToast);
+      return this.createErrorResponse(new ErrorData<BlockchainApiErrorData>(error.name, error.message));
     }
   }
 
@@ -381,47 +369,44 @@ export default abstract class BaseApi extends LoggedService {
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
     logPrefix = '',
-    displayAsError?: ((error: ErrorData<BlockchainApiErrorData>) => boolean),
-    skipErrorToast = false
+    displayAsError?: ((error: ErrorData<BlockchainApiErrorData>) => boolean)
     ): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
   {
     return await this.axiosCall<T, BlockchainApiErrorData>(
       config,
       lockScreen,
       localSpinner,
-      skipErrorToast,
       logPrefix,
       displayAsError,
       (data: BlockchainApiErrorData) => { return '\r\n\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')'; }
     );
   }
-  private async axiosAirDropAPICall<T>(
-    config: AxiosRequestConfig,
-    lockScreen: boolean,
-    localSpinner: LocalSpinner | null,
-    logPrefix = '',
-    displayAsError?: ((error: ErrorData<BlockchainApiErrorData>) => boolean),
-    skipErrorToast = false
-  ): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
-  {
-    return await this.axiosCall<T, BlockchainApiErrorData>(
-      config,
-      lockScreen,
-      localSpinner,
-      skipErrorToast,
-      logPrefix,
-      displayAsError,
-      (data: BlockchainApiErrorData) => { return '\r\n\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')'; }
-    );
-  }
+  // private async axiosAirDropAPICall<T>(
+  //   config: AxiosRequestConfig,
+  //   lockScreen: boolean,
+  //   localSpinner: LocalSpinner | null,
+  //   logPrefix = '',
+  //   displayAsError?: ((error: ErrorData<BlockchainApiErrorData>) => boolean),
+  //   skipErrorToast = false
+  // ): Promise<RequestResponse<T, ErrorData<BlockchainApiErrorData>>>
+  // {
+  //   return await this.axiosCall<T, BlockchainApiErrorData>(
+  //     config,
+  //     lockScreen,
+  //     localSpinner,
+  //     skipErrorToast,
+  //     logPrefix,
+  //     displayAsError,
+  //     (data: BlockchainApiErrorData) => { return '\r\n\tCode: ' + data.code + '\r\n\tMessage: ' + data.message + ')'; }
+  //   );
+  // }
 
   protected async axiosAirdropCall<T, H>(
     localUrl: string,
     mapData: (data: H | undefined) => T,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
-    logPrefix: string,
-    skipErrorToast = false
+    logPrefix: string
   ): Promise<RequestResponse<T, ErrorData<AirdropErrData>>> {
     const config = {
       method: 'GET',
@@ -450,7 +435,6 @@ export default abstract class BaseApi extends LoggedService {
       localSpinner,
       logPrefix,
       isResponseError,
-      skipErrorToast,
       messages,
       errorDataToInfo
     );
@@ -463,8 +447,7 @@ export default abstract class BaseApi extends LoggedService {
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
     logPrefix = '',
-    displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean,
-    skipErrorToast = false): Promise<RequestResponse<P, ErrorData<BlockchainApiErrorData>>> {
+    displayAsError?: (error: ErrorData<BlockchainApiErrorData>) => boolean): Promise<RequestResponse<P, ErrorData<BlockchainApiErrorData>>> {
     const paginationData: any = {};
     if (pagination) {
       if (pagination.key) { paginationData['pagination.key'] = pagination.key; }
@@ -475,14 +458,13 @@ export default abstract class BaseApi extends LoggedService {
       method: 'GET',
       url: useConfigurationStore().config.bcApiURL + url,
       params: paginationData
-    }, lockScreen, localSpinner, logPrefix, displayAsError, skipErrorToast);
+    }, lockScreen, localSpinner, logPrefix, displayAsError);
     return result;
   }
 
   protected async axiosCall<T, E>(config: AxiosRequestConfig,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
-    skipErrorToast: boolean,
     logPrefix: string,
     displayAsError?: (error: ErrorData<E>) => boolean,
     errorDataToInfo?: (data: E) => string): Promise<RequestResponse<T, ErrorData<E>>> {
@@ -493,13 +475,8 @@ export default abstract class BaseApi extends LoggedService {
       this.logToConsole(LogLevel.DEBUG, logPrefix + 'Axios Response', this.stringify(data));
       return new RequestResponse<T, ErrorData<E>>(undefined, data.data);
     } catch (err) {
-
       const error = err as Error | AxiosError<E, any>;
-
-      this.logToConsole(LogLevel.DEBUG, logPrefix + 'Axios Response', this.stringify(err));
-
       let errorResp: ErrorData<E>;
-
       if (error instanceof AxiosError && error.response != undefined) {
         errorResp = new ErrorData<E>(error.name, error.message, error.response.status, error.response.data, errorDataToInfo);
       } else {
@@ -509,8 +486,7 @@ export default abstract class BaseApi extends LoggedService {
       const logLevel = isError ? LogLevel.ERROR : LogLevel.DEBUG;
       this.logToConsole(logLevel, logPrefix + 'Axios Response', this.stringify(err));
       this.logToConsole(logLevel, logPrefix + 'Error data: ' + this.stringify(errorResp));
-
-      return this.createErrorResponseWithToast(errorResp, 'Error sending HTTP request: ', !skipErrorToast && isError);
+      return new RequestResponse<T, ErrorData<E>>(errorResp);
     } finally {
       this.after(lockScreen, localSpinner);
     }
@@ -530,10 +506,7 @@ export default abstract class BaseApi extends LoggedService {
     localSpinner?.turnOffFunction();
   }
 
-  private createErrorResponseWithToast<T, E>(errorData: ErrorData<E>, toastMessageBeginning: string | undefined, showErrorToast: boolean): RequestResponse<T, ErrorData<E>> {
-    if (showErrorToast) {
-      //toast.error(toastMessageBeginning + this.getServiceType() + '\r\n' + errorData.getInfo());
-    }
+  private createErrorResponse<T, E>(errorData: ErrorData<E>): RequestResponse<T, ErrorData<E>> {
     return new RequestResponse<T, ErrorData<E>>(errorData);
   }
 
@@ -544,5 +517,10 @@ export default abstract class BaseApi extends LoggedService {
         : value
     );
   }
+}
+
+export interface ServiceErrorHandler<E>{
+  handleError(appError:ErrorData<E>): void
+  // handleError(appError: BackendAppError):void
 }
 

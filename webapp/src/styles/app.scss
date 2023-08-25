@@ -38,10 +38,11 @@ html, body {
     display: flex;
     padding-bottom: 90px;
     padding-top: 190px;
+
     .content {
         width: 100%;
         padding-left: 100px;
-        padding-right: 100px;
+        padding-right: 30px;
     }
 }
 
@@ -64,6 +65,10 @@ nav {
     border: 0 !important;
 }
 
+.box-shadow{
+    box-shadow: 0px 0px 4px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
 @media screen and (max-width: 700px) {
     #app {
         .main-container {

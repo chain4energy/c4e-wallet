@@ -6,6 +6,7 @@ export interface Gas {
   undelegate: number,
   redelegate: number,
   claimRewards: number,
+  transfer: number
 }
 
 export interface KeplrGasPriceSteps {
@@ -45,7 +46,9 @@ export interface JsonQueries {
   MISSIONS_URL: string;
   AIRDROP_DISTRIBUTIONS: string;
   AIRDROP_CLAIMS_LEFT: string;
+  SPENDABLE_BALANCES_URL: string;
 }
+
 
 export interface Configuration {
   bcApiURL: string,
@@ -53,6 +56,7 @@ export interface Configuration {
   hasuraURL: string,
   keybaseURL: string,
   stakingPageURL: string,
+  publicSaleServiceURL: string,
   addressPrefix: string,
   stakingDenom: string,
   strategicPoolAddress: string[],
@@ -83,4 +87,8 @@ export interface Configuration {
   targetInflationAprMultiplier: number;
   faucetURL: string;
   faucetAvailable: boolean;
+  tokenReservationDenom: string;
+  currentPublicSaleRoundId: number;
+  transferDenom: string;
+  publicSaleVisible: boolean;
 }

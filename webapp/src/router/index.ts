@@ -9,6 +9,14 @@ import ProposalsList from '@/components/governance/ProposalsList.vue';
 import stakingRoutes from "@/router/stakingRoutes";
 import AirDropView from "@/views/AirDropView.vue";
 import FaucetView from "@/views/FaucetView.vue";
+import buyTokensRoutes from "@/router/buyTokens";
+import profileRoutes from "@/router/profile";
+import KycView from "@/views/KycView.vue";
+import SignInView from "@/views/buyTokens/SignInView.vue";
+import SignUpView from "@/views/buyTokens/SignUpView.vue";
+import ProvideVerificationCodeView from "@/views/buyTokens/ProvideVerificationCodeView.vue";
+import {portfolioRoutes} from "@/router/portfolioRoutes";
+import {resetPasswordRoutes} from "@/router/resetPasswordRoutes";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -65,6 +73,15 @@ const routes: Array<RouteRecordRaw> = [
     component: TermsConditionsView
   },
   {
+    path: '/kyc',
+    name: 'kyc',
+    component: KycView,
+    meta: {
+      requiresAuth: true,
+      isPublicSale: true
+    },
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/',
   },
@@ -75,7 +92,52 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       requiresNotMainNetwork: true
     }
-  }
+  },
+  buyTokensRoutes,
+  profileRoutes,
+  {
+    path: '/buyTokens/signIn',
+    name: 'signIn',
+    component: SignInView,
+    meta: {
+      isPublicSale: true
+    }
+  },
+  {
+    path: '/buyTokens/signUp',
+    name: 'signUp',
+    component: SignUpView,
+    meta: {
+      isPublicSale: true
+    }
+  },
+  {
+    path: '/profile/signIn',
+    name: 'signIn-profile',
+    component: SignInView,
+    meta: {
+      isPublicSale: true
+    }
+  },
+  {
+    path: '/profile/signUp',
+    name: 'signUp-profile',
+    component: SignUpView,
+    meta: {
+      isPublicSale: true
+    }
+  },
+  {
+    path: '/profile/provideVerificationCode',
+    name: 'provideVerificationCode',
+    component: ProvideVerificationCodeView,
+    meta: {
+      requiresAuth: true,
+      isPublicSale: true
+    },
+  },
+  portfolioRoutes,
+  ...resetPasswordRoutes
 ];
 
 const router = createRouter({

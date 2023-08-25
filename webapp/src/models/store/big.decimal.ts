@@ -3,7 +3,7 @@ const ROUNDED = true;
 const SHIFT = BigInt("1" + "0".repeat(DECIMALS));
 
 interface BigDecimalConstructor {
-  new (value: bigint | number | BigDecimal | string): BigDecimal;
+  new (value: bigint | number | BigDecimal | string, decimals?: number): BigDecimal;
 }
 
 export interface BigDecimal {
@@ -24,15 +24,21 @@ export interface BigDecimal {
 
   toFixed(fractionDigits?: number, rounded?: boolean): string;
 
+  ceil(decimals: number): BigDecimal;
+
+  floor(decimals: number): BigDecimal;
+
 }
 
 class BigDecimalImpl implements BigDecimal {
 
   private value: bigint;
 
-  constructor(value: bigint | number | BigDecimal | string) {
+  constructor(value: bigint | number | BigDecimal | string, decimals?: number) {
     this.value = BigDecimalImpl.toInternalValue(value);
-
+    if(decimals) {
+      this.value = this.value / BigInt(10 ** ( decimals));
+    }
   }
 
   private toCompare(value: string | number | bigint | BigDecimal): BigDecimalImpl {
@@ -105,6 +111,21 @@ class BigDecimalImpl implements BigDecimal {
       return BigInt(ints + decis.padEnd(DECIMALS, '0').slice(0, DECIMALS))
         + BigInt(ROUNDED && decis[DECIMALS] >= '5');
     }
+  }
+
+  public ceil(decimals: number): BigDecimal {
+    const rest = this.value%BigInt(10**(DECIMALS-decimals));
+
+    let toAdd = 0n;
+    if(rest > 0n) {
+      toAdd = 1n;
+    }
+
+    return fromInternalValue((this.value/BigInt(10**(DECIMALS-decimals))+toAdd)*BigInt(10**(DECIMALS-decimals)));
+  }
+
+  public floor(decimals: number): BigDecimal {
+    return fromInternalValue((this.value/BigInt(10**(DECIMALS-decimals)))*BigInt(10**(DECIMALS-decimals)));
   }
 
 }

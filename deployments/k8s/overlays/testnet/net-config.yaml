@@ -10,6 +10,8 @@ data:
       "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
       "addressPrefix": "c4e",
       "stakingDenom": "uc4e",
+      "transferDenom": "uc4e",
+      "tokenReservationDenom": "uc4e",
       "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -23,7 +25,8 @@ data:
         "delegate": 300000,
         "undelegate": 220000,
         "redelegate": 310000,
-        "claimRewards": 400000
+        "claimRewards": 400000,
+        "transfer": 250000
       },
       "viewDenoms": [
         {
@@ -53,7 +56,8 @@ data:
       "proposalVotingRefreshTimeout": 30000,
       "targetInflationAprMultiplier": 5,
       "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
-      "faucetAvailable": true
+      "faucetAvailable": true,
+      "currentPublicSaleRoundId": 1
     },
       "Mainnet": {
         "bcApiURL": "https://lcd.c4e.io",
@@ -63,6 +67,8 @@ data:
         "stakingPageURL": "https://wallet.c4e.io/staking",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
+        "transferDenom": "uc4e",
+        "tokenReservationDenom": "uc4e",
         "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -76,7 +82,8 @@ data:
           "delegate": 175000,
           "undelegate": 220000,
           "redelegate": 310000,
-          "claimRewards": 400000
+          "claimRewards": 400000,
+          "transfer": 250000
         },
         "viewDenoms": [
           {
@@ -106,6 +113,7 @@ data:
         "proposalVotingRefreshTimeout": 30000,
         "targetInflationAprMultiplier": 5,
         "faucetURL": "",
+        "currentPublicSaleRoundId": 1,
         "faucetAvailable": false
       }
     }

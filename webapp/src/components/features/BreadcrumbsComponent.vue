@@ -1,6 +1,6 @@
 <template>
   <div class="breadcrumbs">
-    <Icon @click="router.push(permissionsService.getAfterLoginPage())" name="Home" style="height: 1em" />
+    <Icon @click="router.push('/')" name="Home" style="height: 1em" />
     <span v-for="(breadcrumbElement, index) of breadcrumbs" :key="breadcrumbElement.name">
       <span>/</span>
       <router-link :class="{disabled: index == breadcrumbs.length - 1}" :to="breadcrumbElement.path">{{getDisplayedName(breadcrumbElement)}}</router-link>
@@ -19,7 +19,7 @@ import { PermissionsService } from "@/services/permissions/permissions.service";
 
 const router = useRouter();
 const i18n = useI18n();
-const permissionsService = new PermissionsService();
+// const permissionsService = new PermissionsService();
 
 const breadcrumbs = computed(() => {
   const breadcrumbsArray:Breadcrumb[] = [];

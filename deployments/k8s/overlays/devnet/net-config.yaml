@@ -8,8 +8,11 @@ data:
       "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
       "keybaseURL": "https://keybase.io",
       "stakingPageURL": "https://wallet-dev.c4e.io/staking",
+      "publicSaleServiceURL": "/api-devnet",
       "addressPrefix": "c4e",
       "stakingDenom": "uc4e",
+      "transferDenom": "uc4e",
+      "tokenReservationDenom": "uc4e",
       "strategicPoolAddress": [
         "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
         "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -23,7 +26,8 @@ data:
         "delegate": 300000,
         "undelegate": 220000,
         "redelegate": 310000,
-        "claimRewards": 400000
+        "claimRewards": 400000,
+        "transfer": 250000
       },
       "viewDenoms": [
         {
@@ -53,6 +57,7 @@ data:
       "proposalVotingRefreshTimeout": 30000,
       "targetInflationAprMultiplier": 5,
       "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
+      "currentPublicSaleRoundId": 1,
       "faucetAvailable": true
     },
       "Mainnet": {
@@ -61,8 +66,11 @@ data:
         "hasuraURL": "https://hasura.c4e.io/v1/graphql",
         "keybaseURL": "https://keybase.io",
         "stakingPageURL": "https://wallet.c4e.io/staking",
+        "publicSaleServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
+        "transferDenom": "uc4e",
+        "tokenReservationDenom": "uc4e",
         "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -76,7 +84,8 @@ data:
           "delegate": 300000,
           "undelegate": 220000,
           "redelegate": 310000,
-          "claimRewards": 400000
+          "claimRewards": 400000,
+          "transfer": 250000
         },
         "viewDenoms": [
           {
@@ -106,6 +115,7 @@ data:
         "proposalVotingRefreshTimeout": 30000,
         "targetInflationAprMultiplier": 5,
         "faucetURL": "",
+        "currentPublicSaleRoundId": 1,
         "faucetAvailable": false
       },
       "Testnet": {
@@ -114,8 +124,11 @@ data:
         "hasuraURL": "https://hasura-testnet.c4e.io/v1/graphql",
         "keybaseURL": "https://keybase.io",
         "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
+        "publicSaleServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
         "addressPrefix": "c4e",
-        "stakingDenom": "uc4e",
+        "stakingDenom": "uc4e",          
+        "transferDenom": "uc4e",
+        "tokenReservationDenom": "uc4e",
         "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -129,7 +142,8 @@ data:
           "delegate": 300000,
           "undelegate": 220000,
           "redelegate": 310000,
-          "claimRewards": 400000
+          "claimRewards": 400000,
+          "transfer": 250000
         },
         "viewDenoms": [
           {
@@ -159,6 +173,7 @@ data:
         "proposalVotingRefreshTimeout": 30000,
         "targetInflationAprMultiplier": 5,
         "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
+        "currentPublicSaleRoundId": 1,
         "faucetAvailable": true
       },
       "EV-testnet":{
@@ -167,8 +182,11 @@ data:
         "hasuraURL": "https://hasura-ev-testnet.c4e.io/v1/graphql",
         "keybaseURL": "https://keybase.io",
         "stakingPageURL": "https://wallet-ev-testnet.c4e.io/staking",
+        "publicSaleServiceURL": "http://api-gateway-and-composer.publicsale-dev.svc.cluster.local",
         "addressPrefix": "c4e",
         "stakingDenom": "uc4e",
+        "transferDenom": "uc4e",
+        "tokenReservationDenom": "uc4e",
         "strategicPoolAddress": [
           "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
           "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
@@ -185,7 +203,8 @@ data:
           "delegate": 250000,
           "undelegate": 250000,
           "redelegate": 250000,
-          "claimRewards": 250000
+          "claimRewards": 250000,
+          "transfer": 250000
         },
         "viewDenoms": [
           {
@@ -215,6 +234,7 @@ data:
         "airdropDefaultDenom": "uc4e",
         "targetInflationAprMultiplier": 5,
         "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
+        "currentPublicSaleRoundId": 1,
         "faucetAvailable": true
       }
     }

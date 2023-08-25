@@ -19,6 +19,6 @@ export class FaucetApi extends BaseApi {
           headers: {
               'recaptcha-response': recaptchaToken
           }
-        }, true, null, false, 'topUpAccount');
+        }, true, null, 'topUpAccount');
     }
 }

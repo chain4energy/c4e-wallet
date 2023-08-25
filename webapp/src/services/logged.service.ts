@@ -4,7 +4,7 @@ import { ServiceTypeEnum } from '@/services/logger/service-type.enum';
 
 export abstract class LoggedService {
 
-  static logger:LoggerService = new LoggerService;
+  static logger:LoggerService = LoggerService.getInstance();
 
   abstract getServiceType(): ServiceTypeEnum;
 

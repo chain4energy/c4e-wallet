@@ -66,7 +66,34 @@
 
           <Button v-if="!useUserStore().isLoggedIn" class="secondary" @click="loginPopupStatus =! loginPopupStatus">{{ $t('COMMON.CONNECT') }}</Button>
 
-          <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout">{{ $t('COMMON.DISCONNECT') }}</Button>
+          <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logoutWallet">{{ $t('COMMON.DISCONNECT') }}</Button>
+
+          <div class="profileMenu" @focusout="closeProfileDropdown" tabindex="0" @click="toggleProfileDropdown()" >
+            <div class="profileMenu-icon"> <UserIcon :style="useUserServiceStore().isLoggedIn ? 'color: #81CF1F' : ''" /></div>
+            <div class="profileMenu__dropdown" v-if="profileDropdown">
+
+              <div v-if="!useUserServiceStore().isLoggedIn">
+                <div class="option grid_container"  @click="router.push({name: 'signIn-profile'});">
+                  <Icon name="LogIn" />
+                  Login to profile
+                </div>
+              </div>
+              <div v-else>
+                <div class="profileMenu__dropdown-info">{{useUserServiceStore().userEmail}}</div>
+                <div class="option grid_container"  @click="router.push({name: 'userProfileTabs'});">
+                  <div><Icon name="User" /></div>
+                  <div>My profile</div>
+                </div>
+                <div class="option grid_container" @click="logoutAccount();">
+                  <Icon name="LogOut" />
+                  <div>
+                    Logout
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
 
 
         </div>
@@ -92,7 +119,7 @@
         <span style="display: flex; flex-direction: column">
             <span v-if="useUserStore().connectionInfo.accountName">{{ useUserStore().connectionInfo.accountName }}: </span>
             {{ useUserStore().getAccount.address.slice(0, 8) }}...{{ useUserStore().getAccount.address.slice(-6) }}
-            <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logout(); toggleDropdown()">{{ $t('COMMON.DISCONNECT') }}</Button>
+            <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logoutWallet(); toggleDropdown()">{{ $t('COMMON.DISCONNECT') }}</Button>
           </span>
       </div>
       <Button style="width: 90%" v-if="!useUserStore().isLoggedIn" class="secondary" @click="toggleDropdown(); loginPopupStatus =! loginPopupStatus">{{
@@ -142,16 +169,16 @@ import {SideBarIconType} from "@/services/permissions/sidebar.config";
 import {useConfigurationStore} from '@/store/configuration.store';
 import {changeTitle} from "@/utils/title-changer";
 import {useRoute, useRouter} from 'vue-router';
-import {useGlobalFilterStore} from "@/store/global-filter.store";
 import {computed, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {PermissionsService} from "@/services/permissions/permissions.service";
 import KeplrLogo from '../commons/KeplrLogo.vue';
 import * as GovernanceIcon from "@/components/commons/GovernanceIcon.vue";
 import dataService from "@/services/data.service";
+import {useUserServiceStore} from "@/store/userService.store";
+import UserIcon from "@/components/features/UserIcon.vue";
 
 const router = useRouter();
-const globalFilter = useGlobalFilterStore();
 const loginPopupStatus = ref(false);
 const logoutPopupStatus = ref(false);
 const dropdown = ref(false);
@@ -203,9 +230,14 @@ function openAccInfo() {
   logoutPopupStatus.value = !logoutPopupStatus.value;
 }
 
-function logout() {
+function logoutWallet() {
   // const latestBlock = computed(() => useBlockStore().getLatestBlock);
-  dataService.onLogOut();
+  dataService.onLogOutWallet();
+}
+
+function logoutAccount(){
+  useUserServiceStore().logoutAccount();
+  router.push('/buyTokens/signIn');
 }
 const route= useRoute();
 const onLogoClick = () => {
@@ -215,6 +247,16 @@ const onLogoClick = () => {
   } else {
     router.push({name: 'Dashboard'});
   }
+};
+
+
+const profileDropdown = ref(false);
+const toggleProfileDropdown = () => {
+  profileDropdown.value = !profileDropdown.value;
+};
+
+const closeProfileDropdown = () => {
+  profileDropdown.value = false;
 };
 </script>
 
@@ -363,11 +405,11 @@ nav a.router-link-exact-active {
 }
 
 .keplr-logo {
-  padding: 0px 5px;
+  padding: 0 5px;
   background-color: rgba(255, 255, 255);
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 700px), (max-height: 640px) {
   .menu {
     display: none;
   }
@@ -387,6 +429,62 @@ nav a.router-link-exact-active {
 
 .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
   color: var(--secondary-color) !important;
+}
+.profileMenu {
+
+  //padding: 10px;
+
+  border-radius: 5px;
+  position: relative;
+
+  cursor: pointer;
+  color: white;
+  z-index: 3;
+
+  &__dropdown {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top:40px;
+    min-width: 130px;
+    border-radius: 5px 0 5px 5px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    z-index: 3;
+    color: black;
+    background-color: #ffffff;
+    transform:translateX(-100%);
+    font-weight: bolder;
+    &-info {
+      padding: 15px 25px;
+    }
+    .option {
+      padding: 20px 15px;
+      background-color: #ffffff;
+      width: 100%;
+      border-top: 1px #eeeeee solid;
+      white-space: nowrap;
+      &:hover {
+        background-color: #b6b6b6;
+      }
+    }
+    .grid_container {
+      text-align: left;
+      display: grid;
+      grid-template-columns: minmax(20px, auto) 1fr;
+      grid-template-rows: 1fr;
+      align-items: center;
+
+      grid-gap: 30px;
+      background-color: #f8f8f8;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      border-radius: 10px;
+    }
+  }
+  &-icon {
+
+  }
 }
 
 // .userdata {

@@ -3,28 +3,48 @@ import {Pagination} from "@/models/blockchain/pagination";
 
 
 export interface UserAirdropInfo {
-  userAirdropEntries: UserAirdropEntry
+  user_entry: UserAirdropEntry
 }
 
 
 export interface UserAirdropEntry {
   address: string,
-  claim_address: string,
-  airdrop_entries: AirdropEntry[]
+  //claim_address: string,
+  claim_records: AirdropEntry[]
 }
 
 export interface AirdropEntry {
   campaign_id: string,
   address: string,
   airdrop_coins: Coin[],
-  amount: number,
+  amount: Coin[],
   completedMissions: string[],
   claimedMissions: string[]
 }
 
 export interface CampaignBc {
+  campaign:{
+    id: string,
+    owner: string,
+    name: string,
+    description: string,
+    feegrant_amount: string,
+    initial_claim_free_amount: string,
+    enabled: boolean,
+    // denom: string,
+    start_time: string,
+    end_time: string,
+    lockup_period: string,
+    vesting_period: string,
+    vestingPoolName: string,
+    campaign_total_amount: Coin[],
+    campaign_current_amount: Coin[],
+  }
+}
+
+export interface CampaignBcCampaign {
   id: string,
-  owner: string,
+    owner: string,
   name: string,
   description: string,
   feegrant_amount: string,
@@ -34,11 +54,14 @@ export interface CampaignBc {
   start_time: string,
   end_time: string,
   lockup_period: string,
-  vesting_period: string
+  vesting_period: string,
+  vestingPoolName: string,
+  campaign_total_amount: Coin[],
+  campaign_current_amount: Coin[],
 }
 
 export interface CampaignsInfo {
-  campaign: CampaignBc[],
+  campaigns: CampaignBc[],
   pagination: Pagination
 
 }
@@ -49,11 +72,12 @@ export interface MissionBc {
   name: string,
   description: string,
   missionType: MissionType,
-  weight: number
+  weight: string,
+  claim_start_date: string | undefined
 }
 
 export interface MissionsInfo {
-  mission: MissionBc[],
+  missions: MissionBc[],
   pagination: Pagination
 }
 
@@ -62,6 +86,7 @@ export enum MissionType {
   INITIAL_CLAIM = 'INITIAL_CLAIM',
   VOTE = 'VOTE',
   DELEGATE = 'DELEGATE',
+  CLAIM = 'CLAIM'
 }
 
 export interface AirdropClaimsLeft {

@@ -6,6 +6,8 @@ import { useConfigurationStore } from "@/store/configuration.store";
 import { ServiceTypeEnum } from "@/services/logger/service-type.enum";
 import { RequestResponse } from '@/models/request-response';
 import { LogLevel } from '@/services/logger/log-level';
+import {ethers } from "ethers";
+import {MetamaskConnectionInfo} from "@/store/user.store";
 
 
 const toast = useToast();
@@ -15,7 +17,9 @@ export enum ConnectionType {
   Keplr,
   Disconnected,
   Cosmostation,
-  Leap
+  Metamask,
+  Leap,
+  Email,
 }
 
 export class ConnectionInfo {
@@ -25,15 +29,18 @@ export class ConnectionInfo {
   readonly account: string;
   readonly modifiable: boolean;
   readonly connectionType: ConnectionType;
+  readonly pubKey?: Uint8Array;
   readonly accountName?: string;
   constructor(
     account = '',
     modifiable = false,
     connectionType = ConnectionType.Disconnected,
+    pubKey?: Uint8Array,
     accountName?: string) {
     this.account = account;
     this.modifiable = modifiable;
     this.connectionType = connectionType;
+    this.pubKey = pubKey;
     this.accountName = accountName;
 
   }
@@ -89,7 +96,29 @@ export default class WalletConnectionApi extends LoggedService {
   public connectLeap(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
     return this.connect(ConnectionType.Leap);
   }
+  public async connectMetamask(): Promise<RequestResponse<MetamaskConnectionInfo, ConnectionError>> {
+    const ethereum = window.ethereum;
+    if (typeof window.ethereum !== 'undefined') {
+      console.log('Eth wallet is installed!');
+    }
+    if (ethereum.isMetaMask) {
+      console.log('MetaMask is installed!');
+    }
+    window.ethereum.enable();
+    const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+    const account = accounts[0];
+    console.log('account is: ' + account);
 
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const { chainId } = await provider.getNetwork();
+
+    const address = await signer.getAddress();
+
+    const metamaskConnectionInfo: MetamaskConnectionInfo = {address:address, networkId: chainId};
+
+    return new RequestResponse<MetamaskConnectionInfo, any>(undefined, metamaskConnectionInfo);
+  }
   public async connect(connectionType: ConnectionType): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
     useSplashStore().increment();
     let extension: Keplr | undefined;
@@ -117,12 +146,13 @@ export default class WalletConnectionApi extends LoggedService {
         const key = await extension.getKey(chainInfo.chainId);
         const offlineSigner = extension.getOfflineSigner(chainInfo.chainId);
         const account = await offlineSigner.getAccounts();
-
+        console.log(account);
         const connection: ConnectionInfo = new ConnectionInfo(
           account[0].address,
           true,
           connectionType,
-          key?.name
+          account[0].pubkey,
+          key?.name,
         );
         return new RequestResponse<ConnectionInfo, any>(undefined, connection);
       } else {

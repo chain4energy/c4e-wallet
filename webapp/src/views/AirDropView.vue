@@ -7,12 +7,12 @@
       </template>
       <AirDropTotal/>
     </TabPanel>
-<!--    <TabPanel>-->
-<!--      <template #header>-->
-<!--        <div>{{$t('AIRDROP.CLAIM_AIRDROP')}}</div>-->
-<!--      </template>-->
-<!--      <ClaimAirDrop/>-->
-<!--    </TabPanel>-->
+    <TabPanel>
+      <template #header>
+        <div>{{$t('AIRDROP.CLAIM_AIRDROP')}}</div>
+      </template>
+      <ClaimAirDrop/>
+    </TabPanel>
   </TabView>
 </div>
 </template>
@@ -22,6 +22,7 @@ import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import AirDropTotal from "@/components/airdrop/AirDropTotal.vue";
 import ClaimAirDrop from "@/components/airdrop/ClaimAirdrop.vue";
+
 </script>
 
 <style scoped lang="scss">

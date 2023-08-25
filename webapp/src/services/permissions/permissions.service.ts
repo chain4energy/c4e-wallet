@@ -5,14 +5,22 @@ import {useConfigurationStore} from "@/store/configuration.store";
 export class PermissionsService{
 
   sidebarElementOrder(): PagesEnum[]{
-    if(this.faucetAvailable()) {
-      return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AirDrop, PagesEnum.FAUCET];
+    const tempPagesEnum = [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AIRDROP, PagesEnum.PORTFOLIO];
+    if(this.publicSaleVisible()) {
+      tempPagesEnum.push(PagesEnum.BUYTOKENS, PagesEnum.PROFILE);
     }
-    return [PagesEnum.DASHBOARD, PagesEnum.STAKING, PagesEnum.GOVERNANCE, PagesEnum.AirDrop];
+    if(this.faucetAvailable()) {
+      tempPagesEnum.push(PagesEnum.FAUCET);
+    }
+    return tempPagesEnum;
   }
 
   faucetAvailable(): boolean {
     return useConfigurationStore().config.faucetAvailable;
+  }
+
+  publicSaleVisible(): boolean {
+    return useConfigurationStore().config.publicSaleVisible;
   }
   createSideBar(): SidebarElement[]{
     const sidebarConfig = new SidebarConfig();

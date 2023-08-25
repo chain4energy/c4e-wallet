@@ -14,9 +14,12 @@ import {useToast} from "vue-toastification";
 import WifiIcon from '@/components/features/WifiOnIcon.vue';
 import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
 import {useI18n} from "vue-i18n";
+import {useUserServiceStore} from "@/store/userService.store";
+import {usePublicSalesStore} from "@/store/publicSales.store";
 const keplrKeyStoreChange = 'keplr_keystorechange';
 const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
 const leapKeyStoreChange = 'leap_keystorechange';
+
 class DataService extends LoggedService {
 
   private minBetweenRefreshmentsPeriod = 1000;
@@ -24,20 +27,25 @@ class DataService extends LoggedService {
   private dashboardTimeout = 3000;
   private validatorsTimeout = 10000;
   private accountTimeout = 10000;
+  private spendableTimeout = 10000;
   private lastBlockTimeout = 0;
   private lastDashboardTimeout = 0;
   private lastValidatorsTimeout = 0;
   private lastAccountTimeout = 0;
+  private lastSpendablesTimeout = 0;
 
   private blockIntervalId = 0;
   private dashboardIntervalId = 0;
   private validatorsIntervalId = 0;
   private accountIntervalId = 0;
+  private spendablesIntervalId = 0;
 
   private onProposalDetailsError?: () => void;
 
   private static instance: DataService;
   private isOnline = navigator.onLine;
+  private onClaimAirdropView = false;
+
 
   public static getInstance(): DataService {
     if (!DataService.instance) {
@@ -84,6 +92,14 @@ class DataService extends LoggedService {
     window.addEventListener('blur', () => {
       this.clearIntervals();
     }, false);
+
+    window.ethereum.on('networkChanged', function(networkId: number){
+      useUserStore().metamaskConnectionInfo.networkId = networkId;
+    });
+
+    window.ethereum.on('accountsChanged', function (accounts: string[]) {
+      useUserStore().metamaskConnectionInfo.address = accounts[0];
+    });
   }
   private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');
@@ -132,6 +148,7 @@ class DataService extends LoggedService {
   public onWindowLoad() {
     this.logToConsole(LogLevel.DEBUG, 'onWindowLoad');
     useUserStore().reconnect(this.onLoginSuccess);
+    useUserStore().reconnectMetamask();
   }
 
   public onKeplrLogIn(onSuccess?: () => void) {
@@ -160,7 +177,12 @@ class DataService extends LoggedService {
     useUserStore().connectAsAddress(address, (connetionInfo: ConnectionInfo) => {this.onLoginSuccess(connetionInfo, onSuccess);});
   }
 
-  public onLogOut() {
+  public async onMetamaskConnect(onSuccess?: () => void) {
+    this.logToConsole(LogLevel.DEBUG, 'onMetamaskConnect');
+    return useUserStore().connectMetamask(() => this.onMetamaskConnectSuccess(onSuccess));
+  }
+
+  public onLogOutWallet() {
     this.logToConsole(LogLevel.DEBUG, 'onLogOut');
     window.clearInterval(this.accountIntervalId);
     this.disableKeplrAccountChangeListener();
@@ -186,13 +208,30 @@ class DataService extends LoggedService {
       useTokensStore().clear();
       useValidatorsStore().clear();
       this.clearIntervals();
-      this.onInit();
+      this.onInit().then( () => {
+          if (this.onClaimAirdropView && useUserStore().getAccount.address) {
+            useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+          }
+        }
+      );
       if (refreshProposals) {
         useProposalsStore().fetchProposals(true);
       }
     } finally {
       useSplashStore().decrement();
     }
+  }
+
+  public onPortfolioSelected() {
+    this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected refreshs');
+
+    this.lastSpendablesTimeout = new Date().getTime();
+    this.spendablesIntervalId = window.setInterval(refreshSpendables, this.spendableTimeout);
+  }
+
+  public onPortfolioUnselected() {
+    this.logToConsole(LogLevel.DEBUG, 'onPortfolioUnselected refreshs');
+    window.clearInterval(this.spendablesIntervalId);
   }
 
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
@@ -204,11 +243,23 @@ class DataService extends LoggedService {
 
   }
 
+  public onInfoView() {
+
+    usePublicSalesStore().fetchRoundInfoList();
+    usePublicSalesStore().fetchRoundInfo(useConfigurationStore().config.currentPublicSaleRoundId, undefined,false);
+
+    if(useUserServiceStore().isLoggedIn) {
+      useUserServiceStore().getAccount(()=>{console.log(1);}, ()=>{console.log(2);});
+      useUserServiceStore().getKycStatus();
+      usePublicSalesStore().fetchTokenReservations();
+    }
+
+  }
+
   public onProposalUnselected() {
     this.logToConsole(LogLevel.DEBUG, 'onProposalUnselected');
     useProposalsStore().clearProposal();
     this.onProposalDetailsError = undefined;
-
   }
 
   public onGovernanceUnselected() {
@@ -230,20 +281,25 @@ class DataService extends LoggedService {
 
   public onKeplrKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onKeplrKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectKeplr();
+    useUserStore().connectKeplr().then(refreshSpendables);
   }
 
   public onCosmostationKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onCosmostationKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectCosmostation();
+    useUserStore().connectCosmostation().then(refreshSpendables);
+
   }
 
   public onLeapKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onLeapKeyStoreChange');
+    usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectLeap();
+    useUserStore().connectLeap().then(refreshSpendables);
+
   }
 
   private onLoginSuccess(connetionInfo: ConnectionInfo, onSuccess?: () => void) {
@@ -258,14 +314,26 @@ class DataService extends LoggedService {
     if (connetionInfo.isLeap()) {
       instancce.enableLeapAccountChangeListener();
     }
-    const now = new Date().getTime();
-    instancce.lastAccountTimeout = now;
+    instancce.lastAccountTimeout = new Date().getTime();
     instancce.accountIntervalId = window.setInterval(refreshAccountData, instancce.accountTimeout);
     const propId = useProposalsStore().proposal;
     const userAddress = useUserStore().getAccount.address;
     if (propId !== undefined && userAddress !== '') {
       useProposalsStore().fetchProposalUserVote(propId.proposalId, userAddress);
     }
+    // refresh spendables once logged in
+    refreshSpendables();
+
+    if (instancce.onClaimAirdropView && userAddress) {
+        useAirDropStore().fetchUsersCampaignData(userAddress, true);
+    }
+    if (onSuccess) {
+      onSuccess();
+    }
+  }
+
+  private onMetamaskConnectSuccess(onSuccess?: () => void) {
+
     if (onSuccess) {
       onSuccess();
     }
@@ -293,6 +361,20 @@ class DataService extends LoggedService {
     if (!this.skipRefreshing(this.lastAccountTimeout)) {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
+      });
+      if(useUserStore().getAccount.address && this.onClaimAirdropView){
+        useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+      }
+    }
+
+  }
+
+  public refreshSpendables() {
+    // f-n refreshing spendable balances from API
+    if (useUserStore().getAccount.address) {
+      this.logToConsole(LogLevel.DEBUG, 'refreshSpendables');
+        useUserStore().updateSpendables().then(() => {
+          this.lastSpendablesTimeout = new Date().getTime();
       });
     }
   }
@@ -362,9 +444,17 @@ class DataService extends LoggedService {
     window.removeEventListener(leapKeyStoreChange, keystoreLeapChangeListener);
   }
 
-  public onClaimAirdrop(address: string) {
-    this.logToConsole(LogLevel.DEBUG, 'onClaimAirdrop');
-    useAirDropStore().fetchCampaigns(address, true);
+  public enterClaimAirdrop() {
+    this.logToConsole(LogLevel.DEBUG, 'enterClaimAirdrop');
+    this.onClaimAirdropView = true;
+    if(useUserStore().getAccount.address){
+      useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+    }
+  }
+
+  public leaveClaimAirdrop() {
+    this.logToConsole(LogLevel.DEBUG, 'leaveClaimAirdrop');
+    this.onClaimAirdropView = false;
   }
 
   public async onProposalUpdateVotes(proposalId: number) {
@@ -375,7 +465,6 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onClaimRewards');
     useUserStore().claimRewards();
   }
-
 }
 
 export default DataService.getInstance();
@@ -406,4 +495,9 @@ function refreshDashboard() {
 
 function refreshValidators() {
   DataService.getInstance().refreshValidators();
+}
+
+
+function refreshSpendables() {
+  DataService.getInstance().refreshSpendables();
 }

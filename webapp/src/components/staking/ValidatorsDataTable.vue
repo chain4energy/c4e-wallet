@@ -1,6 +1,7 @@
 <template>
   <span>
-    <StakingPopup v-if="!isUndelegationsTable() && popupOpened" :validator="currentValidator" @success="transactionSuccess" @close="checkBTN" :redelegation-direction="getRedelegationDirection()"/>
+<!--    <StakingPopup v-if="!isUndelegationsTable() && popupOpened" :validator="currentValidator" @success="transactionSuccess" @close="checkBTN" :redelegation-direction="getRedelegationDirection()"/>-->
+    <StakingPopupModal v-if="!isUndelegationsTable()" :visible="popupOpened" :validator="currentValidator" @success="transactionSuccess" @close="checkBTN" :redelegation-direction="getRedelegationDirection()" />
     <DataTableWrapper :data-key="'operator_address'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick" :paginator="false">
       <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>
       <template #header>
@@ -15,6 +16,7 @@
       <template v-slot:columns>
         <Column v-if="isValidatorsTable()" field="rank" :header="$t(`STAKING_VIEW.TABLE.RANK`)" :sortable="true">
           <template #body="{data}">
+            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.RANK`) }}</span>
             <div class="rank">
               <div style="display: flex; flex-direction: column">
                 <div :class="data.delegatedAmount > 0n ? '' : 'opacity-0'" style="display: flex; margin: 1px 0"><div class="badge-staking staked">{{$t(`STAKING_VIEW.INDICATOR.STAKE`)}}</div></div>
@@ -26,22 +28,26 @@
         </Column>
         <Column field="description.moniker" :header="$t(`STAKING_VIEW.TABLE.NAME`)" :sortable="true">
           <template #body="{data}">
+            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>
             <ValidatorLogo :validator="data"></ValidatorLogo>
             <span>{{ data.description.moniker }}</span>
           </template>
         </Column>
-        <Column v-if="isValidatorsTable()" field="status" :header="$t(`STAKING_VIEW.TABLE.STATUS`)" :sortable="true">
+        <Column v-if="isValidatorsTable() || isDelegationsTable()" field="status" :header="$t(`STAKING_VIEW.TABLE.STATUS`)" :sortable="true">
           <template #body="{data}">
+            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.STATUS`) }}</span>
             <ValidatorStatusBadge :validator="data"/>
           </template>
         </Column>
         <Column v-if="isValidatorsTable()" field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
           <template #body="{data}">
-              <PercentsView :amount="data.commission.rate" :precision="2"></PercentsView>
+            <span class="p-column-title">Comission</span>
+            <PercentsView :amount="data.commission.rate" :precision="2"></PercentsView>
           </template>
         </Column>
         <Column v-if="isValidatorsTable()" field="votingPower" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">
           <template #body="{data}">
+            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.VOTING_POWER`)}}</span>
             <div v-if="data.votingPower">
             <div v-if="data.votingPower < 0.05" class="commision">
               <div class="level-1" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
@@ -65,22 +71,25 @@
         </Column>
         <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.STAKE`)" :sortable="true" sortField="delegatedAmount">
           <template #body="{data}">
+            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.STAKE`)}}</span>
             <CoinAmount :amount="new BigIntWrapper(data.delegatedAmount)" :show-denom="true"/>
           </template>
         </Column>
         <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.REWARDS`)" :sortable="true" sortField="rewardsAmountSort">
           <template #body="{data}">
+            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.REWARDS`)}}</span>
             <CoinAmount :amount="data.rewardsAmount" :show-denom="true"/>
           </template>
         </Column>
         <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING`)" :sortable="true" sortField="entry.amount">
           <template #body="{data}">
+            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.UNSTAKING`)}}</span>
             <CoinAmount :amount="data.entry.amount" :show-denom="true"/>
           </template>
         </Column>
         <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="true" sortField="entry.completionTime">
           <template #body="{data}">
-
+            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)}}</span>
             <span><DateCommon :date="data.entry.getCompletionTimeDate()" /></span>
           </template>
         </Column>
@@ -130,11 +139,13 @@
               <template v-slot:columns>
                 <Column field="amount" header="Amount" style="width: 200px" :sortable="false">
                   <template #body="{data}">
+                    <span class="p-column-title">Amount</span>
                     <CoinAmount :amount="data.amount" :show-denom="true"/>
                   </template>
                 </Column>
                 <Column field="completionTime" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="false">
                   <template #body="{data}">
+                    <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)}}</span>
                     <DateCommon :date="data.completionTime" />
                   </template>
                 </Column>
@@ -166,6 +177,7 @@ import DateCommon from "@/components/commons/DateCommon.vue";
 import ValidatorStatusBadge from "./ValidatorStatusBadge.vue";
 import { UnbondingDelegationEntry } from "@/models/store/staking";
 import {BigIntWrapper} from "@/models/store/common";
+import StakingPopupModal from "@/components/staking/StakingPopupModal.vue";
 
 function getRedelegationDirection() {
   if (isValidatorsTable()) {
@@ -264,6 +276,8 @@ const filters = ref({
 
 <style lang="scss" scoped>
 @import '../../styles/variables.scss';
+@import '../../styles/tables.scss';
+
 
 .flex-container-details {
   display: flex;
@@ -402,15 +416,19 @@ const filters = ref({
   }
 
   .p-datatable-wrapper {
+    overflow: initial !important;
     margin-top: -40px !important;
     transform: translateY(-40px) !important;
   }
+
+.p-datatable .p-datatable-tbody > tr > td > .p-column-title {
+  display: none;
+}
 
   @media screen and (max-width: 950px) {
     .search-bar {
       width: 100%;
       transform: none;
-      z-index: 5;
       margin-bottom: 20px;
     }
 
@@ -422,5 +440,10 @@ const filters = ref({
       margin-top: 0 !important;
       transform: none !important;
     }
+
+    .p-datatable .p-datatable-tbody > tr > td > .p-column-title {
+      display: block;
+    }
   }
+
 </style>
