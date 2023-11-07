@@ -429,6 +429,7 @@
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "publicSaleServiceURL": "http://localhost:8200",
+    "evServiceURL": "http://localhost:8200",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "transferDenom": "uc4e",
@@ -442,6 +443,9 @@
     "networkName": "Dev+docker-compose(veles-dev-1)",
     "keplrNetworkName": "C4E Veles Dev",
     "queries": {
+    },
+    "queriesEv": {
+      "LOGIN_EMAIL_AND_LOGIN_DATA": "/api/login-service/auth/resource"
     },
     "operationGas": {
       "vote": 250000,

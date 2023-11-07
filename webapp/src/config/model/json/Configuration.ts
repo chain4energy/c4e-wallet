@@ -1,3 +1,4 @@
+import {QueriesEv} from "@/config/model/store/Configuration";
 
 
 export interface Gas {
@@ -49,6 +50,9 @@ export interface JsonQueries {
   SPENDABLE_BALANCES_URL: string;
 }
 
+export interface JsonQueriesEv{
+  LOGIN_EMAIL_AND_LOGIN_DATA: string;
+}
 
 export interface Configuration {
   bcApiURL: string,
@@ -57,6 +61,7 @@ export interface Configuration {
   keybaseURL: string,
   stakingPageURL: string,
   publicSaleServiceURL: string,
+  evServiceURL: string,
   addressPrefix: string,
   stakingDenom: string,
   strategicPoolAddress: string[],
@@ -75,6 +80,7 @@ export interface Configuration {
   accountDataRefreshTimeout: number,
   proposalsPageLimit: number,
   queries: JsonQueries;
+  queriesEv: QueriesEv;
   explorerUrl: string,
   explorerAccount: string,
   explorerTx: string,

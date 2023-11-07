@@ -15,6 +15,7 @@ import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
 import {useRouter} from "vue-router";
 import {useUserServiceStore} from "@/store/userService.store";
+import {EvServiceApi} from "@/api/evService.api";
 
 let testfileName = '';
 
@@ -35,6 +36,7 @@ class ApiFactory {
   private readonly _airDropApi = new ClaimApi(() => this._axios);
   private readonly _publicSaleServiceApi = new PublicSaleServiceApi(() => this._axiosJwt);
   private readonly _faucetApi = new FaucetApi(() => this._axios)
+  private readonly _evServiceApi = new EvServiceApi(() => this._axiosJwt);
 
   private testMode = false;
 
@@ -102,6 +104,10 @@ class ApiFactory {
   }
   public publicSaleServiceApi(): PublicSaleServiceApi {
     return this._publicSaleServiceApi;
+  }
+
+  public evServiceApi(): EvServiceApi {
+    return this._evServiceApi;
   }
   public faucetApi(): FaucetApi {
     return this._faucetApi;

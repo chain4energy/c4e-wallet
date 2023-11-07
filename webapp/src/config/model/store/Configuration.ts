@@ -4,7 +4,7 @@ import {
   ViewDenom as JsonViewDenom,
   Configuration as JsonConfiguration,
   KeplrGasPriceSteps as JsonKeplrGasPriceSteps,
-  JsonQueries
+  JsonQueries, JsonQueriesEv
 } from "../json/Configuration";
 import queriesDefaults from "@/api/queries";
 export class Gas implements JsonGas {
@@ -133,6 +133,15 @@ export class Queries implements JsonQueries{
   }
 }
 
+export class QueriesEv implements JsonQueriesEv{
+  LOGIN_EMAIL_AND_LOGIN_DATA: string;
+  constructor (
+    queries : JsonQueriesEv | undefined
+  ) {
+    this.LOGIN_EMAIL_AND_LOGIN_DATA = queries?.LOGIN_EMAIL_AND_LOGIN_DATA ? queries?.LOGIN_EMAIL_AND_LOGIN_DATA : queriesDefaults.ev.LOGIN_EMAIL_AND_LOGIN_DATA;
+  }
+}
+
 export class Configuration implements JsonConfiguration {
   bcApiURL: string;
   bcRpcURL: string;
@@ -140,6 +149,7 @@ export class Configuration implements JsonConfiguration {
   keybaseURL: string;
   stakingPageURL: string;
   publicSaleServiceURL: string;
+  evServiceURL: string;
   addressPrefix: string;
   stakingDenom: string;
   tokenReservationDenom: string;
@@ -161,6 +171,7 @@ export class Configuration implements JsonConfiguration {
   accountDataRefreshTimeout: number;
   proposalsPageLimit: number;
   queries: Queries;
+  queriesEv: QueriesEv;
   explorerUrl: string;
   explorerAccount: string;
   explorerTx: string;
@@ -187,6 +198,7 @@ export class Configuration implements JsonConfiguration {
       this.keybaseURL = configuration.keybaseURL;
       this.stakingPageURL = configuration.stakingPageURL;
       this.publicSaleServiceURL = configuration.publicSaleServiceURL;
+      this.evServiceURL = configuration.evServiceURL;
       this.addressPrefix = configuration.addressPrefix;
       this.stakingDenom = configuration.stakingDenom;
       this.strategicPoolAddress = configuration.strategicPoolAddress;
@@ -209,6 +221,7 @@ export class Configuration implements JsonConfiguration {
       this.accountDataRefreshTimeout = configuration.accountDataRefreshTimeout;
       this.proposalsPageLimit = configuration.proposalsPageLimit;
       this.queries = new Queries(configuration.queries);
+      this.queriesEv = new QueriesEv(configuration.queriesEv);
       this.explorerUrl = configuration.explorerUrl;
       this.explorerAccount = configuration.explorerAccount;
       this.explorerTx = configuration.explorerTx;
@@ -233,6 +246,7 @@ export class Configuration implements JsonConfiguration {
       this.keybaseURL = '';
       this.stakingPageURL = '';
       this.publicSaleServiceURL = ' ';
+      this.evServiceURL = '';
       this.addressPrefix = '';
       this.stakingDenom = '';
       this.strategicPoolAddress = [''];
@@ -252,6 +266,7 @@ export class Configuration implements JsonConfiguration {
       this.accountDataRefreshTimeout = 60000;
       this.proposalsPageLimit = 10;
       this.queries = new Queries(undefined);
+      this.queriesEv = new QueriesEv(undefined);
       this.explorerUrl = '';
       this.explorerAccount = '';
       this.explorerTx = '';

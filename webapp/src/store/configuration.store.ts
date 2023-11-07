@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { Configuration } from "@/config/model/store/Configuration";
-import dataService from "@/services/data.service";
+import {DataServiceInterface} from "@/services/data.service";
 import apiFactory from "@/api/factory.api";
 import axios from "axios";
 
@@ -9,6 +9,7 @@ interface ConfigurationState {
   configName: string
   configList: Map<string, Configuration>,
   initialized: boolean
+  configurationChangeHandler?: DataServiceInterface
 }
 
 const defaultConfigName = '';
@@ -20,7 +21,8 @@ export const useConfigurationStore = defineStore({
       config: new Configuration(),
       configName: defaultConfigName,
       configList: new Map<string, Configuration>(),
-      initialized: false
+      initialized: false,
+      configurationChangeHandler: undefined
     };
   },
   actions: {
@@ -56,7 +58,8 @@ export const useConfigurationStore = defineStore({
     // },
 
 
-    async fetchConfigList(){
+    async fetchConfigList(dataService: DataServiceInterface){
+      this.configurationChangeHandler = dataService;
       this.configList = new Map<string, Configuration>();
       if(this.config.isEmpty && this.configList.size < 1){
         await axios.get('/config.json').then((res ) => {
@@ -87,12 +90,12 @@ export const useConfigurationStore = defineStore({
           }
         });
       } else {
-        dataService.onConfigurationChange();
+        this.configurationChangeHandler?.onConfigurationChange();
       }
       this.initialized = true;
       return this.config;
     },
-    setNetwork(key: string){
+    setNetwork( key: string){
       this.configName = this.configList.get(key)?.networkName || '';
       this.config = this.configList.get(key) || new Configuration();
       if (this.config.testMode && this.config.testFileName) {
@@ -100,7 +103,7 @@ export const useConfigurationStore = defineStore({
       } else {
         apiFactory.runNormalMode();
       }
-      dataService.onConfigurationChange();
+      this.configurationChangeHandler?.onConfigurationChange();
     }
   },
   getters: {

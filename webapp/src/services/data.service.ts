@@ -20,7 +20,11 @@ const keplrKeyStoreChange = 'keplr_keystorechange';
 const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
 const leapKeyStoreChange = 'leap_keystorechange';
 
-class DataService extends LoggedService {
+export interface DataServiceInterface {
+  onConfigurationChange():void;
+}
+
+class DataService extends LoggedService implements DataServiceInterface{
 
   private minBetweenRefreshmentsPeriod = 1000;
   private blockTimeout = 3000;
@@ -72,7 +76,7 @@ class DataService extends LoggedService {
       this.setIntervals();
     });
     this.logToConsole(LogLevel.DEBUG, 'onAppStart');
-    await useConfigurationStore().fetchConfigList().then(() => {
+    await useConfigurationStore().fetchConfigList(this).then(() => {
         const config = useConfigurationStore().getConfig;
         this.minBetweenRefreshmentsPeriod = config.minPeriodBetweenDataRefresh;
         this.blockTimeout = config.blockDataRefreshTimeout;
