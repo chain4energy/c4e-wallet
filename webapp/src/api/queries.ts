@@ -118,6 +118,7 @@ export default {
     OVERVIEW: 'https://individual-api.synaps.io/v3/onboarding/overview'
   },
   ev: {
-    LOGIN_EMAIL_AND_LOGIN_DATA: '/api/auth/resource'
+    LOGIN_EMAIL_AND_LOGIN_DATA: '/api/auth/resource',
+    DECODE_RESOURCE_URL: 'api/xxxxx/decode'
   }
 };

@@ -1,0 +1,5441 @@
+openapi: 3.0.0
+info:
+  title: Przelewy24 REST API Documentation
+  description: The widest possible choice of payment methods on the Polish market
+  version: 0.0.1
+servers:
+  - url: https://secure.przelewy24.pl/api
+    description: Przelewy24 REST API Documentation
+paths:
+  /v1/card/charge:
+    post:
+      tags:
+        - Card
+      summary: Asynchronous charge card.
+      requestBody:
+        description: Input parameters. Card token (card reference id) must be sent in TransactionRegistration process as parameter named 'methodRefId' / 'p24_method_ref_id' (depending on the version).
+        content:
+          application/json:
+            schema:
+              description: Input parameters. Card token (card reference id) must be sent in TransactionRegistration process as parameter named 'methodRefId' / 'p24_method_ref_id' (depending on the version).
+              required: true
+              name: body
+              $ref: '#/components/schemas/CardChargeRequestBody'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CardChargeRequestBody'
+      responses:
+        '200':
+          description: The charge card command has been accepted - notification will be send on success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargeCardSuccessResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/card/chargeWith3ds:
+    post:
+      tags:
+        - Card
+      summary: Synchronously charge card with 3DS check.
+      requestBody:
+        description: |-
+          Input parameters - transaction token created through TransactionRegistration proccess with
+              card token (card reference id) sent as parameter named 'methodRefId' / 'p24_method_ref_id'
+              (depending on the version).
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardChargeRequestBody'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CardChargeRequestBody'
+      responses:
+        '200':
+          description: The charge card command has been accepted - notification will be send on success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargeCardSuccessResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/card/check:
+    post:
+      tags:
+        - Card
+      summary: Check card by terminals.
+      requestBody:
+        description: Input parameters. Card token (card reference id) must be sent in TransactionRegistration process as parameter named 'methodRefId' / 'p24_method_ref_id' (depending on the version). Card notification URL must by sent in TransactionRegistration process as parameter named 'urlCardPaymentNotification' / 'p24_url_card_payment_notification' (depending on the version).
+        content:
+          application/json:
+            schema:
+              required: true
+              name: body
+              $ref: '#/components/schemas/CardChargeRequestBody'
+          application/x-www-form-urlencoded:
+            schema:
+              description: Input parameters. Card token (card reference id) must be sent in TransactionRegistration process as parameter named 'methodRefId' / 'p24_method_ref_id' (depending on the version). Card notification URL must by sent in TransactionRegistration process as parameter named 'urlCardPaymentNotification' / 'p24_url_card_payment_notification' (depending on the version).
+              required: true
+              name: body
+              $ref: '#/components/schemas/CardChargeRequestBody'
+      responses:
+        '200':
+          description: The check card command has been accepted - notification will be send on success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckCardSuccessResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '409':
+          description: Request could not be completed
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+                    example: Request could not be completed
+                  code:
+                    type: number
+                    example: 409
+                type: object
+      security:
+        - basicAuth: []
+  /v1/card/preauthorization/{orderId}:
+    post:
+      tags:
+        - Card
+      summary: Method commits previous preauthorization.
+      parameters:
+        - name: orderId
+          in: path
+          description: An unique order ID.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Request successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '400':
+          description: Wrong input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+        '403':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Transaction not exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+    delete:
+      tags:
+        - Card
+      summary: Method cancels previous preauthorization.
+      parameters:
+        - name: orderId
+          in: path
+          description: An unique order ID.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Request successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '400':
+          description: Wrong input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+        '403':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Transaction not exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/card/info/{orderId}:
+    get:
+      tags:
+        - Card
+      summary: Method return informations about credit card used in transaction.
+      parameters:
+        - name: orderId
+          in: path
+          description: An unique order ID.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Request successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCardInfoResponseData'
+        '400':
+          description: Wrong input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+        '403':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Transaction not exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/card/insert:
+    post:
+      tags:
+        - Card
+      summary: Make card insert.
+      requestBody:
+        description: Input data format
+        content:
+          application/json:
+            schema:
+              required:
+                - transactionToken, cardNumber, cardDate
+              $ref: '#/components/schemas/CardInsertRequestBody'
+      responses:
+        '200':
+          description: The card insert has been succesed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardInsertSuccessResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardInsertResponse409'
+      callbacks:
+        cardPayNotification_positive_authorization:
+          urlCardPaymentNotification:
+            post:
+              requestBody:
+                description: Notification is sent to the url given in the "urlCardPaymentNotification" parameter, which must be added to the transaction/register method, or to a fixed address saved in the P24 account configuration. The value from the token, if it was sent, is paramount.
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/cardPayNotificationPositiveAuthorization'
+              responses:
+                '200':
+                  description: Your code at urlStatus must return status 200
+        cardPayNotification_negative_authorization:
+          urlCardPaymentNotification:
+            post:
+              requestBody:
+                description: Notification is sent to the url given in the "urlCardPaymentNotification" parameter, which must be added to the transaction/register method, or to a fixed address saved in the P24 account configuration. The value from the token, if it was sent, is paramount.
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/cardPayNotificationNegativeAuthorization'
+              responses:
+                '200':
+                  description: Your code at urlStatus must return status 200
+      security:
+        - basicAuth: []
+  /v1/card/pay:
+    post:
+      tags:
+        - Card
+      summary: Make card payment.
+      requestBody:
+        description: Input data format
+        content:
+          application/json:
+            schema:
+              description: Input parameters
+              required: true
+              example:
+                id: a3fb6
+                name: Jessica Smith
+              name: body
+              $ref: '#/components/schemas/CardRegisterRequestBody'
+          x-www-form-urlencoded:
+            schema:
+              description: Input parameters
+              required: true
+              example:
+                id: a3fb6
+                name: Jessica Smith
+              name: body
+              $ref: '#/components/schemas/CardRegisterRequestBody'
+      responses:
+        '200':
+          description: The card payment has been succesed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPaySuccessResponse'
+        '201':
+          description: The card payment require 3DS redirection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPayThreeDSecureResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardPayResponse409'
+      callbacks:
+        cardPayNotification_positive_authorization:
+          urlCardPaymentNotification:
+            post:
+              requestBody:
+                description: Notification is sent to the url given in the "urlCardPaymentNotification" parameter, which must be added to the transaction/register method, or to a fixed address saved in the P24 account configuration. The value from the token, if it was sent, is paramount.
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        amount:
+                          type: integer
+                          example: 10
+                          description: Transaction amount
+                        3ds:
+                          type: boolean
+                          example: true
+                          description: Was 3D-Secure performed during payment?
+                        method:
+                          type: integer
+                          example: 218
+                          description: Payment method ID
+                        refId:
+                          type: string
+                          example: 10636C17-982F797F-E256FF6A-AED9D667
+                          description: Card reference number
+                        orderId:
+                          type: integer
+                          example: 300188118
+                          description: Transaction number assigned by P24 for oneclick sampling
+                        sessionId:
+                          type: string
+                          example: session_1567679496185
+                          description: Unique identifier from merchant's system
+                        bin:
+                          type: integer
+                          example: 901000
+                          description: Registered card bin
+                        maskedCCNumber:
+                          type: string
+                          example: xxxxxxxxxxxx0001
+                          description: 'Masked card number, format: XXXXXXXXXXXX1234'
+                        ccExp:
+                          type: string
+                          example: '012022'
+                          description: Card expiry date in MMYYYY format eg. 122020
+                        hash:
+                          type: string
+                          example: 2c73d10720b6bb9bfe9458da1b4c09ac71baaea519ba0f24049ba6f787ab270ce88eb2194642422be20b7f7fbd2a702c
+                          description: Unique card hash – unique for each card
+                        cardCountry:
+                          type: string
+                          example: PL
+                          description: Country code compatible with ISO, e.g. PL
+                        cardType:
+                          type: string
+                          example: visa
+                          description: Card type (VISA, ECMC)
+                        risk:
+                          type: integer
+                          enum:
+                            - 0
+                            - 1
+                            - 2
+                          description: 0 – safe, 1 – suspicious, 2 – hazardous. Score calculated using a card payment risk calculation tool
+                        liabilityshift:
+                          type: boolean
+                          example: false
+                          description: 1 – Yes, 0 – No
+                        sign:
+                          type: string
+                          example: 692b843724c5103d720f26dd1a09148ff9672f104c26aecf95a6d86e01bf9b01a1909f3689093f91640c157bc9fe0cf9
+                          description: SHA384
+              responses:
+                '200':
+                  description: Your code at urlStatus must return status 200
+        cardPayNotification_negative_authorization:
+          urlCardPaymentNotification:
+            post:
+              requestBody:
+                description: Notification is sent to the url given in the "urlCardPaymentNotification" parameter, which must be added to the transaction/register method, or to a fixed address saved in the P24 account configuration. The value from the token, if it was sent, is paramount.
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        amount:
+                          type: integer
+                          example: 10
+                          description: Transaction amount
+                        3ds:
+                          type: boolean
+                          example: true
+                          description: Was 3D-Secure performed during payment?
+                        method:
+                          type: integer
+                          example: 218
+                          description: Payment method ID
+                        refId:
+                          type: string
+                          example: 10636C17-982F797F-E256FF6A-AED9D667
+                          description: Card reference number
+                        orderId:
+                          type: integer
+                          example: 300188118
+                          description: Transaction number assigned by P24 for oneclick sampling
+                        sessionId:
+                          type: string
+                          example: session_1567679496185
+                          description: Unique identifier from merchant's system
+                        ErrorCode:
+                          type: integer
+                          example: err170
+                          description: Error code
+                        ErrorMessage:
+                          type: string
+                          example: Sth error
+                          description: Error description
+                        sign:
+                          type: string
+                          example: 692b843724c5103d720f26dd1a09148ff9672f104c26aecf95a6d86e01bf9b01a1909f3689093f91640c157bc9fe0cf9
+                          description: SHA384
+              responses:
+                '200':
+                  description: Your code at urlStatus must return status 200
+      security:
+        - basicAuth: []
+  /v1/card/recurringCharge:
+    post:
+      tags:
+        - Card
+      summary: Asynchronous recurring charge card.
+      requestBody:
+        description: Input parameters. Card token (card reference id) must be sent in TransactionRegistration process as parameter named 'methodRefId' / 'p24_method_ref_id' (depending on the version).
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardChargeRequestBody'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CardChargeRequestBody'
+      responses:
+        '200':
+          description: The recurring charge card command has been accepted - notification will be send on success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargeCardSuccessResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/card/register:
+    post:
+      tags:
+        - Card
+      summary: Asynchronous register card.
+      requestBody:
+        description: Input parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardRegisterRequestBody'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CardRegisterRequestBody'
+      responses:
+        '200':
+          description: The card registration command has been accepted - the result will be sent in notification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardRegisterSuccessResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/exchange/getRate/{amount}/{from}/{to}:
+    get:
+      tags:
+        - Exchange
+      summary: Retrieve current EUR -> PLN exchange rate for given merchant.
+      parameters:
+        - name: amount
+          in: path
+          description: Amount in EUR
+          required: true
+          schema:
+            type: integer
+        - name: from
+          in: path
+          description: Currency code to exchange from
+          required: true
+          schema:
+            type: string
+        - name: to
+          in: path
+          description: Currency code to exchange to
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetExchangeRateResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+        '500':
+          description: Undefined Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/issueWithdrawal:
+    post:
+      tags:
+        - Withdraw
+      summary: Set withdraw.
+      requestBody:
+        description: Input data format
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - currency
+              properties:
+                currency:
+                  description: currency
+                  type: string
+                timestamp:
+                  description: timestamp
+                  type: integer
+                requestId:
+                  description: requestId
+                  type: string
+              type: object
+      responses:
+        '202':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/merchant/exists/{identificationType}/{identificationNumber}:
+    get:
+      tags:
+        - Merchant
+      summary: Checking if the merchant is registered by the partner.
+      parameters:
+        - name: identificationType
+          in: path
+          description: nip or pesel type
+          required: true
+          schema:
+            type: string
+        - name: identificationNumber
+          in: path
+          description: nip or pesel value
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantExistResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '403':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/merchant/register:
+    post:
+      tags:
+        - Merchant
+      summary: Method create an account and receive a link to confirm the terms of the agreement with the merchant.
+      requestBody:
+        description: Input data format
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - business_type
+                - name
+                - email
+                - phone_number
+                - bank_account
+                - representatives[name]
+                - representatives[pesel]
+                - contact_person[name]
+                - contact_person[email]
+                - contact_person[phone_number]
+                - address[country]
+                - address[city]
+                - address[post_code]
+                - address[street]
+                - correspondence_address[country]
+                - correspondence_address[city]
+                - correspondence_address[post_code]
+                - correspondence_address[street]
+                - technical_contact[name]
+                - technical_contact[email]
+                - technical_contact[phone_number]
+                - invoice_email
+                - services_description
+                - trade
+                - acceptance
+                - pesel
+              properties:
+                business_type:
+                  description: Type of business *
+                  type: integer
+                  enum:
+                    - '1'
+                    - '2'
+                    - '3'
+                    - '4'
+                    - '5'
+                    - '6'
+                    - '7'
+                    - '8'
+                    - '9'
+                    - '10'
+                name:
+                  description: First name and surname of Customer
+                  type: string
+                email:
+                  description: Customer’s email
+                  type: string
+                phone_number:
+                  description: 'Customer’s telephone number in the following format: 481321132123'
+                  type: string
+                bank_account:
+                  description: Bank account number
+                  type: string
+                representatives[name]:
+                  description: Representative authorized to conclude contracts *
+                  type: string
+                representatives[pesel]:
+                  description: Representative social security number
+                  type: string
+                contact_person[name]:
+                  description: Contact person name
+                  type: string
+                contact_person[email]:
+                  description: Contact person email
+                  type: string
+                contact_person[phone_number]:
+                  description: Contact person phone number
+                  type: string
+                address[country]:
+                  description: Customer’s country
+                  type: string
+                address[city]:
+                  description: Customer’s cit
+                  type: string
+                address[post_code]:
+                  description: Customer’s ZIP code
+                  type: string
+                address[street]:
+                  description: Customer’s street
+                  type: string
+                correspondence_address[country]:
+                  description: Correspondence address - country
+                  type: string
+                correspondence_address[city]:
+                  description: Correspondence address - city
+                  type: string
+                correspondence_address[post_code]:
+                  description: Correspondence address - post code
+                  type: string
+                correspondence_address[street]:
+                  description: Correspondence address - street
+                  type: string
+                technical_contact[name]:
+                  description: Technical contact person name
+                  type: string
+                technical_contact[email]:
+                  description: Technical contact person email
+                  type: string
+                technical_contact[phone_number]:
+                  description: Technical contact person phone number
+                  type: string
+                invoice_email:
+                  description: E-mail address for invoices
+                  type: string
+                shop_url:
+                  type: string
+                services_description:
+                  description: Description of the service, if the customer does not have a website
+                  type: string
+                trade:
+                  description: Industry suitable for the customer's business *
+                  type: string
+                acceptance:
+                  description: Merchant is obliged to accept the terms and conditions
+                  type: string
+                nip:
+                  type: string
+                regon:
+                  type: string
+                krs:
+                  type: string
+                pesel:
+                  description: Client social security number
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantRegistrationResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantRegistrationResponse'
+        '403':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/payment/methods/{lang}:
+    get:
+      tags:
+        - Payment
+      summary: Method returns a list of payment methods.
+      parameters:
+        - name: lang
+          in: path
+          description: 'A language code. One of these: pl , en'
+          required: true
+          schema:
+            type: string
+            enum:
+              - pl
+              - en
+      responses:
+        '200':
+          description: List of payment methods
+        '403':
+          description: Not authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Payment methods not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+        - basicAuth: []
+  /v1/testAccess:
+    get:
+      tags:
+        - Info
+      summary: Method allows to test if access data are correct.
+      responses:
+        '200':
+          description: Access data are correct.
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: boolean
+                  error:
+                    type: string
+                type: object
+        '403':
+          description: Not authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/transaction/by/sessionId/{sessionId}:
+    get:
+      tags:
+        - Transaction
+      summary: Method returns an information about transaction.
+      parameters:
+        - name: sessionId
+          in: path
+          description: Session id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Transaction has been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionBySessionIdSuccessResponse'
+        '403':
+          description: Not authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Transaction not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+        - basicAuth: []
+  /v1/transactions/by/batch/{batch}:
+    get:
+      tags:
+        - Transaction
+      summary: Method returns a list of transactions transferred to Merchant in a single batch.
+      parameters:
+        - name: batch
+          in: path
+          description: An unique batch ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Transactions has been found
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionAbstractResponse'
+                  error:
+                    type: string
+                    default: ''
+                type: object
+        '403':
+          description: Not authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Transactions not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+      security:
+        - basicAuth: []
+  /v1/merchant/configuration/{spId}:
+    get:
+      tags:
+        - Merchant
+      summary: Get configuration for merchant.
+      parameters:
+        - name: spId
+          in: path
+          required: true
+          schema:
+            description: merchant id
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantConfigurationV10Response'
+        '401':
+          description: Not authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantConfigurationV10NotFoundResponse'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/multiStore/{affiliate_id}/crc:
+    get:
+      tags:
+        - MultiStore
+      summary: The ability to download data CRC merchant in order to create demand transactions on his account.
+      parameters:
+        - name: affiliate_id
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAffiliateCrcResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '403':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/multiStore/{affiliate_id}/apiKey:
+    get:
+      tags:
+        - MultiStore
+      summary: The ability to download  merchant's affiliate api key.
+      parameters:
+        - name: affiliate_id
+          in: path
+          description: Client ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAffiliateApiKeyResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyErrorResponse'
+        '401':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: affiliate not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyErrorResponse'
+        '422':
+          description: unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyErrorResponse'
+      security:
+        - basicAuth: []
+  /v1/multiStore/funds:
+    get:
+      tags:
+        - MultiStore
+      summary: Ability to get funds of the merchant.
+      parameters:
+        - name: merchantId
+          in: query
+          description: Merchant ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMerchantFundsResponse'
+        '400':
+          description: Invalid merchant id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '403':
+          description: You do not have rights to this account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/multiStore/refund:
+    post:
+      tags:
+        - Transaction
+      summary: Create refund for one or more transactions.
+      requestBody:
+        description: Parameter 'refunds' may contain multiple refunds.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRefundJsonRequestBody'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransactionRefundJsonRequestBody'
+      responses:
+        '200':
+          description: Request has been processed successful. Parameter 'data' contains all refunds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRefund200'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '409':
+          description: Parameter 'error' contains all refunds and information about error reason for the wrong ones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRefund409'
+      security:
+        - basicAuth: []
+  /v1/multiStore/dispatchInfo/{orderId}:
+    get:
+      tags:
+        - MultiStore
+      summary: Method returns an information about transaction.
+      parameters:
+        - name: orderId
+          in: path
+          description: transaction id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Transaction has been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionDispatchItemsResponse'
+        '401':
+          description: Not authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Transaction not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionNotFoundResponse'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/multiStore/dispatchTransaction:
+    post:
+      tags:
+        - MultiStore
+      summary: Split transaction into multiple mall accounts.
+      requestBody:
+        description: |-
+          <b>Required</b> array containing dispatch information<br><br>
+                                        <b>orderId</b> - transaction id to split<br>
+                                        <b>sessionId</b> - session id of the transaction<br>
+                                        <b>sellerId</b> - seller id to dispatch the payment to<br>
+                                        <b>amount</b> - amount dispatched to seller<br>
+                                        <b>items</b> - optional array of items in the dispatched transaction
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                details:
+                  $ref: '#/components/schemas/DispatchDetailsParameters'
+              type: object
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DispatchSucceedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DispatchErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenResponse'
+        '500':
+          description: Undefined Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/paymentMethod/blik/chargeByCode:
+    post:
+      tags:
+        - PaymentMethod
+      summary: Allows to charge blik transaction by T6 code. Returns unique transaction Id
+      requestBody:
+        description: Input data format
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/ChargeByCodeParameters'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlikChargeByCodeResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/paymentMethod/blik/chargeByAlias:
+    post:
+      tags:
+        - PaymentMethod
+      summary: Allows to charge blik transaction by alias. Returns unique transaction Id
+      requestBody:
+        description: Input data format
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChargeByAliasParameters'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlikChargeByAliasResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '409':
+          description: alternativeKeys
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargeByAlias409'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      callbacks:
+        blikChargeByAliasAdditionalNotification:
+          urlCardPaymentNotification:
+            post:
+              requestBody:
+                description: Notification is sent to the url given in the "urlCardPaymentNotification" parameter, which must be added to the transaction/register method, or to a fixed address saved in the P24 account configuration. The value from the token, if it was sent, is paramount.
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        data:
+                          type: object
+                          properties:
+                            orderId:
+                              type: integer
+                              example: 303457712
+                              description: Order ID
+                            sessionId:
+                              type: string
+                              example: session_1381580057776
+                              description: Merchant session ID
+                            method:
+                              type: integer
+                              example: 181
+                              description: Payment Method ID
+                            result:
+                              type: object
+                              properties:
+                                error:
+                                  type: string
+                                  example: '0'
+                                  description: Error code - 0 for success
+                                message:
+                                  type: string
+                                  example: Correct Transaction
+                                  description: Error message
+                                status:
+                                  type: string
+                                  example: AUTHORIZED
+                                  description: Transaction status
+                                trxRef:
+                                  type: string
+                                  example: '4913521230'
+                                  description: BLIK transaction reference number
+                            sign:
+                              type: string
+                              example: 443a049ab03a0cc89e3d131988d2201ff726d070fc39c2bc67a2008847e91f71dcdf03e428692178e1de974c5ecc19bb
+                              description: 'Checksum sha384 of parameters: ({"orderId":int,"sessionId":string,"method":int,"result":"array","crc":"string"})'
+              responses:
+                '200':
+                  description: Your code at urlStatus must return status 200
+        blikChargeByAliasUpdateNotification:
+          The address is configured via the P24 service:
+            post:
+              requestBody:
+                description: Additional notification may be sent to the specified URL, if the alias status is created or changed. The address is configured via the P24 service. The notification can be used as an alternative to the getAliasesByEmail method.
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        email:
+                          type: string
+                          example: john.doe@example.com
+                          description: client email
+                        value:
+                          type: string
+                          example: Alias
+                          description: alias value
+                        type:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+                          description: UID for oneclick, PAYID for recurring payments
+                        status:
+                          type: string
+                          enum:
+                            - NOT_CONFIRMED
+                            - REGISTERED
+                            - UNREGISTERED
+                            - EXPIRED
+              responses:
+                '200':
+                  description: Your code at urlStatus must return status 200
+      security:
+        - basicAuth: []
+  /v1/paymentMethod/blik/getAliasesByEmail/{email}:
+    get:
+      tags:
+        - PaymentMethod
+      summary: Method returns an information about standard client aliases.
+      parameters:
+        - name: email
+          in: path
+          description: client email address
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Aliases have been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAliasesByEmailResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Aliases not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionNotFoundResponse'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/paymentMethod/blik/getAliasesByEmail/{email}/custom:
+    get:
+      tags:
+        - PaymentMethod
+      summary: Method returns an information about custom client aliases.
+      parameters:
+        - name: email
+          in: path
+          description: client email address
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Aliases have been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAliasesByEmailResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Aliases not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionNotFoundResponse'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/:
+    get:
+      tags:
+        - Info
+      summary: Returns API description in JSON
+      responses:
+        '200':
+          description: successful operation
+  /v1/transaction/verifyLocation/{orderId}:
+    get:
+      tags:
+        - Transaction
+      summary: Method return information about localization and bank (country in ISO).
+      parameters:
+        - name: orderId
+          in: path
+          description: An unique order ID.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/transaction/payer/{sessionId}:
+    get:
+      tags:
+        - Transaction
+      summary: Method returns information about transaction payer.
+      parameters:
+        - name: sessionId
+          in: path
+          description: Session id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Payer data has been found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPayerInfoExtendedSuccessResponse'
+        '202':
+          description: The request has been accepted for processing, but the processing has not been completed. The resource will be returned when it becomes available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPayerInfoExtendedAcceptedResponse'
+        '400':
+          description: Invalid payer data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPayerInfoExtendedInvalidDataResponse'
+        '401':
+          description: Not authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Payer data not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPayerInfoExtendedNotFoundResponse'
+        '409':
+          description: Unable to continue notification process
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPayerInfoExtendedConflictResponse'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/refund/by/orderId/{orderId}:
+    get:
+      tags:
+        - Transaction
+      summary: Get refund details for given Order Id
+      parameters:
+        - name: orderId
+          in: path
+          description: existing refund Order Id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Request has been processed successful. Parameter 'data' contains refund info.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRefundsInfoResponse'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Refund with given Order Id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionNotFoundResponse'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/refunds/date/{date}:
+    get:
+      tags:
+        - Refunds
+      summary: Get refunds details for given date
+      parameters:
+        - name: date
+          in: path
+          description: refunds date in Ymd
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Request has been processed successful. Parameter 'data' contains refunds details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundsByDeteResponse200'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Refunds for given date not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundsDetailsNotFoundResponse'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/refunds/info/{orderId}:
+    get:
+      tags:
+        - Refunds
+      summary: Get refunds info for given orderId
+      parameters:
+        - name: orderId
+          in: path
+          description: orderId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Request has been processed successful. Parameter 'data' contains refunds details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundsInfoResponse200'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '404':
+          description: Refunds for given orderId not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundsDetailsNotFoundResponse'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/transaction/refund:
+    post:
+      tags:
+        - Transaction
+      summary: Create refund for one or more transactions.
+      requestBody:
+        description: Parameter 'refunds' may contain multiple refunds.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRefundJsonRequestBody'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransactionRefundJsonRequestBody'
+      responses:
+        '200':
+          description: Request has been processed successful. Parameter 'data' contains all refunds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRefund200'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '409':
+          description: Parameter 'error' contains all refunds and information about error reason for the wrong ones.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRefund409'
+      callbacks:
+        transactionRefundNotification:
+          '{$request.body.urlStatus}':
+            post:
+              requestBody:
+                description: Request which will be sent by Przelewy24
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        orderId:
+                          type: integer
+                          example: 1001
+                          description: ID of the refunded transaction in P24 system
+                        sessionId:
+                          type: string
+                          example: zamowienie-1
+                          description: ID of the refunded transaction in Partner's system
+                        merchantId:
+                          type: integer
+                          example: 11601
+                          description: Merchant's ID of whose account the refund is performed
+                        requestId:
+                          type: string
+                          example: rq10
+                          description: ID of refund request provided in transaction/refund
+                        refundsUuid:
+                          type: string
+                          example: 123e4567-e89b-12d3-a456-426614174000
+                          description: ID of refund request in Partner's system provided in transaction/refund
+                        amount:
+                          type: integer
+                          example: 123
+                          description: Refund amount expressed in lowest currency unit, e.g. 1.23 PLN = 123
+                        currency:
+                          type: string
+                          example: PLN
+                          description: Refund currency
+                        timestamp:
+                          type: integer
+                          example: 1627055069
+                          description: Time of sending the refund notification provided in UNIX timestamp
+                        status:
+                          type: integer
+                          example: 0
+                          description: Status of the executed refund. The parameter always takes the value 0, which means success
+                        sign:
+                          type: string
+                          example: 2f0ee3e77c92afdc0650e33334b18816f7f54d7237ac766fefb5e0e9e39cd3f824a0f7de0481417cc106f2c7e73aa402
+                          description: 'Checksum sha384 of parameters: {"orderId":int,"sessionId":"str","refundsUuid":"str","merchantId":int,"amount":int,"currency":"str","status":int,"crc":"str"}'
+              responses:
+                '200':
+                  description: Your code at urlStatus must return status 200
+      security:
+        - basicAuth: []
+  /v1/transaction/register/splitpayment:
+    post:
+      tags:
+        - Transaction
+      summary: Returns unique token required for split payment process
+      requestBody:
+        description: Input data format
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/SplitTransactionRegister'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRegistrationResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/transaction/register:
+    post:
+      tags:
+        - Transaction
+      summary: Returns unique token required for payment process
+      requestBody:
+        description: Input data format
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/TransactionRegister'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRegistrationResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      callbacks:
+        transactionRegisterNotification:
+          '{$request.body.urlStatus}':
+            post:
+              requestBody:
+                description: Request which will be sent by Przelewy24
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        merchantId:
+                          type: integer
+                          example: 1001
+                          description: Merchant identification number
+                        posId:
+                          type: integer
+                          example: 2001
+                          description: Shop identification number (defaults to merchant ID)
+                        sessionId:
+                          type: string
+                          example: sess007
+                          description: Unique identifier from merchant's system
+                          maxLength: 100
+                        amount:
+                          type: integer
+                          example: 123
+                          description: Transaction amount expressed in lowest currency unit, e.g. 1.23 PLN = 123
+                        originAmount:
+                          type: integer
+                          example: 123
+                          description: Transaction amount expressed in lowest currency unit, e.g. 1.23 PLN = 123
+                        currency:
+                          type: string
+                          example: PLN
+                          description: Currency compatible with ISO, e.g. PLN
+                          maxLength: 3
+                        orderId:
+                          type: integer
+                          example: 2201
+                          description: Transaction number assigned by P24
+                        methodId:
+                          type: integer
+                          example: 4201
+                          description: Payment method used by customer
+                        statement:
+                          type: string
+                          example: for bicycle
+                          description: Payment title
+                        sign:
+                          type: string
+                          example: 2f0ee3e77c92afdc0650e33334b18816f7f54d7237ac766fefb5e0e9e39cd3f824a0f7de0481417cc106f2c7e73aa402
+                          description: 'Checksum sha384 of parameters: ({"merchantId":int,"posId":int,"sessionId":"string","amount":int,"originAmount":int,"currency":"string","orderId":int,"methodId":int,"statement":"string","crc":"string"})'
+              responses:
+                '200':
+                  description: Your code at urlStatus must return status 200
+      security:
+        - basicAuth: []
+  /v1/transaction/register/ttl:
+    post:
+      tags:
+        - Transaction
+      summary: Returns unique token required for payment process
+      requestBody:
+        description: Input data format
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/TransactionRegisterTTL'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRegistrationResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/transaction/registerOffline:
+    post:
+      tags:
+        - Transaction
+      summary: Register offline transaction.
+      requestBody:
+        description: Input parameters.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRegisterOfflineRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransactionRegisterOfflineRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRegistrationOffline200'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRegistrationOffline409'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/transaction/reject:
+    put:
+      tags:
+        - Transaction
+      summary: Reject transaction.
+      requestBody:
+        description: 'Input parameters. Sign is SHA-384 hash calculated using JSON encoded array, that contains keys: ''merchantId'', ''orderId'', ''sessionId'' and ''crc''.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRejectJsonRequestBodyV11'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransactionRejectJsonRequestBodyV11'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionReject200'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '500':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/transaction/verify:
+    put:
+      tags:
+        - Transaction
+      summary: Verifies result of transaction
+      requestBody:
+        description: Input data format
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - posId
+                - sessionId
+                - amount
+                - currency
+                - orderId
+                - sign
+              properties:
+                posId:
+                  description: Shop identification number (defaults to merchant ID)
+                  type: integer
+                sessionId:
+                  description: Unique identifier from merchant's system
+                  type: string
+                  maxLength: 100
+                amount:
+                  description: Transaction amount which format is presented as amount in given currency divided by 100 (AMOUNT/100)
+                  type: integer
+                currency:
+                  description: Currency
+                  type: string
+                  maxLength: 3
+                orderId:
+                  description: Id of order
+                  type: integer
+                sign:
+                  description: Control sum *
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionVerificationResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+  /v1/user:
+    post:
+      tags:
+        - User
+      summary: Create new user.
+      requestBody:
+        description: New user data.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateJsonRequestBody'
+      responses:
+        '200':
+          description: Request has been processed successful. User already exists. Parameter 'data' contains id of user in P24 system.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreateResponse200'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidInputData'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+        '409':
+          description: User exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreateResponse409'
+        '503':
+          description: Undefined error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+      security:
+        - basicAuth: []
+  /v1/user/methods/{userId}:
+    get:
+      tags:
+        - User
+      summary: Get available payment methods for user.
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneratePaymentMethodsResponse'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorCodeResponse'
+        '403':
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedResponse'
+      security:
+        - basicAuth: []
+components:
+  schemas:
+    CardChargeRequestBody:
+      properties:
+        token:
+          type: string
+          example: 1111111111-222222-333333-abcdefghij
+      type: object
+    ChargeCardSuccessResponse:
+      properties:
+        data:
+          properties:
+            orderId:
+              type: integer
+              example: 123456789
+          type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    CheckCardRequestBody:
+      properties:
+        token:
+          type: string
+          example: 1111111111-222222-333333-abcdefghij
+      type: object
+    CheckCardSuccessResponse:
+      properties:
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    GetCardInfoResponseData:
+      properties:
+        data:
+          properties:
+            refId:
+              type: string
+              default: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX
+            bin:
+              type: integer
+              default: '000000'
+            mask:
+              type: string
+              default: xxxxxxxxxxxx0000
+            cardType:
+              type: string
+              default: visa
+            cardDate:
+              type: string
+              default: '012020'
+            hash:
+              type: string
+              default: 247fc1c866a7ce3a92f4a187d124350b2051e93c918b8a87facec230cf87f6e1
+          type: object
+        responseCode:
+          type: integer
+          example: '0'
+      type: object
+    GetExtendedCardInfoResponseData:
+      properties:
+        data:
+          properties:
+            refId:
+              type: string
+              default: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX
+            bin:
+              type: integer
+              default: '000000'
+            mask:
+              type: string
+              default: xxxxxxxxxxxx0000
+            cardType:
+              type: string
+              default: visa
+            cardDate:
+              type: string
+              default: '012020'
+            hash:
+              type: string
+              default: 247fc1c866a7ce3a92f4a187d124350b2051e93c918b8a87facec230cf87f6e1
+            bank:
+              type: string
+            risk:
+              type: integer
+            security:
+              properties:
+                3ds:
+                  type: boolean
+                frictionless:
+                  type: boolean
+                risk:
+                  type: integer
+                liabilityshift:
+                  type: boolean
+                traceId:
+                  type: string
+                exemption:
+                  type: string
+                softDecline:
+                  type: boolean
+              type: object
+          type: object
+        responseCode:
+          type: integer
+          example: '0'
+      type: object
+    cardPayNotificationPositiveAuthorization:
+      properties:
+        amount:
+          description: Transaction amount
+          type: integer
+          example: '10'
+        3ds:
+          description: Was 3D-Secure performed during payment?
+          type: boolean
+          example: true
+        method:
+          description: Payment method ID
+          type: integer
+          example: 218
+        refId:
+          description: Card reference number
+          type: string
+          example: 10636C17-982F797F-E256FF6A-AED9D667
+        orderId:
+          description: Transaction number assigned by P24 for oneclick sampling
+          type: integer
+          example: 300188118
+        sessionId:
+          description: Unique identifier from merchant's system
+          type: string
+          example: session_1567679496185
+        bin:
+          description: Registered card bin
+          type: integer
+          example: 901000
+        maskedCCNumber:
+          description: 'Masked card number, format: XXXXXXXXXXXX1234'
+          type: string
+          example: xxxxxxxxxxxx0001
+        ccExp:
+          description: Card expiry date in MMYYYY format eg. 122020
+          type: string
+          example: '012022'
+        hash:
+          description: Unique card hash – unique for each card
+          type: string
+          example: 2c73d10720b6bb9bfe9458da1b4c09ac71baaea519ba0f24049ba6f787ab270ce88eb2194642422be20b7f7fbd2a702c
+        cardCountry:
+          description: Country code compatible with ISO, e.g. PL
+          type: string
+          example: PL
+        cardType:
+          description: Card type (VISA, ECMC)
+          type: string
+          example: visa
+        risk:
+          description: 0 – safe, 1 – suspicious, 2 – hazardous. Score calculated using a card payment risk calculation tool
+          type: integer
+          enum:
+            - 0
+            - 1
+            - 2
+        liabilityshift:
+          description: 1 – Yes, 0 – No
+          type: boolean
+          example: false
+        sign:
+          description: SHA384
+          type: string
+          example: 692b843724c5103d720f26dd1a09148ff9672f104c26aecf95a6d86e01bf9b01a1909f3689093f91640c157bc9fe0cf9
+      type: object
+    cardPayNotificationNegativeAuthorization:
+      properties:
+        amount:
+          description: Transaction amount
+          type: integer
+          example: '10'
+        3ds:
+          description: Was 3D-Secure performed during payment?
+          type: boolean
+          example: true
+        method:
+          description: Payment method ID
+          type: integer
+          example: 218
+        refId:
+          description: Card reference number
+          type: string
+          example: 10636C17-982F797F-E256FF6A-AED9D667
+        orderId:
+          description: Transaction number assigned by P24 for oneclick sampling
+          type: integer
+          example: 300188118
+        sessionId:
+          description: Unique identifier from merchant's system
+          type: string
+          example: session_1567679496185
+        errorCode:
+          description: Error code
+          type: string
+          example: err170
+        errorMessage:
+          description: Error description
+          type: string
+          example: Sth error
+        sign:
+          description: SHA384
+          type: string
+          example: 692b843724c5103d720f26dd1a09148ff9672f104c26aecf95a6d86e01bf9b01a1909f3689093f91640c157bc9fe0cf9
+      type: object
+    CardInsertSuccessResponse:
+      properties:
+        data:
+          type: array
+          items:
+            properties:
+              orderId:
+                type: integer
+                example: 123456789
+            type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    CardInsertResponse409:
+      properties:
+        error:
+          type: string
+          example: Transaction token has been used.
+        code:
+          type: number
+          example: 1
+      type: object
+    CardInsertRequestBody:
+      properties:
+        transactionToken:
+          type: string
+          example: 1111111111-222222-333333-4444444444
+        cardNumber:
+          type: string
+          example: '1234123412341234'
+        cardDate:
+          type: string
+          example: '122025'
+        cvv:
+          type: string
+          example: '123'
+        clientName:
+          type: string
+          example: Jan Kowalski
+        check:
+          type: integer
+          example: 1
+      type: object
+    CardPaySuccessResponse:
+      properties:
+        data:
+          type: array
+          items:
+            properties:
+              orderId:
+                type: integer
+                example: 123456789
+            type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    CardPayThreeDSecureResponse:
+      properties:
+        data:
+          type: array
+          items:
+            properties:
+              orderId:
+                type: integer
+                example: 123456789
+              redirectUrl:
+                type: string
+                example: https://secure.przelewy24.pl/3ds/abc123
+            type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    CardPayResponse409:
+      properties:
+        error:
+          type: string
+          example: Unable to make payment.
+        code:
+          type: number
+          example: 8
+      type: object
+    CardRegisterSuccessResponse:
+      properties:
+        data:
+          type: array
+          items:
+            properties:
+              oneclickOrderId:
+                type: integer
+                example: 123456789
+              recurringOrderId:
+                type: integer
+                example: 123456789
+            type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    CardRegisterRequestBody:
+      properties:
+        transactionToken:
+          type: string
+          example: 1111111111-222222-333333-4444444444
+        cardNumber:
+          type: string
+          example: '1234123412341234'
+        cardDate:
+          type: string
+          example: '122025'
+        cvv:
+          type: string
+          example: '123'
+        clientName:
+          type: string
+          example: Jan Kowalski
+      type: object
+    UnauthorizedResponse:
+      properties:
+        error:
+          type: string
+          example: Incorrect authentication
+        code:
+          type: number
+          example: 401
+      type: object
+    ForbiddenResponse:
+      properties:
+        error:
+          type: string
+          example: string
+        code:
+          type: integer
+          default: 403
+      type: object
+    TransactionBySessionIdSuccessResponse:
+      properties:
+        data:
+          $ref: '#/components/schemas/TransactionBySessionIdResponse'
+        responseCode:
+          type: string
+          default: '0'
+      type: object
+    GetAffiliateApiKeyResponse:
+      properties:
+        api_key:
+          type: string
+        type:
+          type: string
+        name:
+          type: string
+      type: object
+    ApiKeyErrorResponse:
+      properties:
+        error:
+          type: string
+        status:
+          type: number
+      type: object
+    BasicResponse:
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+        responseCode:
+          type: string
+      type: object
+    AvailabilityHoursResponse:
+      properties:
+        mondayToFriday:
+          type: string
+          default: 00-24
+        saturday:
+          type: string
+          default: unavailable
+        sunday:
+          type: string
+          default: 00-24
+      type: object
+    TransactionBySessionIdResponse:
+      allOf:
+        - $ref: '#/components/schemas/TransactionAbstractResponse'
+        - properties:
+            statement:
+              type: string
+          type: object
+    MobileHandlePaymentMethod:
+      properties:
+        id:
+          title: id
+          description: Payment method id
+          type: integer
+          default: 1
+        name:
+          title: name
+          type: string
+          default: bank name
+        logo:
+          title: logo
+          type: string
+          default: '1'
+        logoFallback:
+          title: logo_fallback
+          type: string
+          default: 1.png
+        category:
+          title: Category
+          type: string
+          default: Karty i inne
+        isEnabled:
+          title: isEnabled
+          type: boolean
+          default: 'true'
+      type: object
+    PaymentMethodsResponse:
+      properties:
+        name:
+          type: integer
+        id:
+          type: integer
+        status:
+          type: boolean
+        availabilityHours:
+          $ref: '#/components/schemas/AvailabilityHoursResponse'
+      type: object
+    TransactionAbstractResponse:
+      properties:
+        orderId:
+          type: integer
+        sessionId:
+          type: integer
+        status:
+          type: integer
+        amount:
+          type: integer
+        currency:
+          type: string
+          default: PLN
+        date:
+          type: string
+          default: '201701010000'
+        dateOfTransaction:
+          type: string
+          default: '201701010000'
+        clientEmail:
+          type: string
+          default: example@przelewy24.pl
+        accountMD5:
+          type: integer
+        paymentMethod:
+          type: integer
+        description:
+          type: integer
+        clientName:
+          type: integer
+        clientAddress:
+          type: integer
+        clientCity:
+          type: integer
+        clientPostcode:
+          type: integer
+        batchId:
+          type: integer
+        fee:
+          type: string
+          default: '0'
+      type: object
+    MerchantExistResponse:
+      properties:
+        error:
+          type: string
+        data:
+          type: array
+          items:
+            type: string
+      type: object
+    GetAffiliateCrcResponse:
+      required:
+        - error
+      properties:
+        error:
+          type: string
+        data:
+          type: array
+          items:
+            type: string
+      type: object
+    GetAffiliatesResponse:
+      properties:
+        error:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+        status:
+          type: integer
+      type: object
+    GetExchangeRateResponse:
+      properties:
+        data:
+          properties:
+            exchange:
+              type: string
+              example: '1000'
+            amount:
+              type: string
+              example: '43.40'
+            rate:
+              type: string
+              example: '4.3400'
+          type: object
+        responseCode:
+          type: integer
+          default: '0'
+      type: object
+    GetMerchantFundsResponse:
+      required:
+        - funds
+        - status
+      properties:
+        error:
+          type: string
+        funds:
+          type: number
+        status:
+          type: integer
+      type: object
+    MerchantRegistrationResponse:
+      properties:
+        code:
+          type: integer
+        data:
+          type: array
+          items:
+            type: string
+      type: object
+    DocumentRegisterTokenResponse:
+      properties:
+        data:
+          properties:
+            token:
+              type: string
+            validDate:
+              type: string
+              format: date-time
+          type: object
+        responseCode:
+          type: integer
+          default: '0'
+      type: object
+    MerchantConfigurationV10Response:
+      properties:
+        data:
+          type: array
+          items:
+            properties:
+              waitForResult:
+                type: integer
+              signUndefined:
+                type: integer
+            type: object
+        code:
+          type: string
+          example: '200'
+      type: object
+    MerchantConfigurationV10NotFoundResponse:
+      properties:
+        error:
+          type: string
+          example: Not found
+        code:
+          type: integer
+          example: '404'
+      type: object
+    TransactionDispatchItemsResponse:
+      properties:
+        data:
+          properties:
+            parentTransaction:
+              $ref: '#/components/schemas/ItemByOrderIdData'
+            splittedTransaction:
+              type: array
+              items:
+                $ref: '#/components/schemas/ItemByOrderIdDataSplitted'
+          type: object
+        responseCode:
+          type: integer
+          default: '0'
+      type: object
+    ItemByOrderIdData:
+      properties:
+        orderId:
+          type: integer
+          example: 100100
+        sessionId:
+          type: string
+          example: zamowienie-1
+        amount:
+          type: integer
+          example: 100
+        currency:
+          type: string
+          example: PLN
+        status:
+          type: string
+          example: Completed
+        merchantId:
+          type: integer
+          example: 1001
+      type: object
+    ItemByOrderIdDataSplitted:
+      properties:
+        orderId:
+          type: integer
+          example: 100101
+        sessionId:
+          type: string
+          example: unique sessionId
+        amount:
+          type: integer
+          example: 100
+        merchantId:
+          type: integer
+          example: 1001
+        status:
+          type: string
+          example: Completed
+        itemId:
+          type: string
+          example: unique itemId
+        fee:
+          type: integer
+          example: 1
+      type: object
+    DispatchSucceedResponse:
+      properties:
+        result:
+          type: array
+          items:
+            properties:
+              orderId:
+                type: integer
+                example: 123456
+              orderIdNew:
+                type: integer
+                example: 123457
+              sessionId:
+                type: string
+                example: zamowienie-1
+              sellerId:
+                type: integer
+                example: 99999
+              amount:
+                type: integer
+                example: 100
+              status:
+                type: boolean
+                example: true
+              error:
+                type: integer
+                example: ''
+            type: object
+        error:
+          type: array
+          items:
+            properties:
+              errorCode:
+                type: integer
+                example: 0
+              errorMessage:
+                type: string
+                example: Success, no error.
+            type: object
+      type: object
+    DispatchErrorResponse:
+      properties:
+        result:
+          type: array
+          items:
+            properties:
+              orderId:
+                type: integer
+                example: 123456
+              orderIdNew:
+                type: integer
+                example: 0
+              sessionId:
+                type: string
+                example: zamowienie-1
+              sellerId:
+                type: integer
+                example: 99999
+              amount:
+                type: integer
+                example: 100
+              status:
+                type: boolean
+                example: false
+              error:
+                type: integer
+                example: Error message
+            type: object
+        error:
+          type: array
+          items:
+            properties:
+              errorCode:
+                type: integer
+                example: 600
+              errorMessage:
+                type: string
+                example: Example error
+            type: object
+      type: object
+    DispatchDetailsParameters:
+      required:
+        - batchId
+      properties:
+        batchId:
+          description: Dispatch batch identification value
+          type: integer
+        orderId:
+          type: integer
+          example: 123456
+        sessionId:
+          type: string
+          example: zamowienie-1
+        sellerId:
+          type: integer
+          example: 99999
+        amount:
+          type: integer
+          example: 100
+        items:
+          properties:
+            itemId:
+              type: string
+              example: item-123456
+            quantity:
+              type: integer
+              example: 1
+            price:
+              type: integer
+              example: 100
+            description:
+              type: string
+              example: opis produktu
+          type: object
+      type: object
+    BlikChargeByAliasResponseV1.1.1:
+      properties:
+        data:
+          properties:
+            orderId:
+              type: integer
+              example: '1000'
+            message:
+              type: string
+            bankAppUrl:
+              type: string
+          type: object
+        responseCode:
+          type: integer
+          example: '0'
+      type: object
+    BlikChargeByCodeResponseV1.1.1:
+      properties:
+        data:
+          properties:
+            orderId:
+              type: integer
+              example: '1000'
+            message:
+              type: string
+            bankAppUrl:
+              type: string
+          type: object
+        responseCode:
+          type: integer
+          example: '0'
+      type: object
+    GeneralErorResponseV1.1.1:
+      properties:
+        data:
+          properties:
+            orderId:
+              type: integer
+              example: '1000'
+          type: object
+        error:
+          type: string
+          example: error message
+        code:
+          type: number
+      type: object
+    RecurringParameters:
+      properties:
+        type:
+          type: string
+        expirationDate:
+          type: string
+        frequency:
+          type: string
+        totalLimitAmount:
+          type: integer
+        limitAmount:
+          type: integer
+        totalLimitCount:
+          type: integer
+        minimumTime:
+          type: boolean
+          default: true
+        availableBanks:
+          type: boolean
+      type: object
+    ChargeByCodeParameters:
+      required:
+        - token
+        - blikCode
+      properties:
+        token:
+          description: unique reference to transaction
+          type: string
+        blikCode:
+          description: 6-digit, one-time BLIK code generated in the app
+          type: string
+        aliasValue:
+          description: Unique alias of the user which can be used to charge next client transactions
+          type: string
+          maxLength: 64
+          minLength: 5
+        aliasLabel:
+          description: Alias label displayed in the app
+          type: string
+          maxLength: 20
+          minLength: 5
+        recurring:
+          description: |-
+            Data defining a recurring payment type - the type of recurring payment; allowed values: A, A+, M
+                 *    expirationDate - allowed format: YYYY-MM-DD hh:mm:ss
+                 *    frequency - frequency of the recurrency; value must fulfill regex: [1-9]{1,3}[DWMQY][ANPW]\([0-9]{1,3}|E\)
+                 *    totalLimitAmount - maximum total amount that will be charged through the process; allowed type: integer
+                 *    limitAmount - maximum amount that will be charged in a single payment; allowed type: integer
+                 *    totalLimitCount - number of payments that will be issued in the whole process; allowed type: integer
+                 *    minimumTime - parameter for controlling the flag min; allowed type: boolean
+                 *    availableBanks - parameter to control the verification of whether the bank supports recursion.
+                 *    If set to false, it is not checked if the bank supports recursion.; default: true; allowed type: boolean
+                 *    Fields expirationDate, frequency, totalLimitAmount, limitAmount are required when type is set to A or A+,
+                 *    totalLimitCount is required with all type settings
+          type: array
+          items:
+            $ref: '#/components/schemas/RecurringParameters'
+      type: object
+    ChargeByAliasParameters:
+      required:
+        - token
+        - type
+      properties:
+        token:
+          description: unique reference to transaction
+          type: string
+        type:
+          description: Method execute option
+          type: string
+          enum:
+            - alias
+            - alternativeKey
+            - blikCode
+        alternativeKey:
+          description: key assigned to mobile app
+          type: string
+          enum:
+            - alias
+            - alternativeKey
+            - blikCode
+        blikCode:
+          description: 6-digit, one-time BLIK code generated in the app
+          type: string
+        recurring:
+          description: |-
+            Data defining a recurring payment
+                 *    <b>type</b> - the type of recurring payment; allowed values: A, A+, M
+                 *    <b>expirationDate</b> - allowed format: YYYY-MM-DD hh:mm:ss
+                 *    <b>frequency</b> - frequency of the recurrency; value must fulfill regex: [1-9]{1,3}[DWMQY][ANPW]\([0-9]{1,
+                 *     3}|E\)
+                 *    <b>totalLimitAmount</b> - maximum total amount that will be charged through the process; allowed type: integer
+                 *    <b>limitAmount</b> - maximum amount that will be charged in a single payment; allowed type: integer
+                 *    <b>totalLimitCount</b> - number of payments that will be issued in the whole process; allowed type: integer
+                 *    <b>minimumTime</b> - parameter for controlling the flag min; allowed type: boolean
+                 *    <b>availableBanks</b> - parameter to control the verification of whether the bank supports recursion. If set
+                 *    to false, it is not checked if the bank supports recursion.; default: true; allowed type: boolean
+                 *
+                 *    Fields <b>expirationDate</b>, <b>frequency</b>, <b>totalLimitAmount</b>, <b>limitAmount</b> are required
+                 *    when
+                 *    <b>type</b> is set to A or A+,
+                 *    <b>totalLimitCount</b> is required with all type settings
+          type: array
+          items:
+            $ref: '#/components/schemas/RecurringParameters'
+        oneclickAuto:
+          description: Data defining an oneclick payment
+          type: boolean
+      type: object
+    ChargeByAliasParametersV14:
+      required:
+        - token
+        - type
+      properties:
+        token:
+          description: unique reference to transaction
+          type: string
+        type:
+          description: Method execute option
+          type: string
+          enum:
+            - alias
+            - alternativeKey
+            - blikCode
+        alternativeKey:
+          description: key assigned to mobile app
+          type: string
+          enum:
+            - alias
+            - alternativeKey
+            - blikCode
+        blikCode:
+          description: 6-digit, one-time BLIK code generated in the app
+          type: string
+        aliasLabel:
+          description: Allows to change alias label during transaction processing
+          type: string
+        recurring:
+          description: |-
+            Data defining a recurring payment
+                 *    <b>type</b> - the type of recurring payment; allowed values: A, A+, M
+                 *    <b>expirationDate</b> - allowed format: YYYY-MM-DD hh:mm:ss
+                 *    <b>frequency</b> - frequency of the recurrency; value must fulfill regex: [1-9]{1,3}[DWMQY][ANPW]\([0-9]{1,
+                 *     3}|E\)
+                 *    <b>totalLimitAmount</b> - maximum total amount that will be charged through the process; allowed type: integer
+                 *    <b>limitAmount</b> - maximum amount that will be charged in a single payment; allowed type: integer
+                 *    <b>totalLimitCount</b> - number of payments that will be issued in the whole process; allowed type: integer
+                 *    <b>minimumTime</b> - parameter for controlling the flag min; allowed type: boolean
+                 *    <b>availableBanks</b> - parameter to control the verification of whether the bank supports recursion. If set
+                 *    to false, it is not checked if the bank supports recursion.; default: true; allowed type: boolean
+                 *
+                 *    Fields <b>expirationDate</b>, <b>frequency</b>, <b>totalLimitAmount</b>, <b>limitAmount</b> are required
+                 *    when
+                 *    <b>type</b> is set to A or A+,
+                 *    <b>totalLimitCount</b> is required with all type settings
+          type: array
+          items:
+            $ref: '#/components/schemas/RecurringParameters'
+        oneclickAuto:
+          description: Data defining an oneclick payment
+          type: boolean
+      type: object
+    GetAliasesByEmailResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetAliasesByEmailSingle'
+        responseCode:
+          type: integer
+          example: '0'
+      type: object
+    GetAliasesByEmailSingle:
+      properties:
+        value:
+          type: string
+          example: JohnDoeAlias
+        type:
+          type: string
+          example: UID
+        status:
+          type: string
+          example: REGISTERED
+      type: object
+    BlikChargeByAliasResponse:
+      properties:
+        data:
+          properties:
+            orderId:
+              type: integer
+            message:
+              type: string
+          type: object
+        '':
+          type: integer
+          default: '0'
+      type: object
+    ChargeByAlias409:
+      properties:
+        error:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChargeByAlias409Item'
+        code:
+          type: integer
+          example: 51
+      type: object
+    ChargeByAlias409V1.1.1:
+      properties:
+        data:
+          properties:
+            orderId:
+              type: integer
+              example: '1000'
+          type: object
+        error:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChargeByAlias409Item'
+        code:
+          type: integer
+          example: 51
+      type: object
+    ChargeByAlias409Item:
+      properties:
+        message:
+          type: string
+          example: example
+        alternativeKeys:
+          type: array
+          items:
+            $ref: '#/components/schemas/alternativeKeysItem'
+      type: object
+    alternativeKeysItem:
+      properties:
+        label:
+          type: string
+          example: label01
+        alias:
+          type: string
+          example: alias01
+      type: object
+    BlikChargeByCodeResponse:
+      properties:
+        data:
+          properties:
+            orderId:
+              type: integer
+            message:
+              type: string
+          type: object
+        responseCode:
+          type: integer
+          default: '0'
+      type: object
+    DebitChargeResponse:
+      properties:
+        data:
+          properties:
+            orderId:
+              type: integer
+            message:
+              type: string
+          type: object
+        responseCode:
+          type: integer
+          default: '0'
+      type: object
+    MerchantPaymentMethodsV12Response:
+      properties:
+        data:
+          type: array
+          items:
+            properties:
+              methodId:
+                type: integer
+              name:
+                type: string
+              group:
+                type: string
+              enabled:
+                type: boolean
+              mobile:
+                type: boolean
+            type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    ReportResponseTransactionItem:
+      properties:
+        type:
+          description: Always transaction
+          type: string
+          example: transaction
+        amount:
+          type: integer
+          example: 1234567
+        currency:
+          type: string
+          example: PLN
+        details:
+          description: Detailed information about transaction
+          type: object
+      type: object
+    ReportResponseBatchItem:
+      properties:
+        type:
+          description: Always batch
+          type: string
+          example: batch
+        amount:
+          type: integer
+          example: 54321
+        currency:
+          type: string
+          example: PLN
+        details:
+          description: Detailed information about batch
+          type: object
+      type: object
+    ReportResponseRefundItem:
+      properties:
+        type:
+          description: Always refund
+          type: string
+          example: refund
+        amount:
+          type: integer
+          example: 332211
+        currency:
+          type: string
+          example: PLN
+        details:
+          description: Detailed information about refund
+          type: object
+      type: object
+    PageInformationObject:
+      properties:
+        recordsOnPage:
+          type: integer
+          example: 5000
+        recordsAll:
+          type: integer
+          example: 12444
+        pageCount:
+          type: integer
+          example: 3
+      type: object
+    ReportBatchDetailsResponse:
+      properties:
+        data:
+          properties:
+            overall:
+              description: Requested batch information
+              type: object
+              $ref: '#/components/schemas/ReportResponseBatchItem'
+            transactions:
+              description: Transactions paid in requested batch
+              type: array
+              items:
+                $ref: '#/components/schemas/ReportResponseTransactionItem'
+            refunds:
+              description: Refunds paid in requested batch
+              type: array
+              items:
+                $ref: '#/components/schemas/ReportResponseRefundItem'
+          type: object
+        token:
+          description: Token, which should be used to retrieve next pages of data. Token is valid for next few minutes.
+          type: string
+        responseCode:
+          type: integer
+        pageInformation:
+          type: object
+          $ref: '#/components/schemas/PageInformationObject'
+      type: object
+    ReportHistoryResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportResponseTransactionItem'
+        token:
+          description: Token, which should be used to retrieve next pages of data. Token is valid for next few minutes.
+          type: string
+        responseCode:
+          type: integer
+        pageInformation:
+          type: object
+          $ref: '#/components/schemas/PageInformationObject'
+      type: object
+    TransactionNotFoundResponse:
+      properties:
+        error:
+          type: string
+          example: Transaction not found
+        code:
+          type: number
+          example: 404
+      type: object
+    InfoResponse:
+      properties:
+        country:
+          type: string
+          default: PL
+        bank:
+          type: string
+          default: PL
+      type: object
+    TransactionNotification200:
+      properties:
+        data:
+          properties:
+            status:
+              type: string
+              example: success
+          type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    TransactionNotificationResponse404:
+      properties:
+        error:
+          type: string
+          example: Transaction not found
+        code:
+          type: number
+          example: 1
+      type: object
+    TransactionNotificationResponse409:
+      properties:
+        error:
+          type: string
+          example: Invalid transaction state
+        code:
+          type: number
+          example: 3
+      type: object
+    GetPayerInfoExtendedSuccessResponse:
+      properties:
+        data:
+          properties:
+            name:
+              type: string
+              example: JAN NOWAK
+            street:
+              type: string
+              example: UL.TĘCZOWA 15
+            city:
+              type: string
+              example: POZNAŃ
+            postCode:
+              type: string
+              example: 60-275
+            iban:
+              type: string
+              example: '49658765504459786094965876'
+            originalString:
+              type: string
+              example: JAN NOWAK UL.TĘCZOWA 15 60-275 POZNAŃ
+          type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    GetPayerInfoExtendeNotFoundResponse:
+      properties:
+        error:
+          type: string
+          example: Payer data not found
+        code:
+          type: number
+          example: 404
+      type: object
+    GetPayerInfoExtendeInvalidDataResponse:
+      properties:
+        error:
+          type: string
+          example: Invalid payer data
+        code:
+          type: number
+          example: 400
+      type: object
+    GetPayerInfoExtendedConflictResponse:
+      properties:
+        error:
+          type: string
+          example: Unable to continue notification process
+        code:
+          type: number
+          example: 409
+      type: object
+    GetPayerInfoExtendedAcceptedResponse:
+      properties:
+        data:
+          type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    GetPayerInfoExtendedNotFoundResponse:
+      properties:
+        error:
+          type: string
+          example: Payer data not found
+        code:
+          type: number
+          example: 404
+      type: object
+    GetPayerInfoExtendedInvalidDataResponse:
+      properties:
+        error:
+          type: string
+          example: Invalid input data
+        code:
+          type: number
+          example: 400
+      type: object
+    GetPayerInfoSuccessResponse:
+      properties:
+        data:
+          properties:
+            accountNumber:
+              type: string
+              example: '60038941112845549794064531'
+            name:
+              type: string
+              example: JAN NOWAK
+            address:
+              type: string
+              example: UL.TĘCZOWA 15 60-275 POZNAŃ
+          type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    GetPayerInfoNotFoundResponse:
+      properties:
+        error:
+          type: string
+          example: Payer data not found
+        code:
+          type: number
+          example: 404
+      type: object
+    GetPayerInfoInvalidDataResponse:
+      properties:
+        error:
+          type: string
+          example: Invalid payer data
+        code:
+          type: number
+          example: 400
+      type: object
+    TransactionItemRefund200:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionItemRefund200Item'
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    RefundInfoV12Response:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundInfoV12Item'
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    RefundInfoV12Item:
+      properties:
+        parentTransaction:
+          $ref: '#/components/schemas/RefundInfoV12ItemParentTransaction'
+        splittedRefunds:
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundItemByOrderIdDataSplitted'
+      type: object
+    RefundInfoV12ItemParentTransaction:
+      properties:
+        orderId:
+          type: integer
+          example: '1001'
+        sessionId:
+          type: string
+          example: zamowienie-1
+        amount:
+          type: integer
+          example: '100'
+        currency:
+          type: string
+          example: PLN
+        status:
+          type: string
+          example: Completed
+        merchantId:
+          type: string
+          example: '1001'
+      type: object
+    RefundItemByOrderIdDataSplitted:
+      properties:
+        orderId:
+          type: integer
+          example: 100101
+        sessionId:
+          type: string
+          example: unique sessionId
+        amount:
+          type: integer
+          example: 100
+        merchantId:
+          type: integer
+          example: 1001
+        status:
+          type: string
+          example: Completed
+        itemId:
+          type: string
+          example: unique itemId
+        fee:
+          type: integer
+          example: 1
+      type: object
+    TransactionRefundsInfoResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionWithRefundsResponse'
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    TransactionWithRefundsResponse:
+      properties:
+        orderId:
+          type: integer
+          example: '1001'
+        sessionId:
+          type: string
+          example: zamowienie-1
+        amount:
+          type: integer
+          example: '100'
+        currency:
+          type: string
+          example: PLN
+        refunds:
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundsCollection'
+      type: object
+    RefundsCollection:
+      properties:
+        batchId:
+          type: integer
+          example: 2
+        requestId:
+          type: string
+          example: '1527243092'
+        date:
+          type: string
+          example: '20180529133026'
+        login:
+          type: string
+          example: user@email.com
+        description:
+          type: string
+          example: Invoice 123 refund
+        status:
+          type: integer
+          example: 3
+        amount:
+          type: integer
+          example: 100
+      type: object
+    RefundsByDeteResponse200Details:
+      properties:
+        orderId:
+          type: integer
+          example: 100101
+        sessionId:
+          type: string
+          example: unique sessionId
+        amount:
+          type: integer
+          example: 100
+        batchId:
+          type: integer
+          example: 1001
+        status:
+          type: integer
+          example: 1
+        requestId:
+          type: string
+          example: unique requestId
+        statusTxt:
+          type: string
+          example: completed
+        date:
+          type: string
+          example: '202001011232'
+      type: object
+    RefundsByDeteResponse200:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundsByDeteResponse200Details'
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    RefundsDetailsNotFoundResponse:
+      properties:
+        error:
+          type: string
+          example: Refunds not found!
+        code:
+          type: number
+          example: 404
+      type: object
+    RefundsInfoResponse200Details:
+      properties:
+        orderId:
+          type: integer
+          example: 100101
+        sessionId:
+          type: string
+          example: unique sessionId
+        amount:
+          type: integer
+          example: 100
+        batchId:
+          type: integer
+          example: 1001
+        status:
+          type: integer
+          example: 1
+        requestId:
+          type: string
+          example: unique requestId
+        statusTxt:
+          type: string
+          example: completed
+        date:
+          type: string
+          example: '202001011232'
+      type: object
+    RefundsInfoResponse200:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundsInfoResponse200Details'
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    ItemRefundRequestArrayData:
+      properties:
+        orderId:
+          type: integer
+          example: 1001
+        sessionId:
+          type: string
+          maxLength: 64
+          example: zamowienie-1
+        amount:
+          type: integer
+          example: 100
+        merchantId:
+          type: string
+          example: 1001
+        itemId:
+          type: string
+          maxLength: 64
+          example: unique itemId
+        commissionAmount:
+          type: integer
+          example: 10
+        description:
+          type: string
+          maxLength: 35
+          example: refund description
+      type: object
+    TransactionRefundJsonRequestBody11:
+      allOf:
+        - $ref: '#/components/schemas/TransactionRefundJsonRequestBody'
+        - properties:
+            requestId:
+              type: string
+              example: value
+            refundsUuid:
+              type: string
+              example: example
+            urlStatus:
+              type: string
+              example: https://przelewy24.pl
+            refunds:
+              type: array
+              items:
+                $ref: '#/components/schemas/RefundRequestArrayData'
+            sign:
+              type: string
+              example: 0a7ad99c127c137382291c6c5e8477a0b5a303e1a182946d7a95cdf0e3888568
+          type: object
+    RefundRequestArrayData:
+      properties:
+        orderId:
+          type: integer
+          example: '1001'
+        sessionId:
+          type: string
+          example: zamowienie-1
+        amount:
+          type: integer
+          example: '100'
+        sellerId:
+          type: string
+          example: loremIpsum
+        data:
+          $ref: '#/components/schemas/RequestedRefundList'
+      type: object
+    TransactionRefundJsonRequestBody12:
+      allOf:
+        - $ref: '#/components/schemas/TransactionRefundJsonRequestBody'
+        - properties:
+            requestId:
+              type: string
+              example: example
+            refunds:
+              type: array
+              items:
+                $ref: '#/components/schemas/ItemRefundRequestArrayData'
+            refundsUuid:
+              type: string
+              example: example
+            urlStatus:
+              type: string
+              example: https://przelewy24.pl
+          type: object
+    TransactionRefundJsonRequestBody15:
+      allOf:
+        - $ref: '#/components/schemas/TransactionRefundJsonRequestBody'
+        - properties:
+            refunds:
+              type: array
+              items:
+                $ref: '#/components/schemas/RefundRequestArrayDataV15'
+          type: object
+    RefundRequestArrayDataV15:
+      required:
+        - orderId
+        - sessionId
+        - amount
+      properties:
+        orderId:
+          type: integer
+          example: 1001
+        sessionId:
+          type: string
+          example: zamowienie-1
+        amount:
+          type: integer
+          example: 100
+        description:
+          type: string
+          example: zwrot za fakture 123
+        additional:
+          type: string
+          example: dodatkowy tytul
+        data:
+          $ref: '#/components/schemas/RequestedRefundList'
+      type: object
+    TransactionRefundJsonRequestBody:
+      properties:
+        requestId:
+          type: string
+          example: example
+        refunds:
+          type: array
+          items:
+            $ref: '#/components/schemas/RefundRequestArrayDataBasic'
+        refundsUuid:
+          type: string
+          example: example
+        urlStatus:
+          type: string
+          example: https://przelewy24.pl
+      type: object
+    RefundRequestArrayDataBasic:
+      required:
+        - orderId
+        - sessionId
+        - amount
+      properties:
+        orderId:
+          type: integer
+          example: 1001
+        sessionId:
+          type: string
+          example: zamowienie-1
+        amount:
+          type: integer
+          example: 100
+        description:
+          type: string
+          example: zwrot za fakture 123
+        data:
+          $ref: '#/components/schemas/RequestedRefundList'
+      type: object
+    TransactionRefund200:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionRefund200Item'
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    TransactionRefund409:
+      properties:
+        error:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionRefund409Item'
+        code:
+          type: integer
+          example: 409
+      type: object
+    TransactionItemRefund409:
+      properties:
+        error:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionItemRefund409Item'
+        code:
+          type: integer
+          example: 409
+      type: object
+    TransactionRefund409Item:
+      properties:
+        orderId:
+          type: integer
+          example: '1001'
+        sessionId:
+          type: string
+          example: zamowienie-1
+        amount:
+          type: integer
+          example: '101'
+        description:
+          type: string
+          example: zwrot za fakture 123
+        status:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: The amount of refund exceeds available amount for the transaction
+        data:
+          $ref: '#/components/schemas/RequestedRefundList'
+      type: object
+    TransactionItemRefund409Item:
+      properties:
+        orderId:
+          type: integer
+          example: '1001'
+        sessionId:
+          type: string
+          example: zamowienie-1
+        amount:
+          type: integer
+          example: '101'
+        itemId:
+          type: string
+          example: itemId
+        merchantId:
+          type: integer
+          example: '1000'
+        status:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: The amount of refund exceeds available amount for the transaction
+      type: object
+    TransactionRefund200Item:
+      properties:
+        orderId:
+          type: integer
+          example: '1001'
+        sessionId:
+          type: string
+          example: zamowienie-1
+        amount:
+          type: integer
+          example: '100'
+        description:
+          type: string
+          example: zwrot za fakture 123
+          nullable: true
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: success
+        data:
+          $ref: '#/components/schemas/RequestedRefundList'
+      type: object
+    TransactionItemRefund200Item:
+      properties:
+        orderId:
+          type: integer
+          example: '1001'
+        sessionId:
+          type: string
+          example: zamowienie-1
+        amount:
+          type: integer
+          example: '100'
+        itemId:
+          type: string
+          example: itemId
+        merchantId:
+          type: integer
+          example: '1000'
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: success
+      type: object
+    RequestedRefundList:
+      type: array
+      items:
+        $ref: '#/components/schemas/RequestedRefundData'
+    RequestedRefundData:
+      properties:
+        spId:
+          type: integer
+          example: 10000
+        spAmount:
+          type: integer
+          example: 1
+      type: object
+    MarketplaceItemParameters:
+      properties:
+        sellerId:
+          type: integer
+        price:
+          type: integer
+        quantity:
+          type: number
+          format: double
+        description:
+          type: string
+        currency:
+          type: string
+        sessionId:
+          type: string
+        control:
+          type: string
+        sellerCategory:
+          type: string
+        targetAmount:
+          type: integer
+        targetPosId:
+          type: integer
+      type: object
+    MarketplaceTransactionRegisterV15:
+      required:
+        - merchantId
+        - posId
+        - sessionId
+        - amount
+        - currency
+        - description
+        - email
+        - country
+        - language
+        - urlReturn
+        - items
+        - sign
+      properties:
+        merchantId:
+          description: Merchant identification number
+          type: integer
+        posId:
+          description: Shop identification number (defaults to merchant ID)
+          type: integer
+        sessionId:
+          description: Unique identifier from merchant's system
+          type: string
+          maxLength: 100
+        amount:
+          description: Transaction amount which format is presented as amount in given currency divided by 100 (AMOUNT/100)
+          type: integer
+        currency:
+          description: Currency
+          type: string
+          maxLength: 3
+        description:
+          description: Transaction description
+          type: string
+          maxLength: 1024
+        email:
+          description: Customer's e-mail
+          type: string
+          maxLength: 50
+        client:
+          description: Customer's name and surname
+          type: string
+          maxLength: 50
+        address:
+          description: Customer's address
+          type: string
+          maxLength: 80
+        zip:
+          description: Customer's postal code
+          type: string
+          maxLength: 10
+        city:
+          description: Customer's city
+          type: string
+          maxLength: 50
+        country:
+          description: Customer's country
+          type: string
+          maxLength: 2
+        phone:
+          description: Customer's phone number
+          type: string
+          maxLength: 2
+        language:
+          description: Language in format xx
+          type: string
+        method:
+          description: List of payment methods can be found in merchant panel or accessed by API
+          type: integer
+          maxLength: 2
+        urlReturn:
+          description: URL address to which customer will be redirected when transaction is complete
+          type: string
+          maxLength: 250
+        urlStatus:
+          description: URL address to which transaction status will be send
+          type: string
+          maxLength: 250
+        urlNotify:
+          description: URL address to which notify message will be send
+          type: string
+          maxLength: 250
+        timeLimit:
+          description: Time limit for transaction process, 0 - no limit, max. 99 (in minutes)
+          type: integer
+        channel:
+          description: 1 - card, 2 - transfer, 4 - traditional transfer, 8 - N/A, 16 - all 24/7, 32 - prepayment
+          type: integer
+          enum:
+            - '1'
+            - '2'
+            - '4'
+            - '8'
+            - '16'
+            - '32'
+        shipping:
+          description: Delivery cost
+          type: integer
+        transferLabel:
+          description: Description that appears in transfer title (required for card payment, PayPal, FerBuy)
+          type: string
+          maxLength: 20
+        sdkVersion:
+          description: Version of mobile library. Determines if transaction is mobile.
+          type: string
+        sign:
+          description: Control sum *
+          type: string
+        encoding:
+          description: 'Encoding: ISO-8859-2, UTF-8, Windows-1250'
+          type: string
+        items:
+          description: |-
+            Items list
+                 *    <b>itemId - item unique value</b><br/>
+                 *    <b>price - item unit price</b><br/>
+                 *    <b>quantity - item quantity</b><br/>
+                 *    description - additional item description<br/>
+                 *    <b>targetAmount - amount which be moved to merchant targetPosId</b><br/>
+                 *    <b>targetPosId - the id of merchant to which the funds are to be moved</b>
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketplaceItemParameters'
+        methodRefId:
+          description: Method reference number used for fast payments
+          type: string
+      type: object
+    CartParameters:
+      properties:
+        sellerId:
+          type: string
+        sellerCategory:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: integer
+        number:
+          type: string
+      type: object
+    SplitPaymentDetailsParameters:
+      required:
+        - vatAmount
+        - invoiceNumber
+        - nip
+        - iban
+      properties:
+        vatAmount:
+          type: integer
+        invoiceNumber:
+          type: string
+        nip:
+          type: string
+        iban:
+          type: string
+      type: object
+    SplitTransactionRegister:
+      required:
+        - merchantId
+        - posId
+        - sessionId
+        - amount
+        - currency
+        - description
+        - email
+        - country
+        - language
+        - urlReturn
+        - sign
+      properties:
+        merchantId:
+          description: Merchant identification number
+          type: integer
+        posId:
+          description: Shop identification number (defaults to merchant ID)
+          type: integer
+        sessionId:
+          description: Unique identifier from merchant's system
+          type: string
+          maxLength: 100
+        amount:
+          description: Transaction amount which format is presented as amount in given currency divided by 100 (AMOUNT/100)
+          type: integer
+        currency:
+          description: Currency
+          type: string
+          maxLength: 3
+        description:
+          description: Transaction description
+          type: string
+          maxLength: 1024
+        email:
+          description: Customer's e-mail
+          type: string
+          maxLength: 50
+        client:
+          description: Customer's name and surname
+          type: string
+          maxLength: 50
+        address:
+          description: Customer's address
+          type: string
+          maxLength: 80
+        zip:
+          description: Customer's postal code
+          type: string
+          maxLength: 10
+        city:
+          description: Customer's city
+          type: string
+          maxLength: 50
+        country:
+          description: Customer's country
+          type: string
+          maxLength: 2
+        phone:
+          description: Customer's phone number
+          type: string
+          maxLength: 2
+        language:
+          description: Language in format xx
+          type: string
+          maxLength: 2
+        method:
+          description: List of payment methods can be found in merchant panel or accessed by API
+          type: integer
+          maxLength: 2
+        urlReturn:
+          description: URL address to which customer will be redirected when transaction is complete
+          type: string
+          maxLength: 250
+        urlStatus:
+          description: URL address to which transaction status will be send
+          type: string
+          maxLength: 250
+        urlNotify:
+          description: URL address to which notify message will be send
+          type: string
+          maxLength: 250
+        timeLimit:
+          description: Time limit for transaction process, 0 - no limit, max. 99 (in minutes)
+          type: integer
+        channel:
+          description: 1 - card, 2 - transfer, 4 - traditional transfer, 8 - N/A, 16 - all 24/7, 32 - prepayment
+          type: integer
+          enum:
+            - '1'
+            - '2'
+            - '4'
+            - '8'
+            - '16'
+            - '32'
+        shipping:
+          description: Delivery cost
+          type: integer
+        transferLabel:
+          description: Description that appears in transfer title (required for card payment, PayPal, FerBuy)
+          type: string
+          maxLength: 20
+        sdkVersion:
+          description: Version of mobile library. Determines if transaction is mobile.
+          type: string
+        sign:
+          description: Control sum *
+          type: string
+        encoding:
+          description: 'Encoding: ISO-8859-2, UTF-8, Windows-1250'
+          type: string
+        cart:
+          description: Shopping list<b>sellerId - seller id from partners system</b><br/><b>sellerCategory - seller category from partners system</b><br/>name - item name<br/>description - additional item description<br/>quantity - number of items<br/>price - item unit price<br/>number - item id from partners system
+          type: array
+          items:
+            $ref: '#/components/schemas/CartParameters'
+        methodRefId:
+          description: Method reference number used for fast payments
+          type: string
+        splitPaymentDetails:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/SplitPaymentDetailsParameters'
+      type: object
+    RequiredCartParameters:
+      required:
+        - sellerId
+        - sellerCategory
+        - name
+        - description
+        - quantity
+        - price
+        - number
+      properties:
+        sellerId:
+          type: string
+        sellerCategory:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: integer
+        number:
+          type: string
+      type: object
+    ItemParameters:
+      properties:
+        itemId:
+          type: string
+        price:
+          type: integer
+        quantity:
+          type: number
+          format: double
+        description:
+          type: string
+        targetAmount:
+          type: integer
+        targetPosId:
+          type: integer
+      type: object
+    VisaCheckoutParameters:
+      properties:
+        promoCode:
+          type: string
+        discount:
+          type: integer
+        subtotal:
+          type: integer
+        giftWrap:
+          type: integer
+        shippingHandling:
+          type: integer
+        misc:
+          type: integer
+        tax:
+          type: integer
+      type: object
+    DebitDetailsParameters:
+      properties:
+        instalmentAmount:
+          type: integer
+        interest:
+          type: integer
+        commissionAmount:
+          type: integer
+        instalmentNumber:
+          type: integer
+        methodRefIdExpDate:
+          type: string
+      type: object
+    TransactionRegister:
+      required:
+        - merchantId
+        - posId
+        - sessionId
+        - amount
+        - currency
+        - description
+        - email
+        - country
+        - language
+        - urlReturn
+        - sign
+      properties:
+        merchantId:
+          description: Merchant identification number
+          type: integer
+        posId:
+          description: Shop identification number (defaults to merchant ID)
+          type: integer
+        sessionId:
+          description: Unique identifier from merchant's system
+          type: string
+          maxLength: 100
+        amount:
+          description: Transaction amount which format is presented as amount in given currency divided by 100 (AMOUNT/100)
+          type: integer
+        currency:
+          description: Currency
+          type: string
+          maxLength: 3
+        description:
+          description: Transaction description
+          type: string
+          maxLength: 1024
+        email:
+          description: Customer's e-mail
+          type: string
+          maxLength: 50
+        client:
+          description: Customer's name and surname
+          type: string
+          maxLength: 50
+        address:
+          description: Customer's address
+          type: string
+          maxLength: 80
+        zip:
+          description: Customer's postal code
+          type: string
+          maxLength: 10
+        city:
+          description: Customer's city
+          type: string
+          maxLength: 50
+        country:
+          description: Customer's country
+          type: string
+          maxLength: 2
+        phone:
+          description: Customer's phone number
+          type: string
+          maxLength: 2
+        language:
+          description: Language in format xx
+          type: string
+        method:
+          description: List of payment methods can be found in merchant panel or accessed by API
+          type: integer
+          maxLength: 2
+        urlReturn:
+          description: URL address to which customer will be redirected when transaction is complete
+          type: string
+          maxLength: 250
+        urlStatus:
+          description: URL address to which transaction status will be send
+          type: string
+          maxLength: 250
+        urlNotify:
+          description: URL address to which notify message will be send
+          type: string
+          maxLength: 250
+        timeLimit:
+          description: Time limit for transaction process, 0 - no limit, max. 99 (in minutes)
+          type: integer
+        channel:
+          description: 1 - card, 2 - transfer, 4 - traditional transfer, 8 - N/A, 16 - all 24/7, 32 - prepayment
+          type: integer
+          enum:
+            - '1'
+            - '2'
+            - '4'
+            - '8'
+            - '16'
+            - '32'
+        shipping:
+          description: Delivery cost
+          type: integer
+        transferLabel:
+          description: Description that appears in transfer title (required for card payment, PayPal, FerBuy)
+          type: string
+          maxLength: 20
+        sdkVersion:
+          description: Version of mobile library. Determines if transaction is mobile.
+          type: string
+        sign:
+          description: Control sum *
+          type: string
+        encoding:
+          description: 'Encoding: ISO-8859-2, UTF-8, Windows-1250'
+          type: string
+        cart:
+          description: |-
+            Shopping list
+                 *    <b>sellerId - seller id from partners system</b><br/>
+                 *    <b>sellerCategory - seller category from partners system</b><br/>
+                 *    name - item name<br/>
+                 *    description - additional item description<br/>
+                 *    quantity - number of items<br/>
+                 *    price - item unit price<br/>
+                 *    number - item id from partners system
+          type: array
+          items:
+            $ref: '#/components/schemas/CartParameters'
+        methodRefId:
+          description: Method reference number used for fast payments
+          type: string
+      type: object
+    TransactionRegisterV12:
+      required:
+        - merchantId
+        - posId
+        - sessionId
+        - amount
+        - currency
+        - description
+        - email
+        - country
+        - language
+        - urlReturn
+        - sign
+      properties:
+        merchantId:
+          description: Merchant identification number
+          type: integer
+        posId:
+          description: Shop identification number (defaults to merchant ID)
+          type: integer
+        sessionId:
+          description: Unique identifier from merchant's system
+          type: string
+          maxLength: 100
+        amount:
+          description: Transaction amount which format is presented as amount in given currency divided by 100 (AMOUNT/100)
+          type: integer
+        currency:
+          description: Currency
+          type: string
+          maxLength: 3
+        description:
+          description: Transaction description
+          type: string
+          maxLength: 1024
+        email:
+          description: Customer's e-mail
+          type: string
+          maxLength: 50
+        client:
+          description: Customer's name and surname
+          type: string
+          maxLength: 50
+        address:
+          description: Customer's address
+          type: string
+          maxLength: 80
+        zip:
+          description: Customer's postal code
+          type: string
+          maxLength: 10
+        city:
+          description: Customer's city
+          type: string
+          maxLength: 50
+        country:
+          description: Customer's country
+          type: string
+          maxLength: 2
+        phone:
+          description: Customer's phone number
+          type: string
+          maxLength: 2
+        language:
+          description: Language in format xx
+          type: string
+        method:
+          description: List of payment methods can be found in merchant panel or accessed by API
+          type: integer
+          maxLength: 2
+        urlReturn:
+          description: URL address to which customer will be redirected when transaction is complete
+          type: string
+          maxLength: 250
+        urlStatus:
+          description: URL address to which transaction status will be send
+          type: string
+          maxLength: 250
+        timeLimit:
+          description: Time limit for transaction process, 0 - no limit, max. 99 (in minutes)
+          type: integer
+        channel:
+          description: 1 - card, 2 - transfer, 4 - traditional transfer, 8 - N/A, 16 - all 24/7, 32 - prepayment
+          type: integer
+          enum:
+            - '1'
+            - '2'
+            - '4'
+            - '8'
+            - '16'
+            - '32'
+        shipping:
+          description: Delivery cost
+          type: integer
+        transferLabel:
+          description: Description that appears in transfer title (required for card payment, PayPal, FerBuy)
+          type: string
+          maxLength: 20
+        sdkVersion:
+          description: Version of mobile library. Determines if transaction is mobile.
+          type: string
+        sign:
+          description: Control sum *
+          type: string
+        encoding:
+          description: 'Encoding: ISO-8859-2, UTF-8, Windows-1250'
+          type: string
+        items:
+          description: |-
+            Items list
+                 *    <b>itemId - item unique value</b><br/>
+                 *    <b>price - item unit price</b><br/>
+                 *    <b>quantity - item quantity</b><br/>
+                 *    description - additional item description<br/>
+                 *    <b>targetAmount - amount which be moved to merchant targetPosId</b><br/>
+                 *    <b>targetPosId - the id of merchant to which the funds are to be moved</b>
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemParameters'
+        cart:
+          description: |-
+            Shopping list
+                 *    <b>sellerId - seller id from partners system</b><br/>
+                 *    <b>sellerCategory - seller category from partners system</b><br/>
+                 *    name - item name<br/>
+                 *    description - additional item description<br/>
+                 *    quantity - number of items<br/>
+                 *    price - item unit price<br/>
+                 *    number - item id from partners system
+          type: array
+          items:
+            $ref: '#/components/schemas/CartParameters'
+        methodRefId:
+          description: Method reference number used for fast payments
+          type: string
+      type: object
+    TransactionRegisterV15:
+      required:
+        - merchantId
+        - posId
+        - sessionId
+        - amount
+        - currency
+        - description
+        - email
+        - country
+        - language
+        - urlReturn
+        - sign
+      properties:
+        merchantId:
+          description: Merchant identification number
+          type: integer
+        posId:
+          description: Shop identification number (defaults to merchant ID)
+          type: integer
+        sessionId:
+          description: Unique identifier from merchant's system
+          type: string
+          maxLength: 100
+        amount:
+          description: Transaction amount which format is presented as amount in given currency divided by 100 (AMOUNT/100)
+          type: integer
+        currency:
+          description: Currency
+          type: string
+          maxLength: 3
+        description:
+          description: Transaction description
+          type: string
+          maxLength: 1024
+        email:
+          description: Customer's e-mail
+          type: string
+          maxLength: 50
+        client:
+          description: Customer's name and surname
+          type: string
+          maxLength: 50
+        address:
+          description: Customer's address
+          type: string
+          maxLength: 80
+        zip:
+          description: Customer's postal code
+          type: string
+          maxLength: 10
+        city:
+          description: Customer's city
+          type: string
+          maxLength: 50
+        country:
+          description: Customer's country
+          type: string
+          maxLength: 2
+        phone:
+          description: Customer's phone number
+          type: string
+          maxLength: 2
+        language:
+          description: Language in format xx
+          type: string
+        method:
+          description: List of payment methods can be found in merchant panel or accessed by API
+          type: integer
+          maxLength: 2
+        urlReturn:
+          description: URL address to which customer will be redirected when transaction is complete
+          type: string
+          maxLength: 250
+        urlStatus:
+          description: URL address to which transaction status will be send
+          type: string
+          maxLength: 250
+        urlNotify:
+          description: URL address to which notify message will be send
+          type: string
+          maxLength: 250
+        timeLimit:
+          description: Time limit for transaction process, 0 - no limit, max. 99 (in minutes)
+          type: integer
+        channel:
+          description: 1 - card, 2 - transfer, 4 - traditional transfer, 8 - N/A, 16 - all 24/7, 32 - prepayment
+          type: integer
+          enum:
+            - '1'
+            - '2'
+            - '4'
+            - '8'
+            - '16'
+            - '32'
+        shipping:
+          description: Delivery cost
+          type: integer
+        transferLabel:
+          description: Description that appears in transfer title (required for card payment, PayPal, FerBuy)
+          type: string
+          maxLength: 20
+        sdkVersion:
+          description: Version of mobile library. Determines if transaction is mobile.
+          type: string
+        sign:
+          description: Control sum *
+          type: string
+        encoding:
+          description: 'Encoding: ISO-8859-2, UTF-8, Windows-1250'
+          type: string
+        cart:
+          description: |-
+            Shopping list
+                 *    <b>sellerId - seller id from partners system</b><br/>
+                 *    <b>sellerCategory - seller category from partners system</b><br/>
+                 *    name - item name<br/>
+                 *    description - additional item description<br/>
+                 *    quantity - number of items<br/>
+                 *    price - item unit price<br/>
+                 *    number - item id from partners system
+          type: array
+          items:
+            $ref: '#/components/schemas/CartParameters'
+        methodRefId:
+          description: Method reference number used for fast payments
+          type: string
+      type: object
+    CartParametersV17:
+      required:
+        - sellerId
+        - sellerCategory
+        - name
+        - quantity
+        - price
+        - type
+      properties:
+        sellerId:
+          type: string
+        sellerCategory:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        quantity:
+          type: number
+          format: float
+        price:
+          type: integer
+        number:
+          type: string
+        type:
+          type: integer
+      type: object
+    TransactionRegisterV17:
+      required:
+        - merchantId
+        - posId
+        - sessionId
+        - amount
+        - currency
+        - description
+        - email
+        - country
+        - language
+        - urlReturn
+        - sign
+        - cart
+      properties:
+        merchantId:
+          description: Merchant identification number
+          type: integer
+        posId:
+          description: Shop identification number (defaults to merchant ID)
+          type: integer
+        sessionId:
+          description: Unique identifier from merchant's system
+          type: string
+          maxLength: 100
+        amount:
+          description: Transaction amount which format is presented as amount in given currency divided by 100 (AMOUNT/100)
+          type: integer
+        currency:
+          description: Currency
+          type: string
+          maxLength: 3
+        description:
+          description: Transaction description
+          type: string
+          maxLength: 1024
+        email:
+          description: Customer's e-mail
+          type: string
+          maxLength: 50
+        client:
+          description: Customer's name and surname
+          type: string
+          maxLength: 50
+        address:
+          description: Customer's address
+          type: string
+          maxLength: 80
+        zip:
+          description: Customer's postal code
+          type: string
+          maxLength: 10
+        city:
+          description: Customer's city
+          type: string
+          maxLength: 50
+        country:
+          description: Customer's country
+          type: string
+          maxLength: 2
+        phone:
+          description: Customer's phone number
+          type: string
+          maxLength: 2
+        language:
+          description: Language in format xx
+          type: string
+        method:
+          description: List of payment methods can be found in merchant panel or accessed by API
+          type: integer
+          maxLength: 2
+        urlReturn:
+          description: URL address to which customer will be redirected when transaction is complete
+          type: string
+          maxLength: 250
+        urlStatus:
+          description: URL address to which transaction status will be send
+          type: string
+          maxLength: 250
+        urlNotify:
+          description: URL address to which notify message will be send
+          type: string
+          maxLength: 250
+        timeLimit:
+          description: Time limit for transaction process, 0 - no limit, max. 99 (in minutes)
+          type: integer
+        channel:
+          description: 1 - card, 2 - transfer, 4 - traditional transfer, 8 - N/A, 16 - all 24/7, 32 - prepayment
+          type: integer
+          enum:
+            - '1'
+            - '2'
+            - '4'
+            - '8'
+            - '16'
+            - '32'
+        shipping:
+          description: Delivery cost
+          type: integer
+        transferLabel:
+          description: Description that appears in transfer title (required for card payment, PayPal, FerBuy)
+          type: string
+          maxLength: 20
+        sdkVersion:
+          description: Version of mobile library. Determines if transaction is mobile.
+          type: string
+        sign:
+          description: Control sum *
+          type: string
+        encoding:
+          description: 'Encoding: ISO-8859-2, UTF-8, Windows-1250'
+          type: string
+        cart:
+          description: |-
+            Shopping list
+                 *    <b>sellerId - seller id from partners system</b><br/>
+                 *    <b>sellerCategory - seller category from partners system</b><br/>
+                 *    name - item name<br/>
+                 *    description - additional item description<br/>
+                 *    quantity - number of items<br/>
+                 *    price - item unit price<br/>
+                 *    number - item id from partners system<br/>
+                 *    type - item type
+          type: array
+          items:
+            $ref: '#/components/schemas/CartParametersV17'
+        methodRefId:
+          description: Method reference number used for fast payments
+          type: string
+      type: object
+    TransactionRegisterTTL:
+      required:
+        - merchantId
+        - posId
+        - sessionId
+        - amount
+        - currency
+        - description
+        - email
+        - country
+        - language
+        - urlReturn
+        - sign
+        - ttl
+      properties:
+        merchantId:
+          description: Merchant identification number
+          type: integer
+        posId:
+          description: Shop identification number (defaults to merchant ID)
+          type: integer
+        sessionId:
+          description: Unique identifier from merchant's system
+          type: string
+          maxLength: 100
+        amount:
+          description: Transaction amount which format is presented as amount in given currency divided by 100 (AMOUNT/100)
+          type: integer
+        currency:
+          description: Currency
+          type: string
+          maxLength: 3
+        description:
+          description: Transaction description
+          type: string
+          maxLength: 1024
+        email:
+          description: Customer's e-mail
+          type: string
+          maxLength: 50
+        client:
+          description: Customer's name and surname
+          type: string
+          maxLength: 50
+        address:
+          description: Customer's address
+          type: string
+          maxLength: 80
+        zip:
+          description: Customer's postal code
+          type: string
+          maxLength: 10
+        city:
+          description: Customer's city
+          type: string
+          maxLength: 50
+        country:
+          description: Customer's country
+          type: string
+          maxLength: 2
+        phone:
+          description: Customer's phone number
+          type: string
+          maxLength: 2
+        language:
+          description: Language in format xx
+          type: string
+        method:
+          description: List of payment methods can be found in merchant panel or accessed by API
+          type: integer
+          maxLength: 2
+        urlReturn:
+          description: URL address to which customer will be redirected when transaction is complete
+          type: string
+          maxLength: 250
+        urlStatus:
+          description: URL address to which transaction status will be send
+          type: string
+          maxLength: 250
+        urlNotify:
+          description: URL address to which notify message will be send
+          type: string
+          maxLength: 250
+        timeLimit:
+          description: Time limit for transaction process, 0 - no limit, max. 99 (in minutes)
+          type: integer
+        ttl:
+          description: Time limit for transaction token , 0 = max 31 days, max. 44640 (in minutes)
+          type: integer
+        channel:
+          description: 1 - card, 2 - transfer, 4 - traditional transfer, 8 - N/A, 16 - all 24/7, 32 - prepayment
+          type: integer
+          enum:
+            - '1'
+            - '2'
+            - '4'
+            - '8'
+            - '16'
+            - '32'
+        shipping:
+          description: Delivery cost
+          type: integer
+        transferLabel:
+          description: Description that appears in transfer title (required for card payment, PayPal, FerBuy)
+          type: string
+          maxLength: 20
+        sdkVersion:
+          description: Version of mobile library. Determines if transaction is mobile.
+          type: string
+        sign:
+          description: Control sum *
+          type: string
+        encoding:
+          description: 'Encoding: ISO-8859-2, UTF-8, Windows-1250'
+          type: string
+        cart:
+          description: |-
+            Shopping list
+                 *    <b>sellerId - seller id from partners system</b><br/>
+                 *    <b>sellerCategory - seller category from partners system</b><br/>
+                 *    name - item name<br/>
+                 *    description - additional item description<br/>
+                 *    quantity - number of items<br/>
+                 *    price - item unit price<br/>
+                 *    number - item id from partners system
+          type: array
+          items:
+            $ref: '#/components/schemas/CartParameters'
+        methodRefId:
+          description: Method reference number used for fast payments
+          type: string
+      type: object
+    TransactionRegistrationResponse:
+      properties:
+        data:
+          properties:
+            token:
+              type: string
+              default: 1A2B3C4D5E-A1B2C3-A1B2C3-1A2B3C4D5E
+          type: object
+        responseCode:
+          type: string
+          default: '0'
+      type: object
+    TransactionRegisterOfflineRequest:
+      properties:
+        token:
+          type: string
+          example: 0000000000-000000-000000-0000000000
+      type: object
+    TransactionRegistrationOffline200:
+      properties:
+        data:
+          properties:
+            orderId:
+              type: integer
+              example: 123123
+            sessionId:
+              type: string
+              example: order123
+            amount:
+              type: integer
+              example: 1000
+            statement:
+              type: string
+              example: P24-A12-A12-A12
+            iban:
+              type: string
+              example: PL00000000000000000000000000
+            ibanOwner:
+              type: string
+              example: Firma S.A.
+            ibanOwnerAddress:
+              type: string
+              example: Adres 00-000, Ulica 123
+          type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    TransactionRegistrationOffline409:
+      properties:
+        error:
+          type: string
+          example: Unable to create offline transaction
+        code:
+          type: number
+          example: 0
+      type: object
+    TransactionRejectJsonRequestBody:
+      properties:
+        orderId:
+          type: integer
+          example: 1001
+        sessionId:
+          type: string
+          example: zamowienie-1
+      type: object
+    TransactionRejectJsonRequestBodyV11:
+      allOf:
+        - $ref: '#/components/schemas/TransactionRejectJsonRequestBody'
+        - properties:
+            orderId:
+              type: integer
+              example: 1001
+            sessionId:
+              type: string
+              example: zamowienie-1
+            sign:
+              type: string
+              example: 0a7ad99c127c137382291c6c5e8477a0b5a303e1a182946d7a95cdf0e3888568
+          type: object
+    TransactionReject200:
+      properties:
+        data:
+          properties:
+            status:
+              type: string
+              example: success
+          type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    TransactionVerificationResponse:
+      properties:
+        data:
+          properties:
+            status:
+              type: string
+              default: success
+          type: object
+        responseCode:
+          type: string
+          default: '0'
+      type: object
+    UserCreateJsonRequestBody:
+      properties:
+        userId:
+          type: string
+          example: unikalny-identyfikator-uzytkownika
+        email:
+          type: string
+          example: unikalny-adres@example.com
+        firstName:
+          type: string
+          example: Jan
+        lastName:
+          type: string
+          example: Kowalski
+        city:
+          type: string
+          example: Poznań
+        country:
+          type: string
+          example: Poland
+        regulationAcceptanceDate:
+          type: integer
+          example: '1498381559'
+      type: object
+    UserCreateResponse200:
+      properties:
+        data:
+          properties:
+            p24UserId:
+              type: integer
+              example: 1001
+          type: object
+        responseCode:
+          type: string
+          example: '0'
+      type: object
+    UserCreateResponse409:
+      properties:
+        error:
+          type: string
+          example: User already exists
+        code:
+          type: number
+          example: 409
+      type: object
+    GeneratePaymentMethodsResponse:
+      properties:
+        data:
+          properties:
+            paymentMethods:
+              type: array
+              items:
+                properties:
+                  methodId:
+                    type: integer
+                  name:
+                    type: string
+                  group:
+                    type: string
+                  enabled:
+                    type: boolean
+                  imgUrl:
+                    type: string
+                  mobileImgUrl:
+                    type: string
+                  jsUrl:
+                    type: string
+                  mobile:
+                    type: boolean
+                type: object
+            lastPaymentMethods:
+              type: array
+              items:
+                properties:
+                  methodId:
+                    type: integer
+                    example: '218'
+                  lastUsageDate:
+                    type: string
+                    example: '2017-06-27 14:16:41'
+                type: object
+            cardsNumbers:
+              type: array
+              items:
+                properties:
+                  methodId:
+                    type: integer
+                    example: '218'
+                  refId:
+                    type: string
+                    example: 6E29F61E-DD699159-E324BA71-FB8AC28B
+                  maskedCardNumber:
+                    type: string
+                    example: xxxxxxxx0001
+                  expirationDate:
+                    type: string
+                    example: 01/2020
+                  cardName:
+                    type: string
+                    example: visa
+                  enabled:
+                    type: boolean
+                  imgUrl:
+                    type: string
+                    example: https://static.przelewy24.pl/img/card/visa.png
+                  mobileImgUrl:
+                    type: string
+                    example: https://static.przelewy24.pl/img/card/visa.png
+                type: object
+            temporaryCardsNumbers:
+              type: array
+              items:
+                properties:
+                  refId:
+                    type: string
+                    example: P24CCTMP-5B295BC6-BBA153A2-6D661B7D
+                  maskedCardNumber:
+                    type: string
+                    example: xxxxxxxx1013
+                  expirationDate:
+                    type: string
+                    example: 12/2017
+                  cardName:
+                    type: string
+                    example: mastercard
+                  visibilityTo:
+                    type: integer
+                    example: '1498980269'
+                  store:
+                    type: boolean
+                  imgUrl:
+                    type: string
+                    example: https://static.przelewy24.pl/img/card/mastercard.png
+                  mobileImgUrl:
+                    type: string
+                    example: https://static.przelewy24.pl/img/card/mastercard.png
+                type: object
+            paymentAliases:
+              type: array
+              items:
+                properties:
+                  methodId:
+                    type: integer
+                  alias:
+                    type: string
+                type: object
+          type: object
+      type: object
+    ErrorCodeResponse:
+      properties:
+        error:
+          type: string
+          example: Undefined error
+        code:
+          type: integer
+          example: 500
+      type: object
+    InvalidInputData:
+      properties:
+        error:
+          type: string
+          example: Invalid input data
+        code:
+          type: number
+          example: 400
+      type: object
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic

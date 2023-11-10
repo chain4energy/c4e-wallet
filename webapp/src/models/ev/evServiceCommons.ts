@@ -26,3 +26,9 @@ export enum EvServiceApplicationErrorCodespace {
   SERVICE = 'service',
   SIGNATURE = 'signature'
 }
+
+export interface LinkDecoderDto {
+  type : string,
+  version : string,
+  params: Map<string, string>
+}

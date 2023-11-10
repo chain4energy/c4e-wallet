@@ -1,55 +1,71 @@
 <template>
-  <div class="about">
-    <h1>Charger Id:{{chargerId}}</h1>
-  </div>
-  <div>
-    <p>Email:</p>
-    <InputText v-model="login" type="text"/>
-  </div>
-  <div>
-    <p>AccessCode:</p>
-    <InputText v-model="accessCode" type="text"/>
-  </div>
-  <div>
-    <Button
-      @click="createSession"
-      class="airDropTotal-btn">
-      {{ $t('INFO_PAGE.BUTTON') }}
-    </Button>
-  </div>
+
+  <chargerInfoC :charger-info="chargerInfo">
+  </chargerInfoC>
+  <priceC :price-info="priceInfo">
+  </priceC>
+
+  <Button>
+    Next
+  </Button>
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import {RouteParams, useRoute} from 'vue-router'
 import {onMounted, ref} from "vue";
 import apiFactory from "@/api/factory.api";
-import {LoginAuthRequest} from "@/models/evServiceCommons";
+import {LoginAuthRequest} from "@/models/ev/evServiceCommons";
+import PriceC from "@/ev/components/PriceC.vue";
+import ChargerInfoC from "@/ev/components/ChargerInfoC.vue";
+import {ChargerInfo, ChargerStatus, ConnectorType, PriceInfo} from "@/models/ev/chargerInfo";
 
 const route = useRoute()
 
-const chargerId = ref();
-const login = ref();
-const accessCode = ref();
+// const chargerId = ref();
+// const login = ref();
+// const accessCode = ref();
 
 onMounted(()=>{
 
-  console.log( route.params.chargerId);
-  console.log( route.query.tot);
-  if(route.params.chargerId) {
-    chargerId.value = route.params.chargerId;
-  } else {
-    //TODO: chargerId not found
-  }
+  console.log( route.params.context);
+
+  //TODO: decode link
+  const pathToDecoder = createLinkFromPathParams(route.params.context);
+  console.log("pathToDecoder:" + pathToDecoder);
+  // apiFactory.evServiceApi().evDecodeLink(pathToDecoder, true).then(response=>{
+  //   return response;
+  // todo: get charger info
+  // });
 })
 
-function createSession() {
-  const evServiceApi = apiFactory.evServiceApi();
-  const request:LoginAuthRequest = {accessCode: accessCode.value, login: login.value, resource:chargerId.value };
-   let promise = evServiceApi.evLoginEmailAndLoginData(request, true);
-  promise.then(jwt=>{
-    console.log(jwt);
-  })
+function createLinkFromPathParams(params: string | string[]) : string{
+  if(Array.isArray(params)) {
+    return params.join("/");
+  } else {
+    return params;
+  }
 }
+
+const chargerInfo : ChargerInfo= {
+  location:'',
+  name:'',
+  connectorType:ConnectorType.TYPE2,
+  availability:"asdasd",
+  status:  ChargerStatus.AVAILABLE
+}
+
+const priceInfo : PriceInfo= {
+  pricePerKwh : '123'
+}
+
+// function createSession() {
+//   const evServiceApi = apiFactory.evServiceApi();
+//   const request:LoginAuthRequest = {accessCode: accessCode.value, login: login.value, resource:chargerId.value };
+//    let promise = evServiceApi.evLoginEmailAndLoginData(request, true);
+//   promise.then(jwt=>{
+//     console.log(jwt);
+//   })
+// }
 
 
 

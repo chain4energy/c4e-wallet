@@ -11,17 +11,17 @@ const routesEv: Array<RouteRecordRaw> = [
   {
     path: '/' + subAppName + '/infoPage',
     name: subAppName + '_InfoPage',
-    component: () => import(/* webpackChunkName: "about" */ '@/ev/views/InfoPage.vue')
+    component: () => import(/* webpackChunkName: "InfoPage" */ '@/ev/views/InfoPage.vue')
   },
   {
     path: '/' + subAppName + '/about',
     name: subAppName + '_About',
-    component: () => import(/* webpackChunkName: "about" */ '@/ev/views/AboutView.vue')
+    component: () => import(/* webpackChunkName: "AboutView" */ '@/ev/views/AboutView.vue')
   },
   {
-    path: '/' + subAppName + '/resourceLink/:chargerId',
+    path: '/' + subAppName + '/resourceLink/:context(.*)*',
     name: subAppName + '_ResourceLink',
-    component: () => import(/* webpackChunkName: "about" */ '@/ev/views/ResourceLink.vue')
+    component: () => import(/* webpackChunkName: "ResourceLink" */ '@/ev/views/ResourceLink.vue')
   },
 ];
 
