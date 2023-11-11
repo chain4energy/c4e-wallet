@@ -28,28 +28,29 @@
 
 <script setup lang="ts">
 import {ref} from "vue";
-import { useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import ChargerInfoC from "@/ev/components/ChargerInfoC.vue";
 import {ChargerInfo, ChargerStatus, ConnectorType, PriceInfo} from "@/models/ev/chargerInfo";
 import PriceC from "@/ev/components/PriceC.vue";
 
 const resourceId = ref('');
 const router = useRouter()
-function onClick(){
+
+function onClick() {
   console.log("onClick");
   router.push('/ev/resourceLink/' + resourceId.value + '?tot=pooopo');
 }
 
-const chargerInfo : ChargerInfo= {
-  location:'',
-  name:'',
-  connectorType:ConnectorType.TYPE2,
-  availability:"asdasd",
-  status:  ChargerStatus.AVAILABLE
+const chargerInfo: ChargerInfo = {
+  location: '',
+  name: '',
+  connectorType: ConnectorType.TYPE2,
+  availability: "asdasd",
+  status: ChargerStatus.AVAILABLE
 }
 
-const priceInfo : PriceInfo= {
-  pricePerKwh : '123'
+const priceInfo: PriceInfo = {
+  pricePerKwh: '123'
 }
 
 </script>

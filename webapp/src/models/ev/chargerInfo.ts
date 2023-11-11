@@ -1,22 +1,22 @@
-export interface ChargerInfo{
-  location:string;
-  name:string;
-  connectorType:ConnectorType;
-  availability:string;
-  status:  ChargerStatus
+export interface ChargerInfo {
+  location: string;
+  name: string;
+  connectorType: ConnectorType;
+  availability: string;
+  status: ChargerStatus
 }
 
-export enum ConnectorType{
+export enum ConnectorType {
   TYPE1,
   TYPE2,
 }
 
-export enum ChargerStatus{
+export enum ChargerStatus {
   AVAILABLE,
   UNAVAILABLE,
   BUSY
 }
 
-export interface PriceInfo{
+export interface PriceInfo {
   pricePerKwh: string
 }

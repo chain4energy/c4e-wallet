@@ -51,7 +51,7 @@ export interface JsonQueries {
 }
 
 export interface JsonQueriesEv{
-  LOGIN_EMAIL_AND_LOGIN_DATA: string;
+  LOGIN_WITH_RESOURCE: string;
   DECODE_RESOURCE_URL: string;
 }
 

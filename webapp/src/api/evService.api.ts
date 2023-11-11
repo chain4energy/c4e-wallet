@@ -2,12 +2,8 @@ import BaseApi, {ErrorData} from "@/api/base.api";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {RequestResponse} from "@/models/request-response";
-import {formatString} from "@/utils/string-formatter";
 import {Jwt} from "@/models/user/jwt";
-import {SaleServiceApplicationError} from "@/models/saleServiceCommons";
-import queries from "@/api/queries";
 import {EvServiceApplicationError, LinkDecoderDto, LoginAuthRequest} from "@/models/ev/evServiceCommons";
-import {WalletAuthRequest} from "@/models/user/walletAuth";
 
 
 export class EvServiceApi extends BaseApi {
@@ -42,12 +38,23 @@ export class EvServiceApi extends BaseApi {
   //   const url = formatString(useConfigurationStore().config.queries ,{address: accountAddress});
   // }
 
-  public evLoginEmailAndLoginData(authRequest: LoginAuthRequest, lockscreen: boolean){
-      return this.evServicePostCall<LoginAuthRequest, Jwt, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.LOGIN_EMAIL_AND_LOGIN_DATA, authRequest, lockscreen, "activateEmailAccount");
+  public evLoginWithResource(authRequest: LoginAuthRequest, lockscreen: boolean) {
+    return this.evServicePostCall<LoginAuthRequest, Jwt, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.LOGIN_WITH_RESOURCE, authRequest, lockscreen, "activateEmailAccount");
   }
 
-  public evDecodeLink(path:string, lockscreen: boolean){
+  public evDecodeLink(path: string, lockscreen: boolean) {
     return this.evServiceGetCall<LinkDecoderDto, EvServiceApplicationError>(path, lockscreen, "evDecodeLink");
   }
 
+  public evQrCodeInfo(path: string, lockscreen: boolean) {
+    return this.evServiceGetCall<LinkDecoderDto, EvServiceApplicationError>(path, lockscreen, "evQrCodeInfo");
+  }
+
+  public evChargePointInfo(path: string, lockscreen: boolean) {
+    return this.evServiceGetCall<LinkDecoderDto, EvServiceApplicationError>(path, lockscreen, "evChargePointInfo");
+  }
+
+  public startCharging(path: string, lockscreen: boolean) {
+    return this.evServiceGetCall<LinkDecoderDto, EvServiceApplicationError>(path + "/session/prepareAnonymus", lockscreen, "evChargePointInfo");
+  }
 }

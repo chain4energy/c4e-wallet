@@ -1,17 +1,17 @@
 <template>
   <p>
-    Location: {{ chargerInfo.location }}
+<!--    Location: {{ chargerInfo.location }}-->
   </p>
-  <Card class="content">
-    <template #title> Simple Card</template>
-    <template #content>
-      <p>{{ chargerInfo.name }}</p>
-      <p>{{ chargerInfo.connectorType }}</p>
-      <p>{{ chargerInfo.availability }}</p>
-      <p>{{ chargerInfo.status }}</p>
-      <Tag icon="pi pi-check" :value="ChargerStatus[chargerInfo?.status]" severity="success"/>
-    </template>
-  </Card>
+<!--  <Card class="content">-->
+<!--    <template #title> Simple Card</template>-->
+<!--    <template #content>-->
+<!--      <p>{{ chargerInfo.name }}</p>-->
+<!--      <p>{{ chargerInfo.connectorType }}</p>-->
+<!--      <p>{{ chargerInfo.availability }}</p>-->
+<!--      <p>{{ chargerInfo.status }}</p>-->
+<!--      <Tag icon="pi pi-check" :value="ChargerStatus[chargerInfo?.status]" severity="success"/>-->
+<!--    </template>-->
+<!--  </Card>-->
 </template>
 
 

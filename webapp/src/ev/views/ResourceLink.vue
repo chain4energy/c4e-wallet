@@ -11,51 +11,43 @@
 </template>
 
 <script setup lang="ts">
-import {RouteParams, useRoute} from 'vue-router'
-import {onMounted, ref} from "vue";
-import apiFactory from "@/api/factory.api";
-import {LoginAuthRequest} from "@/models/ev/evServiceCommons";
+import {useRoute} from 'vue-router'
+import {onMounted} from "vue";
 import PriceC from "@/ev/components/PriceC.vue";
 import ChargerInfoC from "@/ev/components/ChargerInfoC.vue";
 import {ChargerInfo, ChargerStatus, ConnectorType, PriceInfo} from "@/models/ev/chargerInfo";
+import {useEvStore} from "@/store/ev.store";
 
 const route = useRoute()
+const evStore = useEvStore();
 
-// const chargerId = ref();
-// const login = ref();
-// const accessCode = ref();
-
-onMounted(()=>{
-
-  console.log( route.params.context);
-
-  //TODO: decode link
+onMounted(async () => {
+  console.log(route.params.context);
   const pathToDecoder = createLinkFromPathParams(route.params.context);
   console.log("pathToDecoder:" + pathToDecoder);
-  // apiFactory.evServiceApi().evDecodeLink(pathToDecoder, true).then(response=>{
-  //   return response;
-  // todo: get charger info
-  // });
+  await evStore.getEvAuthResource(pathToDecoder)
+  await evStore.loginWithResource()
+
 })
 
-function createLinkFromPathParams(params: string | string[]) : string{
-  if(Array.isArray(params)) {
+function createLinkFromPathParams(params: string | string[]): string {
+  if (Array.isArray(params)) {
     return params.join("/");
   } else {
     return params;
   }
 }
 
-const chargerInfo : ChargerInfo= {
-  location:'',
-  name:'',
-  connectorType:ConnectorType.TYPE2,
-  availability:"asdasd",
-  status:  ChargerStatus.AVAILABLE
+const chargerInfo: ChargerInfo = {
+  location: '',
+  name: '',
+  connectorType: ConnectorType.TYPE2,
+  availability: "asdasd",
+  status: ChargerStatus.AVAILABLE
 }
 
-const priceInfo : PriceInfo= {
-  pricePerKwh : '123'
+const priceInfo: PriceInfo = {
+  pricePerKwh: '123'
 }
 
 // function createSession() {
@@ -66,7 +58,6 @@ const priceInfo : PriceInfo= {
 //     console.log(jwt);
 //   })
 // }
-
 
 
 </script>

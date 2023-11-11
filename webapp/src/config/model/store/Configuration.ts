@@ -134,12 +134,12 @@ export class Queries implements JsonQueries{
 }
 
 export class QueriesEv implements JsonQueriesEv{
-  LOGIN_EMAIL_AND_LOGIN_DATA: string;
+  LOGIN_WITH_RESOURCE: string;
   DECODE_RESOURCE_URL: string;
   constructor (
     queries : JsonQueriesEv | undefined
   ) {
-    this.LOGIN_EMAIL_AND_LOGIN_DATA = queries?.LOGIN_EMAIL_AND_LOGIN_DATA ? queries?.LOGIN_EMAIL_AND_LOGIN_DATA : queriesDefaults.ev.LOGIN_EMAIL_AND_LOGIN_DATA;
+    this.LOGIN_WITH_RESOURCE = queries?.LOGIN_WITH_RESOURCE ? queries?.LOGIN_WITH_RESOURCE : queriesDefaults.ev.LOGIN_EMAIL_AND_LOGIN_DATA;
     this.DECODE_RESOURCE_URL = queries?.DECODE_RESOURCE_URL ? queries?.DECODE_RESOURCE_URL : queriesDefaults.ev.DECODE_RESOURCE_URL;
   }
 }

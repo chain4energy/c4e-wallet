@@ -1,8 +1,10 @@
-
 export interface LoginAuthRequest {
-  accessCode: number;
-  login: number;
-  resource: number;
+  resourceCode: string;
+}
+
+export interface AuthResponse {
+  path: string;
+  resourceCode: string;
 }
 
 export interface EvServiceApplicationError {
@@ -28,7 +30,8 @@ export enum EvServiceApplicationErrorCodespace {
 }
 
 export interface LinkDecoderDto {
-  type : string,
-  version : string,
+  type: string,
+  version: string,
   params: Map<string, string>
 }
+

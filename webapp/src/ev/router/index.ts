@@ -23,6 +23,11 @@ const routesEv: Array<RouteRecordRaw> = [
     name: subAppName + '_ResourceLink',
     component: () => import(/* webpackChunkName: "ResourceLink" */ '@/ev/views/ResourceLink.vue')
   },
+  {
+    path: '/' + subAppName + '/qrCode/:context(.*)*',
+    name: subAppName + '_QrCode',
+    component: () => import(/* webpackChunkName: "ResourceLink" */ '@/ev/views/QrCode.vue')
+  },
 ];
 
 const routerEv = createRouter({
