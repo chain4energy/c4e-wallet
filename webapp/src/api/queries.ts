@@ -119,6 +119,7 @@ export default {
   },
   ev: {
     LOGIN_EMAIL_AND_LOGIN_DATA: '/api/auth/resource',
-    DECODE_RESOURCE_URL: 'api/xxxxx/decode'
+    DECODE_RESOURCE_URL: 'api/xxxxx/decode',
+    CENTRAL_SYSTEM_SERVICE: '/api/central-system-service'
   }
 };

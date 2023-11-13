@@ -445,7 +445,8 @@
     "queries": {
     },
     "queriesEv": {
-      "LOGIN_EMAIL_AND_LOGIN_DATA": "/api/login-service/auth/resource"
+      "LOGIN_EMAIL_AND_LOGIN_DATA": "/api/login-service/auth/resource",
+      "CENTRAL_SYSTEM_SERVICE":"/api/central-system-service"
     },
     "operationGas": {
       "vote": 250000,

@@ -53,6 +53,7 @@ export interface JsonQueries {
 export interface JsonQueriesEv{
   LOGIN_WITH_RESOURCE: string;
   DECODE_RESOURCE_URL: string;
+  CENTRAL_SYSTEM_SERVICE: string;
 }
 
 export interface Configuration {
