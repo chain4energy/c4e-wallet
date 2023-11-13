@@ -10,17 +10,24 @@
     <Button @click="submitChargePointInfo()" label="Fetch Charge Point Info"/>
   </form>
 
-  <chargerInfoC v-if="evStore.getChargePointInfo" :charge-point-info="evStore.getChargePointInfo"></chargerInfoC>
+  <chargerInfoC v-if="chargePointInfo" :charge-point-info="chargePointInfo"></chargerInfoC>
+
+  <div v-if="chargePointInfo">
+    <Button v-if="chargePointInfo?.status === ChargerStatus.AVAILABLE" @click="next()">
+      Next
+    </Button>
+  </div>
   <priceC :price-info="priceInfo"></priceC>
 </template>
 <script setup lang="ts">
-import {useRoute} from 'vue-router'
-import {onMounted, ref} from "vue";
+import {useRoute, useRouter} from 'vue-router'
+import {computed, ref} from "vue";
 import PriceC from "@/ev/components/PriceC.vue";
 import ChargerInfoC from "@/ev/components/ChargerInfoC.vue";
-import {PriceInfo} from "@/models/ev/chargerInfo";
+import {ChargerStatus, PriceInfo} from "@/models/ev/chargerInfo";
 import {useEvStore} from "@/store/ev.store";
 
+const router = useRouter()
 const route = useRoute()
 const evStore = useEvStore();
 
@@ -33,7 +40,7 @@ const qrCodeInfoForm = ref({
   qrCodeInfoPath: '/v0.1/charge_point/oko/connector/1'
 });
 
-
+const chargePointInfo = computed(() => evStore.getChargePointInfo);
 
 const submitChargePointInfo = async () => {
   await evStore.mockFetchChargePointInfo(chargePointForm.value.chargePointId, parseInt(chargePointForm.value.connectorId));
@@ -46,6 +53,13 @@ const submitQrCodeInfo = () => {
 const fetchConnectorInfo = async () => {
   await evStore.fetchChargePointInfo();
 };
+
+function next(){
+  if(chargePointInfo.value?.status === ChargerStatus.AVAILABLE) {
+    console.log("next step -> start charging")
+    router.push('/ev/startCharging');
+  }
+}
 
 async function fetchAllData() {
   console.log(route.params.context);

@@ -8,11 +8,6 @@
       <p>Status: {{ chargePointInfo?.status }}</p>
       <p>Charge point id: {{ chargePointInfo?.chargePointId }}</p>
       <Tag icon="pi pi-check" :value="ChargerStatus[chargePointInfo?.active]" severity="success"/>
-      <div>
-        <Button v-if="chargePointInfo?.status === ChargerStatus.AVAILABLE" @click="nextStep()">
-          Next
-        </Button>
-      </div>
     </template>
   </Card>
 </template>
@@ -27,10 +22,6 @@ defineProps({
     required: true
   }}
  );
-
-const nextStep = async () => {
-  // TODO: implement route
-}
 </script>
 
 <style scoped lang="scss">
