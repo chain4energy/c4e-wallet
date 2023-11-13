@@ -5,9 +5,10 @@ import {AuthResponse, LoginAuthRequest} from "@/models/ev/evServiceCommons";
 
 interface EvStoreState {
   chargerInfo: ChargerInfo | undefined,
-  qrCodeInfoPath: string
-  sessionPath: string
-  resourceCode: string
+  qrCodeInfoPath: string,
+  sessionPath: string,
+  resourceCode: string,
+  email: string
 }
 
 export const useEvStore = defineStore({
@@ -17,7 +18,8 @@ export const useEvStore = defineStore({
       chargerInfo: undefined,
       qrCodeInfoPath: "",
       sessionPath: "",
-      resourceCode: ""
+      resourceCode: "",
+      email: ""
     };
   },
   actions: {

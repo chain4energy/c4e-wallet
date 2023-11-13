@@ -26,7 +26,17 @@ const routesEv: Array<RouteRecordRaw> = [
   {
     path: '/' + subAppName + '/qrCode/:context(.*)*',
     name: subAppName + '_QrCode',
-    component: () => import(/* webpackChunkName: "ResourceLink" */ '@/ev/views/QrCode.vue')
+    component: () => import(/* webpackChunkName: "QrCode" */ '@/ev/views/QrCode.vue')
+  },
+  {
+    path: '/' + subAppName + '/startCharging',
+    name: subAppName + '_StartCharging',
+    component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/StartChargingProvideEmail.vue')
+  },
+  {
+    path: '/' + subAppName + '/startChargingCheckEmail',
+    name: subAppName + '_StartChargingCheckEmail',
+    component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/StartChargingCheckEmail.vue')
   },
 ];
 
