@@ -1,34 +1,52 @@
 <template>
+  <InputText v-model="pathForm.path" placeholder="Path to decode"/>
+  <Button label="Decode path" @click="mockDecodePath()"/>
 
-  <chargerInfoC :charger-info="chargerInfo">
-  </chargerInfoC>
-  <priceC :price-info="priceInfo">
-  </priceC>
+  <Button label="Login with resource" @click="loginWithResource()"/>
 
-  <Button>
-    Next
-  </Button>
+  <sessionInfoC v-if="sessionInfo" :session-info="sessionInfo"></sessionInfoC>
 </template>
 
 <script setup lang="ts">
 import {useRoute} from 'vue-router'
-import {onMounted} from "vue";
-import PriceC from "@/ev/components/PriceC.vue";
-import ChargerInfoC from "@/ev/components/ChargerInfoC.vue";
-import {ChargerInfo, ChargerStatus, ConnectorType, PriceInfo} from "@/models/ev/chargerInfo";
+import {computed, onMounted, ref} from "vue";
 import {useEvStore} from "@/store/ev.store";
+import SessionInfoC from "@/ev/components/SessionInfoC.vue";
 
 const route = useRoute()
 const evStore = useEvStore();
 
+const pathForm = ref({
+  path: 'oko',
+});
+
+const sessionInfo = computed(() => evStore.getSessionInfo);
+
 onMounted(async () => {
+  // fetchAllData()
+  // TODO: for now only fetch ev auth resource data for testing
   console.log(route.params.context);
   const pathToDecoder = createLinkFromPathParams(route.params.context);
   console.log("pathToDecoder:" + pathToDecoder);
   await evStore.getEvAuthResource(pathToDecoder)
-  await evStore.loginWithResource()
-
 })
+
+function mockDecodePath() {
+  console.log("mockDecodePath")
+  evStore.getEvAuthResource(pathForm.value.path);
+}
+
+function loginWithResource() {
+  evStore.loginWithResource()
+}
+
+function fetchAllData() {
+  console.log(route.params.context);
+  const pathToDecoder = createLinkFromPathParams(route.params.context);
+  console.log("pathToDecoder:" + pathToDecoder);
+  evStore.getEvAuthResource(pathToDecoder)
+  evStore.loginWithResource()
+}
 
 function createLinkFromPathParams(params: string | string[]): string {
   if (Array.isArray(params)) {
@@ -37,28 +55,6 @@ function createLinkFromPathParams(params: string | string[]): string {
     return params;
   }
 }
-
-const chargerInfo: ChargerInfo = {
-  location: '',
-  name: '',
-  connectorType: ConnectorType.TYPE2,
-  availability: "asdasd",
-  status: ChargerStatus.AVAILABLE
-}
-
-const priceInfo: PriceInfo = {
-  pricePerKwh: '123'
-}
-
-// function createSession() {
-//   const evServiceApi = apiFactory.evServiceApi();
-//   const request:LoginAuthRequest = {accessCode: accessCode.value, login: login.value, resource:chargerId.value };
-//    let promise = evServiceApi.evLoginEmailAndLoginData(request, true);
-//   promise.then(jwt=>{
-//     console.log(jwt);
-//   })
-// }
-
 
 </script>
 

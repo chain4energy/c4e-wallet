@@ -35,3 +35,7 @@ export interface LinkDecoderDto {
   params: Map<string, string>
 }
 
+export interface StartChargingAnonumousResponse {}
+export interface StartChargingAnonumousRequest {
+  login: string;
+}

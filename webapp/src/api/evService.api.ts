@@ -3,7 +3,12 @@ import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {RequestResponse} from "@/models/request-response";
 import {Jwt} from "@/models/user/jwt";
-import {EvServiceApplicationError, LinkDecoderDto, LoginAuthRequest} from "@/models/ev/evServiceCommons";
+import {
+  EvServiceApplicationError,
+  LinkDecoderDto,
+  LoginAuthRequest,
+  StartChargingAnonumousRequest, StartChargingAnonumousResponse
+} from "@/models/ev/evServiceCommons";
 import {ChargePointInfo, ChargerInfo} from "@/models/ev/chargerInfo";
 
 
@@ -44,7 +49,7 @@ export class EvServiceApi extends BaseApi {
   }
 
   public evDecodeLink(path: string, lockscreen: boolean) {
-    return this.evServiceGetCall<LinkDecoderDto, EvServiceApplicationError>(path, lockscreen, "evDecodeLink");
+    return this.evServiceGetCall<LinkDecoderDto, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path, lockscreen, "evDecodeLink");
   }
 
   public evQrCodeInfo(path: string, lockscreen: boolean) {
@@ -55,7 +60,7 @@ export class EvServiceApi extends BaseApi {
     return this.evServiceGetCall<ChargePointInfo, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path, lockscreen, "evChargePointInfo");
   }
 
-  public startCharging(path: string, lockscreen: boolean) {
-    return this.evServiceGetCall<LinkDecoderDto, EvServiceApplicationError>(path + "/session/prepareAnonymus", lockscreen, "evChargePointInfo");
+  public startCharging(path: string, login: string, lockscreen: boolean) {
+    return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepareAnonymous", {login},lockscreen,"evChargePointInfo");
   }
 }

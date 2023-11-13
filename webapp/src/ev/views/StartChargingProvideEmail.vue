@@ -15,9 +15,8 @@
   </Form>
 </template>
 <script setup lang="ts">
-import {ref} from "vue";
-import {object} from "yup";
 import * as Yup from "yup";
+import {object} from "yup";
 import {Field, Form} from "vee-validate";
 import {useEvStore} from "@/store/ev.store";
 import {useRouter} from "vue-router";
@@ -32,9 +31,9 @@ const schema = object().shape({
 
 function next(){
   if(evStore.email) {
+
+    evStore.startChargingSession(true, () => router.push('/ev/startChargingCheckEmail'))
     console.log("send request to backend -> start charging")
-    //ii response ok, go to next page
-    router.push('/ev/startChargingCheckEmail');
   }
 }
 

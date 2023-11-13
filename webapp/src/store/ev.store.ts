@@ -2,9 +2,12 @@ import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {ChargePointInfo} from "@/models/ev/chargerInfo";
 import {AuthResponse} from "@/models/ev/evServiceCommons";
+import {setAuthTokens} from "axios-jwt";
+import {SessionInfo} from "@/models/ev/sessionInfo";
 
 interface EvStoreState {
   chargePointInfo: ChargePointInfo | undefined,
+  sessionInfo: SessionInfo | undefined,
   qrCodeInfoPath: string
   sessionPath: string
   resourceCode: string
@@ -16,6 +19,7 @@ export const useEvStore = defineStore({
   state: (): EvStoreState => {
     return {
       chargePointInfo: undefined,
+      sessionInfo: undefined,
       qrCodeInfoPath: "",
       sessionPath: "",
       resourceCode: "",
@@ -33,13 +37,15 @@ export const useEvStore = defineStore({
       });
     },
 
-    // TODO: probably move to another store / api or use another store or api to save jwt
     async loginWithResource(lockscreen = true) {
       await apiFactory.evServiceApi().evLoginWithResource({
         resourceCode: this.resourceCode
       }, lockscreen).then(response => {
         if (response.data) {
-          const jwt = response.data.access_token;
+          setAuthTokens({
+            accessToken: response.data.access_token.token,
+            refreshToken: response.data.refresh_token.token
+          });
         }
       });
     },
@@ -73,18 +79,21 @@ export const useEvStore = defineStore({
       });
     },
 
-    async startChargingSession(lockscreen = true) {
-      await apiFactory.evServiceApi().startCharging(this.qrCodeInfoPath, lockscreen).then(response => {
+    async startChargingSession(lockscreen = true, onSuccess: (() => void)) {
+      console.log(this.qrCodeInfoPath)
+      await apiFactory.evServiceApi().startCharging( this.qrCodeInfoPath,this.email, lockscreen).then(response => {
         if (response.isSuccess()) {
-          //TODO: add currect alert to check email
-          alert("Charging session started, check your email to continue");
-        }
+          onSuccess();
+        } // TODO: error handling
       });
     },
   },
   getters: {
     getChargePointInfo(): ChargePointInfo | undefined {
       return this.chargePointInfo;
+    },
+    getSessionInfo(): SessionInfo | undefined {
+      return this.sessionInfo;
     },
   }
 });
