@@ -4,6 +4,7 @@ import {useConfigurationStore} from "@/store/configuration.store";
 import {RequestResponse} from "@/models/request-response";
 import {Jwt} from "@/models/user/jwt";
 import {EvServiceApplicationError, LinkDecoderDto, LoginAuthRequest} from "@/models/ev/evServiceCommons";
+import {ChargePointInfo, ChargerInfo} from "@/models/ev/chargerInfo";
 
 
 export class EvServiceApi extends BaseApi {
@@ -51,7 +52,7 @@ export class EvServiceApi extends BaseApi {
   }
 
   public evChargePointInfo(path: string, lockscreen: boolean) {
-    return this.evServiceGetCall<LinkDecoderDto, EvServiceApplicationError>(path, lockscreen, "evChargePointInfo");
+    return this.evServiceGetCall<ChargePointInfo, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path, lockscreen, "evChargePointInfo");
   }
 
   public startCharging(path: string, lockscreen: boolean) {

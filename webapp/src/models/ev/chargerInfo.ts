@@ -3,7 +3,16 @@ export interface ChargerInfo {
   name: string;
   connectorType: ConnectorType;
   availability: string;
-  status: ChargerStatus
+  status: ChargerStatus;
+}
+
+export interface ChargePointInfo {
+  id: number;
+  name: string;
+  status: ChargerStatus;
+  active: boolean;
+  chargePointId: string;
+  identifier: number;
 }
 
 export enum ConnectorType {
@@ -12,9 +21,9 @@ export enum ConnectorType {
 }
 
 export enum ChargerStatus {
-  AVAILABLE,
-  UNAVAILABLE,
-  BUSY
+  AVAILABLE= "Available",
+  UNAVAILABLE = "Unavailable",
+  BUSY = "Busy",
 }
 
 export interface PriceInfo {

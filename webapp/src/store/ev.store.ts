@@ -1,10 +1,10 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {ChargerInfo, ChargerStatus, ConnectorType} from "@/models/ev/chargerInfo";
-import {AuthResponse, LoginAuthRequest} from "@/models/ev/evServiceCommons";
+import {ChargePointInfo} from "@/models/ev/chargerInfo";
+import {AuthResponse} from "@/models/ev/evServiceCommons";
 
 interface EvStoreState {
-  chargerInfo: ChargerInfo | undefined,
+  chargePointInfo: ChargePointInfo | undefined,
   qrCodeInfoPath: string
   sessionPath: string
   resourceCode: string
@@ -14,7 +14,7 @@ export const useEvStore = defineStore({
   id: 'evStore',
   state: (): EvStoreState => {
     return {
-      chargerInfo: undefined,
+      chargePointInfo: undefined,
       qrCodeInfoPath: "",
       sessionPath: "",
       resourceCode: ""
@@ -37,25 +37,36 @@ export const useEvStore = defineStore({
         resourceCode: this.resourceCode
       }, lockscreen).then(response => {
         if (response.data) {
-         const jwt = response.data.access_token;
+          const jwt = response.data.access_token;
         }
       });
     },
 
-    async getQrCodeInfo(pathToDecode: string, lockscreen = true) {
-      this.qrCodeInfoPath = "/v0.1/charge_point/oko/connector/1";
-      // TODO: implement, mocked for now
-      // await apiFactory.evServiceApi().evQrCodeInfo(pathToDecode, lockscreen).then(response => {
-      //   if (response.data) {
-      //     this.qrCodeInfoPath = decodeParamsMapToQrCodePath(response.data.params)
-      //   }
-      // });
+    async mockGetQrCodeInfo(qrCodeInfoPath: string) {
+      this.qrCodeInfoPath = qrCodeInfoPath;
     },
 
-    async getChargePointInfo(lockscreen = true) {
+    async getQrCodeInfo(pathToDecode: string, lockscreen = true) {
+      await apiFactory.evServiceApi().evQrCodeInfo(pathToDecode, lockscreen).then(response => {
+        if (response.data) {
+          this.qrCodeInfoPath = response.data.params.get("path") ?? ""
+        }
+      });
+    },
+
+    async mockFetchChargePointInfo(chargePointId: string, connectorId: number, lockscreen = true) {
+      await apiFactory.evServiceApi().evChargePointInfo(`/v0.1/charge_point/${chargePointId}/connector/${connectorId}`, lockscreen).then(response => {
+        if (response.data) {
+          console.log(response.data)
+          this.chargePointInfo = response.data
+        }
+      });
+    },
+
+    async fetchChargePointInfo(lockscreen = true) {
       await apiFactory.evServiceApi().evChargePointInfo(this.qrCodeInfoPath, lockscreen).then(response => {
         if (response.data) {
-          this.chargerInfo = decodeParamsMapToChargerInfo(response.data.params)
+          this.chargePointInfo = response.data
         }
       });
     },
@@ -70,33 +81,11 @@ export const useEvStore = defineStore({
     },
   },
   getters: {
-    getChargerInfo(): ChargerInfo | undefined {
-      return this.chargerInfo;
+    getChargePointInfo(): ChargePointInfo | undefined {
+      return this.chargePointInfo;
     },
-  },
-  persist: {
-    enabled: true
   }
 });
-
-const decodeParamsMapToChargerInfo = (params: Map<string, string>): ChargerInfo => {
-  const getEnumValue = <T>(enumType: any, value: string | undefined, defaultValue: T): T => {
-    const numericValue = value !== undefined ? +value : -1;
-    return numericValue in enumType ? enumType[numericValue] : defaultValue;
-  };
-
-  return {
-    location: params.get("location") ?? "",
-    name: params.get("name") ?? "",
-    connectorType: getEnumValue(ConnectorType, params.get("connectorType"), ConnectorType.TYPE1),
-    availability: params.get("availability") ?? "",
-    status: getEnumValue(ChargerStatus, params.get("status"), ChargerStatus.AVAILABLE)
-  }
-};
-
-const decodeParamsMapToQrCodePath = (params: Map<string, string>): string => {
-  return params.get("path") ?? ""
-};
 
 const decodeParamsMapToAuthResponse = (params: Map<string, string>): AuthResponse => {
   return {
