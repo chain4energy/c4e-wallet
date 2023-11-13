@@ -8,6 +8,7 @@ interface EvStoreState {
   qrCodeInfoPath: string
   sessionPath: string
   resourceCode: string
+  email: string
 }
 
 export const useEvStore = defineStore({
@@ -17,7 +18,8 @@ export const useEvStore = defineStore({
       chargePointInfo: undefined,
       qrCodeInfoPath: "",
       sessionPath: "",
-      resourceCode: ""
+      resourceCode: "",
+      email: ""
     };
   },
   actions: {

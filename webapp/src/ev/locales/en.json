@@ -1,5 +1,9 @@
 {
   "INFO_PAGE" : {
     "BUTTON" : "InfoPage button EN"
+  },
+  "START_CHARGING" : {
+    "EMAIL" : "Email",
+    "BUTTON" : "Next"
   }
 }
