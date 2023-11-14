@@ -445,7 +445,7 @@
     "queries": {
     },
     "queriesEv": {
-      "LOGIN_WITH_RESOURCE": "/api/login-service/auth/resource",
+      "LOGIN_WITH_RESOURCE": "/api/login-service/v0.1/auth/resource",
       "CENTRAL_SYSTEM_SERVICE":"/api/central-system-service"
     },
     "operationGas": {

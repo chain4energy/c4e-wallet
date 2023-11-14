@@ -4,12 +4,16 @@ import {useConfigurationStore} from "@/store/configuration.store";
 import {RequestResponse} from "@/models/request-response";
 import {Jwt} from "@/models/user/jwt";
 import {
+  DecodeLinkAuthParams,
   EvServiceApplicationError,
   LinkDecoderDto,
   LoginAuthRequest,
-  StartChargingAnonumousRequest, StartChargingAnonumousResponse
+  QrCodeInfoParams,
+  StartChargingAnonumousRequest,
+  StartChargingAnonumousResponse
 } from "@/models/ev/evServiceCommons";
-import {ChargePointInfo, ChargerInfo} from "@/models/ev/chargerInfo";
+import {ChargePointInfo} from "@/models/ev/chargerInfo";
+import {SessionInfo} from "@/models/ev/sessionInfo";
 
 
 export class EvServiceApi extends BaseApi {
@@ -49,11 +53,11 @@ export class EvServiceApi extends BaseApi {
   }
 
   public evDecodeLink(path: string, lockscreen: boolean) {
-    return this.evServiceGetCall<LinkDecoderDto, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path, lockscreen, "evDecodeLink");
+    return this.evServiceGetCall<LinkDecoderDto<DecodeLinkAuthParams>, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + "/v0.1/link/" + path, lockscreen, "evDecodeLink");
   }
 
   public evQrCodeInfo(path: string, lockscreen: boolean) {
-    return this.evServiceGetCall<LinkDecoderDto, EvServiceApplicationError>(path, lockscreen, "evQrCodeInfo");
+    return this.evServiceGetCall<LinkDecoderDto<QrCodeInfoParams>, EvServiceApplicationError>(path, lockscreen, "evQrCodeInfo");
   }
 
   public evChargePointInfo(path: string, lockscreen: boolean) {
@@ -61,6 +65,10 @@ export class EvServiceApi extends BaseApi {
   }
 
   public startCharging(path: string, login: string, lockscreen: boolean) {
-    return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepareAnonymous", {login},lockscreen,"evChargePointInfo");
+    return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepareAnonymous", {login}, lockscreen, "evChargePointInfo");
+  }
+
+  public evFetchSesisonInfo(path: string, login: string, lockscreen: boolean) {
+    return this.evServiceGetCall<SessionInfo, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path, lockscreen, "evFetchSesisonInfo");
   }
 }

@@ -1,26 +1,24 @@
 <template>
   <InputText v-model="pathForm.path" placeholder="Path to decode"/>
   <Button label="Decode path" @click="mockDecodePath()"/>
-
+  <div v-if="evStore.getSessionPath">Sesison path: {{ evStore.getSessionPath }}</div>
+  <div v-if="evStore.getResourceCode">Resource code: {{ evStore.getResourceCode }}</div>
   <Button label="Login with resource" @click="loginWithResource()"/>
 
-  <sessionInfoC v-if="sessionInfo" :session-info="sessionInfo"></sessionInfoC>
 </template>
 
 <script setup lang="ts">
-import {useRoute} from 'vue-router'
-import {computed, onMounted, ref} from "vue";
+import {useRoute, useRouter} from 'vue-router'
+import {onMounted, ref} from "vue";
 import {useEvStore} from "@/store/ev.store";
-import SessionInfoC from "@/ev/components/SessionInfoC.vue";
 
 const route = useRoute()
 const evStore = useEvStore();
+const router = useRouter()
 
 const pathForm = ref({
-  path: 'oko',
+  path: '',
 });
-
-const sessionInfo = computed(() => evStore.getSessionInfo);
 
 onMounted(async () => {
   // fetchAllData()
@@ -33,11 +31,13 @@ onMounted(async () => {
 
 function mockDecodePath() {
   console.log("mockDecodePath")
-  evStore.getEvAuthResource(pathForm.value.path);
+  const pathToDecoder = createLinkFromPathParams(pathForm.value.path);
+  console.log(pathToDecoder)
+  evStore.getEvAuthResource(pathToDecoder);
 }
 
 function loginWithResource() {
-  evStore.loginWithResource()
+  evStore.loginWithResource(true, () => router.push('/ev/sessionInfo'))
 }
 
 function fetchAllData() {
@@ -45,7 +45,7 @@ function fetchAllData() {
   const pathToDecoder = createLinkFromPathParams(route.params.context);
   console.log("pathToDecoder:" + pathToDecoder);
   evStore.getEvAuthResource(pathToDecoder)
-  evStore.loginWithResource()
+  loginWithResource()
 }
 
 function createLinkFromPathParams(params: string | string[]): string {

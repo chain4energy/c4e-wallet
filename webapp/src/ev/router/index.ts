@@ -38,6 +38,11 @@ const routesEv: Array<RouteRecordRaw> = [
     name: subAppName + '_StartChargingCheckEmail',
     component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/StartChargingCheckEmail.vue')
   },
+  {
+    path: '/' + subAppName + '/sessionInfo',
+    name: subAppName + '_SessionInfo',
+    component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/SessionInfo.vue')
+  },
 ];
 
 const routerEv = createRouter({

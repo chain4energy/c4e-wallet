@@ -1,7 +1,6 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {ChargePointInfo} from "@/models/ev/chargerInfo";
-import {AuthResponse} from "@/models/ev/evServiceCommons";
 import {setAuthTokens} from "axios-jwt";
 import {SessionInfo} from "@/models/ev/sessionInfo";
 
@@ -9,7 +8,7 @@ interface EvStoreState {
   chargePointInfo: ChargePointInfo | undefined,
   sessionInfo: SessionInfo | undefined,
   qrCodeInfoPath: string
-  sessionPath: string
+  sessionInfoPath: string
   resourceCode: string
   email: string
 }
@@ -21,7 +20,7 @@ export const useEvStore = defineStore({
       chargePointInfo: undefined,
       sessionInfo: undefined,
       qrCodeInfoPath: "",
-      sessionPath: "",
+      sessionInfoPath: "",
       resourceCode: "",
       email: ""
     };
@@ -30,14 +29,13 @@ export const useEvStore = defineStore({
     async getEvAuthResource(pathToDecode: string, lockscreen = true) {
       await apiFactory.evServiceApi().evDecodeLink(pathToDecode, lockscreen).then(response => {
         if (response.data) {
-          const authResponse = decodeParamsMapToAuthResponse(response.data.params);
-          this.sessionPath = authResponse.path;
-          this.resourceCode = authResponse.resourceCode;
+          this.sessionInfoPath = response.data.params.path;
+          this.resourceCode = response.data.params.resourceCode;
         }
       });
     },
 
-    async loginWithResource(lockscreen = true) {
+    async loginWithResource(lockscreen = true, onSuccess: (() => void)) {
       await apiFactory.evServiceApi().evLoginWithResource({
         resourceCode: this.resourceCode
       }, lockscreen).then(response => {
@@ -46,6 +44,7 @@ export const useEvStore = defineStore({
             accessToken: response.data.access_token.token,
             refreshToken: response.data.refresh_token.token
           });
+          onSuccess();
         }
       });
     },
@@ -57,7 +56,7 @@ export const useEvStore = defineStore({
     async getQrCodeInfo(pathToDecode: string, lockscreen = true) {
       await apiFactory.evServiceApi().evQrCodeInfo(pathToDecode, lockscreen).then(response => {
         if (response.data) {
-          this.qrCodeInfoPath = response.data.params.get("path") ?? ""
+          this.qrCodeInfoPath = response.data.params.path
         }
       });
     },
@@ -80,10 +79,17 @@ export const useEvStore = defineStore({
     },
 
     async startChargingSession(lockscreen = true, onSuccess: (() => void)) {
-      console.log(this.qrCodeInfoPath)
-      await apiFactory.evServiceApi().startCharging( this.qrCodeInfoPath,this.email, lockscreen).then(response => {
+      await apiFactory.evServiceApi().startCharging(this.qrCodeInfoPath, this.email, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
+        } // TODO: error handling
+      });
+    },
+
+    async fetchSessionInfo(lockscreen = true) {
+      await apiFactory.evServiceApi().evFetchSesisonInfo(this.sessionInfoPath, this.email, lockscreen).then(response => {
+        if (response.data) {
+          this.sessionInfo = response.data
         } // TODO: error handling
       });
     },
@@ -95,12 +101,14 @@ export const useEvStore = defineStore({
     getSessionInfo(): SessionInfo | undefined {
       return this.sessionInfo;
     },
+    getQrCodeInfoPath(): string {
+      return this.qrCodeInfoPath;
+    },
+    getSessionPath(): string {
+      return this.sessionInfoPath;
+    },
+    getResourceCode(): string {
+      return this.resourceCode;
+    },
   }
 });
-
-const decodeParamsMapToAuthResponse = (params: Map<string, string>): AuthResponse => {
-  return {
-    path: params.get("path") ?? "",
-    resourceCode: params.get("resourceCode") ?? ""
-  }
-};

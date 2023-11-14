@@ -29,13 +29,24 @@ export enum EvServiceApplicationErrorCodespace {
   SIGNATURE = 'signature'
 }
 
-export interface LinkDecoderDto {
+export interface LinkDecoderDto<T> {
   type: string,
   version: string,
-  params: Map<string, string>
+  params: T
 }
 
-export interface StartChargingAnonumousResponse {}
+export interface StartChargingAnonumousResponse {
+}
+
 export interface StartChargingAnonumousRequest {
   login: string;
+}
+
+export interface DecodeLinkAuthParams {
+  path: string;
+  resourceCode: string;
+}
+
+export interface QrCodeInfoParams {
+  path: string;
 }
