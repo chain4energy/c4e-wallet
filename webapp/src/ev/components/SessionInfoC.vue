@@ -1,6 +1,6 @@
 <template>
   <Card class="content">
-    <template #title>Session id: {{ sessionInfo?.id }}</template>
+    <template #title>Session state: {{ sessionInfo.state }}</template>
     <template #content>
 
     </template>

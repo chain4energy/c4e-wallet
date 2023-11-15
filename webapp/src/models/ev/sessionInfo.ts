@@ -1,4 +1,7 @@
-
 export interface SessionInfo {
-  id: number;
+  state: SessionState;
+}
+
+export enum SessionState {
+  CREATED = "Created",
 }
