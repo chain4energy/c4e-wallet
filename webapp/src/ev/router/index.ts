@@ -40,12 +40,37 @@ const routesEv: Array<RouteRecordRaw> = [
   },
   {
     path: '/' + subAppName + '/sessionInfo',
-    name: subAppName + '_SessionInfo',
-    component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/SessionInfo.vue')
+    name: subAppName + '_ChargingSession',
+    component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/ChargingSession.vue')
   },
+  {
+    path: '/' + subAppName + '/choosePaymentMethod',
+    name: subAppName + '_ChoosePaymentMethod',
+    component: () => import(/* webpackChunkName: "ChoosePaymentMethod" */ '@/ev/views/ChoosePaymentMethod.vue')
+  },
+  {
+    path: '/' + subAppName + '/waitForPaymentConfirmation',
+    name: subAppName + '_WaitForPaymentConfirmation',
+    component: () => import(/* webpackChunkName: "WaitForPaymentConfirmation" */ '@/ev/views/WaitForPaymentConfirmation.vue')
+  },
+  {
+    path: '/' + subAppName + '/startChargingSession',
+    name: subAppName + '_StartChargingSession',
+    component: () => import(/* webpackChunkName: "StartChargingSession" */ '@/ev/views/StartChargingSession.vue')
+  },
+  {
+    path: '/' + subAppName + '/paymentRejected',
+    name: subAppName + '_PaymentRejected',
+    component: () => import(/* webpackChunkName: "PaymentRejected" */ '@/ev/views/PaymentRejected.vue')
+  },
+  {
+    path: '/' + subAppName + '/mockPayment',
+    name: subAppName + '_MockPayment',
+    component: () => import(/* webpackChunkName: "MockPayment" */ '@/ev/views/MockPayment.vue')
+  }
 ];
 
-const routerEv = createRouter({
+export const routerEv = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes: routesEv
 });

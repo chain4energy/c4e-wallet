@@ -2,7 +2,8 @@ import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {ChargePointInfo} from "@/models/ev/chargerInfo";
 import {setAuthTokens} from "axios-jwt";
-import {SessionInfo} from "@/models/ev/sessionInfo";
+import {SessionInfo, SessionState} from "@/models/ev/sessionInfo";
+import {routerEv} from "@/ev/router";
 
 interface EvStoreState {
   chargePointInfo: ChargePointInfo | undefined,
@@ -15,6 +16,7 @@ interface EvStoreState {
 
 export const useEvStore = defineStore({
   id: 'evStore',
+
   state: (): EvStoreState => {
     return {
       chargePointInfo: undefined,
@@ -92,6 +94,38 @@ export const useEvStore = defineStore({
           this.sessionInfo = response.data
         } // TODO: error handling
       });
+    },
+
+    async fetchSessionInfoAndRedirect(lockscreen = true) {
+      await this.fetchSessionInfo(lockscreen);
+      await this.redirectBasedOnSessionState();
+    },
+
+    async redirectBasedOnSessionState() {
+      if (this.sessionInfo) {
+        //const router = useRouter();
+        console.log(routerEv)
+        switch (this.sessionInfo.state) {
+          case SessionState.CREATED:
+            routerEv.push({name: "ev_ChoosePaymentMethod"});
+            break;
+          case SessionState.ACCEPTED:
+            routerEv.push({name: "ev_WaitForPaymentConfirmation"});
+            break;
+          case SessionState.PAID:
+            routerEv.push({name: "ev_StartChargingSession"});
+            break;
+          case SessionState.REJECTED:
+            routerEv.push({name: "ev_PaymentRejected"});
+            break;
+          case SessionState.STARTED:
+            routerEv.push({name: "ev_SessionInfo"});
+            break;
+          case SessionState.FINISHED:
+            routerEv.push({name: "ev_SessionInfo"});
+            break;
+        }
+      }
     },
   },
   getters: {
