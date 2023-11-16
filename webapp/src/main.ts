@@ -11,7 +11,6 @@
 //   .use(vuetify)
 //   .mount('#app');
 //
-
 import { createPinia } from 'pinia';
 // import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import {createApp, markRaw} from 'vue';
@@ -114,7 +113,10 @@ const logger = LoggerService.getInstance();
 // const i18n = createI18n({
 //   legacy: false
 // });
+
+
 const app = createApp(App);
+
 
 app.use(router)
   .use(pinia)

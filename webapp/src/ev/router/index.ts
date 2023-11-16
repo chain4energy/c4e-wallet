@@ -67,6 +67,11 @@ const routesEv: Array<RouteRecordRaw> = [
     path: '/' + subAppName + '/mockPayment',
     name: subAppName + '_MockPayment',
     component: () => import(/* webpackChunkName: "MockPayment" */ '@/ev/views/MockPayment.vue')
+  },
+  {
+    path: '/' + subAppName + '/mockStream',
+    name: subAppName + '_MockedStream',
+    component: () => import(/* webpackChunkName: "MockPayment" */ '@/ev/views/MockedStream.vue')
   }
 ];
 
