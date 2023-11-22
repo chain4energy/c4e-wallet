@@ -6,14 +6,15 @@
 
 import {useEvStore} from "@/store/ev.store";
 import {SessionState} from "@/models/ev/sessionInfo";
+import {useRouter} from "vue-router";
 
 const evStore = useEvStore();
-
+const router = useRouter()
 function mockAccepted() {
   if (evStore.sessionInfo) {
     evStore.sessionInfo.state = SessionState.PAID
   }
-  evStore.initPayment({amount: {}, currency: 'PL'}, true);
+  evStore.initPayment({ amount:'500', currency: 'PLN'}, true);
   redirectBackToLink()
 }
 
@@ -21,11 +22,12 @@ function mockRejected() {
   if (evStore.sessionInfo) {
     evStore.sessionInfo.state = SessionState.REJECTED
   }
-  redirectBackToLink()
+  // redirectBackToLink()
 }
 
 function redirectBackToLink() {
-  window.location.href = 'http://localhost:9000/ev/resourceLink/hydrogenium/GUIGUGIUIHIUHDiuhadsacmixexciw'
+  // window.location.href = 'http://localhost:9000/ev/resourceLink/hydrogenium/GUIGUGIUIHIUHDiuhadsacmixexciw'
+  router.push('/ev/sessionInfo');
 }
 </script>
 

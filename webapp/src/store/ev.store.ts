@@ -121,7 +121,7 @@ export const useEvStore = defineStore({
     },
 
     async startChargingSession(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
-      await apiFactory.evServiceApi().startCharging(this.qrCodeInfoPath, this.userEmail, lockscreen).then(response => {
+      await apiFactory.evServiceApi().prepare(this.qrCodeInfoPath, this.userEmail, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
         } else {// TODO: error handling
@@ -145,6 +145,7 @@ export const useEvStore = defineStore({
         } // TODO: error handling
       });
     },
+
 
     async fetchSessionInfoAndRedirect(lockscreen = true) {
       await this.fetchSessionInfo(lockscreen);

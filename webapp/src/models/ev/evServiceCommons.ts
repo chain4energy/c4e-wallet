@@ -43,7 +43,7 @@ export interface StartChargingAnonumousRequest {
 }
 
 export interface InitPaymentRequest{
-  "amount": {},
+  "amount": string,
   "currency": string
 }
 

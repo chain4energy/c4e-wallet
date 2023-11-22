@@ -37,6 +37,17 @@ export class EvServiceApi extends BaseApi {
     );
   }
 
+  private evServiceEmptyPostCall<T, E>(evServiceUrlPart: string, lockscreen: boolean, logPrefix: string): Promise<RequestResponse<T, ErrorData<E>>> {
+    return this.axiosCall<T, E>({
+        method: 'POST',
+        url: useConfigurationStore().config.evServiceURL + evServiceUrlPart
+      },
+      lockscreen,
+      null,
+      logPrefix
+    );
+  }
+
   private evServiceGetCall<T, E>(evServiceUrlPart: string, lockscreen: boolean, logPrefix: string): Promise<RequestResponse<T, ErrorData<E>>> {
     return this.axiosCall<T, E>({
         method: 'GET',
@@ -76,7 +87,7 @@ export class EvServiceApi extends BaseApi {
     return this.evServiceGetCall<ChargePointInfo, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path, lockscreen, "evChargePointInfo");
   }
 
-  public startCharging(path: string, login: string, lockscreen: boolean) {
+  public prepare(path: string, login: string, lockscreen: boolean) {
     return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepare_anonymous", {login}, lockscreen, "evChargePointInfo");
   }
 
@@ -87,4 +98,13 @@ export class EvServiceApi extends BaseApi {
   public initPayment(path: string, initPaymentRequest: InitPaymentRequest, lockscreen: boolean) {
     return this.evServicePostCall<InitPaymentRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/init_payment", initPaymentRequest, lockscreen, "initPayment");
   }
+
+  public startCharging(path: string, initPaymentRequest: InitPaymentRequest, lockscreen: boolean) {
+    return this.evServiceEmptyPostCall<StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/start_charging", lockscreen, "start_charging");
+  }
+
+  public stopCharging(path: string, initPaymentRequest: InitPaymentRequest, lockscreen: boolean) {
+    return this.evServiceEmptyPostCall<StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/stop_charging", lockscreen, "stop_charging");
+  }
+
 }
