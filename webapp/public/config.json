@@ -230,7 +230,7 @@
     "explorerUrl": "https://explorer-testnet.c4e.io",
     "explorerAccount": "https://explorer-testnet.c4e.io/accounts/",
     "explorerTx": "https://explorer-testnet.c4e.io/transactions/",
-    "isMainNetwork": true,
+    "isMainNetwork": false,
     "airdropBaseURL": "https://airdrop.c4e.io/",
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
@@ -446,6 +446,8 @@
     },
     "queriesEv": {
       "LOGIN_WITH_RESOURCE": "/api/login-service/v0.1/auth/resource",
+      "LOGIN_WITH_EMAIL_PASSWORD": "/api/login-service/v0.1/auth/password",
+      "EMAIL_CREATE_ACCOUNT": "/api/login-service/v0.1/auth/register",
       "CENTRAL_SYSTEM_SERVICE":"/api/central-system-service"
     },
     "operationGas": {
@@ -478,7 +480,7 @@
     "explorerUrl": "https://explorer.c4e.io",
     "explorerAccount": "https://explorer.c4e.io/accounts/",
     "explorerTx": "https://explorer.c4e.io/transactions/",
-    "isMainNetwork": false,
+    "isMainNetwork": true,
     "airdropBaseURL": "",
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",

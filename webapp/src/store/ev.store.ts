@@ -4,14 +4,22 @@ import {ChargePointInfo} from "@/models/ev/chargerInfo";
 import {setAuthTokens} from "axios-jwt";
 import {SessionInfo, SessionState} from "@/models/ev/sessionInfo";
 import {routerEv} from "@/ev/router";
+import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
+import {UserServiceContext, UserServiceErrorHandler} from "@/store/errorsHandlers/userServiceErrorHandler";
+import {RequestResponse} from "@/models/request-response";
+import {Jwt} from "@/models/user/jwt";
+import {ErrorData} from "@/api/base.api";
+import {SaleServiceApplicationError} from "@/models/saleServiceCommons";
+import {EvServiceApplicationError, InitPaymentRequest} from "@/models/ev/evServiceCommons";
 
 interface EvStoreState {
   chargePointInfo: ChargePointInfo | undefined,
   sessionInfo: SessionInfo | undefined,
-  qrCodeInfoPath: string
-  sessionInfoPath: string
-  resourceCode: string
-  email: string
+  qrCodeInfoPath: string,
+  sessionInfoPath: string,
+  resourceCode: string,
+  userEmail: string,
+  loggedIn: boolean
 }
 
 export const useEvStore = defineStore({
@@ -24,7 +32,8 @@ export const useEvStore = defineStore({
       qrCodeInfoPath: "",
       sessionInfoPath: "",
       resourceCode: "",
-      email: ""
+      userEmail: "",
+      loggedIn: false
     };
   },
   actions: {
@@ -40,17 +49,48 @@ export const useEvStore = defineStore({
     async loginWithResource(lockscreen = true, onSuccess: (() => void)) {
       await apiFactory.evServiceApi().evLoginWithResource({
         resourceCode: this.resourceCode
-      }, lockscreen).then(response => {
-        if (response.data) {
-          setAuthTokens({
-            accessToken: response.data.access_token.token,
-            refreshToken: response.data.refresh_token.token
-          });
+      }, lockscreen).then(responseDate => {
+        if(responseDate.isSuccess()) {
+          this.setTokens(responseDate);
           onSuccess();
         }
       });
     },
 
+    setTokens(responseDate: RequestResponse<Jwt, ErrorData<EvServiceApplicationError>>){
+      if(responseDate.data){
+        this.loggedIn = true;
+        setAuthTokens({
+          accessToken: responseDate.data.access_token.token,
+          refreshToken: responseDate.data.refresh_token.token
+        });
+      } else {
+        //TODO: toast - log in error
+      }
+    },
+
+    async authEmailAccount(emailAccount: PasswordAuthenticateRequest, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
+      await apiFactory.evServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
+        if(responseDate.isSuccess()) {
+          this.setTokens(responseDate);
+          this.userEmail = emailAccount.login;
+          onSuccess();
+        } else {
+          // UserServiceErrorHandler.getInstance().handleError(responseDate.error, UserServiceContext.LOG_IN);
+          onFail?.();
+        }
+      });
+    },
+    async createEmailAccount(createAccountRequest: CreateAccountRequest, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
+      return await apiFactory.evServiceApi().createEmailAccount(createAccountRequest, lockscreen).then(res => {
+        if(res.isSuccess()) {
+          onSuccess();
+        } else {
+          // UserServiceErrorHandler.getInstance().handleError( res.error, UserServiceContext.CREATE_ACCOUNT);
+          onFail?.();
+        }
+      });
+    },
     async mockGetQrCodeInfo(qrCodeInfoPath: string) {
       this.qrCodeInfoPath = qrCodeInfoPath;
     },
@@ -80,18 +120,28 @@ export const useEvStore = defineStore({
       });
     },
 
-    async startChargingSession(lockscreen = true, onSuccess: (() => void)) {
-      await apiFactory.evServiceApi().startCharging(this.qrCodeInfoPath, this.email, lockscreen).then(response => {
+    async startChargingSession(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
+      await apiFactory.evServiceApi().startCharging(this.qrCodeInfoPath, this.userEmail, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
-        } // TODO: error handling
+        } else {// TODO: error handling
+          onFail(response.error);
+        }
       });
     },
 
     async fetchSessionInfo(lockscreen = true) {
-      await apiFactory.evServiceApi().evFetchSesisonInfo(this.sessionInfoPath, this.email, lockscreen).then(response => {
+      await apiFactory.evServiceApi().evFetchSesisonInfo(this.sessionInfoPath, this.userEmail, lockscreen).then(response => {
         if (response.data) {
           this.sessionInfo = response.data
+        } // TODO: error handling
+      });
+    },
+
+    async initPayment( initPaymentRequest: InitPaymentRequest, lockscreen: boolean){
+      await apiFactory.evServiceApi().initPayment(this.sessionInfoPath, initPaymentRequest, lockscreen).then(response => {
+        if (response.data) {
+//toto
         } // TODO: error handling
       });
     },

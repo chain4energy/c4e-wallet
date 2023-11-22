@@ -67,6 +67,21 @@ const routesEv: Array<RouteRecordRaw> = [
     path: '/' + subAppName + '/mockPayment',
     name: subAppName + '_MockPayment',
     component: () => import(/* webpackChunkName: "MockPayment" */ '@/ev/views/MockPayment.vue')
+  },
+  {
+    path: '/' + subAppName + '/login',
+    name: subAppName + '_SignInView',
+    component: () => import(/* webpackChunkName: "SignInView" */ '@/ev/views/SignInView.vue')
+  },
+  {
+    path: '/' + subAppName + '/register',
+    name: subAppName + '_SignUpView',
+    component: () => import(/* webpackChunkName: "SignInView" */ '@/ev/views/SignUpView.vue')
+  },
+  {
+    path: '/' + subAppName + '/owner',
+    name: subAppName + '_OwnerView',
+    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/OwnerView.vue')
   }
 ];
 

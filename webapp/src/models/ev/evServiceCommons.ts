@@ -42,6 +42,11 @@ export interface StartChargingAnonumousRequest {
   login: string;
 }
 
+export interface InitPaymentRequest{
+  "amount": {},
+  "currency": string
+}
+
 export interface DecodeLinkAuthParams {
   path: string;
   resourceCode: string;

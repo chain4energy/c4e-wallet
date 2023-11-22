@@ -5,7 +5,7 @@ import {RequestResponse} from "@/models/request-response";
 import {Jwt} from "@/models/user/jwt";
 import {
   DecodeLinkAuthParams,
-  EvServiceApplicationError,
+  EvServiceApplicationError, InitPaymentRequest,
   LinkDecoderDto,
   LoginAuthRequest,
   QrCodeInfoParams,
@@ -14,6 +14,10 @@ import {
 } from "@/models/ev/evServiceCommons";
 import {ChargePointInfo} from "@/models/ev/chargerInfo";
 import {SessionInfo} from "@/models/ev/sessionInfo";
+import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
+import {SaleServiceApplicationError} from "@/models/saleServiceCommons";
+import queries from "@/api/queries";
+import {AccountInfo} from "@/models/user/accountInfo";
 
 
 export class EvServiceApi extends BaseApi {
@@ -52,6 +56,14 @@ export class EvServiceApi extends BaseApi {
     return this.evServicePostCall<LoginAuthRequest, Jwt, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.LOGIN_WITH_RESOURCE, authRequest, lockscreen, "activateEmailAccount");
   }
 
+  public async authEmailAccount(emailAccount: PasswordAuthenticateRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<EvServiceApplicationError>>> {
+    return this.evServicePostCall<PasswordAuthenticateRequest, Jwt, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.LOGIN_WITH_EMAIL_PASSWORD, emailAccount, lockscreen, "authEmailAccount");
+  }
+
+  public async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<EvServiceApplicationError>>> {
+    return this.evServicePostCall<PasswordAuthenticateRequest, AccountInfo, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.EMAIL_CREATE_ACCOUNT, createAccountRequest, lockscreen, "createEmailAccount");
+  }
+
   public evDecodeLink(path: string, lockscreen: boolean) {
     return this.evServiceGetCall<LinkDecoderDto<DecodeLinkAuthParams>, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + "/v0.1/link/" + path, lockscreen, "evDecodeLink");
   }
@@ -65,10 +77,14 @@ export class EvServiceApi extends BaseApi {
   }
 
   public startCharging(path: string, login: string, lockscreen: boolean) {
-    return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepareAnonymous", {login}, lockscreen, "evChargePointInfo");
+    return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepare_anonymous", {login}, lockscreen, "evChargePointInfo");
   }
 
   public evFetchSesisonInfo(path: string, login: string, lockscreen: boolean) {
     return this.evServiceGetCall<SessionInfo, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path, lockscreen, "evFetchSesisonInfo");
+  }
+
+  public initPayment(path: string, initPaymentRequest: InitPaymentRequest, lockscreen: boolean) {
+    return this.evServicePostCall<InitPaymentRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/init_payment", initPaymentRequest, lockscreen, "initPayment");
   }
 }

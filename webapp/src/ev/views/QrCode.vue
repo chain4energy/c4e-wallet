@@ -1,4 +1,12 @@
 <template>
+  <div class="card flex justify-content-center">
+    <div class="flex flex-column gap-3">
+      <div v-for="category in categories" :key="category.key" class="flex align-items-center">
+        <RadioButton v-model="chargePointForm.chargePointId" :inputId="category.key" name="dynamic" :value="category.value" />
+        <label :for="category.key" class="ml-2">{{ category.name }}</label>
+      </div>
+    </div>
+  </div>
   <form>
     <InputText v-model="qrCodeInfoForm.qrCodeInfoPath" placeholder="QR Code Info Path"/>
     <Button label="Get QR Code Info" @click="submitQrCodeInfo()"/>
@@ -31,18 +39,28 @@ const router = useRouter()
 const route = useRoute()
 const evStore = useEvStore();
 
+const selectedCategory = ref('Production');
+
+const categories = ref([
+  { name: 'DG - EVGC011221225GK0453', key: 'DG', value: 'EVGC011221225GK0453' },
+  { name: 'PB - EVGC011221225GK0508', key: 'M', value: 'EVGC011221225GK0508' }
+]);
+
 const chargePointForm = ref({
   chargePointId: 'oko',
   connectorId: '1'
 });
 
+const path = computed(() => '/v0.1/charge_point/' + chargePointForm.value.chargePointId + '/connector/1');
+
 const qrCodeInfoForm = ref({
-  qrCodeInfoPath: '/v0.1/charge_point/oko/connector/1'
+  qrCodeInfoPath:path
 });
 
 const chargePointInfo = computed(() => evStore.getChargePointInfo);
 
 const submitChargePointInfo = async () => {
+  submitQrCodeInfo();
   await evStore.mockFetchChargePointInfo(chargePointForm.value.chargePointId, parseInt(chargePointForm.value.connectorId));
 };
 

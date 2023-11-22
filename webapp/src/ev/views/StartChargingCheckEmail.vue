@@ -1,6 +1,6 @@
 <template>
   <p>we sent an email to:</p>
-  <p>{{ evStore.email }}</p>
+  <p>{{ evStore.userEmail }}</p>
   <p>Please check your email</p>
 </template>
 <script setup lang="ts">

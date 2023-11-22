@@ -61,7 +61,7 @@ import {Field, Form} from "vee-validate";
 import {object} from "yup";
 import * as Yup from "yup";
 import {ref} from "vue";
-import {useEvStore} from "@/store/ev.store";
+import {useUserServiceStore} from "@/store/userService.store";
 import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {pattern} from "@/utils/passwordPattern";
@@ -86,7 +86,7 @@ const termsAccepted = ref<boolean>(false);
 function register(){
 
   if(email.value && password.value) {
-    useEvStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccessEmailSend);
+    useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccessEmailSend);
 
   }
 }

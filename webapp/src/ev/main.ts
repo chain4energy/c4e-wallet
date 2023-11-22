@@ -17,6 +17,8 @@ import Card from 'primevue/card';
 import Tag from 'primevue/tag';
 import component from "*.vue";
 import IconComponent from "@/components/features/IconComponent.vue";
+import PrimeVue from "primevue/config";
+import RadioButton from "primevue/radiobutton";
 
 
 const pinia = createPinia();
@@ -28,10 +30,12 @@ const appEv = createApp(EvApp);
 appEv.use(routerEv)
   .use(pinia)
   .use(i18n)
+  .use(PrimeVue)
   .component('Icon', IconComponent)
   .component('Button', Button)
   .component('InputText', InputText)
   .component('Card', Card)
   .component('Tag', Tag)
+  .component('RadioButton', RadioButton)
   ;
 appEv.mount('#app');

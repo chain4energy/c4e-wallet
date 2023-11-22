@@ -13,6 +13,7 @@ function mockAccepted() {
   if (evStore.sessionInfo) {
     evStore.sessionInfo.state = SessionState.PAID
   }
+  evStore.initPayment({amount: {}, currency: 'PL'}, true);
   redirectBackToLink()
 }
 
@@ -27,7 +28,6 @@ function redirectBackToLink() {
   window.location.href = 'http://localhost:9000/ev/resourceLink/hydrogenium/GUIGUGIUIHIUHDiuhadsacmixexciw'
 }
 </script>
-
 
 
 <style scoped lang="scss">

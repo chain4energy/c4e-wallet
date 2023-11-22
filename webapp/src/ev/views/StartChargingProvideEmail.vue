@@ -3,7 +3,7 @@
     <div style="padding: 10px 30px 0;">
       <div >
         <div class="field col-12">
-          <Field style="width:100%" v-model="evStore.email" :placeholder="$t('START_CHARGING.EMAIL')" name="email" type="text" class="form-control"
+          <Field style="width:100%" v-model="evStore.userEmail" :placeholder="$t('START_CHARGING.EMAIL')" name="email" type="text" class="form-control"
              :class="{'is-invalid': errors.email}"></Field>
           <div class="invalid-feedback">{{ errors.email ? $t(errors.email) : '' }}</div>
         </div>
@@ -13,6 +13,9 @@
       <Button class="p-button p-component secondary" style="width: 40%" type="submit">{{ $t('START_CHARGING.BUTTON') }}</Button>
     </div>
   </Form>
+  <div>
+    {{errorStr}}
+  </div>
 </template>
 <script setup lang="ts">
 import * as Yup from "yup";
@@ -20,9 +23,14 @@ import {object} from "yup";
 import {Field, Form} from "vee-validate";
 import {useEvStore} from "@/store/ev.store";
 import {useRouter} from "vue-router";
+import {ErrorData} from "@/api/base.api";
+import {EvServiceApplicationError} from "@/models/ev/evServiceCommons";
+import {ref} from "vue";
 // const email = ref<string>();
 const router = useRouter()
 const evStore = useEvStore();
+
+const errorStr = ref("");
 
 const schema = object().shape({
   email:  Yup.string().email()
@@ -30,10 +38,21 @@ const schema = object().shape({
 });
 
 function next(){
-  if(evStore.email) {
+  if(evStore.userEmail) {
 
-    evStore.startChargingSession(true, () => router.push('/ev/startChargingCheckEmail'))
-    console.log("send request to backend -> start charging")
+    evStore.startChargingSession(true, onSucces, onError );
+    console.log("send request to backend -> start charging");
+  }
+}
+
+function onSucces(){
+  router.push('/ev/startChargingCheckEmail');
+}
+
+function onError(error: ErrorData<EvServiceApplicationError> | undefined){
+  console.log("Error" + error?.message)
+  if(error) {
+    errorStr.value = JSON.stringify(error.data);
   }
 }
 

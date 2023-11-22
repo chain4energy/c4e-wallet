@@ -21,7 +21,9 @@ const pathForm = ref({
 });
 
 onMounted(async () => {
+  pathForm.value.path = createLinkFromPathParams(route.params.context as string);
   fetchAllData()
+  mockDecodePath();
   // TODO: for now only fetch ev auth resource data for testing
   // console.log(route.params.context);
   // const pathToDecoder = createLinkFromPathParams(route.params.context);
