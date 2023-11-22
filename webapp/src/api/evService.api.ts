@@ -65,7 +65,7 @@ export class EvServiceApi extends BaseApi {
   }
 
   public startCharging(path: string, login: string, lockscreen: boolean) {
-    return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepareAnonymous", {login}, lockscreen, "evChargePointInfo");
+    return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepare_anonymous", {login}, lockscreen, "evChargePointInfo");
   }
 
   public evFetchSesisonInfo(path: string, login: string, lockscreen: boolean) {
