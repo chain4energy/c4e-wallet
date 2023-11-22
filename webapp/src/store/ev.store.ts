@@ -120,8 +120,29 @@ export const useEvStore = defineStore({
       });
     },
 
-    async startChargingSession(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
+    async prepareSession(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
       await apiFactory.evServiceApi().prepare(this.qrCodeInfoPath, this.userEmail, lockscreen).then(response => {
+        if (response.isSuccess()) {
+          onSuccess();
+        } else {// TODO: error handling
+          onFail(response.error);
+        }
+      });
+    },
+
+
+    async startCharging(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
+      await apiFactory.evServiceApi().startCharging(this.sessionInfoPath, lockscreen).then(response => {
+        if (response.isSuccess()) {
+          onSuccess();
+        } else {// TODO: error handling
+          onFail(response.error);
+        }
+      });
+    },
+
+    async stopCharging(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
+      await apiFactory.evServiceApi().stopCharging(this.sessionInfoPath, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
         } else {// TODO: error handling

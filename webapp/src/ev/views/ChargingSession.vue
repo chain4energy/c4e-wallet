@@ -1,8 +1,11 @@
 <template>
   <div v-if="evStore.getSessionInfo">
     <sessionInfoC v-if="evStore.getSessionInfo" :session-info="evStore.getSessionInfo"></sessionInfoC>
-    <ChargingSessionCharging v-if="evStore.getSessionInfo.state == SessionState.STARTED" :session-info="evStore.getSessionInfo"></ChargingSessionCharging>
-    <ChargingSessionFinished v-if="evStore.getSessionInfo.state == SessionState.FINISHED" :session-info="evStore.getSessionInfo"></ChargingSessionFinished>
+<!--    <ChargingSessionCharging v-if="evStore.getSessionInfo.state == SessionState.STARTED" :session-info="evStore.getSessionInfo"></ChargingSessionCharging>-->
+<!--    <ChargingSessionFinished v-if="evStore.getSessionInfo.state == SessionState.FINISHED" :session-info="evStore.getSessionInfo"></ChargingSessionFinished>-->
+
+    <ChargingSessionCharging :session-info="evStore.getSessionInfo"></ChargingSessionCharging>
+<!--    <ChargingSessionFinished :session-info="evStore.getSessionInfo"></ChargingSessionFinished>-->
   </div>
 </template>
 

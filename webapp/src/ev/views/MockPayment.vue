@@ -27,7 +27,7 @@ function mockRejected() {
 
 function redirectBackToLink() {
   // window.location.href = 'http://localhost:9000/ev/resourceLink/hydrogenium/GUIGUGIUIHIUHDiuhadsacmixexciw'
-  router.push('/ev/sessionInfo');
+  router.push('/ev/startChargingSession');
 }
 </script>
 

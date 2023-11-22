@@ -99,11 +99,11 @@ export class EvServiceApi extends BaseApi {
     return this.evServicePostCall<InitPaymentRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/init_payment", initPaymentRequest, lockscreen, "initPayment");
   }
 
-  public startCharging(path: string, initPaymentRequest: InitPaymentRequest, lockscreen: boolean) {
+  public startCharging(path: string, lockscreen: boolean) {
     return this.evServiceEmptyPostCall<StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/start_charging", lockscreen, "start_charging");
   }
 
-  public stopCharging(path: string, initPaymentRequest: InitPaymentRequest, lockscreen: boolean) {
+  public stopCharging(path: string, lockscreen: boolean) {
     return this.evServiceEmptyPostCall<StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/stop_charging", lockscreen, "stop_charging");
   }
 
