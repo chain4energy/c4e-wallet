@@ -55,6 +55,7 @@ export interface JsonQueriesEv{
   LOGIN_WITH_EMAIL_PASSWORD: string;
   EMAIL_CREATE_ACCOUNT: string;
   ACTIVATE_ACCOUNT: string;
+  REFRESH_TOKEN: string;
   DECODE_RESOURCE_URL: string;
   CENTRAL_SYSTEM_SERVICE: string;
 }

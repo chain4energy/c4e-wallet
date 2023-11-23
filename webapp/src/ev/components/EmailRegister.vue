@@ -81,7 +81,7 @@ const router = useRouter();
 const toast = useToast();
 const onSuccessEmailSend = () => {
   toast.success('The message has been sent to the e-mail address provided');
-  router.push({name: 'activate'});
+  router.push('/ev/activate');
 };
 const onSuccessAuth = () => {
   toast.success('Successfully logged in');

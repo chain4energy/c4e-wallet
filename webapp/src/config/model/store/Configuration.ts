@@ -138,6 +138,7 @@ export class QueriesEv implements JsonQueriesEv{
   LOGIN_WITH_EMAIL_PASSWORD: string;
   EMAIL_CREATE_ACCOUNT: string;
   ACTIVATE_ACCOUNT: string;
+  REFRESH_TOKEN: string;
   DECODE_RESOURCE_URL: string;
   CENTRAL_SYSTEM_SERVICE: string;
   constructor (
@@ -147,6 +148,7 @@ export class QueriesEv implements JsonQueriesEv{
     this.LOGIN_WITH_EMAIL_PASSWORD = queries?.LOGIN_WITH_EMAIL_PASSWORD ? queries?.LOGIN_WITH_EMAIL_PASSWORD : queriesDefaults.ev.LOGIN_WITH_EMAIL_PASSWORD;
     this.EMAIL_CREATE_ACCOUNT = queries?.EMAIL_CREATE_ACCOUNT ? queries?.EMAIL_CREATE_ACCOUNT : queriesDefaults.ev.EMAIL_CREATE_ACCOUNT;
     this.ACTIVATE_ACCOUNT = queries?.ACTIVATE_ACCOUNT ? queries?.ACTIVATE_ACCOUNT : queriesDefaults.ev.ACTIVATE_ACCOUNT;
+    this.REFRESH_TOKEN = queries?.REFRESH_TOKEN ? queries?.REFRESH_TOKEN : queriesDefaults.ev.REFRESH_TOKEN;
     this.DECODE_RESOURCE_URL = queries?.DECODE_RESOURCE_URL ? queries?.DECODE_RESOURCE_URL : queriesDefaults.ev.DECODE_RESOURCE_URL;
     this.CENTRAL_SYSTEM_SERVICE = queries?.CENTRAL_SYSTEM_SERVICE ? queries?.CENTRAL_SYSTEM_SERVICE : queriesDefaults.ev.CENTRAL_SYSTEM_SERVICE;
   }

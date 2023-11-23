@@ -25,6 +25,7 @@ class ApiFactory {
 
   private _axios: AxiosInstance;
   private _axiosJwt: AxiosInstance;
+  private _axiosJwtEv: AxiosInstance;
 
   private readonly _validatorsApi = new ValidatorsApi(() => this._axios);
   private readonly _tokensApi = new TokensApi(() => this._axios);
@@ -36,7 +37,7 @@ class ApiFactory {
   private readonly _airDropApi = new ClaimApi(() => this._axios);
   private readonly _publicSaleServiceApi = new PublicSaleServiceApi(() => this._axiosJwt);
   private readonly _faucetApi = new FaucetApi(() => this._axios)
-  private readonly _evServiceApi = new EvServiceApi(() => this._axiosJwt);
+  private readonly _evServiceApi = new EvServiceApi(() => this._axiosJwtEv);
 
   private testMode = false;
 
@@ -57,6 +58,35 @@ class ApiFactory {
       throw error;
     }
 
+
+
+    // If your backend supports rotating refresh tokens, you may also choose to return an object containing both tokens:
+    // return {
+    //  accessToken: response.data.access_token,
+    //  refreshToken: response.data.refresh_token
+    //}
+  }
+
+
+  requestRefreshEv: TokenRefreshRequest = async (refreshToken: string): Promise<IAuthTokens | string> => {
+
+    // Important! Do NOT use the axios instance that you supplied to applyAuthTokenInterceptor (in our case 'axiosInstance')
+    // because this will result in an infinite loop when trying to refresh the token.
+    // Use the global axios client or a different instance
+    try {
+      const response = await axios.post(useConfigurationStore().config.evServiceURL + useConfigurationStore().config.queriesEv.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
+      return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
+    } catch (error) {
+      // useUserServiceStore().logoutAccount();
+      // if(useRouter().currentRoute.value.meta.requiresAuth) {
+      //   await useRouter().push('/buyTokens/signIn');
+      // }
+      console.log(JSON.stringify(error));
+      throw error;
+    }
+
+
+
     // If your backend supports rotating refresh tokens, you may also choose to return an object containing both tokens:
     // return {
     //  accessToken: response.data.access_token,
@@ -67,7 +97,9 @@ class ApiFactory {
   private constructor() {
     this._axios = axios.create({});
     this._axiosJwt = axios.create({});
+    this._axiosJwtEv = axios.create({});
     applyAuthTokenInterceptor(this._axiosJwt, {requestRefresh: this.requestRefresh });
+    applyAuthTokenInterceptor(this._axiosJwtEv, {requestRefresh: this.requestRefreshEv });
     applyStorage(getBrowserSessionStorage());
   }
 

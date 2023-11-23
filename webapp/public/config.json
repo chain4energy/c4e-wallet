@@ -447,8 +447,9 @@
     "queriesEv": {
       "LOGIN_WITH_RESOURCE": "/api/login-service/v0.1/auth/resource",
       "LOGIN_WITH_EMAIL_PASSWORD": "/api/login-service/v0.1/auth/password",
-      "EMAIL_CREATE_ACCOUNT": "/api/login-service/v0.1/auth/register",
+      "EMAIL_CREATE_ACCOUNT": "/api/login-service/v0.1/register",
       "ACTIVATE_ACCOUNT": "/api/login-service/v0.1/activate/{activationCode}",
+      "REFRESH_TOKEN": "/api/login-service/v0.1/refresh",
       "CENTRAL_SYSTEM_SERVICE":"/api/central-system-service"
     },
     "operationGas": {

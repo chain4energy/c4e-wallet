@@ -19,7 +19,23 @@ import component from "*.vue";
 import IconComponent from "@/components/features/IconComponent.vue";
 import PrimeVue from "primevue/config";
 import RadioButton from "primevue/radiobutton";
+import Toast, {PluginOptions, POSITION, TYPE} from "vue-toastification";
+import SuccessIcon from "@/components/features/SuccessIcon.vue";
+import ErrorIcon from "@/components/features/ErrorIcon.vue";
 
+const toastOptions: PluginOptions = {
+  // You can set your default options here
+  position: POSITION.BOTTOM_RIGHT,
+  toastDefaults: {
+    [TYPE.SUCCESS]: {
+      icon: SuccessIcon,
+    },
+    [TYPE.ERROR]: {
+      icon: ErrorIcon,
+    },
+  }
+
+};
 
 const pinia = createPinia();
 pinia.use(piniaPersist);
@@ -31,6 +47,7 @@ appEv.use(routerEv)
   .use(pinia)
   .use(i18n)
   .use(PrimeVue)
+  .use(Toast, toastOptions)
   .component('Icon', IconComponent)
   .component('Button', Button)
   .component('InputText', InputText)

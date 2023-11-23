@@ -65,6 +65,7 @@ import {useUserServiceStore} from "@/store/userService.store";
 import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {pattern} from "@/utils/passwordPattern";
+import {useEvStore} from "@/store/ev.store";
 
 
 const schema = object().shape({
@@ -93,10 +94,8 @@ const routes = {
 }
 
 function register(){
-
   if(email.value && password.value) {
-    useUserServiceStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccessEmailSend);
-
+    useEvStore().createEmailAccount( { login:email.value, password:password.value  }, onSuccessEmailSend);
   }
 }
 

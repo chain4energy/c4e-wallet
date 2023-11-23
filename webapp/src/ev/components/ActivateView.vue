@@ -17,17 +17,18 @@ import {ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import {useToast} from "vue-toastification";
 import {useRouter} from "vue-router";
+import {useEvStore} from "@/store/ev.store";
 
 const activationCode = ref<string>('');
 const onActivateClick = () => {
 
-  useUserServiceStore().activateEmailAccount(activationCode.value, onSuccess, onError, true);
+  useEvStore().activateEmailAccount(activationCode.value, onSuccess, onError, true);
 };
 const toast = useToast();
 const router = useRouter();
 const onSuccess = () => {
   toast.success('Account activated');
-  router.push({name: 'publicSaleInfo'});
+  router.push('/ev/owner');
 };
 const onError = () => {
   toast.error('An error occurred');
