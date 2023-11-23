@@ -43,8 +43,8 @@
 
             <Button class="p-button p-component secondary" style="width: 40%" type="submit" >{{ $t('SIGN_IN_VIEW.SIGN_UP') }}</Button>
           </div>
-          <RouterLink class="register" :to="useRoute().path.includes('buyTokens') ? '/buyTokens/signIn' : '/profile/signIn'">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</RouterLink>
-
+<!--          <RouterLink class="register" :to="useRoute().path.includes('buyTokens') ? '/buyTokens/signIn' : '/profile/signIn'">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</RouterLink>-->
+          <p style="cursor: pointer" class="register" @click="routes.goToSingIn()">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</p>
         </Form>
       </div>
     </div>
@@ -83,6 +83,15 @@ const password = ref<string>();
 const passwordRetype = ref<string>();
 const termsAccepted = ref<boolean>(false);
 
+const routes = {
+  goToSingIn: () => {
+    router.push('/ev/login')
+  },
+  goToActivate: () => {
+    router.push('/ev/activate');
+  }
+}
+
 function register(){
 
   if(email.value && password.value) {
@@ -95,7 +104,7 @@ const router = useRouter();
 const toast = useToast();
 const onSuccessEmailSend = () => {
   toast.success('The message has been sent to the e-mail address provided');
-  router.push({name: 'activate'});
+  routes.goToActivate();
 };
 
 

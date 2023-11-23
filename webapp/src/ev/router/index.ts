@@ -79,6 +79,11 @@ const routesEv: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "SignInView" */ '@/ev/views/SignUpView.vue')
   },
   {
+    path: '/' + subAppName + '/activate',
+    name: subAppName + '_SignUpView',
+    component: () => import(/* webpackChunkName: "SignInView" */ '@/ev/views/SignUpView.vue')
+  },
+  {
     path: '/' + subAppName + '/owner',
     name: subAppName + '_OwnerView',
     component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/OwnerView.vue')

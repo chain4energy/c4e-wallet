@@ -18,6 +18,7 @@ import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/p
 import {SaleServiceApplicationError} from "@/models/saleServiceCommons";
 import queries from "@/api/queries";
 import {AccountInfo} from "@/models/user/accountInfo";
+import {formatString} from "@/utils/string-formatter";
 
 
 export class EvServiceApi extends BaseApi {
@@ -74,7 +75,9 @@ export class EvServiceApi extends BaseApi {
   public async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<EvServiceApplicationError>>> {
     return this.evServicePostCall<PasswordAuthenticateRequest, AccountInfo, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.EMAIL_CREATE_ACCOUNT, createAccountRequest, lockscreen, "createEmailAccount");
   }
-
+  public async activateEmailAccount(code: string, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<EvServiceApplicationError>>> {
+    return this.evServiceGetCall<Jwt, EvServiceApplicationError>(formatString(useConfigurationStore().config.queriesEv.ACTIVATE_ACCOUNT, {activationCode: code}), lockscreen, "activateEmailAccount");
+  }
   public evDecodeLink(path: string, lockscreen: boolean) {
     return this.evServiceGetCall<LinkDecoderDto<DecodeLinkAuthParams>, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + "/v0.1/link/" + path, lockscreen, "evDecodeLink");
   }

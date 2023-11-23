@@ -448,6 +448,7 @@
       "LOGIN_WITH_RESOURCE": "/api/login-service/v0.1/auth/resource",
       "LOGIN_WITH_EMAIL_PASSWORD": "/api/login-service/v0.1/auth/password",
       "EMAIL_CREATE_ACCOUNT": "/api/login-service/v0.1/auth/register",
+      "ACTIVATE_ACCOUNT": "/api/login-service/v0.1/activate/{activationCode}",
       "CENTRAL_SYSTEM_SERVICE":"/api/central-system-service"
     },
     "operationGas": {

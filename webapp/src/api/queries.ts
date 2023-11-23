@@ -121,6 +121,7 @@ export default {
     LOGIN_EMAIL_AND_LOGIN_DATA: '/api/auth/resource',
     LOGIN_WITH_EMAIL_PASSWORD: '/api/auth/password',
     EMAIL_CREATE_ACCOUNT: '/api/auth/register',
+    ACTIVATE_ACCOUNT: '/api/auth/activate/{activationCode}',
     DECODE_RESOURCE_URL: 'api/xxxxx/decode',
     CENTRAL_SYSTEM_SERVICE: '/api/central-system-service'
   }

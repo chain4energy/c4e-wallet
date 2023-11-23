@@ -23,13 +23,14 @@
             </div>
 
           </div>
-          <p class="forgot" @click="routes.reset()">Forgot password?</p>
+          <p class="forgot" @click="routes.goToReset()">Forgot password?</p>
           <div class="flex justify-content-center">
 
             <Button class="p-button p-component secondary" style="width: 40%" type="submit">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</Button>
           </div>
           <div style="padding: 5px">
-<!--            <RouterLink class="register" :to="routes.singUp()">{{ $t('SIGN_IN_VIEW.REGISTER') }}</RouterLink>-->
+<!--            <RouterLink class="register" to="/ev/register">{{ $t('SIGN_IN_VIEW.REGISTER') }}</RouterLink>-->
+            <p style="cursor: pointer" class="register" @click="routes.goToSingUp()">{{ $t('SIGN_IN_VIEW.REGISTER') }}</p>
           </div>
         </Form>
       </div>
@@ -62,13 +63,13 @@ const email = ref<string>();
 const password = ref<string>();
 
 const routes = {
-  reset: () => {
+  goToReset: () => {
     router.push('/ev/reset')
   },
-  singUp: () => {
+  goToSingUp: () => {
     router.push('/ev/register')
   },
-  successLogin: () => {
+  goToOwnetDashboard: () => {
     router.push('/ev/owner');
   }
 }
@@ -84,7 +85,7 @@ const router = useRouter();
 const toast = useToast();
 const onSuccessAuth = () => {
   toast.success('Successfully logged in');
-  routes.successLogin();
+  routes.goToOwnetDashboard();
 };
 
 </script>

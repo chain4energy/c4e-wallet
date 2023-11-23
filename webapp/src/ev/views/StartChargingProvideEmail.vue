@@ -13,7 +13,7 @@
       <Button class="p-button p-component secondary" style="width: 40%" type="submit">{{ $t('START_CHARGING.BUTTON') }}</Button>
     </div>
   </Form>
-  <div>
+  <div style="color: red">
     {{errorStr}}
   </div>
 </template>

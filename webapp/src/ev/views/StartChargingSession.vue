@@ -6,26 +6,41 @@
 
   <Button @click="startChargingSession()">Start</Button>
   <Button @click="stopChargingSession()">Stop</Button>
+  <div style="color: red">
+    {{errorStr}}
+  </div>
 </template>
 
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import {useEvStore} from "@/store/ev.store";
+import {ref} from "vue";
+import {ErrorData} from "@/api/base.api";
+import {EvServiceApplicationError} from "@/models/ev/evServiceCommons";
+
+const errorStr = ref("");
 
 const router = useRouter()
 const evStore = useEvStore();
 function startChargingSession() {
   //router.push({ name: 'ev_ChargingSession' })
-  evStore.startCharging(true, ()=>{
-    console.log("success")}, ()=>{
-    console.log("failed")});
+  evStore.startCharging(true, onSuccess, onError);
 }
 
 function stopChargingSession() {
   //router.push({ name: 'ev_ChargingSession' })
-  evStore.stopCharging(true, ()=>{
-    console.log("success")}, ()=>{
-    console.log("failed")});
+  evStore.stopCharging(true, onSuccess, onError);
+}
+
+function onSuccess(){
+  console.log("onSuccess");
+}
+
+function onError(error: ErrorData<EvServiceApplicationError> | undefined){
+  console.log("Error" + error?.message)
+  if(error) {
+    errorStr.value = JSON.stringify(error.data);
+  }
 }
 </script>
 

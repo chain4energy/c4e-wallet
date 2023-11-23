@@ -11,6 +11,7 @@ import {Jwt} from "@/models/user/jwt";
 import {ErrorData} from "@/api/base.api";
 import {SaleServiceApplicationError} from "@/models/saleServiceCommons";
 import {EvServiceApplicationError, InitPaymentRequest} from "@/models/ev/evServiceCommons";
+import {LoginTypeEnum} from "@/store/userService.store";
 
 interface EvStoreState {
   chargePointInfo: ChargePointInfo | undefined,
@@ -37,11 +38,14 @@ export const useEvStore = defineStore({
     };
   },
   actions: {
-    async getEvAuthResource(pathToDecode: string, lockscreen = true) {
+    async getEvAuthResource(pathToDecode: string, lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
       await apiFactory.evServiceApi().evDecodeLink(pathToDecode, lockscreen).then(response => {
-        if (response.data) {
+        if (response.isSuccess() && response.data) {
           this.sessionInfoPath = response.data.params.path;
           this.resourceCode = response.data.params.resourceCode;
+          onSuccess();
+        }else{
+          onFail(response.error);
         }
       });
     },
@@ -91,6 +95,18 @@ export const useEvStore = defineStore({
         }
       });
     },
+    async activateEmailAccount(code: string, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
+      await apiFactory.evServiceApi().activateEmailAccount(code, lockscreen).then(responseDate => {
+        if(responseDate.isSuccess()) {
+          this.setTokens(responseDate);
+          // this.loginType = LoginTypeEnum.EMAIL;
+          onSuccess();
+        } else {
+          // UserServiceErrorHandler.getInstance().handleError(responseDate.error, UserServiceContext.ACTIVATE_EMAIL_ACCOUNT);
+          // onFail?.();
+        }
+      });
+    },
     async mockGetQrCodeInfo(qrCodeInfoPath: string) {
       this.qrCodeInfoPath = qrCodeInfoPath;
     },
@@ -103,11 +119,13 @@ export const useEvStore = defineStore({
       });
     },
 
-    async mockFetchChargePointInfo(chargePointId: string, connectorId: number, lockscreen = true) {
+    async mockFetchChargePointInfo(chargePointId: string, connectorId: number, lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
       await apiFactory.evServiceApi().evChargePointInfo(`/v0.1/charge_point/${chargePointId}/connector/${connectorId}`, lockscreen).then(response => {
-        if (response.data) {
-          console.log(response.data)
+        if (response.isSuccess()) {
+          onSuccess();
           this.chargePointInfo = response.data
+        } else {// TODO: error handling
+          onFail(response.error);
         }
       });
     },
@@ -159,11 +177,13 @@ export const useEvStore = defineStore({
       });
     },
 
-    async initPayment( initPaymentRequest: InitPaymentRequest, lockscreen: boolean){
+    async initPayment( initPaymentRequest: InitPaymentRequest, lockscreen: boolean, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)){
       await apiFactory.evServiceApi().initPayment(this.sessionInfoPath, initPaymentRequest, lockscreen).then(response => {
-        if (response.data) {
-//toto
-        } // TODO: error handling
+        if (response.isSuccess()) {
+          onSuccess();
+        } else {// TODO: error handling
+          onFail(response.error);
+        }
       });
     },
 

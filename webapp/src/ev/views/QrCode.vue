@@ -19,7 +19,9 @@
   </form>
 
   <chargerInfoC v-if="chargePointInfo" :charge-point-info="chargePointInfo"></chargerInfoC>
-
+  <div style="color: red">
+    {{errorStr}}
+  </div>
   <div v-if="chargePointInfo">
     <Button v-if="chargePointInfo?.status === ChargerStatus.AVAILABLE" @click="next()">
       Next
@@ -34,6 +36,10 @@ import PriceC from "@/ev/components/PriceC.vue";
 import ChargerInfoC from "@/ev/components/ChargerInfoC.vue";
 import {ChargerStatus, PriceInfo} from "@/models/ev/chargerInfo";
 import {useEvStore} from "@/store/ev.store";
+import {ErrorData} from "@/api/base.api";
+import {EvServiceApplicationError} from "@/models/ev/evServiceCommons";
+
+const errorStr = ref("");
 
 const router = useRouter()
 const route = useRoute()
@@ -61,8 +67,16 @@ const chargePointInfo = computed(() => evStore.getChargePointInfo);
 
 const submitChargePointInfo = async () => {
   submitQrCodeInfo();
-  await evStore.mockFetchChargePointInfo(chargePointForm.value.chargePointId, parseInt(chargePointForm.value.connectorId));
+  await evStore.mockFetchChargePointInfo(chargePointForm.value.chargePointId, parseInt(chargePointForm.value.connectorId), true,()=>{
+    console.log("success")}, onError);
 };
+
+function onError(error: ErrorData<EvServiceApplicationError> | undefined){
+  console.log("Error" + error?.message)
+  if(error) {
+    errorStr.value = JSON.stringify(error.data);
+  }
+}
 
 const submitQrCodeInfo = () => {
   evStore.mockGetQrCodeInfo(qrCodeInfoForm.value.qrCodeInfoPath);

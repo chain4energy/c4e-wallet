@@ -4,13 +4,19 @@
   <div v-if="evStore.getSessionPath">Sesison path: {{ evStore.getSessionPath }}</div>
   <div v-if="evStore.getResourceCode">Resource code: {{ evStore.getResourceCode }}</div>
   <Button label="Login with resource" @click="loginWithResource()"/>
-
+  <div style="color: red">
+    {{errorStr}}
+  </div>
 </template>
 
 <script setup lang="ts">
 import {useRoute, useRouter} from 'vue-router'
 import {onMounted, ref} from "vue";
 import {useEvStore} from "@/store/ev.store";
+import {ErrorData} from "@/api/base.api";
+import {EvServiceApplicationError} from "@/models/ev/evServiceCommons";
+
+const errorStr = ref("");
 
 const route = useRoute()
 const evStore = useEvStore();
@@ -36,7 +42,18 @@ function mockDecodePath() {
   console.log("mockDecodePath")
   const pathToDecoder = createLinkFromPathParams(pathForm.value.path);
   console.log(pathToDecoder)
-  evStore.getEvAuthResource(pathToDecoder);
+  evStore.getEvAuthResource(pathToDecoder, true, onSuccessEvAuthResource, onErrorEvAuthResource);
+}
+
+function onSuccessEvAuthResource(){
+  console.log("onSuccessEvAuthResource");
+}
+
+function onErrorEvAuthResource(error: ErrorData<EvServiceApplicationError> | undefined){
+  console.log("Error" + error?.message)
+  if(error) {
+    errorStr.value = JSON.stringify(error.data);
+  }
 }
 
 function loginWithResource() {
@@ -47,7 +64,7 @@ function fetchAllData() {
   console.log(route.params.context);
   const pathToDecoder = createLinkFromPathParams(route.params.context);
   console.log("pathToDecoder:" + pathToDecoder);
-  evStore.getEvAuthResource(pathToDecoder)
+  evStore.getEvAuthResource(pathToDecoder, true, onSuccessEvAuthResource, onErrorEvAuthResource);
   loginWithResource()
 }
 
