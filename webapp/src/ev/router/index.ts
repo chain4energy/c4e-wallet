@@ -87,6 +87,16 @@ const routesEv: Array<RouteRecordRaw> = [
     path: '/' + subAppName + '/owner',
     name: subAppName + '_OwnerView',
     component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/OwnerView.vue')
+  },
+  {
+    path: '/' + subAppName + '/addCharger',
+    name: subAppName + '_AddCharger',
+    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/AddCharger.vue')
+  },
+  {
+    path: '/' + subAppName + '/singleCharger/:id',
+    name: subAppName + '_SingleCharger',
+    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/SingleCharger.vue')
   }
 ];
 

@@ -29,7 +29,7 @@ export enum EvServiceApplicationErrorCodespace {
   SIGNATURE = 'signature'
 }
 
-export interface LinkDecoderDto<T> {
+export interface LinkDecoder<T> {
   type: string,
   version: string,
   params: T
