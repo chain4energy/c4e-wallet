@@ -18,6 +18,7 @@ import {useUserServiceStore} from "@/store/userService.store";
 import {useToast} from "vue-toastification";
 import {useRouter} from "vue-router";
 import {useEvStore} from "@/store/ev.store";
+import {goTo_EvOwnerDashboardView} from "@/ev/router/goToRoute";
 
 const activationCode = ref<string>('');
 const onActivateClick = () => {
@@ -28,7 +29,7 @@ const toast = useToast();
 const router = useRouter();
 const onSuccess = () => {
   toast.success('Account activated');
-  router.push('/ev/owner');
+  goTo_EvOwnerDashboardView();
 };
 const onError = () => {
   toast.error('An error occurred');

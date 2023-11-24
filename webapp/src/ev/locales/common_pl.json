@@ -1,0 +1,15 @@
+{
+  "SIGN_IN_VIEW": {
+    "SIGN_UP": "Rejestracja",
+    "SIGN_IN": "Logowanie",
+    "EMAIL": "Adres e-mail",
+    "PASSWORD": "Podaj hasło",
+    "OLD_PASSWORD": "Podaj dotychczasowe hasło",
+    "RETYPE": "Powtórz hasło",
+    "REGISTER": "Załóż konto",
+    "TERMS": "Akceptuję zasady i warunki",
+    "CHANGE_PASSWORD": "Zmiana hasła",
+    "CHANGE_HEADER": "Zmiana hasła konta: "
+  }
+}
+

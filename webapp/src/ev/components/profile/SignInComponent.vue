@@ -23,21 +23,18 @@
             </div>
 
           </div>
-          <p class="forgot" @click="routes.goToReset()">Forgot password?</p>
+          <p class="forgot" @click="emit('onForgotPasswordButton')">Forgot password?</p>
           <div class="flex justify-content-center">
 
             <Button class="p-button p-component secondary" style="width: 40%" type="submit">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</Button>
           </div>
           <div style="padding: 5px">
-<!--            <RouterLink class="register" to="/ev/register">{{ $t('SIGN_IN_VIEW.REGISTER') }}</RouterLink>-->
-            <p style="cursor: pointer" class="register" @click="routes.goToSingUp()">{{ $t('SIGN_IN_VIEW.REGISTER') }}</p>
+            <p style="cursor: pointer" class="register" @click="emit('onSignUpButton')">{{ $t('SIGN_IN_VIEW.REGISTER') }}</p>
           </div>
         </Form>
       </div>
     </div>
   </div>
-
-
 </template>
 
 <script setup lang="ts">
@@ -50,7 +47,9 @@ import {ref} from "vue";
 import {useEvStore} from "@/store/ev.store";
 import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
-
+import {PropType} from "vue/dist/vue";
+import {AuthEmailAccountMethod, AuthMethods} from "@/ev/components/profile/EmailRegister";
+import {BaseServiceApplicationError} from "@/models/ev/evServiceCommons";
 
 const schema = object().shape({
   email:  Yup.string()
@@ -62,22 +61,18 @@ const schema = object().shape({
 const email = ref<string>();
 const password = ref<string>();
 
-const routes = {
-  goToReset: () => {
-    router.push('/ev/reset')
+const props = defineProps({
+  authEmailAccountMethod:{
+    type:  Object as PropType<AuthEmailAccountMethod<BaseServiceApplicationError>>,
+    required: true
   },
-  goToSingUp: () => {
-    router.push('/ev/register')
-  },
-  goToOwnetDashboard: () => {
-    router.push('/ev/owner');
-  }
-}
+});
+
+const emit = defineEmits(['onForgotPasswordButton', 'onSuccessLogin', 'onSignUpButton'])
 
 function login(){
-
   if(email.value && password.value) {
-    useEvStore().authEmailAccount({login: email.value, password: password.value}, onSuccessAuth);
+    props.authEmailAccountMethod.authEmailAccount({login: email.value, password: password.value}, onSuccessAuth);
   }
 }
 
@@ -85,7 +80,7 @@ const router = useRouter();
 const toast = useToast();
 const onSuccessAuth = () => {
   toast.success('Successfully logged in');
-  routes.goToOwnetDashboard();
+  emit('onSuccessLogin');
 };
 
 </script>

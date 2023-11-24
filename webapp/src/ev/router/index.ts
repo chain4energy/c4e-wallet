@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import {resetPasswordRoutes} from "@/ev/router/resetPasswordRoutes";
 
 const subAppName ="ev";
+
 
 const routesEv: Array<RouteRecordRaw> = [
   {
@@ -69,25 +71,26 @@ const routesEv: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "MockPayment" */ '@/ev/views/MockPayment.vue')
   },
   {
-    path: '/' + subAppName + '/login',
+    path: '/' + subAppName + '/signIn',
     name: subAppName + '_SignInView',
-    component: () => import(/* webpackChunkName: "SignInView" */ '@/ev/views/SignInView.vue')
+    component: () => import(/* webpackChunkName: "SignInView" */ '@/ev/views/profile/SignInView.vue')
   },
   {
-    path: '/' + subAppName + '/register',
+    path: '/' + subAppName + '/signUp',
     name: subAppName + '_SignUpView',
-    component: () => import(/* webpackChunkName: "SignInView" */ '@/ev/views/SignUpView.vue')
+    component: () => import(/* webpackChunkName: "SignUpView" */ '@/ev/views/profile/SignUpView.vue')
   },
   {
     path: '/' + subAppName + '/activate',
-    name: subAppName + '_activate',
-    component: () => import(/* webpackChunkName: "SignInView" */ '@/ev/components/ActivateView.vue')
+    name: subAppName + '_Activate',
+    component: () => import(/* webpackChunkName: "ActivateView" */ '@/ev/views/profile/ActivateView.vue')
   },
   {
     path: '/' + subAppName + '/owner',
     name: subAppName + '_OwnerView',
     component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/OwnerView.vue')
-  }
+  },
+  ... resetPasswordRoutes
 ];
 
 export const routerEv = createRouter({

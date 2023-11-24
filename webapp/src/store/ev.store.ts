@@ -73,7 +73,7 @@ export const useEvStore = defineStore({
       }
     },
 
-    async authEmailAccount(emailAccount: PasswordAuthenticateRequest, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
+    async authEmailAccount(emailAccount: PasswordAuthenticateRequest, onSuccess: (() => void), onFail?: ((error:ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true) {
       await apiFactory.evServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
         if(responseDate.isSuccess()) {
           this.setTokens(responseDate);
@@ -81,17 +81,17 @@ export const useEvStore = defineStore({
           onSuccess();
         } else {
           // UserServiceErrorHandler.getInstance().handleError(responseDate.error, UserServiceContext.LOG_IN);
-          onFail?.();
+          onFail?.(responseDate.error);
         }
       });
     },
-    async createEmailAccount(createAccountRequest: CreateAccountRequest, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
-      return await apiFactory.evServiceApi().createEmailAccount(createAccountRequest, lockscreen).then(res => {
-        if(res.isSuccess()) {
+    async createEmailAccount(createAccountRequest: CreateAccountRequest, onSuccess: (() => void), onFail?: ((error:ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true) {
+      return await apiFactory.evServiceApi().createEmailAccount(createAccountRequest, lockscreen).then(responseDate => {
+        if(responseDate.isSuccess()) {
           onSuccess();
         } else {
           // UserServiceErrorHandler.getInstance().handleError( res.error, UserServiceContext.CREATE_ACCOUNT);
-          onFail?.();
+          onFail?.(responseDate.error);
         }
       });
     },
