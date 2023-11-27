@@ -12,6 +12,7 @@ import {ErrorData} from "@/api/base.api";
 import {SaleServiceApplicationError} from "@/models/saleServiceCommons";
 import {EvServiceApplicationError, InitPaymentRequest} from "@/models/ev/evServiceCommons";
 import {LoginTypeEnum} from "@/store/userService.store";
+import {EvServiceContext, EvServiceErrorHandler} from "@/store/errorsHandlers/uvServiceErrorHandler";
 
 interface EvStoreState {
   chargePointInfo: ChargePointInfo | undefined,
@@ -80,7 +81,7 @@ export const useEvStore = defineStore({
           this.userEmail = emailAccount.login;
           onSuccess();
         } else {
-          // UserServiceErrorHandler.getInstance().handleError(responseDate.error, UserServiceContext.LOG_IN);
+          EvServiceErrorHandler.getInstance().handleError(responseDate.error, EvServiceContext.LOG_IN);
           onFail?.(responseDate.error);
         }
       });
