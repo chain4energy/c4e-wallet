@@ -3,7 +3,7 @@ export interface CreateTariff {
   accountId?: number;
   currency: string;
   unit: string;
-  unitCost: number; // Assuming decimal.Dec can be represented as number
+  unitCost: number;
   active: boolean;
   startDate?: Date;
   endDate?: Date;

@@ -1,4 +1,5 @@
 export interface ChargePointDict {
+  id: number;
   name: string;
   description?: string;
   codeType: string;

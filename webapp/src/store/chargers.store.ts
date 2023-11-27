@@ -15,6 +15,9 @@ interface ChargerStore {
   chargePoints: ChargePoint[];
   chargePointDicts: ChargePointDict[];
   tariffGroups: TariffGroup[];
+  selectedChargePointDict: ChargePointDict;
+  selectedTariffGroup: TariffGroup;
+  createChargePointFromDict: CreateChargePointFromDict;
 }
 
 export const useChargerStore = defineStore({
@@ -24,6 +27,9 @@ export const useChargerStore = defineStore({
     chargePoints: [],
     chargePointDicts: [],
     tariffGroups: [],
+    createChargePointFromDict: {} as CreateChargePointFromDict,
+    selectedChargePointDict: {} as ChargePointDict,
+    selectedTariffGroup: {} as TariffGroup,
   }),
 
   actions: {
@@ -87,10 +93,11 @@ export const useChargerStore = defineStore({
       }
     },
 
-    async createTariffGroup(createTariffGroup: CreateTariffGroup, lockscreen = true) {
+    async createTariffGroup(createTariffGroup: CreateTariffGroup, lockscreen = true, onSuccess: ((tariffGroupId: number) => void)) {
       const response = await apiFactory.evServiceApi().createTariffGroup(createTariffGroup, lockscreen);
       if (response.isSuccess() && response.data) {
         this.tariffGroups.push(response.data);
+        onSuccess(response.data.id);
       }
     },
 
@@ -130,12 +137,13 @@ export const useChargerStore = defineStore({
     },
 
 
-    async createTariff(tgId: number, createTariff: CreateTariff, lockscreen = true) {
+    async createTariff(tgId: number, createTariff: CreateTariff, lockscreen = true, onSuccess: () => void) {
       const response = await apiFactory.evServiceApi().createTariff(createTariff, lockscreen);
       if (response.isSuccess() && response.data) {
         const tgIndex = this.tariffGroups.findIndex(tg => tg.id === tgId);
         if (tgIndex !== -1) {
           this.tariffGroups[tgIndex].tariffs.push(response.data);
+          onSuccess();
         }
       }
     },

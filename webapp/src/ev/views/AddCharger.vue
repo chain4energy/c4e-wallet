@@ -1,7 +1,7 @@
 <template>
   <h2>Add new charger</h2>
 
-  <div v-if="!selectedChargePointDict">
+  <div v-if="!chargerStore.selectedChargePointDict">
     <div class="selectCharger" v-for="chargePointDict in chargerStore.getChargePointDicts" :key="chargePointDict.name">
       <h2>Select charger type</h2>
       <ChargePointDictC :charge-point-dict="chargePointDict"/>
@@ -9,33 +9,49 @@
     </div>
   </div>
 
-  <div class="selectCharger" v-if="selectedChargePointDict">
-    <ChargePointDictC :charge-point-dict="selectedChargePointDict"/>
+  <div class="selectCharger" v-if="chargerStore.selectedChargePointDict">
+    <ChargePointDictC :charge-point-dict="chargerStore.selectedChargePointDict"/>
     <h1 style="color: red">Selected</h1>
   </div>
 
-  <div v-if="selectChargePointDict">
-    <h2>Select tariff group</h2>
-    <div class="selectCharger" v-for="tariffGroup in chargerStore.getTariffGroups" :key="tariffGroup.name">
-      <TariffGroupC :tariff-group="tariffGroup"/>
-      <Button @click="selectedTariffGroup = tariffGroup">Select</Button>
+  <div v-if="chargerStore.selectedChargePointDict">
+    <div v-if="chargerStore.getTariffGroups?.length === 0">
+      <h2>No tariff groups found</h2>
     </div>
+    <div v-if="chargerStore.getTariffGroups?.length > 0">
+      <h2>Select tariff group</h2>
+      <div class="selectCharger" v-for="tariffGroup in chargerStore.getTariffGroups" :key="tariffGroup.name">
+        <TariffGroupC :tariff-group="tariffGroup"/>
+        <Button @click="selectTariffGroup(tariffGroup)">Select</Button>
+      </div>
+    </div>
+    <Button @click="addNewTariffGroup()">Add new tariff group</Button>
+    <!--    <Button @click="chargerStore.createChargePointFromDict(selectedChargePointDict, selectedTariffGroup)">Add charger</Button>-->
   </div>
 
 </template>
 
 <script setup lang="ts">
 import {useChargerStore} from "@/store/chargers.store";
-import {ref} from "vue";
 import ChargePointDictC from "@/ev/components/ChargePointDictC.vue";
 import TariffGroupC from "@/ev/components/TariffGroupC.vue";
+import {ChargePointDict} from "@/models/ev/chargePointDict";
+import {TariffGroup} from "@/models/ev/tariffGroup";
+import {useRouter} from "vue-router";
 
 const chargerStore = useChargerStore();
-let selectedChargePointDict = ref()
-let selectedTariffGroup = ref()
+const router = useRouter()
 
-const selectChargePointDict = (chargePointDict: any) => {
-  selectedChargePointDict.value = chargePointDict
+const selectChargePointDict = (chargePointDict: ChargePointDict) => {
+  chargerStore.selectedChargePointDict = chargePointDict
+}
+
+const selectTariffGroup = (tariffGroup: TariffGroup) => {
+  chargerStore.selectedTariffGroup = tariffGroup
+}
+
+const addNewTariffGroup = () => {
+  router.push('/ev/addTariffGroup');
 }
 </script>
 
