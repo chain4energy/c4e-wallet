@@ -15,6 +15,14 @@
   </div>
 
   <div v-if="chargerStore.selectedChargePointDict">
+    <h2>Charger Details</h2>
+    <InputText v-model="chargerStore.createChargePointFromDict.id" placeholder="Charger ID"/>
+    <InputText v-model="chargerStore.createChargePointFromDict.name" placeholder="Charger Name"/>
+    <InputText v-model="chargerStore.createChargePointFromDict.identificationCode" placeholder="Identification Code"/>
+    <Button @click="createChargerFromDict()">Add charger</Button>
+  </div>
+
+  <div v-if="chargerStore.selectedChargePointDict">
     <div v-if="chargerStore.getTariffGroups?.length === 0">
       <h2>No tariff groups found</h2>
     </div>
@@ -22,12 +30,17 @@
       <h2>Select tariff group</h2>
       <div class="selectCharger" v-for="tariffGroup in chargerStore.getTariffGroups" :key="tariffGroup.name">
         <TariffGroupC :tariff-group="tariffGroup"/>
-        <Button @click="selectTariffGroup(tariffGroup)">Select</Button>
+        <Button @click="selectTariffGroup(tariffGroup)" v-if="chargerStore.selectedTariffGroup?.id !== tariffGroup.id">
+          Select
+        </Button>
+        <Button class="selected" @click="selectTariffGroup(tariffGroup)"
+                v-if="chargerStore.selectedTariffGroup?.id === tariffGroup.id">Selected
+        </Button>
       </div>
     </div>
     <Button @click="addNewTariffGroup()">Add new tariff group</Button>
-    <!--    <Button @click="chargerStore.createChargePointFromDict(selectedChargePointDict, selectedTariffGroup)">Add charger</Button>-->
   </div>
+
 
 </template>
 
@@ -53,6 +66,12 @@ const selectTariffGroup = (tariffGroup: TariffGroup) => {
 const addNewTariffGroup = () => {
   router.push('/ev/addTariffGroup');
 }
+
+const createChargerFromDict = () => {
+  chargerStore.createChargePointFromDictFn(true, () => {
+    router.push("/ev/owner");
+  })
+};
 </script>
 
 
@@ -61,5 +80,10 @@ const addNewTariffGroup = () => {
   background: #0A6BDD;
   padding: 40px;
   border-radius: 20px;
+}
+
+.selected {
+  color: green;
+  transform: scale(1.1)
 }
 </style>

@@ -1,8 +1,7 @@
 <template>
-<!--all tariff data-->
   <Card>
     <template #title>
-      <h3>Name: {{ tariff.name }}</h3>
+      <h3>Tariff name: {{ tariff.name }}</h3>
     </template>
     <template #content>
       <h3>Active: {{ tariff.active }}</h3>
@@ -10,20 +9,31 @@
       <h3>Unit const: {{ tariff.unitCost }}</h3>
       <h3>Start date: {{ tariff.startDate }}</h3>
       <h3>End date: {{ tariff.endDate }}</h3>
+      <Button @click="deleteTariff(tgId, tariff.id)">Delete</Button>
     </template>
   </Card>
 </template>
 
 <script setup lang="ts">
 import {Tariff} from "@/models/ev/tariff";
+import {useChargerStore} from "@/store/chargers.store";
 
+const chargerStore = useChargerStore();
 defineProps({
     tariff: {
       type: Object as () => Tariff,
       required: true
-    }
+    },
+    tgId: {
+      type: Number,
+      required: true
+    },
   }
 );
+
+const deleteTariff = (tgId: number, id: number) => {
+  chargerStore.deleteTariff(tgId, id)
+}
 </script>
 
 

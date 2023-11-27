@@ -1,19 +1,23 @@
 <template>
   <h2>Add new tariff group</h2>
   <div class="p-fluid">
-    <InputText v-model="createTariffGroup.name" placeholder="Tariff Group Name" />
-    <Checkbox v-model="createTariffGroup.active" binary="true">Active</Checkbox>
-    <Calendar v-model="createTariffGroup.startDate" placeholder="Start Date" />
-    <Calendar v-model="createTariffGroup.endDate" placeholder="End Date" />
+    <InputText v-model="createTariffGroup.name" placeholder="Tariff Group Name"/>
+    <Checkbox inputId="checkboxActive" v-model="createTariffGroup.active" :binary="true">Active</Checkbox>
+    <label for="checkboxActive" class="ml-2"> Active </label>
 
-    <Button label="Create Tariff Group" @click="createNewTariffGroup()" />
+    <Calendar v-model="createTariffGroup.startDate" placeholder="Start Date"/>
+    <Calendar v-model="createTariffGroup.endDate" placeholder="End Date"/>
+
+    <Button label="Create Tariff Group" @click="createNewTariffGroup()"/>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import Calendar from 'primevue/calendar';
+import Checkbox from 'primevue/checkbox';
+import {ref} from "vue";
 
-import { CreateTariffGroup } from "@/models/ev/createTariffGroup";
+import {CreateTariffGroup} from "@/models/ev/createTariffGroup";
 import {useChargerStore} from "@/store/chargers.store";
 import {useRouter} from "vue-router";
 

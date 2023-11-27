@@ -111,6 +111,12 @@ const routesEv: Array<RouteRecordRaw> = [
     name: subAppName + '_AddTariff',
     component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/AddTariff.vue'),
     props: true,
+  },
+  {
+    path: '/' + subAppName + '/tariffGroups',
+    name: subAppName + '_TariffGroups',
+    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/TariffGroupView.vue'),
+    props: true,
   }
 ];
 

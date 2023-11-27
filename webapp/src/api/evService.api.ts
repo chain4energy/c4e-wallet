@@ -201,7 +201,7 @@ export class EvServiceApi extends BaseApi {
   }
 
   public getTariffs(tgId: number, lockscreen: boolean): Promise<RequestResponse<Tariff[], ErrorData<EvServiceApplicationError>>> {
-    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group/{tgId}/tariff', {tgId});
+    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group/{tgId}/tariff', {tgId: tgId});
     return this.evServiceGetCall<Tariff[], EvServiceApplicationError>(url, lockscreen, "getTariffs");
   }
 
@@ -210,8 +210,9 @@ export class EvServiceApi extends BaseApi {
     return this.evServiceGetCall<Tariff[], EvServiceApplicationError>(url, lockscreen, "getAllTariffs");
   }
 
-  public createTariff(createTariff: CreateTariff, lockscreen: boolean): Promise<RequestResponse<Tariff, ErrorData<EvServiceApplicationError>>> {
-    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group/{tgId}/tariff', createTariff);
+  public createTariff(tgId: number, createTariff: CreateTariff, lockscreen: boolean): Promise<RequestResponse<Tariff, ErrorData<EvServiceApplicationError>>> {
+    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group/{tgId}/tariff', {tgId: tgId});
+    console.log(url)
     return this.evServicePostCall<CreateTariff, Tariff, EvServiceApplicationError>(url, createTariff, lockscreen, "createTariff");
   }
 

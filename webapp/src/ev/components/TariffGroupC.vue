@@ -1,15 +1,15 @@
 <template>
   <Card>
     <template #title>
-      <h3>Name: {{ tariffGroup.name }}</h3>
+      <h3>Tariff group name: {{ tariffGroup.name }}</h3>
     </template>
 
     <template #content>
       <h3>Active: {{ tariffGroup.active }}</h3>
       <h3>Number of tariffs: {{ tariffGroup.tariffs.length }}</h3>
-
+      <Button @click="deleteTariffGroup(tariffGroup.id)">Delete</Button>
       <div v-for="tariff in tariffGroup.tariffs"  :key="tariff.name">
-        <TariffC :tariff="tariff" />
+        <TariffC :tariff="tariff"  :tg-id="tariffGroup.id"/>
       </div>
     </template>
   </Card>
@@ -18,6 +18,9 @@
 <script setup lang="ts">
 import {TariffGroup} from "@/models/ev/tariffGroup";
 import TariffC from "@/ev/components/TariffC.vue";
+import {useChargerStore} from "@/store/chargers.store";
+
+const chargerStore = useChargerStore();
 
 defineProps({
     tariffGroup: {
@@ -26,6 +29,10 @@ defineProps({
     }
   }
 );
+
+const deleteTariffGroup = (id: number) => {
+  chargerStore.deleteTariffGroup(id)
+}
 </script>
 
 <style scoped lang="scss">
