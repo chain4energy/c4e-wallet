@@ -7,7 +7,11 @@ export interface AuthResponse {
   resourceCode: string;
 }
 
-export interface EvServiceApplicationError {
+export interface BaseServiceApplicationError{
+
+}
+
+export interface EvServiceApplicationError extends BaseServiceApplicationError{
   code: number,
   name: string,
   codespace: EvServiceApplicationErrorCodespace,

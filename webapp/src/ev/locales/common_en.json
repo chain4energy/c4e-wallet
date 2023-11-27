@@ -1,0 +1,14 @@
+{
+  "SIGN_IN_VIEW": {
+    "SIGN_UP": "Sign up",
+    "SIGN_IN": "Sign in",
+    "EMAIL": "E-mail address",
+    "PASSWORD": "Type your password",
+    "OLD_PASSWORD": "Type your old password",
+    "RETYPE": "Retype your password",
+    "REGISTER": "Register",
+    "TERMS": "Accept terms and conditions",
+    "CHANGE_PASSWORD": "Change password",
+    "CHANGE_HEADER": "Changing password of: "
+  }
+}
