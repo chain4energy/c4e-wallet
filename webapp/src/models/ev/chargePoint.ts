@@ -18,5 +18,4 @@ export interface ChargePoint{
   tariffGroupId?: number;
   authRequired: boolean;
   chargePointConnectors?: ChargePointConnector[];
-  tariffGroup?: TariffGroup;
 }

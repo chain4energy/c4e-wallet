@@ -30,6 +30,7 @@ import {UpdateTariffGroup} from "@/models/ev/updateTariffGroup";
 import {CreateTariffGroup} from "@/models/ev/createTariffGroup";
 import {TariffGroup} from "@/models/ev/tariffGroup";
 import {ChargePointDict} from "@/models/ev/chargePointDict";
+import {CreateChargePointFromDict} from "@/models/ev/createChargePointFromDict";
 
 
 export class EvServiceApi extends BaseApi {
@@ -138,6 +139,11 @@ export class EvServiceApi extends BaseApi {
     return this.evServicePostCall<CreateChargePoint, ChargePoint, EvServiceApplicationError>(url, createChargePoint, lockscreen, "createChargePoint");
   }
 
+  public createChargePointFromDict(createChargePoint: CreateChargePointFromDict, lockscreen: boolean): Promise<RequestResponse<ChargePoint, ErrorData<EvServiceApplicationError>>> {
+    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point_from_dict';
+    return this.evServicePostCall<CreateChargePointFromDict, ChargePoint, EvServiceApplicationError>(url, createChargePoint, lockscreen, "createChargePointFromDict");
+  }
+
   public updateChargePoint(cpId: string, updateChargePoint: UpdateChargePoint, lockscreen: boolean): Promise<RequestResponse<ChargePoint, ErrorData<EvServiceApplicationError>>> {
     const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}', {cpId});
     return this.evServicePostCall<UpdateChargePoint, ChargePoint, EvServiceApplicationError>(url, updateChargePoint, lockscreen, "updateChargePoint");
@@ -184,8 +190,8 @@ export class EvServiceApi extends BaseApi {
     return this.evServicePostCall<CreateTariffGroup, TariffGroup, EvServiceApplicationError>(url, createTariffGroup, lockscreen, "createTariffGroup");
   }
 
-  public updateTariffGroup(updateTariffGroup: UpdateTariffGroup, lockscreen: boolean): Promise<RequestResponse<TariffGroup, ErrorData<EvServiceApplicationError>>> {
-    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group/{tgId}', updateTariffGroup);
+  public updateTariffGroup(tgId: number, updateTariffGroup: UpdateTariffGroup, lockscreen: boolean): Promise<RequestResponse<TariffGroup, ErrorData<EvServiceApplicationError>>> {
+    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group/{tgId}', {tgId});
     return this.evServicePostCall<UpdateTariffGroup, TariffGroup, EvServiceApplicationError>(url, updateTariffGroup, lockscreen, "updateTariffGroup");
   }
 

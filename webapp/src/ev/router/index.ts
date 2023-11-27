@@ -90,8 +90,7 @@ const routesEv: Array<RouteRecordRaw> = [
     name: subAppName + '_OwnerView',
     component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/OwnerView.vue')
   },
-  ... resetPasswordRoutes
-  },
+  ... resetPasswordRoutes,
   {
     path: '/' + subAppName + '/addCharger',
     name: subAppName + '_AddCharger',
