@@ -1,4 +1,8 @@
 {
+  "COMMON": {
+    "BACK": "Back",
+    "NEXT": "Next"
+  },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Sign up",
     "SIGN_IN": "Sign in",
