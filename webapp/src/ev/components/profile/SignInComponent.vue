@@ -63,7 +63,8 @@ const password = ref<string>();
 
 const props = defineProps({
   authEmailAccountMethod:{
-    type:  Object as PropType<AuthEmailAccountMethod<BaseServiceApplicationError>>,
+    // type:  Object as PropType<AuthEmailAccountMethod<BaseServiceApplicationError>>,
+    type: Function ,
     required: true
   },
 });
@@ -72,7 +73,7 @@ const emit = defineEmits(['onForgotPasswordButton', 'onSuccessLogin', 'onSignUpB
 
 function login(){
   if(email.value && password.value) {
-    props.authEmailAccountMethod.authEmailAccount({login: email.value, password: password.value}, onSuccessAuth);
+    props.authEmailAccountMethod({login: email.value, password: password.value}, onSuccessAuth);
   }
 }
 
