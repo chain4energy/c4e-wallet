@@ -12,25 +12,25 @@ import {
   QrCodeInfoParams,
   StartChargingAnonumousRequest,
   StartChargingAnonumousResponse
-} from "@/models/ev/evServiceCommons";
-import {ChargePointInfo} from "@/models/ev/chargerInfo";
-import {SessionInfo} from "@/models/ev/sessionInfo";
+} from "@/ev/models/evServiceCommons";
+import {ChargePointInfo} from "@/ev/models/chargerInfo";
+import {SessionInfo} from "@/ev/models/sessionInfo";
 import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
 import {AccountInfo} from "@/models/user/accountInfo";
 import {formatString} from "@/utils/string-formatter";
-import {ChargePoint} from "@/models/ev/chargePoint";
-import {CreateChargePoint} from "@/models/ev/createChargePoint";
-import {UpdateChargePoint} from "@/models/ev/updateChargePoint";
-import {UpdateChargePointConnector} from "@/models/ev/updateChargePointConnector";
-import {ChargePointConnector} from "@/models/ev/chargePointConnector";
-import {CreateChargePointConnector} from "@/models/ev/createChargePointConnector";
-import {CreateTariff} from "@/models/ev/createTariff";
-import {Tariff} from "@/models/ev/tariff";
-import {UpdateTariffGroup} from "@/models/ev/updateTariffGroup";
-import {CreateTariffGroup} from "@/models/ev/createTariffGroup";
-import {TariffGroup} from "@/models/ev/tariffGroup";
-import {ChargePointDict} from "@/models/ev/chargePointDict";
-import {CreateChargePointFromDict} from "@/models/ev/createChargePointFromDict";
+import {ChargePoint} from "@/ev/models/chargePoint";
+import {CreateChargePoint} from "@/ev/models/createChargePoint";
+import {UpdateChargePoint} from "@/ev/models/updateChargePoint";
+import {UpdateChargePointConnector} from "@/ev/models/updateChargePointConnector";
+import {ChargePointConnector} from "@/ev/models/chargePointConnector";
+import {CreateChargePointConnector} from "@/ev/models/createChargePointConnector";
+import {CreateTariff} from "@/ev/models/createTariff";
+import {Tariff} from "@/ev/models/tariff";
+import {UpdateTariffGroup} from "@/ev/models/updateTariffGroup";
+import {CreateTariffGroup} from "@/ev/models/createTariffGroup";
+import {TariffGroup} from "@/ev/models/tariffGroup";
+import {ChargePointDict} from "@/ev/models/chargePointDict";
+import {CreateChargePointFromDict} from "@/ev/models/createChargePointFromDict";
 
 
 export class EvServiceApi extends BaseApi {
@@ -53,6 +53,17 @@ export class EvServiceApi extends BaseApi {
   private evServiceEmptyPostCall<T, E>(evServiceUrlPart: string, lockscreen: boolean, logPrefix: string): Promise<RequestResponse<T, ErrorData<E>>> {
     return this.axiosCall<T, E>({
         method: 'POST',
+        url: useConfigurationStore().config.evServiceURL + evServiceUrlPart
+      },
+      lockscreen,
+      null,
+      logPrefix
+    );
+  }
+
+  private evServiceEmptyDeleteCall<T, E>(evServiceUrlPart: string, lockscreen: boolean, logPrefix: string): Promise<RequestResponse<T, ErrorData<E>>> {
+    return this.axiosCall<T, E>({
+        method: 'DELETE',
         url: useConfigurationStore().config.evServiceURL + evServiceUrlPart
       },
       lockscreen,
@@ -151,7 +162,7 @@ export class EvServiceApi extends BaseApi {
 
   public deleteChargePoint(cpId: string, lockscreen: boolean): Promise<RequestResponse<void, ErrorData<EvServiceApplicationError>>> {
     const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}', {cpId});
-    return this.evServiceEmptyPostCall<void, EvServiceApplicationError>(url, lockscreen, "deleteChargePoint");
+    return this.evServiceEmptyDeleteCall<void, EvServiceApplicationError>(url, lockscreen, "deleteChargePoint");
   }
 
   public createChargePointConnector(cpId: string, createChargePointConnector: CreateChargePointConnector, lockscreen: boolean): Promise<RequestResponse<ChargePointConnector, ErrorData<EvServiceApplicationError>>> {
@@ -177,7 +188,7 @@ export class EvServiceApi extends BaseApi {
       cpId,
       connectorId
     });
-    return this.evServiceEmptyPostCall<void, EvServiceApplicationError>(url, lockscreen, "deleteChargePointConnector");
+    return this.evServiceEmptyDeleteCall<void, EvServiceApplicationError>(url, lockscreen, "deleteChargePointConnector");
   }
 
   public getTariffGroups(lockscreen: boolean): Promise<RequestResponse<TariffGroup[], ErrorData<EvServiceApplicationError>>> {
@@ -197,7 +208,7 @@ export class EvServiceApi extends BaseApi {
 
   public deleteTariffGroup(tgId: number, lockscreen: boolean): Promise<RequestResponse<void, ErrorData<EvServiceApplicationError>>> {
     const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group/{tgId}', {tgId});
-    return this.evServiceEmptyPostCall<void, EvServiceApplicationError>(url, lockscreen, "deleteTariffGroup");
+    return this.evServiceEmptyDeleteCall<void, EvServiceApplicationError>(url, lockscreen, "deleteTariffGroup");
   }
 
   public getTariffs(tgId: number, lockscreen: boolean): Promise<RequestResponse<Tariff[], ErrorData<EvServiceApplicationError>>> {
@@ -226,7 +237,7 @@ export class EvServiceApi extends BaseApi {
       tgId,
       tId
     });
-    return this.evServiceEmptyPostCall<void, EvServiceApplicationError>(url, lockscreen, "deleteTariff");
+    return this.evServiceEmptyDeleteCall<void, EvServiceApplicationError>(url, lockscreen, "deleteTariff");
   }
 
   async getTariffGroup(tgId: number, lockscreen: boolean) {

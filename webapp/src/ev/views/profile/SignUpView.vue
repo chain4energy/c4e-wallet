@@ -65,7 +65,7 @@ import {useUserServiceStore} from "@/store/userService.store";
 import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {pattern} from "@/utils/passwordPattern";
-import {useEvStore} from "@/store/ev.store";
+import {useEvStore} from "@/ev/store/ev.store";
 import {goTo_ActivateAccountView, goTo_SignInView} from "@/ev/router/goToRoute";
 
 

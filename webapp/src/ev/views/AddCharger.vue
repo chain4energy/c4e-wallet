@@ -45,11 +45,11 @@
 </template>
 
 <script setup lang="ts">
-import {useChargerStore} from "@/store/chargers.store";
+import {useChargerStore} from "@/ev/store/owner.store";
 import ChargePointDictC from "@/ev/components/ChargePointDictC.vue";
 import TariffGroupC from "@/ev/components/TariffGroupC.vue";
-import {ChargePointDict} from "@/models/ev/chargePointDict";
-import {TariffGroup} from "@/models/ev/tariffGroup";
+import {ChargePointDict} from "@/ev/models/chargePointDict";
+import {TariffGroup} from "@/ev/models/tariffGroup";
 import {useRouter} from "vue-router";
 
 const chargerStore = useChargerStore();

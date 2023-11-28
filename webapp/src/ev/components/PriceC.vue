@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import {PriceInfo} from "@/models/ev/chargerInfo";
+import {PriceInfo} from "@/ev/models/chargerInfo";
   defineProps<{
     priceInfo?: PriceInfo
   }>()

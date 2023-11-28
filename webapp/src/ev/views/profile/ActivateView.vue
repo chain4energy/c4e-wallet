@@ -17,7 +17,7 @@ import {ref} from "vue";
 import {useUserServiceStore} from "@/store/userService.store";
 import {useToast} from "vue-toastification";
 import {useRouter} from "vue-router";
-import {useEvStore} from "@/store/ev.store";
+import {useEvStore} from "@/ev/store/ev.store";
 import {goTo_EvOwnerDashboardView} from "@/ev/router/goToRoute";
 
 const activationCode = ref<string>('');

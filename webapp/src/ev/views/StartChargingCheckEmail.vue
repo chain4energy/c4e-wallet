@@ -4,7 +4,7 @@
   <p>Please check your email</p>
 </template>
 <script setup lang="ts">
-import {useEvStore} from "@/store/ev.store";
+import {useEvStore} from "@/ev/store/ev.store";
 const evStore = useEvStore();
 </script>
 

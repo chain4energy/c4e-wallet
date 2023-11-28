@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import {useRouter} from "vue-router";
-import {useChargerStore} from "@/store/chargers.store";
+import {useChargerStore} from "@/ev/store/owner.store";
 import {onMounted} from "vue";
 import ChargePointC from "@/ev/components/ChargePointC.vue";
 

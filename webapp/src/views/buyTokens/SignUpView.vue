@@ -61,7 +61,7 @@ import {Field, Form} from "vee-validate";
 import {object} from "yup";
 import * as Yup from "yup";
 import {ref} from "vue";
-import {useEvStore} from "@/store/ev.store";
+import {useEvStore} from "@/ev/store/ev.store";
 import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {pattern} from "@/utils/passwordPattern";

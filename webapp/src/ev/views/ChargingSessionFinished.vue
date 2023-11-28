@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import {SessionInfo} from "@/models/ev/sessionInfo";
+import {SessionInfo} from "@/ev/models/sessionInfo";
 
 defineProps({
     sessionInfo: {

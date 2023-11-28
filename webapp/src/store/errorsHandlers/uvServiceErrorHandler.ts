@@ -1,4 +1,4 @@
-import {EvServiceApplicationError, EvServiceApplicationErrorCodespace, EvServiceApplicationErrorName} from "@/models/ev/evServiceCommons";
+import {EvServiceApplicationError, EvServiceApplicationErrorCodespace, EvServiceApplicationErrorName} from "@/ev/models/evServiceCommons";
 import {ErrorData} from "@/api/base.api";
 import {ToastsService} from "@/services/toasts/toasts.service";
 import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";

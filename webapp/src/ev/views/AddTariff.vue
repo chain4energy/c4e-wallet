@@ -21,33 +21,43 @@ import Checkbox from 'primevue/checkbox';
 import Dropdown from 'primevue/dropdown';
 
 import {ref} from 'vue';
-import {useChargerStore} from '@/store/chargers.store';
-import {CreateTariff} from '@/models/ev/createTariff';
+import {useChargerStore} from '@/ev/store/owner.store';
+import {CreateTariff} from '@/ev/models/createTariff';
 import {useRouter} from "vue-router";
+import {Tariff} from "@/ev/models/tariff";
 
 const props = defineProps({
-  tariffGroupId: Number
+  tariffGroupId: Number,
+  isEdit: Boolean,
+  tariff: Object as () => Tariff
 });
-
 
 const chargerStore = useChargerStore();
 const createTariff = ref<CreateTariff>({
-  name: '',
-  accountId: undefined,
-  currency: '',
-  unit: '',
-  unitCost: 0,
-  active: false,
-  startDate: undefined,
-  endDate: undefined
+  name: props.tariff?.name || "",
+  currency: props.tariff?.currency || "",
+  unit: props.tariff?.currency || "",
+  unitCost: props.tariff?.unitCost || 0,
+  active: props.tariff?.active || false,
+  startDate:props.tariff?.startDate,
+  endDate: props.tariff?.endDate,
 });
 
 const router = useRouter();
 
+const onSubmit = async () => {
+  if (props.isEdit && props.tariff) {
+    await chargerStore.updateTariff(props.tariffGroupId, props.tariff.id, createTariff.value, true, () => {
+      router.push("/ev/addCharger");
+    });
+  } else {
+    await createNewTariff();
+  }
+}
 
 const createNewTariff = async () => {
   if (props.tariffGroupId) {
-    await chargerStore.createTariff(props.tariffGroupId, createTariff.value, false, () => {
+    await chargerStore.createTariff(props.tariffGroupId, createTariff.value, true, () => {
       router.push("/ev/addCharger");
     });
   }

@@ -15,8 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import {Tariff} from "@/models/ev/tariff";
-import {useChargerStore} from "@/store/chargers.store";
+import {Tariff} from "@/ev/models/tariff";
+import {useChargerStore} from "@/ev/store/owner.store";
 
 const chargerStore = useChargerStore();
 defineProps({

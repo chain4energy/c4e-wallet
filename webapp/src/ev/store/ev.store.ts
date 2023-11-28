@@ -1,8 +1,8 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {ChargePointInfo} from "@/models/ev/chargerInfo";
+import {ChargePointInfo} from "@/ev/models/chargerInfo";
 import {setAuthTokens} from "axios-jwt";
-import {SessionInfo, SessionState} from "@/models/ev/sessionInfo";
+import {SessionInfo, SessionState} from "@/ev/models/sessionInfo";
 import {routerEv} from "@/ev/router";
 import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
 import {UserServiceContext, UserServiceErrorHandler} from "@/store/errorsHandlers/userServiceErrorHandler";
@@ -10,7 +10,7 @@ import {RequestResponse} from "@/models/request-response";
 import {Jwt} from "@/models/user/jwt";
 import {ErrorData} from "@/api/base.api";
 import {SaleServiceApplicationError} from "@/models/saleServiceCommons";
-import {EvServiceApplicationError, InitPaymentRequest} from "@/models/ev/evServiceCommons";
+import {EvServiceApplicationError, InitPaymentRequest} from "@/ev/models/evServiceCommons";
 import {LoginTypeEnum} from "@/store/userService.store";
 import {EvServiceContext, EvServiceErrorHandler} from "@/store/errorsHandlers/uvServiceErrorHandler";
 

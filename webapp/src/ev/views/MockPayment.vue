@@ -7,12 +7,12 @@
 </template>
 <script setup lang="ts">
 
-import {useEvStore} from "@/store/ev.store";
-import {SessionState} from "@/models/ev/sessionInfo";
+import {useEvStore} from "@/ev/store/ev.store";
+import {SessionState} from "@/ev/models/sessionInfo";
 import {useRouter} from "vue-router";
 import {ref} from "vue";
 import {ErrorData} from "@/api/base.api";
-import {EvServiceApplicationError} from "@/models/ev/evServiceCommons";
+import {EvServiceApplicationError} from "@/ev/models/evServiceCommons";
 
 const errorStr = ref("");
 

@@ -20,9 +20,9 @@
 </template>
 
 <script setup lang="ts">
-import {ChargePoint} from "@/models/ev/chargePoint";
+import {ChargePoint} from "@/ev/models/chargePoint";
 import ChargePointConnectorC from "@/ev/components/ChargePointConnectorC.vue";
-import {useChargerStore} from "@/store/chargers.store";
+import {useChargerStore} from "@/ev/store/owner.store";
 
 const chargeStore = useChargerStore();
 

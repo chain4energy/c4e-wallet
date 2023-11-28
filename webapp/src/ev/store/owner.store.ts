@@ -1,15 +1,15 @@
 import {defineStore} from 'pinia';
 import apiFactory from '@/api/factory.api';
-import {ChargePointDict} from "@/models/ev/chargePointDict";
-import {ChargePoint} from "@/models/ev/chargePoint";
-import {CreateChargePoint} from "@/models/ev/createChargePoint";
-import {UpdateChargePoint} from "@/models/ev/updateChargePoint";
-import {CreateTariffGroup} from "@/models/ev/createTariffGroup";
-import {UpdateTariffGroup} from "@/models/ev/updateTariffGroup";
-import {UpdateChargePointConnector} from "@/models/ev/updateChargePointConnector";
-import {CreateChargePointFromDict} from "@/models/ev/createChargePointFromDict";
-import {TariffGroup} from "@/models/ev/tariffGroup";
-import {CreateTariff} from "@/models/ev/createTariff";
+import {ChargePointDict} from "@/ev/models/chargePointDict";
+import {ChargePoint} from "@/ev/models/chargePoint";
+import {CreateChargePoint} from "@/ev/models/createChargePoint";
+import {UpdateChargePoint} from "@/ev/models/updateChargePoint";
+import {CreateTariffGroup} from "@/ev/models/createTariffGroup";
+import {UpdateTariffGroup} from "@/ev/models/updateTariffGroup";
+import {UpdateChargePointConnector} from "@/ev/models/updateChargePointConnector";
+import {CreateChargePointFromDict} from "@/ev/models/createChargePointFromDict";
+import {TariffGroup} from "@/ev/models/tariffGroup";
+import {CreateTariff} from "@/ev/models/createTariff";
 
 interface ChargerStore {
   chargePoints: ChargePoint[];

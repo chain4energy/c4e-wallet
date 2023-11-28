@@ -15,7 +15,7 @@
 // import {useRouter} from "vue-router";
 import SignInComponent from "@/ev/components/profile/SignInComponent.vue";
 import {goTo_EvOwnerDashboardView, goTo_ResetPasswordView, goTo_SignUpView} from "@/ev/router/goToRoute";
-import {useEvStore} from "@/store/ev.store";
+import {useEvStore} from "@/ev/store/ev.store";
 </script>
 
 <style scoped lang="scss">

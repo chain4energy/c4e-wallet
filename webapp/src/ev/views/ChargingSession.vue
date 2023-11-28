@@ -11,11 +11,11 @@
 
 <script setup lang="ts">
 import {computed, onMounted} from "vue";
-import {useEvStore} from "@/store/ev.store";
+import {useEvStore} from "@/ev/store/ev.store";
 import SessionInfoC from "@/ev/components/SessionInfoC.vue";
 import ChargingSessionFinished from "@/ev/views/ChargingSessionFinished.vue";
 import ChargingSessionCharging from "@/ev/views/ChargingSessionCharging.vue";
-import {SessionState} from "@/models/ev/sessionInfo";
+import {SessionState} from "@/ev/models/sessionInfo";
 
 const evStore = useEvStore();
 

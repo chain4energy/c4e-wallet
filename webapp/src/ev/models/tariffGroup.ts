@@ -1,4 +1,4 @@
-import {Tariff} from "@/models/ev/tariff";
+import {Tariff} from "@/ev/models/tariff";
 
 export interface TariffGroup {
   id: number;

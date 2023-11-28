@@ -34,10 +34,10 @@ import {useRoute, useRouter} from 'vue-router'
 import {computed, ref} from "vue";
 import PriceC from "@/ev/components/PriceC.vue";
 import ChargerInfoC from "@/ev/components/ChargerInfoC.vue";
-import {ChargerStatus, PriceInfo} from "@/models/ev/chargerInfo";
-import {useEvStore} from "@/store/ev.store";
+import {ChargerStatus, PriceInfo} from "@/ev/models/chargerInfo";
+import {useEvStore} from "@/ev/store/ev.store";
 import {ErrorData} from "@/api/base.api";
-import {EvServiceApplicationError} from "@/models/ev/evServiceCommons";
+import {EvServiceApplicationError} from "@/ev/models/evServiceCommons";
 
 const errorStr = ref("");
 

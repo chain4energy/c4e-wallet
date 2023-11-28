@@ -1,123 +1,93 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import {resetPasswordRoutes} from "@/ev/router/resetPasswordRoutes";
+import {ownerRoutes} from "@/ev/router/ownerRoutes";
 
-const subAppName ="ev";
+export const evSubAppName ="ev";
 
 
 const routesEv: Array<RouteRecordRaw> = [
   {
-    path: '/' + subAppName,
+    path: '/' + evSubAppName,
     name: "",
-    redirect: '/' + subAppName + '/infoPage',
+    redirect: '/' + evSubAppName + '/infoPage',
   },
   {
-    path: '/' + subAppName + '/infoPage',
-    name: subAppName + '_InfoPage',
+    path: '/' + evSubAppName + '/infoPage',
+    name: evSubAppName + '_InfoPage',
     component: () => import(/* webpackChunkName: "InfoPage" */ '@/ev/views/InfoPage.vue')
   },
   {
-    path: '/' + subAppName + '/about',
-    name: subAppName + '_About',
+    path: '/' + evSubAppName + '/about',
+    name: evSubAppName + '_About',
     component: () => import(/* webpackChunkName: "AboutView" */ '@/ev/views/AboutView.vue')
   },
   {
-    path: '/' + subAppName + '/resourceLink/:context(.*)*',
-    name: subAppName + '_ResourceLink',
+    path: '/' + evSubAppName + '/resourceLink/:context(.*)*',
+    name: evSubAppName + '_ResourceLink',
     component: () => import(/* webpackChunkName: "ResourceLink" */ '@/ev/views/ResourceLink.vue')
   },
   {
-    path: '/' + subAppName + '/qrCode/:context(.*)*',
-    name: subAppName + '_QrCode',
+    path: '/' + evSubAppName + '/qrCode/:context(.*)*',
+    name: evSubAppName + '_QrCode',
     component: () => import(/* webpackChunkName: "QrCode" */ '@/ev/views/QrCode.vue')
   },
   {
-    path: '/' + subAppName + '/startCharging',
-    name: subAppName + '_StartCharging',
+    path: '/' + evSubAppName + '/startCharging',
+    name: evSubAppName + '_StartCharging',
     component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/StartChargingProvideEmail.vue')
   },
   {
-    path: '/' + subAppName + '/startChargingCheckEmail',
-    name: subAppName + '_StartChargingCheckEmail',
+    path: '/' + evSubAppName + '/startChargingCheckEmail',
+    name: evSubAppName + '_StartChargingCheckEmail',
     component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/StartChargingCheckEmail.vue')
   },
   {
-    path: '/' + subAppName + '/sessionInfo',
-    name: subAppName + '_ChargingSession',
+    path: '/' + evSubAppName + '/sessionInfo',
+    name: evSubAppName + '_ChargingSession',
     component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/ChargingSession.vue')
   },
   {
-    path: '/' + subAppName + '/choosePaymentMethod',
-    name: subAppName + '_ChoosePaymentMethod',
+    path: '/' + evSubAppName + '/choosePaymentMethod',
+    name: evSubAppName + '_ChoosePaymentMethod',
     component: () => import(/* webpackChunkName: "ChoosePaymentMethod" */ '@/ev/views/ChoosePaymentMethod.vue')
   },
   {
-    path: '/' + subAppName + '/waitForPaymentConfirmation',
-    name: subAppName + '_WaitForPaymentConfirmation',
+    path: '/' + evSubAppName + '/waitForPaymentConfirmation',
+    name: evSubAppName + '_WaitForPaymentConfirmation',
     component: () => import(/* webpackChunkName: "WaitForPaymentConfirmation" */ '@/ev/views/WaitForPaymentConfirmation.vue')
   },
   {
-    path: '/' + subAppName + '/startChargingSession',
-    name: subAppName + '_StartChargingSession',
+    path: '/' + evSubAppName + '/startChargingSession',
+    name: evSubAppName + '_StartChargingSession',
     component: () => import(/* webpackChunkName: "StartChargingSession" */ '@/ev/views/StartChargingSession.vue')
   },
   {
-    path: '/' + subAppName + '/paymentRejected',
-    name: subAppName + '_PaymentRejected',
+    path: '/' + evSubAppName + '/paymentRejected',
+    name: evSubAppName + '_PaymentRejected',
     component: () => import(/* webpackChunkName: "PaymentRejected" */ '@/ev/views/PaymentRejected.vue')
   },
   {
-    path: '/' + subAppName + '/mockPayment',
-    name: subAppName + '_MockPayment',
+    path: '/' + evSubAppName + '/mockPayment',
+    name: evSubAppName + '_MockPayment',
     component: () => import(/* webpackChunkName: "MockPayment" */ '@/ev/views/MockPayment.vue')
   },
   {
-    path: '/' + subAppName + '/signIn',
-    name: subAppName + '_SignInView',
+    path: '/' + evSubAppName + '/signIn',
+    name: evSubAppName + '_SignInView',
     component: () => import(/* webpackChunkName: "SignInView" */ '@/ev/views/profile/SignInView.vue')
   },
   {
-    path: '/' + subAppName + '/signUp',
-    name: subAppName + '_SignUpView',
+    path: '/' + evSubAppName + '/signUp',
+    name: evSubAppName + '_SignUpView',
     component: () => import(/* webpackChunkName: "SignUpView" */ '@/ev/views/profile/SignUpView.vue')
   },
   {
-    path: '/' + subAppName + '/activate',
-    name: subAppName + '_Activate',
+    path: '/' + evSubAppName + '/activate',
+    name: evSubAppName + '_Activate',
     component: () => import(/* webpackChunkName: "ActivateView" */ '@/ev/views/profile/ActivateView.vue')
   },
-  {
-    path: '/' + subAppName + '/owner',
-    name: subAppName + '_OwnerView',
-    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/OwnerView.vue')
-  },
   ... resetPasswordRoutes,
-  {
-    path: '/' + subAppName + '/addCharger',
-    name: subAppName + '_AddCharger',
-    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/AddCharger.vue')
-  },
-  {
-    path: '/' + subAppName + '/singleCharger/:id',
-    name: subAppName + '_SingleCharger',
-    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/SingleCharger.vue')
-  },
-  {
-    path: '/' + subAppName + '/addTariffGroup',
-    name: subAppName + '_AddTariffGroup',
-    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/AddTariffGroup.vue')
-  },
-  {
-    path: '/' + subAppName + '/addTariff/:tariffGroupId',
-    name: subAppName + '_AddTariff',
-    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/AddTariff.vue'),
-    props: true,
-  },
-  {
-    path: '/' + subAppName + '/tariffGroups',
-    name: subAppName + '_TariffGroups',
-    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/TariffGroupView.vue'),
-    props: true,
-  }
+  ...ownerRoutes
 ];
 
 export const routerEv = createRouter({

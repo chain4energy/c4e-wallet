@@ -15,7 +15,7 @@ import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
 import {useRouter} from "vue-router";
 import {useUserServiceStore} from "@/store/userService.store";
-import {EvServiceApi} from "@/api/evService.api";
+import {EvServiceApi} from "@/ev/api/evService.api";
 
 let testfileName = '';
 

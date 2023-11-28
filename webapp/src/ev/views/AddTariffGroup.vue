@@ -17,8 +17,8 @@ import Calendar from 'primevue/calendar';
 import Checkbox from 'primevue/checkbox';
 import {ref} from "vue";
 
-import {CreateTariffGroup} from "@/models/ev/createTariffGroup";
-import {useChargerStore} from "@/store/chargers.store";
+import {CreateTariffGroup} from "@/ev/models/createTariffGroup";
+import {useChargerStore} from "@/ev/store/owner.store";
 import {useRouter} from "vue-router";
 
 const chargerStore = useChargerStore();

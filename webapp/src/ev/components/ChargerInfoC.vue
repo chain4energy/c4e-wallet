@@ -14,7 +14,7 @@
 
 
 <script setup lang="ts">
-import {ChargePointInfo, ChargerStatus} from "@/models/ev/chargerInfo";
+import {ChargePointInfo, ChargerStatus} from "@/ev/models/chargerInfo";
 
 defineProps({
   chargePointInfo: {

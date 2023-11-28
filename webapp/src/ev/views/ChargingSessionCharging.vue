@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import {SessionInfo} from "@/models/ev/sessionInfo";
+import {SessionInfo} from "@/ev/models/sessionInfo";
 import StartStopButton from "@/ev/views/StartStopButton.vue";
 import {useRouter} from "vue-router";
 

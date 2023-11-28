@@ -16,9 +16,9 @@
 </template>
 
 <script setup lang="ts">
-import {TariffGroup} from "@/models/ev/tariffGroup";
+import {TariffGroup} from "@/ev/models/tariffGroup";
 import TariffC from "@/ev/components/TariffC.vue";
-import {useChargerStore} from "@/store/chargers.store";
+import {useChargerStore} from "@/ev/store/owner.store";
 
 const chargerStore = useChargerStore();
 

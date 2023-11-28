@@ -21,10 +21,10 @@
 import * as Yup from "yup";
 import {object} from "yup";
 import {Field, Form} from "vee-validate";
-import {useEvStore} from "@/store/ev.store";
+import {useEvStore} from "@/ev/store/ev.store";
 import {useRouter} from "vue-router";
 import {ErrorData} from "@/api/base.api";
-import {EvServiceApplicationError} from "@/models/ev/evServiceCommons";
+import {EvServiceApplicationError} from "@/ev/models/evServiceCommons";
 import {ref} from "vue";
 // const email = ref<string>();
 const router = useRouter()

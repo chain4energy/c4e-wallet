@@ -13,10 +13,10 @@
 
 <script setup lang="ts">
 import {useRouter} from "vue-router";
-import {useEvStore} from "@/store/ev.store";
+import {useEvStore} from "@/ev/store/ev.store";
 import {ref} from "vue";
 import {ErrorData} from "@/api/base.api";
-import {EvServiceApplicationError} from "@/models/ev/evServiceCommons";
+import {EvServiceApplicationError} from "@/ev/models/evServiceCommons";
 
 const errorStr = ref("");
 

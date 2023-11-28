@@ -1,5 +1,5 @@
-import {ChargePointConnector} from "@/models/ev/chargePointConnector";
-import {TariffGroup} from "@/models/ev/tariffGroup";
+import {ChargePointConnector} from "@/ev/models/chargePointConnector";
+import {TariffGroup} from "@/ev/models/tariffGroup";
 
 export interface ChargePoint{
   id: string;

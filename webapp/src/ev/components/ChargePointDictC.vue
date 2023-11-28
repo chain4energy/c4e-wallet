@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import {ChargePointDict} from "@/models/ev/chargePointDict";
+import {ChargePointDict} from "@/ev/models/chargePointDict";
 
 defineProps({
     chargePointDict: {

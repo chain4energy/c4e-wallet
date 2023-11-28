@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import {useChargerStore} from "@/store/chargers.store";
+import {useChargerStore} from "@/ev/store/owner.store";
 import TariffGroupC from "@/ev/components/TariffGroupC.vue";
 import {useRouter} from "vue-router";
 

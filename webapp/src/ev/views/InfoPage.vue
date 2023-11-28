@@ -30,7 +30,7 @@
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import ChargerInfoC from "@/ev/components/ChargerInfoC.vue";
-import {ChargerInfo, ChargerStatus, ConnectorType, PriceInfo} from "@/models/ev/chargerInfo";
+import {ChargerInfo, ChargerStatus, ConnectorType, PriceInfo} from "@/ev/models/chargerInfo";
 import PriceC from "@/ev/components/PriceC.vue";
 
 const resourceId = ref('');
