@@ -38,10 +38,8 @@
         </Button>
       </div>
     </div>
-    <Button @click="addNewTariffGroup()">Add new tariff group</Button>
+    <Button @click="goTo_AddTariffGroupView()">Add new tariff group</Button>
   </div>
-
-
 </template>
 
 <script setup lang="ts">
@@ -50,10 +48,9 @@ import ChargePointDictC from "@/ev/components/ChargePointDictC.vue";
 import TariffGroupC from "@/ev/components/TariffGroupC.vue";
 import {ChargePointDict} from "@/ev/models/chargePointDict";
 import {TariffGroup} from "@/ev/models/tariffGroup";
-import {useRouter} from "vue-router";
+import {goTo_AddTariffGroupView, goTo_EvOwnerDashboardView} from "@/ev/router/goToRoute";
 
 const chargerStore = useChargerStore();
-const router = useRouter()
 
 const selectChargePointDict = (chargePointDict: ChargePointDict) => {
   chargerStore.selectedChargePointDict = chargePointDict
@@ -63,14 +60,8 @@ const selectTariffGroup = (tariffGroup: TariffGroup) => {
   chargerStore.selectedTariffGroup = tariffGroup
 }
 
-const addNewTariffGroup = () => {
-  router.push('/ev/addTariffGroup');
-}
-
 const createChargerFromDict = () => {
-  chargerStore.createChargePointFromDictFn(true, () => {
-    router.push("/ev/owner");
-  })
+  chargerStore.createChargePointFromDictFn(true, goTo_EvOwnerDashboardView)
 };
 </script>
 

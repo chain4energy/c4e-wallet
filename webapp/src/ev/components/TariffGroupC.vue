@@ -8,6 +8,7 @@
       <h3>Active: {{ tariffGroup.active }}</h3>
       <h3>Number of tariffs: {{ tariffGroup.tariffs.length }}</h3>
       <Button @click="deleteTariffGroup(tariffGroup.id)">Delete</Button>
+      <Button @click="goTo_AddTariffView(tariffGroup.id)">Add tariff to this group</Button>
       <div v-for="tariff in tariffGroup.tariffs"  :key="tariff.name">
         <TariffC :tariff="tariff"  :tg-id="tariffGroup.id"/>
       </div>
@@ -19,6 +20,7 @@
 import {TariffGroup} from "@/ev/models/tariffGroup";
 import TariffC from "@/ev/components/TariffC.vue";
 import {useChargerStore} from "@/ev/store/owner.store";
+import {goTo_AddTariffView} from "@/ev/router/goToRoute";
 
 const chargerStore = useChargerStore();
 

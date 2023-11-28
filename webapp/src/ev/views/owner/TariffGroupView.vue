@@ -7,19 +7,15 @@
       <TariffGroupC :tariff-group="tariffGroup"/>
     </div>
   </div>
-  <Button @click="addNewTariffGroup()">Add new tariff group</Button>
+  <Button @click="goTo_AddTariffGroupView()">Add new tariff group</Button>
 </template>
 
 <script setup lang="ts">
 import {useChargerStore} from "@/ev/store/owner.store";
 import TariffGroupC from "@/ev/components/TariffGroupC.vue";
-import {useRouter} from "vue-router";
+import {goTo_AddTariffGroupView} from "@/ev/router/goToRoute";
 
 const chargerStore = useChargerStore();
-const router = useRouter()
-const addNewTariffGroup = () => {
-  router.push('/ev/addTariffGroup');
-}
 
 </script>
 

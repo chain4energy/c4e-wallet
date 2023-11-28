@@ -10,6 +10,7 @@
       <h3>Start date: {{ tariff.startDate }}</h3>
       <h3>End date: {{ tariff.endDate }}</h3>
       <Button @click="deleteTariff(tgId, tariff.id)">Delete</Button>
+      <Button @click="goTo_UpdateTariffView(tgId, tariff.id)">Update</Button>
     </template>
   </Card>
 </template>
@@ -17,6 +18,7 @@
 <script setup lang="ts">
 import {Tariff} from "@/ev/models/tariff";
 import {useChargerStore} from "@/ev/store/owner.store";
+import {goTo_UpdateTariffView} from "@/ev/router/goToRoute";
 
 const chargerStore = useChargerStore();
 defineProps({

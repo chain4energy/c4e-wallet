@@ -10,7 +10,7 @@
     <Calendar v-model="createTariff.startDate" placeholder="Start Date"/>
     <Calendar v-model="createTariff.endDate" placeholder="End Date"/>
 
-    <Button label="Create Tariff" @click="createNewTariff()"/>
+    <Button label="Create Tariff" @click="onSubmit()"/>
   </div>
 </template>
 
@@ -23,33 +23,38 @@ import Dropdown from 'primevue/dropdown';
 import {ref} from 'vue';
 import {useChargerStore} from '@/ev/store/owner.store';
 import {CreateTariff} from '@/ev/models/createTariff';
-import {useRouter} from "vue-router";
 import {Tariff} from "@/ev/models/tariff";
+import {goTo_AddChargerView} from "@/ev/router/goToRoute";
 
 const props = defineProps({
-  tariffGroupId: Number,
-  isEdit: Boolean,
-  tariff: Object as () => Tariff
+  tariffGroupId: {
+    type: Number,
+    required: true
+  },
+  isEdit: {
+    type: Boolean,
+    default: false
+  },
+  tariff: {
+    type: Object as () => Tariff,
+  }
 });
 
 const chargerStore = useChargerStore();
+
 const createTariff = ref<CreateTariff>({
   name: props.tariff?.name || "",
   currency: props.tariff?.currency || "",
   unit: props.tariff?.currency || "",
   unitCost: props.tariff?.unitCost || 0,
   active: props.tariff?.active || false,
-  startDate:props.tariff?.startDate,
+  startDate: props.tariff?.startDate,
   endDate: props.tariff?.endDate,
 });
 
-const router = useRouter();
-
 const onSubmit = async () => {
-  if (props.isEdit && props.tariff) {
-    await chargerStore.updateTariff(props.tariffGroupId, props.tariff.id, createTariff.value, true, () => {
-      router.push("/ev/addCharger");
-    });
+  if (props.isEdit) {
+    await updateTariff();
   } else {
     await createNewTariff();
   }
@@ -57,11 +62,16 @@ const onSubmit = async () => {
 
 const createNewTariff = async () => {
   if (props.tariffGroupId) {
-    await chargerStore.createTariff(props.tariffGroupId, createTariff.value, true, () => {
-      router.push("/ev/addCharger");
-    });
+    await chargerStore.createTariff(props.tariffGroupId, createTariff.value, true, goTo_AddChargerView);
   }
 };
+
+const updateTariff = async () => {
+  if (props.tariffGroupId && props.tariff) {
+    await chargerStore.updateTariff(props.tariffGroupId, props.tariff.id, createTariff.value, true, goTo_AddChargerView);
+  }
+};
+
 </script>
 
 <style scoped lang="scss">

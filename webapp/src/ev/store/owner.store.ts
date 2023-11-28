@@ -163,7 +163,7 @@ export const useChargerStore = defineStore({
       }
     },
 
-    async updateTariff(tgId: number, tId: number, updateTariff: UpdateTariff, lockscreen = true) {
+    async updateTariff(tgId: number, tId: number, updateTariff: UpdateTariff, lockscreen = true, onSuccess: () => void) {
       const response = await apiFactory.evServiceApi().updateTariff(updateTariff, lockscreen);
       if (response.isSuccess() && response.data) {
         const tgIndex = this.tariffGroups.findIndex(tg => tg.id === tgId);
@@ -173,6 +173,7 @@ export const useChargerStore = defineStore({
             this.tariffGroups[tgIndex].tariffs[tariffIndex] = response.data;
           }
         }
+        onSuccess()
       }
     },
 

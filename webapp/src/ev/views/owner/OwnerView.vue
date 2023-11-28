@@ -8,31 +8,21 @@
     </div>
   </div>
 
-  <Button @click="addCharger()">Add new charger</Button>
-  <Button @click="showTariffGroups()">Tariffs</Button>
+  <Button @click="goTo_AddChargerView()">Add new charger</Button>
+  <Button @click="goTo_TariffGroupsView()">Tariffs</Button>
 </template>
 
 <script setup lang="ts">
-import {useRouter} from "vue-router";
 import {useChargerStore} from "@/ev/store/owner.store";
 import {onMounted} from "vue";
 import ChargePointC from "@/ev/components/ChargePointC.vue";
+import {goTo_AddChargerView, goTo_TariffGroupsView} from "@/ev/router/goToRoute";
 
-const router = useRouter()
 const chargerStore = useChargerStore();
-
-
-const addCharger = () => {
-  router.push('/ev/addCharger')
-}
 
 onMounted(async () => {
   await chargerStore.fetchAllChargeStoreData();
 })
-
-const showTariffGroups = () => {
-  router.push('/ev/tariffGroups')
-}
 
 </script>
 <style lang="scss" scoped>
