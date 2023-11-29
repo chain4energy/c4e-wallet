@@ -9,15 +9,14 @@
       <h3>Identifier: {{ chargePointConnector.identifier }}</h3>
       <h3>Charge point id: {{ chargePointConnector.id}}</h3>
       <h3>Error code: {{ chargePointConnector.errorCode}}</h3>
-      <Button @click="deleteChargePointConnector(cpId, chargePointConnector.identifier)">Delete</Button>
     </template>
   </Card>
 </template>
 <script setup lang="ts">
 import {ChargePointConnector} from "@/ev/models/chargePointConnector";
-import {useChargerStore} from "@/ev/store/owner.store";
+import {useOwnerStore} from "@/ev/store/owner.store";
 
-const chargeStore = useChargerStore();
+const chargeStore = useOwnerStore();
 
 defineProps({
     chargePointConnector: {

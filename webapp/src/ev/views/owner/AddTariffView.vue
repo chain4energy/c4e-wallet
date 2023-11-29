@@ -1,4 +1,5 @@
 <template>
+  <h2>Add new tariff</h2>
   <AddTariffC :tariff-group-id="tariffGroupId"/>
 </template>
 

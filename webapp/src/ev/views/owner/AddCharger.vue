@@ -19,49 +19,61 @@
     <InputText v-model="chargerStore.createChargePointFromDict.id" placeholder="Charger ID"/>
     <InputText v-model="chargerStore.createChargePointFromDict.name" placeholder="Charger Name"/>
     <InputText v-model="chargerStore.createChargePointFromDict.identificationCode" placeholder="Identification Code"/>
+
+    <div class="p-fluid">
+      <InputText v-model="createTariffForChargePoint.name" placeholder="Tariff Name"/>
+      <Dropdown v-model="createTariffForChargePoint.currency" placeholder="Select currency" :options="['PLN', 'EUR']"/>
+      <Dropdown v-model="createTariffForChargePoint.unit" placeholder="Select unit" :options="['Wh', 'kWh']"/>
+      <InputText v-model="createTariffForChargePoint.unitCost" placeholder="Unit Cost"/>
+      <Calendar v-model="createTariffForChargePoint.startDate" placeholder="Start Date"/>
+      <Calendar v-model="createTariffForChargePoint.endDate" placeholder="End Date"/>
+    </div>
+
     <Button @click="createChargerFromDict()">Add charger</Button>
   </div>
 
   <div v-if="chargerStore.selectedChargePointDict">
-    <div v-if="chargerStore.getTariffGroups?.length === 0">
-      <h2>No tariff groups found</h2>
-    </div>
-    <div v-if="chargerStore.getTariffGroups?.length > 0">
-      <h2>Select tariff group</h2>
-      <div class="selectCharger" v-for="tariffGroup in chargerStore.getTariffGroups" :key="tariffGroup.name">
-        <TariffGroupC :tariff-group="tariffGroup"/>
-        <Button @click="selectTariffGroup(tariffGroup)" v-if="chargerStore.selectedTariffGroup?.id !== tariffGroup.id">
-          Select
-        </Button>
-        <Button class="selected" @click="selectTariffGroup(tariffGroup)"
-                v-if="chargerStore.selectedTariffGroup?.id === tariffGroup.id">Selected
-        </Button>
-      </div>
-    </div>
-    <Button @click="goTo_AddTariffGroupView()">Add new tariff group</Button>
+    <Button @click="goTo_AddTariffForChargePointView()">Add new tariff</Button>
   </div>
 </template>
 
 <script setup lang="ts">
-import {useChargerStore} from "@/ev/store/owner.store";
+import {useOwnerStore} from "@/ev/store/owner.store";
 import ChargePointDictC from "@/ev/components/ChargePointDictC.vue";
 import TariffGroupC from "@/ev/components/TariffGroupC.vue";
 import {ChargePointDict} from "@/ev/models/chargePointDict";
 import {TariffGroup} from "@/ev/models/tariffGroup";
-import {goTo_AddTariffGroupView, goTo_EvOwnerDashboardView} from "@/ev/router/goToRoute";
+import {
+  goTo_AddTariffForChargePointView,
+  goTo_AddTariffGroupView, goTo_ChargePointView,
+  goTo_EvOwnerDashboardView
+} from "@/ev/router/goToRoute";
+import Button from "primevue/button";
+import InputText from "primevue/inputtext";
+import Dropdown from "primevue/dropdown";
+import Calendar from "primevue/calendar";
+import {ref} from "vue";
+import {CreateTariffForChargePoint} from "@/ev/models/createTariffForChargePoint";
 
-const chargerStore = useChargerStore();
+const chargerStore = useOwnerStore();
 
 const selectChargePointDict = (chargePointDict: ChargePointDict) => {
   chargerStore.selectedChargePointDict = chargePointDict
 }
 
-const selectTariffGroup = (tariffGroup: TariffGroup) => {
-  chargerStore.selectedTariffGroup = tariffGroup
-}
+const createTariffForChargePoint = ref<CreateTariffForChargePoint>({
+  accountId: undefined,
+  currency: "",
+  name: "",
+  unit: "",
+  unitCost: "",
+});
 
-const createChargerFromDict = () => {
-  chargerStore.createChargePointFromDictFn(true, goTo_EvOwnerDashboardView)
+const createChargerFromDict = async () => {
+  await chargerStore.createChargePointFromDictFn(true)
+  if (chargerStore.selectedChargePoint) {
+    await chargerStore.createTariffForChargePoint(chargerStore.selectedChargePoint.id, createTariffForChargePoint.value, true, goTo_ChargePointView)
+  }
 };
 </script>
 

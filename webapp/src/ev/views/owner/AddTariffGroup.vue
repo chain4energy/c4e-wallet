@@ -18,10 +18,10 @@ import Checkbox from 'primevue/checkbox';
 import {ref} from "vue";
 
 import {CreateTariffGroup} from "@/ev/models/createTariffGroup";
-import {useChargerStore} from "@/ev/store/owner.store";
+import {useOwnerStore} from "@/ev/store/owner.store";
 import {useRouter} from "vue-router";
 
-const chargerStore = useChargerStore();
+const chargerStore = useOwnerStore();
 
 const createTariffGroup = ref<CreateTariffGroup>({
   name: '',

@@ -1,26 +1,11 @@
 <template>
-  <AddTariffC :tariff-group-id="tariffGroupId" :is-edit="true"/>
+  <h2>Update tariff</h2>
+  <AddTariffC :is-edit="true" @on-success="goTo_TariffGroupsView()"/>
 </template>
 
 <script setup lang="ts">
 import AddTariffC from "@/ev/components/AddTariffC.vue";
-import {useRoute} from "vue-router";
-
-const route = useRoute();
-
-const props = defineProps({
-  tariffGroupId: {
-    type: Number,
-    required: true
-  },
-  tariffId: {
-    type: Number,
-    required: true
-  }
-});
-
-console.log(props.tariffGroupId);
-console.log(props.tariffId);
+import {goTo_TariffGroupsView} from "@/ev/router/goToRoute";
 
 </script>
 

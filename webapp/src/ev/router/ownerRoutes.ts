@@ -12,9 +12,9 @@ export const ownerRoutes = [
     component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/owner/AddCharger.vue')
   },
   {
-    path: '/' + evSubAppName + '/singleCharger/:id',
-    name: evSubAppName + '_SingleCharger',
-    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/SingleCharger.vue')
+    path: '/' + evSubAppName + '/chargePoint',
+    name: evSubAppName + '_ChargePoint',
+    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/owner/ChargePointView.vue')
   },
   {
     path: '/' + evSubAppName + '/addTariffGroup',
@@ -34,12 +34,15 @@ export const ownerRoutes = [
     props: true,
   },
   {
-    path: '/' + evSubAppName + '/updateTariff/:tariffGroupId/:tariffId',
+    path: '/' + evSubAppName + '/updateTariff',
     name: evSubAppName + '_UpdateTariff',
     component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/owner/UpdateTariffView.vue'),
-    props: {
-      header: true,
-      content: true
-    },
+    props: true,
+  },
+  {
+    path: '/' + evSubAppName + '/addTariffForChargePoint',
+    name: evSubAppName + '_AddTariffForChargePoint',
+    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/owner/AddTariffForChargePointView.vue'),
+    props: true,
   }
 ];

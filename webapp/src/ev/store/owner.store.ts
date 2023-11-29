@@ -10,26 +10,32 @@ import {UpdateChargePointConnector} from "@/ev/models/updateChargePointConnector
 import {CreateChargePointFromDict} from "@/ev/models/createChargePointFromDict";
 import {TariffGroup} from "@/ev/models/tariffGroup";
 import {CreateTariff} from "@/ev/models/createTariff";
+import {Tariff} from "@/ev/models/tariff";
+import {CreateTariffForChargePoint} from "@/ev/models/createTariffForChargePoint";
 
-interface ChargerStore {
+interface OwnerStore {
+  selectedTariff: Tariff | null;
   chargePoints: ChargePoint[];
   chargePointDicts: ChargePointDict[];
   tariffGroups: TariffGroup[];
   selectedChargePointDict: ChargePointDict | null;
   selectedTariffGroup: TariffGroup | null;
-  createChargePointFromDict: CreateChargePointFromDict
+  createChargePointFromDict: CreateChargePointFromDict,
+  selectedChargePoint: ChargePoint | null;
 }
 
-export const useChargerStore = defineStore({
-  id: 'chargerStore',
+export const useOwnerStore = defineStore({
+  id: 'ownerStore',
 
-  state: (): ChargerStore => ({
+  state: (): OwnerStore => ({
     chargePoints: [],
     chargePointDicts: [],
     tariffGroups: [],
     createChargePointFromDict: {} as CreateChargePointFromDict,
     selectedChargePointDict: null,
     selectedTariffGroup: null,
+    selectedChargePoint: null,
+    selectedTariff: null,
   }),
 
   actions: {
@@ -69,16 +75,17 @@ export const useChargerStore = defineStore({
       }
     },
 
-    async createChargePointFromDictFn(lockscreen = true, onSuccess: (() => void)) {
+    async createChargePointFromDictFn(lockscreen = true, onSuccess?: (() => void)) {
       this.createChargePointFromDict.sourceChargePointDictId = this.selectedChargePointDict?.id;
-      this.createChargePointFromDict.tariffGroupId = this.selectedTariffGroup?.id;
       const response = await apiFactory.evServiceApi().createChargePointFromDict(this.createChargePointFromDict, lockscreen);
       if (response.isSuccess() && response.data) {
         this.chargePoints.push(response.data);
+        this.selectedChargePoint = response.data;
         this.createChargePointFromDict = {} as CreateChargePointFromDict;
         this.selectedChargePointDict = null;
-        this.selectedTariffGroup = null;
-        onSuccess();
+        if (onSuccess) {
+          onSuccess();
+        }
       }
     },
 
@@ -164,7 +171,8 @@ export const useChargerStore = defineStore({
     },
 
     async updateTariff(tgId: number, tId: number, updateTariff: UpdateTariff, lockscreen = true, onSuccess: () => void) {
-      const response = await apiFactory.evServiceApi().updateTariff(updateTariff, lockscreen);
+     console.log(tgId, tId, updateTariff)
+      const response = await apiFactory.evServiceApi().updateTariff(tgId, tId, updateTariff, lockscreen);
       if (response.isSuccess() && response.data) {
         const tgIndex = this.tariffGroups.findIndex(tg => tg.id === tgId);
         if (tgIndex !== -1) {
@@ -184,6 +192,27 @@ export const useChargerStore = defineStore({
         if (tgIndex !== -1) {
           this.tariffGroups[tgIndex].tariffs = this.tariffGroups[tgIndex].tariffs.filter(t => t.id !== tId);
         }
+      }
+    },
+
+    async createTariffForChargePoint(cpId: string, createTariffForChargePointDto: CreateTariffForChargePoint, lockscreen = true, onSuccess: () => void) {
+      const response = await apiFactory.evServiceApi().createTariffForChargePoint(cpId, createTariffForChargePointDto, lockscreen);
+      if (response.isSuccess() && response.data) {
+        const newTariff = response.data.tariff;
+        const newTariffGroup = response.data.tariffGroup;
+
+        if (newTariffGroup) {
+          newTariffGroup.tariffs = [newTariff];
+          this.tariffGroups.push(newTariffGroup);
+        }
+
+        const cpIndex = this.chargePoints.findIndex(cp => cp.id === cpId);
+        if (cpIndex !== -1) {
+          this.chargePoints[cpIndex].tariffGroupId = newTariffGroup.id;
+          await this.updateChargePoint(cpId, { ...this.chargePoints[cpIndex], tariffGroupId: newTariffGroup.id });
+        }
+
+        onSuccess();
       }
     },
 
@@ -218,6 +247,22 @@ export const useChargerStore = defineStore({
       if (response.isSuccess() && response.data) {
         this.chargePointDicts = response.data;
       }
+    },
+
+    getTariffForChargePoint(cpId: string) {
+      const chargePoint = this.chargePoints.find(cp => cp.id === cpId);
+      if (!chargePoint || chargePoint.tariffGroupId === undefined) return null;
+
+      const tariffGroup = this.tariffGroups.find(tg => tg.id === chargePoint.tariffGroupId);
+      if (!tariffGroup || !tariffGroup.tariffs) return null;
+
+      const now = new Date();
+
+      return tariffGroup.tariffs.find(tariff =>
+        tariff.active &&
+        (!tariff.startDate || new Date(tariff.startDate) <= now) &&
+        (!tariff.endDate || new Date(tariff.endDate) >= now)
+      );
     },
   },
 

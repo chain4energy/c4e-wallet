@@ -1,5 +1,4 @@
 <template>
-  <h2>Add new tariff</h2>
   <div class="p-fluid">
     <InputText v-model="createTariff.name" placeholder="Tariff Name"/>
     <Dropdown v-model="createTariff.currency" placeholder="Select currency" :options="['PLN', 'EUR']"/>
@@ -21,38 +20,32 @@ import Checkbox from 'primevue/checkbox';
 import Dropdown from 'primevue/dropdown';
 
 import {ref} from 'vue';
-import {useChargerStore} from '@/ev/store/owner.store';
+import {useOwnerStore} from '@/ev/store/owner.store';
 import {CreateTariff} from '@/ev/models/createTariff';
-import {Tariff} from "@/ev/models/tariff";
-import {goTo_AddChargerView} from "@/ev/router/goToRoute";
 
 const props = defineProps({
-  tariffGroupId: {
-    type: Number,
-    required: true
-  },
   isEdit: {
     type: Boolean,
     default: false
   },
-  tariff: {
-    type: Object as () => Tariff,
-  }
 });
 
-const chargerStore = useChargerStore();
+const emit = defineEmits(['onSuccess'])
+
+const chargerStore = useOwnerStore();
 
 const createTariff = ref<CreateTariff>({
-  name: props.tariff?.name || "",
-  currency: props.tariff?.currency || "",
-  unit: props.tariff?.currency || "",
-  unitCost: props.tariff?.unitCost || 0,
-  active: props.tariff?.active || false,
-  startDate: props.tariff?.startDate,
-  endDate: props.tariff?.endDate,
+  name: chargerStore.selectedTariff?.name || "",
+  currency: chargerStore.selectedTariff?.currency || "",
+  unit: chargerStore.selectedTariff?.currency || "",
+  unitCost: chargerStore.selectedTariff?.unitCost || 0,
+  active: chargerStore.selectedTariff?.active || false,
+  startDate: chargerStore.selectedTariff?.startDate,
+  endDate: chargerStore.selectedTariff?.endDate,
 });
 
 const onSubmit = async () => {
+  console.log(props.isEdit)
   if (props.isEdit) {
     await updateTariff();
   } else {
@@ -61,14 +54,21 @@ const onSubmit = async () => {
 }
 
 const createNewTariff = async () => {
-  if (props.tariffGroupId) {
-    await chargerStore.createTariff(props.tariffGroupId, createTariff.value, true, goTo_AddChargerView);
+  if (chargerStore.selectedTariffGroup) {
+    await chargerStore.createTariff(chargerStore.selectedTariffGroup.id, createTariff.value, true, () => {
+      emit ('onSuccess')
+    });
   }
 };
 
 const updateTariff = async () => {
-  if (props.tariffGroupId && props.tariff) {
-    await chargerStore.updateTariff(props.tariffGroupId, props.tariff.id, createTariff.value, true, goTo_AddChargerView);
+  if (chargerStore.selectedTariff) {
+    console.log(chargerStore.selectedTariff)
+    console.log(chargerStore.selectedTariff.tariffGroupId)
+    console.log(chargerStore.selectedTariff.id)
+    await chargerStore.updateTariff(chargerStore.selectedTariff.tariffGroupId, chargerStore.selectedTariff.id, createTariff.value, true, () => {
+      emit ('onSuccess')
+    });
   }
 };
 

@@ -9,16 +9,15 @@
   </div>
 
   <Button @click="goTo_AddChargerView()">Add new charger</Button>
-  <Button @click="goTo_TariffGroupsView()">Tariffs</Button>
 </template>
 
 <script setup lang="ts">
-import {useChargerStore} from "@/ev/store/owner.store";
+import {useOwnerStore} from "@/ev/store/owner.store";
 import {onMounted} from "vue";
 import ChargePointC from "@/ev/components/ChargePointC.vue";
 import {goTo_AddChargerView, goTo_TariffGroupsView} from "@/ev/router/goToRoute";
 
-const chargerStore = useChargerStore();
+const chargerStore = useOwnerStore();
 
 onMounted(async () => {
   await chargerStore.fetchAllChargeStoreData();

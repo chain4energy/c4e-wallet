@@ -19,10 +19,10 @@
 <script setup lang="ts">
 import {TariffGroup} from "@/ev/models/tariffGroup";
 import TariffC from "@/ev/components/TariffC.vue";
-import {useChargerStore} from "@/ev/store/owner.store";
+import {useOwnerStore} from "@/ev/store/owner.store";
 import {goTo_AddTariffView} from "@/ev/router/goToRoute";
 
-const chargerStore = useChargerStore();
+const chargerStore = useOwnerStore();
 
 defineProps({
     tariffGroup: {

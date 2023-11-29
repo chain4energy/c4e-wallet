@@ -9,18 +9,17 @@
       <h3>Unit const: {{ tariff.unitCost }}</h3>
       <h3>Start date: {{ tariff.startDate }}</h3>
       <h3>End date: {{ tariff.endDate }}</h3>
-      <Button @click="deleteTariff(tgId, tariff.id)">Delete</Button>
-      <Button @click="goTo_UpdateTariffView(tgId, tariff.id)">Update</Button>
+      <Button @click="updateTariff(tgId, tariff.id)">Update</Button>
     </template>
   </Card>
 </template>
 
 <script setup lang="ts">
 import {Tariff} from "@/ev/models/tariff";
-import {useChargerStore} from "@/ev/store/owner.store";
+import {useOwnerStore} from "@/ev/store/owner.store";
 import {goTo_UpdateTariffView} from "@/ev/router/goToRoute";
 
-const chargerStore = useChargerStore();
+const chargerStore = useOwnerStore();
 defineProps({
     tariff: {
       type: Object as () => Tariff,
@@ -32,6 +31,11 @@ defineProps({
     },
   }
 );
+
+const updateTariff = (tariffGroupId: number, tariffId: number) => {
+  chargerStore.selectedTariff = chargerStore.selectedTariff = chargerStore.tariffGroups.find(tg => tg.id === tariffGroupId)?.tariffs.find(t => t.id === tariffId) as Tariff;
+  goTo_UpdateTariffView();
+}
 
 const deleteTariff = (tgId: number, id: number) => {
   chargerStore.deleteTariff(tgId, id)

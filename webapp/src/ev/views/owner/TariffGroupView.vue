@@ -11,11 +11,11 @@
 </template>
 
 <script setup lang="ts">
-import {useChargerStore} from "@/ev/store/owner.store";
+import {useOwnerStore} from "@/ev/store/owner.store";
 import TariffGroupC from "@/ev/components/TariffGroupC.vue";
 import {goTo_AddTariffGroupView} from "@/ev/router/goToRoute";
 
-const chargerStore = useChargerStore();
+const chargerStore = useOwnerStore();
 
 </script>
 
