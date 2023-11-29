@@ -81,6 +81,7 @@ export const useOwnerStore = defineStore({
       if (response.isSuccess() && response.data) {
         this.chargePoints.push(response.data);
         this.selectedChargePoint = response.data;
+        await this.fetchAndAssignChargePointConnectors(response.data.id);
         this.createChargePointFromDict = {} as CreateChargePointFromDict;
         this.selectedChargePointDict = null;
         if (onSuccess) {
