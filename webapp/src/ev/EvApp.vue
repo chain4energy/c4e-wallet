@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <loading-screen/>
     <app-header/>
     <div class="main-container">
       <div class="content">
@@ -14,6 +15,7 @@
 import AppHeader from "@/components/layout/AppHeader.vue";
 import dataServiceEv from "@/ev/services/dataEv.service";
 import CurrentBlockchain from "@/components/layout/CurrentBlockchain.vue";
+import LoadingScreen from "@/components/LoadingScreen.vue";
 dataServiceEv.onAppStart();
 </script>
 

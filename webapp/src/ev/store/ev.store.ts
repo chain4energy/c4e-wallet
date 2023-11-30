@@ -39,6 +39,12 @@ export const useEvStore = defineStore({
     };
   },
   actions: {
+
+    setSessionInfoState(sessionState: SessionState){
+      if(this.sessionInfo) {
+        this.sessionInfo.state = sessionState;
+      }
+    },
     async getEvAuthResource(pathToDecode: string, lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
       await apiFactory.evServiceApi().evDecodeLink(pathToDecode, lockscreen).then(response => {
         if (response.isSuccess() && response.data) {
@@ -174,6 +180,12 @@ export const useEvStore = defineStore({
       await apiFactory.evServiceApi().evFetchSesisonInfo(this.sessionInfoPath, this.userEmail, lockscreen).then(response => {
         if (response.data) {
           this.sessionInfo = response.data
+          if(!this.sessionInfo.cost){
+            this.sessionInfo.cost = 0;
+          }
+          if(!this.sessionInfo.energyConsumed){
+            this.sessionInfo.energyConsumed = 0;
+          }
         } // TODO: error handling
       });
     },

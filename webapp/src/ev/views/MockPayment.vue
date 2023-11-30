@@ -1,5 +1,6 @@
 <template>
   <Button @click="mockAccepted()">Accepted</Button>
+  <Button @click="mockAcceptedAccepted()">AcceptedAccepted</Button>
   <Button @click="mockRejected()">Rejected</Button>
   <div style="color: red">
     {{errorStr}}
@@ -25,8 +26,15 @@ function mockAccepted() {
   evStore.initPayment({ amount:'500', currency: 'PLN'}, true, onSucces, onError);
 }
 
+function mockAcceptedAccepted() {
+  if (evStore.sessionInfo) {
+    evStore.sessionInfo.state = SessionState.PAID
+  }
+  onSucces();
+}
+
 function onSucces(){
-  router.push('/ev/startChargingSession');
+  router.push('/ev/sessionInfo');
 }
 
 function onError(error: ErrorData<EvServiceApplicationError> | undefined){
