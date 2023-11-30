@@ -1,5 +1,11 @@
+import {BigDecimal} from "@/models/store/big.decimal";
+
 export interface SessionInfo {
   state: SessionState;
+  energyConsumed:number;
+  cost:number;
+  startTime: Date;
+  entDate: Date;
 }
 
 export enum SessionState {

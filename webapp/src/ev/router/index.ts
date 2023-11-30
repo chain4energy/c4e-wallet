@@ -17,11 +17,6 @@ const routesEv: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "InfoPage" */ '@/ev/views/InfoPage.vue')
   },
   {
-    path: '/' + evSubAppName + '/about',
-    name: evSubAppName + '_About',
-    component: () => import(/* webpackChunkName: "AboutView" */ '@/ev/views/AboutView.vue')
-  },
-  {
     path: '/' + evSubAppName + '/resourceLink/:context(.*)*',
     name: evSubAppName + '_ResourceLink',
     component: () => import(/* webpackChunkName: "ResourceLink" */ '@/ev/views/ResourceLink.vue')
@@ -44,7 +39,7 @@ const routesEv: Array<RouteRecordRaw> = [
   {
     path: '/' + evSubAppName + '/sessionInfo',
     name: evSubAppName + '_ChargingSession',
-    component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/ChargingSession.vue')
+    component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/ChargingSessionView.vue')
   },
   {
     path: '/' + evSubAppName + '/choosePaymentMethod',
@@ -56,11 +51,11 @@ const routesEv: Array<RouteRecordRaw> = [
     name: evSubAppName + '_WaitForPaymentConfirmation',
     component: () => import(/* webpackChunkName: "WaitForPaymentConfirmation" */ '@/ev/views/WaitForPaymentConfirmation.vue')
   },
-  {
-    path: '/' + evSubAppName + '/startChargingSession',
-    name: evSubAppName + '_StartChargingSession',
-    component: () => import(/* webpackChunkName: "StartChargingSession" */ '@/ev/views/StartChargingSession.vue')
-  },
+  // {
+  //   path: '/' + evSubAppName + '/startChargingSession',
+  //   name: evSubAppName + '_StartChargingSession',
+  //   component: () => import(/* webpackChunkName: "StartChargingSession" */ '@/ev/views/StartChargingSessionView.vue')
+  // },
   {
     path: '/' + evSubAppName + '/paymentRejected',
     name: evSubAppName + '_PaymentRejected',
