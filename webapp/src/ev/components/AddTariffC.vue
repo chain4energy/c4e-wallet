@@ -1,27 +1,23 @@
 <template>
   <div class="p-fluid">
     <InputText v-model="createTariff.name" placeholder="Tariff Name"/>
-    <Dropdown v-model="createTariff.currency" placeholder="Select currency" :options="['PLN', 'EUR']"/>
+    <Dropdown v-model="createTariff.currency"
+              placeholder="Select country"
+              :options="countryOptions"
+              optionLabel="name"
+              optionValue="currency" />
     <Dropdown v-model="createTariff.unit" placeholder="Select unit" :options="['Wh', 'kWh']"/>
-    <InputNumber v-model="createTariff.unitCost" placeholder="Unit Cost" :useGrouping="false"/>
-    <Checkbox inputId="checkboxActive" v-model="createTariff.active" :binary="true"/>
-    <label for="checkboxActive" class="ml-2"> Active </label>
-    <Calendar v-model="createTariff.startDate" placeholder="Start Date"/>
-    <Calendar v-model="createTariff.endDate" placeholder="End Date"/>
+    <InputText v-model="createTariff.unitCost" placeholder="Unit Cost"/>
 
-    <Button label="Create Tariff" @click="onSubmit()"/>
+    <Button label="Update tariff" @click="onSubmit()"/>
   </div>
 </template>
 
 <script setup lang="ts">
-import Calendar from 'primevue/calendar';
-import InputNumber from 'primevue/inputnumber';
-import Checkbox from 'primevue/checkbox';
 import Dropdown from 'primevue/dropdown';
-
-import {ref} from 'vue';
-import {useOwnerStore} from '@/ev/store/owner.store';
-import {CreateTariff} from '@/ev/models/createTariff';
+import { ref, computed } from 'vue';
+import { useOwnerStore } from '@/ev/store/owner.store';
+import { CreateTariff } from '@/ev/models/createTariff';
 
 const props = defineProps({
   isEdit: {
@@ -44,6 +40,37 @@ const createTariff = ref<CreateTariff>({
   endDate: chargerStore.selectedTariff?.endDate,
 });
 
+const europeanCountries = [
+  { name: 'Poland', currency: 'PLN' },
+  { name: 'Germany', currency: 'EUR' },
+  { name: 'France', currency: 'EUR' },
+  { name: 'Spain', currency: 'EUR' },
+  { name: 'Italy', currency: 'EUR' },
+  { name: 'United Kingdom', currency: 'EUR' },
+  { name: 'Switzerland', currency: 'EUR' },
+  { name: 'Norway', currency: 'EUR' },
+  { name: 'Sweden', currency: 'EUR' },
+  { name: 'Denmark', currency: 'EUR' },
+  { name: 'Greece', currency: 'EUR' },
+  { name: 'Portugal', currency: 'EUR' },
+  { name: 'Belgium', currency: 'EUR' },
+  { name: 'Netherlands', currency: 'EUR' },
+  { name: 'Austria', currency: 'EUR' },
+  { name: 'Finland', currency: 'EUR' },
+  { name: 'Ireland', currency: 'EUR' },
+  { name: 'Czech Republic', currency: 'EUR' },
+  { name: 'Hungary', currency: 'EUR' },
+  { name: 'Romania', currency: 'EUR' },
+];
+
+
+const countryOptions = computed(() => {
+  return europeanCountries.map(country => ({
+    name: country.name,
+    currency: country.currency
+  }));
+});
+
 const onSubmit = async () => {
   console.log(props.isEdit)
   if (props.isEdit) {
@@ -63,9 +90,6 @@ const createNewTariff = async () => {
 
 const updateTariff = async () => {
   if (chargerStore.selectedTariff) {
-    console.log(chargerStore.selectedTariff)
-    console.log(chargerStore.selectedTariff.tariffGroupId)
-    console.log(chargerStore.selectedTariff.id)
     await chargerStore.updateTariff(chargerStore.selectedTariff.tariffGroupId, chargerStore.selectedTariff.id, createTariff.value, true, () => {
       emit ('onSuccess')
     });
@@ -74,6 +98,4 @@ const updateTariff = async () => {
 
 </script>
 
-<style scoped lang="scss">
-// Your styles here
-</style>
+<style scoped lang="scss"></style>

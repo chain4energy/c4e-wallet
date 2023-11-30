@@ -17,11 +17,6 @@ export const ownerRoutes = [
     component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/owner/ChargePointView.vue')
   },
   {
-    path: '/' + evSubAppName + '/addTariffGroup',
-    name: evSubAppName + '_AddTariffGroup',
-    component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/views/owner/AddTariffGroup.vue')
-  },
-  {
     path: '/' + evSubAppName + '/addTariff/:tariffGroupId',
     name: evSubAppName + '_AddTariff',
     component: () => import(/* webpackChunkName: "OwnerView" */ '@/ev/components/AddTariffC.vue'),

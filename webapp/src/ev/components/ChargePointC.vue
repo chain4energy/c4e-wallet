@@ -12,7 +12,8 @@
         <h3>Connectors number: {{ chargePoint.chargePointConnectors?.length }}</h3>
         <Button @click="deleteChargePoint(chargePoint.id)">Delete</Button>
         <Button @click="navigateToChargePoint()">Open</Button>
-        <TariffC :tariff="currentTariff" v-if="currentTariff" tg-id=""/>
+        <TariffC :tariff="currentTariff" v-if="currentTariff"/>
+        <h3 v-if="!currentTariff">No active tariffs found</h3>
       </div>
     </template>
   </Card>
@@ -23,7 +24,7 @@ import {ChargePoint} from "@/ev/models/chargePoint";
 import {useOwnerStore} from "@/ev/store/owner.store";
 import {computed} from "vue";
 import TariffC from "@/ev/components/TariffC.vue";
-import {goTo_ChargePointView} from "@/ev/router/goToRoute";
+import {goTo_ChargePointView, goTo_EvOwnerDashboardView} from "@/ev/router/goToRoute";
 
 const chargeStore = useOwnerStore();
 
@@ -43,7 +44,7 @@ const navigateToChargePoint = () => {
 const currentTariff = computed(() => chargeStore.getTariffForChargePoint(props.chargePoint.id));
 
 const deleteChargePoint = (id: string) => {
-  chargeStore.deleteChargePoint(id)
+  chargeStore.deleteChargePoint(id, true, goTo_EvOwnerDashboardView)
 }
 </script>
 

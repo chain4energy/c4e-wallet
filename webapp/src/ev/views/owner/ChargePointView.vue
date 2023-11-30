@@ -26,6 +26,7 @@ import {useOwnerStore} from "@/ev/store/owner.store";
 import {computed} from "vue";
 import TariffC from "@/ev/components/TariffC.vue";
 import ChargePointConnectorC from "@/ev/components/ChargePointConnectorC.vue";
+import {goTo_EvOwnerDashboardView} from "@/ev/router/goToRoute";
 
 const chargeStore = useOwnerStore();
 
@@ -36,7 +37,7 @@ const currentTariff = computed(() => {
 
 const deleteChargePoint = (id: string | undefined) => {
   if (id) {
-    chargeStore.deleteChargePoint(id);
+    chargeStore.deleteChargePoint(id, true, goTo_EvOwnerDashboardView);
   }
 }
 </script>

@@ -7,9 +7,9 @@
       <h3>Active: {{ tariff.active }}</h3>
       <h3>Currency: {{ tariff.currency }}</h3>
       <h3>Unit const: {{ tariff.unitCost }}</h3>
-      <h3>Start date: {{ tariff.startDate }}</h3>
-      <h3>End date: {{ tariff.endDate }}</h3>
-      <Button @click="updateTariff(tgId, tariff.id)">Update</Button>
+      <h3 v-if="tariff.startDate">Start date: {{ tariff.startDate }}</h3>
+      <h3  v-if="tariff.endDate">End date: {{ tariff.endDate }}</h3>
+      <Button @click="updateTariff(tariff.tariffGroupId, tariff.id)">Update</Button>
     </template>
   </Card>
 </template>
@@ -23,10 +23,6 @@ const chargerStore = useOwnerStore();
 defineProps({
     tariff: {
       type: Object as () => Tariff,
-      required: true
-    },
-    tgId: {
-      type: Number,
       required: true
     },
   }

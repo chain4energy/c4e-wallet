@@ -32,6 +32,7 @@ import {TariffGroup} from "@/ev/models/tariffGroup";
 import {ChargePointDict} from "@/ev/models/chargePointDict";
 import {CreateChargePointFromDict} from "@/ev/models/createChargePointFromDict";
 import {CreateTariffForChargePoint, CreateTariffForChargePointResponse} from "@/ev/models/createTariffForChargePoint";
+import {ChargePointChangeActiveState} from "@/ev/models/ChargePointChangeActiveState";
 
 
 export class EvServiceApi extends BaseApi {
@@ -42,6 +43,19 @@ export class EvServiceApi extends BaseApi {
   private evServicePostCall<R, T, E>(evServiceUrlPart: string, data: R, lockscreen: boolean, logPrefix: string): Promise<RequestResponse<T, ErrorData<E>>> {
     return this.axiosCall<T, E>({
         method: 'POST',
+        url: useConfigurationStore().config.evServiceURL + evServiceUrlPart,
+        data: data
+      },
+      lockscreen,
+      null,
+      logPrefix
+    );
+  }
+
+
+  private evServicePutCall<R, T, E>(evServiceUrlPart: string, data: R, lockscreen: boolean, logPrefix: string): Promise<RequestResponse<T, ErrorData<E>>> {
+    return this.axiosCall<T, E>({
+        method: 'PUT',
         url: useConfigurationStore().config.evServiceURL + evServiceUrlPart,
         data: data
       },
@@ -151,6 +165,11 @@ export class EvServiceApi extends BaseApi {
     return this.evServicePostCall<CreateChargePoint, ChargePoint, EvServiceApplicationError>(url, createChargePoint, lockscreen, "createChargePoint");
   }
 
+  public changeChargePointActiveState(cpId: string, chargePointChangeActiveState: ChargePointChangeActiveState, lockscreen: boolean): Promise<RequestResponse<void, ErrorData<EvServiceApplicationError>>> {
+    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}/activation_state', { cpId });
+    return this.evServicePostCall<ChargePointChangeActiveState, void, EvServiceApplicationError>(url, chargePointChangeActiveState, lockscreen, "changeChargePointActiveState");
+  }
+
   public createChargePointFromDict(createChargePoint: CreateChargePointFromDict, lockscreen: boolean): Promise<RequestResponse<ChargePoint, ErrorData<EvServiceApplicationError>>> {
     const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point_from_dict';
     return this.evServicePostCall<CreateChargePointFromDict, ChargePoint, EvServiceApplicationError>(url, createChargePoint, lockscreen, "createChargePointFromDict");
@@ -162,7 +181,7 @@ export class EvServiceApi extends BaseApi {
   }
 
   public deleteChargePoint(cpId: string, lockscreen: boolean): Promise<RequestResponse<void, ErrorData<EvServiceApplicationError>>> {
-    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}', {cpId});
+    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}/with_tariff', {cpId});
     return this.evServiceEmptyDeleteCall<void, EvServiceApplicationError>(url, lockscreen, "deleteChargePoint");
   }
 
@@ -210,7 +229,7 @@ export class EvServiceApi extends BaseApi {
 
   public updateTariffGroup(tgId: number, updateTariffGroup: UpdateTariffGroup, lockscreen: boolean): Promise<RequestResponse<TariffGroup, ErrorData<EvServiceApplicationError>>> {
     const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group/{tgId}', {tgId});
-    return this.evServicePostCall<UpdateTariffGroup, TariffGroup, EvServiceApplicationError>(url, updateTariffGroup, lockscreen, "updateTariffGroup");
+    return this.evServicePutCall<UpdateTariffGroup, TariffGroup, EvServiceApplicationError>(url, updateTariffGroup, lockscreen, "updateTariffGroup");
   }
 
   public deleteTariffGroup(tgId: number, lockscreen: boolean): Promise<RequestResponse<void, ErrorData<EvServiceApplicationError>>> {
@@ -240,7 +259,7 @@ export class EvServiceApi extends BaseApi {
       tgId: tgId,
       tId: tId
     });
-    return this.evServicePostCall<UpdateTariff, Tariff, EvServiceApplicationError>(url, updateTariff, lockscreen, "updateTariff");
+    return this.evServicePutCall<UpdateTariff, Tariff, EvServiceApplicationError>(url, updateTariff, lockscreen, "updateTariff");
   }
 
   public deleteTariff(tgId: number, tId: number, lockscreen: boolean): Promise<RequestResponse<void, ErrorData<EvServiceApplicationError>>> {

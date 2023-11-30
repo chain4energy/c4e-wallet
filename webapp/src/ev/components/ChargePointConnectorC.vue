@@ -6,9 +6,10 @@
 
     <template #content>
       <h3>Status: {{ chargePointConnector.status }}</h3>
+      <h3 v-if="chargePointConnector.active" style="color: green">Active</h3>
+      <h3 v-if="!chargePointConnector.active" style="color: red">Disabled</h3>
       <h3>Identifier: {{ chargePointConnector.identifier }}</h3>
-      <h3>Charge point id: {{ chargePointConnector.id}}</h3>
-      <h3>Error code: {{ chargePointConnector.errorCode}}</h3>
+      <h3 v-if="chargePointConnector.errorCode">Error code: {{ chargePointConnector.errorCode}}</h3>
     </template>
   </Card>
 </template>

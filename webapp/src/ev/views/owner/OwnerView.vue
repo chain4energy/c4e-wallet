@@ -1,8 +1,10 @@
 <template>
-  <div class="about">
-    <h1>Your chargers</h1>
+  <div v-if="chargerStore.getChargePoints?.length === 0">
+    <h1>You have no chargers</h1>
   </div>
-  <div>
+
+  <div v-if="chargerStore.getChargePoints?.length > 0">
+    <h1>Your chargers</h1>
     <div v-for="charger in chargerStore.getChargePoints" :key="charger.id">
       <ChargePointC :charge-point="charger"/>
     </div>
@@ -15,7 +17,7 @@
 import {useOwnerStore} from "@/ev/store/owner.store";
 import {onMounted} from "vue";
 import ChargePointC from "@/ev/components/ChargePointC.vue";
-import {goTo_AddChargerView, goTo_TariffGroupsView} from "@/ev/router/goToRoute";
+import {goTo_AddChargerView} from "@/ev/router/goToRoute";
 
 const chargerStore = useOwnerStore();
 
@@ -24,10 +26,6 @@ onMounted(async () => {
 })
 
 </script>
+
 <style lang="scss" scoped>
-
-
-</style>
-<style>
-
 </style>

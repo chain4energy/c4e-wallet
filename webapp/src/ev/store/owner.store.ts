@@ -12,6 +12,7 @@ import {TariffGroup} from "@/ev/models/tariffGroup";
 import {CreateTariff} from "@/ev/models/createTariff";
 import {Tariff} from "@/ev/models/tariff";
 import {CreateTariffForChargePoint} from "@/ev/models/createTariffForChargePoint";
+import {ChargePointChangeActiveState} from "@/ev/models/ChargePointChangeActiveState";
 
 interface OwnerStore {
   selectedTariff: Tariff | null;
@@ -100,10 +101,13 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async deleteChargePoint(cpId: string, lockscreen = true) {
+    async deleteChargePoint(cpId: string, lockscreen = true, onSuccess?: (() => void)) {
       const response = await apiFactory.evServiceApi().deleteChargePoint(cpId, lockscreen);
       if (response.isSuccess()) {
         this.chargePoints = this.chargePoints.filter(cp => cp.id !== cpId);
+        if (onSuccess) {
+          onSuccess();
+        }
       }
     },
 
@@ -172,7 +176,6 @@ export const useOwnerStore = defineStore({
     },
 
     async updateTariff(tgId: number, tId: number, updateTariff: UpdateTariff, lockscreen = true, onSuccess: () => void) {
-     console.log(tgId, tId, updateTariff)
       const response = await apiFactory.evServiceApi().updateTariff(tgId, tId, updateTariff, lockscreen);
       if (response.isSuccess() && response.data) {
         const tgIndex = this.tariffGroups.findIndex(tg => tg.id === tgId);
@@ -182,7 +185,22 @@ export const useOwnerStore = defineStore({
             this.tariffGroups[tgIndex].tariffs[tariffIndex] = response.data;
           }
         }
+        this.selectedTariff = null;
         onSuccess()
+      }
+    },
+
+    async changeChargePointActiveState(cpId: string, chargePointChangeActiveState: ChargePointChangeActiveState, lockscreen = true, onSuccess?: () => void) {
+      const response = await apiFactory.evServiceApi().changeChargePointActiveState(cpId, chargePointChangeActiveState, lockscreen);
+      if (response.isSuccess() && response.data) {
+        const index = this.chargePoints.findIndex(cp => cp.id === cpId);
+        if (index !== -1) {
+          this.chargePoints[index] = response.data;
+        }
+
+        if (onSuccess) {
+          onSuccess();
+        }
       }
     },
 
