@@ -192,10 +192,10 @@ export const useOwnerStore = defineStore({
 
     async changeChargePointActiveState(cpId: string, chargePointChangeActiveState: ChargePointChangeActiveState, lockscreen = true, onSuccess?: () => void) {
       const response = await apiFactory.evServiceApi().changeChargePointActiveState(cpId, chargePointChangeActiveState, lockscreen);
-      if (response.isSuccess() && response.data) {
+      if (response.isSuccess()) {
         const index = this.chargePoints.findIndex(cp => cp.id === cpId);
         if (index !== -1) {
-          this.chargePoints[index] = response.data;
+          this.chargePoints[index].active = chargePointChangeActiveState.active;
         }
 
         if (onSuccess) {

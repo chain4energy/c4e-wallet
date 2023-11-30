@@ -5,12 +5,20 @@
     </template>
 
     <template #content>
-      <div style="background: green; color: white" @click="navigateToChargePoint()">
+      <div style="background: green; color: white">
         <h3>Status: {{ chargePoint.status }}</h3>
         <h3>Integration type: {{ chargePoint.integrationType }}</h3>
         <h3>Charge point id: {{ chargePoint.id }}</h3>
         <h3>Connectors number: {{ chargePoint.chargePointConnectors?.length }}</h3>
-        <Button @click="deleteChargePoint(chargePoint.id)">Delete</Button>
+        <Button @click="deleteChargePoint()">Delete</Button>
+        <Button @click="changeChargePointActiveState()">
+          <span v-if="chargePoint.active">
+            Disable
+          </span>
+          <span v-if="!chargePoint.active">
+            Enable
+          </span>
+        </Button>
         <Button @click="navigateToChargePoint()">Open</Button>
         <TariffC :tariff="currentTariff" v-if="currentTariff"/>
         <h3 v-if="!currentTariff">No active tariffs found</h3>
@@ -25,6 +33,7 @@ import {useOwnerStore} from "@/ev/store/owner.store";
 import {computed} from "vue";
 import TariffC from "@/ev/components/TariffC.vue";
 import {goTo_ChargePointView, goTo_EvOwnerDashboardView} from "@/ev/router/goToRoute";
+import {ChargePointChangeActiveState} from "@/ev/models/ChargePointChangeActiveState";
 
 const chargeStore = useOwnerStore();
 
@@ -43,8 +52,15 @@ const navigateToChargePoint = () => {
 
 const currentTariff = computed(() => chargeStore.getTariffForChargePoint(props.chargePoint.id));
 
-const deleteChargePoint = (id: string) => {
-  chargeStore.deleteChargePoint(id, true, goTo_EvOwnerDashboardView)
+const deleteChargePoint = () => {
+  chargeStore.deleteChargePoint(props.chargePoint.id, true, goTo_EvOwnerDashboardView)
+}
+
+const changeChargePointActiveState = () => {
+  const chargePointChangeActiveState = {
+    active: !props.chargePoint.active
+  }
+  chargeStore.changeChargePointActiveState(props.chargePoint.id, chargePointChangeActiveState)
 }
 </script>
 
