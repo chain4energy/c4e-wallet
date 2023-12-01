@@ -6,4 +6,5 @@ export interface ChargePointConnector {
   errorCode?: string;
   active: boolean;
   name?: string;
+  qrCodeLink?: string;
 }

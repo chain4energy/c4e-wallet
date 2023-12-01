@@ -33,6 +33,7 @@ import {ChargePointDict} from "@/ev/models/chargePointDict";
 import {CreateChargePointFromDict} from "@/ev/models/createChargePointFromDict";
 import {CreateTariffForChargePoint, CreateTariffForChargePointResponse} from "@/ev/models/createTariffForChargePoint";
 import {ChargePointChangeActiveState} from "@/ev/models/ChargePointChangeActiveState";
+import {HttpLink} from "@/ev/models/httpLink";
 
 
 export class EvServiceApi extends BaseApi {
@@ -203,6 +204,14 @@ export class EvServiceApi extends BaseApi {
     return this.evServicePostCall<UpdateChargePointConnector, ChargePointConnector, EvServiceApplicationError>(url, updateChargePointConnector, lockscreen, "updateChargePointConnector");
   }
 
+  public getQrCodeLinkForConnector(cpId: string, connectorIdentifier: number, lockscreen: boolean): Promise<RequestResponse<HttpLink, ErrorData<EvServiceApplicationError>>> {
+    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}/connector/{connectorId}/link', {
+      cpId,
+      connectorId: connectorIdentifier
+    });
+    return this.evServiceGetCall<HttpLink, EvServiceApplicationError>(url, lockscreen, "getQrCodeLinkForConnector");
+  }
+
   public createTariffForChargePoint(cpId: string, createTariffForChargePointDto: CreateTariffForChargePoint, lockscreen = true): Promise<RequestResponse<CreateTariffForChargePointResponse, ErrorData<EvServiceApplicationError>>> {
     const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}/tariff', {cpId})
     console.log(url)
@@ -226,13 +235,6 @@ export class EvServiceApi extends BaseApi {
     const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group';
     return this.evServicePostCall<CreateTariffGroup, TariffGroup, EvServiceApplicationError>(url, createTariffGroup, lockscreen, "createTariffGroup");
   }
-
-  public getQrCode(createTariffGroup: CreateTariffGroup, lockscreen: boolean): Promise<RequestResponse<TariffGroup, ErrorData<EvServiceApplicationError>>> {
-    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group';
-    return this.evServicePostCall<CreateTariffGroup, TariffGroup, EvServiceApplicationError>(url, createTariffGroup, lockscreen, "createTariffGroup");
-  }
-
-
 
   public updateTariffGroup(tgId: number, updateTariffGroup: UpdateTariffGroup, lockscreen: boolean): Promise<RequestResponse<TariffGroup, ErrorData<EvServiceApplicationError>>> {
     const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group/{tgId}', {tgId});

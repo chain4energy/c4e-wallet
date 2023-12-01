@@ -8,8 +8,10 @@
       <h3>Status: {{ chargePointConnector.status }}</h3>
       <h3>Identifier: {{ chargePointConnector.identifier }}</h3>
       <h3 v-if="chargePointConnector.errorCode">Error code: {{ chargePointConnector.errorCode}}</h3>
-
-      <QrcodeVue :value="getQrCode()" size="200" :render-as="'svg'"></QrcodeVue>
+      <div v-if="chargePointConnector.qrCodeLink">
+        <a :href="chargePointConnector.qrCodeLink">{{chargePointConnector.qrCodeLink}}</a>
+        <QrcodeVue :value="chargePointConnector.qrCodeLink" size="200" :render-as="'svg'"></QrcodeVue>
+      </div>
     </template>
   </Card>
 </template>
@@ -17,10 +19,11 @@
 import {ChargePointConnector} from "@/ev/models/chargePointConnector";
 import {useOwnerStore} from "@/ev/store/owner.store";
 import QrcodeVue from "qrcode.vue";
+import {onMounted} from "vue";
 
 const chargeStore = useOwnerStore();
 
-defineProps({
+const props = defineProps({
     chargePointConnector: {
       type: Object as () => ChargePointConnector,
       required: true
@@ -32,9 +35,11 @@ defineProps({
   }
 );
 
-const getQrCode = () => {
-  return chargeStore.getQrCode();
-}
+onMounted(() => {
+  if (!props.chargePointConnector.qrCodeLink) {
+    chargeStore.getQrCode(props.chargePointConnector?.chargePointId, props.chargePointConnector?.identifier);
+  }
+});
 
 </script>
 <style scoped lang="scss">

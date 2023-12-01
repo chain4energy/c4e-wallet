@@ -13,6 +13,7 @@ import {CreateTariff} from "@/ev/models/createTariff";
 import {Tariff} from "@/ev/models/tariff";
 import {CreateTariffForChargePoint} from "@/ev/models/createTariffForChargePoint";
 import {ChargePointChangeActiveState} from "@/ev/models/ChargePointChangeActiveState";
+import {HttpLink} from "@/ev/models/httpLink";
 
 interface OwnerStore {
   selectedTariff: Tariff | null;
@@ -111,12 +112,21 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    getQrCode(): string {
-      // const response = await apiFactory.evServiceApi().getQrCode();
-      // if (response.isSuccess() && response.data) {
-      //   return response.data;
-      // }
-      return "abcd";
+    async getQrCode(cpId: string, connectorIdentifier: number) {
+      const response = await apiFactory.evServiceApi().getQrCodeLinkForConnector(cpId, connectorIdentifier, true);
+      if (response.isSuccess() && response.data) {
+        const cpIndex = this.chargePoints.findIndex(cp => cp.id === cpId);
+        if (cpIndex !== -1) {
+          const connectorIndex = this.chargePoints[cpIndex].chargePointConnectors?.findIndex(c => c.identifier === connectorIdentifier);
+          if (connectorIndex !== undefined && connectorIndex !== -1) {
+            const chargePointConnectors = this.chargePoints[cpIndex].chargePointConnectors;
+            console.log(response.data.link);
+            if (chargePointConnectors) {
+              chargePointConnectors[connectorIndex].qrCodeLink = response.data.link;
+            }
+          }
+        }
+      }
     },
 
     async createTariffGroup(createTariffGroup: CreateTariffGroup, lockscreen = true, onSuccess: ((tariffGroupId: number) => void)) {
@@ -125,7 +135,6 @@ export const useOwnerStore = defineStore({
         this.tariffGroups.push(response.data);
         onSuccess(response.data.id);
       }
-      console.log(this.tariffGroups)
     },
 
     async updateTariffGroup(tgId: number, updateTariffGroup: UpdateTariffGroup, lockscreen = true) {
@@ -168,17 +177,12 @@ export const useOwnerStore = defineStore({
       const response = await apiFactory.evServiceApi().createTariff(tgId, createTariff, lockscreen);
       if (response.isSuccess() && response.data) {
         const tgIndex = this.tariffGroups.findIndex(tg => tg.id == tgId);
-        console.log(tgIndex)
-        console.log(this.tariffGroups)
         if (!this.tariffGroups[tgIndex].tariffs) {
           this.tariffGroups[tgIndex].tariffs = [];
         }
         if (tgIndex !== -1) {
-          console.log(this.tariffGroups[tgIndex])
-          console.log(this.tariffGroups[tgIndex].tariffs)
           this.tariffGroups[tgIndex].tariffs.push(response.data);
         }
-        console.log("sucess")
         onSuccess();
       }
     },
