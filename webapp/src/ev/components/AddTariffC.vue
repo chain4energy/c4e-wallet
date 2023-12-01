@@ -33,7 +33,7 @@ const chargerStore = useOwnerStore();
 const createTariff = ref<CreateTariff>({
   name: chargerStore.selectedTariff?.name || "",
   currency: chargerStore.selectedTariff?.currency || "",
-  unit: chargerStore.selectedTariff?.currency || "",
+  unit: chargerStore.selectedTariff?.unit || "",
   unitCost: chargerStore.selectedTariff?.unitCost || 0,
   active: chargerStore.selectedTariff?.active || false,
   startDate: chargerStore.selectedTariff?.startDate,

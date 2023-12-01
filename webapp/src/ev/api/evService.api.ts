@@ -227,6 +227,13 @@ export class EvServiceApi extends BaseApi {
     return this.evServicePostCall<CreateTariffGroup, TariffGroup, EvServiceApplicationError>(url, createTariffGroup, lockscreen, "createTariffGroup");
   }
 
+  public getQrCode(createTariffGroup: CreateTariffGroup, lockscreen: boolean): Promise<RequestResponse<TariffGroup, ErrorData<EvServiceApplicationError>>> {
+    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group';
+    return this.evServicePostCall<CreateTariffGroup, TariffGroup, EvServiceApplicationError>(url, createTariffGroup, lockscreen, "createTariffGroup");
+  }
+
+
+
   public updateTariffGroup(tgId: number, updateTariffGroup: UpdateTariffGroup, lockscreen: boolean): Promise<RequestResponse<TariffGroup, ErrorData<EvServiceApplicationError>>> {
     const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group/{tgId}', {tgId});
     return this.evServicePutCall<UpdateTariffGroup, TariffGroup, EvServiceApplicationError>(url, updateTariffGroup, lockscreen, "updateTariffGroup");

@@ -111,6 +111,14 @@ export const useOwnerStore = defineStore({
       }
     },
 
+    getQrCode(): string {
+      // const response = await apiFactory.evServiceApi().getQrCode();
+      // if (response.isSuccess() && response.data) {
+      //   return response.data;
+      // }
+      return "abcd";
+    },
+
     async createTariffGroup(createTariffGroup: CreateTariffGroup, lockscreen = true, onSuccess: ((tariffGroupId: number) => void)) {
       const response = await apiFactory.evServiceApi().createTariffGroup(createTariffGroup, lockscreen);
       if (response.isSuccess() && response.data) {
