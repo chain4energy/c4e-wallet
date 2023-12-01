@@ -1,7 +1,8 @@
 <template>
-  <h1>Podepnij ładowarkę do auta</h1>
-  <Button @click="connect()">Connect charger (simulation)</Button>
-  <Button @click="startChargingSession()" :disabled="!connected">Start charging</Button>
+  <h1 v-if="evStore.getSessionInfo?.state==SessionState.WAIT_FOR_PLUG_INSERT ">Podepnij ładowarkę do auta</h1>
+<!--  <Button @click="connect()">Connect charger (simulation)</Button>-->
+<!--  <Button @click="startChargingSession()" :disabled="evStore.getSessionInfo?.state!=SessionState.READY_TO_START ">Start charging</Button>-->
+  <Button @click="startChargingSession()" :disabled="evStore.getSessionInfo?.state!=SessionState.READY_TO_START ">Start charging</Button>
 
   <div style="color: red">
     {{errorStr}}
@@ -15,6 +16,7 @@ import {SessionInfo, SessionState} from "@/ev/models/sessionInfo";
 import {ErrorData} from "@/api/base.api";
 import {EvServiceApplicationError} from "@/ev/models/evServiceCommons";
 import {PropType, ref} from "vue";
+
 const evStore = useEvStore();
 const errorStr = ref("");
 const connected = ref(false);

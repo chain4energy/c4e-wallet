@@ -214,21 +214,27 @@ export const useEvStore = defineStore({
           case SessionState.CREATED:
             routerEv.push({name: "ev_ChoosePaymentMethod"});
             break;
-          case SessionState.ACCEPTED:
-            routerEv.push({name: "ev_WaitForPaymentConfirmation"});
+          // case SessionState.ACCEPTED:
+          //   routerEv.push({name: "ev_WaitForPaymentConfirmation"});
+          //   break;
+          // case SessionState.PAID:
+          //   routerEv.push({name: "ev_StartChargingSession"});
+          //   break;
+          // case SessionState.REJECTED:
+          //   routerEv.push({name: "ev_PaymentRejected"});
+          //   break;
+          case SessionState.INIT:
+            routerEv.push({name: "ev_ChargingSession"});
             break;
-          case SessionState.PAID:
-            routerEv.push({name: "ev_StartChargingSession"});
+
+          case SessionState.READY_TO_START:
+            routerEv.push({name: "ev_ChargingSession"});
             break;
-          case SessionState.REJECTED:
-            routerEv.push({name: "ev_PaymentRejected"});
-            break;
-          case SessionState.STARTED:
-            routerEv.push({name: "ev_SessionInfo"});
-            break;
-          case SessionState.FINISHED:
-            routerEv.push({name: "ev_SessionInfo"});
-            break;
+          // case SessionState.FINISHED:
+          //   routerEv.push({name: "ev_SessionInfo"});
+          //   break;
+          default:
+            routerEv.push({name: "ev_ChargingSession"});
         }
       }
     },
