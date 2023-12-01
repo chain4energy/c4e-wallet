@@ -33,7 +33,7 @@ function stopChargingSession() {
 
 function onSuccess(){
   console.log("onSuccess");
-  evStore.setSessionInfoState(SessionState.FINISHED)
+  evStore.setSessionInfoState(SessionState.FINAL)
 }
 
 function onError(error: ErrorData<EvServiceApplicationError> | undefined){
@@ -43,17 +43,17 @@ function onError(error: ErrorData<EvServiceApplicationError> | undefined){
   }
 }
 
-function  startInterval(){
-  interval = setInterval(() => {
-    if(evStore.sessionInfo) {
-      evStore.sessionInfo.cost = evStore.sessionInfo.cost + 1;
-      evStore.sessionInfo.energyConsumed = evStore.sessionInfo.energyConsumed + 0.5;
-    }
-  }, 1000);
-}
-onMounted(()=>{
-  startInterval();
-})
+// function  startInterval(){
+//   interval = setInterval(() => {
+//     if(evStore.sessionInfo) {
+//       evStore.sessionInfo.cost = evStore.sessionInfo.cost + 1;
+//       evStore.sessionInfo.energyConsumed = evStore.sessionInfo.energyConsumed + 0.5;
+//     }
+//   }, 1000);
+// }
+// onMounted(()=>{
+//   startInterval();
+// })
 
 onUnmounted(()=>{
   clearInterval(interval);

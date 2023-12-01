@@ -4,9 +4,9 @@
   <label for="useInterval" class="ml-2"> turn on interval </label>
   <p>session: {{JSON.stringify(evStore.getSessionInfo)}}</p>
 
-  <ChargingSessionWaiteForConnectAndStart  v-if="evStore.getSessionInfo?.state ==SessionState.CREATED" :sessionInfo="evStore.getSessionInfo"/>
-  <ChargingSessionProgress  v-if="evStore.getSessionInfo?.state ==SessionState.STARTED" :sessionInfo="evStore.getSessionInfo"/>
-  <ChargingSessionSummary  v-if="evStore.getSessionInfo?.state ==SessionState.FINISHED" :sessionInfo="evStore.getSessionInfo" />
+  <ChargingSessionWaiteForConnectAndStart  v-if="evStore.getSessionInfo?.state ==SessionState.WAIT_FOR_PLUG_INSERT || evStore.getSessionInfo?.state ==SessionState.READY_TO_START" :sessionInfo="evStore.getSessionInfo"/>
+  <ChargingSessionProgress  v-if="evStore.getSessionInfo?.state ==SessionState.CHARGING" :sessionInfo="evStore.getSessionInfo"/>
+  <ChargingSessionSummary  v-if="evStore.getSessionInfo?.state ==SessionState.FINAL" :sessionInfo="evStore.getSessionInfo" />
 </template>
 
 <script setup lang="ts">
