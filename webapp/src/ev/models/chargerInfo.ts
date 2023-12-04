@@ -1,3 +1,5 @@
+import {ChargePointConnectorStatusType} from "@/ev/models/chargePointConnector";
+
 export interface ChargerInfo {
   location: string;
   name: string;
@@ -9,10 +11,15 @@ export interface ChargerInfo {
 export interface ChargePointInfo {
   id: number;
   name: string;
-  status: ChargerStatus;
+  status: ChargePointConnectorStatusType;
   active: boolean;
-  chargePointId: string;
-  identifier: number;
+  identificationCode: number;
+  codeType: string;
+  integrationType: string;
+  integrationVersion: string;
+  tariffGroupId: string;
+  chargePointDictId: number;
+  errorCode: string;
 }
 
 export enum ConnectorType {

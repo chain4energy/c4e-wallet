@@ -5,14 +5,12 @@ import {setAuthTokens} from "axios-jwt";
 import {SessionInfo, SessionState} from "@/ev/models/sessionInfo";
 import {routerEv} from "@/ev/router";
 import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
-import {UserServiceContext, UserServiceErrorHandler} from "@/store/errorsHandlers/userServiceErrorHandler";
 import {RequestResponse} from "@/models/request-response";
 import {Jwt} from "@/models/user/jwt";
 import {ErrorData} from "@/api/base.api";
-import {SaleServiceApplicationError} from "@/models/saleServiceCommons";
-import {EvServiceApplicationError, InitPaymentRequest} from "@/ev/models/evServiceCommons";
-import {LoginTypeEnum} from "@/store/userService.store";
+import {DecodedLinkParamsType, DecodedLinkType, DecodeLinkAuthParams, EvServiceApplicationError, InitPaymentRequest} from "@/ev/models/evServiceCommons";
 import {EvServiceContext, EvServiceErrorHandler} from "@/store/errorsHandlers/uvServiceErrorHandler";
+import {ChargePointConnectorStatusType, RequestStatusType} from "@/ev/models/chargePointConnector";
 
 interface EvStoreState {
   chargePointInfo: ChargePointInfo | undefined,
@@ -21,8 +19,19 @@ interface EvStoreState {
   sessionInfoPath: string,
   resourceCode: string,
   userEmail: string,
-  loggedIn: boolean
+  loggedIn: boolean,
+
+  appTypeLink: AppTypeLink | undefined,
+  chargePointConnectorUrl : string,
+  chargingSessionUrl: string
+  connectorLiveStatus: ChargePointConnectorStatusType | undefined,
 }
+
+export enum AppTypeLink {
+  CHARGE_POINT_CONNECTOR_LINK,
+  CHARGING_SESSION_LINK
+}
+
 
 export const useEvStore = defineStore({
   id: 'evStore',
@@ -35,23 +44,27 @@ export const useEvStore = defineStore({
       sessionInfoPath: "",
       resourceCode: "",
       userEmail: "",
-      loggedIn: false
+      loggedIn: false,
+      connectorLiveStatus: undefined,
+      appTypeLink: undefined,
+      chargePointConnectorUrl : "",
+      chargingSessionUrl: ""
     };
   },
   actions: {
 
-    setSessionInfoState(sessionState: SessionState){
-      if(this.sessionInfo) {
+    setSessionInfoState(sessionState: SessionState) {
+      if (this.sessionInfo) {
         this.sessionInfo.state = sessionState;
       }
     },
-    async getEvAuthResource(pathToDecode: string, lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
+    async getEvAuthResource(pathToDecode: string, lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().evDecodeLink(pathToDecode, lockscreen).then(response => {
         if (response.isSuccess() && response.data) {
           this.sessionInfoPath = response.data.params.path;
-          this.resourceCode = response.data.params.resourceCode;
+          this.resourceCode = (response.data.params as DecodeLinkAuthParams).resourceCode;
           onSuccess();
-        }else{
+        } else {
           onFail(response.error);
         }
       });
@@ -61,15 +74,15 @@ export const useEvStore = defineStore({
       await apiFactory.evServiceApi().evLoginWithResource({
         resourceCode: this.resourceCode
       }, lockscreen).then(responseDate => {
-        if(responseDate.isSuccess()) {
+        if (responseDate.isSuccess()) {
           this.setTokens(responseDate);
           onSuccess();
         }
       });
     },
 
-    setTokens(responseDate: RequestResponse<Jwt, ErrorData<EvServiceApplicationError>>){
-      if(responseDate.data){
+    setTokens(responseDate: RequestResponse<Jwt, ErrorData<EvServiceApplicationError>>) {
+      if (responseDate.data) {
         this.loggedIn = true;
         setAuthTokens({
           accessToken: responseDate.data.access_token.token,
@@ -80,9 +93,9 @@ export const useEvStore = defineStore({
       }
     },
 
-    async authEmailAccount(emailAccount: PasswordAuthenticateRequest, onSuccess: (() => void), onFail?: ((error:ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true) {
+    async authEmailAccount(emailAccount: PasswordAuthenticateRequest, onSuccess: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true) {
       await apiFactory.evServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
-        if(responseDate.isSuccess()) {
+        if (responseDate.isSuccess()) {
           this.setTokens(responseDate);
           this.userEmail = emailAccount.login;
           onSuccess();
@@ -92,9 +105,9 @@ export const useEvStore = defineStore({
         }
       });
     },
-    async createEmailAccount(createAccountRequest: CreateAccountRequest, onSuccess: (() => void), onFail?: ((error:ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true) {
+    async createEmailAccount(createAccountRequest: CreateAccountRequest, onSuccess: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true) {
       return await apiFactory.evServiceApi().createEmailAccount(createAccountRequest, lockscreen).then(responseDate => {
-        if(responseDate.isSuccess()) {
+        if (responseDate.isSuccess()) {
           onSuccess();
         } else {
           // UserServiceErrorHandler.getInstance().handleError( res.error, UserServiceContext.CREATE_ACCOUNT);
@@ -104,7 +117,7 @@ export const useEvStore = defineStore({
     },
     async activateEmailAccount(code: string, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
       await apiFactory.evServiceApi().activateEmailAccount(code, lockscreen).then(responseDate => {
-        if(responseDate.isSuccess()) {
+        if (responseDate.isSuccess()) {
           this.setTokens(responseDate);
           // this.loginType = LoginTypeEnum.EMAIL;
           onSuccess();
@@ -114,19 +127,19 @@ export const useEvStore = defineStore({
         }
       });
     },
-    async mockGetQrCodeInfo(qrCodeInfoPath: string) {
-      this.qrCodeInfoPath = qrCodeInfoPath;
-    },
+    // async mockGetQrCodeInfo(qrCodeInfoPath: string) {
+    //   this.qrCodeInfoPath = qrCodeInfoPath;
+    // },
 
-    async getQrCodeInfo(pathToDecode: string, lockscreen = true) {
-      await apiFactory.evServiceApi().evQrCodeInfo(pathToDecode, lockscreen).then(response => {
-        if (response.data) {
-          this.qrCodeInfoPath = response.data.params.path
-        }
-      });
-    },
+    // async getQrCodeInfo(pathToDecode: string, lockscreen = true) {
+    //   await apiFactory.evServiceApi().evQrCodeInfo(pathToDecode, lockscreen).then(response => {
+    //     if (response.data) {
+    //       this.qrCodeInfoPath = response.data.params.path
+    //     }
+    //   });
+    // },
 
-    async mockFetchChargePointInfo(chargePointId: string, connectorId: number, lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
+    async mockFetchChargePointInfo(chargePointId: string, connectorId: number, lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().evChargePointInfo(`/v0.1/charge_point/${chargePointId}/connector/${connectorId}`, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
@@ -137,16 +150,30 @@ export const useEvStore = defineStore({
       });
     },
 
-    async fetchChargePointInfo(lockscreen = true) {
-      await apiFactory.evServiceApi().evChargePointInfo(this.qrCodeInfoPath, lockscreen).then(response => {
+    async fetchChargePointInfo(chargePointUrl:string,lockscreen = true) {
+      await apiFactory.evServiceApi().evChargePointInfo(chargePointUrl, lockscreen).then(response => {
         if (response.data) {
           this.chargePointInfo = response.data
         }
       });
     },
 
-    async prepareSession(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
-      await apiFactory.evServiceApi().prepare(this.qrCodeInfoPath, this.userEmail, lockscreen).then(response => {
+    async fetchChargePointConnectorLiveStatus(chargePointConnectorUrl:string, lockscreen = true) {
+      await apiFactory.evServiceApi().evChargePointConnectorLiveStatus(chargePointConnectorUrl, lockscreen).then(response => {
+        if (response.data) {
+          if (response.data.requestStatus == RequestStatusType.ACCEPTED) {
+            this.connectorLiveStatus = response.data.status
+          } else {
+            //TODO: error
+          }
+        } else {
+          //TODO: error
+        }
+      });
+    },
+
+    async prepareSession(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
+      await apiFactory.evServiceApi().prepare(this.chargePointConnectorUrl, this.userEmail, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
         } else {// TODO: error handling
@@ -156,7 +183,7 @@ export const useEvStore = defineStore({
     },
 
 
-    async startCharging(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
+    async startCharging(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().startCharging(this.sessionInfoPath, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
@@ -166,7 +193,7 @@ export const useEvStore = defineStore({
       });
     },
 
-    async stopCharging(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)) {
+    async stopCharging(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().stopCharging(this.sessionInfoPath, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
@@ -180,17 +207,17 @@ export const useEvStore = defineStore({
       await apiFactory.evServiceApi().evFetchSesisonInfo(this.sessionInfoPath, this.userEmail, lockscreen).then(response => {
         if (response.data) {
           this.sessionInfo = response.data
-          if(!this.sessionInfo.cost){
+          if (!this.sessionInfo.cost) {
             this.sessionInfo.cost = 0;
           }
-          if(!this.sessionInfo.energyConsumed){
+          if (!this.sessionInfo.energyConsumed) {
             this.sessionInfo.energyConsumed = 0;
           }
         } // TODO: error handling
       });
     },
 
-    async initPayment( initPaymentRequest: InitPaymentRequest, lockscreen: boolean, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined)=>void)){
+    async initPayment(initPaymentRequest: InitPaymentRequest, lockscreen: boolean, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().initPayment(this.sessionInfoPath, initPaymentRequest, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
@@ -238,6 +265,36 @@ export const useEvStore = defineStore({
         }
       }
     },
+    async fetchQrCodeInfo(pathToDecode: string, lockscreen = true, onSuccess: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
+      await apiFactory.evServiceApi().evDecodeQrCodeLink(pathToDecode, lockscreen).then(response => {
+        if (response.isSuccess() && response.data) {
+          this.qrCodeInfoPath = response.data.params.path;
+          onSuccess();
+        } else {
+          onFail?.(response.error);
+        }
+      });
+    },
+    async decodeLink(pathToDecode: string, lockscreen = true, onSuccess?: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
+      apiFactory.evServiceApi().evDecodeLink(pathToDecode, lockscreen).then(response => {
+        if (response.isSuccess() && response.data) {
+          if (response.data.type == DecodedLinkType.RESOURCE_LINK && response.data.params.type == DecodedLinkParamsType.CHARGE_POINT_CONNECTOR) {
+            this.appTypeLink = AppTypeLink.CHARGE_POINT_CONNECTOR_LINK;
+            this.chargePointConnectorUrl = response.data.params.path;
+            onSuccess?.();
+          } else if (response.data.type == DecodedLinkType.AUTH_RESOURCE_LINK && response.data.params.type == DecodedLinkParamsType.CHARGING_SESSION) {
+            this.appTypeLink = AppTypeLink.CHARGING_SESSION_LINK;
+            onSuccess?.();
+          } else {
+            console.error("NOT IMPLEMENTED");
+            //TODO:
+          }
+        } else {
+          onFail?.(response.error);
+        }
+      });
+    }
+
   },
   getters: {
     getChargePointInfo(): ChargePointInfo | undefined {
@@ -255,5 +312,15 @@ export const useEvStore = defineStore({
     getResourceCode(): string {
       return this.resourceCode;
     },
+    getAppLinkType(): AppTypeLink | undefined {
+      return this.appTypeLink;
+    },
+    getConnectorLiveStatus(): ChargePointConnectorStatusType | undefined{
+      return this.connectorLiveStatus;
+    },
+    getChargePointConnectorUrl(): string | undefined{
+      return this.chargePointConnectorUrl;
+    },
+
   }
 });

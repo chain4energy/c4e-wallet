@@ -33,8 +33,18 @@ export enum EvServiceApplicationErrorCodespace {
   SIGNATURE = 'signature'
 }
 
+
+export enum DecodedLinkType{
+  AUTH_RESOURCE_LINK ="auth-resource-link",
+  RESOURCE_LINK = "resource-link"
+}
+
+export enum DecodedLinkParamsType{
+  CHARGE_POINT_CONNECTOR = "charge-point-connector",
+  CHARGING_SESSION = "charging-session"
+}
 export interface LinkDecoder<T> {
-  type: string,
+  type: DecodedLinkType,
   version: string,
   params: T
 }
@@ -52,13 +62,18 @@ export interface InitPaymentRequest{
   "currency": string
 }
 
-export interface DecodeLinkAuthParams {
+export interface DecodedLinkParamsBase {
   path: string;
+  type: DecodedLinkParamsType;
+}
+
+export interface DecodeLinkAuthParams extends DecodedLinkParamsBase{
   resourceCode: string;
 }
 
 export interface QrCodeInfoParams {
   path: string;
+  type: string;
 }
 
 

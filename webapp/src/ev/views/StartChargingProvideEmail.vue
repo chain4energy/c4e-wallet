@@ -39,7 +39,6 @@ const schema = object().shape({
 
 function next(){
   if(evStore.userEmail) {
-
     evStore.prepareSession(true, onSucces, onError );
     console.log("send request to backend -> start charging");
   }

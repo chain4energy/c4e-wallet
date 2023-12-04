@@ -19,12 +19,30 @@ const routesEv: Array<RouteRecordRaw> = [
   {
     path: '/' + evSubAppName + '/resourceLink/:context(.*)*',
     name: evSubAppName + '_ResourceLink',
-    component: () => import(/* webpackChunkName: "ResourceLink" */ '@/ev/views/ResourceLink.vue')
+    component: () => import(/* webpackChunkName: "ResourceLinkNew" */ '@/ev/views/ResourceLinkNew.vue'),
+    props: true,
+    // alias: '/' + evSubAppName + '/resourceLink/:context'
+  },
+  {
+    path: '/' + evSubAppName + '/sessionLink/:context(.*)*',
+    name: evSubAppName + '_SessionLink',
+    component: () => import(/* webpackChunkName: "ResourceLink" */ '@/ev/views/ResourceLink.vue'),
+    props: true,
+    // alias: '/' + evSubAppName + '/resourceLink/:context'
+  },
+  {
+    path: '/' + evSubAppName + '/chargePointConnector/:context(.*)*',
+    name: evSubAppName + '_ChargePointConnector',
+    component: () => import(/* webpackChunkName: "ChargePointConnector" */ '@/ev/views/ChargePointConnector.vue'),
+    props: true,
+    // alias: '/' + evSubAppName + '/resourceLink/:context'
   },
   {
     path: '/' + evSubAppName + '/qrCode/:context(.*)*',
     name: evSubAppName + '_QrCode',
-    component: () => import(/* webpackChunkName: "QrCode" */ '@/ev/views/QrCode.vue')
+    component: () => import(/* webpackChunkName: "QrCode" */ '@/ev/views/QrCode.vue'),
+    props: true,
+    // alias: '/' + evSubAppName + '/resourceLink/:context'
   },
   {
     path: '/' + evSubAppName + '/startCharging',

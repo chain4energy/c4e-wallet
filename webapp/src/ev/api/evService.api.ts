@@ -4,6 +4,7 @@ import {useConfigurationStore} from "@/store/configuration.store";
 import {RequestResponse} from "@/models/request-response";
 import {Jwt} from "@/models/user/jwt";
 import {
+  DecodedLinkParamsBase,
   DecodeLinkAuthParams,
   EvServiceApplicationError,
   InitPaymentRequest,
@@ -22,7 +23,7 @@ import {ChargePoint} from "@/ev/models/chargePoint";
 import {CreateChargePoint} from "@/ev/models/createChargePoint";
 import {UpdateChargePoint} from "@/ev/models/updateChargePoint";
 import {UpdateChargePointConnector} from "@/ev/models/updateChargePointConnector";
-import {ChargePointConnector} from "@/ev/models/chargePointConnector";
+import {ChargePointConnector, ChargePointConnectorStatusResponse} from "@/ev/models/chargePointConnector";
 import {CreateChargePointConnector} from "@/ev/models/createChargePointConnector";
 import {CreateTariff} from "@/ev/models/createTariff";
 import {Tariff} from "@/ev/models/tariff";
@@ -119,9 +120,9 @@ export class EvServiceApi extends BaseApi {
     return this.evServiceGetCall<Jwt, EvServiceApplicationError>(formatString(useConfigurationStore().config.queriesEv.ACTIVATE_ACCOUNT, {activationCode: code}), lockscreen, "activateEmailAccount");
   }
 
-  public evDecodeLink(path: string, lockscreen: boolean) {
-    return this.evServiceGetCall<LinkDecoder<DecodeLinkAuthParams>, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + "/v0.1/link/" + path, lockscreen, "evDecodeLink");
-  }
+  // public evDecodeResourceLink(path: string, lockscreen: boolean) {
+  //   return this.evServiceGetCall<LinkDecoder<DecodeLinkAuthParams>, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + "/v0.1/link/" + path, lockscreen, "evDecodeLink");
+  // }
 
   public evQrCodeInfo(path: string, lockscreen: boolean) {
     return this.evServiceGetCall<LinkDecoder<QrCodeInfoParams>, EvServiceApplicationError>(path, lockscreen, "evQrCodeInfo");
@@ -129,6 +130,10 @@ export class EvServiceApi extends BaseApi {
 
   public evChargePointInfo(path: string, lockscreen: boolean) {
     return this.evServiceGetCall<ChargePointInfo, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path, lockscreen, "evChargePointInfo");
+  }
+
+  public evChargePointConnectorLiveStatus(path: string, lockscreen: boolean) {
+    return this.evServiceGetCall<ChargePointConnectorStatusResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/status", lockscreen, "evChargePointConnectorLiveStatus");
   }
 
   public prepare(path: string, login: string, lockscreen: boolean) {
@@ -282,5 +287,13 @@ export class EvServiceApi extends BaseApi {
   async getTariffGroup(tgId: number, lockscreen: boolean) {
     const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/tariff_group/{tgId}', {tgId});
     return this.evServiceGetCall<void, EvServiceApplicationError>(url, lockscreen, "getTariffGroup");
+  }
+
+  public evDecodeQrCodeLink(path: string, lockscreen: boolean) {
+    return this.evServiceGetCall<LinkDecoder<QrCodeInfoParams>, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + "/v0.1/link/" + path, lockscreen, "evDecodeQrCodeLink");
+  }
+
+  public evDecodeLink(path: string, lockscreen: boolean){
+    return this.evServiceGetCall<LinkDecoder<DecodeLinkAuthParams | DecodedLinkParamsBase>, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + "/v0.1/link/" + path, lockscreen, "evDecodeLink");
   }
 }

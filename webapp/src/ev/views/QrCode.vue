@@ -1,37 +1,40 @@
 <template>
-  <div class="card flex justify-content-center">
-    <div class="flex flex-column gap-3">
-      <div v-for="category in categories" :key="category.key" class="flex align-items-center">
-        <RadioButton v-model="chargePointForm.chargePointId" :inputId="category.key" name="dynamic" :value="category.value" />
-        <label :for="category.key" class="ml-2">{{ category.name }}</label>
-      </div>
-    </div>
-  </div>
-  <form>
-    <InputText v-model="qrCodeInfoForm.qrCodeInfoPath" placeholder="QR Code Info Path"/>
-    <Button label="Get QR Code Info" @click="submitQrCodeInfo()"/>
-    <Button label="Fetch Connector from QR Code Info Path" @click="fetchConnectorInfo()"/>
-  </form>
-  <form style="margin-bottom: 25px;">
-    <InputText v-model="chargePointForm.chargePointId" placeholder="Charge Point ID"/>
-    <InputText v-model="chargePointForm.connectorId" placeholder="Connector ID" type="number"/>
-    <Button @click="submitChargePointInfo()" label="Fetch Charge Point Info"/>
-  </form>
+<!--  <div class="card flex justify-content-center">-->
+<!--    <div class="flex flex-column gap-3">-->
+<!--      <div v-for="category in categories" :key="category.key" class="flex align-items-center">-->
+<!--        <RadioButton v-model="chargePointForm.chargePointId" :inputId="category.key" name="dynamic" :value="category.value" />-->
+<!--        <label :for="category.key" class="ml-2">{{ category.name }}</label>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <form>-->
+<!--    <InputText v-model="qrCodeInfoForm.qrCodeInfoPath" placeholder="QR Code Info Path"/>-->
+<!--    <Button label="Get QR Code Info" @click="submitQrCodeInfo()"/>-->
+<!--    <Button label="Fetch Connector from QR Code Info Path" @click="fetchConnectorInfo()"/>-->
+<!--  </form>-->
+<!--  <form style="margin-bottom: 25px;">-->
+<!--    <InputText v-model="chargePointForm.chargePointId" placeholder="Charge Point ID"/>-->
+<!--    <InputText v-model="chargePointForm.connectorId" placeholder="Connector ID" type="number"/>-->
+<!--    <Button @click="submitChargePointInfo()" label="Fetch Charge Point Info"/>-->
+<!--  </form>-->
 
   <chargerInfoC v-if="chargePointInfo" :charge-point-info="chargePointInfo"></chargerInfoC>
-  <div style="color: red">
-    {{errorStr}}
+  <div >
+    <p>Connector live status - {{evStore.connectorStatus}}</p>
   </div>
+  <priceC :price-info="priceInfo"></priceC>
   <div v-if="chargePointInfo">
     <Button v-if="chargePointInfo?.status === ChargerStatus.AVAILABLE" @click="next()">
       Next
     </Button>
   </div>
-  <priceC :price-info="priceInfo"></priceC>
+  <div style="color: red">
+    {{errorStr}}
+  </div>
 </template>
 <script setup lang="ts">
 import {useRoute, useRouter} from 'vue-router'
-import {computed, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import PriceC from "@/ev/components/PriceC.vue";
 import ChargerInfoC from "@/ev/components/ChargerInfoC.vue";
 import {ChargerStatus, PriceInfo} from "@/ev/models/chargerInfo";
@@ -44,6 +47,24 @@ const errorStr = ref("");
 const router = useRouter()
 const route = useRoute()
 const evStore = useEvStore();
+
+const props = defineProps({
+  context: {
+    type: String ,
+    required: false
+  },
+});
+
+
+onMounted(()=>{
+  console.log("context!!! -> " + JSON.stringify(props.context ));
+  evStore.fetchQrCodeInfo( createLinkFromPathParams(props.context as unknown as string[]), true, fetchChargerPointInfo, undefined);
+})
+
+function fetchChargerPointInfo(){
+  evStore.fetchChargePointInfo();
+  evStore.fetchChargePointConnectorLiveStatus();
+}
 
 const selectedCategory = ref('Production');
 
@@ -79,7 +100,7 @@ function onError(error: ErrorData<EvServiceApplicationError> | undefined){
 }
 
 const submitQrCodeInfo = () => {
-  evStore.mockGetQrCodeInfo(qrCodeInfoForm.value.qrCodeInfoPath);
+  // evStore.mockGetQrCodeInfo(qrCodeInfoForm.value.qrCodeInfoPath);
 };
 
 const fetchConnectorInfo = async () => {
@@ -93,13 +114,13 @@ function next(){
   }
 }
 
-async function fetchAllData() {
-  console.log(route.params.context);
-  const qrCodePath = createLinkFromPathParams(route.params.context);
-  console.log("pathToDecoder:" + qrCodePath);
-  await evStore.getQrCodeInfo(qrCodePath)
-  await fetchConnectorInfo()
-}
+// async function fetchAllData() {
+//   console.log(route.params.context);
+//   const qrCodePath = createLinkFromPathParams(route.params.context);
+//   console.log("pathToDecoder:" + qrCodePath);
+//   // await evStore.getQrCodeInfo(qrCodePath)
+//   await fetchConnectorInfo()
+// }
 
 function createLinkFromPathParams(params: string | string[]): string {
   if (Array.isArray(params)) {
