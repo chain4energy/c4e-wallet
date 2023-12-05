@@ -10,7 +10,15 @@
       <h3 v-if="chargePointConnector.errorCode">Error code: {{ chargePointConnector.errorCode}}</h3>
       <div v-if="chargePointConnector.qrCodeLink">
         <a :href="chargePointConnector.qrCodeLink">{{chargePointConnector.qrCodeLink}}</a>
-        <QrcodeVue :value="chargePointConnector.qrCodeLink" size="200" :render-as="'svg'"></QrcodeVue>
+        <div class="qrcode">
+          <QrcodeVue :value="chargePointConnector.qrCodeLink" size="200" :render-as="'svg'"></QrcodeVue>
+          <img
+            class="qrcode__image"
+            src="@/assets/svg/C4E.svg"
+            alt="C4E logo"
+          />
+        </div>
+
       </div>
     </template>
   </Card>
@@ -43,5 +51,24 @@ onMounted(() => {
 
 </script>
 <style scoped lang="scss">
+.qrcode {
+  display: inline-block;
+  font-size: 0;
+  margin-bottom: 0;
+  position: relative;
+}
 
+.qrcode__image {
+  background-color: #fff;
+  border: 0.25rem solid #fff;
+  border-radius: 10px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.25);
+  height: 30%;
+  left: 50%;
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+}
 </style>

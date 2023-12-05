@@ -166,6 +166,11 @@ export class EvServiceApi extends BaseApi {
     return this.evServiceGetCall<ChargePoint[], EvServiceApplicationError>(url, lockscreen, "getChargePoints");
   }
 
+  public getChargePointsAll(lockscreen: boolean): Promise<RequestResponse<ChargePoint[], ErrorData<EvServiceApplicationError>>> {
+    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/all';
+    return this.evServiceGetCall<ChargePoint[], EvServiceApplicationError>(url, lockscreen, "getChargePoints");
+  }
+
   public createChargePoint(createChargePoint: CreateChargePoint, lockscreen: boolean): Promise<RequestResponse<ChargePoint, ErrorData<EvServiceApplicationError>>> {
     const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point';
     return this.evServicePostCall<CreateChargePoint, ChargePoint, EvServiceApplicationError>(url, createChargePoint, lockscreen, "createChargePoint");
@@ -177,7 +182,7 @@ export class EvServiceApi extends BaseApi {
   }
 
   public createChargePointFromDict(createChargePoint: CreateChargePointFromDict, lockscreen: boolean): Promise<RequestResponse<ChargePoint, ErrorData<EvServiceApplicationError>>> {
-    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point_from_dict';
+    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/from_dict';
     return this.evServicePostCall<CreateChargePointFromDict, ChargePoint, EvServiceApplicationError>(url, createChargePoint, lockscreen, "createChargePointFromDict");
   }
 

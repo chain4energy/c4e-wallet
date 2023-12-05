@@ -43,18 +43,18 @@ export const useOwnerStore = defineStore({
   actions: {
     async fetchAllChargeStoreData(lockscreen = true) {
       await this.fetchChargePointDicts(lockscreen);
-      await this.fetchChargePoints(lockscreen);
-      await this.fetchTariffGroups(lockscreen);
-      for (const cp of this.chargePoints) {
-        await this.fetchAndAssignChargePointConnectors(cp.id, lockscreen);
-      }
-      for (const tg of this.tariffGroups) {
-        await this.fetchAndAssignTariffsToTariffGroup(tg.id, lockscreen);
-      }
+      await this.fetchChargePointsAll(lockscreen);
     },
 
     async fetchChargePoints(lockscreen = true) {
       const response = await apiFactory.evServiceApi().getChargePoints(lockscreen);
+      if (response.isSuccess() && response.data) {
+        this.chargePoints = response.data;
+      }
+    },
+
+    async fetchChargePointsAll(lockscreen = true) {
+      const response = await apiFactory.evServiceApi().getChargePointsAll(lockscreen);
       if (response.isSuccess() && response.data) {
         this.chargePoints = response.data;
       }
@@ -83,7 +83,6 @@ export const useOwnerStore = defineStore({
       if (response.isSuccess() && response.data) {
         this.chargePoints.push(response.data);
         this.selectedChargePoint = response.data;
-        await this.fetchAndAssignChargePointConnectors(response.data.id);
         this.createChargePointFromDict = {} as CreateChargePointFromDict;
         this.selectedChargePointDict = null;
         if (onSuccess) {
@@ -153,17 +152,6 @@ export const useOwnerStore = defineStore({
         this.tariffGroups = this.tariffGroups.filter(tg => tg.id !== tgId);
       }
     },
-
-    async fetchAndAssignTariffsToTariffGroup(tgId: number, lockscreen = true) {
-      const response = await apiFactory.evServiceApi().getTariffs(tgId, lockscreen);
-      if (response.isSuccess() && response.data) {
-        const tgIndex = this.tariffGroups.findIndex(tg => tg.id === tgId);
-        if (tgIndex !== -1) {
-          this.tariffGroups[tgIndex].tariffs = response.data;
-        }
-      }
-    },
-
 
     async fetchTariffGroups(lockscreen = true) {
       const response = await apiFactory.evServiceApi().getTariffGroups(lockscreen);
