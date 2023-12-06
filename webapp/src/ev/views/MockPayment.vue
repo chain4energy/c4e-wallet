@@ -21,14 +21,14 @@ const evStore = useEvStore();
 const router = useRouter()
 function mockAccepted() {
   if (evStore.sessionInfo) {
-    evStore.sessionInfo.state = SessionState.PAID
+    evStore.sessionInfo.state = SessionState.INIT
   }
   evStore.initPayment({ amount:'500', currency: 'PLN'}, true, onSucces, onError);
 }
 
 function mockAcceptedAccepted() {
   if (evStore.sessionInfo) {
-    evStore.sessionInfo.state = SessionState.PAID
+    evStore.sessionInfo.state = SessionState.INIT
   }
   onSucces();
 }

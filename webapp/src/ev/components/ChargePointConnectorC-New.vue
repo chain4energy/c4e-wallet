@@ -1,16 +1,12 @@
 <template>
   <Card>
     <template #title>
-      <h3>Name: {{ evStore.getChargePointInfo?.name }}</h3>
+      <h3>Name: {{ chargePointConnector?.name }}</h3>
     </template>
     <template #content>
-      <h3>Active: {{evStore.getChargePointInfo?.active}}</h3>
-      <h3>IdentificationCode: {{ evStore.getChargePointInfo?.identificationCode}}</h3>
-      <h3>IntegrationType: {{ evStore.getChargePointInfo?.integrationType}}</h3>
-      <h3>IntegrationVersion: {{ evStore.getChargePointInfo?.integrationVersion}}</h3>
-      <h3>TariffGroupId: {{ evStore.getChargePointInfo?.tariffGroupId}}</h3>
-      <h3>ErrorCode: {{ evStore.getChargePointInfo?.errorCode}}</h3>
-      <h3>Connector Status: {{ evStore.getConnectorLiveStatus }}</h3>
+      <p>Active: {{chargePointConnector?.active}}</p>
+      <p>ErrorCode: {{chargePointConnector?.errorCode}}</p>
+      <p>Status: {{chargePointConnector?.status}}</p>
     </template>
   </Card>
 </template>
@@ -18,13 +14,14 @@
 
 import {onMounted} from "vue";
 import {useEvStore} from "@/ev/store/ev.store";
-import {getChargerPointUrlFromChargerPointConnectorUrl} from "@/ev/services/utils";
+import {getChargePointUrlFromChargerPointConnectorUrl} from "@/ev/services/utils";
+import {ChargePointConnector} from "@/ev/models/chargePointConnector";
 
 const evStore = useEvStore();
 
 const props = defineProps({
-    chargePointConnectorUrl: {
-      type: String,
+    chargePointConnector: {
+      type:  Object as () => ChargePointConnector,
       required: true
     },
     showQrCode: {
@@ -34,12 +31,9 @@ const props = defineProps({
   }
 );
 
-onMounted(() => {
-  if(props.chargePointConnectorUrl != "") {
-    evStore.fetchChargePointConnectorLiveStatus(props.chargePointConnectorUrl);
-    evStore.fetchChargePointInfo(getChargerPointUrlFromChargerPointConnectorUrl(props.chargePointConnectorUrl));
-  }
-});
+// onMounted(() => {
+//
+// });
 
 </script>
 <style scoped lang="scss">

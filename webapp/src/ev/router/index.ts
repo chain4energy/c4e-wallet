@@ -9,38 +9,26 @@ const routesEv: Array<RouteRecordRaw> = [
   {
     path: '/' + evSubAppName,
     name: "",
-    redirect: '/' + evSubAppName + '/infoPage',
-  },
-  {
-    path: '/' + evSubAppName + '/infoPage',
-    name: evSubAppName + '_InfoPage',
-    component: () => import(/* webpackChunkName: "InfoPage" */ '@/ev/views/InfoPage.vue')
+    redirect: '/' + evSubAppName + '/signIn',
   },
   {
     path: '/' + evSubAppName + '/resourceLink/:context(.*)*',
     name: evSubAppName + '_ResourceLink',
-    component: () => import(/* webpackChunkName: "ResourceLinkNew" */ '@/ev/views/ResourceLinkNew.vue'),
+    component: () => import(/* webpackChunkName: "ResourceLinkNew" */ '@/ev/views/ResourceLink.vue'),
     props: true,
     // alias: '/' + evSubAppName + '/resourceLink/:context'
   },
   {
     path: '/' + evSubAppName + '/sessionLink/:context(.*)*',
     name: evSubAppName + '_SessionLink',
-    component: () => import(/* webpackChunkName: "ResourceLink" */ '@/ev/views/ResourceLink.vue'),
+    component: () => import(/* webpackChunkName: "ResourceLink" */ '@/ev/views/ChargingSessionView.vue'),
     props: true,
     // alias: '/' + evSubAppName + '/resourceLink/:context'
   },
   {
     path: '/' + evSubAppName + '/chargePointConnector/:context(.*)*',
     name: evSubAppName + '_ChargePointConnector',
-    component: () => import(/* webpackChunkName: "ChargePointConnector" */ '@/ev/views/ChargePointConnector.vue'),
-    props: true,
-    // alias: '/' + evSubAppName + '/resourceLink/:context'
-  },
-  {
-    path: '/' + evSubAppName + '/qrCode/:context(.*)*',
-    name: evSubAppName + '_QrCode',
-    component: () => import(/* webpackChunkName: "QrCode" */ '@/ev/views/QrCode.vue'),
+    component: () => import(/* webpackChunkName: "ChargePointConnectorView" */ '@/ev/views/ChargePointConnectorView.vue'),
     props: true,
     // alias: '/' + evSubAppName + '/resourceLink/:context'
   },

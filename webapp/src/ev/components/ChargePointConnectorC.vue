@@ -8,10 +8,10 @@
       <h3>Status: {{ chargePointConnector.status }}</h3>
       <h3>Identifier: {{ chargePointConnector.identifier }}</h3>
       <h3 v-if="chargePointConnector.errorCode">Error code: {{ chargePointConnector.errorCode}}</h3>
-      <div v-if="chargePointConnector.qrCodeLink">
-        <a :href="chargePointConnector.qrCodeLink">{{chargePointConnector.qrCodeLink}}</a>
+      <div v-if="chargePointConnector.url">
+        <a :href="chargePointConnector.url">{{chargePointConnector.url}}</a>
         <div class="qrcode">
-          <QrcodeVue :value="chargePointConnector.qrCodeLink" size="200" :render-as="'svg'"></QrcodeVue>
+          <QrcodeVue :value="chargePointConnector.url" size="200" :render-as="'svg'"></QrcodeVue>
           <img
             class="qrcode__image"
             src="@/assets/svg/C4E.svg"

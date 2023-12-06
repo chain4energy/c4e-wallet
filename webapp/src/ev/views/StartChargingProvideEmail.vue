@@ -3,7 +3,7 @@
     <div style="padding: 10px 30px 0;">
       <div >
         <div class="field col-12">
-          <Field style="width:100%" v-model="evStore.userEmail" :placeholder="$t('START_CHARGING.EMAIL')" name="email" type="text" class="form-control"
+          <Field style="width:100%" v-model="userEmail" :placeholder="$t('START_CHARGING.EMAIL')" name="email" type="text" class="form-control"
              :class="{'is-invalid': errors.email}"></Field>
           <div class="invalid-feedback">{{ errors.email ? $t(errors.email) : '' }}</div>
         </div>
@@ -26,11 +26,13 @@ import {useRouter} from "vue-router";
 import {ErrorData} from "@/api/base.api";
 import {EvServiceApplicationError} from "@/ev/models/evServiceCommons";
 import {ref} from "vue";
+import {useEvChargePointConnectorStore} from "@/ev/store/evChargePointConnector.store";
 // const email = ref<string>();
 const router = useRouter()
-const evStore = useEvStore();
+const evChargePointConnectorStore= useEvChargePointConnectorStore();
 
 const errorStr = ref("");
+const userEmail = ref("");
 
 const schema = object().shape({
   email:  Yup.string().email()
@@ -38,8 +40,8 @@ const schema = object().shape({
 });
 
 function next(){
-  if(evStore.userEmail) {
-    evStore.prepareSession(true, onSucces, onError );
+  if(userEmail.value) {
+    evChargePointConnectorStore.prepareSession(userEmail.value,true, onSucces, onError );
     console.log("send request to backend -> start charging");
   }
 }

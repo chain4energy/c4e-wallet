@@ -121,7 +121,7 @@ export const useOwnerStore = defineStore({
             const chargePointConnectors = this.chargePoints[cpIndex].chargePointConnectors;
             console.log(response.data.link);
             if (chargePointConnectors) {
-              chargePointConnectors[connectorIndex].qrCodeLink = response.data.link;
+              chargePointConnectors[connectorIndex].url = response.data.link;
             }
           }
         }

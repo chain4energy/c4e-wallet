@@ -2,11 +2,11 @@ export interface ChargePointConnector {
   id: number;
   chargePointId?: string;
   identifier: number;
-  status?: string;
+  name?: string;
+  status?: ChargePointConnectorStatusType;
   errorCode?: string;
   active: boolean;
-  name?: string;
-  qrCodeLink?: string;
+  url?: string;
 }
 
 export interface ChargePointConnectorStatusResponse {

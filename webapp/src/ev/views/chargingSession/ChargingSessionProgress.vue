@@ -10,16 +10,15 @@
 </template>
 
 <script setup lang="ts">
-import {useEvStore} from "@/ev/store/ev.store";
-import {ErrorData} from "@/api/base.api";
-import {EvServiceApplicationError} from "@/ev/models/evServiceCommons";
-import {SessionInfo, SessionState} from "@/ev/models/sessionInfo";
-import {onMounted, onUnmounted, ref} from "vue";
+
+import {SessionInfo} from "@/ev/models/sessionInfo";
+import {onUnmounted, ref} from "vue";
 import {PropType} from "vue/dist/vue";
 
-const evStore = useEvStore();
 const errorStr = ref("");
 let interval :any;
+
+const emit = defineEmits(['stopCharging']);
 
 const props = defineProps({
   sessionInfo: {
@@ -28,36 +27,8 @@ const props = defineProps({
   },
 });
 function stopChargingSession() {
-  evStore.stopCharging(true, onSuccess, onError);
+  emit('stopCharging');
 }
-
-function onSuccess(){
-  console.log("onSuccess");
-  evStore.setSessionInfoState(SessionState.FINAL)
-}
-
-function onError(error: ErrorData<EvServiceApplicationError> | undefined){
-  console.log("Error" + error?.message)
-  if(error) {
-    errorStr.value = JSON.stringify(error.data);
-  }
-}
-
-// function  startInterval(){
-//   interval = setInterval(() => {
-//     if(evStore.sessionInfo) {
-//       evStore.sessionInfo.cost = evStore.sessionInfo.cost + 1;
-//       evStore.sessionInfo.energyConsumed = evStore.sessionInfo.energyConsumed + 0.5;
-//     }
-//   }, 1000);
-// }
-// onMounted(()=>{
-//   startInterval();
-// })
-
-onUnmounted(()=>{
-  clearInterval(interval);
-})
 
 </script>
 

@@ -1,80 +1,40 @@
 <template>
-  <InputText v-model="pathForm.path" placeholder="Path to decode"/>
-  <Button label="Decode path" @click="mockDecodePath()"/>
-  <div v-if="evStore.getSessionPath">Sesison path: {{ evStore.getSessionPath }}</div>
-  <div v-if="evStore.getResourceCode">Resource code: {{ evStore.getResourceCode }}</div>
-  <Button label="Login with resource" @click="loginWithResource()"/>
-  <div style="color: red">
-    {{errorStr}}
-  </div>
+  <p>{{evCommonStore.appTypeLink}}</p>
 </template>
 
 <script setup lang="ts">
-import {useRoute, useRouter} from 'vue-router'
-import {onMounted, ref} from "vue";
-import {useEvStore} from "@/ev/store/ev.store";
-import {ErrorData} from "@/api/base.api";
-import {EvServiceApplicationError} from "@/ev/models/evServiceCommons";
+import {onMounted} from "vue";
+import {AppTypeLink, useEvStore} from "@/ev/store/ev.store";
+import {useRouter} from "vue-router";
+import {createLinkFromPathParams} from "@/ev/services/utils";
+import {useEvCommonStore} from "@/ev/store/evCommon.store";
 
-const errorStr = ref("");
-
-const route = useRoute()
-const evStore = useEvStore();
+const evCommonStore = useEvCommonStore();
 const router = useRouter()
 
-const pathForm = ref({
-  path: 'hydrogenium/eyJ0eXBlIjoiYXV0aC1yZXNvdXJjZS1saW5rIiwidmVyc2lvbiI6InYwLjEiLCJwYXJhbXMiOnsicmVzb3VyY2UiOnsidHlwZSI6ImNoYXJnaW5nLXNlc3Npb24iLCJ2ZXJzaW9uIjoiMC4xIiwicGFyYW1zIjp7ImNoYXJnZVBvaW50Ijoib2tvIiwiY29ubmVjdG9yIjoiMSIsInNlc3Npb24iOiJhZGN4bHAxNXJpZmU2ckRZcSJ9fSwicmVzb3VyY2VDb2RlIjoiZXlKc2IyZHBiaUk2SW1SaGQybGtMbXR5ZFd0QWIzWnZieTV3YkNJc0ltRmpZMlZ6YzBOdlpHVWlPaUp0TW1GdlRYbE5NbE5xZDAxNWNrMDFaMmhHZFVWbWNWcFJibEJpWkU1TVpTSXNJbkpsYzI5MWNtTmxJam9pZTF3aWRIbHdaVndpT2x3aVkyaGhjbWRwYm1jdGMyVnpjMmx2Ymx3aUxGd2lkbVZ5YzJsdmJsd2lPbHdpTUM0eFhDSXNYQ0p3WVhKaGJYTmNJanA3WENKamFHRnlaMlZRYjJsdWRGd2lPbHdpYjJ0dlhDSXNYQ0pqYjI1dVpXTjBiM0pjSWpwY0lqRmNJaXhjSW5ObGMzTnBiMjVjSWpwY0ltRmtZM2hzY0RFMWNtbG1aVFp5UkZseFhDSjlmU0o5Q2c9PSJ9fQ==',
+const props = defineProps({
+  context: {
+    type: String ,
+    required: false
+  },
 });
 
-onMounted(async () => {
-  pathForm.value.path = createLinkFromPathParams(route.params.context as string);
-  fetchAllData()
-  mockDecodePath();
-  // TODO: for now only fetch ev auth resource data for testing
-  // console.log(route.params.context);
-  // const pathToDecoder = createLinkFromPathParams(route.params.context);
-  // console.log("pathToDecoder:" + pathToDecoder);
-  // await evStore.getEvAuthResource(pathToDecoder)
+onMounted(()=>{
+  console.log("context:" + props.context);
+  evCommonStore.decodeLink( createLinkFromPathParams(props.context as unknown as string[]), true, onSuccess);
+});
 
-})
-
-function mockDecodePath() {
-  console.log("mockDecodePath")
-  const pathToDecoder = createLinkFromPathParams(pathForm.value.path);
-  console.log(pathToDecoder)
-  evStore.getEvAuthResource(pathToDecoder, true, onSuccessEvAuthResource, onErrorEvAuthResource);
-}
-
-function onSuccessEvAuthResource(){
-  console.log("onSuccessEvAuthResource");
-}
-
-function onErrorEvAuthResource(error: ErrorData<EvServiceApplicationError> | undefined){
-  console.log("Error" + error?.message)
-  if(error) {
-    errorStr.value = JSON.stringify(error.data);
-  }
-}
-
-function loginWithResource() {
-  evStore.loginWithResource(true, () => evStore.fetchSessionInfoAndRedirect(true))
-}
-
-function fetchAllData() {
-  console.log(route.params.context);
-  const pathToDecoder = createLinkFromPathParams(route.params.context);
-  console.log("pathToDecoder:" + pathToDecoder);
-  evStore.getEvAuthResource(pathToDecoder, true, onSuccessEvAuthResource, onErrorEvAuthResource);
-  loginWithResource()
-}
-
-function createLinkFromPathParams(params: string | string[]): string {
-  if (Array.isArray(params)) {
-    return params.join("/");
+function onSuccess(){
+  console.log("Application link type:" + evCommonStore.appTypeLink);
+  if(evCommonStore.appTypeLink == AppTypeLink.CHARGE_POINT_CONNECTOR_LINK){
+    router.push({name:'ev_ChargePointConnector',params:{context:props.context}})
+  } else if(evCommonStore.appTypeLink == AppTypeLink.CHARGING_SESSION_LINK){
+    router.push({name:'ev_SessionLink',params:{context:props.context}})
   } else {
-    return params;
+    //GO TO ERROR lINK PAGE
   }
 }
+
 
 </script>
 

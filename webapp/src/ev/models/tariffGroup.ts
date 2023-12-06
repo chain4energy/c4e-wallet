@@ -8,4 +8,5 @@ export interface TariffGroup {
   startDate?: Date;
   endDate?: Date;
   tariffs: Tariff[];
+  url: string;
 }

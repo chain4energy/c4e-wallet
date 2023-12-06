@@ -1,11 +1,8 @@
-import {ChargePointConnector} from "@/ev/models/chargePointConnector";
+import {ChargePointConnector, ChargePointConnectorStatusType} from "@/ev/models/chargePointConnector";
 import {TariffGroup} from "@/ev/models/tariffGroup";
 
 export interface ChargePoint{
   id: string;
-  active: boolean;
-  status: string;
-  errorCode?: string;
   accountId?: number;
   chargePointDictId?: number;
   name: string;
@@ -13,9 +10,19 @@ export interface ChargePoint{
   codeType: string;
   integrationType: string;
   integrationVersion?: string;
-  addressId?: number;
-  locationId?: number;
   tariffGroupId?: number;
   authRequired: boolean;
+  active: boolean;
+  status: ChargePointStatusType; //sprawdzic statusy dla charger pointa
+  errorCode?: string;
+  addressId?: number;
+  locationId?: number;
   chargePointConnectors?: ChargePointConnector[];
+  tariffGroup:TariffGroup;
+  url:string;
+}
+
+export enum ChargePointStatusType{
+  AVAILABLE= 'AVAILABLE',
+  PREPARING='PREPARING'
 }

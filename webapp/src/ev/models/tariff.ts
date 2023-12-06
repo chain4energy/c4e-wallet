@@ -9,4 +9,5 @@ export interface Tariff {
   active: boolean;
   startDate?: Date;
   endDate?: Date;
+  url: string;
 }

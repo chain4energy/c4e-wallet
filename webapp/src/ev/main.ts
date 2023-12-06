@@ -23,6 +23,8 @@ import RadioButton from "primevue/radiobutton";
 import Toast, {PluginOptions, POSITION, TYPE} from "vue-toastification";
 import SuccessIcon from "@/components/features/SuccessIcon.vue";
 import ErrorIcon from "@/components/features/ErrorIcon.vue";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
 
 const toastOptions: PluginOptions = {
   // You can set your default options here
@@ -55,5 +57,7 @@ appEv.use(routerEv)
   .component('Card', Card)
   .component('Tag', Tag)
   .component('RadioButton', RadioButton)
+  .component('DataTable', DataTable)
+  .component('Column', Column)
   ;
 appEv.mount('#app');

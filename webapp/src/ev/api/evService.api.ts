@@ -104,7 +104,7 @@ export class EvServiceApi extends BaseApi {
   //   const url = formatString(useConfigurationStore().config.queries ,{address: accountAddress});
   // }
 
-  public evLoginWithResource(authRequest: LoginAuthRequest, lockscreen: boolean) {
+  public loginWithResource(authRequest: LoginAuthRequest, lockscreen: boolean) {
     return this.evServicePostCall<LoginAuthRequest, Jwt, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.LOGIN_WITH_RESOURCE, authRequest, lockscreen, "activateEmailAccount");
   }
 
@@ -140,7 +140,7 @@ export class EvServiceApi extends BaseApi {
     return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepare_anonymous", {login}, lockscreen, "evChargePointInfo");
   }
 
-  public evFetchSesisonInfo(path: string, login: string, lockscreen: boolean) {
+  public getSesisonInfo(path: string, lockscreen: boolean) {
     return this.evServiceGetCall<SessionInfo, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path, lockscreen, "evFetchSesisonInfo");
   }
 
@@ -204,6 +204,11 @@ export class EvServiceApi extends BaseApi {
   public getChargePointConnectors(cpId: string, lockscreen: boolean): Promise<RequestResponse<ChargePointConnector[], ErrorData<EvServiceApplicationError>>> {
     const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}/connector', {cpId});
     return this.evServiceGetCall<ChargePointConnector[], EvServiceApplicationError>(url, lockscreen, "getChargePointConnectors");
+  }
+
+  public getChargePointConnectorAll(path: string, lockscreen: boolean): Promise<RequestResponse<ChargePoint, ErrorData<EvServiceApplicationError>>> {
+    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + '/all';
+    return this.evServiceGetCall<ChargePoint, EvServiceApplicationError>(url, lockscreen, "getChargePointConnectorAll");
   }
 
   public updateChargePointConnector(cpId: string, connectorId: number, updateChargePointConnector: UpdateChargePointConnector, lockscreen: boolean): Promise<RequestResponse<ChargePointConnector, ErrorData<EvServiceApplicationError>>> {
