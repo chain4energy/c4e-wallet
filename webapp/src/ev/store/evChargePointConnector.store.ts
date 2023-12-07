@@ -2,7 +2,8 @@ import {defineStore} from "pinia";
 import {ChargePoint} from "@/ev/models/chargePoint";
 import apiFactory from "@/api/factory.api";
 import {ErrorData} from "@/api/base.api";
-import {EvServiceApplicationError} from "@/ev/models/evServiceCommons";
+import {EvServiceApplicationError} from "@/ev/models/evServiceErrors";
+import evServiceErrorHandler, {EvServiceContext} from "@/ev/store/evServiceErrorHandler";
 
 interface EvChargePointConnectorStoreState {
   chargePointConnectorUrl : string,
@@ -19,22 +20,23 @@ export const useEvChargePointConnectorStore = defineStore({
     };
   },
   actions: {
-    async fetchChargePointConnectorAll( lockscreen = true) {
+    async fetchChargePointConnectorAll( lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().getChargePointConnectorAll(this.chargePointConnectorUrl, lockscreen).then(response => {
         if (response.isSuccess() && response.data) {
           console.log(JSON.stringify(response.data));
           this.chargePoint = response.data;
+          onSuccess?.();
         } else {
-          //TODO: error
+          evServiceErrorHandler.handleError(response.error,  EvServiceContext.CHARGE_POINT_INFO_FETCH, onFail);
         }
       });
     },
-    async prepareSession(userEmail: string, lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
+    async prepareSession(userEmail: string, lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().prepare(this.chargePointConnectorUrl, userEmail, lockscreen).then(response => {
         if (response.isSuccess()) {
-          onSuccess();
-        } else {// TODO: error handling
-          onFail(response.error);
+          onSuccess?.();
+        } else {
+          evServiceErrorHandler.handleError(response.error,  EvServiceContext.CHARGING_SESSION_PREPARE, onFail);
         }
       });
     },

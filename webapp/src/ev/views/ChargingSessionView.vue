@@ -23,6 +23,7 @@ import ChoosePaymentMethod from "@/ev/views/ChoosePaymentMethod.vue";
 import {useEvChargingSessionStore} from "@/ev/store/evChargingSession.store";
 import {useEvChargePointConnectorStore} from "@/ev/store/evChargePointConnector.store";
 import {getChargePointConnectorUrlFromChargerPointConnectorSessionUrl} from "@/ev/services/utils";
+import {clearAuthTokens} from "axios-jwt/src/tokensUtils";
 
 const errorStr = ref("");
 
@@ -44,6 +45,7 @@ onMounted(()=>{
   if (chargingSessionStore.getChargingSessionUrl == "") {
     router.push({name: 'ev_ResourceLink', params: {context: props.context}})
   } else {
+    clearAuthTokens();
     chargingSessionStore.loginWithResource(true, onSuccess)
   }
 });
@@ -56,6 +58,7 @@ function onSuccess(){
     startInterval();
   }
 }
+
 
 function  startInterval(){
   interval = setInterval(() => {chargingSessionStore.fetchSessionInfo(false)}, 1000);

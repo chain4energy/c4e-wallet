@@ -1,16 +1,19 @@
 <template>
-  <p>{{evCommonStore.appTypeLink}}</p>
+  <p v-if="isIncorrectLink">Podany link jest błędny</p>
 </template>
 
 <script setup lang="ts">
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
 import {AppTypeLink, useEvStore} from "@/ev/store/ev.store";
 import {useRouter} from "vue-router";
 import {createLinkFromPathParams} from "@/ev/services/utils";
 import {useEvCommonStore} from "@/ev/store/evCommon.store";
+import {ErrorData} from "@/api/base.api";
+import {EvServiceApplicationError} from "@/ev/models/evServiceErrors";
 
 const evCommonStore = useEvCommonStore();
-const router = useRouter()
+const router = useRouter();
+const isIncorrectLink = ref(false);
 
 const props = defineProps({
   context: {
@@ -21,7 +24,7 @@ const props = defineProps({
 
 onMounted(()=>{
   console.log("context:" + props.context);
-  evCommonStore.decodeLink( createLinkFromPathParams(props.context as unknown as string[]), true, onSuccess);
+  evCommonStore.decodeLink( createLinkFromPathParams(props.context as unknown as string[]), true, onSuccess, onError);
 });
 
 function onSuccess(){
@@ -35,9 +38,11 @@ function onSuccess(){
   }
 }
 
-
+function onError(defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined){
+  defaultErrorHandler();
+  isIncorrectLink.value = true;
+}
 </script>
 
 <style scoped lang="scss">
-
 </style>

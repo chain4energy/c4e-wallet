@@ -33,16 +33,6 @@ const routesEv: Array<RouteRecordRaw> = [
     // alias: '/' + evSubAppName + '/resourceLink/:context'
   },
   {
-    path: '/' + evSubAppName + '/startCharging',
-    name: evSubAppName + '_StartCharging',
-    component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/StartChargingProvideEmail.vue')
-  },
-  {
-    path: '/' + evSubAppName + '/startChargingCheckEmail',
-    name: evSubAppName + '_StartChargingCheckEmail',
-    component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/StartChargingCheckEmail.vue')
-  },
-  {
     path: '/' + evSubAppName + '/sessionInfo',
     name: evSubAppName + '_ChargingSession',
     component: () => import(/* webpackChunkName: "StartChargingProvideEmail" */ '@/ev/views/ChargingSessionView.vue')

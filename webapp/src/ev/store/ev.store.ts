@@ -8,10 +8,11 @@ import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/p
 import {RequestResponse} from "@/models/request-response";
 import {Jwt} from "@/models/user/jwt";
 import {ErrorData} from "@/api/base.api";
-import {DecodedLinkParamsType, DecodedLinkType, DecodeLinkAuthParams, EvServiceApplicationError, InitPaymentRequest} from "@/ev/models/evServiceCommons";
+import {DecodedLinkParamsType, DecodedLinkType, DecodeLinkAuthParams, InitPaymentRequest} from "@/ev/models/evServiceCommons";
 import {EvServiceContext, EvServiceErrorHandler} from "@/store/errorsHandlers/uvServiceErrorHandler";
 import {ChargePointConnectorStatusType, RequestStatusType} from "@/ev/models/chargePointConnector";
 import {ChargePoint} from "@/ev/models/chargePoint";
+import {EvServiceApplicationError} from "@/ev/models/evServiceErrors";
 
 interface EvStoreState {
   chargePointInfo: ChargePointInfo | undefined,
@@ -63,17 +64,6 @@ export const useEvStore = defineStore({
       if (this.sessionInfo) {
         this.sessionInfo.state = sessionState;
       }
-    },
-    async getEvAuthResource(pathToDecode: string, lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
-      await apiFactory.evServiceApi().evDecodeLink(pathToDecode, lockscreen).then(response => {
-        if (response.isSuccess() && response.data) {
-          this.sessionInfoPath = response.data.params.path;
-          this.resourceCode = (response.data.params as DecodeLinkAuthParams).resourceCode;
-          onSuccess();
-        } else {
-          onFail(response.error);
-        }
-      });
     },
 
     async loginWithResource(lockscreen = true, onSuccess: (() => void)) {
@@ -130,50 +120,6 @@ export const useEvStore = defineStore({
         } else {
           // UserServiceErrorHandler.getInstance().handleError(responseDate.error, UserServiceContext.ACTIVATE_EMAIL_ACCOUNT);
           // onFail?.();
-        }
-      });
-    },
-    // async mockGetQrCodeInfo(qrCodeInfoPath: string) {
-    //   this.qrCodeInfoPath = qrCodeInfoPath;
-    // },
-
-    // async getQrCodeInfo(pathToDecode: string, lockscreen = true) {
-    //   await apiFactory.evServiceApi().evQrCodeInfo(pathToDecode, lockscreen).then(response => {
-    //     if (response.data) {
-    //       this.qrCodeInfoPath = response.data.params.path
-    //     }
-    //   });
-    // },
-
-    async mockFetchChargePointInfo(chargePointId: string, connectorId: number, lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
-      await apiFactory.evServiceApi().evChargePointInfo(`/v0.1/charge_point/${chargePointId}/connector/${connectorId}`, lockscreen).then(response => {
-        if (response.isSuccess()) {
-          onSuccess();
-          this.chargePointInfo = response.data
-        } else {// TODO: error handling
-          onFail(response.error);
-        }
-      });
-    },
-
-    async fetchChargePointInfo(chargePointUrl:string,lockscreen = true) {
-      await apiFactory.evServiceApi().evChargePointInfo(chargePointUrl, lockscreen).then(response => {
-        if (response.data) {
-          this.chargePointInfo = response.data
-        }
-      });
-    },
-
-    async fetchChargePointConnectorLiveStatus(chargePointConnectorUrl:string, lockscreen = true) {
-      await apiFactory.evServiceApi().evChargePointConnectorLiveStatus(chargePointConnectorUrl, lockscreen).then(response => {
-        if (response.data) {
-          if (response.data.requestStatus == RequestStatusType.ACCEPTED) {
-            this.connectorLiveStatus = response.data.status
-          } else {
-            //TODO: error
-          }
-        } else {
-          //TODO: error
         }
       });
     },
@@ -244,54 +190,6 @@ export const useEvStore = defineStore({
       });
     },
 
-
-    // async fetchSessionInfoAndRedirect(lockscreen = true) {
-    //   await this.fetchSessionInfo(lockscreen);
-    //   await this.redirectBasedOnSessionState();
-    // },
-
-    async redirectBasedOnSessionState() {
-      if (this.sessionInfo) {
-        //const router = useRouter();
-        console.log(routerEv)
-        switch (this.sessionInfo.state) {
-          case SessionState.CREATED:
-            routerEv.push({name: "ev_ChoosePaymentMethod"});
-            break;
-          // case SessionState.ACCEPTED:
-          //   routerEv.push({name: "ev_WaitForPaymentConfirmation"});
-          //   break;
-          // case SessionState.PAID:
-          //   routerEv.push({name: "ev_StartChargingSession"});
-          //   break;
-          // case SessionState.REJECTED:
-          //   routerEv.push({name: "ev_PaymentRejected"});
-          //   break;
-          case SessionState.INIT:
-            routerEv.push({name: "ev_ChargingSession"});
-            break;
-
-          case SessionState.READY_TO_START:
-            routerEv.push({name: "ev_ChargingSession"});
-            break;
-          // case SessionState.FINISHED:
-          //   routerEv.push({name: "ev_SessionInfo"});
-          //   break;
-          default:
-            routerEv.push({name: "ev_ChargingSession"});
-        }
-      }
-    },
-    async fetchQrCodeInfo(pathToDecode: string, lockscreen = true, onSuccess: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
-      await apiFactory.evServiceApi().evDecodeQrCodeLink(pathToDecode, lockscreen).then(response => {
-        if (response.isSuccess() && response.data) {
-          this.qrCodeInfoPath = response.data.params.path;
-          onSuccess();
-        } else {
-          onFail?.(response.error);
-        }
-      });
-    },
     async decodeLink(pathToDecode: string, lockscreen = true, onSuccess?: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       apiFactory.evServiceApi().evDecodeLink(pathToDecode, lockscreen).then(response => {
         if (response.isSuccess() && response.data) {

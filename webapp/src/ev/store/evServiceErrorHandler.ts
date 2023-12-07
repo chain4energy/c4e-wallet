@@ -8,10 +8,16 @@ export enum EvServiceContext {
   CREATE_ACCOUNT,
   LOG_IN,
   ACTIVATE_EMAIL_ACCOUNT,
-  PARING_EMAIL_KEPLR
+  DECODE_RESOURCE_LINK,
+  SESSION_INFO_FETCH,
+  CHARGE_POINT_INFO_FETCH,
+  INIT_PAYMENT,
+  CHARGING_SESSION_OPERATION,
+  CHARGING_SESSION_PREPARE
 }
 
-export class EvServiceErrorHandler {
+
+class EvServiceErrorHandler {
 
   private static instance: EvServiceErrorHandler;
   toastService: ToastsService = ToastsService.getInstance();
@@ -27,7 +33,15 @@ export class EvServiceErrorHandler {
     return EvServiceErrorHandler.instance;
   }
 
-  handleError(error?: ErrorData<EvServiceApplicationError>, evServiceContext: EvServiceContext = EvServiceContext.ANY) {
+  public handleError(error: ErrorData<EvServiceApplicationError> | undefined, evServiceContext: EvServiceContext, onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
+    if (onFail) {
+      onFail(() => this.defaultErrorHandler(error, evServiceContext), error);
+    } else {
+      this.defaultErrorHandler(error, evServiceContext)
+    }
+  }
+
+  private defaultErrorHandler(error?: ErrorData<EvServiceApplicationError>, evServiceContext: EvServiceContext = EvServiceContext.ANY) {
     if (error) {
       if (error.data) {
         switch (evServiceContext) {
@@ -40,9 +54,22 @@ export class EvServiceErrorHandler {
           case EvServiceContext.ACTIVATE_EMAIL_ACCOUNT:
             this.handleActivateEmailAccountError(error);
             break;
-          case EvServiceContext.PARING_EMAIL_KEPLR:
-            this.handleParingEmailKeplrError(error);
+          case EvServiceContext.DECODE_RESOURCE_LINK:
+            this.handleDecodeResourceLinkError(error);
             break;
+          case EvServiceContext.SESSION_INFO_FETCH:
+            this.handleSessionInfoError(error);
+            break;
+          case EvServiceContext.CHARGING_SESSION_OPERATION:
+            this.handleChargingSessionOperationError(error);
+            break;
+          case EvServiceContext.CHARGE_POINT_INFO_FETCH:
+            this.handleChargePointInfoFetchError(error);
+            break;
+          case EvServiceContext.CHARGING_SESSION_PREPARE:
+            this.handleChargingSessionPrepareError(error);
+            break;
+
           default:
             //UserServiceContext.ANY
             this.handleCommonServiceError(error);
@@ -61,13 +88,13 @@ export class EvServiceErrorHandler {
     if (error.name == "AxiosError" && error.message == "Network Error") {
       message = "Błąd połaczenia sieciowego";//TODO: translate
     }
-    this.toastService.errorToast(ToastsTypeEnum.PUBLIC_SALE_SERVICE, message, 1);
+    this.toastService.errorToast(ToastsTypeEnum.EV_SERVICE, message, 1);
   }
 
   handleCommonServiceError(error: ErrorData<EvServiceApplicationError>) {
     console.log("handleCommonServiceError" + JSON.stringify(error));
     const message = "Błąd podczas wykonywania operacji";//TODO: translate
-    this.toastService.errorToast(ToastsTypeEnum.PUBLIC_SALE_SERVICE, message, 1);
+    this.toastService.errorToast(ToastsTypeEnum.EV_SERVICE, message, 1);
   }
 
   handleAccountCreateError(error: ErrorData<EvServiceApplicationError>) {
@@ -95,7 +122,7 @@ export class EvServiceErrorHandler {
           message = "Podane hasło musi zawierać znak zpecjalny"; //TODO: translate
         }
     }
-    this.toastService.errorToast(ToastsTypeEnum.PUBLIC_SALE_SERVICE, message, 1);
+    this.toastService.errorToast(ToastsTypeEnum.EV_SERVICE, message, 1);
   }
 
   handleLogInError(error: ErrorData<EvServiceApplicationError>) {
@@ -106,11 +133,11 @@ export class EvServiceErrorHandler {
       case EvServiceApplicationErrorCodespace.SERVICE:
         if (data.name == EvServiceApplicationErrorName.SERVICE_LOGIN_FAILED) {
           message = "Nieprawidłowe dane logowania"; //TODO: translate
-        } else if (data.name == EvServiceApplicationErrorName.SERVICE_ACCOUNT_INACTIVE){
+        } else if (data.name == EvServiceApplicationErrorName.SERVICE_ACCOUNT_INACTIVE) {
           message = "Konto jest nieaktywne";//TODO: translate
         }
     }
-    this.toastService.errorToast(ToastsTypeEnum.PUBLIC_SALE_SERVICE, message, 1);
+    this.toastService.errorToast(ToastsTypeEnum.EV_SERVICE, message, 1);
   }
 
   handleActivateEmailAccountError(error: ErrorData<EvServiceApplicationError>) {
@@ -123,21 +150,45 @@ export class EvServiceErrorHandler {
           message = "Kod aktywacyjny stracił ważność."; //TODO: translate
         }
     }
-    this.toastService.errorToast(ToastsTypeEnum.PUBLIC_SALE_SERVICE, message, 1);
+    this.toastService.errorToast(ToastsTypeEnum.EV_SERVICE, message, 1);
   }
 
-  handleParingEmailKeplrError(error: ErrorData<EvServiceApplicationError>) {
-    console.debug("handleParingEmailKeplrError" + JSON.stringify(error));
-    const data = error.data;
-    let message = "Błędny podczas parowania email to Keplr";//TODO: translate
-    switch (data?.codespace) {
-      case EvServiceApplicationErrorCodespace.SERVICE:
-        if (data.name == EvServiceApplicationErrorName.SERVICE_ACCOUNT_PAIRING_TIME_EXPIRED) {
-          message = "Kod parowania stracił ważność."; //TODO: translate
-        }
-    }
-    this.toastService.errorToast(ToastsTypeEnum.PUBLIC_SALE_SERVICE, message, 1);
+  handleDecodeResourceLinkError(error: ErrorData<EvServiceApplicationError>) {
+    console.debug("handleDecodeResourceLinkError" + JSON.stringify(error));
+    const message = "Podany link jest błędny ";//TODO: translate
+    // switch (data?.codespace) {
+    //   case EvServiceApplicationErrorCodespace.SERVICE:
+    //     if (data.name == EvServiceApplicationErrorName.SERVICE_ACCOUNT_ACTIVATION_TIME_EXPIRED) {
+    //       message = "Kod aktywacyjny stracił ważność."; //TODO: translate
+    //     }
+    // }
+    this.toastService.errorToast(ToastsTypeEnum.EV_SERVICE, message, 1);
   }
 
+  handleSessionInfoError(error: ErrorData<EvServiceApplicationError>) {
+    console.debug("handleSessionInfoError" + JSON.stringify(error));
+    const message = "Błąd podczas pobierania inforamcji o sessji";//TODO: translate
+    this.toastService.errorToast(ToastsTypeEnum.EV_SERVICE, message, 1);
+  }
+
+
+  handleChargingSessionOperationError(error: ErrorData<EvServiceApplicationError>) {
+    console.debug("handleChargingSessionOperationError" + JSON.stringify(error));
+    const message = "Błąd podczas wykonywania operacji na sessji";//TODO: translate
+    this.toastService.errorToast(ToastsTypeEnum.EV_SERVICE, message, 1);
+  }
+
+  handleChargePointInfoFetchError(error: ErrorData<EvServiceApplicationError>) {
+    console.debug("handleChargePointInfoFetchError" + JSON.stringify(error));
+    const message = "Błąd podczas pobierania informaji o ładowarce";//TODO: translate
+    this.toastService.errorToast(ToastsTypeEnum.EV_SERVICE, message, 1);
+  }
+
+  handleChargingSessionPrepareError(error: ErrorData<EvServiceApplicationError>) {
+    console.debug("handleChargingSessionPrepareError" + JSON.stringify(error));
+    const message = "Błąd podczas tworzenia sesji";//TODO: translate
+    this.toastService.errorToast(ToastsTypeEnum.EV_SERVICE, message, 1);
+  }
 }
 
+export default EvServiceErrorHandler.getInstance();

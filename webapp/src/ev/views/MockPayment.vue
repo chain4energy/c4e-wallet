@@ -8,27 +8,27 @@
 </template>
 <script setup lang="ts">
 
-import {useEvStore} from "@/ev/store/ev.store";
 import {SessionState} from "@/ev/models/sessionInfo";
 import {useRouter} from "vue-router";
 import {ref} from "vue";
 import {ErrorData} from "@/api/base.api";
-import {EvServiceApplicationError} from "@/ev/models/evServiceCommons";
+import {useEvChargingSessionStore} from "@/ev/store/evChargingSession.store";
+import {EvServiceApplicationError} from "@/ev/models/evServiceErrors";
 
 const errorStr = ref("");
 
-const evStore = useEvStore();
+const evChargingSessionStore = useEvChargingSessionStore();
 const router = useRouter()
 function mockAccepted() {
-  if (evStore.sessionInfo) {
-    evStore.sessionInfo.state = SessionState.INIT
+  if (evChargingSessionStore.sessionInfo) {
+    evChargingSessionStore.sessionInfo.state = SessionState.INIT
   }
-  evStore.initPayment({ amount:'500', currency: 'PLN'}, true, onSucces, onError);
+  evChargingSessionStore.initPayment({ amount:'500', currency: 'PLN'}, true, onSucces, onError);
 }
 
 function mockAcceptedAccepted() {
-  if (evStore.sessionInfo) {
-    evStore.sessionInfo.state = SessionState.INIT
+  if (evChargingSessionStore.sessionInfo) {
+    evChargingSessionStore.sessionInfo.state = SessionState.INIT
   }
   onSucces();
 }
@@ -45,19 +45,13 @@ function onError(error: ErrorData<EvServiceApplicationError> | undefined){
 }
 
 function mockRejected() {
-  if (evStore.sessionInfo) {
-    evStore.sessionInfo.state = SessionState.REJECTED
+  if (evChargingSessionStore.sessionInfo) {
+    evChargingSessionStore.sessionInfo.state = SessionState.FINAL
   }
   errorStr.value="ten przycisk nie działa. Jeszcze ...."
-  // redirectBackToLink()
 }
 
-// function redirectBackToLink() {
-  // window.location.href = 'http://localhost:9000/ev/resourceLink/hydrogenium/GUIGUGIUIHIUHDiuhadsacmixexciw'
-  // router.push('/ev/startChargingSession');
-// }
 </script>
-
 
 <style scoped lang="scss">
 

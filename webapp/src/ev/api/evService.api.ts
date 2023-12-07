@@ -6,7 +6,6 @@ import {Jwt} from "@/models/user/jwt";
 import {
   DecodedLinkParamsBase,
   DecodeLinkAuthParams,
-  EvServiceApplicationError,
   InitPaymentRequest,
   LinkDecoder,
   LoginAuthRequest,
@@ -35,6 +34,7 @@ import {CreateChargePointFromDict} from "@/ev/models/createChargePointFromDict";
 import {CreateTariffForChargePoint, CreateTariffForChargePointResponse} from "@/ev/models/createTariffForChargePoint";
 import {ChargePointChangeActiveState} from "@/ev/models/ChargePointChangeActiveState";
 import {HttpLink} from "@/ev/models/httpLink";
+import {EvServiceApplicationError} from "@/ev/models/evServiceErrors";
 
 
 export class EvServiceApi extends BaseApi {

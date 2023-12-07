@@ -22,9 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed} from "vue";
-// import TariffC from "@/ev/components/TariffC.vue";
-// import {ChargePointChangeActiveState} from "@/ev/models/ChargePointChangeActiveState";
+
 import {ChargePoint} from "@/ev/models/chargePoint";
 import ChargePointConnectorCNew from "@/ev/components/ChargePointConnectorC-New.vue";
 import TarrifGroupCNew from "@/ev/components/TariffGroupC-New.vue";
@@ -37,23 +35,6 @@ const props = defineProps({
   }
 );
 
-// const navigateToChargePoint = () => {
-//   chargeStore.selectedChargePoint = props.chargePoint;
-//   goTo_ChargePointView();
-// }
-
-// const currentTariff = computed(() => chargeStore.getTariffForChargePoint(props.chargePoint.id));
-
-// const deleteChargePoint = () => {
-//   chargeStore.deleteChargePoint(props.chargePoint.id, true, goTo_EvOwnerDashboardView)
-// }
-
-// const changeChargePointActiveState = () => {
-//   const chargePointChangeActiveState = {
-//     active: !props.chargePoint.active
-//   }
-//   chargeStore.changeChargePointActiveState(props.chargePoint.id, chargePointChangeActiveState)
-// }
 </script>
 
 <style scoped lang="scss">

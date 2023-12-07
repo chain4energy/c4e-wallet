@@ -1,13 +1,12 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {ErrorData} from "@/api/base.api";
-import {ChargePoint} from "@/ev/models/chargePoint";
-import {EvServiceApplicationError, InitPaymentRequest} from "@/ev/models/evServiceCommons";
-import {RequestResponse} from "@/models/request-response";
-import {Jwt} from "@/models/user/jwt";
-import {setAuthTokens} from "axios-jwt";
+import {InitPaymentRequest} from "@/ev/models/evServiceCommons";
 import {SessionInfo} from "@/ev/models/sessionInfo";
 import {setTokens} from "@/ev/services/utils";
+import {EvServiceApplicationError} from "@/ev/models/evServiceErrors";
+import {EvServiceContext} from "@/ev/store/evServiceErrorHandler";
+import evServiceErrorHandler from "@/ev/store/evServiceErrorHandler"
 
 interface EvChargingSessionStoreState {
   loggedIn: boolean,
@@ -23,78 +22,74 @@ export const useEvChargingSessionStore = defineStore({
   state: (): EvChargingSessionStoreState => {
     return {
       loggedIn: false,
-      chargingSessionUrl : "",
-      chargingSessionResourceCode : "",
+      chargingSessionUrl: "",
+      chargingSessionResourceCode: "",
       sessionInfo: undefined,
     };
   },
 
   actions: {
-    async loginWithResource(lockscreen = true, onSuccess: (() => void)) {
+    async loginWithResource(lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().loginWithResource({
         resourceCode: this.chargingSessionResourceCode
-      }, lockscreen).then(responseDate => {
-        if (responseDate.isSuccess()) {
-          this.setTokens(responseDate);
-          onSuccess();
+      }, lockscreen).then(response => {
+        if (response.isSuccess() && response.data) {
+          setTokens(response.data.access_token.token, response.data.refresh_token.token);
+          this.loggedIn = true;
+          onSuccess?.();
+        } else {
+          evServiceErrorHandler.handleError(response.error,  EvServiceContext.LOG_IN, onFail);
         }
       });
     },
-    async fetchSessionInfo(lockscreen = true) {
+    async fetchSessionInfo(lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().getSesisonInfo(this.chargingSessionUrl, lockscreen).then(response => {
-        if (response.data) {
+        if (response.isSuccess() && response.data) {
           this.sessionInfo = response.data
-          if (!this.sessionInfo.cost) {
-            this.sessionInfo.cost = 0;
-          }
-          if (!this.sessionInfo.energyConsumed) {
-            this.sessionInfo.energyConsumed = 0;
-          }
-        } // TODO: error handling
+          // if (!this.sessionInfo.cost) {
+          //   this.sessionInfo.cost = 0;
+          // }
+          // if (!this.sessionInfo.energyConsumed) {
+          //   this.sessionInfo.energyConsumed = 0;
+          // }
+        } else {
+          evServiceErrorHandler.handleError(response.error,  EvServiceContext.SESSION_INFO_FETCH, onFail);
+        }
       });
     },
-    async initPayment(initPaymentRequest: InitPaymentRequest, lockscreen: boolean, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
+    async initPayment(initPaymentRequest: InitPaymentRequest, lockscreen: boolean, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().initPayment(this.chargingSessionUrl, initPaymentRequest, lockscreen).then(response => {
         if (response.isSuccess()) {
-          onSuccess();
-        } else {// TODO: error handling
-          onFail(response.error);
+          onSuccess?.();
+        } else {
+          evServiceErrorHandler.handleError(response.error,  EvServiceContext.INIT_PAYMENT, onFail);
         }
       });
     },
 
-    async startCharging(lockscreen = true, onSuccess?: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
+    async startCharging(lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().startCharging(this.chargingSessionUrl, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess?.();
-        } else {// TODO: error handling
-          onFail?.(response.error);
+        } else {
+          evServiceErrorHandler.handleError(response.error,  EvServiceContext.CHARGING_SESSION_OPERATION, onFail);
         }
       });
     },
 
-    async stopCharging(lockscreen = true, onSuccess?: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
+    async stopCharging(lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().stopCharging(this.chargingSessionUrl, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess?.();
-        } else {// TODO: error handling
-          onFail?.(response.error);
+        } else {
+          evServiceErrorHandler.handleError(response.error,  EvServiceContext.CHARGING_SESSION_OPERATION, onFail);
         }
       });
-    },
-
-    //???
-    setTokens(responseDate: RequestResponse<Jwt, ErrorData<EvServiceApplicationError>>) {
-      if (responseDate.data) {
-        setTokens(responseDate.data.access_token.token,responseDate.data.refresh_token.token);
-      } else {
-        //TODO: toast - log in error
-      }
     },
   },
 
   getters: {
-    getChargingSessionUrl(): string{
+    getChargingSessionUrl(): string {
       return this.chargingSessionUrl;
     },
     getSessionInfo(): SessionInfo | undefined {
@@ -102,3 +97,12 @@ export const useEvChargingSessionStore = defineStore({
     },
   }
 });
+
+// function handleError(error:ErrorData<EvServiceApplicationError> | undefined, evServiceContext: EvServiceContext,  onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)){
+//   const defaultErrorHandler = useEvServiceErrorHandler.getDefaultErrorHandler(error, evServiceContext);
+//   if (onFail) {
+//     onFail(defaultErrorHandler, error);
+//   } else {
+//     defaultErrorHandler();
+//   }
+// }
