@@ -57,10 +57,10 @@ export const useEvChargingSessionStore = defineStore({
         }
       });
     },
-    async initPayment(initPaymentRequest: InitPaymentRequest, lockscreen: boolean, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
+    async initPayment(initPaymentRequest: InitPaymentRequest, lockscreen = true, onSuccess?: ((paymentUrl:string) => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().initPayment(this.chargingSessionUrl, initPaymentRequest, lockscreen).then(response => {
-        if (response.isSuccess()) {
-          onSuccess?.();
+        if (response.isSuccess() && response.data) {
+          onSuccess?.(response.data.paymentUrl);
         } else {
           evServiceErrorHandler.handleError(response.error,  EvServiceContext.INIT_PAYMENT, onFail);
         }

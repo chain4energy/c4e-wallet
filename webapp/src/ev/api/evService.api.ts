@@ -6,7 +6,7 @@ import {Jwt} from "@/models/user/jwt";
 import {
   DecodedLinkParamsBase,
   DecodeLinkAuthParams,
-  InitPaymentRequest,
+  InitPaymentRequest, InitPaymentResponse,
   LinkDecoder,
   LoginAuthRequest,
   QrCodeInfoParams,
@@ -145,7 +145,7 @@ export class EvServiceApi extends BaseApi {
   }
 
   public initPayment(path: string, initPaymentRequest: InitPaymentRequest, lockscreen: boolean) {
-    return this.evServicePostCall<InitPaymentRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/init_payment", initPaymentRequest, lockscreen, "initPayment");
+    return this.evServicePostCall<InitPaymentRequest, InitPaymentResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/init_payment", initPaymentRequest, lockscreen, "initPayment");
   }
 
   public startCharging(path: string, lockscreen: boolean) {

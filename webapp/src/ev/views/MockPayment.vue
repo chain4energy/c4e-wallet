@@ -23,17 +23,17 @@ function mockAccepted() {
   if (evChargingSessionStore.sessionInfo) {
     evChargingSessionStore.sessionInfo.state = SessionState.INIT
   }
-  evChargingSessionStore.initPayment({ amount:'500', currency: 'PLN'}, true, onSucces, onError);
+  evChargingSessionStore.initPayment({ amount:'500', currency: 'PLN'}, true, onSuccess);
 }
 
 function mockAcceptedAccepted() {
   if (evChargingSessionStore.sessionInfo) {
     evChargingSessionStore.sessionInfo.state = SessionState.INIT
   }
-  onSucces();
+  onSuccess();
 }
 
-function onSucces(){
+function onSuccess(){
   router.push('/ev/sessionInfo');
 }
 

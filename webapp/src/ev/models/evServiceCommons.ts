@@ -35,6 +35,10 @@ export interface InitPaymentRequest{
   "currency": string
 }
 
+
+export interface InitPaymentResponse{
+  "paymentUrl": string,
+}
 export interface DecodedLinkParamsBase {
   path: string;
   type: DecodedLinkParamsType;

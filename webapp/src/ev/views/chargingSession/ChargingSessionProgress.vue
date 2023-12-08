@@ -4,19 +4,12 @@
   <p>Aktualna wartość {{props.sessionInfo.cost}} PLN</p>
   <p>Czas rozpoczęcia ładowania {{props.sessionInfo.startTime}}</p>
   <Button @click="stopChargingSession()">Stop charging</Button>
-  <div style="color: red">
-    {{errorStr}}
-  </div>
 </template>
 
 <script setup lang="ts">
 
 import {SessionInfo} from "@/ev/models/sessionInfo";
-import {onUnmounted, ref} from "vue";
 import {PropType} from "vue/dist/vue";
-
-const errorStr = ref("");
-let interval :any;
 
 const emit = defineEmits(['stopCharging']);
 

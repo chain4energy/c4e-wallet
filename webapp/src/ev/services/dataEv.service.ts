@@ -15,7 +15,7 @@ class DataServiceEv extends LoggedService implements DataServiceInterface{
   }
 
   getServiceType(): ServiceTypeEnum {
-    return ServiceTypeEnum.DATA_SERVICE;
+    return ServiceTypeEnum.EV_SERVICE_API;
   }
 
   public async onAppStart() {
