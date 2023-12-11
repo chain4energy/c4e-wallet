@@ -28,7 +28,7 @@ function dateToString(date: Date): string {
     return "";
   }
   const day = date.getDate();
-  const monthIndex = date.getMonth();
+  const monthIndex = date.getMonth() + 1;
   const year = date.getFullYear();
   const minutes = date.getMinutes();
   const hours = date.getHours();
