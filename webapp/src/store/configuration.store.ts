@@ -3,6 +3,7 @@ import { Configuration } from "@/config/model/store/Configuration";
 import dataService from "@/services/data.service";
 import apiFactory from "@/api/factory.api";
 import axios from "axios";
+import {UnwrapRef} from "vue";
 
 interface ConfigurationState {
   config: Configuration
@@ -107,7 +108,7 @@ export const useConfigurationStore = defineStore({
     getConfigName(): string {
       return this.configName;
     },
-    getConfigList(): Map<string, Configuration>{
+    getConfigList():  UnwrapRef<ConfigurationState["configList"]>{
       return this.configList;
     },
     getConfig(): Configuration {
