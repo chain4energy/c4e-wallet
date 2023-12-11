@@ -36,7 +36,7 @@ data:
            }
          ],
          "keplrGasPriceSteps": {
-           "low": 0.01,
+           "low": 0.00,
            "average": 0.025,
            "high": 0.03
          },
@@ -57,7 +57,9 @@ data:
          "targetInflationAprMultiplier": 5,
          "faucetURL": "",
          "currentPublicSaleRoundId": 1,
-         "faucetAvailable": false
+         "faucetAvailable": false,
+         "currentPublicSaleRoundId": 1,
+         "publicSaleVisible": false
        },
        "Testnet": {
          "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -93,7 +95,7 @@ data:
            }
          ],
          "keplrGasPriceSteps": {
-           "low": 0.01,
+           "low": 0.00,
            "average": 0.025,
            "high": 0.03
          },
@@ -114,7 +116,9 @@ data:
          "targetInflationAprMultiplier": 5,
          "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
          "currentPublicSaleRoundId": 1,
-         "faucetAvailable": true
+         "faucetAvailable": true,
+         "currentPublicSaleRoundId": 1,
+         "publicSaleVisible": false
        }
      }
 kind: ConfigMap

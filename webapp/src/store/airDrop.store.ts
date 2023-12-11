@@ -422,10 +422,10 @@ export const useAirDropStore = defineStore({
           const missionsList = Array<Mission>();
           let initialMission = {} as Mission;
           missions.data?.missions.forEach((el: MissionBc) =>{
-            const completed = campaignData.completedMissions.find((mission)=>{
+            const completed = campaignData.completed_missions.find((mission)=>{
               return mission == el.id;
             });
-            const claimed = campaignData.claimedMissions.find((mission)=>{
+            const claimed = campaignData.claimed_missions.find((mission)=>{
               return mission == el.id;
             });
             if(el.missionType !== MissionType.INITIAL_CLAIM){

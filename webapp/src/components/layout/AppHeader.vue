@@ -68,7 +68,7 @@
 
           <Button v-if="useUserStore().isLoggedIn" class="secondary" @click="logoutWallet">{{ $t('COMMON.DISCONNECT') }}</Button>
 
-          <div class="profileMenu" @focusout="closeProfileDropdown" tabindex="0" @click="toggleProfileDropdown()" >
+          <div v-if="useConfigurationStore().config.publicSaleVisible === true" class="profileMenu" @focusout="closeProfileDropdown" tabindex="0" @click="toggleProfileDropdown()" >
             <div class="profileMenu-icon"> <UserIcon :style="useUserServiceStore().isLoggedIn ? 'color: #81CF1F' : ''" /></div>
             <div class="profileMenu__dropdown" v-if="profileDropdown">
 

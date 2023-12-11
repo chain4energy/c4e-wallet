@@ -18,8 +18,8 @@ export interface AirdropEntry {
   address: string,
   airdrop_coins: Coin[],
   amount: Coin[],
-  completedMissions: string[],
-  claimedMissions: string[]
+  completed_missions: string[],
+  claimed_missions: string[]
 }
 
 export interface CampaignBc {
