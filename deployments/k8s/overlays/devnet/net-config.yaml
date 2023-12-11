@@ -240,7 +240,6 @@ data:
         "airdropDefaultDenom": "uc4e",
         "targetInflationAprMultiplier": 5,
         "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
-        "currentPublicSaleRoundId": 1,
         "faucetAvailable": true,
         "currentPublicSaleRoundId": 1,
         "publicSaleVisible": false
