@@ -110,6 +110,9 @@ export const useConfigurationStore = defineStore({
     getConfigName(): string {
       return this.configName;
     },
+    // getConfigList(): UnwrapRef<ConfigurationState["configList"]>{
+    //   return this.configList;
+    // },
     getConfigList(): Map<string, Configuration>{
       return this.configList;
     },

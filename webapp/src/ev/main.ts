@@ -25,6 +25,7 @@ import SuccessIcon from "@/components/features/SuccessIcon.vue";
 import ErrorIcon from "@/components/features/ErrorIcon.vue";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import {LoggerService} from "@/services/logger/logger.service";
 
 const toastOptions: PluginOptions = {
   // You can set your default options here
@@ -40,6 +41,8 @@ const toastOptions: PluginOptions = {
 
 };
 
+const logger = LoggerService.getInstance();
+
 const pinia = createPinia();
 pinia.use(piniaPersist);
 
@@ -51,6 +54,7 @@ appEv.use(routerEv)
   .use(i18n)
   .use(PrimeVue)
   .use(Toast, toastOptions)
+  .provide('logger', logger)
   .component('Icon', IconComponent)
   .component('Button', Button)
   .component('InputText', InputText)
