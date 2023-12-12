@@ -14,18 +14,18 @@
           <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{$t('AIRDROP.TOTAL_HEADER')}}</h4>
           <div class="claimAirDrop__summaryData claimAirDrop__basicText">
             <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
-              <CoinAmount :amount="convertAmount(summary.totalAmount)" :show-denom="true" :show-tooltip="true" :precision="2"/>
+              <CoinAmount :amount="summary.totalAmount" :show-denom="true" :show-tooltip="true" :precision="2"/>
             </ClaimInfo>
             <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.claimedPercent">
-              <CoinAmount :amount="convertAmount(summary.totalClaimed)" :show-denom="true" :show-tooltip="true" :precision="2"/>
+              <CoinAmount :amount="summary.totalClaimed" :show-denom="true" :show-tooltip="true" :precision="2"/>
             </ClaimInfo>
             <div class="vl"/>
             <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
-              <CoinAmount :amount="convertAmount(summary.activeCampaigns)" :show-denom="true" :show-tooltip="true" :precision="2"/>
+              <CoinAmount :amount="summary.activeCampaigns" :show-denom="true" :show-tooltip="true" :precision="2"/>
             </ClaimInfo>
             <!-- :percentage-vale="summary.claimedPercentage" -->
             <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.toClaimPercent">
-              <CoinAmount :amount="convertAmount(summary.toClaim)" :show-denom="true" :show-tooltip="true" :precision="2"/>
+              <CoinAmount :amount="summary.toClaim" :show-denom="true" :show-tooltip="true" :precision="2"/>
             </ClaimInfo>
           </div>
         </div>
