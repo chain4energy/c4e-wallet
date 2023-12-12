@@ -447,7 +447,8 @@
     "CONNECT_INFO": "Connect to wallet to claim rewards!",
     "SUCCESS": "You successfully claimed mission!",
     "SOON": "Soon",
-    "TO_DEEFINE": "To define"
+    "TO_DEEFINE": "To define",
+    "CLAIM_TO_ADDRESS": "Tokens will be claimed to this address:"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Campaign countdown",

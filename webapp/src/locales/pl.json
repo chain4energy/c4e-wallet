@@ -438,7 +438,8 @@
     "CONNECT_INFO": "Połącz się z portfelem, by odbierać nagrody!",
     "SUCCESS": "Sukces! Misja wykonana pomyślnie",
     "SOON": "Wkrótce",
-    "TO_DEEFINE": "To define"
+    "TO_DEEFINE": "To define",
+    "CLAIM_TO_ADDRESS": "Tokeny zostaną wysłane na adres:"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS": "Odliczanie kampanii",
