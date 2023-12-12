@@ -108,7 +108,7 @@ export const useConfigurationStore = defineStore({
       return this.configName;
     },
     getConfigList(): Map<string, Configuration>{
-      return this.configList;
+      return this.configList as Map<string, Configuration>;
     },
     getConfig(): Configuration {
       return new Configuration(this.config);

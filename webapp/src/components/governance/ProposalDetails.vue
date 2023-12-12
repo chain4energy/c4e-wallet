@@ -39,21 +39,21 @@
         <CoinAmount :amount="proposal.getTotalDepositByDenom()" :show-denom="true"/>
         <span>{{ $t("GOVERNANCE_VIEW.VOTING_START") }}:</span>
         <span>
-          <DateCommon :date="proposal.votingStartTime" :show-time="true"/>
+          <DateCommon :date="proposal.votingStartTime" :showTime="true"/>
         </span>
         <span>{{ $t("GOVERNANCE_VIEW.VOTING_END") }}:</span>
         <span>
-          <DateCommon :date="proposal.votingEndTime" :show-time="true"/>
+          <DateCommon :date="proposal.votingEndTime" :showTime="true"/>
         </span>
         <span>{{ $t("GOVERNANCE_VIEW.TYPE") }}:</span>
         <ProposalType :proposal="proposal" />
         <span>{{ $t("GOVERNANCE_VIEW.SUBMIT_TIME") }}:</span>
         <span>
-          <DateCommon :date="proposal.submitTime"/>
+          <DateCommon :date="proposal.submitTime" :showTime="true"/>
         </span>
         <span>{{ $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") }}:</span>
         <span>
-          <DateCommon :date="proposal.depositEndTime"/>
+          <DateCommon :date="proposal.depositEndTime" :showTime="true"/>
         </span>
         <span>{{ $t("GOVERNANCE_VIEW.QUORUM") }}:</span>
         <span><PercentsView :amount="proposalsStore.getTallyParams.quorum" :precision="2"/></span>
