@@ -52,13 +52,18 @@ const props = defineProps<{
   isFinal: boolean
 }>();
 
-const address = ref(useUserStore().getAccount.address);
+const address = ref('');
+address.value = useUserStore().getAccount.address;
+
 const accountOfVestingType = computed(() => useUserStore().getAccount.type === AccountType.ContinuousVestingAccount);
 
-const emit = defineEmits(['close', 'typeChange', 'final']);
+const emit = defineEmits(['close', 'typeChange', 'final', 'claim']);
 
 let errorMessageType = '';
 
+function claim() {
+  emit('claim', address);
+}
 async function validateAddress(address: string | undefined) {
   if (!address) {
     errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.EMPTY');
@@ -106,45 +111,7 @@ const addressSchema = object().shape({
   ])
 });
 
-function claim() {
-  if (props.initialClaim) {
-    claimInitialAirdrop(props.campaignId);
-  } else {
-    claimOtherAirdrop(props.campaignId, props.missionId);
-  }
-}
 
-function claimInitialAirdrop(id: string) {
-  useAirDropStore().claimInitialAirdrop(id, address.value).then((r) => {
-    if (!r.error) {
-      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
-        .then(() => {
-          useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
-          if (props.isFinal) {
-            emit('final');
-          }
-        });
-    }
-  }).finally(() => {
-    emit('close');
-  });
-}
-
-function claimOtherAirdrop(campaignId: string, missionId: string) {
-  useAirDropStore().claimOtherAirdrop(campaignId, missionId).then((r) => {
-    if (!r.error) {
-      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
-        .then(() => {
-          useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
-          if (props.isFinal) {
-            emit('final');
-          }
-        });
-    }
-  }).finally(() => {
-    emit('close');
-  });
-}
 
 </script>
 

@@ -1,48 +1,44 @@
 <template>
   <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
   <div class="claimAirDrop" v-if="isLoggedIn && address">
-    <ClaimingOptionsPopup
-      :initial-claim="currentClaimIsInitial"
-      :campaign-id="selectedCampaignId"
-      :mission-id="selectedMissionId"
-      :isFinal="isFinal"
-      v-if="claimingProcessStarted" @close="claimingProcessStarted = false"
-      @final='handleFinal'
-    />
-    <div class="claimAirDrop__total">
-      <div class="claimAirDrop__container">
-        <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{ $t('AIRDROP.TOTAL_HEADER') }}</h4>
-        <div class="claimAirDrop__summaryData claimAirDrop__basicText">
-          <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
-            <CoinAmount :amount="summary.totalAmount" :show-denom="true" :show-tooltip="true" :precision="2"/>
-          </ClaimInfo>
-          <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText claimAirDrop__summaryTile"
-                     :percentage-vale="summary.claimedPercent">
-            <CoinAmount :amount="summary.totalClaimed" :show-denom="true" :show-tooltip="true" :precision="2"/>
-          </ClaimInfo>
-          <div class="vl"/>
-          <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
-            <CoinAmount :amount="summary.activeCampaigns" :show-denom="true" :show-tooltip="true" :precision="2"/>
-          </ClaimInfo>
-          <!-- :percentage-vale="summary.claimedPercentage" -->
-          <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText claimAirDrop__summaryTile"
-                     :percentage-vale="summary.toClaimPercent">
-            <CoinAmount :amount="summary.toClaim" :show-denom="true" :show-tooltip="true" :precision="2"/>
-          </ClaimInfo>
+      <ClaimingOptionsPopup
+        :initial-claim="currentClaimIsInitial"
+        :campaign-id="selectedCampaignId"
+        :mission-id="selectedMissionId"
+        :isFinal="isFinal"
+        v-if="claimingProcessStarted" @close="claimingProcessStarted = false"
+        @final = 'handleFinal'
+        @claim = 'claim'
+      />
+      <div class="claimAirDrop__total">
+        <div class="claimAirDrop__container">
+          <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{$t('AIRDROP.TOTAL_HEADER')}}</h4>
+          <div class="claimAirDrop__summaryData claimAirDrop__basicText">
+            <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
+              <CoinAmount :amount="summary.totalAmount" :show-denom="true" :show-tooltip="true" :precision="2"/>
+            </ClaimInfo>
+            <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.claimedPercent">
+              <CoinAmount :amount="summary.totalClaimed" :show-denom="true" :show-tooltip="true" :precision="2"/>
+            </ClaimInfo>
+            <div class="vl"/>
+            <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
+              <CoinAmount :amount="summary.activeCampaigns" :show-denom="true" :show-tooltip="true" :precision="2"/>
+            </ClaimInfo>
+            <!-- :percentage-vale="summary.claimedPercentage" -->
+            <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.toClaimPercent">
+              <CoinAmount :amount="summary.toClaim" :show-denom="true" :show-tooltip="true" :precision="2"/>
+            </ClaimInfo>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="claimAirDrop__total claimAirDrop__basicText" v-for="(campaignRecord, index) in airdropClaimRecord"
-         :key="index">
-      <div class="claimAirDrop__container">
-        <h4 class="claimAirDrop__header">{{ campaignRecord.name }}</h4>
-        <hr class="claimAirDrop__hr"/>
-        <div class="claimAirDrop__progressHeader">
-          <h5 style="margin: 0 0 20px 10px"
-              v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past">
-            {{ $t('CLAIM_AIRDROP.PROGRESS') }}</h5>
-          <h5 v-else style="margin: 0 0 20px 10px">{{ $t('CLAIM_AIRDROP.FINISHED') }}</h5>
-        </div>
+      <div class="claimAirDrop__total claimAirDrop__basicText" v-for="(campaignRecord, index) in airdropClaimRecord" :key="index">
+          <div class="claimAirDrop__container">
+            <h4 class="claimAirDrop__header">{{campaignRecord.name}}</h4>
+            <hr class="claimAirDrop__hr"/>
+            <div class="claimAirDrop__progressHeader">
+              <h5 style="margin: 0 0 20px 10px" v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past">{{$t('CLAIM_AIRDROP.PROGRESS')}}</h5>
+              <h5 v-else style="margin: 0 0 20px 10px">{{$t('CLAIM_AIRDROP.FINISHED')}}</h5>
+            </div>
 
 
         <PercentageBar
@@ -171,12 +167,15 @@ import {ChevronDown, ChevronUp} from "lucide-vue-next";
 import dataService from "@/services/data.service";
 import Dialog from 'primevue/dialog';
 import DateCommon from "@/components/commons/DateCommon.vue";
+import {string} from "yup";
+import {useToast} from "vue-toastification";
 
 const percentsBar = ref();
 const i18n = useI18n();
 const loginPopupStatus = ref(false);
 const sharePopupStatus = ref(false);
 const isFinal = ref(false);
+
 // const currentLang = computed(() => {
 //   return i18n.global.locale;
 // });
@@ -392,6 +391,47 @@ const handleFinal = () => {
   socialMediaMessage.value = `I have completed the whole campaign ${selectedCampaignName.value}!`;
   isFinal.value = false;
 };
+
+
+function claim(address:string) {
+  if (currentClaimIsInitial.value) {
+    claimInitialAirdrop(selectedCampaignId.value, address);
+  } else {
+    claimOtherAirdrop(selectedCampaignId.value, selectedMissionId.value);
+  }
+}
+
+function claimInitialAirdrop(id: string, address:string) {
+  useAirDropStore().claimInitialAirdrop(id, address).then((r) => {
+    if (!r.error) {
+      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
+        .then(() => {
+          useToast().success(i18n.t('AIRDROP.SUCCESS'));
+          if (isFinal.value) {
+            handleFinal();
+          }
+        });
+    }
+  }).finally(() => {
+    claimingProcessStarted.value = false;
+  });
+}
+
+function claimOtherAirdrop(campaignId: string, missionId: string) {
+  useAirDropStore().claimOtherAirdrop(campaignId, missionId).then((r) => {
+    if (!r.error) {
+      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
+        .then(() => {
+          useToast().success(i18n.t('AIRDROP.SUCCESS'));
+          if (isFinal.value) {
+            handleFinal();
+          }
+        });
+    }
+  }).finally(() => {
+    claimingProcessStarted.value = false;
+  });
+}
 
 </script>
 
