@@ -7,19 +7,22 @@
 <script setup lang="ts">
 import {computed} from "vue";
 
-const props = defineProps<{
-  date: Date,
+const props = defineProps({
+  date: {
+    type: [Date, Number],
+    required: true
+  },
   showTime: {
-    type: boolean,
+    type: Boolean,
     default: true,
     required: false
   },
   showTooltip: {
-    type : boolean,
+    type: Boolean,
     required: false,
     default: false
-  },
-}>();
+  }
+});
 
 const trueDate = computed(()=> {
   let date = new Date(props.date);

@@ -5,8 +5,8 @@
       <span>{{ $t("GOVERNANCE_VIEW.TOTAL_VOTED") }} / {{ $t("GOVERNANCE_VIEW.TOTAL") }}</span>
       <span>
 <!--        <CoinAmount :amount="useProposalsStore().getSelectedProposalTally.total" :reduce-big-number="true" :precision="2"/> /-->
-        <CoinAmount :amount="totalVotes!==undefined ? new BigIntWrapper(totalVotes) : 0" :reduce-big-number="true" :precision="2"/> /
-        <CoinAmount :amount="bondedTokens !== undefined ? new BigIntWrapper(bondedTokens) : 0" :reduce-big-number="true" :precision="2"/>
+        <CoinAmount :amount="wrapBigInt(totalVotes)" :reduce-big-number="true" :precision="2"/> /
+        <CoinAmount :amount="wrapBigInt(bondedTokens)" :reduce-big-number="true" :precision="2"/>
       </span>
 
     </div>
@@ -36,7 +36,7 @@
             <PercentsView :amount="yesPercentage" :precision="2"></PercentsView>
           </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.yes" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="yes" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="wrapBigInt(yes)" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -47,7 +47,7 @@
           <PercentsView :amount="abstainPercentage" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.abstain" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="abstain" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="wrapBigInt(abstain)" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -58,7 +58,7 @@
           <PercentsView :amount="noPercentage" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.no" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="no" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="wrapBigInt(no)" :reduce-big-number="true" :precision="2"/>)
       </div>
       </div>
       <div style="display: flex; align-items: center">
@@ -69,7 +69,7 @@
           <PercentsView :amount="noWithVetoPercentage" :precision="2"></PercentsView>
         </div>
 <!--          (<CoinAmount :amount="useProposalsStore().getSelectedProposalTally.noWithVeto" :reduce-big-number="true" :precision="2"/>)-->
-          (<CoinAmount :amount="noWithVeto" :reduce-big-number="true" :precision="2"/>)
+          (<CoinAmount :amount="wrapBigInt(noWithVeto)" :reduce-big-number="true" :precision="2"/>)
         </div>
       </div>
     </div>
@@ -111,6 +111,11 @@ import {BigIntWrapper} from "@/models/store/common";
 import ProgressBarComponent from "@/components/features/ProgressBarComponent.vue";
 import dataService from "@/services/data.service";
 
+const props = defineProps<{
+  proposal?: Proposal,
+  proposalDetailsTally?: ProposalDetailsTally
+}>();
+
 use([
   SVGRenderer,
   PieChart,
@@ -118,7 +123,6 @@ use([
   TooltipComponent,
   LegendComponent
 ]);
-
 
 const tokensStore = useTokensStore();
 
@@ -128,6 +132,10 @@ onBeforeMount(async () => {
   }
 });
 
+function wrapBigInt(value :bigint| undefined){
+  return value!==undefined ? new BigIntWrapper(value) : 0;
+}
+
 if(props.proposal?.status === ProposalStatus.VOTING_PERIOD) {
   setInterval(() => {
     updateVotes();
@@ -135,10 +143,7 @@ if(props.proposal?.status === ProposalStatus.VOTING_PERIOD) {
 }
 
 const childRef = ref<InstanceType<typeof ProgressBarComponent>>();
-const props = defineProps<{
-  proposal?: Proposal,
-  proposalDetailsTally?: ProposalDetailsTally
-}>();
+
 
 const icons  = new Map<string, string>([
   [ProposalStatus.PASSED, 'CheckSquare'],
