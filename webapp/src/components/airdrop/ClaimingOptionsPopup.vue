@@ -1,38 +1,50 @@
 <template>
   <div class="claimingOptionsPopup">
     <div class="claimingOptionsPopup__background" @click="$emit('close')"></div>
-    <div class="claimingOptionsPopup__holder">
-      <h3>Type an account to claim mission reward</h3>
+
+    <div class="claimingOptionsPopup__holder" v-if="!accountOfVestingType">
+      <h3>Tokens will be claimed to this account</h3>
+      <h4 class="m-4" v-if="isFinal">You are about to claim the final mission</h4>
+      <div class="claimingOptionsPopup__content">
+        {{ address }}
+      </div>
+    </div>
+
+    <div class="claimingOptionsPopup__holder" v-if="accountOfVestingType">
+      <h3>Rewards will be claimed to this account</h3>
       <h4 class="m-4" v-if="isFinal">You are about to claim the final mission</h4>
       <div class="claimingOptionsPopup__content">
         <Form @submit="claim" :validation-schema="addressSchema" v-slot="{ errors }" class="loginEmail__body">
           <div class="loginEmail__description">
             <div class="field">
-              <Field v-model="address" name="address" placeholder=" " type="text" class="form-control" style="width: 100%;" :class="{ 'is-invalid': errors.address }"></Field>
-              <span>{{$t('CONNECT.ADDRESS_HELP')}}</span>
+              <Field v-model="address" name="address" placeholder=" " type="text" class="form-control"
+                     style="width: 100%;" :class="{ 'is-invalid': errors.address }"></Field>
+              <span>{{ $t('CONNECT.ADDRESS_HELP') }}</span>
               <div class="invalid-feedback">
                 {{ errors.address ? errors.address : "" }}
               </div>
-              <Button type="submit">{{ $t('COMMON.CLAIM')}}</Button>
+              <Button type="submit">{{ $t('COMMON.CLAIM') }}</Button>
             </div>
           </div>
         </Form>
       </div>
     </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
 import {useAirDropStore} from "@/store/airDrop.store";
 import {useUserStore} from '@/store/user.store';
-import {ref, defineEmits} from "vue";
-import {Form, Field} from "vee-validate";
+import {computed, defineEmits, ref} from "vue";
+import {Field, Form} from "vee-validate";
 import {object, string} from "yup";
 import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import i18n from "@/plugins/i18n";
 import {useConfigurationStore} from "@/store/configuration.store";
 import * as bench32 from "bech32";
 import {useToast} from "vue-toastification";
+import {AccountType} from "@/models/store/account";
 
 const props = defineProps<{
   initialClaim: boolean,
@@ -41,20 +53,21 @@ const props = defineProps<{
   isFinal: boolean
 }>();
 
-const address= ref(useUserStore().getAccount.address);
+const address = ref(useUserStore().getAccount.address);
+const accountOfVestingType = computed(() => useUserStore().getAccount.type === AccountType.ContinuousVestingAccount);
 
-const emit = defineEmits(['close', 'typeChange','final']);
+const emit = defineEmits(['close', 'typeChange', 'final']);
 
 let errorMessageType = '';
 
-async function validateAddress(address: string | undefined){
+async function validateAddress(address: string | undefined) {
   if (!address) {
     errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.EMPTY');
     return false;
   }
   try {
     const words = bench32.decode(address);
-    if(words?.prefix !== useConfigurationStore().config.addressPrefix){
+    if (words?.prefix !== useConfigurationStore().config.addressPrefix) {
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.NOT_THIS_NETWORK', {prefix: useConfigurationStore().config.addressPrefix});
     }
     return true;
@@ -65,14 +78,14 @@ async function validateAddress(address: string | undefined){
 }
 
 function onWrongAddress(address: string, err: string) {
-  switch (err.slice(7)){
+  switch (err.slice(7)) {
     case address + ' too short' || 'Data too short':
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.TOO_SHORT');
       break;
-    case 'No separator character for '+ address:
+    case 'No separator character for ' + address:
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.SEPARATOR');
       break;
-    case 'Invalid checksum for '+ address:
+    case 'Invalid checksum for ' + address:
       errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.CHECK_SUM');
       break;
     default:
@@ -94,16 +107,16 @@ const addressSchema = object().shape({
   ])
 });
 
-function claim(){
-  if(props.initialClaim){
+function claim() {
+  if (props.initialClaim) {
     claimInitialAirdrop(props.campaignId);
-  }else {
+  } else {
     claimOtherAirdrop(props.campaignId, props.missionId);
   }
 }
 
-function claimInitialAirdrop(id: string){
-  useAirDropStore().claimInitialAirdrop(id, address.value).then((r) =>{
+function claimInitialAirdrop(id: string) {
+  useAirDropStore().claimInitialAirdrop(id, address.value).then((r) => {
     if (!r.error) {
       useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
         .then(() => {
@@ -118,16 +131,16 @@ function claimInitialAirdrop(id: string){
   });
 }
 
-function claimOtherAirdrop(campaignId: string, missionId: string){
-  useAirDropStore().claimOtherAirdrop(campaignId, missionId).then((r) =>{
+function claimOtherAirdrop(campaignId: string, missionId: string) {
+  useAirDropStore().claimOtherAirdrop(campaignId, missionId).then((r) => {
     if (!r.error) {
-    useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
-      .then(() => {
-      useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
-      if (props.isFinal) {
-        emit('final');
-      }
-      });
+      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
+        .then(() => {
+          useToast().success(i18n.global.t('AIRDROP.SUCCESS'));
+          if (props.isFinal) {
+            emit('final');
+          }
+        });
     }
   }).finally(() => {
     emit('close');
@@ -150,7 +163,8 @@ function claimOtherAirdrop(campaignId: string, missionId: string){
   width: 100%;
   height: 100vh;
   z-index: 10;
-  &__background{
+
+  &__background {
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -158,7 +172,8 @@ function claimOtherAirdrop(campaignId: string, missionId: string){
     opacity: 0.85;
     z-index: -1;
   }
-  &__holder{
+
+  &__holder {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -170,7 +185,8 @@ function claimOtherAirdrop(campaignId: string, missionId: string){
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
     border-radius: 8px;
   }
-  &__content{
+
+  &__content {
     width: 100%;
   }
 }
