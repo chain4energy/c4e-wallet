@@ -62,7 +62,7 @@ const emit = defineEmits(['close', 'typeChange', 'final', 'claim']);
 let errorMessageType = '';
 
 function claim() {
-  emit('claim', address);
+  emit('claim', address.value);
 }
 async function validateAddress(address: string | undefined) {
   if (!address) {

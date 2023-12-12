@@ -331,10 +331,11 @@ function redirectMission(campaign: Campaign, mission: Mission, type: MissionType
     currentClaimIsInitial.value = true;
   } else if (mission.mission_type === MissionTypeSt.CLAIM) {
     currentClaimIsInitial.value = false;
+    claimOtherAirdrop(selectedCampaignId.value, selectedMissionId.value);
   } else {
     currentClaimIsInitial.value = false;
     if (mission.completed && !mission.claimed) {
-      claimingProcessStarted.value = true;
+      claimOtherAirdrop(selectedCampaignId.value, selectedMissionId.value);
     } else {
       switch (type) {
         case MissionTypeSt.DELEGATE:
@@ -394,6 +395,7 @@ const handleFinal = () => {
 
 
 function claim(address:string) {
+  console.log("claim:", address);
   if (currentClaimIsInitial.value) {
     claimInitialAirdrop(selectedCampaignId.value, address);
   } else {
