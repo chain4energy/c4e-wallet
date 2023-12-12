@@ -70,7 +70,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     const fee: StdFee = {
       amount: [{
         denom: denom,
-        amount: '0',
+        amount: "0",
       }],
       gas: gas.toString(),
     };

@@ -3,7 +3,6 @@
     <div class="claimingOptionsPopup__background" @click="$emit('close')"></div>
 
     <div class="claimingOptionsPopup__holder" v-if="!accountOfVestingType">
-<!--      <h4 class="m-4" v-if="isFinal">{{$t('AIRDROP.CLAIM_FINAL_MISSION')}}</h4>-->
       <h3>{{$t('AIRDROP.CLAIM_TO_ADDRESS')}}</h3>
       <div class="claimingOptionsPopup__content">
         {{ address }}
@@ -12,7 +11,6 @@
     </div>
 
     <div class="claimingOptionsPopup__holder" v-if="accountOfVestingType">
-<!--      <h4 class="m-4" v-if="isFinal">{{$t('AIRDROP.CLAIM_FINAL_MISSION')}}</h4>-->
       <h3>{{$t('AIRDROP.CLAIM_TO_ADDRESS')}}</h3>
       <div class="claimingOptionsPopup__content">
         <Form @submit="claim" :validation-schema="addressSchema" v-slot="{ errors }" class="loginEmail__body">

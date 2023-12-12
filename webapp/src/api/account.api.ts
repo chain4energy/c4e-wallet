@@ -60,8 +60,10 @@ export class AccountApi extends TxBroadcastBaseApi {
       }
       return new RequestResponse<StoreAccount, ErrorData<BlockchainApiErrorData>>(errorResponse.error);
     };
-    const mapData = (bcData: AccountResponse | undefined) => {return mapAccount(bcData?.account);};
-    return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.ACCOUNT_URL, {address: address}),
+    const mapData = (bcData: AccountResponse | undefined) => {
+      return mapAccount(bcData?.account);
+    };
+    return await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.ACCOUNT_URL, {address: address}),
       mapData, lockscreen, null, 'fetchAccount - ', displayAsError, handleError);
   }
 
@@ -71,35 +73,54 @@ export class AccountApi extends TxBroadcastBaseApi {
     return status === 404 && code === 5 && message !== undefined && (/rpc error: code = NotFound/i.test(message) || /account.*not found/i.test(message));
   }
 
-  public async fetchBalance(address: string, denom: string, lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>>{
-    const mapData = (bcData: BalanceResponse | undefined) => {return mapCoin(bcData?.balance, denom);};
-    return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.BALANCE_URL, {address: address, denom: denom}),
+  public async fetchBalance(address: string, denom: string, lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: BalanceResponse | undefined) => {
+      return mapCoin(bcData?.balance, denom);
+    };
+    return await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.BALANCE_URL, {
+        address: address,
+        denom: denom
+      }),
       mapData, lockscreen, null, 'fetchBalance - ');
   }
 
-  public async fetchSpendableBalances(address: string, lockscreen: boolean): Promise<RequestResponse<Coin[] | undefined, ErrorData<BlockchainApiErrorData>>>{
-    const mapData = (bcData: SpendableBalancesResponse | undefined) => {return bcData?.balances.map(el => mapCoin(el, el.denom));};
-    return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.SPENDABLE_BALANCES_URL, {address: address}),
+  public async fetchSpendableBalances(address: string, lockscreen: boolean): Promise<RequestResponse<Coin[] | undefined, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: SpendableBalancesResponse | undefined) => {
+      return bcData?.balances.map(el => mapCoin(el, el.denom));
+    };
+    return await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.SPENDABLE_BALANCES_URL, {address: address}),
       mapData, lockscreen, null, 'fetchSpendableBalances - ');
   }
 
-  public async fetchDelegations(address: string, lockscreen: boolean): Promise<RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>>{
-    const mapData = (bcData: DelegationsResponse | undefined) => {return mapDelegations(bcData?.delegation_responses);};
-    const mapAndAddData = (data: Delegations, bcData: DelegationsResponse | undefined) => {return mapAndAddDelegations(data, bcData?.delegation_responses);};
+  public async fetchDelegations(address: string, lockscreen: boolean): Promise<RequestResponse<Delegations, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: DelegationsResponse | undefined) => {
+      return mapDelegations(bcData?.delegation_responses);
+    };
+    const mapAndAddData = (data: Delegations, bcData: DelegationsResponse | undefined) => {
+      return mapAndAddDelegations(data, bcData?.delegation_responses);
+    };
 
-    return  await this.axiosGetAllBlockchainApiCallPaginated(formatString(useConfigurationStore().config.queries.STAKED_AMOUNT_URL, {address: address}),
-            mapData, mapAndAddData, lockscreen, null, 'fetchDelegations - ');
+    return await this.axiosGetAllBlockchainApiCallPaginated(formatString(useConfigurationStore().config.queries.STAKED_AMOUNT_URL, {address: address}),
+      mapData, mapAndAddData, lockscreen, null, 'fetchDelegations - ');
   }
-  public async fetchUnbondingDelegations(address: string, lockscreen: boolean): Promise<RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>>{
-    const mapData = (bcData: UnbondigDelegationsResponse | undefined) => {return mapUnbondingDelegations(bcData?.unbonding_responses);};
-    const mapAndAddData = (data: UnbondingDelegations, bcData: UnbondigDelegationsResponse | undefined) => {return mapAndAddUnbondingDelegations(data, bcData?.unbonding_responses);};
 
-    return  await this.axiosGetAllBlockchainApiCallPaginated(formatString(useConfigurationStore().config.queries.UNSTAKED_AMOUNT_URL, {address: address}),
-            mapData, mapAndAddData, lockscreen, null, 'fetchUnbondingDelegations - ');
+  public async fetchUnbondingDelegations(address: string, lockscreen: boolean): Promise<RequestResponse<UnbondingDelegations, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: UnbondigDelegationsResponse | undefined) => {
+      return mapUnbondingDelegations(bcData?.unbonding_responses);
+    };
+    const mapAndAddData = (data: UnbondingDelegations, bcData: UnbondigDelegationsResponse | undefined) => {
+      return mapAndAddUnbondingDelegations(data, bcData?.unbonding_responses);
+    };
+
+    return await this.axiosGetAllBlockchainApiCallPaginated(formatString(useConfigurationStore().config.queries.UNSTAKED_AMOUNT_URL, {address: address}),
+      mapData, mapAndAddData, lockscreen, null, 'fetchUnbondingDelegations - ');
   }
-  public async fetchRewards(address: string, lockscreen: boolean): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>>{
-    const mapData = (bcData: RewardsResponse | undefined) => {return mapRewards(bcData);};
-    return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.REWARDS_URL, {address: address}),
+
+  public async fetchRewards(address: string, lockscreen: boolean): Promise<RequestResponse<Rewards, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: RewardsResponse | undefined) => {
+      return mapRewards(bcData);
+    };
+    return await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.REWARDS_URL, {address: address}),
       mapData, lockscreen, null, 'fetchRewards - ');
   }
 
@@ -117,14 +138,14 @@ export class AccountApi extends TxBroadcastBaseApi {
         }]
       };
       if (isLedger) {
-        return [{ typeUrl: typeUrl, value: val }];
+        return [{typeUrl: typeUrl, value: val}];
       } else {
-        return [{ typeUrl: typeUrl, value: MsgSend.fromPartial(val) }];
+        return [{typeUrl: typeUrl, value: MsgSend.fromPartial(val)}];
       }
     };
     let fee;
-    if(reservedFee){
-      fee=this.createFee(Math.ceil(reservedFee), config.transferDenom);
+    if (reservedFee) {
+      fee = this.createFee(Math.ceil(reservedFee), config.transferDenom);
     } else {
       fee = this.createFee(config.operationGas.transfer, config.transferDenom);
     }
@@ -132,7 +153,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
 
-  public async simulateSending(connection: ConnectionInfo, target: string, amount: number){
+  public async simulateSending(connection: ConnectionInfo, target: string, amount: number) {
     const config = useConfigurationStore().config;
     const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
     const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
@@ -146,9 +167,9 @@ export class AccountApi extends TxBroadcastBaseApi {
         }]
       };
       if (isLedger) {
-        return [{ typeUrl: typeUrl, value: val }];
+        return [{typeUrl: typeUrl, value: val}];
       } else {
-        return [{ typeUrl: typeUrl, value: MsgSend.fromPartial(val) }];
+        return [{typeUrl: typeUrl, value: MsgSend.fromPartial(val)}];
       }
     };
     const fee = this.createFee(config.operationGas.transfer, config.transferDenom);
@@ -169,20 +190,21 @@ export class AccountApi extends TxBroadcastBaseApi {
         }
       };
       if (isLedger) {
-        return [{ typeUrl: typeUrl, value: val }];
+        return [{typeUrl: typeUrl, value: val}];
       } else {
-        return [{ typeUrl: typeUrl, value: MsgDelegate.fromPartial(val) }];
+        return [{typeUrl: typeUrl, value: MsgDelegate.fromPartial(val)}];
       }
     };
     let fee;
-    if(reservedFee){
-      fee=this.createFee(reservedFee, config.stakingDenom);
+    if (reservedFee) {
+      fee = this.createFee(reservedFee, config.stakingDenom);
     } else {
       fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
     }
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
-  public async simulate(connection: ConnectionInfo, validator: string, amount: number){
+
+  public async simulate(connection: ConnectionInfo, validator: string, amount: number) {
     const config = useConfigurationStore().config;
     const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
     const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
@@ -196,9 +218,9 @@ export class AccountApi extends TxBroadcastBaseApi {
         }
       };
       if (isLedger) {
-        return [{ typeUrl: typeUrl, value: val }];
+        return [{typeUrl: typeUrl, value: val}];
       } else {
-        return [{ typeUrl: typeUrl, value: MsgDelegate.fromPartial(val) }];
+        return [{typeUrl: typeUrl, value: MsgDelegate.fromPartial(val)}];
       }
     };
 
@@ -206,6 +228,7 @@ export class AccountApi extends TxBroadcastBaseApi {
     const fee = this.createFee(config.operationGas.delegate, config.stakingDenom);
     return await this.simulateDelegation(connection, getMessages, fee, '', true, null);
   }
+
   // public async simulateDelegation(connection: ConnectionInfo, validator: string, amount: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
   //   const config = useConfigurationStore().config;
   //   const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
@@ -246,9 +269,9 @@ export class AccountApi extends TxBroadcastBaseApi {
         }
       };
       if (isLedger) {
-        return [{ typeUrl: typeUrl, value: val }];
+        return [{typeUrl: typeUrl, value: val}];
       } else {
-        return [{ typeUrl: typeUrl, value: MsgUndelegate.fromPartial(val) }];
+        return [{typeUrl: typeUrl, value: MsgUndelegate.fromPartial(val)}];
       }
     };
 
@@ -272,9 +295,9 @@ export class AccountApi extends TxBroadcastBaseApi {
         }
       };
       if (isLedger) {
-        return [{ typeUrl: typeUrl, value: val }];
+        return [{typeUrl: typeUrl, value: val}];
       } else {
-        return [{ typeUrl: typeUrl, value: MsgBeginRedelegate.fromPartial(val) }];
+        return [{typeUrl: typeUrl, value: MsgBeginRedelegate.fromPartial(val)}];
       }
     };
 
@@ -296,9 +319,9 @@ export class AccountApi extends TxBroadcastBaseApi {
         voter: connection.account,
       };
       if (isLedger) {
-        return [{ typeUrl: typeUrl, value: val }];
+        return [{typeUrl: typeUrl, value: val}];
       } else {
-        return [{ typeUrl: typeUrl, value: MsgVote.fromPartial(val) }];
+        return [{typeUrl: typeUrl, value: MsgVote.fromPartial(val)}];
       }
     };
 
@@ -317,7 +340,10 @@ export class AccountApi extends TxBroadcastBaseApi {
           delegatorAddress: connection.account,
           validatorAddress: validator,
         };
-        const msg: EncodeObject = isLedger ? { typeUrl: typeUrl, value: val } : { typeUrl: typeUrl, value: MsgWithdrawDelegatorReward.fromPartial(val) };
+        const msg: EncodeObject = isLedger ? {typeUrl: typeUrl, value: val} : {
+          typeUrl: typeUrl,
+          value: MsgWithdrawDelegatorReward.fromPartial(val)
+        };
         messages.push(msg);
 
       }
@@ -329,25 +355,32 @@ export class AccountApi extends TxBroadcastBaseApi {
     };
 
 
-
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
     return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
   }
+
   public async claimInitialAirDrop(connection: ConnectionInfo, campaignId: string, extraAddress: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
 
     const getMessages = (): readonly EncodeObject[] => {
       const typeUrl = '/chain4energy.c4echain.cfeclaim.MsgInitialClaim';
-      const val: MsgInitialClaim ={
+      const val: MsgInitialClaim = {
         claimer: connection.account,
         campaignId: Number(campaignId),
         destinationAddress: extraAddress,
       };
-      return [{ typeUrl: typeUrl, value: val }];
+      return [{typeUrl: typeUrl, value: val}];
     };
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
-    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+
+    try {
+      this.setKeplrPreferNoSetFee(true)
+      return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+    } finally {
+      this.setKeplrPreferNoSetFee(false)
+    }
   }
+
   public async claimAirDropMissions(connection: ConnectionInfo, campaignId: string, missionId: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
 
@@ -358,28 +391,41 @@ export class AccountApi extends TxBroadcastBaseApi {
         campaignId: Number(campaignId),
         missionId: Number(missionId),
       };
-      return [{ typeUrl: typeUrl, value: val }];
+      return [{typeUrl: typeUrl, value: val}];
     };
-
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
-    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
 
+    try {
+      this.setKeplrPreferNoSetFee(true)
+      return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+    } finally {
+      this.setKeplrPreferNoSetFee(false)
+    }
   }
-  public async sign(connection: ConnectionInfo, dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 
+ public setKeplrPreferNoSetFee(preferNoSetFee: boolean) {
+   if (window.keplr) {
+     window.keplr.defaultOptions = {
+       sign: {
+         preferNoSetFee,
+       }
+     }
+   }
+ }
 
+  public async sign(connection: ConnectionInfo, dataToSign: string): Promise<RequestResponse<string, TxBroadcastError>> {
     return this.signDirect(connection, dataToSign, true, null);
   }
-  public async signMetamask(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
 
-
+  public async signMetamask(dataToSign: string): Promise<RequestResponse<string, TxBroadcastError>> {
     return this.signWithMetamask(dataToSign, true, null);
   }
-  public async sendTransaction(amount: string, blockchainAddress: string, coinDecimals: number,destinationAddress: string):Promise<RequestResponse<string, TxBroadcastError>> {
 
+  public async sendTransaction(amount: string, blockchainAddress: string, coinDecimals: number, destinationAddress: string): Promise<RequestResponse<string, TxBroadcastError>> {
     return this.sendTransactionWithMetamask(amount, blockchainAddress, coinDecimals, destinationAddress, true, null);
   }
-  public async signMetamaskPairing(dataToSign: string):Promise<RequestResponse<string, TxBroadcastError>> {
+
+  public async signMetamaskPairing(dataToSign: string): Promise<RequestResponse<string, TxBroadcastError>> {
     return this.signWithMetamaskPairing(dataToSign, true, null);
   }
 }
