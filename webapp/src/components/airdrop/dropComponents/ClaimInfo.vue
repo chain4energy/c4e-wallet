@@ -28,8 +28,9 @@ const props = defineProps<{
   padding: 1rem;
   box-shadow: 0px 0px 2px 2px #02447A;
   border-radius: 2px;
-  width: 100%;
-  display: flex;
+  flex: 2 1;
+  margin: 5px;
+  min-width: 120px;  display: flex;
   flex-direction: column;
   justify-content: space-between;
 

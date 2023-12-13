@@ -134,7 +134,8 @@ const addressSchema = object().shape({
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    width: 650px;
+    max-width: 650px;
+    width: 90%;
     min-height: 292px;
     background-color: #FFFFFF;
     padding: 30px 20px;
@@ -144,6 +145,7 @@ const addressSchema = object().shape({
 
   &__content {
     width: 100%;
+    overflow: scroll;
   }
 }
 </style>

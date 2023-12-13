@@ -107,7 +107,7 @@
     </div>
   </div>
 
-  <Dialog v-model:visible="sharePopupStatus" modal header="Congratulations!" :style="{ width: '50vw' }">
+  <Dialog v-model:visible="sharePopupStatus" modal header="Congratulations!" :style="{ width: '50vw', 'min-width': '300px' }">
     <div class="sharePopup">
       <h3>Share this claim on your social media!</h3>
       <p>{{ socialMediaMessage }}</p>
@@ -486,12 +486,9 @@ function claimOtherAirdrop(campaignId: string, missionId: string) {
   }
 
   &__data {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
-    grid-column-gap: 9px;
-    grid-row-gap: 9px;
-    margin-bottom: 18px;
-
+        display: inline-flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
     &-text {
       margin: 0;
     }
@@ -525,6 +522,7 @@ function claimOtherAirdrop(campaignId: string, missionId: string) {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    flex-wrap: wrap;
   }
 
   &__showBtn {
@@ -550,7 +548,7 @@ function claimOtherAirdrop(campaignId: string, missionId: string) {
 
     &-body {
       display: flex;
-      justify-content: space-between;
+      justify-content: space-evenly;
       align-items: center;
       width: 100%;
       background-color: #013C6C;
@@ -558,12 +556,13 @@ function claimOtherAirdrop(campaignId: string, missionId: string) {
       box-shadow: 0 0 2px 2px #02447A;
       border-radius: 2px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
     &-btn {
       width: 130px;
       max-height: 42px !important;
-      margin: 8px !important;
+      margin: 8px auto !important;
       border-radius: 5px !important;
       color: $header-text-color !important;
       background-color: $secondary-color !important;
@@ -584,13 +583,15 @@ function claimOtherAirdrop(campaignId: string, missionId: string) {
     &-shareBtn {
       width: 130px;
       max-height: 42px !important;
-      margin: 8px !important;
+      margin: 8px auto !important;
       border-radius: 5px !important;
       box-sizing: border-box !important;
       color: $secondary-color !important;
       border: $secondary-color 1px solid !important;
       background-color: #002C50 !important;
       transition: all 0.2s linear;
+      box-sizing: border-box !important;
+
 
       &:hover {
         background-color: white !important;
@@ -614,7 +615,8 @@ function claimOtherAirdrop(campaignId: string, missionId: string) {
 
   &__leftCol {
     text-align: initial;
-    width: 75%;
+    flex: 1 1;
+    min-width: 250px;
   }
 
   &__boldText {
