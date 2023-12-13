@@ -8,6 +8,7 @@
     "CONNECT_KEPLR": "Connect with Keplr wallet",
     "CONNECT_LEAP": "Connect with Leap wallet",
     "CONNECT_COSMOSTATION": "Connect with Cosmostation wallet",
+    "CONNECT_TERMS": "I have read and accept Terms & Conditions and Privacy Policy",
     "ADDRESS_HELP": "Explore with any address",
     "VIEW_EXPLORER": "View on explorer",
     "COPY": "Copy",
@@ -447,7 +448,7 @@
     "CONNECT_INFO": "Connect to wallet to claim rewards!",
     "SUCCESS": "You successfully claimed mission!",
     "SOON": "Soon",
-    "TO_DEEFINE": "To define",
+    "TO_DEFINE": "Soon",
     "CLAIM_TO_ADDRESS": "Tokens will be claimed to this address:"
   },
   "CLAIM_AIRDROP": {

@@ -28,7 +28,6 @@ import {Coin} from "@/models/store/common";
 import {useUserStore} from "@/store/user.store";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 
-
 interface ISummary {
   totalAmount: Coin,
   activeCampaigns: Coin,
@@ -43,7 +42,6 @@ interface airDropState {
   airDropMock: AirdropTotal,
   campaigns: Campaign[],
   campaignIds: string[],
-  // fairdropPollUsage: FairdropPollUsage,
   airdropClaimingAddress: string,
   summary: ISummary,
 }
