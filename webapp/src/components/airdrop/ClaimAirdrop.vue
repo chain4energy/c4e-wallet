@@ -260,9 +260,9 @@ function calculateTimeToPass(startDate: number | string, endDate: number | strin
 
 
 
-setInterval(() => {
-  updateComponent.value = !updateComponent.value;
-}, 1000);
+// setInterval(() => {
+//   updateComponent.value = !updateComponent.value;
+// }, 1000);
 
 function getTextForMissionsBtn(mission: Mission, type: MissionTypeSt) {
   let text;
@@ -343,11 +343,15 @@ function generateSocialMediaMessage(campaign: Campaign, mission?: Mission) {
     socialMediaMessage.value = `I have completed the whole campaign ${campaign?.name}!`;
     isFinal = false;
   } else {
-    socialMediaMessage.value = `I have completed mission ${mission?.name} with a value of ${formatBigNumberLocalized((Number(mission?.weight) / 1000000).toString())} C4E from campaign ${campaign?.name} on Airdrop Allocation!`;
+    socialMediaMessage.value = `I have completed mission ${mission?.name} with a value of ${transformToExpView(Number(mission?.weight) / 1000000)} C4E from campaign ${campaign?.name} on Airdrop Allocation!`;
   }
 }
 
-function handleMissionCompleted(campaign: Campaign, mission?: Mission) {
+function transformToExpView(amount: number | bigint) {
+  return formatBigNumberLocalized(typeof amount === 'bigint' ? amount.toString() : amount.toFixed(6));
+}
+
+function handleMissionCompleted(campaign: Campaign, mission: Mission) {
   generateSocialMediaMessage(campaign, mission);
   sharePopupStatus.value = true;
 }
@@ -356,7 +360,7 @@ function claim(address: string) {
   console.log("claim:", address);
   if (selectedCampaign.value && selectedMission.value) {
     if (currentClaimIsInitial) {
-      claimInitialAirdrop(selectedCampaign.value, address);
+      claimInitialAirdrop(selectedCampaign.value, selectedMission.value, address);
     } else {
       claimOtherAirdrop(selectedCampaign.value, selectedMission.value);
     }
@@ -365,12 +369,12 @@ function claim(address: string) {
   }
 }
 
-function claimInitialAirdrop(campaign: Campaign, address: string) {
+function claimInitialAirdrop(campaign: Campaign, mission: Mission, address: string) {
   useAirDropStore().claimInitialAirdrop(campaign.id, address).then((r) => {
     if (!r.error) {
       useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
         .then(() => {
-          onSuccessClaim(campaign);
+          onSuccessClaim(campaign, mission);
         });
     }
   }).finally(() => {
@@ -391,7 +395,7 @@ function claimOtherAirdrop(campaign: Campaign, mission: Mission) {
   });
 }
 
-function onSuccessClaim(campaign: Campaign, mission?: Mission){
+function onSuccessClaim(campaign: Campaign, mission: Mission){
   useToast().success(i18n.t('AIRDROP.SUCCESS'));
   handleMissionCompleted(campaign, mission);
 }

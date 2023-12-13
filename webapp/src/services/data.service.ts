@@ -377,7 +377,7 @@ class DataService extends LoggedService {
         this.lastAccountTimeout = new Date().getTime();
       });
       if(useUserStore().getAccount.address && this.isClaimAirdropViewSelected){
-        useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+        useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, false);
       }
     }
 
