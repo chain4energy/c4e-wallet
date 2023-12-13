@@ -1,28 +1,28 @@
 <template>
   <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
-  <div class="claimAirDrop" v-if="isLoggedIn && address">
-    <ClaimingOptionsPopup v-if="claimingProcessStarted" @close="claimingProcessStarted = false" @final='handleFinal' @claim='claim'/>
+  <div class="claimAirDrop" v-if="useUserStore().isLoggedIn && useUserStore().getAccount.address">
+    <ClaimingOptionsPopup v-if="claimingProcessStarted" @close="claimingProcessStarted = false" @claim='claim'/>
     <div class="claimAirDrop__total">
       <div class="claimAirDrop__container">
         <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{ $t('AIRDROP.TOTAL_HEADER') }}</h4>
         <div class="claimAirDrop__summaryData claimAirDrop__basicText">
           <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
-            <CoinAmount :amount="summary.totalAmount" :show-denom="true" :show-tooltip="true" :precision="2"/>
+            <CoinAmount :amount="useAirDropStore().getSummary.totalAmount" :show-denom="true" :show-tooltip="true" :precision="2"/>
           </ClaimInfo>
-          <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.claimedPercent">
-            <CoinAmount :amount="summary.totalClaimed" :show-denom="true" :show-tooltip="true" :precision="2"/>
+          <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="useAirDropStore().getSummary.claimedPercent">
+            <CoinAmount :amount="useAirDropStore().getSummary.totalClaimed" :show-denom="true" :show-tooltip="true" :precision="2"/>
           </ClaimInfo>
           <div class="vl"/>
           <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
-            <CoinAmount :amount="summary.activeCampaigns" :show-denom="true" :show-tooltip="true" :precision="2"/>
+            <CoinAmount :amount="useAirDropStore().getSummary.activeCampaigns" :show-denom="true" :show-tooltip="true" :precision="2"/>
           </ClaimInfo>
-          <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.toClaimPercent">
-            <CoinAmount :amount="summary.toClaim" :show-denom="true" :show-tooltip="true" :precision="2"/>
+          <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="useAirDropStore().getSummary.toClaimPercent">
+            <CoinAmount :amount="useAirDropStore().getSummary.toClaim" :show-denom="true" :show-tooltip="true" :precision="2"/>
           </ClaimInfo>
         </div>
       </div>
     </div>
-    <div class="claimAirDrop__total claimAirDrop__basicText" v-for="(campaignRecord, index) in airdropClaimRecord" :key="index">
+    <div class="claimAirDrop__total claimAirDrop__basicText" v-for="(campaignRecord, index) in airDropStore.getCampaigns" :key="index">
       <div class="claimAirDrop__container">
         <h4 class="claimAirDrop__header">{{ campaignRecord.name }}</h4>
         <hr class="claimAirDrop__hr"/>
@@ -87,7 +87,7 @@
 
               <Button v-else class="p-button p-component secondary claimAirDrop__missions-shareBtn"
                       label="Share"
-                      @click.prevent="onClickedShareButton(missions, campaignRecord)"/>
+                      @click.prevent="onClickedShareButton(campaignRecord, missions)"/>
             </div>
           </div>
         </div>
@@ -137,56 +137,45 @@ import CoinAmount from "@/components/commons/CoinAmount.vue";
 import router from "@/router";
 import ClaimingOptionsPopup from "@/components/airdrop/ClaimingOptionsPopup.vue";
 import {useI18n} from "vue-i18n";
-import {BigDecimal} from "@/models/store/big.decimal";
-import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import {ChevronDown, ChevronUp} from "lucide-vue-next";
 import dataService from "@/services/data.service";
 import Dialog from 'primevue/dialog';
 import DateCommon from "@/components/commons/DateCommon.vue";
-import {string} from "yup";
 import {useToast} from "vue-toastification";
 
+let isFinal = false;
+
 const percentsBar = ref();
-const i18n = useI18n();
 const loginPopupStatus = ref(false);
 const sharePopupStatus = ref(false);
-const isFinal = ref(false);
-
-// const currentLang = computed(() => {
-//   return i18n.global.locale;
-// });
-const airDropStore = useAirDropStore();
 
 const claimingProcessStarted = ref();
-const isLoggedIn = computed(() => {
-  return useUserStore().isLoggedIn;
-});
-const address = computed(() => {
-  return useUserStore().getAccount.address;
-});
+const activeCampaign = ref();
+const updateComponent = ref(false);
+
+const selectedMission = ref<Mission>();
+const selectedCampaign = ref<Campaign>();
+const currentClaimIsInitial = ref();
+
+const socialMediaMessage = ref<string>();
+
+const i18n = useI18n();
+const airDropStore = useAirDropStore();
 
 onMounted(() => {
   dataService.enterClaimAirdrop();
-
 });
 
 onUnmounted(() => {
   dataService.leaveClaimAirdrop();
 });
 
-const summary = computed(() => {
-  return useAirDropStore().getSummary;
-});
-
-const activeCampaign = ref();
-
-function onClickedShareButton(mission: Mission, campaignRecord: Campaign){
-  popupMission.value = mission;
-  popupCampaign.value = campaignRecord;
-  generateSocialMediaMessage();
+function onClickedShareButton(campaignRecord: Campaign, mission: Mission) {
+  generateSocialMediaMessage(campaignRecord, mission);
   sharePopupStatus.value = true;
 }
+
 function setActiveCampaign(campaign: Campaign) {
   if (campaign !== activeCampaign.value) {
     activeCampaign.value = campaign;
@@ -215,10 +204,6 @@ function getAmountOfClaimedMissions(campaign: Campaign) {
   return total;
 }
 
-const airdropClaimRecord = computed(() => {
-  return airDropStore.getCampaigns;
-});
-
 function checkCampaignStatus(startTime: number | string, endTime: number | string) {
   if (new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime() > new Date(Date.now()).getTime()) {
     return CampainStatus.Now;
@@ -238,8 +223,6 @@ function calculateProgress(startTime: number | string, endTime: number | string)
     return null;
   }
 }
-
-const updateComponent = ref(false);
 
 function getTextForTimeColumn(campaign: Campaign) {
   const res = checkCampaignStatus(campaign.start_time, campaign.end_time);
@@ -298,27 +281,22 @@ function getTextForMissionsBtn(mission: Mission, type: MissionTypeSt) {
   return text;
 }
 
-const selectedMissionId = ref();
-const selectedCampaignId = ref();
-const currentClaimIsInitial = ref();
-const selectedCampaignName = ref();
 
 function redirectMission(campaign: Campaign, mission: Mission, type: MissionTypeSt) {
-  selectedCampaignId.value = campaign.id;
-  selectedMissionId.value = mission.id;
-  isFinal.value = (campaign.missions.length - getAmountOfClaimedMissions(campaign) === 1);
-  selectedCampaignName.value = campaign.name;
+  selectedCampaign.value = campaign;
+  selectedMission.value = mission;
+  isFinal = (campaign.missions.length - getAmountOfClaimedMissions(campaign) === 1);
 
   if (mission.mission_type === MissionTypeSt.INITIAL_CLAIM) {
     claimingProcessStarted.value = true;
     currentClaimIsInitial.value = true;
   } else if (mission.mission_type === MissionTypeSt.CLAIM) {
     currentClaimIsInitial.value = false;
-    claimOtherAirdrop(selectedCampaignId.value, selectedMissionId.value);
+    claimOtherAirdrop(campaign, mission);
   } else {
     currentClaimIsInitial.value = false;
     if (mission.completed && !mission.claimed) {
-      claimOtherAirdrop(selectedCampaignId.value, selectedMissionId.value);
+      claimOtherAirdrop(campaign, mission);
     } else {
       switch (type) {
         case MissionTypeSt.DELEGATE:
@@ -353,50 +331,39 @@ function isInitialMissionClaimed(campaign: Campaign) {
   return initialMission?.claimed;
 }
 
-function convertAmount(amount: bigint | number | BigDecimal | Coin | DecCoin) {
-  if (typeof amount === 'bigint') {
-    return new BigIntWrapper(amount);
+function generateSocialMediaMessage(campaign: Campaign, mission?: Mission) {
+  if (isFinal) {
+    socialMediaMessage.value = `I have completed the whole campaign ${campaign?.name}!`;
+    isFinal = false;
   } else {
-    return amount;
+    socialMediaMessage.value = `I have completed mission ${mission?.name} with a value of ${Number(mission?.weight) / 1000000} C4E from campaign ${campaign?.name} on Airdrop Allocation!`;
   }
 }
 
-const popupMission = ref<Mission>();
-const popupCampaign = ref<Campaign>();
-const socialMediaMessage = ref<string>();
-
-const generateSocialMediaMessage = () => {
-  socialMediaMessage.value = `I have completed mission ${popupMission.value?.name} with a value of ${Number(popupMission.value?.weight) / 1000000} C4E from campaign ${popupCampaign.value?.name} on Airdrop Allocation!`;
-};
-
-function handleFinal(){
-  socialMediaMessage.value = `I have completed the whole campaign ${selectedCampaignName.value}!`;
-  isFinal.value = false;
-}
-
-function handleMissionCompleted(){
+function handleMissionCompleted(campaign: Campaign, mission?: Mission) {
+  generateSocialMediaMessage(campaign, mission);
   sharePopupStatus.value = true;
 }
 
 function claim(address: string) {
   console.log("claim:", address);
-  if (currentClaimIsInitial.value) {
-    claimInitialAirdrop(selectedCampaignId.value, address);
+  if (selectedCampaign.value && selectedMission.value) {
+    if (currentClaimIsInitial.value) {
+      claimInitialAirdrop(selectedCampaign.value, address);
+    } else {
+      claimOtherAirdrop(selectedCampaign.value, selectedMission.value);
+    }
   } else {
-    claimOtherAirdrop(selectedCampaignId.value, selectedMissionId.value);
+    console.warn("claim: selectedCampaign or selectedMission not provided!!");
   }
 }
 
-function claimInitialAirdrop(id: string, address: string) {
-  useAirDropStore().claimInitialAirdrop(id, address).then((r) => {
+function claimInitialAirdrop(campaign: Campaign, address: string) {
+  useAirDropStore().claimInitialAirdrop(campaign.id, address).then((r) => {
     if (!r.error) {
       useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
         .then(() => {
-          useToast().success(i18n.t('AIRDROP.SUCCESS'));
-          handleMissionCompleted();
-          if (isFinal.value) {
-            handleFinal();
-          }
+          onSuccessClaim(campaign);
         });
     }
   }).finally(() => {
@@ -404,21 +371,22 @@ function claimInitialAirdrop(id: string, address: string) {
   });
 }
 
-function claimOtherAirdrop(campaignId: string, missionId: string) {
-  useAirDropStore().claimOtherAirdrop(campaignId, missionId).then((r) => {
+function claimOtherAirdrop(campaign: Campaign, mission: Mission) {
+  useAirDropStore().claimOtherAirdrop(campaign.id, mission.id).then((r) => {
     if (!r.error) {
       useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
         .then(() => {
-          useToast().success(i18n.t('AIRDROP.SUCCESS'));
-          handleMissionCompleted();
-          if (isFinal.value) {
-            handleFinal();
-          }
+          onSuccessClaim(campaign, mission);
         });
     }
   }).finally(() => {
     claimingProcessStarted.value = false;
   });
+}
+
+function onSuccessClaim(campaign: Campaign, mission?: Mission){
+  useToast().success(i18n.t('AIRDROP.SUCCESS'));
+  handleMissionCompleted(campaign, mission);
 }
 
 </script>

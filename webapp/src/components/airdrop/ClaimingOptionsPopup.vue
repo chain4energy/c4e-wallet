@@ -29,7 +29,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script setup lang="ts">
@@ -43,12 +42,12 @@ import {useConfigurationStore} from "@/store/configuration.store";
 import * as bench32 from "bech32";
 import {AccountType} from "@/models/store/account";
 
+const emit = defineEmits(['close', 'claim']);
+
 const address = ref('');
 address.value = useUserStore().getAccount.address;
 
 const accountOfVestingType = computed(() => useUserStore().getAccount.type === AccountType.ContinuousVestingAccount);
-
-const emit = defineEmits(['close', 'claim']);
 
 let errorMessageType = '';
 
