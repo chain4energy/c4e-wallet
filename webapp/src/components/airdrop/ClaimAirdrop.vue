@@ -1,45 +1,36 @@
 <template>
   <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
   <div class="claimAirDrop" v-if="isLoggedIn && address">
-      <ClaimingOptionsPopup
-        :initial-claim="currentClaimIsInitial"
-        :campaign-id="selectedCampaignId"
-        :mission-id="selectedMissionId"
-        :isFinal="isFinal"
-        v-if="claimingProcessStarted" @close="claimingProcessStarted = false"
-        @final = 'handleFinal'
-        @claim = 'claim'
-      />
-      <div class="claimAirDrop__total">
-        <div class="claimAirDrop__container">
-          <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{$t('AIRDROP.TOTAL_HEADER')}}</h4>
-          <div class="claimAirDrop__summaryData claimAirDrop__basicText">
-            <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
-              <CoinAmount :amount="summary.totalAmount" :show-denom="true" :show-tooltip="true" :precision="2"/>
-            </ClaimInfo>
-            <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.claimedPercent">
-              <CoinAmount :amount="summary.totalClaimed" :show-denom="true" :show-tooltip="true" :precision="2"/>
-            </ClaimInfo>
-            <div class="vl"/>
-            <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
-              <CoinAmount :amount="summary.activeCampaigns" :show-denom="true" :show-tooltip="true" :precision="2"/>
-            </ClaimInfo>
-            <!-- :percentage-vale="summary.claimedPercentage" -->
-            <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.toClaimPercent">
-              <CoinAmount :amount="summary.toClaim" :show-denom="true" :show-tooltip="true" :precision="2"/>
-            </ClaimInfo>
-          </div>
+    <ClaimingOptionsPopup v-if="claimingProcessStarted" @close="claimingProcessStarted = false" @final='handleFinal' @claim='claim'/>
+    <div class="claimAirDrop__total">
+      <div class="claimAirDrop__container">
+        <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{ $t('AIRDROP.TOTAL_HEADER') }}</h4>
+        <div class="claimAirDrop__summaryData claimAirDrop__basicText">
+          <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
+            <CoinAmount :amount="summary.totalAmount" :show-denom="true" :show-tooltip="true" :precision="2"/>
+          </ClaimInfo>
+          <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.claimedPercent">
+            <CoinAmount :amount="summary.totalClaimed" :show-denom="true" :show-tooltip="true" :precision="2"/>
+          </ClaimInfo>
+          <div class="vl"/>
+          <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
+            <CoinAmount :amount="summary.activeCampaigns" :show-denom="true" :show-tooltip="true" :precision="2"/>
+          </ClaimInfo>
+          <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.toClaimPercent">
+            <CoinAmount :amount="summary.toClaim" :show-denom="true" :show-tooltip="true" :precision="2"/>
+          </ClaimInfo>
         </div>
       </div>
-      <div class="claimAirDrop__total claimAirDrop__basicText" v-for="(campaignRecord, index) in airdropClaimRecord" :key="index">
-          <div class="claimAirDrop__container">
-            <h4 class="claimAirDrop__header">{{campaignRecord.name}}</h4>
-            <hr class="claimAirDrop__hr"/>
-            <div class="claimAirDrop__progressHeader">
-              <h5 style="margin: 0 0 20px 10px" v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past">{{$t('CLAIM_AIRDROP.PROGRESS')}}</h5>
-              <h5 v-else style="margin: 0 0 20px 10px">{{$t('CLAIM_AIRDROP.FINISHED')}}</h5>
-            </div>
-
+    </div>
+    <div class="claimAirDrop__total claimAirDrop__basicText" v-for="(campaignRecord, index) in airdropClaimRecord" :key="index">
+      <div class="claimAirDrop__container">
+        <h4 class="claimAirDrop__header">{{ campaignRecord.name }}</h4>
+        <hr class="claimAirDrop__hr"/>
+        <div class="claimAirDrop__progressHeader">
+          <h5 style="margin: 0 0 20px 10px" v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past">
+            {{ $t('CLAIM_AIRDROP.PROGRESS') }}</h5>
+          <h5 v-else style="margin: 0 0 20px 10px">{{ $t('CLAIM_AIRDROP.FINISHED') }}</h5>
+        </div>
 
         <PercentageBar
           v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past"
@@ -62,8 +53,7 @@
               {{ getAmountOfClaimedMissions(campaignRecord) }}/{{ campaignRecord.missions.length }}</p>
           </ClaimInfo>
           <ClaimInfo :header="getTextForTimeColumn(campaignRecord)">
-            <p class="claimAirDrop__data-text"
-               v-if="calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)">
+            <p class="claimAirDrop__data-text" v-if="calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)">
               {{ calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time) }}</p>
             <DateCommon :date="new Date(campaignRecord.end_time)" :show-time="false" :show-tooltip="true" v-else/>
           </ClaimInfo>
@@ -74,8 +64,7 @@
           </ClaimInfo>
         </div>
         <div class="claimAirDrop__body">
-          <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)"
-                  class="claimAirDrop__showBtn claimAirDrop__basicText">
+          <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn claimAirDrop__basicText">
             <ChevronDown :size="15" v-if="activeCampaign !== campaignRecord"/>
             <ChevronUp :size="15" v-else/>
             <p>{{ activeCampaign === campaignRecord ? $t('AIRDROP.HIDE_MISSIONS') : $t('AIRDROP.SHOW_MISSIONS') }}</p>
@@ -92,24 +81,13 @@
                   <CoinAmount :amount="missions.weight" :show-denom="true" :precision="2"></CoinAmount>
                 </div>
               </div>
+              <Button v-if="!missions.claimed" :disabled="!isDisabled(campaignRecord, missions)" class="p-button p-component secondary claimAirDrop__missions-btn"
+                      :label="getTextForMissionsBtn(missions, missions.mission_type)"
+                      @click="redirectMission(campaignRecord, missions, missions.mission_type)"/>
 
-              <Button
-                v-if="!missions.claimed"
-                :disabled="!isDisabled(campaignRecord, missions)"
-                class="p-button p-component secondary claimAirDrop__missions-btn"
-                :label="getTextForMissionsBtn(missions, missions.mission_type)"
-                @click="redirectMission(campaignRecord, missions, missions.mission_type)"
-              />
-
-              <Button
-                v-else
-                class="p-button p-component secondary claimAirDrop__missions-shareBtn"
-                @click.prevent="() => {popupMission = missions; popupCampaign = campaignRecord; generateSocialMediaMessage(); sharePopupStatus = true;}"
-              >
-                Share
-              </Button>
-
-
+              <Button v-else class="p-button p-component secondary claimAirDrop__missions-shareBtn"
+                      label="Share"
+                      @click.prevent="onClickedShareButton(missions, campaignRecord)"/>
             </div>
           </div>
         </div>
@@ -121,8 +99,7 @@
       <div class="claimAirDrop__container">
         <div class="claimAirDrop__header claimAirDrop__mainTxt">
           <h4>{{ $t('AIRDROP.CONNECT_INFO') }}</h4>
-          <Button v-if="!useUserStore().isLoggedIn" class="secondary h-3rem"
-                  @click="loginPopupStatus =! loginPopupStatus">
+          <Button v-if="!useUserStore().isLoggedIn" class="secondary h-3rem" @click="loginPopupStatus =! loginPopupStatus">
             {{ $t('COMMON.CONNECT') }}
           </Button>
         </div>
@@ -204,6 +181,12 @@ const summary = computed(() => {
 
 const activeCampaign = ref();
 
+function onClickedShareButton(mission: Mission, campaignRecord: Campaign){
+  popupMission.value = mission;
+  popupCampaign.value = campaignRecord;
+  generateSocialMediaMessage();
+  sharePopupStatus.value = true;
+}
 function setActiveCampaign(campaign: Campaign) {
   if (campaign !== activeCampaign.value) {
     activeCampaign.value = campaign;
@@ -386,15 +369,16 @@ const generateSocialMediaMessage = () => {
   socialMediaMessage.value = `I have completed mission ${popupMission.value?.name} with a value of ${Number(popupMission.value?.weight) / 1000000} C4E from campaign ${popupCampaign.value?.name} on Airdrop Allocation!`;
 };
 
-
-const handleFinal = () => {
-  sharePopupStatus.value = true;
+function handleFinal(){
   socialMediaMessage.value = `I have completed the whole campaign ${selectedCampaignName.value}!`;
   isFinal.value = false;
-};
+}
 
+function handleMissionCompleted(){
+  sharePopupStatus.value = true;
+}
 
-function claim(address:string) {
+function claim(address: string) {
   console.log("claim:", address);
   if (currentClaimIsInitial.value) {
     claimInitialAirdrop(selectedCampaignId.value, address);
@@ -403,12 +387,13 @@ function claim(address:string) {
   }
 }
 
-function claimInitialAirdrop(id: string, address:string) {
+function claimInitialAirdrop(id: string, address: string) {
   useAirDropStore().claimInitialAirdrop(id, address).then((r) => {
     if (!r.error) {
       useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
         .then(() => {
           useToast().success(i18n.t('AIRDROP.SUCCESS'));
+          handleMissionCompleted();
           if (isFinal.value) {
             handleFinal();
           }
@@ -425,6 +410,7 @@ function claimOtherAirdrop(campaignId: string, missionId: string) {
       useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
         .then(() => {
           useToast().success(i18n.t('AIRDROP.SUCCESS'));
+          handleMissionCompleted();
           if (isFinal.value) {
             handleFinal();
           }

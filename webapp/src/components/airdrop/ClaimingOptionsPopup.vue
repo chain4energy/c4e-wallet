@@ -33,7 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import {useAirDropStore} from "@/store/airDrop.store";
 import {useUserStore} from '@/store/user.store';
 import {computed, defineEmits, ref} from "vue";
 import {Field, Form} from "vee-validate";
@@ -42,22 +41,14 @@ import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import i18n from "@/plugins/i18n";
 import {useConfigurationStore} from "@/store/configuration.store";
 import * as bench32 from "bech32";
-import {useToast} from "vue-toastification";
 import {AccountType} from "@/models/store/account";
-
-const props = defineProps<{
-  initialClaim: boolean,
-  campaignId: string,
-  missionId: string,
-  isFinal: boolean
-}>();
 
 const address = ref('');
 address.value = useUserStore().getAccount.address;
 
 const accountOfVestingType = computed(() => useUserStore().getAccount.type === AccountType.ContinuousVestingAccount);
 
-const emit = defineEmits(['close', 'typeChange', 'final', 'claim']);
+const emit = defineEmits(['close', 'claim']);
 
 let errorMessageType = '';
 
@@ -110,7 +101,6 @@ const addressSchema = object().shape({
     string().test('validate Address', i18n.global.t(errorMessageType), validateAddress)
   ])
 });
-
 
 
 </script>
