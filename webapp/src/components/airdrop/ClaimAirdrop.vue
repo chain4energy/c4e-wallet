@@ -478,9 +478,11 @@ function claimOtherAirdrop(campaignId: string, missionId: string) {
   }
 
   &__summaryTile {
-    flex: 1 1;
-    margin: 0 5px;
+    flex: 2 1;
+    margin: 5px;
+
     height: 120px;
+    min-width: 120px;
   }
 
   &__data {
@@ -651,6 +653,8 @@ function claimOtherAirdrop(campaignId: string, missionId: string) {
     padding: 15%;
 
   }
+
+
 }
 
 .vl {
@@ -674,6 +678,48 @@ function claimOtherAirdrop(campaignId: string, missionId: string) {
     border: none;
     background-color: #1DA1F2;
     color: white;
+  }
+}
+
+@media (max-width: 1400px) {
+  .claimAirDrop__container {
+    width: 90%;
+  }
+
+  .claimAirDrop__total {
+    grid-area: auto;
+  }
+
+  .claimAirDrop__content {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+  }
+
+
+}
+
+@media (max-width: 1024px) {
+  .claimAirDrop__container {
+    width: 90%;
+
+  }
+  .claimAirDrop__content {
+    width: 100%;
+  }
+
+  .claimAirDrop__content {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+}
+
+@media (max-width: 660px) {
+  .vl {
+    display: none;
+  }
+  .claimAirDrop__summaryTile {
+    width: 50%;
   }
 }
 </style>

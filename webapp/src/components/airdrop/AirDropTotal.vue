@@ -326,8 +326,8 @@ watch(userLoggedIn, () => {
       font-weight: 700;
       font-size: 28px;
       line-height: 34px;
-      @media (max-width: 500px) {
-        margin-top: 10px;
+      @media (max-width: 1024px) {
+        margin-top: 20px;
       }
     }
   }
@@ -439,5 +439,62 @@ watch(userLoggedIn, () => {
 
 }
 
+@media (max-width: 1024px) {
+  .airDropTotal {
+    width: 90%;
+  }
 
+  .airDropTotal__container {
+    padding: 20px;
+    grid-area: 1 / 1 / 1 / 5;
+  }
+
+  .airDropTotal__head,
+  .airDropTotal__form,
+  .airDropTotal__totalData,
+  .airDropTotal__footer,
+  .airDropTotal__content {
+    width: 100%;
+  }
+
+  .airDropTotal__form {
+    flex-direction: column;
+  }
+
+  .airDropTotal-btn,
+  .airDropTotal__head-btn {
+    width: 100%;
+  }
+
+  .airDropTotal__totalData-item {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .airDropTotal {
+    width: 95%;
+  }
+  .airDropTotal__container {
+    padding: 10px;
+  }
+  .airDropTotal__content-items {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .airDropTotal__content-details {
+    margin-top: 10px;
+  }
+
+  .airDropTotal__footer-icons {
+    width: 100%;
+    display: inline-flex;
+    justify-content: space-evenly;
+  }
+
+  .airDropTotal__footerIcon {
+    width: 30px;
+  }
+}
 </style>
