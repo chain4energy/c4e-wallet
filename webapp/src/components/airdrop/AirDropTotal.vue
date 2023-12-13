@@ -185,6 +185,7 @@ onMounted(() => {
 });
 
 watch(userLoggedIn, () => {
+  console.log("watch: userLoggedIn - CHANGED");
   address.value = useUserStore().getAccount.address;
   submit();
 });

@@ -168,12 +168,12 @@ onBeforeMount(()=>{
 });
 
 onMounted(() => {
-  dataService.enterClaimAirdrop();
+  dataService.onClaimAirdropSelected();
 });
 
 onUnmounted(() => {
   window.clearInterval(intervalId);
-  dataService.leaveClaimAirdrop();
+  dataService.onClaimAirdropUnselected();
 });
 
 function onClickedShareButton(campaignRecord: Campaign, mission: Mission) {
