@@ -22,55 +22,54 @@
         </div>
       </div>
     </div>
-    <div class="claimAirDrop__total claimAirDrop__basicText" v-for="(campaignRecord, index) in airDropStore.getCampaigns" :key="index">
+    <div class="claimAirDrop__total claimAirDrop__basicText" v-for="(campaign, index) in airDropStore.getCampaigns" :key="index">
       <div class="claimAirDrop__container">
-        <h4 class="claimAirDrop__header">{{ campaignRecord.name }}</h4>
+        <h4 class="claimAirDrop__header">{{ campaign.name }}</h4>
         <hr class="claimAirDrop__hr"/>
         <div class="claimAirDrop__progressHeader">
-          <h5 style="margin: 0 0 20px 10px" v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past">
+          <h5 style="margin: 0 0 20px 10px" v-if="checkCampaignStatus(campaign.start_time, campaign.end_time) !== CampainStatus.Past">
             {{ $t('CLAIM_AIRDROP.PROGRESS') }}</h5>
           <h5 v-else style="margin: 0 0 20px 10px">{{ $t('CLAIM_AIRDROP.FINISHED') }}</h5>
         </div>
 
         <PercentageBar
-          v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past"
-          ref="percentsBar"
+          v-if="checkCampaignStatus(campaign.start_time, campaign.end_time) !== CampainStatus.Past"
           :key="updateComponent"
-          :amount="calculateProgress(campaignRecord.start_time, campaignRecord.end_time)"
-          :status="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time)"
-          :time-to-pass="calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)"
+          :amount="calculateProgress(campaign.start_time, campaign.end_time)"
+          :status="checkCampaignStatus(campaign.start_time, campaign.end_time)"
+          :time-to-pass="calculateTimeToPass(campaign.start_time, campaign.end_time)"
         />
         <div class="claimAirDrop__data">
           <ClaimInfo :header="$t('AIRDROP.CLAIMED')">
             <div class="claimAirDrop__data-text">
-              <CoinAmount :amount="calculateMissions(campaignRecord)" :show-denom="true" :precision="2"></CoinAmount>
+              <CoinAmount :amount="calculateMissions(campaign)" :show-denom="true" :precision="2"></CoinAmount>
               /
-              <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
+              <CoinAmount :amount="campaign.amount" :show-denom="true" :precision="2"></CoinAmount>
             </div>
           </ClaimInfo>
           <ClaimInfo :header="$t('AIRDROP.MISSION_COMPLETED')">
             <p class="claimAirDrop__data-text">
-              {{ getAmountOfClaimedMissions(campaignRecord) }}/{{ campaignRecord.missions.length }}</p>
+              {{ getAmountOfClaimedMissions(campaign) }}/{{ campaign.missions.length }}</p>
           </ClaimInfo>
-          <ClaimInfo :header="getTextForTimeColumn(campaignRecord)">
-            <p class="claimAirDrop__data-text" v-if="calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)">
-              {{ calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time) }}</p>
-            <DateCommon :date="new Date(campaignRecord.end_time)" :show-time="false" :show-tooltip="true" v-else/>
+          <ClaimInfo :header="getTextForTimeColumn(campaign)">
+            <p class="claimAirDrop__data-text" v-if="calculateTimeToPass(campaign.start_time, campaign.end_time)">
+              {{ calculateTimeToPass(campaign.start_time, campaign.end_time) }}</p>
+            <DateCommon :date="new Date(campaign.end_time)" :show-time="false" :show-tooltip="true" v-else/>
           </ClaimInfo>
           <ClaimInfo :header="$t('AIRDROP.TOTAL_DISTRIBUTION')">
             <div class="claimAirDrop__data-text">
-              <CoinAmount :amount="campaignRecord.totalDistribution" :show-denom="true" :precision="2"></CoinAmount>
+              <CoinAmount :amount="campaign.totalDistribution" :show-denom="true" :precision="2"></CoinAmount>
             </div>
           </ClaimInfo>
         </div>
         <div class="claimAirDrop__body">
-          <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn claimAirDrop__basicText">
-            <ChevronDown :size="15" v-if="activeCampaign !== campaignRecord"/>
+          <button v-if="campaign.missions.length > 0" @click="setActiveCampaign(campaign)" class="claimAirDrop__showBtn claimAirDrop__basicText">
+            <ChevronDown :size="15" v-if="activeCampaign?.id !== campaign.id"/>
             <ChevronUp :size="15" v-else/>
-            <p>{{ activeCampaign === campaignRecord ? $t('AIRDROP.HIDE_MISSIONS') : $t('AIRDROP.SHOW_MISSIONS') }}</p>
+            <p>{{ activeCampaign?.id === campaign.id ? $t('AIRDROP.HIDE_MISSIONS') : $t('AIRDROP.SHOW_MISSIONS') }}</p>
           </button>
-          <div v-if="activeCampaign === campaignRecord" class="claimAirDrop__missions">
-            <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
+          <div v-if="activeCampaign?.id === campaign.id" class="claimAirDrop__missions">
+            <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaign.missions" v-bind:key="id">
               <div class="claimAirDrop__leftCol">
                 <div class="claimAirDrop__smallTxt">
                   {{ $t('AIRDROP.MISSION') }} {{ `#${missions.id}` }}
@@ -81,13 +80,13 @@
                   <CoinAmount :amount="missions.weight" :show-denom="true" :precision="2"></CoinAmount>
                 </div>
               </div>
-              <Button v-if="!missions.claimed" :disabled="!isDisabled(campaignRecord, missions)" class="p-button p-component secondary claimAirDrop__missions-btn"
+              <Button v-if="!missions.claimed" :disabled="!isDisabled(campaign, missions)" class="p-button p-component secondary claimAirDrop__missions-btn"
                       :label="getTextForMissionsBtn(missions, missions.mission_type)"
-                      @click="redirectMission(campaignRecord, missions, missions.mission_type)"/>
+                      @click="redirectMission(campaign, missions, missions.mission_type)"/>
 
               <Button v-else class="p-button p-component secondary claimAirDrop__missions-shareBtn"
                       label="Share"
-                      @click.prevent="onClickedShareButton(campaignRecord, missions)"/>
+                      @click.prevent="onClickedShareButton(campaign, missions)"/>
             </div>
           </div>
         </div>
@@ -127,7 +126,7 @@
 
 <script setup lang="ts">
 import {useAirDropStore} from "@/store/airDrop.store";
-import {computed, onMounted, onUnmounted, ref} from "vue";
+import {computed, onBeforeMount, onMounted, onUnmounted, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {CampainStatus} from "@/models/airdrop/airdrop";
 import {Campaign, Mission, MissionTypeSt} from "@/models/store/airdrop";
@@ -145,29 +144,35 @@ import DateCommon from "@/components/commons/DateCommon.vue";
 import {useToast} from "vue-toastification";
 
 let isFinal = false;
+let currentClaimIsInitial = false;
+let intervalId = 0;
 
-const percentsBar = ref();
-const loginPopupStatus = ref(false);
-const sharePopupStatus = ref(false);
+const loginPopupStatus = ref<boolean>(false);
+const sharePopupStatus = ref<boolean>(false);
 
-const claimingProcessStarted = ref();
-const activeCampaign = ref();
+const claimingProcessStarted = ref<boolean>(false);
+const activeCampaign = ref<Campaign>();
 const updateComponent = ref(false);
 
 const selectedMission = ref<Mission>();
 const selectedCampaign = ref<Campaign>();
-const currentClaimIsInitial = ref();
 
 const socialMediaMessage = ref<string>();
 
 const i18n = useI18n();
 const airDropStore = useAirDropStore();
 
+onBeforeMount(()=>{
+  intervalId = window.setInterval(() => {
+    updateComponent.value = !updateComponent.value;}, 1000);
+});
+
 onMounted(() => {
   dataService.enterClaimAirdrop();
 });
 
 onUnmounted(() => {
+  window.clearInterval(intervalId);
   dataService.leaveClaimAirdrop();
 });
 
@@ -252,6 +257,9 @@ function calculateTimeToPass(startDate: number | string, endDate: number | strin
   }
 }
 
+
+
+
 setInterval(() => {
   updateComponent.value = !updateComponent.value;
 }, 1000);
@@ -271,8 +279,8 @@ function getTextForMissionsBtn(mission: Mission, type: MissionTypeSt) {
     case MissionTypeSt.CLAIM:
       text = i18n.t('AIRDROP.CLAIM');
       break;
-    case MissionTypeSt.TO_DEEFINE:
-      text = i18n.t('AIRDROP.TO_DEEFINE');
+    case MissionTypeSt.TO_DEFINE:
+      text = i18n.t('AIRDROP.TO_DEFINE');
       break;
   }
   if (mission.completed && !mission.claimed) {
@@ -281,7 +289,6 @@ function getTextForMissionsBtn(mission: Mission, type: MissionTypeSt) {
   return text;
 }
 
-
 function redirectMission(campaign: Campaign, mission: Mission, type: MissionTypeSt) {
   selectedCampaign.value = campaign;
   selectedMission.value = mission;
@@ -289,12 +296,12 @@ function redirectMission(campaign: Campaign, mission: Mission, type: MissionType
 
   if (mission.mission_type === MissionTypeSt.INITIAL_CLAIM) {
     claimingProcessStarted.value = true;
-    currentClaimIsInitial.value = true;
+    currentClaimIsInitial = true;
   } else if (mission.mission_type === MissionTypeSt.CLAIM) {
-    currentClaimIsInitial.value = false;
+    currentClaimIsInitial = false;
     claimOtherAirdrop(campaign, mission);
   } else {
-    currentClaimIsInitial.value = false;
+    currentClaimIsInitial = false;
     if (mission.completed && !mission.claimed) {
       claimOtherAirdrop(campaign, mission);
     } else {
@@ -318,7 +325,7 @@ function isDisabled(campaignRec: Campaign, mission: Mission) {
     return false;
   } else if (!isInitialMissionClaimed(campaignRec) && mission.mission_type !== MissionTypeSt.INITIAL_CLAIM) {
     return false;
-  } else if (mission.claimed || mission.mission_type === MissionTypeSt.TO_DEEFINE) {
+  } else if (mission.claimed || mission.mission_type === MissionTypeSt.TO_DEFINE) {
     return false;
   }
   return true;
@@ -348,7 +355,7 @@ function handleMissionCompleted(campaign: Campaign, mission?: Mission) {
 function claim(address: string) {
   console.log("claim:", address);
   if (selectedCampaign.value && selectedMission.value) {
-    if (currentClaimIsInitial.value) {
+    if (currentClaimIsInitial) {
       claimInitialAirdrop(selectedCampaign.value, address);
     } else {
       claimOtherAirdrop(selectedCampaign.value, selectedMission.value);

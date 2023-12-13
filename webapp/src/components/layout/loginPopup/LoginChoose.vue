@@ -4,8 +4,6 @@
       <h2 style="font-weight: bold">{{ $t('CONNECT.WELCOME') }}</h2>
       <Button icon="pi pi-times" style="margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
     </div>
-
-
     <p>{{ $t('CONNECT.WELCOME_MESSAGE') }}</p>
     <div class="loginChoose__body">
       <div v-if="props.showAddressOption" class="box" @click="$emit('typeChange', LoginEmail)">
@@ -52,25 +50,18 @@
           </div>
         </div>
       </div>
-<!--      <div class="keplr" @click="$emit('keplr')" v-if="!isMobile()">-->
-<!--        <KeplrLogo/>-->
-<!--        <span>{{ $t('CONNECT.CONNECT_KEPLR') }}</span>-->
-<!--      </div>-->
-<!--      <Button @click="$emit('typeChange', LoginEmail)">-->
-<!--      <Icon style="margin-right: 10px;" name="Globe"></Icon>-->
-<!--        {{ $t('CONNECT.CONNECT_ADDRESS') }}-->
-<!--      </Button>-->
-<!--      <Button @click="$emit('keplr')" v-if="!isMobile()">-->
-<!--        <KeplrLogo/>-->
-<!--        {{ $t('CONNECT.CONNECT_KEPLR') }}-->
-
-<!--      </Button>-->
+    </div>
+    <div>
+      <Checkbox name="termsAccepted" v-model="termsAccepted" :binary="true"/>
+      <span class="mx-2">{{ $t('CONNECT.CONNECT_TERMS') }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import LoginEmail from '@/components/layout/loginPopup/LoginAddress.vue';
+import Checkbox from "primevue/checkbox";
+import {ref} from "vue";
 
 const props = defineProps({
   showAddressOption: {
@@ -79,6 +70,8 @@ const props = defineProps({
     required: false
   }
 });
+
+const termsAccepted = ref<boolean>(false);
 function isMobile() {
    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
      return true;

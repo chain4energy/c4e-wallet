@@ -8,6 +8,7 @@
     "CONNECT_KEPLR": "Zaloguj się z Keplrem",
     "CONNECT_LEAP": "Zaloguj się z Leap",
     "CONNECT_COSMOSTATION": "Zaloguj się z Cosmostation",
+    "CONNECT_TERMS": "Przeczytałem i akceptuję Regulamin oraz Politykę prywatności",
     "ADDRESS_HELP": "Przeglądaj z dowolnym adresem",
     "VIEW_EXPLORER": "Zobacz w eksploratorze",
     "COPY": "Kopiuj",
@@ -372,6 +373,7 @@
     "SIGNUP": "Rejestracja",
     "ACTIVATE": "Aktywacja konta",
     "PROVIDEVERIFICATIONCODE": "Weryfikacja",
+    "PORTFOLIO": "Portfolio",
     "SIGNIN-PROFILE": "Logowanie",
     "SIGNUP-PROFILE": "Rejestracja",
     "RESETPASSWORD": "Reset hasła",
@@ -438,7 +440,7 @@
     "CONNECT_INFO": "Połącz się z portfelem, by odbierać nagrody!",
     "SUCCESS": "Sukces! Misja wykonana pomyślnie",
     "SOON": "Wkrótce",
-    "TO_DEEFINE": "To define",
+    "TO_DEFINE": "Wkrótce",
     "CLAIM_TO_ADDRESS": "Tokeny zostaną wysłane na adres:"
   },
   "CLAIM_AIRDROP": {
