@@ -5,6 +5,10 @@
       <Button icon="pi pi-times" style="margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
     </div>
     <p>{{ $t('CONNECT.WELCOME_MESSAGE') }}</p>
+    <div>
+      <Checkbox name="termsAccepted" v-model="termsAccepted" :binary="true"/>
+      <span class="mx-2">{{ $t('CONNECT.CONNECT_TERMS') }}</span>
+    </div>
     <div class="loginChoose__body">
       <div v-if="props.showAddressOption" class="box" @click="$emit('typeChange', LoginEmail)">
         <div class="iconContainer">
@@ -51,10 +55,7 @@
         </div>
       </div>
     </div>
-    <div>
-      <Checkbox name="termsAccepted" v-model="termsAccepted" :binary="true"/>
-      <span class="mx-2">{{ $t('CONNECT.CONNECT_TERMS') }}</span>
-    </div>
+
   </div>
 </template>
 

@@ -112,10 +112,9 @@
       <p>{{ socialMediaMessage }}</p>
       <a :href='`https://twitter.com/intent/tweet?text=${socialMediaMessage}`' target="_blank">
         <button>
-          <svg width="32" height="25" viewBox="0 0 32 25" fill="white" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M31.2481 0C30.0294 0.723392 27.5842 1.70927 26.1468 1.99363C26.1046 2.00456 26.0702 2.01862 26.0296 2.02956C24.7594 0.776514 23.0189 0 21.0924 0C17.2099 0 14.0616 3.14824 14.0616 7.03081C14.0616 7.23548 14.0444 7.61202 14.0616 7.81201C8.82289 7.81201 4.83564 5.06843 1.97644 1.5624C1.66552 2.3436 1.52959 3.5779 1.52959 4.7372C1.52959 6.92613 3.24042 9.076 5.90432 10.4087C5.41372 10.5353 4.87313 10.6259 4.31067 10.6259C3.40291 10.6259 2.44204 10.3869 1.5624 9.6619C1.5624 9.68846 1.5624 9.71346 1.5624 9.74158C1.5624 12.8008 4.80907 14.8834 7.69639 15.4631C7.11049 15.8084 5.92932 15.8428 5.35279 15.8428C4.94657 15.8428 3.50916 15.6568 3.1248 15.585C3.92788 18.0926 6.82457 19.5019 9.58534 19.5519C7.4261 21.2455 5.92775 21.8736 1.50616 21.8736H0C2.79358 23.6641 6.35117 25 9.91657 25C21.5252 25 28.1232 16.1521 28.1232 7.81201C28.1232 7.67764 28.1201 7.39641 28.1154 7.11362C28.1154 7.08549 28.1232 7.05893 28.1232 7.03081C28.1232 6.98863 28.1107 6.948 28.1107 6.90582C28.1061 6.69333 28.1014 6.49491 28.0967 6.39179C29.331 5.50122 30.4012 4.39035 31.2481 3.1248C30.1153 3.6279 28.8998 3.96538 27.6233 4.11849C28.9263 3.33729 30.7778 1.47491 31.2481 0Z"
-              fill="white"/>
+          <svg  width="32" height="24" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1668.56 1221.19" xml:space="preserve">
+              <path d="M283.94,167.31l386.39,516.64L281.5,1104h87.51l340.42-367.76L984.48,1104h297.8L874.15,558.3l361.92-390.99h-87.51l-313.51,338.7l-253.31-338.7H283.94z M412.63,231.77h136.81l604.13,807.76h-136.81L412.63,231.77z"
+                    fill="white"/>
           </svg>
           Tweet
         </button>
@@ -142,6 +141,7 @@ import dataService from "@/services/data.service";
 import Dialog from 'primevue/dialog';
 import DateCommon from "@/components/commons/DateCommon.vue";
 import {useToast} from "vue-toastification";
+import {formatBigNumberLocalized, reduceBigNumberLocalized} from "@/utils/locale-number-formatter";
 
 let isFinal = false;
 let currentClaimIsInitial = false;
@@ -343,7 +343,7 @@ function generateSocialMediaMessage(campaign: Campaign, mission?: Mission) {
     socialMediaMessage.value = `I have completed the whole campaign ${campaign?.name}!`;
     isFinal = false;
   } else {
-    socialMediaMessage.value = `I have completed mission ${mission?.name} with a value of ${Number(mission?.weight) / 1000000} C4E from campaign ${campaign?.name} on Airdrop Allocation!`;
+    socialMediaMessage.value = `I have completed mission ${mission?.name} with a value of ${formatBigNumberLocalized((Number(mission?.weight) / 1000000).toString())} C4E from campaign ${campaign?.name} on Airdrop Allocation!`;
   }
 }
 
