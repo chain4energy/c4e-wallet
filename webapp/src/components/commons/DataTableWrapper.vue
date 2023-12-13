@@ -279,23 +279,25 @@ function reload() {
 }
 
 .p-datatable .p-datatable-tbody tr > td {
-  border: solid 1px var(--gray);
-  border-left: 0;
-  border-right: 0;
+  border: solid 1px var(--gray) !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  padding: 5px !important;
 }
 
 .p-datatable .p-datatable-tbody > tr > td:first-child {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-  border: solid 1px var(--gray);
-  border-right: 0;
+  border: solid 1px var(--gray) !important;
+  border-right: 0 !important;
 }
 
 .p-datatable .p-datatable-tbody > tr > td:last-child {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  border: solid 1px var(--gray);
-  border-left: 0;
+  border: solid 1px var(--gray) !important;
+  border-left: 0 !important;
+  text-align: right !important;
 }
 
 .row-spacing table {
@@ -311,7 +313,8 @@ function reload() {
 .p-datatable .p-datatable-thead > tr > th {
   border-width: 0;
   color: gray;
-  padding-bottom: 0px;
+  padding: 5px 0 !important;
+  background: none !important;
 }
 
 .p-datatable .p-sortable-column:not(.p-highlight):hover {
