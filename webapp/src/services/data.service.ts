@@ -319,19 +319,19 @@ class DataService extends LoggedService {
   }
 
   private onLoginSuccess(connetionInfo: ConnectionInfo, onSuccess?: () => void) {
-    // const instancce = DataService.getInstance();
-    this.logToConsole(LogLevel.DEBUG, 'onLoginSuccess: ' + connetionInfo.isKeplr());
+    const instancce = DataService.getInstance();
+    instancce.logToConsole(LogLevel.DEBUG, 'onLoginSuccess: ' + connetionInfo.isKeplr());
     if (connetionInfo.isKeplr()) {
-      this.enableKeplrAccountChangeListener();
+      instancce.enableKeplrAccountChangeListener();
     }
     if (connetionInfo.isCosmostation()) {
-      this.enableCosmostationAccountChangeListener();
+      instancce.enableCosmostationAccountChangeListener();
     }
     if (connetionInfo.isLeap()) {
-      this.enableLeapAccountChangeListener();
+      instancce.enableLeapAccountChangeListener();
     }
-    this.lastAccountTimeout = new Date().getTime();
-    this.accountIntervalId = this.checkAndSetInterval(this.accountIntervalId, refreshAccountData, this.accountTimeout);
+    instancce.lastAccountTimeout = new Date().getTime();
+    instancce.accountIntervalId = instancce.checkAndSetInterval(instancce.accountIntervalId, refreshAccountData, instancce.accountTimeout);
     const propId = useProposalsStore().proposal;
     const userAddress = useUserStore().getAccount.address;
     if (propId !== undefined && userAddress !== '') {
@@ -340,7 +340,7 @@ class DataService extends LoggedService {
     // refresh spendables once logged in
     refreshSpendables();
 
-    if (this.isClaimAirdropViewSelected && userAddress) {
+    if (instancce.isClaimAirdropViewSelected && userAddress) {
         useAirDropStore().fetchUsersCampaignData(userAddress, true);
     }
     onSuccess?.();

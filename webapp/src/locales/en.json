@@ -10,6 +10,7 @@
     "CONNECT_COSMOSTATION": "Connect with Cosmostation wallet",
     "CONNECT_TERMS": "I have read and accept Terms & Conditions and Privacy Policy",
     "ADDRESS_HELP": "Explore with any address",
+    "INSERT_ADDRESS": "Blockchain address",
     "VIEW_EXPLORER": "View on explorer",
     "COPY": "Copy",
     "COPIED": "Address have been copied to clipboard",
@@ -449,7 +450,8 @@
     "SUCCESS": "You successfully claimed mission!",
     "SOON": "Soon",
     "TO_DEFINE": "Soon",
-    "CLAIM_TO_ADDRESS": "Tokens will be claimed to this address:"
+    "CLAIM_TO_ADDRESS": "Tokens will be claimed to this address:",
+    "CLAIM_TO_DESTINATION_ADDRESS": "Given that your blockchain account is a vesting account, the tokens received from this campaign must be transferred to a different account. Please provide the address of the account where the tokens from this campaign should be sent."
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Campaign countdown",

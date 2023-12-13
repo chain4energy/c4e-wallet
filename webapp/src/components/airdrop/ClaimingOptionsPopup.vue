@@ -11,14 +11,14 @@
     </div>
 
     <div class="claimingOptionsPopup__holder" v-if="accountOfVestingType">
-      <h3>{{$t('AIRDROP.CLAIM_TO_ADDRESS')}}</h3>
+      <h3>{{$t('AIRDROP.CLAIM_TO_DESTINATION_ADDRESS')}}</h3>
       <div class="claimingOptionsPopup__content">
         <Form @submit="claim" :validation-schema="addressSchema" v-slot="{ errors }" class="loginEmail__body">
           <div class="loginEmail__description">
             <div class="field">
               <Field v-model="address" name="address" placeholder=" " type="text" class="form-control"
                      style="width: 100%;" :class="{ 'is-invalid': errors.address }"></Field>
-              <span>{{ $t('CONNECT.ADDRESS_HELP') }}</span>
+              <span>{{ $t('CONNECT.INSERT_ADDRESS') }}</span>
               <div class="invalid-feedback">
                 {{ errors.address ? errors.address : "" }}
               </div>
@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import {useUserStore} from '@/store/user.store';
-import {computed, defineEmits, ref} from "vue";
+import {computed, defineEmits, onMounted, ref} from "vue";
 import {Field, Form} from "vee-validate";
 import {object, string} from "yup";
 import {YupSequentialStringSchema} from "@/utils/yup-utils";
@@ -45,9 +45,14 @@ import {AccountType} from "@/models/store/account";
 const emit = defineEmits(['close', 'claim']);
 
 const address = ref('');
-address.value = useUserStore().getAccount.address;
 
 const accountOfVestingType = computed(() => useUserStore().getAccount.type === AccountType.ContinuousVestingAccount);
+
+onMounted(() => {
+  if (!accountOfVestingType.value) {
+    address.value = useUserStore().getAccount.address;
+  }
+})
 
 let errorMessageType = '';
 

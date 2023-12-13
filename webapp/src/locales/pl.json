@@ -10,6 +10,7 @@
     "CONNECT_COSMOSTATION": "Zaloguj się z Cosmostation",
     "CONNECT_TERMS": "Przeczytałem i akceptuję Regulamin oraz Politykę prywatności",
     "ADDRESS_HELP": "Przeglądaj z dowolnym adresem",
+    "INSERT_ADDRESS": "Adres blockckhain",
     "VIEW_EXPLORER": "Zobacz w eksploratorze",
     "COPY": "Kopiuj",
     "COPIED": "Adres został skopiowany do schowka",
@@ -441,7 +442,8 @@
     "SUCCESS": "Sukces! Misja wykonana pomyślnie",
     "SOON": "Wkrótce",
     "TO_DEFINE": "Wkrótce",
-    "CLAIM_TO_ADDRESS": "Tokeny zostaną wysłane na adres:"
+    "CLAIM_TO_ADDRESS": "Tokeny zostaną wysłane na adres:",
+    "CLAIM_TO_DESTINATION_ADDRESS": "W związku z tym, że Twoje konto blockchain jest kontem vestingowym (z ograniczeniem czasowym), tokeny otrzymane z tej kampanii muszą zostać przekazane na inne konto. Proszę podać adres konta, na które mają zostać przesłane tokeny z tej kampanii."
   },
   "CLAIM_AIRDROP": {
     "PROGRESS": "Odliczanie kampanii",
