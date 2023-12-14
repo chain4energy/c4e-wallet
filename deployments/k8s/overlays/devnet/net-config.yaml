@@ -59,7 +59,6 @@ data:
       "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
       "currentPublicSaleRoundId": 1,
       "faucetAvailable": true,
-      "currentPublicSaleRoundId": 1,
       "publicSaleVisible": false
     },
       "Mainnet": {
@@ -119,7 +118,6 @@ data:
         "faucetURL": "",
         "currentPublicSaleRoundId": 1,
         "faucetAvailable": false,
-        "currentPublicSaleRoundId": 1,
         "publicSaleVisible": false
       },
       "Testnet": {
@@ -179,7 +177,6 @@ data:
         "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
         "currentPublicSaleRoundId": 1,
         "faucetAvailable": true,
-        "currentPublicSaleRoundId": 1,
         "publicSaleVisible": false
       },
       "EV-testnet":{
