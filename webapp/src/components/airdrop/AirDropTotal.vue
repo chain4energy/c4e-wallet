@@ -67,7 +67,7 @@
             <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/discord.svg" alt="example svg image"/>
           </a>
           <a href="https://twitter.com/chain4energy" target="_blank" class="airDropTotal__footerIcon">
-            <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/twitter.svg" alt="example svg image"/>
+            <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/twitterX.svg" alt="example svg image"/>
           </a>
           <a href="https://medium.com/chain4-energy" target="_blank" class="airDropTotal__footerIcon">
             <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/medium.svg" alt="Medium"/>
