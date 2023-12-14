@@ -386,7 +386,7 @@ export const useAirDropStore = defineStore({
           this.campaignIds = campaignsList.map(el => el.campaign_id);
           const promisesArray: Promise<Campaign>[] = [];
           for (const el of campaignsList) {
-            promisesArray.push(this.fetchCampaign(el.campaign_id, el));
+            promisesArray.push(this.fetchCampaign(el.campaign_id, el, lockscreen));
           }
           Promise.all(promisesArray).then(r => this.campaigns = r).then(this.sortEntries);
         }
