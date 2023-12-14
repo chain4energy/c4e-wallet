@@ -6,7 +6,7 @@ import {
   Campaign,
   CampaignAllocation,
   convertMissionType,
-  FairdropPollUsage,
+  // FairdropPollUsage,
   Mission
 } from "@/models/store/airdrop";
 import {AllocationMapping, CampaignInfoDetails, CampainStatus} from "@/models/airdrop/airdrop";
@@ -28,12 +28,11 @@ import {Coin} from "@/models/store/common";
 import {useUserStore} from "@/store/user.store";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 
-
 interface ISummary {
-  totalAmount: bigint,
-  activeCampaigns: bigint,
-  totalClaimed: bigint,
-  toClaim: bigint,
+  totalAmount: Coin,
+  activeCampaigns: Coin,
+  totalClaimed: Coin,
+  toClaim: Coin,
   claimedPercent?: BigDecimal,
   toClaimPercent?: BigDecimal
 }
@@ -43,7 +42,6 @@ interface airDropState {
   airDropMock: AirdropTotal,
   campaigns: Campaign[],
   campaignIds: string[],
-  fairdropPollUsage: FairdropPollUsage,
   airdropClaimingAddress: string,
   summary: ISummary,
 }
@@ -55,16 +53,13 @@ export const useAirDropStore = defineStore({
       claimRecord: {} as UserAirdropEntry,
       airDropMock: Object(AirdropTotal),
       campaigns: Array<Campaign>(),
-      fairdropPollUsage: new FairdropPollUsage(new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
-        new Coin(BigInt(0), "C4E"), new Coin(BigInt(0), "C4E"),
-        new BigDecimal(0), new BigDecimal(0)),
       airdropClaimingAddress: '',
       campaignIds: [],
       summary: {
-        totalAmount: 0n,
-        activeCampaigns: 0n,
-        totalClaimed: 0n,
-        toClaim: 0n
+        totalAmount: new Coin(BigInt(0), "uc4e"),
+        activeCampaigns: new Coin(BigInt(0), "uc4e"),
+        totalClaimed: new Coin(BigInt(0), "uc4e"),
+        toClaim: new Coin(BigInt(0), "uc4e")
       },
     };
   },
@@ -72,10 +67,10 @@ export const useAirDropStore = defineStore({
     async sortEntries() {
       const result: Campaign[] = [];
       this.summary = {
-        totalAmount: 0n,
-        activeCampaigns: 0n,
-        totalClaimed: 0n,
-        toClaim: 0n
+        totalAmount: new Coin(BigInt(0), "uc4e"),
+        activeCampaigns: new Coin(BigInt(0), "uc4e"),
+        totalClaimed: new Coin(BigInt(0), "uc4e"),
+        toClaim: new Coin(BigInt(0), "uc4e")
       };
 
       const presentSortedByMissions = Array<Campaign>();
@@ -83,14 +78,20 @@ export const useAirDropStore = defineStore({
       const pastSortedByMissions = Array<Campaign>();
 
       for (const el of this.campaigns) {
-        this.summary.totalAmount += el.amount.amount;
+        this.summary.totalAmount.add(el.amount);
         el.missions.forEach(mission => {
-          if (mission.claimed) this.summary.totalClaimed += (BigInt(mission.weightInPerc) * el.amount.amount / 100n);
-          if (el.status === CampainStatus.Now && !mission.claimed) this.summary.toClaim += (BigInt(mission.weightInPerc) * el.amount.amount / 100n);
+          const missionAmount = mission.weightInPerc * Number(el.amount.amount) / 100;
+          const missionAmountCoin = new Coin(BigInt(Math.floor(missionAmount)), el.amount.denom);
+          if (mission.claimed) {
+            this.summary.totalClaimed.add(missionAmountCoin);
+          }
+          if (el.status === CampainStatus.Now && !mission.claimed) {
+            this.summary.toClaim.add(missionAmountCoin);
+          }
         });
 
         if (el.status === CampainStatus.Now) {
-          this.summary.activeCampaigns += el.amount.amount;
+          this.summary.activeCampaigns.add(el.amount);
           presentSortedByMissions.push(el);
         } else if (el.status === CampainStatus.Future) {
           futureSortedByMissions.push(el);
@@ -385,7 +386,7 @@ export const useAirDropStore = defineStore({
           this.campaignIds = campaignsList.map(el => el.campaign_id);
           const promisesArray: Promise<Campaign>[] = [];
           for (const el of campaignsList) {
-            promisesArray.push(this.fetchCampaign(el.campaign_id, el));
+            promisesArray.push(this.fetchCampaign(el.campaign_id, el, lockscreen));
           }
           Promise.all(promisesArray).then(r => this.campaigns = r).then(this.sortEntries);
         }
@@ -518,28 +519,28 @@ export const useAirDropStore = defineStore({
   },
 
   getters: {
-    getAirdropClaimRecord(): UserAirdropEntry {
-      return this.claimRecord;
-    },
+    // getAirdropClaimRecord(): UserAirdropEntry {
+    //   return this.claimRecord;
+    // },
     getAirDropTotal(): AirdropTotal {
       return this.airDropMock;
     },
     getCampaigns(): Campaign[] {
       return this.campaigns;
     },
-    getFairdropPoolUsage(): FairdropPollUsage {
-      return this.fairdropPollUsage;
-    },
+    // getFairdropPoolUsage(): FairdropPollUsage {
+    //   return this.fairdropPollUsage;
+    // },
     getSummary(): ISummary {
       return this.summary;
     },
   },
 });
 
-function getPercentage(divider: bigint, divisor: bigint): BigDecimal {
-  if (divisor <= 0n) {
+function getPercentage(divider: Coin, divisor: Coin): BigDecimal {
+  if (divisor.amount <= 0n) {
     return new BigDecimal(0);
   }
-  return divideBigInts(divider, divisor);
+  return divideBigInts(divider.amount, divisor.amount);
 }
 

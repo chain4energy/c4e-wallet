@@ -86,7 +86,8 @@ export enum MissionType {
   INITIAL_CLAIM = 'INITIAL_CLAIM',
   VOTE = 'VOTE',
   DELEGATE = 'DELEGATE',
-  CLAIM = 'CLAIM'
+  CLAIM = 'CLAIM',
+  TO_DEFINE = 'TO_DEFINE'
 }
 
 export interface AirdropClaimsLeft {

@@ -8,10 +8,13 @@
     "CONNECT_KEPLR": "Zaloguj się z Keplrem",
     "CONNECT_LEAP": "Zaloguj się z Leap",
     "CONNECT_COSMOSTATION": "Zaloguj się z Cosmostation",
+    "CONNECT_TERMS": "Przeczytałem i akceptuję Regulamin oraz Politykę prywatności",
     "ADDRESS_HELP": "Przeglądaj z dowolnym adresem",
+    "INSERT_ADDRESS": "Adres blockckhain",
     "VIEW_EXPLORER": "Zobacz w eksploratorze",
     "COPY": "Kopiuj",
     "COPIED": "Adres został skopiowany do schowka",
+    "ACCEPT_TERMS": "Najpierw zaakceptuj regulamin i politykę prywatności",
     "ADDRESS_VALIDATION": {
       "EMPTY": "Adres jest wymagany",
       "NOT_THIS_NETWORK": "Adres musi zaczynać się od prefiksu '{prefix}'",
@@ -372,6 +375,7 @@
     "SIGNUP": "Rejestracja",
     "ACTIVATE": "Aktywacja konta",
     "PROVIDEVERIFICATIONCODE": "Weryfikacja",
+    "PORTFOLIO": "Portfolio",
     "SIGNIN-PROFILE": "Logowanie",
     "SIGNUP-PROFILE": "Rejestracja",
     "RESETPASSWORD": "Reset hasła",
@@ -438,7 +442,13 @@
     "CONNECT_INFO": "Połącz się z portfelem, by odbierać nagrody!",
     "SUCCESS": "Sukces! Misja wykonana pomyślnie",
     "SOON": "Wkrótce",
-    "TO_DEEFINE": "To define"
+    "TO_DEFINE": "Wkrótce",
+    "CLAIM_TO_ADDRESS": "Tokeny zostaną wysłane na adres:",
+    "CLAIM_TO_DESTINATION_ADDRESS": "W związku z tym, że Twoje konto blockchain jest kontem vestingowym (z ograniczeniem czasowym), tokeny otrzymane z tej kampanii muszą zostać przekazane na inne konto. Proszę podać adres konta, na które mają zostać przesłane tokeny z tej kampanii.",
+    "SHARE_MESSAGE_HEADER" : "Gratulacje!",
+    "SHARE_MESSAGE_BASE" : "Udostępnij odebranie nagród w swoich mediach społecznościowych!",
+    "SHARE_MESSAGE_CAMPAIGN_COMPLETED": "Ukończyłem całą kampanię '{campaignName}'",
+    "SHARE_MESSAGE_MISSION_COMPLETED": "Ukończyłem misję '{missionName}' o wartości {missionValue} C4E z kampanii '{campaignName}' w ramach Airdrop!"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS": "Odliczanie kampanii",

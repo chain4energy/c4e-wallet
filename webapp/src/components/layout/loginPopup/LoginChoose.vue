@@ -4,11 +4,13 @@
       <h2 style="font-weight: bold">{{ $t('CONNECT.WELCOME') }}</h2>
       <Button icon="pi pi-times" style="margin-bottom: 0.5rem" @click="$emit('close')" class="p-button-rounded p-button-secondary p-button-text" />
     </div>
-
-
     <p>{{ $t('CONNECT.WELCOME_MESSAGE') }}</p>
-    <div class="loginChoose__body">
-      <div v-if="props.showAddressOption" class="box" @click="$emit('typeChange', LoginEmail)">
+    <div class="mb-3">
+      <Checkbox name="termsAccepted" v-model="termsAccepted" :binary="true"/>
+      <span class="mx-2">{{ $t('CONNECT.CONNECT_TERMS') }}</span>
+    </div>
+    <div class="loginChoose__body" v-tooltip.bottom="{ value: $t('CONNECT.ACCEPT_TERMS') , disabled: termsAccepted }">
+      <div v-if="props.showAddressOption" class="box" :class="{'box__inactive': !termsAccepted}" @click="() => {if (termsAccepted) $emit('typeChange', LoginEmail)}">
         <div class="iconContainer">
           <Icon class="icon" name="Globe"></Icon>
         </div>
@@ -19,7 +21,7 @@
           </div>
         </div>
       </div>
-      <div style="margin-top: 10px" class="box" @click="$emit('keplr')" v-if="!isMobile()">
+      <div style="margin-top: 10px" class="box" :class="{'box__inactive': !termsAccepted}" @click="() => {if (termsAccepted) $emit('keplr')}" v-if="!isMobile()">
         <div style="margin-left: 25px; margin-right: 20px; ">
           <img style="height:50px;;padding-top: 6px;" src="@/assets/keplrIcon2.png">
         </div>
@@ -30,7 +32,7 @@
           </div>
         </div>
       </div>
-      <div style="margin-top: 10px" class="box" @click="$emit('cosmostation')" v-if="!isMobile()">
+      <div style="margin-top: 10px" class="box" :class="{'box__inactive': !termsAccepted}" @click="() => {if (termsAccepted) $emit('cosmostation')}" v-if="!isMobile()">
         <div style="margin-left: 25px; margin-right: 20px; ">
           <img style="height:50px;;padding-top: 6px;" src="@/assets/cosmostationIcon.png">
         </div>
@@ -41,7 +43,7 @@
           </div>
         </div>
       </div>
-      <div style="margin-top: 10px" class="box" @click="$emit('leap')" v-if="!isMobile()">
+      <div style="margin-top: 10px" class="box" :class="{'box__inactive': !termsAccepted}" @click="() => {if (termsAccepted) $emit('leap')}  " v-if="!isMobile()">
         <div style="margin-left: 25px; margin-right: 20px; ">
           <img style="height:50px;;padding-top: 6px;" src="@/assets/leapIcon.png">
         </div>
@@ -52,25 +54,15 @@
           </div>
         </div>
       </div>
-<!--      <div class="keplr" @click="$emit('keplr')" v-if="!isMobile()">-->
-<!--        <KeplrLogo/>-->
-<!--        <span>{{ $t('CONNECT.CONNECT_KEPLR') }}</span>-->
-<!--      </div>-->
-<!--      <Button @click="$emit('typeChange', LoginEmail)">-->
-<!--      <Icon style="margin-right: 10px;" name="Globe"></Icon>-->
-<!--        {{ $t('CONNECT.CONNECT_ADDRESS') }}-->
-<!--      </Button>-->
-<!--      <Button @click="$emit('keplr')" v-if="!isMobile()">-->
-<!--        <KeplrLogo/>-->
-<!--        {{ $t('CONNECT.CONNECT_KEPLR') }}-->
-
-<!--      </Button>-->
     </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
 import LoginEmail from '@/components/layout/loginPopup/LoginAddress.vue';
+import Checkbox from "primevue/checkbox";
+import {ref} from "vue";
 
 const props = defineProps({
   showAddressOption: {
@@ -79,6 +71,8 @@ const props = defineProps({
     required: false
   }
 });
+
+const termsAccepted = ref<boolean>(false);
 function isMobile() {
    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
      return true;
@@ -163,6 +157,7 @@ function isMobile() {
       border-radius: 10px 10px 10px 10px;
       display: flex;
       align-items: center;
+      transition: all 0.2s linear;
       .iconContainer {
         box-shadow: 0px 0px 24px 0px rgba(196, 203, 212, 1);
         height: 50px;
@@ -178,6 +173,9 @@ function isMobile() {
           height: 24px;
           width: 24px;
         }
+      }
+      &__inactive {
+        opacity: 0.6;
       }
     }
     .box:hover {

@@ -1,138 +1,120 @@
 <template>
   <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
-  <div class="claimAirDrop" v-if="isLoggedIn && address">
-      <ClaimingOptionsPopup
-        :initial-claim="currentClaimIsInitial"
-        :campaign-id="selectedCampaignId"
-        :mission-id="selectedMissionId"
-        :isFinal="isFinal"
-        v-if="claimingProcessStarted" @close="claimingProcessStarted = false"
-        @final = 'handleFinal'
-      />
-      <div class="claimAirDrop__total">
-        <div class="claimAirDrop__container">
-          <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{$t('AIRDROP.TOTAL_HEADER')}}</h4>
-          <div class="claimAirDrop__summaryData claimAirDrop__basicText">
-            <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
-              <CoinAmount :amount="convertAmount(summary.totalAmount)" :show-denom="true" :show-tooltip="true" :precision="2"/>
-            </ClaimInfo>
-            <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.claimedPercent">
-              <CoinAmount :amount="convertAmount(summary.totalClaimed)" :show-denom="true" :show-tooltip="true" :precision="2"/>
-            </ClaimInfo>
-            <div class="vl"/>
-            <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
-              <CoinAmount :amount="convertAmount(summary.activeCampaigns)" :show-denom="true" :show-tooltip="true" :precision="2"/>
-            </ClaimInfo>
-            <!-- :percentage-vale="summary.claimedPercentage" -->
-            <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="summary.toClaimPercent">
-              <CoinAmount :amount="convertAmount(summary.toClaim)" :show-denom="true" :show-tooltip="true" :precision="2"/>
-            </ClaimInfo>
-          </div>
+  <div class="claimAirDrop" v-if="useUserStore().isLoggedIn && useUserStore().getAccount.address">
+    <ClaimingOptionsPopup v-if="claimingProcessStarted" @close="claimingProcessStarted = false" @claim='claim'/>
+    <div class="claimAirDrop__total">
+      <div class="claimAirDrop__container">
+        <h4 class="claimAirDrop__header claimAirDrop__mainTxt">{{ $t('AIRDROP.TOTAL_HEADER') }}</h4>
+        <div class="claimAirDrop__summaryData claimAirDrop__basicText">
+          <ClaimInfo :header="$t('AIRDROP.TOTAL')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
+            <CoinAmount :amount="useAirDropStore().getSummary.totalAmount" :show-denom="true" :show-tooltip="true" :precision="2"/>
+          </ClaimInfo>
+          <ClaimInfo :header="$t('AIRDROP.TOTAL_CLAIMED')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="useAirDropStore().getSummary.claimedPercent">
+            <CoinAmount :amount="useAirDropStore().getSummary.totalClaimed" :show-denom="true" :show-tooltip="true" :precision="2"/>
+          </ClaimInfo>
+          <div class="vl"/>
+          <ClaimInfo :header="$t('AIRDROP.ACTIVE')" class="claimAirDrop__boldText claimAirDrop__summaryTile">
+            <CoinAmount :amount="useAirDropStore().getSummary.activeCampaigns" :show-denom="true" :show-tooltip="true" :precision="2"/>
+          </ClaimInfo>
+          <ClaimInfo :header="$t('AIRDROP.TO_CLAIM')" class="claimAirDrop__boldText claimAirDrop__summaryTile" :percentage-vale="useAirDropStore().getSummary.toClaimPercent">
+            <CoinAmount :amount="useAirDropStore().getSummary.toClaim" :show-denom="true" :show-tooltip="true" :precision="2"/>
+          </ClaimInfo>
         </div>
       </div>
-      <div class="claimAirDrop__total claimAirDrop__basicText" v-for="(campaignRecord, index) in airdropClaimRecord" :key="index">
-          <div class="claimAirDrop__container">
-            <h4 class="claimAirDrop__header">{{campaignRecord.name}}</h4>
-            <hr class="claimAirDrop__hr"/>
-            <div class="claimAirDrop__progressHeader">
-              <h5 style="margin: 0 0 20px 10px" v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past">{{$t('CLAIM_AIRDROP.PROGRESS')}}</h5>
-              <h5 v-else style="margin: 0 0 20px 10px">{{$t('CLAIM_AIRDROP.FINISHED')}}</h5>
+    </div>
+    <div class="claimAirDrop__total claimAirDrop__basicText" v-for="(campaign, index) in airDropStore.getCampaigns" :key="index">
+      <div class="claimAirDrop__container">
+        <h4 class="claimAirDrop__header">{{ campaign.name }}</h4>
+        <hr class="claimAirDrop__hr"/>
+        <div class="claimAirDrop__progressHeader">
+          <h5 style="margin: 0 0 20px 10px" v-if="checkCampaignStatus(campaign.start_time, campaign.end_time) !== CampainStatus.Past">
+            {{ $t('CLAIM_AIRDROP.PROGRESS') }}</h5>
+          <h5 v-else style="margin: 0 0 20px 10px">{{ $t('CLAIM_AIRDROP.FINISHED') }}</h5>
+        </div>
+
+        <PercentageBar
+          v-if="checkCampaignStatus(campaign.start_time, campaign.end_time) !== CampainStatus.Past"
+          :key="updateComponent"
+          :amount="calculateProgress(campaign.start_time, campaign.end_time)"
+          :status="checkCampaignStatus(campaign.start_time, campaign.end_time)"
+          :time-to-pass="calculateTimeToPass(campaign.start_time, campaign.end_time)"
+        />
+        <div class="claimAirDrop__data">
+          <ClaimInfo :header="$t('AIRDROP.CLAIMED')">
+            <div class="claimAirDrop__data-text">
+              <CoinAmount :amount="calculateMissions(campaign)" :show-denom="true" :precision="2"></CoinAmount>
+              /
+              <CoinAmount :amount="campaign.amount" :show-denom="true" :precision="2"></CoinAmount>
             </div>
-
-
-            <PercentageBar
-              v-if="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time) !== CampainStatus.Past"
-              ref="percentsBar"
-              :key="updateComponent"
-              :amount="calculateProgress(campaignRecord.start_time, campaignRecord.end_time)"
-              :status="checkCampaignStatus(campaignRecord.start_time, campaignRecord.end_time)"
-              :time-to-pass="calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)"
-            />
-            <div class="claimAirDrop__data">
-              <ClaimInfo :header="$t('AIRDROP.CLAIMED')">
-                <div class="claimAirDrop__data-text">
-                  <CoinAmount :amount="calculateMissions(campaignRecord)" :show-denom="true" :precision="2"></CoinAmount>
-                  /
-                  <CoinAmount :amount="campaignRecord.amount" :show-denom="true" :precision="2"></CoinAmount>
-                </div>
-              </ClaimInfo>
-              <ClaimInfo :header="$t('AIRDROP.MISSION_COMPLETED')">
-                <p class="claimAirDrop__data-text">{{getAmountOfClaimedMissions(campaignRecord)}}/{{campaignRecord.missions.length}}</p>
-              </ClaimInfo>
-              <ClaimInfo :header="getTextForTimeColumn(campaignRecord)">
-                <p class="claimAirDrop__data-text" v-if="calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)">{{calculateTimeToPass(campaignRecord.start_time, campaignRecord.end_time)}}</p>
-                <DateCommon :date="new Date(campaignRecord.end_time)" :show-time="false" :show-tooltip="true" v-else/>
-              </ClaimInfo>
-              <ClaimInfo :header="$t('AIRDROP.TOTAL_DISTRIBUTION')">
-                <div class="claimAirDrop__data-text">
-                  <CoinAmount :amount="campaignRecord.totalDistribution" :show-denom="true" :precision="2"></CoinAmount>
-                </div>
-              </ClaimInfo>
+          </ClaimInfo>
+          <ClaimInfo :header="$t('AIRDROP.MISSION_COMPLETED')">
+            <p class="claimAirDrop__data-text">
+              {{ getAmountOfClaimedMissions(campaign) }}/{{ campaign.missions.length }}</p>
+          </ClaimInfo>
+          <ClaimInfo :header="getTextForTimeColumn(campaign)">
+            <p class="claimAirDrop__data-text" v-if="calculateTimeToPass(campaign.start_time, campaign.end_time)">
+              {{ calculateTimeToPass(campaign.start_time, campaign.end_time) }}</p>
+            <DateCommon :date="new Date(campaign.end_time)" :show-time="false" :show-tooltip="true" v-else/>
+          </ClaimInfo>
+          <ClaimInfo :header="$t('AIRDROP.TOTAL_DISTRIBUTION')">
+            <div class="claimAirDrop__data-text">
+              <CoinAmount :amount="campaign.totalDistribution" :show-denom="true" :precision="2"></CoinAmount>
             </div>
-            <div class="claimAirDrop__body">
-              <button v-if="campaignRecord.missions.length > 0" @click="setActiveCampaign(campaignRecord)" class="claimAirDrop__showBtn claimAirDrop__basicText">
-                <ChevronDown :size="15" v-if="activeCampaign !== campaignRecord"/>
-                <ChevronUp :size="15" v-else/>
-                <p>{{ activeCampaign === campaignRecord ? $t('AIRDROP.HIDE_MISSIONS') : $t('AIRDROP.SHOW_MISSIONS') }}</p>
-              </button>
-              <div v-if="activeCampaign === campaignRecord" class="claimAirDrop__missions">
-                <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaignRecord.missions" v-bind:key="id">
-                  <div class="claimAirDrop__leftCol">
-                    <div class="claimAirDrop__smallTxt">
-                      {{ $t('AIRDROP.MISSION')}} {{`#${missions.id}`}}
-                    </div>
-                    <div>
-                      {{missions.description === 'Initial mission - basic mission that must be claimed first' ? $t('AIRDROP.INITIAL') : missions.description}}
-                       ({{missions.weightInPerc}}%) -
-                      <CoinAmount :amount="missions.weight" :show-denom="true" :precision="2"></CoinAmount>
-                    </div>
-                  </div>
-
-                    <Button
-                      v-if="!missions.claimed"
-                      :disabled="!isDisabled(campaignRecord, missions)"
-                      class="p-button p-component secondary claimAirDrop__missions-btn"
-                      :label="getTextForMissionsBtn(missions, missions.mission_type)"
-                      @click="redirectMission(campaignRecord, missions, missions.mission_type)"
-                    />
-
-                  <Button
-                    v-else
-                    class="p-button p-component secondary claimAirDrop__missions-shareBtn"
-                    @click.prevent="() => {popupMission = missions; popupCampaign = campaignRecord; generateSocialMediaMessage(); sharePopupStatus = true;}"
-                  >
-                    Share
-                  </Button>
-
-
-
+          </ClaimInfo>
+        </div>
+        <div class="claimAirDrop__body">
+          <button v-if="campaign.missions.length > 0" @click="setActiveCampaign(campaign)" class="claimAirDrop__showBtn claimAirDrop__basicText">
+            <ChevronDown :size="15" v-if="activeCampaign?.id !== campaign.id"/>
+            <ChevronUp :size="15" v-else/>
+            <p>{{ activeCampaign?.id === campaign.id ? $t('AIRDROP.HIDE_MISSIONS') : $t('AIRDROP.SHOW_MISSIONS') }}</p>
+          </button>
+          <div v-if="activeCampaign?.id === campaign.id" class="claimAirDrop__missions">
+            <div class="claimAirDrop__missions-body" v-for="(missions, id) in campaign.missions" v-bind:key="id">
+              <div class="claimAirDrop__leftCol">
+                <div class="claimAirDrop__smallTxt">
+                  {{ $t('AIRDROP.MISSION') }} {{ `#${missions.id}` }}
+                </div>
+                <div>
+                  {{ missions.description === 'Initial mission - basic mission that must be claimed first' ? $t('AIRDROP.INITIAL') : missions.description }}
+                  ({{ missions.weightInPerc }}%) -
+                  <CoinAmount :amount="missions.weight" :show-denom="true" :precision="2"></CoinAmount>
+                </div>
               </div>
+              <Button v-if="!missions.claimed" :disabled="!isDisabled(campaign, missions)" class="p-button p-component secondary claimAirDrop__missions-btn"
+                      :label="getTextForMissionsBtn(missions, missions.mission_type)"
+                      @click="redirectMission(campaign, missions, missions.mission_type)"/>
+
+              <Button v-else class="p-button p-component secondary claimAirDrop__missions-shareBtn"
+                      label="Share"
+                      @click.prevent="onClickedShareButton(campaign, missions)"/>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
   <div class="claimAirDrop" v-else>
     <div class="claimAirDrop__total">
       <div class="claimAirDrop__container">
         <div class="claimAirDrop__header claimAirDrop__mainTxt">
-          <h4>{{$t('AIRDROP.CONNECT_INFO')}}</h4>
+          <h4>{{ $t('AIRDROP.CONNECT_INFO') }}</h4>
           <Button v-if="!useUserStore().isLoggedIn" class="secondary h-3rem" @click="loginPopupStatus =! loginPopupStatus">
-            {{$t('COMMON.CONNECT') }}
+            {{ $t('COMMON.CONNECT') }}
           </Button>
         </div>
       </div>
     </div>
   </div>
 
-  <Dialog v-model:visible="sharePopupStatus" modal header="Congratulations!" :style="{ width: '50vw' }">
+  <Dialog v-model:visible="sharePopupStatus" modal :header="$t('AIRDROP.SHARE_MESSAGE_HEADER')" :style="{ width: '50vw', 'min-width': '300px' }">
     <div class="sharePopup">
-      <h3>Share this claim on your social media!</h3>
-      <p>{{socialMediaMessage}}</p>
+      <h3>{{ $t('AIRDROP.SHARE_MESSAGE_BASE') }}</h3>
+      <p>{{ socialMediaMessage }}</p>
       <a :href='`https://twitter.com/intent/tweet?text=${socialMediaMessage}`' target="_blank">
         <button>
-          <svg width="32" height="25" viewBox="0 0 32 25" fill="white" xmlns="http://www.w3.org/2000/svg">
-            <path d="M31.2481 0C30.0294 0.723392 27.5842 1.70927 26.1468 1.99363C26.1046 2.00456 26.0702 2.01862 26.0296 2.02956C24.7594 0.776514 23.0189 0 21.0924 0C17.2099 0 14.0616 3.14824 14.0616 7.03081C14.0616 7.23548 14.0444 7.61202 14.0616 7.81201C8.82289 7.81201 4.83564 5.06843 1.97644 1.5624C1.66552 2.3436 1.52959 3.5779 1.52959 4.7372C1.52959 6.92613 3.24042 9.076 5.90432 10.4087C5.41372 10.5353 4.87313 10.6259 4.31067 10.6259C3.40291 10.6259 2.44204 10.3869 1.5624 9.6619C1.5624 9.68846 1.5624 9.71346 1.5624 9.74158C1.5624 12.8008 4.80907 14.8834 7.69639 15.4631C7.11049 15.8084 5.92932 15.8428 5.35279 15.8428C4.94657 15.8428 3.50916 15.6568 3.1248 15.585C3.92788 18.0926 6.82457 19.5019 9.58534 19.5519C7.4261 21.2455 5.92775 21.8736 1.50616 21.8736H0C2.79358 23.6641 6.35117 25 9.91657 25C21.5252 25 28.1232 16.1521 28.1232 7.81201C28.1232 7.67764 28.1201 7.39641 28.1154 7.11362C28.1154 7.08549 28.1232 7.05893 28.1232 7.03081C28.1232 6.98863 28.1107 6.948 28.1107 6.90582C28.1061 6.69333 28.1014 6.49491 28.0967 6.39179C29.331 5.50122 30.4012 4.39035 31.2481 3.1248C30.1153 3.6279 28.8998 3.96538 27.6233 4.11849C28.9263 3.33729 30.7778 1.47491 31.2481 0Z" fill="white"/>
+          <svg  width="32" height="24" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1668.56 1221.19" xml:space="preserve">
+              <path d="M283.94,167.31l386.39,516.64L281.5,1104h87.51l340.42-367.76L984.48,1104h297.8L874.15,558.3l361.92-390.99h-87.51l-313.51,338.7l-253.31-338.7H283.94z M412.63,231.77h136.81l604.13,807.76h-136.81L412.63,231.77z"
+                    fill="white"/>
           </svg>
           Tweet
         </button>
@@ -143,7 +125,7 @@
 
 <script setup lang="ts">
 import {useAirDropStore} from "@/store/airDrop.store";
-import {computed, onMounted, onUnmounted, ref} from "vue";
+import {computed, onBeforeMount, onMounted, onUnmounted, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {CampainStatus} from "@/models/airdrop/airdrop";
 import {Campaign, Mission, MissionTypeSt} from "@/models/store/airdrop";
@@ -153,110 +135,115 @@ import CoinAmount from "@/components/commons/CoinAmount.vue";
 import router from "@/router";
 import ClaimingOptionsPopup from "@/components/airdrop/ClaimingOptionsPopup.vue";
 import {useI18n} from "vue-i18n";
-import {BigDecimal} from "@/models/store/big.decimal";
-import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
 import LoginPopUp from "@/components/layout/loginPopup/LoginPopUp.vue";
 import {ChevronDown, ChevronUp} from "lucide-vue-next";
 import dataService from "@/services/data.service";
 import Dialog from 'primevue/dialog';
 import DateCommon from "@/components/commons/DateCommon.vue";
+import {useToast} from "vue-toastification";
+import {formatBigNumberLocalized, reduceBigNumberLocalized} from "@/utils/locale-number-formatter";
+import {useConfigurationStore} from "@/store/configuration.store";
 
-const percentsBar = ref();
+let isFinal = false;
+let currentClaimIsInitial = false;
+let intervalId = 0;
+
+const loginPopupStatus = ref<boolean>(false);
+const sharePopupStatus = ref<boolean>(false);
+
+const claimingProcessStarted = ref<boolean>(false);
+const activeCampaign = ref<Campaign>();
+const updateComponent = ref(false);
+
+const selectedMission = ref<Mission>();
+const selectedCampaign = ref<Campaign>();
+
+const socialMediaMessage = ref<string>();
+
 const i18n = useI18n();
-const loginPopupStatus = ref(false);
-const sharePopupStatus = ref(false);
-const isFinal = ref(false);
-// const currentLang = computed(() => {
-//   return i18n.global.locale;
-// });
 const airDropStore = useAirDropStore();
 
-const claimingProcessStarted = ref();
-const isLoggedIn = computed(() =>{
-  return useUserStore().isLoggedIn;
-});
-const address = computed(() => {
-  return useUserStore().getAccount.address;
+onBeforeMount(()=>{
+  intervalId = window.setInterval(() => {
+    updateComponent.value = !updateComponent.value;}, 1000);
 });
 
 onMounted(() => {
-  dataService.enterClaimAirdrop();
-
+  dataService.onClaimAirdropSelected();
 });
 
 onUnmounted(() => {
-  dataService.leaveClaimAirdrop();
+  window.clearInterval(intervalId);
+  dataService.onClaimAirdropUnselected();
 });
 
-const summary = computed(()=>{
-  return useAirDropStore().getSummary;
-});
+function onClickedShareButton(campaignRecord: Campaign, mission: Mission) {
+  generateSocialMediaMessage(campaignRecord, mission);
+  sharePopupStatus.value = true;
+}
 
-const activeCampaign = ref();
-function setActiveCampaign(campaign: Campaign){
-  if(campaign !== activeCampaign.value){
+function setActiveCampaign(campaign: Campaign) {
+  if (campaign !== activeCampaign.value) {
     activeCampaign.value = campaign;
   } else {
     activeCampaign.value = undefined;
   }
 }
 
-function calculateMissions(campaign : Campaign){
+function calculateMissions(campaign: Campaign) {
   let total = 0;
   campaign.missions.forEach((el) => {
-    if(el.claimed){
+    if (el.claimed) {
       total += Number(el.weight);
     }
   });
   return total;
 }
-function getAmountOfClaimedMissions(campaign : Campaign){
+
+function getAmountOfClaimedMissions(campaign: Campaign) {
   let total = 0;
   campaign.missions.forEach((el) => {
-    if(el.claimed){
+    if (el.claimed) {
       total++;
     }
   });
   return total;
 }
 
-const airdropClaimRecord = computed(() => {
-  return airDropStore.getCampaigns;
-});
-
 function checkCampaignStatus(startTime: number | string, endTime: number | string) {
-  if(new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime()> new Date(Date.now()).getTime()){
+  if (new Date(startTime).getTime() < new Date(Date.now()).getTime() && new Date(endTime).getTime() > new Date(Date.now()).getTime()) {
     return CampainStatus.Now;
-  }else if(new Date(startTime).getTime() > new Date(Date.now()).getTime()){
+  } else if (new Date(startTime).getTime() > new Date(Date.now()).getTime()) {
     return CampainStatus.Future;
   } else {
     return CampainStatus.Past;
   }
 }
 
-function calculateProgress(startTime: number | string, endTime: number | string){
-  if(new Date(startTime).getTime() < Date.now() && new Date(endTime).getTime()> Date.now()){
+function calculateProgress(startTime: number | string, endTime: number | string) {
+  if (new Date(startTime).getTime() < Date.now() && new Date(endTime).getTime() > Date.now()) {
     const startEndDiff = new Date(endTime).getTime() - new Date(startTime).getTime();
     const difference = Date.now() - new Date(endTime).getTime();
-    return Math.abs(100 - ((Math.abs(difference)/Math.abs(startEndDiff)) * 100));
-  }
-  else{
+    return Math.abs(100 - ((Math.abs(difference) / Math.abs(startEndDiff)) * 100));
+  } else {
     return null;
   }
 }
 
-const updateComponent = ref(false);
-
-function getTextForTimeColumn(campaign: Campaign){
+function getTextForTimeColumn(campaign: Campaign) {
   const res = checkCampaignStatus(campaign.start_time, campaign.end_time);
-  switch (res){
-    case CampainStatus.Past: return i18n.t('AIRDROP.CAMPAIGN_PASSED');
-    case CampainStatus.Now: return i18n.t('AIRDROP.CAMPAIGN_END');
-    case CampainStatus.Future: return i18n.t('AIRDROP.CAMPAIGN_START');
+  switch (res) {
+    case CampainStatus.Past:
+      return i18n.t('AIRDROP.CAMPAIGN_PASSED');
+    case CampainStatus.Now:
+      return i18n.t('AIRDROP.CAMPAIGN_END');
+    case CampainStatus.Future:
+      return i18n.t('AIRDROP.CAMPAIGN_START');
   }
 }
-function calculateTimeToPass(startDate: number | string, endDate: number | string){
-  if(new Date(startDate).getTime() < new Date(Date.now()).getTime() && new Date(endDate).getTime()> new Date(Date.now()).getTime()){
+
+function calculateTimeToPass(startDate: number | string, endDate: number | string) {
+  if (new Date(startDate).getTime() < new Date(Date.now()).getTime() && new Date(endDate).getTime() > new Date(Date.now()).getTime()) {
     const now = new Date(Date.now());
     const difference = new Date(endDate).getTime() - now.getTime();
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
@@ -264,58 +251,60 @@ function calculateTimeToPass(startDate: number | string, endDate: number | strin
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
     return `${days}D ${hours}H ${minutes}M ${seconds}S`;
-  } else if(new Date(endDate).getTime()> new Date(Date.now()).getTime()){
+  } else if (new Date(endDate).getTime() > new Date(Date.now()).getTime()) {
     return i18n.t('AIRDROP.SOON');
   } else {
     return '';
   }
 }
 
-setInterval(() => {
-    updateComponent.value = !updateComponent.value;
-},1000);
 
-function getTextForMissionsBtn(mission: Mission, type: MissionTypeSt){
+
+
+// setInterval(() => {
+//   updateComponent.value = !updateComponent.value;
+// }, 1000);
+
+function getTextForMissionsBtn(mission: Mission, type: MissionTypeSt) {
   let text;
-  switch (type){
-    case MissionTypeSt.INITIAL_CLAIM: text = i18n.t('AIRDROP.CLAIM');
-    break;
-    case MissionTypeSt.DELEGATE: text = i18n.t('AIRDROP.DELEGATE');
-    break;
-    case MissionTypeSt.VOTE: text = i18n.t('AIRDROP.VOTE');
-    break;
-    case MissionTypeSt.CLAIM: text = i18n.t('AIRDROP.CLAIM');
-    break;
-    case MissionTypeSt.TO_DEEFINE: text = i18n.t('AIRDROP.TO_DEEFINE');
+  switch (type) {
+    case MissionTypeSt.INITIAL_CLAIM:
+      text = i18n.t('AIRDROP.CLAIM');
+      break;
+    case MissionTypeSt.DELEGATE:
+      text = i18n.t('AIRDROP.DELEGATE');
+      break;
+    case MissionTypeSt.VOTE:
+      text = i18n.t('AIRDROP.VOTE');
+      break;
+    case MissionTypeSt.CLAIM:
+      text = i18n.t('AIRDROP.CLAIM');
+      break;
+    case MissionTypeSt.TO_DEFINE:
+      text = i18n.t('AIRDROP.TO_DEFINE');
       break;
   }
-  if(mission.completed && !mission.claimed){
+  if (mission.completed && !mission.claimed) {
     text = i18n.t('AIRDROP.CLAIM');
   }
   return text;
 }
 
-const selectedMissionId = ref();
-const selectedCampaignId = ref();
-const currentClaimIsInitial = ref();
-const selectedCampaignName = ref();
-
-function redirectMission(campaign: Campaign, mission : Mission, type: MissionTypeSt) {
-  selectedCampaignId.value = campaign.id;
-  selectedMissionId.value = mission.id;
-  isFinal.value = (campaign.missions.length - getAmountOfClaimedMissions(campaign) === 1);
-  selectedCampaignName.value = campaign.name;
+function redirectMission(campaign: Campaign, mission: Mission, type: MissionTypeSt) {
+  selectedCampaign.value = campaign;
+  selectedMission.value = mission;
+  isFinal = (campaign.missions.length - getAmountOfClaimedMissions(campaign) === 1);
 
   if (mission.mission_type === MissionTypeSt.INITIAL_CLAIM) {
     claimingProcessStarted.value = true;
-    currentClaimIsInitial.value = true;
-  }else if(mission.mission_type === MissionTypeSt.CLAIM){
-    claimingProcessStarted.value = true;
-    currentClaimIsInitial.value = false;
+    currentClaimIsInitial = true;
+  } else if (mission.mission_type === MissionTypeSt.CLAIM) {
+    currentClaimIsInitial = false;
+    claimOtherAirdrop(campaign, mission);
   } else {
-    currentClaimIsInitial.value = false;
+    currentClaimIsInitial = false;
     if (mission.completed && !mission.claimed) {
-      claimingProcessStarted.value = true;
+      claimOtherAirdrop(campaign, mission);
     } else {
       switch (type) {
         case MissionTypeSt.DELEGATE:
@@ -330,58 +319,101 @@ function redirectMission(campaign: Campaign, mission : Mission, type: MissionTyp
 }
 
 
-
 function isDisabled(campaignRec: Campaign, mission: Mission) {
-  if (!campaignRec.enabled){
+  if (!campaignRec.enabled) {
     return false;
-  } else if(checkCampaignStatus(campaignRec.start_time, campaignRec.end_time) !== CampainStatus.Now){
+  } else if (checkCampaignStatus(campaignRec.start_time, campaignRec.end_time) !== CampainStatus.Now) {
     return false;
-  } else if(!isInitialMissionClaimed(campaignRec) && mission.mission_type !== MissionTypeSt.INITIAL_CLAIM){
+  } else if (!isInitialMissionClaimed(campaignRec) && mission.mission_type !== MissionTypeSt.INITIAL_CLAIM) {
     return false;
-  } else if(mission.claimed || mission.mission_type === MissionTypeSt.TO_DEEFINE){
+  } else if (mission.claimed || mission.mission_type === MissionTypeSt.TO_DEFINE) {
     return false;
   }
   return true;
 }
 
 function isInitialMissionClaimed(campaign: Campaign) {
-  const initialMission = campaign.missions.find((mission)=> {
+  const initialMission = campaign.missions.find((mission) => {
     return mission.mission_type === 'INITIAL_CLAIM';
   });
   return initialMission?.claimed;
 }
 
-function convertAmount( amount: bigint | number | BigDecimal | Coin | DecCoin){
-  if( typeof amount === 'bigint'){
-    return new BigIntWrapper(amount);
+function generateSocialMediaMessage(campaign: Campaign, mission?: Mission) {
+  if (isFinal) {
+    // socialMediaMessage.value = `I have completed the whole campaign ${campaign?.name}!`;
+    socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_CAMPAIGN_COMPLETED', {campaignName: campaign?.name});
+    isFinal = false;
   } else {
-    return amount;
+    // socialMediaMessage.value = `I have completed mission ${mission?.name} with a value of ${transformToExpView(Number(mission?.weight) / 1000000)} C4E from campaign ${campaign?.name} on Airdrop Allocation!`;
+    const missionValue = transformToExpView(Number(mission?.weight) / 1000000);
+    socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_MISSION_COMPLETED', {campaignName: campaign?.name, missionName:mission?.name, missionValue:missionValue});
   }
 }
 
-const popupMission = ref<Mission>();
-const popupCampaign = ref<Campaign>();
-const socialMediaMessage = ref<string>();
+function transformToExpView(amount: number | bigint) {
+  return formatBigNumberLocalized(typeof amount === 'bigint' ? amount.toString() : amount.toFixed(6));
+}
 
-const generateSocialMediaMessage = () => {
-  socialMediaMessage.value = `I have completed mission ${popupMission.value?.name} with a value of ${Number(popupMission.value?.weight) / 1000000} C4E from campaign ${popupCampaign.value?.name} on Airdrop Allocation!`;
-};
-
-
-const handleFinal = () => {
+function handleMissionCompleted(campaign: Campaign, mission: Mission) {
+  generateSocialMediaMessage(campaign, mission);
   sharePopupStatus.value = true;
-  socialMediaMessage.value = `I have completed the whole campaign ${selectedCampaignName.value}!`;
-  isFinal.value = false;
-};
+}
+
+function claim(address: string) {
+  console.log("claim:", address);
+  if (selectedCampaign.value && selectedMission.value) {
+    if (currentClaimIsInitial) {
+      claimInitialAirdrop(selectedCampaign.value, selectedMission.value, address);
+    } else {
+      claimOtherAirdrop(selectedCampaign.value, selectedMission.value);
+    }
+  } else {
+    console.warn("claim: selectedCampaign or selectedMission not provided!!");
+  }
+}
+
+function claimInitialAirdrop(campaign: Campaign, mission: Mission, address: string) {
+  useAirDropStore().claimInitialAirdrop(campaign.id, address).then((r) => {
+    if (!r.error) {
+      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
+        .then(() => {
+          onSuccessClaim(campaign, mission);
+        });
+    }
+  }).finally(() => {
+    claimingProcessStarted.value = false;
+  });
+}
+
+function claimOtherAirdrop(campaign: Campaign, mission: Mission) {
+  useAirDropStore().claimOtherAirdrop(campaign.id, mission.id).then((r) => {
+    if (!r.error) {
+      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
+        .then(() => {
+          onSuccessClaim(campaign, mission);
+        });
+    }
+  }).finally(() => {
+    claimingProcessStarted.value = false;
+  });
+}
+
+function onSuccessClaim(campaign: Campaign, mission: Mission){
+  useToast().success(i18n.t('AIRDROP.SUCCESS'));
+  handleMissionCompleted(campaign, mission);
+}
 
 </script>
 
 <style scoped lang="scss">
 @import '../../styles/variables.scss';
-.claimAirDrop{
+
+.claimAirDrop {
   font-family: 'Inter', sans-serif;
   width: 100%;
-  &__total{
+
+  &__total {
     margin-bottom: 10px;
     display: flex;
     align-items: center;
@@ -392,17 +424,20 @@ const handleFinal = () => {
       grid-area: 1 /1/ 1 / 5;
     }
   }
-  &__basicText{
+
+  &__basicText {
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
     line-height: 22px;
   }
-  &__mainTxt{
+
+  &__mainTxt {
     font-weight: 700;
     font-size: 31px;
     line-height: 38px;
   }
+
   &__container {
     width: 60%;
     margin: 0 auto;
@@ -418,27 +453,32 @@ const handleFinal = () => {
       grid-area: 1 /1/ 1 / 9;
     }
   }
+
   &__summaryData {
     display: inline-flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    align-items: center;
   }
+
   &__summaryTile {
-    flex: 1 1;
-    margin: 0 5px;
+    flex: 2 1;
+    margin: 5px;
+
     height: 120px;
+    min-width: 120px;
   }
-  &__data{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
-    grid-column-gap: 9px;
-    grid-row-gap: 9px;
-    margin-bottom: 18px;
-    &-text{
+
+  &__data {
+        display: inline-flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    &-text {
       margin: 0;
     }
   }
-  &__header{
+
+  &__header {
 
     display: flex;
     align-items: center;
@@ -448,23 +488,28 @@ const handleFinal = () => {
     font-size: 31px;
     line-height: 38px;
     margin: 15px 10px 25px;
+
     h4 {
       margin: 0;
     }
   }
-  &__progressHeader{
+
+  &__progressHeader {
     display: flex;
     align-items: flex-start;
     width: 100%;
   }
-  &__body{
+
+  &__body {
     width: 100%;
     background-color: transparent;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    flex-wrap: wrap;
   }
-  &__showBtn{
+
+  &__showBtn {
     width: 215px;
     background: transparent;
     border: none;
@@ -475,28 +520,33 @@ const handleFinal = () => {
     display: inline-flex;
     justify-content: space-between;
     align-items: center;
+
     p {
       margin: 0;
     }
   }
-  &__missions{
+
+  &__missions {
     transition: 2s ease-in-out;
     width: 100%;
-    &-body{
+
+    &-body {
       display: flex;
-      justify-content: space-between;
-      align-items:center;
+      justify-content: space-evenly;
+      align-items: center;
       width: 100%;
       background-color: #013C6C;
       padding: 3.5px 13px;
       box-shadow: 0 0 2px 2px #02447A;
       border-radius: 2px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
     }
+
     &-btn {
       width: 130px;
       max-height: 42px !important;
-      margin: 8px !important;
+      margin: 8px auto !important;
       border-radius: 5px !important;
       color: $header-text-color !important;
       background-color: $secondary-color !important;
@@ -513,16 +563,20 @@ const handleFinal = () => {
         }
       }
     }
+
     &-shareBtn {
       width: 130px;
       max-height: 42px !important;
-      margin: 8px !important;
+      margin: 8px auto !important;
       border-radius: 5px !important;
       box-sizing: border-box !important;
       color: $secondary-color !important;
       border: $secondary-color 1px solid !important;
       background-color: #002C50 !important;
       transition: all 0.2s linear;
+      box-sizing: border-box !important;
+
+
       &:hover {
         background-color: white !important;
         color: #002C50 !important;
@@ -530,23 +584,29 @@ const handleFinal = () => {
     }
 
   }
-  &__percents{
+
+  &__percents {
     width: 100%;
     height: 30px;
   }
-  &__smallTxt{
+
+  &__smallTxt {
     font-weight: 400;
     font-size: 12px;
     line-height: 12px;
     margin-bottom: 5px;
   }
-  &__leftCol{
+
+  &__leftCol {
     text-align: initial;
-    width: 75%;
+    flex: 1 1;
+    min-width: 250px;
   }
+
   &__boldText {
     font-weight: 700;
   }
+
   &__hr {
     margin: 0 0 1em;
     color: $secondary-color;
@@ -554,19 +614,21 @@ const handleFinal = () => {
     align-items: center;
     width: 100%;
   }
-  &__content{
+
+  &__content {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(calc((100%/ 8) - 5px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(calc((100% / 8) - 5px), 1fr));
     grid-column-gap: 5px;
     grid-row-gap: 5px;
     @media (max-width: 1024px) {
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      grid-column-gap:0;
+      grid-column-gap: 0;
       grid-row-gap: 10px;
     }
   }
-  &__items{
+
+  &__items {
     display: flex;
     flex-direction: column;
     font-size: 16px;
@@ -577,6 +639,8 @@ const handleFinal = () => {
     padding: 15%;
 
   }
+
+
 }
 
 .vl {
@@ -587,10 +651,12 @@ const handleFinal = () => {
 
 .sharePopup {
   padding: 15px 5%;
-  text-align: justify;
+  text-align: left;
+
   p {
     margin: 20px 0;
   }
+
   button {
     height: 50px;
     padding: 10px 40px;
@@ -598,6 +664,48 @@ const handleFinal = () => {
     border: none;
     background-color: #1DA1F2;
     color: white;
+  }
+}
+
+@media (max-width: 1400px) {
+  .claimAirDrop__container {
+    width: 90%;
+  }
+
+  .claimAirDrop__total {
+    grid-area: auto;
+  }
+
+  .claimAirDrop__content {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+  }
+
+
+}
+
+@media (max-width: 1024px) {
+  .claimAirDrop__container {
+    width: 90%;
+
+  }
+  .claimAirDrop__content {
+    width: 100%;
+  }
+
+  .claimAirDrop__content {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+}
+
+@media (max-width: 660px) {
+  .vl {
+    display: none;
+  }
+  .claimAirDrop__summaryTile {
+    width: 50%;
   }
 }
 </style>

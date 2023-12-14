@@ -126,7 +126,7 @@ export enum MissionTypeSt {
   DELEGATE = 'DELEGATE',
   CLAIM = 'CLAIM',
   UNDEFINED = 'UNDEFINED',
-  TO_DEEFINE = 'TO_DEEFINE'
+  TO_DEFINE = 'TO_DEFINE'
 }
 
 export function convertMissionType(missionTypeBc: MissionTypeBc): MissionTypeSt {
@@ -140,6 +140,8 @@ export function convertMissionType(missionTypeBc: MissionTypeBc): MissionTypeSt 
         return MissionTypeSt.VOTE;
       case MissionTypeBc.CLAIM:
         return MissionTypeSt.CLAIM;
+      case MissionTypeBc.TO_DEFINE:
+        return MissionTypeSt.TO_DEFINE;
     }
   } else {
     console.log("missionTypeBc not defined");
@@ -158,24 +160,24 @@ export function findCampaign(campaigns: Campaign[], campaignId: string): Campaig
     return d.id == campaignId;
   });
 }
-export class FairdropPollUsage {
-  total:Coin;
-  claimed:Coin;
-  activeCampaigns:Coin;
-  toClaim:Coin;
-  claimedPercentage:BigDecimal;
-  toClaimePercentage:BigDecimal;
-
-
-  constructor(total: Coin, claimed: Coin, activeCampaigns: Coin, toClaim: Coin, claimedPercentage:BigDecimal,   toClaimPercentage:BigDecimal) {
-    this.total = total;
-    this.claimed = claimed;
-    this.activeCampaigns = activeCampaigns;
-    this.toClaim = toClaim;
-    this.claimedPercentage = claimedPercentage;
-    this.toClaimePercentage = toClaimPercentage;
-  }
-}
+// export class FairdropPollUsage {
+//   total:Coin;
+//   claimed:Coin;
+//   activeCampaigns:Coin;
+//   toClaim:Coin;
+//   claimedPercentage:BigDecimal;
+//   toClaimePercentage:BigDecimal;
+//
+//
+//   constructor(total: Coin, claimed: Coin, activeCampaigns: Coin, toClaim: Coin, claimedPercentage:BigDecimal,   toClaimPercentage:BigDecimal) {
+//     this.total = total;
+//     this.claimed = claimed;
+//     this.activeCampaigns = activeCampaigns;
+//     this.toClaim = toClaim;
+//     this.claimedPercentage = claimedPercentage;
+//     this.toClaimePercentage = toClaimPercentage;
+//   }
+// }
 
 function getDefaultDenom():string{
   return useConfigurationStore().config.airdropDefaultDenom;

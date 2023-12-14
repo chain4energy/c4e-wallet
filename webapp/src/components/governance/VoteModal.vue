@@ -34,7 +34,7 @@
             <p>{{ $t("GOVERNANCE_VIEW.VOTE_CONDITION") }}</p>
             <Button
               @click="dataService.onKeplrLogIn()" class="p-button-raised p-button-rounded">
-              <KeplrLogo/> {{ $t('CONNECT.CONNECT' )}}
+              <KeplrLogo letter="K" /> {{ $t('CONNECT.CONNECT' )}}
             </Button>
           </span>
         </div>

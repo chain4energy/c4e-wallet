@@ -67,7 +67,7 @@
             <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/discord.svg" alt="example svg image"/>
           </a>
           <a href="https://twitter.com/chain4energy" target="_blank" class="airDropTotal__footerIcon">
-            <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/twitter.svg" alt="example svg image"/>
+            <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/twitterX.svg" alt="example svg image"/>
           </a>
           <a href="https://medium.com/chain4-energy" target="_blank" class="airDropTotal__footerIcon">
             <img v-svg-inline class="icon airDropTotal__footerIcon" src="@/assets/svg/social_media/medium.svg" alt="Medium"/>
@@ -185,6 +185,7 @@ onMounted(() => {
 });
 
 watch(userLoggedIn, () => {
+  console.log("watch: userLoggedIn - CHANGED");
   address.value = useUserStore().getAccount.address;
   submit();
 });
@@ -326,8 +327,8 @@ watch(userLoggedIn, () => {
       font-weight: 700;
       font-size: 28px;
       line-height: 34px;
-      @media (max-width: 500px) {
-        margin-top: 10px;
+      @media (max-width: 1024px) {
+        margin-top: 20px;
       }
     }
   }
@@ -439,5 +440,62 @@ watch(userLoggedIn, () => {
 
 }
 
+@media (max-width: 1024px) {
+  .airDropTotal {
+    width: 90%;
+  }
 
+  .airDropTotal__container {
+    padding: 20px;
+    grid-area: 1 / 1 / 1 / 5;
+  }
+
+  .airDropTotal__head,
+  .airDropTotal__form,
+  .airDropTotal__totalData,
+  .airDropTotal__footer,
+  .airDropTotal__content {
+    width: 100%;
+  }
+
+  .airDropTotal__form {
+    flex-direction: column;
+  }
+
+  .airDropTotal-btn,
+  .airDropTotal__head-btn {
+    width: 100%;
+  }
+
+  .airDropTotal__totalData-item {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .airDropTotal {
+    width: 95%;
+  }
+  .airDropTotal__container {
+    padding: 10px;
+  }
+  .airDropTotal__content-items {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .airDropTotal__content-details {
+    margin-top: 10px;
+  }
+
+  .airDropTotal__footer-icons {
+    width: 100%;
+    display: inline-flex;
+    justify-content: space-evenly;
+  }
+
+  .airDropTotal__footerIcon {
+    width: 30px;
+  }
+}
 </style>

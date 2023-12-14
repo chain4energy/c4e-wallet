@@ -44,7 +44,7 @@ class DataService extends LoggedService {
 
   private static instance: DataService;
   private isOnline = navigator.onLine;
-  private onClaimAirdropView = false;
+  private isClaimAirdropViewSelected = false;
 
 
   public static getInstance(): DataService {
@@ -126,19 +126,41 @@ class DataService extends LoggedService {
     }
   }
   public setIntervals() {
+    console.log("setIntervals!!!!!");
     const now = new Date().getTime();
     this.lastBlockTimeout = now;
     this.lastDashboardTimeout = now;
     this.lastValidatorsTimeout = now;
-    this.blockIntervalId = window.setInterval(refreshBlocksData, this.blockTimeout);
-    this.dashboardIntervalId = window.setInterval(refreshDashboard, this.dashboardTimeout);
-    this.validatorsIntervalId = window.setInterval(refreshValidators, this.validatorsTimeout);
+
+
+    this.blockIntervalId = this.checkAndSetInterval(this.blockIntervalId, refreshBlocksData, this.blockTimeout);
+    this.dashboardIntervalId = this.checkAndSetInterval(this.dashboardIntervalId, refreshDashboard, this.dashboardTimeout);
+    this.validatorsIntervalId = this.checkAndSetInterval(this.validatorsIntervalId, refreshValidators, this.validatorsTimeout);
+    if (useUserStore().isLoggedIn) {
+      this.lastAccountTimeout = now;
+      this.accountIntervalId = this.checkAndSetInterval(this.accountIntervalId, refreshAccountData, this.accountTimeout);
+    }
+  }
+
+  private checkAndSetInterval(intervalId: number, functionToCall: (() => void), timeout: number): number {
+    if (intervalId != 0) {
+      window.clearInterval(intervalId);
+    }
+    return window.setInterval(functionToCall, timeout);
   }
 
   public clearIntervals() {
+    console.log("clearIntervals!!!!!");
     window.clearInterval(this.blockIntervalId);
+    this.blockIntervalId = 0;
     window.clearInterval(this.dashboardIntervalId);
+    this.dashboardIntervalId = 0;
     window.clearInterval(this.validatorsIntervalId);
+    this.validatorsIntervalId= 0;
+    window.clearInterval(this.accountIntervalId);
+    this.accountIntervalId= 0;
+    window.clearInterval(this.spendablesIntervalId);
+    this.spendablesIntervalId= 0;
   }
   async waitTillCondition(condition: () => boolean) {
     while (!condition()) {
@@ -209,7 +231,7 @@ class DataService extends LoggedService {
       useValidatorsStore().clear();
       this.clearIntervals();
       this.onInit().then( () => {
-          if (this.onClaimAirdropView && useUserStore().getAccount.address) {
+          if (this.isClaimAirdropViewSelected && useUserStore().getAccount.address) {
             useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
           }
         }
@@ -224,7 +246,6 @@ class DataService extends LoggedService {
 
   public onPortfolioSelected() {
     this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected refreshs');
-
     this.lastSpendablesTimeout = new Date().getTime();
     this.spendablesIntervalId = window.setInterval(refreshSpendables, this.spendableTimeout);
   }
@@ -315,7 +336,7 @@ class DataService extends LoggedService {
       instancce.enableLeapAccountChangeListener();
     }
     instancce.lastAccountTimeout = new Date().getTime();
-    instancce.accountIntervalId = window.setInterval(refreshAccountData, instancce.accountTimeout);
+    instancce.accountIntervalId = instancce.checkAndSetInterval(instancce.accountIntervalId, refreshAccountData, instancce.accountTimeout);
     const propId = useProposalsStore().proposal;
     const userAddress = useUserStore().getAccount.address;
     if (propId !== undefined && userAddress !== '') {
@@ -324,12 +345,10 @@ class DataService extends LoggedService {
     // refresh spendables once logged in
     refreshSpendables();
 
-    if (instancce.onClaimAirdropView && userAddress) {
+    if (instancce.isClaimAirdropViewSelected && userAddress) {
         useAirDropStore().fetchUsersCampaignData(userAddress, true);
     }
-    if (onSuccess) {
-      onSuccess();
-    }
+    onSuccess?.();
   }
 
   private onMetamaskConnectSuccess(onSuccess?: () => void) {
@@ -362,8 +381,8 @@ class DataService extends LoggedService {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
       });
-      if(useUserStore().getAccount.address && this.onClaimAirdropView){
-        useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+      if(useUserStore().getAccount.address && this.isClaimAirdropViewSelected){
+        useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, false);
       }
     }
 
@@ -373,9 +392,11 @@ class DataService extends LoggedService {
     // f-n refreshing spendable balances from API
     if (useUserStore().getAccount.address) {
       this.logToConsole(LogLevel.DEBUG, 'refreshSpendables');
+      if (!this.skipRefreshing(this.lastSpendablesTimeout)) {
         useUserStore().updateSpendables().then(() => {
           this.lastSpendablesTimeout = new Date().getTime();
-      });
+        });
+      }
     }
   }
 
@@ -444,17 +465,17 @@ class DataService extends LoggedService {
     window.removeEventListener(leapKeyStoreChange, keystoreLeapChangeListener);
   }
 
-  public enterClaimAirdrop() {
-    this.logToConsole(LogLevel.DEBUG, 'enterClaimAirdrop');
-    this.onClaimAirdropView = true;
+  public onClaimAirdropSelected() {
+    this.logToConsole(LogLevel.DEBUG, 'onClaimAirdropSelected');
+    this.isClaimAirdropViewSelected = true;
     if(useUserStore().getAccount.address){
       useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
     }
   }
 
-  public leaveClaimAirdrop() {
-    this.logToConsole(LogLevel.DEBUG, 'leaveClaimAirdrop');
-    this.onClaimAirdropView = false;
+  public onClaimAirdropUnselected() {
+    this.logToConsole(LogLevel.DEBUG, 'onClaimAirdropUnselected');
+    this.isClaimAirdropViewSelected = false;
   }
 
   public async onProposalUpdateVotes(proposalId: number) {
