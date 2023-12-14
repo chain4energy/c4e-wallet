@@ -458,6 +458,7 @@ function onSuccessClaim(campaign: Campaign, mission: Mission){
     display: inline-flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    align-items: center;
   }
 
   &__summaryTile {
@@ -650,7 +651,7 @@ function onSuccessClaim(campaign: Campaign, mission: Mission){
 
 .sharePopup {
   padding: 15px 5%;
-  text-align: justify;
+  text-align: left;
 
   p {
     margin: 20px 0;
