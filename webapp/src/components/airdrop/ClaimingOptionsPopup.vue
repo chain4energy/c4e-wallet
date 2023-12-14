@@ -3,6 +3,8 @@
     <div class="claimingOptionsPopup__background" @click="$emit('close')"></div>
 
     <div class="claimingOptionsPopup__holder" v-if="!accountOfVestingType">
+      <div class="claimingOptionsPopup__x" @click="$emit('close')"><Icon name="X" style="height: 25px;"/></div>
+
       <h3>{{$t('AIRDROP.CLAIM_TO_ADDRESS')}}</h3>
       <div class="claimingOptionsPopup__content">
         {{ address }}
@@ -41,6 +43,7 @@ import i18n from "@/plugins/i18n";
 import {useConfigurationStore} from "@/store/configuration.store";
 import * as bench32 from "bech32";
 import {AccountType} from "@/models/store/account";
+import Icon from "@/components/features/IconComponent.vue";
 
 const emit = defineEmits(['close', 'claim']);
 
@@ -145,11 +148,22 @@ const addressSchema = object().shape({
     padding: 30px 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
     border-radius: 8px;
+    position: relative;
   }
 
   &__content {
     width: 100%;
-    overflow: scroll;
+    @media (max-width: 604px) {
+      overflow: scroll;
+    }
+  }
+
+  &__x {
+    position: absolute;
+    right:0;
+    top:20px;
+    cursor: pointer;
+
   }
 }
 </style>
