@@ -387,9 +387,11 @@ class DataService extends LoggedService {
     // f-n refreshing spendable balances from API
     if (useUserStore().getAccount.address) {
       this.logToConsole(LogLevel.DEBUG, 'refreshSpendables');
+      if (!this.skipRefreshing(this.lastSpendablesTimeout)) {
         useUserStore().updateSpendables().then(() => {
           this.lastSpendablesTimeout = new Date().getTime();
-      });
+        });
+      }
     }
   }
 
