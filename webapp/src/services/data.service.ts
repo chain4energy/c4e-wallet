@@ -131,13 +131,15 @@ class DataService extends LoggedService {
     this.lastBlockTimeout = now;
     this.lastDashboardTimeout = now;
     this.lastValidatorsTimeout = now;
-    // this.blockIntervalId = window.setInterval(refreshBlocksData, this.blockTimeout);
-    // this.dashboardIntervalId = window.setInterval(refreshDashboard, this.dashboardTimeout);
-    // this.validatorsIntervalId = window.setInterval(refreshValidators, this.validatorsTimeout);
 
-    this.blockIntervalId = this.checkAndSetInterval( this.blockIntervalId,refreshBlocksData, this.blockTimeout);
-    this.dashboardIntervalId = this.checkAndSetInterval( this.dashboardIntervalId,refreshDashboard, this.dashboardTimeout);
-    this.validatorsIntervalId = this.checkAndSetInterval( this.validatorsIntervalId,refreshValidators, this.validatorsTimeout);
+
+    this.blockIntervalId = this.checkAndSetInterval(this.blockIntervalId, refreshBlocksData, this.blockTimeout);
+    this.dashboardIntervalId = this.checkAndSetInterval(this.dashboardIntervalId, refreshDashboard, this.dashboardTimeout);
+    this.validatorsIntervalId = this.checkAndSetInterval(this.validatorsIntervalId, refreshValidators, this.validatorsTimeout);
+    if (useUserStore().isLoggedIn) {
+      this.lastAccountTimeout = now;
+      this.accountIntervalId = this.checkAndSetInterval(this.accountIntervalId, refreshAccountData, this.accountTimeout);
+    }
   }
 
   private checkAndSetInterval(intervalId: number, functionToCall: (() => void), timeout: number): number {
@@ -155,6 +157,10 @@ class DataService extends LoggedService {
     this.dashboardIntervalId = 0;
     window.clearInterval(this.validatorsIntervalId);
     this.validatorsIntervalId= 0;
+    window.clearInterval(this.accountIntervalId);
+    this.accountIntervalId= 0;
+    window.clearInterval(this.spendablesIntervalId);
+    this.spendablesIntervalId= 0;
   }
   async waitTillCondition(condition: () => boolean) {
     while (!condition()) {
@@ -240,7 +246,6 @@ class DataService extends LoggedService {
 
   public onPortfolioSelected() {
     this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected refreshs');
-
     this.lastSpendablesTimeout = new Date().getTime();
     this.spendablesIntervalId = window.setInterval(refreshSpendables, this.spendableTimeout);
   }
