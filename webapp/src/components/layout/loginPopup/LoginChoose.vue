@@ -9,7 +9,7 @@
       <Checkbox name="termsAccepted" v-model="termsAccepted" :binary="true"/>
       <span class="mx-2">{{ $t('CONNECT.CONNECT_TERMS') }}</span>
     </div>
-    <div class="loginChoose__body" v-tooltip.bottom="{ value: 'Accept the terms first', disabled: termsAccepted }">
+    <div class="loginChoose__body" v-tooltip.bottom="{ value: $t('CONNECT.ACCEPT_TERMS') , disabled: termsAccepted }">
       <div v-if="props.showAddressOption" class="box" :class="{'box__inactive': !termsAccepted}" @click="() => {if (termsAccepted) $emit('typeChange', LoginEmail)}">
         <div class="iconContainer">
           <Icon class="icon" name="Globe"></Icon>

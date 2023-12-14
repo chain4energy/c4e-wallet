@@ -106,9 +106,9 @@
     </div>
   </div>
 
-  <Dialog v-model:visible="sharePopupStatus" modal header="Congratulations!" :style="{ width: '50vw', 'min-width': '300px' }">
+  <Dialog v-model:visible="sharePopupStatus" modal :header="$t('AIRDROP.SHARE_MESSAGE_HEADER')" :style="{ width: '50vw', 'min-width': '300px' }">
     <div class="sharePopup">
-      <h3>Share this claim on your social media!</h3>
+      <h3>{{ $t('AIRDROP.SHARE_MESSAGE_BASE') }}</h3>
       <p>{{ socialMediaMessage }}</p>
       <a :href='`https://twitter.com/intent/tweet?text=${socialMediaMessage}`' target="_blank">
         <button>
@@ -142,6 +142,7 @@ import Dialog from 'primevue/dialog';
 import DateCommon from "@/components/commons/DateCommon.vue";
 import {useToast} from "vue-toastification";
 import {formatBigNumberLocalized, reduceBigNumberLocalized} from "@/utils/locale-number-formatter";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 let isFinal = false;
 let currentClaimIsInitial = false;
@@ -340,10 +341,13 @@ function isInitialMissionClaimed(campaign: Campaign) {
 
 function generateSocialMediaMessage(campaign: Campaign, mission?: Mission) {
   if (isFinal) {
-    socialMediaMessage.value = `I have completed the whole campaign ${campaign?.name}!`;
+    // socialMediaMessage.value = `I have completed the whole campaign ${campaign?.name}!`;
+    socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_CAMPAIGN_COMPLETED', {campaignName: campaign?.name});
     isFinal = false;
   } else {
-    socialMediaMessage.value = `I have completed mission ${mission?.name} with a value of ${transformToExpView(Number(mission?.weight) / 1000000)} C4E from campaign ${campaign?.name} on Airdrop Allocation!`;
+    // socialMediaMessage.value = `I have completed mission ${mission?.name} with a value of ${transformToExpView(Number(mission?.weight) / 1000000)} C4E from campaign ${campaign?.name} on Airdrop Allocation!`;
+    const missionValue = transformToExpView(Number(mission?.weight) / 1000000);
+    socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_MISSION_COMPLETED', {campaignName: campaign?.name, missionName:mission?.name, missionValue:missionValue});
   }
 }
 
