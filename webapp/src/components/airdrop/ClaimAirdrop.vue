@@ -98,7 +98,7 @@
       <div class="claimAirDrop__container">
         <div class="claimAirDrop__header claimAirDrop__mainTxt">
           <h4>{{ $t('AIRDROP.CONNECT_INFO') }}</h4>
-          <Button v-if="!useUserStore().isLoggedIn" class="secondary h-3rem" @click="loginPopupStatus =! loginPopupStatus">
+          <Button v-if="!useUserStore().isLoggedIn" class="secondary h-3rem connectBtn" @click="loginPopupStatus =! loginPopupStatus">
             {{ $t('COMMON.CONNECT') }}
           </Button>
         </div>
@@ -665,6 +665,10 @@ function onSuccessClaim(campaign: Campaign, mission: Mission){
     background-color: #1DA1F2;
     color: white;
   }
+}
+
+.connectBtn {
+  font-size: 1rem !important;
 }
 
 @media (max-width: 1400px) {
