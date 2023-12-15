@@ -16,6 +16,7 @@ import WifiOffIcon from '@/components/features/WifiOffIcon.vue';
 import {useI18n} from "vue-i18n";
 import {useUserServiceStore} from "@/store/userService.store";
 import {usePublicSalesStore} from "@/store/publicSales.store";
+import {Campaign, Mission} from "@/models/store/airdrop";
 const keplrKeyStoreChange = 'keplr_keystorechange';
 const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
 const leapKeyStoreChange = 'leap_keystorechange';
@@ -246,8 +247,8 @@ class DataService extends LoggedService {
 
   public onPortfolioSelected() {
     this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected refreshs');
-    this.lastSpendablesTimeout = new Date().getTime();
-    this.spendablesIntervalId = window.setInterval(refreshSpendables, this.spendableTimeout);
+    this.refreshSpendables(true, true);
+    this.spendablesIntervalId = window.setInterval(()=>{refreshSpendables(false)}, this.spendableTimeout);
   }
 
   public onPortfolioUnselected() {
@@ -304,14 +305,14 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onKeplrKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectKeplr().then(refreshSpendables);
+    useUserStore().connectKeplr().then(()=>{refreshSpendables(false)});
   }
 
   public onCosmostationKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onCosmostationKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectCosmostation().then(refreshSpendables);
+    useUserStore().connectCosmostation().then(()=>{refreshSpendables(false)});
 
   }
 
@@ -319,7 +320,7 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onLeapKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectLeap().then(refreshSpendables);
+    useUserStore().connectLeap().then(()=>{refreshSpendables(false)});
 
   }
 
@@ -343,7 +344,7 @@ class DataService extends LoggedService {
       useProposalsStore().fetchProposalUserVote(propId.proposalId, userAddress);
     }
     // refresh spendables once logged in
-    refreshSpendables();
+    refreshSpendables(true);
 
     if (instancce.isClaimAirdropViewSelected && userAddress) {
         useAirDropStore().fetchUsersCampaignData(userAddress, true);
@@ -385,15 +386,14 @@ class DataService extends LoggedService {
         useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, false);
       }
     }
-
   }
 
-  public refreshSpendables() {
+  public refreshSpendables(lockscreen: boolean, force = false) {
     // f-n refreshing spendable balances from API
     if (useUserStore().getAccount.address) {
       this.logToConsole(LogLevel.DEBUG, 'refreshSpendables');
-      if (!this.skipRefreshing(this.lastSpendablesTimeout)) {
-        useUserStore().updateSpendables().then(() => {
+      if (force || !this.skipRefreshing(this.lastSpendablesTimeout)) {
+        useUserStore().updateSpendables(lockscreen).then(() => {
           this.lastSpendablesTimeout = new Date().getTime();
         });
       }
@@ -485,7 +485,25 @@ class DataService extends LoggedService {
   public onClaimRewards() {
     this.logToConsole(LogLevel.DEBUG, 'onClaimRewards');
     useUserStore().claimRewards();
+
   }
+
+  public async onClaimInitialAirdrop(campaign: Campaign, mission: Mission, address: string, onSuccessClaim:(campaign: Campaign, mission: Mission)=>void){
+    await useUserStore().claimInitialAirdrop(campaign.id, address).then(()=>{
+      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true);
+      onSuccessClaim(campaign, mission);
+    });
+  }
+
+  public async onClaimOtherAirdrop(campaign: Campaign, mission: Mission, onSuccessClaim?: (campaign: Campaign, mission: Mission) => void) {
+    await useUserStore().claimOtherAirdrop(campaign.id, mission.id).then(() => {
+      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
+        .then(() => {
+          onSuccessClaim?.(campaign, mission);
+        });
+    });
+  }
+
 }
 
 export default DataService.getInstance();
@@ -519,6 +537,6 @@ function refreshValidators() {
 }
 
 
-function refreshSpendables() {
-  DataService.getInstance().refreshSpendables();
+function refreshSpendables(lockscreen: boolean) {
+  DataService.getInstance().refreshSpendables(lockscreen);
 }

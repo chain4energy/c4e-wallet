@@ -98,7 +98,7 @@
       <div class="claimAirDrop__container">
         <div class="claimAirDrop__header claimAirDrop__mainTxt">
           <h4>{{ $t('AIRDROP.CONNECT_INFO') }}</h4>
-          <Button v-if="!useUserStore().isLoggedIn" class="secondary h-3rem" @click="loginPopupStatus =! loginPopupStatus">
+          <Button v-if="!useUserStore().isLoggedIn" class="secondary h-3rem connectBtn" @click="loginPopupStatus =! loginPopupStatus">
             {{ $t('COMMON.CONNECT') }}
           </Button>
         </div>
@@ -125,7 +125,7 @@
 
 <script setup lang="ts">
 import {useAirDropStore} from "@/store/airDrop.store";
-import {computed, onBeforeMount, onMounted, onUnmounted, ref} from "vue";
+import {computed, onBeforeMount, onMounted, onUnmounted, ref, watch} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {CampainStatus} from "@/models/airdrop/airdrop";
 import {Campaign, Mission, MissionTypeSt} from "@/models/store/airdrop";
@@ -142,7 +142,6 @@ import Dialog from 'primevue/dialog';
 import DateCommon from "@/components/commons/DateCommon.vue";
 import {useToast} from "vue-toastification";
 import {formatBigNumberLocalized, reduceBigNumberLocalized} from "@/utils/locale-number-formatter";
-import {useConfigurationStore} from "@/store/configuration.store";
 
 let isFinal = false;
 let currentClaimIsInitial = false;
@@ -163,9 +162,12 @@ const socialMediaMessage = ref<string>();
 const i18n = useI18n();
 const airDropStore = useAirDropStore();
 
+const userLoggedIn = computed(() => {
+  return useUserStore().getAccount.address != '';
+});
+
 onBeforeMount(()=>{
-  intervalId = window.setInterval(() => {
-    updateComponent.value = !updateComponent.value;}, 1000);
+  intervalId = window.setInterval(() => { updateComponent.value = !updateComponent.value;}, 1000);
 });
 
 onMounted(() => {
@@ -176,6 +178,15 @@ onUnmounted(() => {
   window.clearInterval(intervalId);
   dataService.onClaimAirdropUnselected();
 });
+
+watch(userLoggedIn, () => {
+  console.log("watch: userLoggedIn - CHANGED");
+  claimingProcessStarted.value = false;
+  sharePopupStatus.value = false;
+  loginPopupStatus.value = false;
+});
+
+
 
 function onClickedShareButton(campaignRecord: Campaign, mission: Mission) {
   generateSocialMediaMessage(campaignRecord, mission);
@@ -258,13 +269,6 @@ function calculateTimeToPass(startDate: number | string, endDate: number | strin
   }
 }
 
-
-
-
-// setInterval(() => {
-//   updateComponent.value = !updateComponent.value;
-// }, 1000);
-
 function getTextForMissionsBtn(mission: Mission, type: MissionTypeSt) {
   let text;
   switch (type) {
@@ -300,11 +304,11 @@ function redirectMission(campaign: Campaign, mission: Mission, type: MissionType
     currentClaimIsInitial = true;
   } else if (mission.mission_type === MissionTypeSt.CLAIM) {
     currentClaimIsInitial = false;
-    claimOtherAirdrop(campaign, mission);
+    dataService.onClaimOtherAirdrop(campaign, mission);
   } else {
     currentClaimIsInitial = false;
     if (mission.completed && !mission.claimed) {
-      claimOtherAirdrop(campaign, mission);
+      dataService.onClaimOtherAirdrop(campaign, mission);
     } else {
       switch (type) {
         case MissionTypeSt.DELEGATE:
@@ -341,13 +345,12 @@ function isInitialMissionClaimed(campaign: Campaign) {
 
 function generateSocialMediaMessage(campaign: Campaign, mission?: Mission) {
   if (isFinal) {
-    // socialMediaMessage.value = `I have completed the whole campaign ${campaign?.name}!`;
-    socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_CAMPAIGN_COMPLETED', {campaignName: campaign?.name});
+    const campaignAmount = transformToExpView(campaign.amount.amount);
+    socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_CAMPAIGN_COMPLETED', {campaignName: campaign?.name, campaignAmount: campaignAmount});
     isFinal = false;
   } else {
-    // socialMediaMessage.value = `I have completed mission ${mission?.name} with a value of ${transformToExpView(Number(mission?.weight) / 1000000)} C4E from campaign ${campaign?.name} on Airdrop Allocation!`;
-    const missionValue = transformToExpView(Number(mission?.weight) / 1000000);
-    socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_MISSION_COMPLETED', {campaignName: campaign?.name, missionName:mission?.name, missionValue:missionValue});
+    const missionAmount = transformToExpView(Number(mission?.weight) / 1000000);
+    socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_MISSION_COMPLETED', {campaignName: campaign?.name, missionName:mission?.name, missionAmount:missionAmount});
   }
 }
 
@@ -357,6 +360,7 @@ function transformToExpView(amount: number | bigint) {
 
 function handleMissionCompleted(campaign: Campaign, mission: Mission) {
   generateSocialMediaMessage(campaign, mission);
+  claimingProcessStarted.value = false;
   sharePopupStatus.value = true;
 }
 
@@ -364,39 +368,13 @@ function claim(address: string) {
   console.log("claim:", address);
   if (selectedCampaign.value && selectedMission.value) {
     if (currentClaimIsInitial) {
-      claimInitialAirdrop(selectedCampaign.value, selectedMission.value, address);
+      dataService.onClaimInitialAirdrop(selectedCampaign.value, selectedMission.value, address, onSuccessClaim);
     } else {
-      claimOtherAirdrop(selectedCampaign.value, selectedMission.value);
+      dataService.onClaimOtherAirdrop(selectedCampaign.value, selectedMission.value, onSuccessClaim);
     }
   } else {
     console.warn("claim: selectedCampaign or selectedMission not provided!!");
   }
-}
-
-function claimInitialAirdrop(campaign: Campaign, mission: Mission, address: string) {
-  useAirDropStore().claimInitialAirdrop(campaign.id, address).then((r) => {
-    if (!r.error) {
-      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
-        .then(() => {
-          onSuccessClaim(campaign, mission);
-        });
-    }
-  }).finally(() => {
-    claimingProcessStarted.value = false;
-  });
-}
-
-function claimOtherAirdrop(campaign: Campaign, mission: Mission) {
-  useAirDropStore().claimOtherAirdrop(campaign.id, mission.id).then((r) => {
-    if (!r.error) {
-      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
-        .then(() => {
-          onSuccessClaim(campaign, mission);
-        });
-    }
-  }).finally(() => {
-    claimingProcessStarted.value = false;
-  });
 }
 
 function onSuccessClaim(campaign: Campaign, mission: Mission){
@@ -665,6 +643,10 @@ function onSuccessClaim(campaign: Campaign, mission: Mission){
     background-color: #1DA1F2;
     color: white;
   }
+}
+
+.connectBtn {
+  font-size: 1rem !important;
 }
 
 @media (max-width: 1400px) {
