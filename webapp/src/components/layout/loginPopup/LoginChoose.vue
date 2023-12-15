@@ -7,7 +7,13 @@
     <p>{{ $t('CONNECT.WELCOME_MESSAGE') }}</p>
     <div class="mb-3">
       <Checkbox name="termsAccepted" v-model="termsAccepted" :binary="true"/>
-      <span class="mx-2">{{ $t('CONNECT.CONNECT_TERMS') }}</span>
+      <span class="mx-2">
+        <i18n-t keypath="CONNECT.CONNECT_TERMS" tag="label">
+          <a href="/terms_conditions" target="_blank">{{ $t('CONNECT.CONNECT_TERMS_LINK_TERMS') }}</a>
+          <a href='/privacy_policy' target='_blank'>{{ $t('CONNECT.CONNECT_TERMS_LINK_POLICY') }}</a>
+        </i18n-t>
+
+      </span>
     </div>
     <div class="loginChoose__body" v-tooltip.bottom="{ value: $t('CONNECT.ACCEPT_TERMS') , disabled: termsAccepted }">
       <div v-if="props.showAddressOption" class="box" :class="{'box__inactive': !termsAccepted}" @click="() => {if (termsAccepted) $emit('typeChange', LoginEmail)}">

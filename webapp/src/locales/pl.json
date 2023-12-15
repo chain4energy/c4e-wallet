@@ -8,7 +8,9 @@
     "CONNECT_KEPLR": "Zaloguj się z Keplrem",
     "CONNECT_LEAP": "Zaloguj się z Leap",
     "CONNECT_COSMOSTATION": "Zaloguj się z Cosmostation",
-    "CONNECT_TERMS": "Przeczytałem i akceptuję Regulamin oraz Politykę prywatności",
+    "CONNECT_TERMS": "Przeczytałem i akceptuję {0} i {1}",
+    "CONNECT_TERMS_LINK_TERMS": "Regulamin",
+    "CONNECT_TERMS_LINK_POLICY": "Politykę prywatności",
     "ADDRESS_HELP": "Przeglądaj z dowolnym adresem",
     "INSERT_ADDRESS": "Adres blockckhain",
     "VIEW_EXPLORER": "Zobacz w eksploratorze",
@@ -422,7 +424,7 @@
     "FOOTER_TEXT": "Połącz się z nami, aby być na bieżąco z airdropem i nowościami w C4E.",
     "DETAILS": "Szczegóły",
     "TOTAL_HEADER": "Podsumowanie",
-    "TOTAL": "Razem",
+    "TOTAL": "Twoja alokacja",
     "TOTAL_CLAIMED": "Odebrane",
     "ACTIVE": "Aktywne kampanie",
     "TO_CLAIM": "Do odebrania",
@@ -447,8 +449,8 @@
     "CLAIM_TO_DESTINATION_ADDRESS": "W związku z tym, że Twoje konto blockchain jest kontem vestingowym (z ograniczeniem czasowym), tokeny otrzymane z tej kampanii muszą zostać przekazane na inne konto. Proszę podać adres konta, na które mają zostać przesłane tokeny z tej kampanii.",
     "SHARE_MESSAGE_HEADER" : "Gratulacje!",
     "SHARE_MESSAGE_BASE" : "Udostępnij odebranie nagród w swoich mediach społecznościowych!",
-    "SHARE_MESSAGE_CAMPAIGN_COMPLETED": "Ukończyłem całą kampanię '{campaignName}'",
-    "SHARE_MESSAGE_MISSION_COMPLETED": "Ukończyłem misję '{missionName}' o wartości {missionValue} C4E z kampanii '{campaignName}' w ramach Airdrop!"
+    "SHARE_MESSAGE_CAMPAIGN_COMPLETED": "Ukończyłem pomyślnie całą kampanię '{campaignName}' i zdobyłem nagrodę w wysokości {campaignAmount} {'@'}C4E",
+    "SHARE_MESSAGE_MISSION_COMPLETED": "Ukończyłem pomyślnie misję '{missionName}' i zdobyłem nagrodę w wysokości {missionAmount} {'@'}C4E z kampanii '{campaignName}' w ramach Airdrop!"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS": "Odliczanie kampanii",

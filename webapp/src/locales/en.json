@@ -8,7 +8,9 @@
     "CONNECT_KEPLR": "Connect with Keplr wallet",
     "CONNECT_LEAP": "Connect with Leap wallet",
     "CONNECT_COSMOSTATION": "Connect with Cosmostation wallet",
-    "CONNECT_TERMS": "I have read and accept Terms & Conditions and Privacy Policy",
+    "CONNECT_TERMS": "I have read and accept {0} and {1}",
+    "CONNECT_TERMS_LINK_TERMS": "Terms & Conditions",
+    "CONNECT_TERMS_LINK_POLICY": "Privacy Policy",
     "ADDRESS_HELP": "Explore with any address",
     "INSERT_ADDRESS": "Blockchain address",
     "VIEW_EXPLORER": "View on explorer",
@@ -430,7 +432,7 @@
     "FOOTER_TEXT": "Connect with us to stay up-to-date on airdrop distribution and what's next for C4E.",
     "DETAILS": "Details",
     "TOTAL_HEADER": "Summary",
-    "TOTAL": "Total",
+    "TOTAL": "Your allocation",
     "TOTAL_CLAIMED": "Total claimed",
     "ACTIVE": "Active campaigns",
     "TO_CLAIM": "To claim",
@@ -455,8 +457,8 @@
     "CLAIM_TO_DESTINATION_ADDRESS": "Given that your blockchain account is a vesting account, the tokens received from this campaign must be transferred to a different account. Please provide the address of the account where the tokens from this campaign should be sent.",
     "SHARE_MESSAGE_HEADER" : "Congratulations!",
     "SHARE_MESSAGE_BASE" : "Share this claim on your social media!",
-    "SHARE_MESSAGE_CAMPAIGN_COMPLETED": "I have completed the whole campaign '{campaignName}'",
-    "SHARE_MESSAGE_MISSION_COMPLETED": "I have completed mission '{missionName}' with a value of {missionValue} C4E from campaign '{campaignName}' on Airdrop Allocation!"
+    "SHARE_MESSAGE_CAMPAIGN_COMPLETED": "I have successfully completed the whole campaign '{campaignName}' and earned a reward of {campaignAmount} {'@'}C4E!",
+    "SHARE_MESSAGE_MISSION_COMPLETED": "I have successfully completed the '{missionName}' and earned a reward of {missionAmount} {'@'}C4E from the '{campaignName}' in the Airdrop Allocation!"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS":"Campaign countdown",

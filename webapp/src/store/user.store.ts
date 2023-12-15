@@ -287,6 +287,37 @@ export const useUserStore = defineStore({
         }
       });
     },
+    async claimInitialAirdrop(campaignId: string, extraAddress: string) {
+      const connectionInfo = this.connectionInfo;
+      return await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, (!extraAddress || extraAddress === '')?extraAddress:this.account.address)
+        .then(async (resp) => {
+          if (resp.isError()) {
+            await onTxDeliveryFailure(connectionInfo, this, resp, 'Claiming airdrop rewards failed: ' + resp.error?.message);
+          } else {
+            const allResults = await Promise.all([
+              fetchBalance(connectionInfo, useUserStore(), true),
+            ]);
+            onTxDeliverySuccess(resp.data);
+            onRefreshingError(allResults);
+          }
+        });
+    },
+    async claimOtherAirdrop(campaignId: string, missionId: string) {
+      const connectionInfo = useUserStore().connectionInfo;
+      return await apiFactory.accountApi().claimAirDropMissions(connectionInfo, campaignId, missionId)
+        .then(async (resp) => {
+          if (resp.isError()) {
+            await onTxDeliveryFailure(connectionInfo, this, resp, 'Claiming airdrop rewards failed: ' + resp.error?.message);
+          } else {
+            const allResults = await Promise.all([
+              fetchBalance(connectionInfo, useUserStore(), true),
+            ]);
+            onTxDeliverySuccess(resp.data);
+            onRefreshingError(allResults);
+          }
+        });
+    },
+
     async vote(option: VoteOption, proposalId: number){
       const connectionInfo = this.connectionInfo;
       apiFactory.accountApi().vote(this.connectionInfo, option, proposalId).then(async (resp) => {
@@ -332,8 +363,8 @@ export const useUserStore = defineStore({
           }
         });
     },
-    async updateSpendables() {
-      await fetchSpendableBalances(this.account.address, this, false);
+    async updateSpendables(lockscreen: boolean) {
+      await fetchSpendableBalances(this.account.address, this, lockscreen);
     }
   },
   getters: {
@@ -439,7 +470,7 @@ function clearStateOnLogout(state: UserState) {
   clearStateForNonexistentAccount(state);
 }
 
-async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState, lockscreen: boolean): Promise<boolean> {
+export async function fetchBalance(connectionInfo: ConnectionInfo, state: UserState, lockscreen: boolean): Promise<boolean> {
   const address = connectionInfo.account;
   const denom = useConfigurationStore().config.stakingDenom;
   const response = await apiFactory.accountApi().fetchBalance(address, denom, lockscreen);
