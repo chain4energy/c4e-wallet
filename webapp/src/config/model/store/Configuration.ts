@@ -221,7 +221,7 @@ export class Configuration implements JsonConfiguration {
       this.proposalVotingRefreshTimeout = configuration.proposalVotingRefreshTimeout;
       this.targetInflationAprMultiplier = configuration.targetInflationAprMultiplier;
       this.faucetURL = configuration.faucetURL;
-      this.faucetAvailable = configuration.faucetAvailable;
+      this.faucetAvailable = configuration.faucetAvailable ? configuration.faucetAvailable : false;
       this.tokenReservationDenom = configuration.tokenReservationDenom;
       this.currentPublicSaleRoundId = configuration.currentPublicSaleRoundId;
       this.transferDenom = configuration.transferDenom;
