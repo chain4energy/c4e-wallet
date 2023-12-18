@@ -21,12 +21,12 @@
     "queries": {
     },
     "operationGas": {
-      "vote": 250000,
-      "delegate": 250000,
-      "undelegate": 250000,
-      "redelegate": 250000,
-      "claimRewards": 250000,
-      "transfer": 250000
+      "vote": 320000,
+      "delegate": 320000,
+      "undelegate": 320000,
+      "redelegate": 440000,
+      "claimRewards": 320000,
+      "transfer": 320000
     },
     "viewDenoms": [
       {
@@ -82,12 +82,12 @@
     "queries": {
     },
     "operationGas": {
-      "vote": 250000,
-      "delegate": 250000,
-      "undelegate": 250000,
-      "redelegate": 250000,
-      "claimRewards": 250000,
-      "transfer": 250000
+      "vote": 320000,
+      "delegate": 320000,
+      "undelegate": 320000,
+      "redelegate": 440000,
+      "claimRewards": 320000,
+      "transfer": 320000
 
     },
     "viewDenoms": [
@@ -142,12 +142,12 @@
     "networkName": "Int-Testnet",
     "keplrNetworkName": "Chain 4 Energy internal testnet",
     "operationGas": {
-      "vote": 1200000,
-      "delegate": 1300000,
-      "undelegate": 1400000,
-      "redelegate": 1500000,
-      "claimRewards": 2500000,
-      "transfer": 250000
+      "vote": 320000,
+      "delegate": 320000,
+      "undelegate": 320000,
+      "redelegate": 440000,
+      "claimRewards": 320000,
+      "transfer": 320000
     },
     "viewDenoms": [
       {
@@ -201,12 +201,12 @@
     "networkName": "Testnet(babajaga-1)",
     "keplrNetworkName": "Chain 4 Energy Testnet",
     "operationGas": {
-      "vote": 200000,
-      "delegate": 300000,
-      "undelegate": 400000,
-      "redelegate": 500000,
-      "claimRewards": 2500000,
-      "transfer": 250000
+      "vote": 320000,
+      "delegate": 320000,
+      "undelegate": 320000,
+      "redelegate": 440000,
+      "claimRewards": 320000,
+      "transfer": 320000
     },
     "viewDenoms": [
       {
@@ -262,12 +262,12 @@
     "testMode": true,
     "testFileName": "pb_test-mode-config.json",
     "operationGas": {
-      "vote": 250000,
-      "delegate": 250000,
-      "undelegate": 250000,
-      "redelegate": 250000,
-      "claimRewards": 250000,
-      "transfer": 250000
+      "vote": 320000,
+      "delegate": 320000,
+      "undelegate": 320000,
+      "redelegate": 440000,
+      "claimRewards": 320000,
+      "transfer": 320000
     },
     "viewDenoms": [
       {

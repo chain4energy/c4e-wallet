@@ -22,12 +22,12 @@ data:
       "networkName": "Devnet(veles-dev-test-1)",
       "keplrNetworkName": "Chain4Energy Devnet",
       "operationGas": {
-        "vote": 72000,
-        "delegate": 300000,
-        "undelegate": 220000,
-        "redelegate": 310000,
-        "claimRewards": 400000,
-        "transfer": 250000
+        "vote": 320000,
+        "delegate": 320000,
+        "undelegate": 320000,
+        "redelegate": 440000,
+        "claimRewards": 320000,
+        "transfer": 320000
       },
       "viewDenoms": [
         {
@@ -81,12 +81,12 @@ data:
         "networkName": "Mainnet(perun-1)",
         "keplrNetworkName": "Chain4Energy",
         "operationGas": {
-          "vote": 72000,
-          "delegate": 300000,
-          "undelegate": 220000,
-          "redelegate": 310000,
-          "claimRewards": 400000,
-          "transfer": 250000
+          "vote": 320000,
+          "delegate": 320000,
+          "undelegate": 320000,
+          "redelegate": 440000,
+          "claimRewards": 320000,
+          "transfer": 320000
         },
         "viewDenoms": [
           {
