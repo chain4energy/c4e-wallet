@@ -11,12 +11,12 @@
             <span class="text">{{ app_version + "/" + compilation_timestamp}}</span>
           </div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr)"  @click="topup" v-if="!isMainNetwork">
-          <div>
-            <span class="text">{{ $t('HEADER.TOP_UP_ACCOUNT') }}</span>
-          </div>
-          <div class="center"><img class="" src="@/assets/faucet.svg" alt="Image" style="width: 40px"></div>
-        </div>
+<!--        <div style="display: grid; grid-template-columns: repeat(2, 1fr)"  @click="topup" v-if="isFaucetAvailable">-->
+<!--          <div>-->
+<!--            <span class="text">{{ $t('HEADER.TOP_UP_ACCOUNT') }}</span>-->
+<!--          </div>-->
+<!--          <div class="center"><img class="" src="@/assets/faucet.svg" alt="Image" style="width: 40px"></div>-->
+<!--        </div>-->
 
       </div>
         </span>
@@ -26,10 +26,10 @@
 <script setup lang="ts">
 
 import {useToast} from "vue-toastification";
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import {useI18n} from "vue-i18n";
-import {useUserStore} from "@/store/user.store";
-import {useConfigurationStore} from "@/store/configuration.store";
+// import {useUserStore} from "@/store/user.store";
+// import {useConfigurationStore} from "@/store/configuration.store";
 
 const dropdown = ref(false);
 const toggleDropdown = () => {
@@ -43,19 +43,19 @@ const i18n = useI18n();
 const toast = useToast();
 const app_version = process.env.VUE_APP_VERSION;
 const compilation_timestamp = process.env.VUE_APP_COMPILATION_TIMESTAMP;
-const isMainNetwork = computed(() => {
-  return useConfigurationStore().config.isMainNetwork;
-});
-function topup() {
-    console.log('topup');
-    useUserStore().topUpAccount(
-        () => {
-            toast.success(i18n.t('TOAST.SUCCESS.TOP_UP'));
-        },
-        () => {
-            toast.error(i18n.t('TOAST.ERROR.TOP_UP'));
-        });
-}
+// const isFaucetAvailable= computed(() => {
+//   return useConfigurationStore().config.faucetAvailable;
+// });
+// function topup() {
+//     console.log('topup');
+//     useUserStore().topUpAccount(
+//         () => {
+//             toast.success(i18n.t('TOAST.SUCCESS.TOP_UP'));
+//         },
+//         () => {
+//             toast.error(i18n.t('TOAST.ERROR.TOP_UP'));
+//         });
+// }
 
 
 </script>
