@@ -4,14 +4,18 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted} from "vue";
-import router from "@/router";
+import {onMounted, PropType} from "vue";
+import {useSessionStorage} from "@vueuse/core";
+import {useRouter} from "vue-router";
+
+const router = useRouter()
 
 onMounted(() => {
-  setTimeout(() => {
-    router.push({ name: 'ev_StartChargingSession' })
-  }, 3000)
+  let context = useSessionStorage("context", {}) ;
+  console.log("context: " + context);
+  router.push({name:'ev_SessionLink',params:{context:context.value as string[] | undefined}})
 })
+
 </script>
 
 <style scoped lang="scss">

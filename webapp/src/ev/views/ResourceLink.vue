@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {onMounted, PropType, ref} from "vue";
 import {AppTypeLink, useEvStore} from "@/ev/store/ev.store";
 import {useRouter} from "vue-router";
 import {createLinkFromPathParams} from "@/ev/services/utils";
@@ -17,7 +17,7 @@ const isIncorrectLink = ref(false);
 
 const props = defineProps({
   context: {
-    type: String ,
+    type:  Object as PropType<Array<string>>  ,
     required: false
   },
 });

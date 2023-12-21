@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, PropType, ref} from "vue";
 import {useRouter} from "vue-router";
 import ChargePointCNew from "@/ev/components/ChargePointC-New.vue";
 import {ChargePoint, ChargePointStatusType} from "@/ev/models/chargePoint";
@@ -31,7 +31,7 @@ enum State {
 
 const props = defineProps({
   context: {
-    type: String,
+    type:  Object as PropType<Array<string>> ,
     required: false
   },
 });

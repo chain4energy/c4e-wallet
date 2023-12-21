@@ -13,35 +13,36 @@
   || chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_STARTED"
                            :sessionInfo="chargingSessionStore.getSessionInfo"
                            @stop-charging="stopCharging"/>
-  <ChargingSessionSummary v-if="chargingSessionStore.getSessionInfo?.state == SessionState.FINAL" :sessionInfo="chargingSessionStore.getSessionInfo"/>
+  <ChargingSessionSummary v-if="chargingSessionStore.getSessionInfo?.state == SessionState.FINAL
+  || chargingSessionStore.getSessionInfo?.state == SessionState.FINALIZE_ACCOUNTING" :sessionInfo="chargingSessionStore.getSessionInfo"/>
 </template>
 
 <script setup lang="ts">
 import {useRouter} from "vue-router";
-import {onMounted, onUnmounted, ref, watch} from "vue";
+import {onMounted, onUnmounted, PropType, ref, watch} from "vue";
 import ChargingSessionWaiteForConnectAndStart from "@/ev/views/chargingSession/ChargingSessionWaiteForConnectAndStart.vue";
-import {SessionState} from "@/ev/models/sessionInfo";
+import {SessionInfo, SessionState} from "@/ev/models/sessionInfo";
 import ChargingSessionProgress from "@/ev/views/chargingSession/ChargingSessionProgress.vue";
 import ChargingSessionSummary from "@/ev/views/chargingSession/ChargingSessionSummary.vue";
 import Checkbox from "primevue/checkbox";
-import ChoosePaymentMethod from "@/ev/views/ChoosePaymentMethod.vue";
 import {useEvChargingSessionStore} from "@/ev/store/evChargingSession.store";
 import {useEvChargePointConnectorStore} from "@/ev/store/evChargePointConnector.store";
 import {getChargePointConnectorUrlFromChargerPointConnectorSessionUrl} from "@/ev/services/utils";
 import {clearAuthTokens} from "axios-jwt/src/tokensUtils";
 import ChargingSessionInitPayment from "@/ev/views/chargingSession/ChargingSessionInitPayment.vue";
 import ChargingSessionWaitForPayment from "@/ev/views/chargingSession/ChargingSessionWaitForPayment.vue";
+import { useSessionStorage } from "@vueuse/core"
 
 const router = useRouter()
 const chargingSessionStore = useEvChargingSessionStore();
 const chargePointConnectorStore = useEvChargePointConnectorStore();
 const useInterval = ref(true);
 
-let interval: any;
+let interval = 0;
 
 const props = defineProps({
   context: {
-    type: String,
+    type: Object as PropType<Array<string>> ,
     required: false
   },
 });
@@ -50,43 +51,67 @@ onMounted(() => {
   if (chargingSessionStore.getChargingSessionUrl == "") {
     router.push({name: 'ev_ResourceLink', params: {context: props.context}})
   } else {
+    //check if tokens are ok
     clearAuthTokens();
     chargingSessionStore.loginWithResource(true, onSuccessLoginToSession)
   }
 });
 
-function onSuccessLoginToSession() {
-  chargePointConnectorStore.chargePointConnectorUrl = getChargePointConnectorUrlFromChargerPointConnectorSessionUrl(chargingSessionStore.getChargingSessionUrl);
-  chargePointConnectorStore.fetchChargePointConnectorAll();
-  chargingSessionStore.fetchSessionInfo();
-  if (chargingSessionStore.getSessionInfo?.state != SessionState.FINAL) {
-    startInterval();
-  }
-}
-
-function startInterval() {
-  interval = setInterval(() => {
-    chargingSessionStore.fetchSessionInfo(false)
-  }, 1000);
-}
+onUnmounted(() => {
+  stopInterval();
+})
 
 watch(useInterval, (newValue, oldValue) => {
   if (newValue) {
     startInterval();
   } else {
-    clearInterval(interval);
+    stopInterval();
   }
 })
+function onSuccessLoginToSession() {
+  chargePointConnectorStore.chargePointConnectorUrl = getChargePointConnectorUrlFromChargerPointConnectorSessionUrl(chargingSessionStore.getChargingSessionUrl);
+  chargePointConnectorStore.fetchChargePointConnectorAll();
+  chargingSessionStore.fetchSessionInfo().then(()=> {
+    if (chargingSessionStore.getSessionInfo?.state == SessionState.FINAL) {
+      stopInterval();
+    } else {
+      startInterval();
+    }
+  });
+}
 
-onUnmounted(() => {
+function startInterval() {
+  if (interval == 0) {
+    interval = window.setInterval(() => {
+      chargingSessionStore.fetchSessionInfo(false).then(
+        () => {
+          if (chargingSessionStore.getSessionInfo?.state == SessionState.FINAL) {
+            stopInterval();
+          }
+        }
+      )
+    }, 1000);
+  } else {
+    console.log("startInterval interval != 0");
+  }
+}
+
+function stopInterval(){
   clearInterval(interval);
-})
+  interval= 0;
+  useInterval.value = false;
+}
+
+
 
 function stopCharging() {
   chargingSessionStore.stopCharging();
 }
 
 function initPayment(){
+  let context = useSessionStorage("context", props.context );
+  context.value = props.context;
+  stopInterval();
   chargingSessionStore.initPayment({ amount:'500', currency: 'PLN'}, true, (paymentUrl)=>{
     console.log("Redirect to " + paymentUrl);
     window.location.href=paymentUrl;

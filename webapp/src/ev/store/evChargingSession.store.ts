@@ -46,12 +46,6 @@ export const useEvChargingSessionStore = defineStore({
       await apiFactory.evServiceApi().getSesisonInfo(this.chargingSessionUrl, lockscreen).then(response => {
         if (response.isSuccess() && response.data) {
           this.sessionInfo = response.data
-          // if (!this.sessionInfo.cost) {
-          //   this.sessionInfo.cost = 0;
-          // }
-          // if (!this.sessionInfo.energyConsumed) {
-          //   this.sessionInfo.energyConsumed = 0;
-          // }
         } else {
           evServiceErrorHandler.handleError(response.error,  EvServiceContext.SESSION_INFO_FETCH, onFail);
         }
@@ -95,6 +89,9 @@ export const useEvChargingSessionStore = defineStore({
     getSessionInfo(): SessionInfo | undefined {
       return this.sessionInfo;
     },
+    getChargingSessionResourceCode():string{
+      return this.chargingSessionResourceCode;
+    }
   }
 });
 

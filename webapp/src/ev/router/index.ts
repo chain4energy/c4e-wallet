@@ -78,7 +78,14 @@ const routesEv: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "ActivateView" */ '@/ev/views/profile/ActivateView.vue')
   },
   ... resetPasswordRoutes,
-  ...ownerRoutes
+  ...ownerRoutes,
+  {
+    path: '/' + evSubAppName + '/dg',
+    name: evSubAppName + '_dg',
+    component: () => import(/* webpackChunkName: "ResourceLinkNew" */ '@/ev/views/DgCss.vue'),
+    props: true,
+    // alias: '/' + evSubAppName + '/resourceLink/:context'
+  },
 ];
 
 export const routerEv = createRouter({

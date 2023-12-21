@@ -25,6 +25,7 @@
     "@koa/cors": "^4.0.0",
     "@popperjs/core": "^2.11.5",
     "@synaps-io/vue3-verify": "^1.0.2",
+    "@vueuse/core": "^10.7.0",
     "axios": "^1.3.5",
     "axios-jwt": "^3.0.2",
     "bootstrap": "^5.1.3",

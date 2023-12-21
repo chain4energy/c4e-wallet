@@ -1,5 +1,6 @@
 <template>
   <p>Charging summary</p>
+  <p>state: {{sessionInfo.state}}</p>
 </template>
 
 <script setup lang="ts">
