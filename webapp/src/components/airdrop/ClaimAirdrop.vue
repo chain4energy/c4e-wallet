@@ -142,6 +142,9 @@ import Dialog from 'primevue/dialog';
 import DateCommon from "@/components/commons/DateCommon.vue";
 import {useToast} from "vue-toastification";
 import {formatBigNumberLocalized, reduceBigNumberLocalized} from "@/utils/locale-number-formatter";
+import {BigDecimal} from "@/models/store/big.decimal";
+import {BigIntWrapper, Coin, DecCoin} from "@/models/store/common";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 let isFinal = false;
 let currentClaimIsInitial = false;
@@ -359,8 +362,13 @@ function isInitialMissionClaimed(campaign: Campaign) {
 }
 
 function generateSocialMediaMessage(campaign: Campaign, mission?: Mission) {
+  //TODO:  quick FIX !!! /// to refactor!!!
+  if(campaign.missions.length == 1){
+    isFinal = true;
+  }
+  /////////////////////////
   if (isFinal) {
-    const campaignAmount = transformToExpView(campaign.amount.amount);
+    const campaignAmount = retrieveConvertedAmount(campaign.amount);
     socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_CAMPAIGN_COMPLETED', {campaignName: campaign?.name, campaignAmount: campaignAmount});
     isFinal = false;
   } else {
@@ -371,6 +379,11 @@ function generateSocialMediaMessage(campaign: Campaign, mission?: Mission) {
 
 function transformToExpView(amount: number | bigint) {
   return formatBigNumberLocalized(typeof amount === 'bigint' ? amount.toString() : amount.toFixed(6));
+}
+
+function retrieveConvertedAmount(amount: Coin ): string {
+  const amountStr = useConfigurationStore().config.getConvertedAmount(amount.amount, amount.denom).toFixed(6);
+  return formatBigNumberLocalized(amountStr);
 }
 
 function handleMissionCompleted(campaign: Campaign, mission: Mission) {

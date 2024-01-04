@@ -450,8 +450,8 @@
     "CLAIM_TO_DESTINATION_ADDRESS": "W związku z tym, że Twoje konto blockchain jest kontem vestingowym (z ograniczeniem czasowym), tokeny otrzymane z tej kampanii muszą zostać przekazane na inne konto. Proszę podać adres konta, na które mają zostać przesłane tokeny z tej kampanii.",
     "SHARE_MESSAGE_HEADER" : "Gratulacje!",
     "SHARE_MESSAGE_BASE" : "Udostępnij odebranie nagród w swoich mediach społecznościowych!",
-    "SHARE_MESSAGE_CAMPAIGN_COMPLETED": "Ukończyłem pomyślnie całą kampanię '{campaignName}' i zdobyłem nagrodę w wysokości {campaignAmount} {'@'}C4E",
-    "SHARE_MESSAGE_MISSION_COMPLETED": "Ukończyłem pomyślnie misję '{missionName}' i zdobyłem nagrodę w wysokości {missionAmount} {'@'}C4E z kampanii '{campaignName}' w ramach Airdrop!"
+    "SHARE_MESSAGE_CAMPAIGN_COMPLETED": "I have completed the {'@'}Chain4Energy Airdrop Campaign and earned a reward of {campaignAmount} #C4E!",
+    "SHARE_MESSAGE_MISSION_COMPLETED": "I have successfully completed the '{missionName}' and earned a reward of {missionAmount} {'@'}Chain4Energy from the '{campaignName}' in the Airdrop Allocation!"
   },
   "CLAIM_AIRDROP": {
     "PROGRESS": "Odliczanie kampanii",
