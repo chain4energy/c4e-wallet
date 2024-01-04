@@ -5,6 +5,7 @@
       "subfolder": "stakedrop",
       "detailsUrl": "https://medium.com/@chain4energy/stake-drop-summary-e328831689b4",
       "hideIfAbsent": false,
+      "hideTotalDistribution": false,
       "allocationMapping": [
         {
           "name": "Base Allocation",
@@ -25,6 +26,7 @@
       "subfolder": "greendrop",
       "detailsUrl": "https://medium.com/chain4-energy/the-green-airdrop-by-chain4energy-join-our-gleam-campaign-24e59568e22a",
       "hideIfAbsent": false,
+      "hideTotalDistribution": false,
       "allocationMapping": [
         {
           "name": "Token Allocation",
@@ -37,6 +39,7 @@
       "subfolder": "santadrop",
       "detailsUrl": "https://gleam.io/Qqiwq/c4e-santa-drop",
       "hideIfAbsent": false,
+      "hideTotalDistribution": false,
       "allocationMapping": [
         {
           "name": "Token Allocation",
@@ -49,6 +52,7 @@
       "subfolder": "teamdrop",
       "detailsUrl": "",
       "hideIfAbsent": true,
+      "hideTotalDistribution": true,
       "allocationMapping": [
         {
           "name": "Token Base Allocation",
@@ -65,6 +69,7 @@
       "subfolder": "amadrop",
       "detailsUrl": "",
       "hideIfAbsent": true,
+      "hideTotalDistribution": false,
       "allocationMapping": [
         {
           "name": "AMA Allocation",

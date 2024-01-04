@@ -27,13 +27,15 @@ export class CampaignAllocation {
 
   is_absent: boolean;
   hide_if_absent: boolean;
+  hide_total_distribution : boolean;
   allocations: AlocationsSt[];
 
-  constructor(name: string, details_url: string, is_absent: boolean, hide_if_absent: boolean, allocations: AlocationsSt[]) {
+  constructor(name: string, details_url: string, is_absent: boolean, hide_if_absent: boolean, hide_total_distribution: boolean, allocations: AlocationsSt[]) {
     this.name = name;
     this.details_url = details_url;
     this.is_absent = is_absent;
-    this.hide_if_absent = hide_if_absent;
+    this.hide_if_absent = hide_if_absent ?  hide_if_absent : false;
+    this.hide_total_distribution = hide_total_distribution ? hide_total_distribution : false;
     this.allocations = allocations;
   }
 

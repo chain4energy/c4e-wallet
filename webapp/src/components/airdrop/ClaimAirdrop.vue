@@ -37,7 +37,7 @@
           :key="updateComponent"
           :amount="calculateProgress(campaign.start_time, campaign.end_time)"
           :status="checkCampaignStatus(campaign.start_time, campaign.end_time)"
-          :time-to-pass="calculateTimeToPass(campaign.start_time, campaign.end_time)"
+          :time-to-pass="calculateTimeToPass(campaign)"
         />
         <div class="claimAirDrop__data">
           <ClaimInfo :header="$t('AIRDROP.CLAIMED')">
@@ -52,11 +52,11 @@
               {{ getAmountOfClaimedMissions(campaign) }}/{{ campaign.missions.length }}</p>
           </ClaimInfo>
           <ClaimInfo :header="getTextForTimeColumn(campaign)">
-            <p class="claimAirDrop__data-text" v-if="calculateTimeToPass(campaign.start_time, campaign.end_time)">
-              {{ calculateTimeToPass(campaign.start_time, campaign.end_time) }}</p>
+            <p class="claimAirDrop__data-text" v-if="calculateTimeToPass(campaign)">
+              {{ calculateTimeToPass(campaign) }}</p>
             <DateCommon :date="new Date(campaign.end_time)" :show-time="false" :show-tooltip="true" v-else/>
           </ClaimInfo>
-          <ClaimInfo :header="$t('AIRDROP.TOTAL_DISTRIBUTION')">
+          <ClaimInfo :header="$t('AIRDROP.TOTAL_DISTRIBUTION')" v-if="!hideTotalDistribution(campaign)">
             <div class="claimAirDrop__data-text">
               <CoinAmount :amount="campaign.totalDistribution" :show-denom="true" :precision="2"></CoinAmount>
             </div>
@@ -249,11 +249,17 @@ function getTextForTimeColumn(campaign: Campaign) {
     case CampainStatus.Now:
       return i18n.t('AIRDROP.CAMPAIGN_END');
     case CampainStatus.Future:
-      return i18n.t('AIRDROP.CAMPAIGN_START');
+      if (campaign.enabled) {
+        return i18n.t('AIRDROP.CAMPAIGN_START');
+      } else {
+        return i18n.t('AIRDROP.CAMPAIGN_START_SOON');
+      }
   }
 }
 
-function calculateTimeToPass(startDate: number | string, endDate: number | string) {
+function calculateTimeToPass(campaign: Campaign) {
+  const startDate = campaign.start_time;
+  const endDate = campaign.end_time;
   if (new Date(startDate).getTime() < new Date(Date.now()).getTime() && new Date(endDate).getTime() > new Date(Date.now()).getTime()) {
     const now = new Date(Date.now());
     const difference = new Date(endDate).getTime() - now.getTime();
@@ -262,7 +268,16 @@ function calculateTimeToPass(startDate: number | string, endDate: number | strin
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
     return `${days}D ${hours}H ${minutes}M ${seconds}S`;
-  } else if (new Date(endDate).getTime() > new Date(Date.now()).getTime()) {
+  } else if (campaign.enabled){
+    const now = new Date(Date.now());
+    const difference = new Date(startDate).getTime() - now.getTime();
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+    return `${days}D ${hours}H ${minutes}M ${seconds}S`;
+  // }else if(new Date(startDate).getTime() > new Date(Date.now()).getTime()) {
+  } else if(!campaign.enabled) {
     return i18n.t('AIRDROP.SOON');
   } else {
     return '';
@@ -382,6 +397,12 @@ function onSuccessClaim(campaign: Campaign, mission: Mission){
   handleMissionCompleted(campaign, mission);
 }
 
+function hideTotalDistribution(campaign: Campaign){
+  const airDropTotal = airDropStore.getAirDropTotal;
+  const campaignConfig = airDropTotal.campaignAllocations?.find((e)=> e.name == campaign.name);
+  return campaignConfig ? campaignConfig.hide_total_distribution : false;
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -488,13 +509,13 @@ function onSuccessClaim(campaign: Campaign, mission: Mission){
   }
 
   &__showBtn {
-    width: 215px;
+    width: 250px;
     background: transparent;
     border: none;
     margin-bottom: 17px;
-    color: $header-text-color;
+    color: $primary-green-color;
     font-weight: 400;
-    font-size: 18px;
+    font-size: 25px;
     display: inline-flex;
     justify-content: space-between;
     align-items: center;

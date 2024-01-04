@@ -86,6 +86,7 @@ export interface CampaignInfoDetails{
   detailsUrl: string,
 
   hideIfAbsent:boolean,
+  hideTotalDistribution:boolean,
   allocationMapping:AllocationMapping[]
 }
 
