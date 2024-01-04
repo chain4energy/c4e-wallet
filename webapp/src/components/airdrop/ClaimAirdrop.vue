@@ -368,8 +368,8 @@ function generateSocialMediaMessage(campaign: Campaign, mission?: Mission) {
   }
   /////////////////////////
   if (isFinal) {
-    const campaignAmount = retrieveConvertedAmount(campaign.amount);
-    socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_CAMPAIGN_COMPLETED', {campaignName: campaign?.name, campaignAmount: campaignAmount});
+    // const campaignAmount = retrieveConvertedAmount(campaign.amount);
+    socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_CAMPAIGN_COMPLETED');
     isFinal = false;
   } else {
     const missionAmount = transformToExpView(Number(mission?.weight) / 1000000);
