@@ -246,7 +246,18 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
         return this.getOfflineSignerExtensionBased(window.cosmostation?.providers.keplr, 'Cosmostation not installed');
       }
       case ConnectionType.Leap: {
-        return this.getOfflineSignerExtensionBased(window.leap, 'Leap not installed');
+        if( window.leap) {
+          const signOptions = {
+            preferNoFeeSet: false,
+            disableBalanceCheck: true,
+          };
+          // TODO: tutaj!
+          const chainId = useConfigurationStore().config.chainId;
+          const isLedger = (await window.leap?.getKey(chainId)).isNanoLedger;
+          const offlineSigner = isLedger ? window.leap.getOfflineSignerOnlyAmino(chainId) : window.leap.getOfflineSigner(chainId, signOptions);
+          return {signer: offlineSigner, isLedger: isLedger};
+        }
+        throw new Error('Leap not installed');
       }
       default: {
         throw new Error('No signer for connnection type: ' + connectionType);
