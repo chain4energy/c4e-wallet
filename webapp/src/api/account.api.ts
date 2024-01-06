@@ -373,12 +373,12 @@ export class AccountApi extends TxBroadcastBaseApi {
     };
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
 
-    try {
-      this.setKeplrPreferNoSetFee(true)
-      return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
-    } finally {
-      this.setKeplrPreferNoSetFee(false)
-    }
+    // try {
+    //   this.setKeplrPreferNoSetFee(true)
+      return await this.signAndBroadcastFeeControl(connection, getMessages, fee, '', true, true, null);
+    // } finally {
+    //   this.setKeplrPreferNoSetFee(false)
+    // }
   }
 
   public async claimAirDropMissions(connection: ConnectionInfo, campaignId: string, missionId: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
@@ -395,23 +395,23 @@ export class AccountApi extends TxBroadcastBaseApi {
     };
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
 
-    try {
-      this.setKeplrPreferNoSetFee(true)
-      return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
-    } finally {
-      this.setKeplrPreferNoSetFee(false)
-    }
+    // try {
+    //   this.setKeplrPreferNoSetFee(true)
+      return await this.signAndBroadcastFeeControl(connection, getMessages, fee, '', true, true, null);
+    // } finally {
+    //   this.setKeplrPreferNoSetFee(false)
+    // }
   }
 
- public setKeplrPreferNoSetFee(preferNoSetFee: boolean) {
-   if (window.keplr) {
-     window.keplr.defaultOptions = {
-       sign: {
-         preferNoSetFee,
-       }
-     }
-   }
- }
+//  public setKeplrPreferNoSetFee(preferNoSetFee: boolean) {
+//    if (window.keplr) {
+//      window.keplr.defaultOptions = {
+//        sign: {
+//          preferNoSetFee,
+//        }
+//      }
+//    }
+//  }
 
   public async sign(connection: ConnectionInfo, dataToSign: string): Promise<RequestResponse<string, TxBroadcastError>> {
     return this.signDirect(connection, dataToSign, true, null);

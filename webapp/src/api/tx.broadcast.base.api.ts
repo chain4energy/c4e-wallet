@@ -9,7 +9,7 @@ import { RequestResponse } from '@/models/request-response';
 import TxToast from "@/components/commons/TxToast.vue";
 import { MsgClaim, MsgInitialClaim } from "@/api/cfeclaim/tx";
 import { customAccountParser } from "@/api/periodicContinousVestingAccount/custom_account_parser";
-import {Keplr} from "@keplr-wallet/types";
+import {Keplr, KeplrSignOptions} from "@keplr-wallet/types";
 import {
   EncodeObject,
   encodePubkey,
@@ -86,6 +86,19 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     skipErrorToast = false
   ): Promise<RequestResponse<TxData, TxBroadcastError>>
   {
+    return await this.signAndBroadcastFeeControl(connection, getMessages, fee, memo, false, lockScreen, localSpinner, skipErrorToast)
+  }
+
+  protected async signAndBroadcastFeeControl(
+    connection: ConnectionInfo,
+    getMessages: (isLedger: boolean) => readonly EncodeObject[] | TxBroadcastError,
+    fee: StdFee | "auto" | number,
+    memo: string,
+    appControlledFee: boolean,
+    lockScreen: boolean, localSpinner: LocalSpinner | null,
+    skipErrorToast = false
+  ): Promise<RequestResponse<TxData, TxBroadcastError>>
+  {
     this.logToConsole(LogLevel.DEBUG, 'signAndBroadcast');
     this.before(lockScreen, localSpinner);
     const myRegistry = new Registry(defaultRegistryTypes);
@@ -98,7 +111,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           !skipErrorToast
         );
       }
-      const { client, isLedger } = await this.createClient(connection.connectionType);
+      const { client, isLedger } = await this.createClientFeeControl(connection.connectionType, appControlledFee);
       clientToDisconnect = client;
       if (client === undefined) {
         return this.createTxErrorResponseWithToast(
@@ -213,7 +226,11 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
   // }
 
   private async createClient(connectionType: ConnectionType): Promise<{ client: SigningStargateClient, isLedger: boolean }> {
-    const { signer, isLedger } = await this.getOfflineSigner(connectionType);
+    return await this.createClientFeeControl(connectionType, false)
+  }
+
+  private async createClientFeeControl(connectionType: ConnectionType, appControlledFee: boolean): Promise<{ client: SigningStargateClient, isLedger: boolean }> {
+    const { signer, isLedger } = await this.getOfflineSigner(connectionType, appControlledFee);
 
     if (signer == undefined) {
       throw new Error('Cannot get signer');
@@ -237,27 +254,16 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     return { client: client, isLedger: isLedger };
   }
 
-  private async getOfflineSigner(connectionType: ConnectionType) {
+  private async getOfflineSigner(connectionType: ConnectionType, appControlledFee: boolean) {
     switch(connectionType) {
       case ConnectionType.Keplr: {
-        return this.getOfflineSignerExtensionBased(window.keplr, 'Keplr not installed');
+        return this.getOfflineSignerExtensionBased(window.keplr, 'Keplr not installed', appControlledFee);
       }
       case ConnectionType.Cosmostation: {
-        return this.getOfflineSignerExtensionBased(window.cosmostation?.providers.keplr, 'Cosmostation not installed');
+        return this.getOfflineSignerExtensionBased(window.cosmostation?.providers.keplr, 'Cosmostation not installed', appControlledFee);
       }
       case ConnectionType.Leap: {
-        if( window.leap) {
-          const signOptions = {
-            preferNoFeeSet: false,
-            disableBalanceCheck: true,
-          };
-          // TODO: tutaj!
-          const chainId = useConfigurationStore().config.chainId;
-          const isLedger = (await window.leap?.getKey(chainId)).isNanoLedger;
-          const offlineSigner = isLedger ? window.leap.getOfflineSignerOnlyAmino(chainId) : window.leap.getOfflineSigner(chainId, signOptions);
-          return {signer: offlineSigner, isLedger: isLedger};
-        }
-        throw new Error('Leap not installed');
+        return this.getOfflineSignerExtensionBased(window.leap, 'Leap not installed', appControlledFee, true);
       }
       default: {
         throw new Error('No signer for connnection type: ' + connectionType);
@@ -266,11 +272,25 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
   }
 
 
-  private async getOfflineSignerExtensionBased(extension: Keplr | undefined, errorMessage: string) {
+  private async getOfflineSignerExtensionBased(extension: Keplr | undefined, errorMessage: string, appControlledFee: boolean, disableBalanceCheck?: boolean) {
     if(extension) {
       const chainId = useConfigurationStore().config.chainId;
       const isLedger = (await extension?.getKey(chainId)).isNanoLedger;
-      const offlineSigner = isLedger ? extension.getOfflineSignerOnlyAmino(chainId) : extension.getOfflineSigner(chainId);
+      let signOptions: KeplrSignOptions | undefined = undefined
+      if (appControlledFee) {
+        if (disableBalanceCheck) {
+          signOptions = {
+            preferNoSetFee: true,
+            disableBalanceCheck: true,
+          }
+        } else {
+          signOptions = {
+            preferNoSetFee: true,
+          }
+        }
+      }
+      
+      const offlineSigner = isLedger ? extension.getOfflineSignerOnlyAmino(chainId, signOptions) : extension.getOfflineSigner(chainId, signOptions);
       return {signer: offlineSigner, isLedger: isLedger};
     }
     throw new Error(errorMessage);
