@@ -3,7 +3,7 @@ import { ConnectionType, ConnectionInfo } from "@/api/wallet.connecton.api";
 import { useToast } from 'vue-toastification';
 import { LocalSpinner } from "@/services/model/localSpinner";
 import { LogLevel } from '@/services/logger/log-level';
-import {SigningStargateClient, isDeliverTxFailure, DeliverTxResponse, defaultRegistryTypes} from "@cosmjs/stargate";
+import {SigningStargateClient, isDeliverTxFailure, DeliverTxResponse, defaultRegistryTypes, AminoTypes} from "@cosmjs/stargate";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { RequestResponse } from '@/models/request-response';
 import TxToast from "@/components/commons/TxToast.vue";
@@ -24,6 +24,7 @@ import {fromBase64} from "@cosmjs/encoding";
 import {_arrayBufferToBase64} from "@/utils/sign";
 import {ethers} from "ethers";
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
+import { createCfeClaimAminoConverters } from "./cfeclaim/amino";
 
 
 const toast = useToast();
@@ -244,12 +245,15 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
 
     // myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
     console.log(myRegistry);
+
+    const aminoTypes = new AminoTypes(createCfeClaimAminoConverters());
+
     //myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
     const rpc = useConfigurationStore().config.bcRpcURL;
     const client = await SigningStargateClient.connectWithSigner(
       rpc,
       signer,
-      {registry: myRegistry,  accountParser: customAccountParser}
+      {registry: myRegistry, aminoTypes: aminoTypes, accountParser: customAccountParser}
     );
     return { client: client, isLedger: isLedger };
   }
@@ -289,8 +293,11 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           }
         }
       }
-      
-      const offlineSigner = isLedger ? extension.getOfflineSignerOnlyAmino(chainId, signOptions) : extension.getOfflineSigner(chainId, signOptions);
+
+      // TODO temporary change - revert it after solving ledger problem
+      // const offlineSigner = isLedger ? extension.getOfflineSignerOnlyAmino(chainId, signOptions) : extension.getOfflineSigner(chainId, signOptions);
+      const offlineSigner = extension.getOfflineSignerOnlyAmino(chainId, signOptions);
+
       return {signer: offlineSigner, isLedger: isLedger};
     }
     throw new Error(errorMessage);
