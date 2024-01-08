@@ -322,11 +322,11 @@ function redirectMission(campaign: Campaign, mission: Mission, type: MissionType
     currentClaimIsInitial = true;
   } else if (mission.mission_type === MissionTypeSt.CLAIM) {
     currentClaimIsInitial = false;
-    dataService.onClaimOtherAirdrop(campaign, mission);
+    dataService.onClaimOtherAirdrop(campaign, mission, onSuccessClaim);
   } else {
     currentClaimIsInitial = false;
     if (mission.completed && !mission.claimed) {
-      dataService.onClaimOtherAirdrop(campaign, mission);
+      dataService.onClaimOtherAirdrop(campaign, mission, onSuccessClaim);
     } else {
       switch (type) {
         case MissionTypeSt.DELEGATE:
@@ -381,14 +381,13 @@ function transformToExpView(amount: number | bigint) {
   return formatBigNumberLocalized(typeof amount === 'bigint' ? amount.toString() : amount.toFixed(6));
 }
 
-function retrieveConvertedAmount(amount: Coin ): string {
-  const amountStr = useConfigurationStore().config.getConvertedAmount(amount.amount, amount.denom).toFixed(6);
-  return formatBigNumberLocalized(amountStr);
-}
+// function retrieveConvertedAmount(amount: Coin ): string {
+//   const amountStr = useConfigurationStore().config.getConvertedAmount(amount.amount, amount.denom).toFixed(6);
+//   return formatBigNumberLocalized(amountStr);
+// }
 
 function handleMissionCompleted(campaign: Campaign, mission: Mission) {
   generateSocialMediaMessage(campaign, mission);
-  claimingProcessStarted.value = false;
   sharePopupStatus.value = true;
 }
 
@@ -406,7 +405,7 @@ function claim(address: string) {
 }
 
 function onSuccessClaim(campaign: Campaign, mission: Mission){
-  useToast().success(i18n.t('AIRDROP.SUCCESS'));
+  claimingProcessStarted.value = false;
   handleMissionCompleted(campaign, mission);
 }
 

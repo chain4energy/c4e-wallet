@@ -1,10 +1,8 @@
 import {PagesEnum} from "@/services/permissions/pages-enum";
-import {useI18n} from "vue-i18n";
 
 export class SidebarConfig{
 
   config = new Map<PagesEnum,SidebarElement>() ;
-  i18n = useI18n();
 
   constructor() {
     this.config.set(PagesEnum.DASHBOARD, this.createDashboard());

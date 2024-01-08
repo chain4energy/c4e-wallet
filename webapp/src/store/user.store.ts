@@ -287,33 +287,39 @@ export const useUserStore = defineStore({
         }
       });
     },
-    async claimInitialAirdrop(campaignId: string, extraAddress: string) {
+    async claimInitialAirdrop(campaignId: string, extraAddress: string): Promise<boolean> {
       const connectionInfo = this.connectionInfo;
-      return await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, (!extraAddress || extraAddress === '')?extraAddress:this.account.address)
+      return await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, (!extraAddress || extraAddress === '') ? extraAddress:this.account.address)
         .then(async (resp) => {
           if (resp.isError()) {
             await onTxDeliveryFailure(connectionInfo, this, resp, 'Claiming airdrop rewards failed: ' + resp.error?.message);
+            return false;
           } else {
             const allResults = await Promise.all([
               fetchBalance(connectionInfo, useUserStore(), true),
             ]);
             onTxDeliverySuccess(resp.data);
             onRefreshingError(allResults);
+            onClaimAirdropSuccess();
+            return true;
           }
         });
     },
-    async claimOtherAirdrop(campaignId: string, missionId: string) {
+    async claimOtherAirdrop(campaignId: string, missionId: string): Promise<boolean> {
       const connectionInfo = useUserStore().connectionInfo;
       return await apiFactory.accountApi().claimAirDropMissions(connectionInfo, campaignId, missionId)
         .then(async (resp) => {
           if (resp.isError()) {
             await onTxDeliveryFailure(connectionInfo, this, resp, 'Claiming airdrop rewards failed: ' + resp.error?.message);
+            return false;
           } else {
             const allResults = await Promise.all([
               fetchBalance(connectionInfo, useUserStore(), true),
             ]);
             onTxDeliverySuccess(resp.data);
             onRefreshingError(allResults);
+            onClaimAirdropSuccess();
+            return true;
           }
         });
     },
@@ -557,6 +563,10 @@ function onTxDeliverySuccess(tx?: TxData) {
     logger.logToConsole(LogLevel.WARNING, `Tx delivered successfully but cannt get TX data`);
     toast.warning(`Tx delivered successfully but cannt get TX data`);
   }
+}
+
+function onClaimAirdropSuccess() {
+   toast.success(i18n.global.t('AIRDROP.SUCCESS'));
 }
 
 function findMaxTime(periods: VestingPeriods[]) {

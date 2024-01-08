@@ -488,19 +488,21 @@ class DataService extends LoggedService {
 
   }
 
-  public async onClaimInitialAirdrop(campaign: Campaign, mission: Mission, address: string, onSuccessClaim:(campaign: Campaign, mission: Mission)=>void){
-    await useUserStore().claimInitialAirdrop(campaign.id, address).then(()=>{
-      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true);
-      onSuccessClaim(campaign, mission);
+  public async onClaimInitialAirdrop(campaign: Campaign, mission: Mission, address: string, onSuccessClaim?: (campaign: Campaign, mission: Mission) => void){
+    await useUserStore().claimInitialAirdrop(campaign.id, address).then((isTransactionOk)=>{
+      if(isTransactionOk) {
+        useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true);
+        onSuccessClaim?.(campaign, mission);
+      }
     });
   }
 
   public async onClaimOtherAirdrop(campaign: Campaign, mission: Mission, onSuccessClaim?: (campaign: Campaign, mission: Mission) => void) {
-    await useUserStore().claimOtherAirdrop(campaign.id, mission.id).then(() => {
-      useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true)
-        .then(() => {
-          onSuccessClaim?.(campaign, mission);
-        });
+    await useUserStore().claimOtherAirdrop(campaign.id, mission.id).then((isTransactionOk) => {
+      if(isTransactionOk) {
+        useAirDropStore().fetchUsersCampaignData(useUserStore().account.address, true);
+        onSuccessClaim?.(campaign, mission);
+      }
     });
   }
 
