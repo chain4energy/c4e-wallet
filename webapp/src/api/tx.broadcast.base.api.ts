@@ -3,7 +3,7 @@ import { ConnectionType, ConnectionInfo } from "@/api/wallet.connecton.api";
 import { useToast } from 'vue-toastification';
 import { LocalSpinner } from "@/services/model/localSpinner";
 import { LogLevel } from '@/services/logger/log-level';
-import {SigningStargateClient, isDeliverTxFailure, DeliverTxResponse, defaultRegistryTypes, createDefaultAminoConverters, AminoTypes} from "@cosmjs/stargate";
+import {SigningStargateClient, isDeliverTxFailure, DeliverTxResponse, defaultRegistryTypes, AminoTypes} from "@cosmjs/stargate";
 import { useConfigurationStore } from "@/store/configuration.store";
 import { RequestResponse } from '@/models/request-response';
 import TxToast from "@/components/commons/TxToast.vue";
@@ -246,7 +246,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     // myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
     console.log(myRegistry);
 
-    const aminoTypes = new AminoTypes({...createDefaultAminoConverters(), ...createCfeClaimAminoConverters()})
+    const aminoTypes = new AminoTypes(createCfeClaimAminoConverters());
 
     //myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
     const rpc = useConfigurationStore().config.bcRpcURL;
@@ -293,7 +293,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           }
         }
       }
-      
+
       // TODO temporary change - revert it after solving ledger problem
       // const offlineSigner = isLedger ? extension.getOfflineSignerOnlyAmino(chainId, signOptions) : extension.getOfflineSigner(chainId, signOptions);
       const offlineSigner = extension.getOfflineSignerOnlyAmino(chainId, signOptions);
