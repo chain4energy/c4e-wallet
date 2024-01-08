@@ -286,17 +286,17 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           signOptions = {
             preferNoSetFee: true,
             disableBalanceCheck: true,
-          }
+          };
         } else {
           signOptions = {
             preferNoSetFee: true,
-          }
+          };
         }
       }
 
       // TODO temporary change - revert it after solving ledger problem
-      // const offlineSigner = isLedger ? extension.getOfflineSignerOnlyAmino(chainId, signOptions) : extension.getOfflineSigner(chainId, signOptions);
-      const offlineSigner = extension.getOfflineSignerOnlyAmino(chainId, signOptions);
+      const offlineSigner = ( isLedger || useConfigurationStore().config.useAminoOnly) ? extension.getOfflineSignerOnlyAmino(chainId, signOptions) : extension.getOfflineSigner(chainId, signOptions);
+      // const offlineSigner = extension.getOfflineSignerOnlyAmino(chainId, signOptions);
 
       return {signer: offlineSigner, isLedger: isLedger};
     }

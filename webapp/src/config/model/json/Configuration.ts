@@ -91,4 +91,5 @@ export interface Configuration {
   currentPublicSaleRoundId: number;
   transferDenom: string;
   publicSaleVisible: boolean;
+  useAminoOnly: boolean;
 }

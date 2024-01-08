@@ -175,6 +175,7 @@ export class Configuration implements JsonConfiguration {
   currentPublicSaleRoundId: number;
   transferDenom: string;
   publicSaleVisible: boolean;
+  useAminoOnly:boolean;
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -226,6 +227,7 @@ export class Configuration implements JsonConfiguration {
       this.currentPublicSaleRoundId = configuration.currentPublicSaleRoundId;
       this.transferDenom = configuration.transferDenom;
       this.publicSaleVisible=configuration.publicSaleVisible;
+      this.useAminoOnly=configuration.useAminoOnly;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -268,6 +270,7 @@ export class Configuration implements JsonConfiguration {
       this.currentPublicSaleRoundId = 0;
       this.transferDenom = '';
       this.publicSaleVisible=false;
+      this.useAminoOnly=false;
     }
   }
 

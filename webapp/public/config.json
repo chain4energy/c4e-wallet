@@ -122,6 +122,69 @@
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": false
   },
+  "devnet-amoino-only":{
+    "bcApiURL": "https://lcd-dev.c4e.io",
+    "bcRpcURL": "https://rpc-dev.c4e.io",
+    "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
+    "keybaseURL": "https://keybase.io",
+    "stakingPageURL": "https://wallet.c4e.io/staking",
+    "publicSaleServiceURL": "/api-devnet",
+    "addressPrefix": "c4e",
+    "stakingDenom": "uc4e",
+    "transferDenom": "uc4e",
+    "tokenReservationDenom": "uc4e",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+    ],
+    "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+    "chainId": "veles-dev-test-1",
+    "networkName": "Dev-Amino-Only(veles-dev-test-1)",
+    "keplrNetworkName": "C4E Veles Dev Amino Only",
+    "queries": {
+    },
+    "operationGas": {
+      "vote": 320000,
+      "delegate": 320000,
+      "undelegate": 320000,
+      "redelegate": 440000,
+      "claimRewards": 320000,
+      "transfer": 320000
+
+    },
+    "viewDenoms": [
+      {
+        "denom": "uc4e",
+        "viewDenom": "C4E",
+        "coinDecimals": 6
+      }
+    ],
+    "keplrGasPriceSteps": {
+      "low": 0.00,
+      "average": 0.025,
+      "high": 0.03
+    },
+    "reservedCoinsAmount": 250000,
+    "minPeriodBetweenDataRefresh": 1000,
+    "blockDataRefreshTimeout": 30000,
+    "dashboardDataRefreshTimeout": 300000,
+    "validatorsDataRefreshTimeout":600000,
+    "accountDataRefreshTimeout": 90000,
+    "proposalsPageLimit": 50,
+    "explorerUrl": "https://explorer.c4e.io",
+    "explorerAccount": "https://explorer.c4e.io/accounts/",
+    "explorerTx": "https://explorer.c4e.io/transactions/",
+    "isMainNetwork": false,
+    "airdropBaseURL": "",
+    "proposalVotingRefreshTimeout": 30000,
+    "airdropDefaultDenom": "uc4e",
+    "targetInflationAprMultiplier": 5,
+    "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
+    "faucetAvailable": true,
+    "currentPublicSaleRoundId": 1,
+    "publicSaleVisible": false,
+    "useAminoOnly": true
+  },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
     "bcRpcURL": "http://10.0.14.81:26657",
