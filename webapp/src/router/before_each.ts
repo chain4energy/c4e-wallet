@@ -4,7 +4,6 @@ import { ServiceTypeEnum } from '@/services/logger/service-type.enum';
 import { LoggerService } from '@/services/logger/logger.service';
 import {useConfigurationStore} from "@/store/configuration.store";
 
-// why it's here? It shouldn't be global outside the router and imported in App.vue
 export function createRouterBeforeEach (logger: LoggerService) {
   useRouter().beforeEach(async (to, from, next) => {
     logger.logToConsole(LogLevel.DEBUG, ServiceTypeEnum.ROUTER, 'go form:' + JSON.stringify(from.name) + ' to:' + JSON.stringify(to.name));

@@ -109,7 +109,7 @@ function stopCharging() {
 }
 
 function initPayment(){
-  let context = useSessionStorage("context", props.context );
+  const context = useSessionStorage("context", props.context );
   context.value = props.context;
   stopInterval();
   chargingSessionStore.initPayment({ amount:'500', currency: 'PLN'}, true, (paymentUrl)=>{

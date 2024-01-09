@@ -11,7 +11,7 @@ import {useRouter} from "vue-router";
 const router = useRouter()
 
 onMounted(() => {
-  let context = useSessionStorage("context", {}) ;
+  const context = useSessionStorage("context", {}) ;
   console.log("context: " + context);
   router.push({name:'ev_SessionLink',params:{context:context.value as string[] | undefined}})
 })
