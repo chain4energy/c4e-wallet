@@ -2,21 +2,22 @@
   "name": "c4ewallet",
   "version": "1.0.1",
   "private": true,
+  "engines": {
+    "node": "=v20.10.0"
+  },
   "scripts": {
-    "serve": "vue-cli-service serve --mode development",
-    "build": "vue-cli-service build --mode development",
-    "build-preproduction": "vue-cli-service build --mode preproduction",
-    "build-production": "vue-cli-service build --mode production",
-    "build-dev": "vue-cli-service build -mode development",
-    "production": "vue-cli-service serve --mode production",
-    "test:unit": "vue-cli-service test:unit",
-    "test:unit:coverage": "vue-cli-service test:unit --coverage",
+    "serve": "npm run check-node-version && vue-cli-service serve --mode development",
+    "build": "npm run check-node-version && vue-cli-service build --mode development",
+    "build-preproduction": "npm run check-node-version && vue-cli-service build --mode preproduction",
+    "build-production": "npm run check-node-version && vue-cli-service build --mode production",
+    "build-dev": "npm run check-node-version && vue-cli-service build -mode development",
+    "production": "npm run check-node-version && vue-cli-service serve --mode production",
+    "test:unit": "npm run check-node-version && vue-cli-service test:unit",
+    "test:unit:coverage": "npm run check-node-version && vue-cli-service test:unit --coverage",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "proxy": "node proxy.js",
-    "versioner-dev": "cd ./scripts && python3 versioner.py dev",
-    "versioner-preprod": "cd ./scripts && python3 versioner.py preprod",
-    "versioner-prod": "cd ./scripts && python3 versioner.py prod"
+    "check-node-version": "node ./../scripts/check_node_version.js"
   },
   "dependencies": {
     "@koa/cors": "^5.0.0",
