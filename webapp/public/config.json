@@ -58,7 +58,8 @@
     "faucetURL": "",
     "faucetAvailable": false,
     "currentPublicSaleRoundId": 1,
-    "publicSaleVisible": true
+    "publicSaleVisible": true,
+    "useAminoOnly": false
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -120,7 +121,8 @@
     "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
-    "publicSaleVisible": false
+    "publicSaleVisible": false,
+    "useAminoOnly": false
   },
   "devnet-amoino-only":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -242,7 +244,8 @@
     "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
-    "publicSaleVisible": true
+    "publicSaleVisible": true,
+    "useAminoOnly": false
   },
   "Testnet": {
     "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -301,7 +304,8 @@
     "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
-    "publicSaleVisible": true
+    "publicSaleVisible": true,
+    "useAminoOnly": false
   },
   "pbtest" :{
     "bcApiURL": "api",
@@ -361,7 +365,8 @@
     "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
-    "publicSaleVisible": true
+    "publicSaleVisible": true,
+    "useAminoOnly": false
   },
   "local":{
     "bcApiURL": "http://localhost:1317",
@@ -421,7 +426,8 @@
     "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
-    "publicSaleVisible": true
+    "publicSaleVisible": true,
+    "useAminoOnly": false
   },
   "EV-testnet":{
     "bcApiURL": "https://lcd-ev-testnet.c4e.io",
@@ -483,7 +489,8 @@
     "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
-    "publicSaleVisible": true
+    "publicSaleVisible": true,
+    "useAminoOnly": false
   },
   "docker-compose":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -544,6 +551,7 @@
     "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
-    "publicSaleVisible": true
+    "publicSaleVisible": true,
+    "useAminoOnly": false
   }
 }

@@ -59,7 +59,68 @@ data:
       "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
       "currentPublicSaleRoundId": 1,
       "faucetAvailable": true,
-      "publicSaleVisible": false
+      "publicSaleVisible": false,
+      "useAminoOnly": false
+    },
+    "Devnet-amino-only": {
+      "bcApiURL": "https://lcd-dev.c4e.io",
+      "bcRpcURL": "https://rpc-dev.c4e.io",
+      "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
+      "keybaseURL": "https://keybase.io",
+      "stakingPageURL": "https://wallet-dev.c4e.io/staking",
+      "publicSaleServiceURL": "/api-devnet",
+      "addressPrefix": "c4e",
+      "stakingDenom": "uc4e",
+      "transferDenom": "uc4e",
+      "tokenReservationDenom": "uc4e",
+      "strategicPoolAddress": [
+        "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+        "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+      ],
+      "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+      "chainId": "veles-dev-test-1",
+      "networkName": "Devnet-amino-only(veles-dev-test-1)",
+      "keplrNetworkName": "Chain4Energy Devnet Amino Only",
+      "operationGas": {
+        "vote": 320000,
+        "delegate": 320000,
+        "undelegate": 320000,
+        "redelegate": 440000,
+        "claimRewards": 320000,
+        "transfer": 320000
+      },
+      "viewDenoms": [
+        {
+          "denom": "uc4e",
+          "viewDenom": "C4E",
+          "coinDecimals": 6
+        }
+      ],
+      "keplrGasPriceSteps": {
+        "low": 0,
+        "average": 0.025,
+        "high": 0.03
+      },
+     "reservedCoinsAmount": 250000,
+      "minPeriodBetweenDataRefresh": 1000,
+      "blockDataRefreshTimeout": 30000,
+      "dashboardDataRefreshTimeout": 300000,
+      "validatorsDataRefreshTimeout":600000,
+      "accountDataRefreshTimeout": 90000,
+      "proposalsPageLimit": 50,
+      "explorerUrl": "https://explorer-dev.c4e.io",
+      "explorerAccount": "https://explorer-dev.c4e.io/accounts/",
+      "explorerTx": "https://explorer-dev.c4e.io/transactions/",
+      "isMainNetwork": true,
+      "airdropBaseURL": "https://airdrop.c4e.io/",
+      "airdropDefaultDenom": "uc4e",
+      "proposalVotingRefreshTimeout": 30000,
+      "targetInflationAprMultiplier": 5,
+      "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
+      "currentPublicSaleRoundId": 1,
+      "faucetAvailable": true,
+      "publicSaleVisible": false,
+      "useAminoOnly": true
     },
       "Mainnet": {
         "bcApiURL": "https://lcd.c4e.io",
@@ -118,7 +179,8 @@ data:
         "faucetURL": "",
         "currentPublicSaleRoundId": 1,
         "faucetAvailable": false,
-        "publicSaleVisible": false
+        "publicSaleVisible": false,
+        "useAminoOnly": false
       },
       "Testnet": {
         "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -177,7 +239,8 @@ data:
         "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
         "currentPublicSaleRoundId": 1,
         "faucetAvailable": true,
-        "publicSaleVisible": false
+        "publicSaleVisible": false,
+        "useAminoOnly": false
       },
       "EV-testnet":{
         "bcApiURL": "https://lcd-ev-testnet.c4e.io",
@@ -239,7 +302,8 @@ data:
         "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
         "faucetAvailable": true,
         "currentPublicSaleRoundId": 1,
-        "publicSaleVisible": false
+        "publicSaleVisible": false,
+        "useAminoOnly": false
       }
     }
 kind: ConfigMap
