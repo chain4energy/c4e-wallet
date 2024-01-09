@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onBeforeMount, ref} from "vue";
-import OtpComponent from "@/components/buyTokens/OtpComponent.vue";
+import OtpComponent from "@/components/OtpComponent.vue";
 
 const props = defineProps({
   newPassword: {

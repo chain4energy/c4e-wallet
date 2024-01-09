@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import Steps from 'primevue/steps';
 import {computed, ref} from "vue";
-import i18n from "@/plugins/i18n";
-import router from "@/router";
 import {useToast} from "vue-toastification";
+import i18n from "@/plugins/i18n";
+import routerEv from "@/router";
+import {goTo_SignInView} from "@/router/goToRoute";
 
-const currentPath = router.currentRoute.value.path;
-
+const currentPath = routerEv.currentRoute.value.path;
+console.log("currentPath:" + currentPath);
 const items = computed(()=> [
   {
     label: i18n.global.t('SIGN_IN_VIEW.EMAIL'),
@@ -23,16 +24,16 @@ const items = computed(()=> [
 ]);
 
 const nextPage = (event: {pageIndex: number}) => {
-  router.push(items.value[event.pageIndex + 1].to);
+  routerEv.push(items.value[event.pageIndex + 1].to);
 };
 const prevPage = (event: {pageIndex: number}) => {
-  if (event.pageIndex === 0) router.back();
-  else router.push(items.value[event.pageIndex - 1].to);
+  if (event.pageIndex === 0) routerEv.back();
+  else routerEv.push(items.value[event.pageIndex - 1].to);
 };
 const complete = () => {
   console.log(newPassword);
   useToast().success('Password has been reset');
-  router.push('/profile/signIn');
+  goTo_SignInView();
 };
 
 const newPassword = ref({

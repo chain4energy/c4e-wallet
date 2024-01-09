@@ -4,13 +4,8 @@ const path = require('path');
 
 module.exports = defineConfig({
   pages:{
-    index:{
+    index: {
       entry: 'src/main.ts',
-      title: 'Chain4Energy | C4E wallet',
-      chunks: ['chunk-vendors', 'chunk-common', 'index']
-    },
-    ev: {
-      entry: 'src/ev/main.ts',
       title: 'Ev Page',
       template: 'public/indexEv.html',
       chunks: ['chunk-vendors', 'chunk-common', 'ev']

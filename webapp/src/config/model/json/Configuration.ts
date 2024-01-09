@@ -85,7 +85,6 @@ export interface Configuration {
   validatorsDataRefreshTimeout: number,
   accountDataRefreshTimeout: number,
   proposalsPageLimit: number,
-  queries: JsonQueries;
   queriesEv: QueriesEv;
   explorerUrl: string,
   explorerAccount: string,

@@ -1,6 +1,0 @@
-address:
-    c4e1wze8mn5nsgl9qrgazq6a92fvh7m5e6ps3ql85z
-    cosmos1wze8mn5nsgl9qrgazq6a92fvh7m5e6psjcx2du
-
-address:
-    c4e1803djx5a8uatg2qg7xppp3df84stxh2s0n3tmy

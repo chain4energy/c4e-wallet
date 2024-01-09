@@ -1,4 +1,3 @@
-import { BigDecimal, divideBigInts } from "@/models/store/big.decimal";
 import {
   Gas as JsonGas,
   ViewDenom as JsonViewDenom,
@@ -74,65 +73,6 @@ export class KeplrGasPriceSteps implements JsonKeplrGasPriceSteps{
     }
   }
 }
-
-export class Queries implements JsonQueries{
-  STAKING_POOL_URL: string;
-  TOTAL_SUPPLY_URL: string;
-  COMMUNITY_POOL_URL: string;
-  PROPOSALS_URL: string;
-  PROPOSALS_BY_ID_URL: string;
-  TALLYING_URL: string;
-  DEPOSIT_URL: string;
-  LATEST_BLOCK_URL: string;
-  VALIDATORS_URL: string;
-  ACCOUNT_URL: string;
-  BALANCE_URL: string;
-  STAKED_AMOUNT_URL: string;
-  UNSTAKED_AMOUNT_URL: string;
-  REWARDS_URL: string;
-  PROPOSAL_TALLY_URL: string;
-  INFLATION_URL: string;
-  STAKING_PARAMS_URL: string;
-  VESTINGS_SUM_URL: string;
-  DISTRIBUTOR_PARAMS_URL: string;
-  USER_AIRDROP_ENTRIES_URL: string;
-  CAMPAIGNS_URL: string;
-  MISSIONS_URL: string;
-  AIRDROP_DISTRIBUTIONS: string;
-  AIRDROP_CLAIMS_LEFT: string;
-  SPENDABLE_BALANCES_URL: string;
-
-  constructor (
-    queries : JsonQueries | undefined
-  ) {
-    this.STAKING_POOL_URL = queries?.STAKING_POOL_URL ? queries.STAKING_POOL_URL : queriesDefaults.blockchain.STAKING_POOL_URL;
-    this.TOTAL_SUPPLY_URL = queries?.TOTAL_SUPPLY_URL ? queries.TOTAL_SUPPLY_URL : queriesDefaults.blockchain.TOTAL_SUPPLY_URL;
-    this.COMMUNITY_POOL_URL = queries?.COMMUNITY_POOL_URL ? queries.COMMUNITY_POOL_URL : queriesDefaults.blockchain.COMMUNITY_POOL_URL;
-    this.PROPOSALS_URL = queries?.PROPOSALS_URL ? queries.PROPOSALS_URL : queriesDefaults.blockchain.PROPOSALS_URL;
-    this.PROPOSALS_BY_ID_URL = queries?.PROPOSALS_BY_ID_URL ? queries.PROPOSALS_BY_ID_URL : queriesDefaults.blockchain.PROPOSALS_BY_ID_URL;
-    this.TALLYING_URL = queries?.TALLYING_URL ? queries.TALLYING_URL : queriesDefaults.blockchain.TALLYING_URL;
-    this.DEPOSIT_URL = queries?.DEPOSIT_URL ? queries.DEPOSIT_URL : queriesDefaults.blockchain.DEPOSIT_URL;
-    this.LATEST_BLOCK_URL = queries?.LATEST_BLOCK_URL ? queries.LATEST_BLOCK_URL : queriesDefaults.blockchain.LATEST_BLOCK_URL;
-    this.VALIDATORS_URL = queries?.VALIDATORS_URL ? queries.VALIDATORS_URL : queriesDefaults.blockchain.VALIDATORS_URL;
-    this.ACCOUNT_URL = queries?.ACCOUNT_URL ? queries.ACCOUNT_URL : queriesDefaults.blockchain.ACCOUNT_URL;
-    this.BALANCE_URL = queries?.BALANCE_URL ? queries.BALANCE_URL : queriesDefaults.blockchain.BALANCE_URL;
-    this.STAKED_AMOUNT_URL = queries?.STAKED_AMOUNT_URL ? queries.STAKED_AMOUNT_URL : queriesDefaults.blockchain.STAKED_AMOUNT_URL;
-    this.UNSTAKED_AMOUNT_URL = queries?.UNSTAKED_AMOUNT_URL ? queries.UNSTAKED_AMOUNT_URL : queriesDefaults.blockchain.UNSTAKED_AMOUNT_URL;
-    this.REWARDS_URL = queries?.REWARDS_URL ? queries.REWARDS_URL : queriesDefaults.blockchain.REWARDS_URL;
-    this.PROPOSAL_TALLY_URL = queries?.PROPOSAL_TALLY_URL ? queries.PROPOSAL_TALLY_URL : queriesDefaults.blockchain.PROPOSAL_TALLY_URL;
-    this.INFLATION_URL = queries?.INFLATION_URL ? queries.INFLATION_URL : queriesDefaults.blockchain.INFLATION_URL;
-    this.STAKING_PARAMS_URL = queries?.STAKING_PARAMS_URL ? queries.STAKING_PARAMS_URL : queriesDefaults.blockchain.STAKING_PARAMS_URL;
-    this.VESTINGS_SUM_URL = queries?.VESTINGS_SUM_URL ? queries.VESTINGS_SUM_URL : queriesDefaults.blockchain.VESTINGS_SUM_URL;
-    this.DISTRIBUTOR_PARAMS_URL = queries?.DISTRIBUTOR_PARAMS_URL ? queries.DISTRIBUTOR_PARAMS_URL : queriesDefaults.blockchain.DISTRIBUTOR_PARAMS_URL;
-    this.USER_AIRDROP_ENTRIES_URL = queries?.USER_AIRDROP_ENTRIES_URL ? queries.USER_AIRDROP_ENTRIES_URL : queriesDefaults.blockchain.USER_AIRDROP_ENTRIES_URL;
-    this.CAMPAIGNS_URL = queries?.CAMPAIGNS_URL ? queries.CAMPAIGNS_URL : queriesDefaults.blockchain.CAMPAIGNS_URL;
-    this.MISSIONS_URL = queries?.MISSIONS_URL ? queries.MISSIONS_URL : queriesDefaults.blockchain.MISSIONS_URL;
-    this.AIRDROP_DISTRIBUTIONS = queries?.AIRDROP_DISTRIBUTIONS ? queries.AIRDROP_DISTRIBUTIONS : queriesDefaults.blockchain.AIRDROP_DISTRIBUTIONS;
-    this.AIRDROP_CLAIMS_LEFT = queries?.AIRDROP_CLAIMS_LEFT ? queries.AIRDROP_CLAIMS_LEFT : queriesDefaults.blockchain.AIRDROP_CLAIMS_LEFT;
-    this.SPENDABLE_BALANCES_URL = queries?.SPENDABLE_BALANCES_URL ? queries.SPENDABLE_BALANCES_URL : queriesDefaults.blockchain.SPENDABLE_BALANCES_URL;
-  }
-}
-
 export class QueriesEv implements JsonQueriesEv{
   LOGIN_WITH_RESOURCE: string;
   LOGIN_WITH_EMAIL_PASSWORD: string;
@@ -182,7 +122,6 @@ export class Configuration implements JsonConfiguration {
   validatorsDataRefreshTimeout: number;
   accountDataRefreshTimeout: number;
   proposalsPageLimit: number;
-  queries: Queries;
   queriesEv: QueriesEv;
   explorerUrl: string;
   explorerAccount: string;
@@ -200,8 +139,8 @@ export class Configuration implements JsonConfiguration {
   publicSaleVisible: boolean;
   public static readonly emptyConfiguration = new Configuration();
 
-  constructor (
-    configuration?: JsonConfiguration | undefined
+  constructor(
+      configuration?: JsonConfiguration | undefined
   ) {
     if (configuration) {
       this.bcApiURL = configuration.bcApiURL;
@@ -221,7 +160,9 @@ export class Configuration implements JsonConfiguration {
       this.operationGas = new Gas(configuration.operationGas);
       const viewDenoms = Array<ViewDenom>();
       if (configuration.viewDenoms) {
-        configuration.viewDenoms.forEach(d => {viewDenoms.push(new ViewDenom(d));});
+        configuration.viewDenoms.forEach(d => {
+          viewDenoms.push(new ViewDenom(d));
+        });
       }
       this.viewDenoms = viewDenoms;
       this.keplrGasPriceSteps = new KeplrGasPriceSteps(configuration.keplrGasPriceSteps);
@@ -232,7 +173,6 @@ export class Configuration implements JsonConfiguration {
       this.validatorsDataRefreshTimeout = configuration.validatorsDataRefreshTimeout;
       this.accountDataRefreshTimeout = configuration.accountDataRefreshTimeout;
       this.proposalsPageLimit = configuration.proposalsPageLimit;
-      this.queries = new Queries(configuration.queries);
       this.queriesEv = new QueriesEv(configuration.queriesEv);
       this.explorerUrl = configuration.explorerUrl;
       this.explorerAccount = configuration.explorerAccount;
@@ -250,7 +190,7 @@ export class Configuration implements JsonConfiguration {
       this.tokenReservationDenom = configuration.tokenReservationDenom;
       this.currentPublicSaleRoundId = configuration.currentPublicSaleRoundId;
       this.transferDenom = configuration.transferDenom;
-      this.publicSaleVisible=configuration.publicSaleVisible;
+      this.publicSaleVisible = configuration.publicSaleVisible;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -277,7 +217,6 @@ export class Configuration implements JsonConfiguration {
       this.validatorsDataRefreshTimeout = 60000;
       this.accountDataRefreshTimeout = 60000;
       this.proposalsPageLimit = 10;
-      this.queries = new Queries(undefined);
       this.queriesEv = new QueriesEv(undefined);
       this.explorerUrl = '';
       this.explorerAccount = '';
@@ -294,76 +233,8 @@ export class Configuration implements JsonConfiguration {
       this.tokenReservationDenom = '';
       this.currentPublicSaleRoundId = 0;
       this.transferDenom = '';
-      this.publicSaleVisible=false;
-    }
-  }
-
-  public getViewDenomDecimals(origDenom = this.stakingDenom): number {
-    const viewDenomConf = this.getViewDenomConfig(origDenom);
-    if (viewDenomConf) {
-      return viewDenomConf.coinDecimals;
-    }
-    return 0;
-  }
-
-  public getConvertedDenom(origDenom = this.stakingDenom): string {
-    const viewDenomConf = this.getViewDenomConfig(origDenom);
-    if (viewDenomConf) {
-      return viewDenomConf.viewDenom;
-    }
-    return origDenom;
-  }
-
-  public getViewDenomConversionFactor(origDenom = this.stakingDenom): number {
-    const viewDenomConf = this.getViewDenomConfig(origDenom);
-    if (viewDenomConf) {
-      return viewDenomConf.conversionFactor;
-    }
-    return 1;
-  }
-
-  public getGasPrise() {
-    return this.keplrGasPriceSteps.average;
-  }
-  public getReservedCoinsAmount(){
-    return this.reservedCoinsAmount;
-  }
-
-  public getConvertedAmount(origAmount: bigint | number | BigDecimal, origDenom = this.stakingDenom): number | BigDecimal {
-    const viewDenomConf = this.getViewDenomConfig(origDenom);
-    let amount: number | BigDecimal;
-    if (viewDenomConf) {
-      if (typeof origAmount === 'bigint') {
-        amount = this.bigintToConvertedAmount(origAmount, viewDenomConf.conversionFactor);
-      } else if (typeof origAmount === 'number') {
-        amount = (origAmount / viewDenomConf.conversionFactor);
-      } else {
-        amount = origAmount.divide( viewDenomConf.conversionFactor);
-      }
-      return amount;
-    }
-    if (typeof origAmount === 'bigint') {
-      return new BigDecimal(origAmount);
-    }
-    return origAmount;
-  }
-
-  private bigintToConvertedAmount(origAmount: bigint, conversionFactor: number): BigDecimal {
-    // const helperValue = Math.pow(10, precision);
-    // const helperValueBigInt = BigInt(helperValue);
-    // const amount = origAmount * helperValueBigInt / BigInt(conversionFactor);
-    return divideBigInts(origAmount, BigInt(conversionFactor));
-  }
-
-  private getViewDenomConfig(origDenom: string): ViewDenom | undefined {
-    return this.viewDenoms.find(d => {return d.denom === origDenom;});
-  }
-
-  private bigIntToFixed(num: bigint, precision: number): string {
-    if (precision <= 0) {
-      return num.toString();
-    } else {
-      return num + '.' + '0'.repeat(precision);
+      this.publicSaleVisible = false;
     }
   }
 }
+

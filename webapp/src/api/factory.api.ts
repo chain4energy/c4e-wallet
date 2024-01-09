@@ -1,21 +1,8 @@
-import {ValidatorsApi} from "@/api/validators.api";
-import {TokensApi} from "@/api/tokensApi";
-import {BlockApi} from "@/api/block.api";
-import {ProposalsApi} from "@/api/proposals.api";
-import {AccountApi} from "@/api/account.api";
-import WalletConnectionApi from "./wallet.connecton.api";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
-import { KeybaseApi } from "./keybase.api";
-import {ClaimApi} from "@/api/claim.api";
 import {applyAuthTokenInterceptor, getBrowserSessionStorage, IAuthTokens, TokenRefreshRequest} from "axios-jwt";
 import { useConfigurationStore } from "@/store/configuration.store";
-import queries from "@/api/queries";
-import {FaucetApi} from "@/api/faucet.api";
-import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
-import {useRouter} from "vue-router";
-import {useUserServiceStore} from "@/store/userService.store";
-import {EvServiceApi} from "@/ev/api/evService.api";
+import {EvServiceApi} from "@/api/evService.api";
 
 let testfileName = '';
 
@@ -27,78 +14,26 @@ class ApiFactory {
   private _axiosJwt: AxiosInstance;
   private _axiosJwtEv: AxiosInstance;
 
-  private readonly _validatorsApi = new ValidatorsApi(() => this._axios);
-  private readonly _tokensApi = new TokensApi(() => this._axios);
-  private readonly _blockApi = new BlockApi(() => this._axios);
-  private readonly _proposalsApi = new ProposalsApi(() => this._axios);
-  private readonly _accountApi = new AccountApi(() => this._axios);
-  private readonly _walletApi = new WalletConnectionApi();
-  private readonly _keybaseApi = new KeybaseApi(() => this._axios);
-  private readonly _airDropApi = new ClaimApi(() => this._axios);
-  private readonly _publicSaleServiceApi = new PublicSaleServiceApi(() => this._axiosJwt);
-  private readonly _faucetApi = new FaucetApi(() => this._axios)
   private readonly _evServiceApi = new EvServiceApi(() => this._axiosJwtEv);
 
   private testMode = false;
 
   // https://www.npmjs.com/package/axios-jwt
-  requestRefresh: TokenRefreshRequest = async (refreshToken: string): Promise<IAuthTokens | string> => {
-
-    // Important! Do NOT use the axios instance that you supplied to applyAuthTokenInterceptor (in our case 'axiosInstance')
-    // because this will result in an infinite loop when trying to refresh the token.
-    // Use the global axios client or a different instance
-    try {
-      const response = await axios.post(useConfigurationStore().config.publicSaleServiceURL + queries.publicSaleService.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
-      return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
-    } catch (error) {
-      useUserServiceStore().logoutAccount();
-      if(useRouter().currentRoute.value.meta.requiresAuth) {
-        await useRouter().push('/buyTokens/signIn');
-      }
-      throw error;
-    }
-
-
-
-    // If your backend supports rotating refresh tokens, you may also choose to return an object containing both tokens:
-    // return {
-    //  accessToken: response.data.access_token,
-    //  refreshToken: response.data.refresh_token
-    //}
-  }
-
 
   requestRefreshEv: TokenRefreshRequest = async (refreshToken: string): Promise<IAuthTokens | string> => {
-
-    // Important! Do NOT use the axios instance that you supplied to applyAuthTokenInterceptor (in our case 'axiosInstance')
-    // because this will result in an infinite loop when trying to refresh the token.
-    // Use the global axios client or a different instance
     try {
       const response = await axios.post(useConfigurationStore().config.evServiceURL + useConfigurationStore().config.queriesEv.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
       return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
     } catch (error) {
-      // useUserServiceStore().logoutAccount();
-      // if(useRouter().currentRoute.value.meta.requiresAuth) {
-      //   await useRouter().push('/buyTokens/signIn');
-      // }
       console.log(JSON.stringify(error));
       throw error;
     }
-
-
-
-    // If your backend supports rotating refresh tokens, you may also choose to return an object containing both tokens:
-    // return {
-    //  accessToken: response.data.access_token,
-    //  refreshToken: response.data.refresh_token
-    //}
   }
 
   private constructor() {
     this._axios = axios.create({});
     this._axiosJwt = axios.create({});
     this._axiosJwtEv = axios.create({});
-    applyAuthTokenInterceptor(this._axiosJwt, {requestRefresh: this.requestRefresh });
     applyAuthTokenInterceptor(this._axiosJwtEv, {requestRefresh: this.requestRefreshEv });
     applyStorage(getBrowserSessionStorage());
   }
@@ -110,47 +45,9 @@ class ApiFactory {
     return ApiFactory.instance;
   }
 
-  public validatorsApi(): ValidatorsApi{
-    return this._validatorsApi;
-  }
-  public tokensApi(): TokensApi{
-    return this._tokensApi;
-  }
-  public blockApi(): BlockApi {
-    return this._blockApi;
-  }
-  public proposalsApi(): ProposalsApi {
-    return this._proposalsApi;
-  }
-  public accountApi(): AccountApi{
-    return this._accountApi;
-  }
-  public walletApi(): WalletConnectionApi{
-    return this._walletApi;
-  }
-  public keybaseApi(): KeybaseApi{
-    return this._keybaseApi;
-  }
-  public airDropApi(): ClaimApi{
-    return this._airDropApi;
-  }
-  public publicSaleServiceApi(): PublicSaleServiceApi {
-    return this._publicSaleServiceApi;
-  }
-
   public evServiceApi(): EvServiceApi {
     return this._evServiceApi;
   }
-  public faucetApi(): FaucetApi {
-    return this._faucetApi;
-  }
-  public setAxiosInstance(axios: AxiosInstance) {
-    this._axios = axios;
-  }
-  public setAxiosJWTInstance(axios: AxiosInstance) {
-    this._axiosJwt = axios;
-  }
-
   public runTestMode(testConfigFileName: string) {
     this.testMode = true;
     testfileName = testConfigFileName;
@@ -164,6 +61,7 @@ class ApiFactory {
       this.testMode = false;
     }
   }
+
 }
 
 export default ApiFactory.getInstance();
