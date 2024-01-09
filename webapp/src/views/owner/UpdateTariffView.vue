@@ -5,7 +5,7 @@
 
 <script setup lang="ts">
 import AddTariffC from "@/components/AddTariffC.vue";
-import {goTo_ChargePointView, goTo_TariffGroupsView} from "@/router/goToRoute";
+import {goTo_ChargePointView} from "@/router/goToRoute";
 
 </script>
 

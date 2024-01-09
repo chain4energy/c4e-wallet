@@ -13,7 +13,6 @@ import {CreateTariff} from "@/models/createTariff";
 import {Tariff} from "@/models/tariff";
 import {CreateTariffForChargePoint} from "@/models/createTariffForChargePoint";
 import {ChargePointChangeActiveState} from "@/models/ChargePointChangeActiveState";
-import {HttpLink} from "@/models/httpLink";
 
 interface OwnerStore {
   selectedTariff: Tariff | null;

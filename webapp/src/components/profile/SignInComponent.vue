@@ -39,17 +39,13 @@
 
 <script setup lang="ts">
 
-import Password from "primevue/password";
+// import Password from "primevue/password";
 import {Field, Form} from "vee-validate";
 import {object} from "yup";
 import * as Yup from "yup";
 import {ref} from "vue";
-import {useEvStore} from "@/store/ev.store";
-import {useRoute, useRouter} from "vue-router";
+import { useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
-import {PropType} from "vue/dist/vue";
-import {AuthEmailAccountMethod, AuthMethods} from "@/components/profile/EmailRegister";
-import {BaseServiceApplicationError} from "@/models/evServiceCommons";
 
 const schema = object().shape({
   email:  Yup.string()

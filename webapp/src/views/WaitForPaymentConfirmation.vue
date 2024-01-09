@@ -4,7 +4,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, PropType} from "vue";
+import {onMounted} from "vue";
 import {useSessionStorage} from "@vueuse/core";
 import {useRouter} from "vue-router";
 

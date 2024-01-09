@@ -33,7 +33,6 @@ import {useOwnerStore} from "@/store/owner.store";
 import {computed} from "vue";
 import TariffC from "@/components/TariffC.vue";
 import {goTo_ChargePointView, goTo_EvOwnerDashboardView} from "@/router/goToRoute";
-import {ChargePointChangeActiveState} from "@/models/ChargePointChangeActiveState";
 
 const chargeStore = useOwnerStore();
 

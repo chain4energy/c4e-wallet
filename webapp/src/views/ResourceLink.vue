@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import {onMounted, PropType, ref} from "vue";
-import {AppTypeLink, useEvStore} from "@/store/ev.store";
+import {AppTypeLink} from "@/store/ev.store";
 import {useRouter} from "vue-router";
 import {createLinkFromPathParams} from "@/services/utils";
 import {useEvCommonStore} from "@/store/evCommon.store";

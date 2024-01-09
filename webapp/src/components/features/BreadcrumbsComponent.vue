@@ -11,11 +11,10 @@
 <script setup lang="ts">
 import {computed} from "vue";
 import { useRouter } from "vue-router";
-import {BreadcrumbData} from '../../models/breadcrumb-data';
+import {BreadcrumbData} from '@/models/breadcrumb-data';
 import Icon from "../features/IconComponent.vue";
 import {Breadcrumb} from "@/components/features/Breadcrumb";
 import {useI18n} from "vue-i18n";
-import { PermissionsService } from "@/services/permissions/permissions.service";
 
 const router = useRouter();
 const i18n = useI18n();

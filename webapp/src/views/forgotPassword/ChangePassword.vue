@@ -1,11 +1,9 @@
 <script setup lang="ts">
 
 import {useRouter} from "vue-router";
-import Password from "primevue/password";
 import {Field, Form} from "vee-validate";
 import {useToast} from "vue-toastification";
 import {ref} from "vue";
-import {useUserServiceStore} from "@/store/userService.store";
 import {object} from "yup";
 import * as Yup from "yup";
 import {pattern} from "@/utils/passwordPattern";
@@ -40,7 +38,7 @@ const schema = object().shape({
       </div>
       <div class="login_container__body">
         <Form @submit="handleSubmit" :validation-schema="schema" v-slot="{errors}" >
-          <p style="margin: 30px auto 15px;">{{$t("SIGN_IN_VIEW.CHANGE_HEADER")}}{{useUserServiceStore().userEmail}}</p>
+         <!-- <p style="margin: 30px auto 15px;">{{$t("SIGN_IN_VIEW.CHANGE_HEADER")}}{{useUserServiceStore().userEmail}}</p>-->
           <div style="padding: 10px 30px;">
             <div >
               <div class="field col-12 ">

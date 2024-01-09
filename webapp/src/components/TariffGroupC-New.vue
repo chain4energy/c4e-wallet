@@ -25,7 +25,6 @@
 
 <script setup lang="ts">
 import {TariffGroup} from "@/models/tariffGroup";
-import TariffC from "@/components/TariffC.vue";
 import {useOwnerStore} from "@/store/owner.store";
 
 

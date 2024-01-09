@@ -3,7 +3,7 @@ import {
   ViewDenom as JsonViewDenom,
   Configuration as JsonConfiguration,
   KeplrGasPriceSteps as JsonKeplrGasPriceSteps,
-  JsonQueries, JsonQueriesEv
+   JsonQueriesEv
 } from "../json/Configuration";
 import queriesDefaults from "@/api/queries";
 export class Gas implements JsonGas {

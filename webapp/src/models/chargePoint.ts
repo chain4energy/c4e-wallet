@@ -1,4 +1,4 @@
-import {ChargePointConnector, ChargePointConnectorStatusType} from "@/models/chargePointConnector";
+import {ChargePointConnector} from "@/models/chargePointConnector";
 import {TariffGroup} from "@/models/tariffGroup";
 
 export interface ChargePoint{

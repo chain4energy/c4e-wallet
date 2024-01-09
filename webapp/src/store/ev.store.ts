@@ -3,14 +3,13 @@ import apiFactory from "@/api/factory.api";
 import {ChargePointInfo} from "@/models/chargerInfo";
 import {setAuthTokens} from "axios-jwt";
 import {SessionInfo, SessionState} from "@/models/sessionInfo";
-import {routerEv} from "@/router";
 import {CreateAccountRequest, PasswordAuthenticateRequest} from "@/models/user/passwordAuth";
 import {RequestResponse} from "@/models/request-response";
 import {Jwt} from "@/models/user/jwt";
 import {ErrorData} from "@/api/base.api";
 import {DecodedLinkParamsType, DecodedLinkType, DecodeLinkAuthParams, InitPaymentRequest} from "@/models/evServiceCommons";
 import {EvServiceContext, EvServiceErrorHandler} from "@/store/uvServiceErrorHandler";
-import {ChargePointConnectorStatusType, RequestStatusType} from "@/models/chargePointConnector";
+import {ChargePointConnectorStatusType} from "@/models/chargePointConnector";
 import {ChargePoint} from "@/models/chargePoint";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
 

@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import {resetPasswordRoutes} from "@/router/resetPasswordRoutes";
-import {ownerRoutes} from "@/router/ownerRoutes";
 // @ts-ignore
 import ResourceLink from "@/views/ResourceLink.vue";
 // @ts-ignore

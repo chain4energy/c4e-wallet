@@ -21,13 +21,8 @@
 import * as Yup from "yup";
 import {object} from "yup";
 import {Field, Form} from "vee-validate";
-import {useEvStore} from "@/store/ev.store";
 import {useRouter} from "vue-router";
-import {ErrorData} from "@/api/base.api";
-import {EvServiceApplicationError} from "@/models/evServiceCommons";
 import {ref} from "vue";
-import {useEvChargePointConnectorStore} from "@/store/evChargePointConnector.store";
-import {useEvCommonStore} from "@/store/evCommon.store";
 const email = ref<string>();
 const router = useRouter()
 
@@ -48,12 +43,6 @@ function onSucces(){
   router.push('/ev/startChargingCheckEmail');
 }
 
-function onError(error: ErrorData<EvServiceApplicationError> | undefined){
-  console.log("Error" + error?.message)
-  if(error) {
-    errorStr.value = JSON.stringify(error.data);
-  }
-}
 
 </script>
 

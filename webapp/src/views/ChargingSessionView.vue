@@ -21,7 +21,7 @@
 import {useRouter} from "vue-router";
 import {onMounted, onUnmounted, PropType, ref, watch} from "vue";
 import ChargingSessionWaiteForConnectAndStart from "@/views/chargingSession/ChargingSessionWaiteForConnectAndStart.vue";
-import {SessionInfo, SessionState} from "@/models/sessionInfo";
+import { SessionState} from "@/models/sessionInfo";
 import ChargingSessionProgress from "@/views/chargingSession/ChargingSessionProgress.vue";
 import ChargingSessionSummary from "@/views/chargingSession/ChargingSessionSummary.vue";
 import Checkbox from "primevue/checkbox";

@@ -12,9 +12,7 @@
 </template>
 <script setup lang="ts">
 
-import {onMounted} from "vue";
 import {useEvStore} from "@/store/ev.store";
-import {getChargePointUrlFromChargerPointConnectorUrl} from "@/services/utils";
 import {ChargePointConnector} from "@/models/chargePointConnector";
 
 const evStore = useEvStore();

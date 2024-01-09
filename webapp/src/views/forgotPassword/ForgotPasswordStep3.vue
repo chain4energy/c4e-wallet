@@ -2,7 +2,6 @@
 import {onBeforeMount, ref} from "vue";
 import {object} from "yup";
 import * as Yup from "yup";
-import Password from "primevue/password";
 import {pattern} from "@/utils/passwordPattern";
 import {Field, Form} from "vee-validate";
 
