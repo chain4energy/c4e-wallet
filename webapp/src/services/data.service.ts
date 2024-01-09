@@ -248,12 +248,16 @@ class DataService extends LoggedService {
   public onPortfolioSelected() {
     this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected refreshs');
     this.refreshSpendables(true, true);
-    this.spendablesIntervalId = window.setInterval(()=>{refreshSpendables(false)}, this.spendableTimeout);
+    this.checkAndSetInterval(this.spendablesIntervalId,()=>{refreshSpendables(false)}, this.spendableTimeout )
+    if (useUserStore().isLoggedIn) {
+      this.refreshAccountData();
+    }
   }
 
   public onPortfolioUnselected() {
-    this.logToConsole(LogLevel.DEBUG, 'onPortfolioUnselected refreshs');
+    this.logToConsole(LogLevel.DEBUG, 'onPortfolioUnselected');
     window.clearInterval(this.spendablesIntervalId);
+    this.spendablesIntervalId = 0;
   }
 
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {

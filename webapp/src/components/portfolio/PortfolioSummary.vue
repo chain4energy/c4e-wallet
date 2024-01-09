@@ -101,14 +101,6 @@ import {useConfigurationStore} from "@/store/configuration.store";
 
 const userStore = useUserStore();
 
-onMounted(() => {
-    dataService.onPortfolioSelected();
-});
-
-onUnmounted(() => {
-  dataService.onPortfolioUnselected();
-});
-
 const totalBalance = computed(()=> {
   return userStore.getBalance;
 });

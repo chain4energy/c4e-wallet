@@ -60,8 +60,8 @@ function changeStatus(){
     default: text = '';
       break;
   }
-  const fontsize = 14;
-  ctx.value.font = `${fontsize}px sans-serif`;
+  const fontsize = 16;
+  ctx.value.font = `bold ${fontsize}px sans-serif`;
   const textWidth = ctx.value.measureText(text ).width;
   const widthOfBar = ((canva.value.width /100) * props.amount) - textWidth/2;
   if(progress && widthOfBar > textWidth){
@@ -80,6 +80,7 @@ function changeStatus(){
 
   ctx.value.globalCompositeOperation='destination-over';
   ctx.value.fillStyle = backgroundColor;
+  ctx.value.textAlign = "center";
   ctx.value.fill();
 }
 
