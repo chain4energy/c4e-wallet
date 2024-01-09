@@ -111,7 +111,7 @@ data:
       "explorerUrl": "https://explorer-dev.c4e.io",
       "explorerAccount": "https://explorer-dev.c4e.io/accounts/",
       "explorerTx": "https://explorer-dev.c4e.io/transactions/",
-      "isMainNetwork": true,
+      "isMainNetwork": false,
       "airdropBaseURL": "https://airdrop.c4e.io/",
       "airdropDefaultDenom": "uc4e",
       "proposalVotingRefreshTimeout": 30000,
