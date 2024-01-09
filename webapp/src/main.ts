@@ -16,7 +16,7 @@ import Toast, {PluginOptions, POSITION, TYPE} from "vue-toastification";
 import SuccessIcon from "@/components/features/SuccessIcon.vue";
 import ErrorIcon from "@/components/features/ErrorIcon.vue";
 import {LoggerService} from "@/services/logger/logger.service";
-import EvApp from "@/EvApp.vue";
+import EvApp from "./EvApp.vue";
 
 const toastOptions: PluginOptions = {
     // You can set your default options here

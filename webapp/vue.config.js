@@ -8,7 +8,7 @@ module.exports = defineConfig({
       entry: 'src/main.ts',
       title: 'Ev Page',
       template: 'public/indexEv.html',
-      chunks: ['chunk-vendors', 'chunk-common', 'ev']
+      chunks: ['chunk-vendors', 'chunk-common', 'index']
     },
   },
   transpileDependencies: true,
