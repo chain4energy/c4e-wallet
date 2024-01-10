@@ -9,7 +9,6 @@ import "primevue/resources/themes/lara-light-blue/theme.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 import 'vue-toastification/dist/index.css';
-import "@/assets/tailwindInput.css";
 
 import PrimeVue from "primevue/config";
 import Toast, {PluginOptions, POSITION, TYPE} from "vue-toastification";
