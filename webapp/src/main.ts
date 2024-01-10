@@ -4,11 +4,11 @@ import i18n from "@/plugins/i18n";
 import { createPinia } from 'pinia';
 import piniaPersist from "pinia-plugin-persist";
 
-import "primeflex/primeflex.css";
 import "primevue/resources/themes/lara-light-blue/theme.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 import 'vue-toastification/dist/index.css';
+import "@/assets/tailwind.css";
 
 import PrimeVue from "primevue/config";
 import Toast, {PluginOptions, POSITION, TYPE} from "vue-toastification";
@@ -18,6 +18,7 @@ import {LoggerService} from "@/services/logger/logger.service";
 import EvApp from "./EvApp.vue";
 import Card from "primevue/card";
 import Button from "primevue/button";
+import InputText from "primevue/inputtext";
 
 const toastOptions: PluginOptions = {
     // You can set your default options here
@@ -49,5 +50,6 @@ appEv.use(routerEv)
     .provide('logger', logger)
   .component('Card', Card)
   .component('Button', Button)
+  .component('InputText', InputText)
 ;
 appEv.mount('#app');

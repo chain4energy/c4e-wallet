@@ -1,4 +1,10 @@
 /* color palette from <https://github.com/vuejs/theme> */
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;

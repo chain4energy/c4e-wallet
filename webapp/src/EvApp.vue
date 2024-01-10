@@ -1,8 +1,8 @@
 <template>
-    <div class="page-container">
+    <div class="w-full h-full mx-auto">
       <loading-screen/>
-      <div class="main-container">
-        <div class="content">
+      <div class="w-full h-full">
+        <div class="w-full h-full">
           <router-view/>
         </div>
       </div>
@@ -30,4 +30,5 @@ window.onload = async () =>{
 </script>
 
 <style lang="scss">
+@import "assets/main.css";
 </style>

@@ -1,51 +1,47 @@
 <template>
-  <div style="margin-top:100px;padding-bottom: 60px;">
-    <div class="login_container box-shadow">
-      <div class="login_container__header">
-        <h1 style="font-weight: 900; padding-top: 20px;">{{$t("SIGN_IN_VIEW.SIGN_IN")}}</h1>
-      </div>
-      <div class="login_container__body">
-        <Form @submit="login" :validation-schema="schema" v-slot="{errors}" >
-          <div style="padding: 10px 30px 0;">
-            <div >
-              <div class="field col-12 border-2 border-lime-200">
-                <Field style="width:100%" v-model="email" :placeholder="$t('SIGN_IN_VIEW.EMAIL')" name="email" type="text" class="form-control border-lime-600"
-                       :class="{'is-invalid': errors.email}"></Field>
-                <div class="invalid-feedback">{{ errors.email ? $t(errors.email) : '' }}</div>
-              </div>
-
-              <div class="field col-12 ">
-                <Field style="width:100%" v-model="password" :placeholder="$t('SIGN_IN_VIEW.PASSWORD')" name="password" type="text" class="form-control" :class="{'is-invalid': errors.password}">
-                  <Password style="width:100%" v-model="password" name="password" :placeholder="$t('SIGN_IN_VIEW.PASSWORD')" toggleMask :feedback="false"></Password>
-                </Field>
-                <div class="invalid">{{errors.password ? $t(errors.password) : ''}}</div>
-              </div>
-            </div>
-
-          </div>
-          <p class="forgot" @click="emit('onForgotPasswordButton')">Forgot password?</p>
-          <div class="flex justify-content-center">
-
-            <Button class="p-button p-component secondary" style="width: 40%" type="submit">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</Button>
-          </div>
-          <div style="padding: 5px">
-            <p style="cursor: pointer" class="register" @click="emit('onSignUpButton')">{{ $t('SIGN_IN_VIEW.REGISTER') }}</p>
-          </div>
-        </Form>
+    <div class="w-full h-full flex items-center justify-center">
+      <div class="mx-auto min-w-[330px] w-full max-w-[600px] h-full p-2 sm:p-5 flex flex-col justify-between">
+        <div class="w-1/4">
+          <C4ELogoSVG/>
+        </div>
+        <div class="w-full sm:w-[70%] mx-auto">
+          <CarSVG/>
+        </div>
+        <div class="flex flex-col w-full mx-auto">
+          <span class="flex justify-center items-center">
+            <IconComponent name="Mail" class="text-lime-600"/>
+            <InputText v-model="email" placeholder="E-mail" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+          </span>
+          <span class="flex justify-center items-center">
+            <IconComponent name="Lock" class="text-lime-600"/>
+            <Password  v-model="password" name="password" :placeholder="$t('SIGN_IN_VIEW.PASSWORD')" toggleMask :feedback="false" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%] outline-0"/>
+          </span>
+        </div>
+        <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center" @click="login">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</Button>
+        <div class="w-full text-center">
+          <p>or</p>
+          <span @click="emit('onForgotPasswordButton')" class="mt-3 text-lime-600 font-bold">Forgot password?</span>
+        </div>
+        <div>
+          <p class="cursor-pointer text-center">Don't have an account? <span @click="emit('onSignUpButton')" class="mt-3 text-lime-600 font-bold">{{ $t('SIGN_IN_VIEW.REGISTER') }}</span></p>
+        </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
 
 import Password from "primevue/password";
-import {Field, Form} from "vee-validate";
+import InputText from "primevue/inputtext";
 import {object} from "yup";
 import * as Yup from "yup";
 import {ref} from "vue";
 import { useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
+import CarSVG from "@/components/svg/CarSVG.vue";
+import C4EIcon from "@/components/C4EIcon.vue";
+import C4ELogoSVG from "@/components/svg/C4ELogoSVG.vue";
+import IconComponent from "@/components/features/IconComponent.vue";
 
 const schema = object().shape({
   email:  Yup.string()
@@ -84,43 +80,5 @@ const onSuccessAuth = () => {
 
 
 <style scoped lang="scss">
-.login_container {
-  margin-left: auto;
-  margin-right: auto;  height: 100%;
-  max-width: 550px;
-  &__header {
 
-  }
-  &__body {
-    padding-bottom: 20px;
-    .register {
-      color: #125389;font-weight: 600; font-size: 16px; text-decoration: none;
-
-      &:hover{
-        opacity: 0.8;
-      }
-    }
-  }
-
-}
-::v-deep(.p-password input) {
-  width: 100%;
-}
-
-::v-deep(.p-input-icon-right > i) {
-  margin-top: -0.5rem;
-}
-::v-deep(.p-button:not(.p-button-icon-only)) {
-  border-radius: 5px !important;
-
-}
-
-.forgot {
-  text-align: right;
-  padding: 0 35px;
-  margin: 5px auto 20px;
-  font-size: 14px;
-  text-decoration: underline;
-  cursor: pointer;
-}
 </style>
