@@ -1,7 +1,9 @@
 {
   "COMMON": {
     "BACK": "Wróć",
-    "NEXT": "Dalej"
+    "NEXT": "Dalej",
+    "LANGUAGE": "Wybierz język",
+    "CURRENCY": "Wybierz walutę"
   },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Rejestracja",

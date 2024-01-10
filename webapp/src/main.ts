@@ -20,6 +20,7 @@ import Card from "primevue/card";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Checkbox from "primevue/checkbox";
+import Dropdown from "primevue/dropdown";
 
 const toastOptions: PluginOptions = {
     // You can set your default options here
@@ -53,5 +54,6 @@ appEv.use(routerEv)
   .component('Button', Button)
   .component('InputText', InputText)
   .component('Checkbox', Checkbox)
+  .component('Dropdown', Dropdown)
 ;
 appEv.mount('#app');

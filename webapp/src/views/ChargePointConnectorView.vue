@@ -1,7 +1,6 @@
 <template>
-  <div v-if="pageState==State.INIT">
-    <charge-point-c-new :charge-point="evChargePointConnectorStore.chargePoint as ChargePoint"/>
-    <Button v-if="showButton_Next" @click="goToProvideEmail()">Next</Button>
+  <div v-if="pageState==State.INIT" class="w-full h-full">
+    <charge-point-c-new :charge-point="evChargePointConnectorStore.chargePoint as ChargePoint" @next="goToProvideEmail"/>
   </div>
   <ProvideEmail v-if="pageState==State.PROVIDE_EMAIL" @onEmilProvided="emilProvided"></ProvideEmail>
   <CheckEmail v-if="pageState==State.CHECK_EMAIL" :provided-email="providedEmail"></CheckEmail>

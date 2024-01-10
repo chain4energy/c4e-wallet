@@ -1,7 +1,9 @@
 {
   "COMMON": {
     "BACK": "Back",
-    "NEXT": "Next"
+    "NEXT": "Next",
+    "LANGUAGE": "Select language",
+    "CURRENCY": "Select currency"
   },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Sign up",
