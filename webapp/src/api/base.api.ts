@@ -10,7 +10,7 @@ export class ErrorData<D> {
   readonly message: string;
   readonly status?: number;
   readonly data?: D;
-  private readonly dataToInfo?: (data: D) => string
+  private readonly dataToInfo?: (data: D) => string;
 
   constructor(name: string, message: string, status?: number, data?: D, dataToInfo?: (data: D) => string) {
     this.name = name;

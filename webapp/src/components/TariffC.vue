@@ -31,11 +31,11 @@ defineProps({
 const updateTariff = (tariffGroupId: number, tariffId: number) => {
   chargerStore.selectedTariff = chargerStore.selectedTariff = chargerStore.tariffGroups.find(tg => tg.id === tariffGroupId)?.tariffs.find(t => t.id === tariffId) as Tariff;
   goTo_UpdateTariffView();
-}
+};
 
 const deleteTariff = (tgId: number, id: number) => {
-  chargerStore.deleteTariff(tgId, id)
-}
+  chargerStore.deleteTariff(tgId, id);
+};
 </script>
 
 

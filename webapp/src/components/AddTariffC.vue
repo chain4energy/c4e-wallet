@@ -26,7 +26,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['onSuccess'])
+const emit = defineEmits(['onSuccess']);
 
 const chargerStore = useOwnerStore();
 
@@ -72,18 +72,18 @@ const countryOptions = computed(() => {
 });
 
 const onSubmit = async () => {
-  console.log(props.isEdit)
+  console.log(props.isEdit);
   if (props.isEdit) {
     await updateTariff();
   } else {
     await createNewTariff();
   }
-}
+};
 
 const createNewTariff = async () => {
   if (chargerStore.selectedTariffGroup) {
     await chargerStore.createTariff(chargerStore.selectedTariffGroup.id, createTariff.value, true, () => {
-      emit ('onSuccess')
+      emit ('onSuccess');
     });
   }
 };
@@ -91,7 +91,7 @@ const createNewTariff = async () => {
 const updateTariff = async () => {
   if (chargerStore.selectedTariff) {
     await chargerStore.updateTariff(chargerStore.selectedTariff.tariffGroupId, chargerStore.selectedTariff.id, createTariff.value, true, () => {
-      emit ('onSuccess')
+      emit ('onSuccess');
     });
   }
 };

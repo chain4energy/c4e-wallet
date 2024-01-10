@@ -53,15 +53,15 @@ const changeChargePointActiveState = () => {
   if (!chargeStore.selectedChargePoint) return console.error("No charge point selected");
   const chargePointChangeActiveState = {
     active: !chargeStore.selectedChargePoint.active
-  }
-  chargeStore.changeChargePointActiveState(chargeStore.selectedChargePoint.id, chargePointChangeActiveState)
-}
+  };
+  chargeStore.changeChargePointActiveState(chargeStore.selectedChargePoint.id, chargePointChangeActiveState);
+};
 
 const deleteChargePoint = (id: string | undefined) => {
   if (id) {
     chargeStore.deleteChargePoint(id, true, goTo_EvOwnerDashboardView);
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

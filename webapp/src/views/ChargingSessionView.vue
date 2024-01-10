@@ -31,9 +31,9 @@ import {getChargePointConnectorUrlFromChargerPointConnectorSessionUrl} from "@/s
 import {clearAuthTokens} from "axios-jwt/src/tokensUtils";
 import ChargingSessionInitPayment from "@/views/chargingSession/ChargingSessionInitPayment.vue";
 import ChargingSessionWaitForPayment from "@/views/chargingSession/ChargingSessionWaitForPayment.vue";
-import { useSessionStorage } from "@vueuse/core"
+import { useSessionStorage } from "@vueuse/core";
 
-const router = useRouter()
+const router = useRouter();
 const chargingSessionStore = useEvChargingSessionStore();
 const chargePointConnectorStore = useEvChargePointConnectorStore();
 const useInterval = ref(true);
@@ -49,17 +49,17 @@ const props = defineProps({
 
 onMounted(() => {
   if (chargingSessionStore.getChargingSessionUrl == "") {
-    router.push({name: 'ev_ResourceLink', params: {context: props.context}})
+    router.push({name: 'ev_ResourceLink', params: {context: props.context}});
   } else {
     //check if tokens are ok
     clearAuthTokens();
-    chargingSessionStore.loginWithResource(true, onSuccessLoginToSession)
+    chargingSessionStore.loginWithResource(true, onSuccessLoginToSession);
   }
 });
 
 onUnmounted(() => {
   stopInterval();
-})
+});
 
 watch(useInterval, (newValue, oldValue) => {
   if (newValue) {
@@ -67,7 +67,7 @@ watch(useInterval, (newValue, oldValue) => {
   } else {
     stopInterval();
   }
-})
+});
 function onSuccessLoginToSession() {
   chargePointConnectorStore.chargePointConnectorUrl = getChargePointConnectorUrlFromChargerPointConnectorSessionUrl(chargingSessionStore.getChargingSessionUrl);
   chargePointConnectorStore.fetchChargePointConnectorAll();
@@ -89,7 +89,7 @@ function startInterval() {
             stopInterval();
           }
         }
-      )
+      );
     }, 1000);
   } else {
     console.log("startInterval interval != 0");
@@ -115,7 +115,7 @@ function initPayment(){
   chargingSessionStore.initPayment({ amount:'500', currency: 'PLN'}, true, (paymentUrl)=>{
     console.log("Redirect to " + paymentUrl);
     window.location.href=paymentUrl;
-  })
+  });
 }
 
 </script>

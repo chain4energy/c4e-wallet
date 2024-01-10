@@ -16,7 +16,7 @@ import {ErrorData} from "@/api/base.api";
 import {PropType, ref} from "vue";
 import {useEvChargingSessionStore} from "@/store/evChargingSession.store";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
-import ChargerAnimationSVG from '@/components/svg/ChargerAnimationSVG.vue'
+import ChargerAnimationSVG from '@/components/svg/ChargerAnimationSVG.vue';
 
 const chargingSessionStore = useEvChargingSessionStore();
 const errorStr = ref("");
@@ -37,14 +37,14 @@ function onSuccess(){
 }
 
 function onError(defaultErrorHandler: () => void, error:ErrorData<EvServiceApplicationError> | undefined){
-  console.log("Error" + error?.message)
+  console.log("Error" + error?.message);
   if(error) {
     errorStr.value = JSON.stringify(error.data);
   }
 }
 
 function connect(){
-  connected.value = true
+  connected.value = true;
 
 }
 

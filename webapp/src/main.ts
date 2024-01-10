@@ -9,7 +9,7 @@ import "primevue/resources/themes/lara-light-blue/theme.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 import 'vue-toastification/dist/index.css';
-import "@/assets/tailwindOutput.css"
+import "@/assets/tailwindInput.css";
 
 import PrimeVue from "primevue/config";
 import Toast, {PluginOptions, POSITION, TYPE} from "vue-toastification";
@@ -39,7 +39,7 @@ const logger = LoggerService.getInstance();
 const pinia = createPinia();
 pinia.use(piniaPersist);
 
-console.log("start ev/main.ts")
+console.log("start ev/main.ts");
 const appEv = createApp(EvApp);
 
 appEv.use(routerEv)

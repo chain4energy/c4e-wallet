@@ -8,7 +8,7 @@ import {EvServiceContext} from "@/store/evServiceErrorHandler";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
 import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";
 import {ToastsService} from "@/services/toasts/toasts.service";
-import evServiceErrorHandler from "@/store/evServiceErrorHandler"
+import evServiceErrorHandler from "@/store/evServiceErrorHandler";
 
 interface EvCommonStoreState {
   loggedIn: boolean,

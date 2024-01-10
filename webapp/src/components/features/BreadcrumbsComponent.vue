@@ -32,8 +32,8 @@ const breadcrumbs = computed(() => {
     console.log("alreadyAdded" + alreadyAdded );
     console.log("indexOf: " + matchedRoute.path.indexOf('step')  );
     if(matchedRoute.name !== undefined && alreadyAdded.length ===0  && matchedRoute.path.length > 0 && matchedRoute.path.indexOf('step') < 0) {
-      let _name = matchedRoute.name.toString();
-      let _skipTranslation = false;
+      const _name = matchedRoute.name.toString();
+      const _skipTranslation = false;
       // if(matchedRoute.meta.breadcrumbElement !== undefined){
       //   switch (matchedRoute.meta.breadcrumbElement as BreadcrumbElementType) {
       //     case BreadcrumbElementType.SELECTED_PROVIDE_NAME:

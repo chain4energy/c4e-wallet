@@ -10,7 +10,7 @@ export function createLinkFromPathParams(params: string | string[]): string {
 }
 
 export function getChargePointUrlFromChargerPointConnectorUrl(chargePointConnectorUrl:string){
-  console.log("chargePointConnectorUrl:" + chargePointConnectorUrl)
+  console.log("chargePointConnectorUrl:" + chargePointConnectorUrl);
   const split = chargePointConnectorUrl.split("/");
   const retValue= split.slice(0,  -2).join("/");
   console.log("retValue:" + retValue);
@@ -18,7 +18,7 @@ export function getChargePointUrlFromChargerPointConnectorUrl(chargePointConnect
 }
 
 export function getChargePointConnectorUrlFromChargerPointConnectorSessionUrl(chargePointConnectorSessionUrl:string){
-  console.log("chargePointConnectorSessionUrl:" + chargePointConnectorSessionUrl)
+  console.log("chargePointConnectorSessionUrl:" + chargePointConnectorSessionUrl);
   const split = chargePointConnectorSessionUrl.split("/");
   const retValue= split.slice(0,  -2).join("/");
   console.log("retValue:" + retValue);

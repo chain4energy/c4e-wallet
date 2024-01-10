@@ -52,8 +52,8 @@ import {CreateTariffForChargePoint} from "@/models/createTariffForChargePoint";
 const chargerStore = useOwnerStore();
 
 const selectChargePointDict = (chargePointDict: ChargePointDict) => {
-  chargerStore.selectedChargePointDict = chargePointDict
-}
+  chargerStore.selectedChargePointDict = chargePointDict;
+};
 
 const createTariffForChargePoint = ref<CreateTariffForChargePoint>({
   accountId: undefined,
@@ -96,9 +96,9 @@ const countryOptions = computed(() => {
 
 
 const createChargerFromDict = async () => {
-  await chargerStore.createChargePointFromDictFn(true)
+  await chargerStore.createChargePointFromDictFn(true);
   if (chargerStore.selectedChargePoint) {
-    await chargerStore.createTariffForChargePoint(chargerStore.selectedChargePoint.id, createTariffForChargePoint.value, true, goTo_ChargePointView)
+    await chargerStore.createTariffForChargePoint(chargerStore.selectedChargePoint.id, createTariffForChargePoint.value, true, goTo_ChargePointView);
   }
 };
 </script>

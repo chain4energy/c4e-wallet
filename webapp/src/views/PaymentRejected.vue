@@ -7,9 +7,9 @@
 
 import {useRouter} from "vue-router";
 
-const router = useRouter()
+const router = useRouter();
 function navigateToChoosePaymentMethod() {
-  router.push({ name: 'ev_ChoosePaymentMethod' })
+  router.push({ name: 'ev_ChoosePaymentMethod' });
 }
 </script>
 

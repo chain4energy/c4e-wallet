@@ -28,7 +28,7 @@ class ApiFactory {
       console.log(JSON.stringify(error));
       throw error;
     }
-  }
+  };
 
   private constructor() {
     this._axios = axios.create({});

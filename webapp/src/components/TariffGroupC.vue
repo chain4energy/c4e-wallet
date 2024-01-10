@@ -33,8 +33,8 @@ defineProps({
 );
 
 const deleteTariffGroup = (id: number) => {
-  chargerStore.deleteTariffGroup(id)
-}
+  chargerStore.deleteTariffGroup(id);
+};
 </script>
 
 <style scoped lang="scss">

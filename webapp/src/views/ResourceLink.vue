@@ -30,9 +30,9 @@ onMounted(()=>{
 function onSuccess(){
   console.log("Application link type:" + evCommonStore.appTypeLink);
   if(evCommonStore.appTypeLink == AppTypeLink.CHARGE_POINT_CONNECTOR_LINK){
-    router.push({name:'ev_ChargePointConnector',params:{context:props.context}})
+    router.push({name:'ev_ChargePointConnector',params:{context:props.context}});
   } else if(evCommonStore.appTypeLink == AppTypeLink.CHARGING_SESSION_LINK){
-    router.push({name:'ev_SessionLink',params:{context:props.context}})
+    router.push({name:'ev_SessionLink',params:{context:props.context}});
   } else {
     //GO TO ERROR lINK PAGE
   }

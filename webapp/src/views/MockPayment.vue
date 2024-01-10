@@ -18,17 +18,17 @@ import {EvServiceApplicationError} from "@/models/evServiceErrors";
 const errorStr = ref("");
 
 const evChargingSessionStore = useEvChargingSessionStore();
-const router = useRouter()
+const router = useRouter();
 function mockAccepted() {
   if (evChargingSessionStore.sessionInfo) {
-    evChargingSessionStore.sessionInfo.state = SessionState.INIT
+    evChargingSessionStore.sessionInfo.state = SessionState.INIT;
   }
   evChargingSessionStore.initPayment({ amount:'500', currency: 'PLN'}, true, onSuccess);
 }
 
 function mockAcceptedAccepted() {
   if (evChargingSessionStore.sessionInfo) {
-    evChargingSessionStore.sessionInfo.state = SessionState.INIT
+    evChargingSessionStore.sessionInfo.state = SessionState.INIT;
   }
   onSuccess();
 }
@@ -38,7 +38,7 @@ function onSuccess(){
 }
 
 function onError(error: ErrorData<EvServiceApplicationError> | undefined){
-  console.log("Error" + error?.message)
+  console.log("Error" + error?.message);
   if(error) {
     errorStr.value = JSON.stringify(error.data);
   }
@@ -46,9 +46,9 @@ function onError(error: ErrorData<EvServiceApplicationError> | undefined){
 
 function mockRejected() {
   if (evChargingSessionStore.sessionInfo) {
-    evChargingSessionStore.sessionInfo.state = SessionState.FINAL
+    evChargingSessionStore.sessionInfo.state = SessionState.FINAL;
   }
-  errorStr.value="ten przycisk nie działa. Jeszcze ...."
+  errorStr.value="ten przycisk nie działa. Jeszcze ....";
 }
 
 </script>

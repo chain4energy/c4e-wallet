@@ -12,7 +12,7 @@
 import {PriceInfo} from "@/models/chargerInfo";
   defineProps<{
     priceInfo?: PriceInfo
-  }>()
+  }>();
 </script>
 
 <style scoped lang="scss">

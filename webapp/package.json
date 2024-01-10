@@ -2,27 +2,25 @@
   "name": "c4ewallet",
   "version": "1.0.1",
   "private": true,
-  "engines": {
-    "node": "=v20.10.0"
-  },
   "scripts": {
     "serve": "npm run check-node-version && vue-cli-service serve --mode development",
     "build": "npm run check-node-version && vue-cli-service build --mode development",
-    "build-preproduction": "npm run check-node-version && vue-cli-service build --mode preproduction",
-    "build-production": "npm run check-node-version && vue-cli-service build --mode production",
-    "build-dev": "npm run check-node-version && vue-cli-service build -mode development",
-    "production": "npm run check-node-version && vue-cli-service serve --mode production",
     "test:unit": "npm run check-node-version && vue-cli-service test:unit",
-    "test:unit:coverage": "npm run check-node-version && vue-cli-service test:unit --coverage",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
+    "build-dev": "npm run check-node-version && vue-cli-service build -mode development",
+    "build-preproduction": "npm run check-node-version && vue-cli-service build --mode preproduction",
+    "build-production": "npm run check-node-version && vue-cli-service build --mode production",
+    "check-node-version": "node ./../scripts/check_node_version.js",
+    "production": "npm run check-node-version && vue-cli-service serve --mode production",
     "proxy": "node proxy.js",
-    "check-node-version": "node ./../scripts/check_node_version.js"
+    "test:unit:coverage": "npm run check-node-version && vue-cli-service test:unit --coverage"
   },
   "dependencies": {
     "@koa/cors": "^5.0.0",
     "@synaps-io/vue3-verify": "^1.0.2",
     "@vueuse/core": "^10.7.1",
+    "autoprefixer": "^10.4.16",
     "axios": "^1.6.5",
     "axios-jwt": "^4.0.0",
     "core-js": "^3.35.0",
@@ -33,6 +31,7 @@
     "node-polyfill-webpack-plugin": "^3.0.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persist": "^1.0.0",
+    "postcss": "^8.4.33",
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
     "primevue": "^3.46.0",
@@ -75,6 +74,10 @@
     "prettier": "^3.1.1",
     "sass": "^1.69.7",
     "sass-loader": "^13.3.3",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "vue-cli-plugin-tailwind": "~3.0.0"
+  },
+  "engines": {
+    "node": "=v20.10.0"
   }
 }

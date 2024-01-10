@@ -65,7 +65,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['onForgotPasswordButton', 'onSuccessLogin', 'onSignUpButton'])
+const emit = defineEmits(['onForgotPasswordButton', 'onSuccessLogin', 'onSignUpButton']);
 
 function login(){
   if(email.value && password.value) {

@@ -23,7 +23,7 @@ const chargerStore = useOwnerStore();
 
 onMounted(async () => {
   await chargerStore.fetchAllChargeStoreData();
-})
+});
 
 </script>
 

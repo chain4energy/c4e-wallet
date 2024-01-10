@@ -6,7 +6,7 @@ import {SessionInfo} from "@/models/sessionInfo";
 import {setTokens} from "@/services/utils";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
 import {EvServiceContext} from "@/store/evServiceErrorHandler";
-import evServiceErrorHandler from "@/store/evServiceErrorHandler"
+import evServiceErrorHandler from "@/store/evServiceErrorHandler";
 
 interface EvChargingSessionStoreState {
   loggedIn: boolean,
@@ -45,7 +45,7 @@ export const useEvChargingSessionStore = defineStore({
     async fetchSessionInfo(lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
       await apiFactory.evServiceApi().getSesisonInfo(this.chargingSessionUrl, lockscreen).then(response => {
         if (response.isSuccess() && response.data) {
-          this.sessionInfo = response.data
+          this.sessionInfo = response.data;
         } else {
           evServiceErrorHandler.handleError(response.error,  EvServiceContext.SESSION_INFO_FETCH, onFail);
         }

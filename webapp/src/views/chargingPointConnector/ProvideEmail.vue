@@ -24,7 +24,7 @@ import {Field, Form} from "vee-validate";
 import {useRouter} from "vue-router";
 import {ref} from "vue";
 const email = ref<string>();
-const router = useRouter()
+const router = useRouter();
 
 const errorStr = ref("");
 
@@ -36,7 +36,7 @@ const schema = object().shape({
 });
 
 function next(){
- emit('onEmilProvided', email.value)
+ emit('onEmilProvided', email.value);
 }
 
 function onSucces(){

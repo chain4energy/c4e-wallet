@@ -9,10 +9,10 @@
 
 import {useRouter} from "vue-router";
 
-const router = useRouter()
+const router = useRouter();
 
 function navigateToPrzelewy24Confirmation() {
-  router.push({ name: 'ev_MockPayment' })
+  router.push({ name: 'ev_MockPayment' });
   // router.push({ name: 'przelewy24-confirmation' })
 }
 

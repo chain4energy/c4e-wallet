@@ -168,7 +168,7 @@ export const useEvStore = defineStore({
     async fetchSessionInfo(chargingSessionUrl:string,lockscreen = true) {
       await apiFactory.evServiceApi().getSesisonInfo(chargingSessionUrl, lockscreen).then(response => {
         if (response.data) {
-          this.sessionInfo = response.data
+          this.sessionInfo = response.data;
           if (!this.sessionInfo.cost) {
             this.sessionInfo.cost = 0;
           }

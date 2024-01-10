@@ -36,30 +36,30 @@ const props = defineProps({
   },
 });
 
-const pageState = ref(State.NONE)
+const pageState = ref(State.NONE);
 const providedEmail= ref('');
 
 onMounted(() => {
   if (evChargePointConnectorStore.getChargePointConnectorUrl == "") {
-    router.push({name: 'ev_ResourceLink', params: {context: props.context}})
+    router.push({name: 'ev_ResourceLink', params: {context: props.context}});
   } else {
     clearAuthTokens();
-    evChargePointConnectorStore.fetchChargePointConnectorAll(true, ()=>{pageState.value = State.INIT});
+    evChargePointConnectorStore.fetchChargePointConnectorAll(true, ()=>{pageState.value = State.INIT;});
   }
 });
 
 const showButton_Next = computed(() => {
-  return evChargePointConnectorStore.chargePoint && (evChargePointConnectorStore.chargePoint.status == ChargePointStatusType.AVAILABLE || evChargePointConnectorStore.chargePoint.status == ChargePointStatusType.PREPARING)
+  return evChargePointConnectorStore.chargePoint && (evChargePointConnectorStore.chargePoint.status == ChargePointStatusType.AVAILABLE || evChargePointConnectorStore.chargePoint.status == ChargePointStatusType.PREPARING);
 });
 
 function goToProvideEmail() {
-  console.log("next step -> goToProvideEmail")
+  console.log("next step -> goToProvideEmail");
   // router.push('/ev/startCharging');
   pageState.value = State.PROVIDE_EMAIL;
 }
 
 function emilProvided(email:string){
-  console.log("next step -> goToCheckEmail")
+  console.log("next step -> goToCheckEmail");
   if (email) {
     providedEmail.value = email;
     pageState.value = State.CHECK_EMAIL;

@@ -22,7 +22,7 @@ class DataServiceEv extends LoggedService implements DataServiceInterface{
     this.logToConsole(LogLevel.DEBUG, 'onAppStart');
     await useConfigurationStore().fetchConfigList(this).then(() => {
       const config = useConfigurationStore().getConfig;
-    })
+    });
   }
 
   private async onInit() {

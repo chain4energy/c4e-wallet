@@ -8,13 +8,13 @@ import {onMounted} from "vue";
 import {useSessionStorage} from "@vueuse/core";
 import {useRouter} from "vue-router";
 
-const router = useRouter()
+const router = useRouter();
 
 onMounted(() => {
   const context = useSessionStorage("context", {}) ;
   console.log("context: " + context);
-  router.push({name:'ev_SessionLink',params:{context:context.value as string[] | undefined}})
-})
+  router.push({name:'ev_SessionLink',params:{context:context.value as string[] | undefined}});
+});
 
 </script>
 

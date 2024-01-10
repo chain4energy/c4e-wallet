@@ -185,7 +185,7 @@ export const useOwnerStore = defineStore({
           }
         }
         this.selectedTariff = null;
-        onSuccess()
+        onSuccess();
       }
     },
 
@@ -286,10 +286,10 @@ export const useOwnerStore = defineStore({
 
   getters: {
     getChargePoints(): ChargePoint[] | undefined {
-      return this.chargePoints
+      return this.chargePoints;
     },
     getChargePointDicts(): ChargePointDict[] | undefined {
-      return this.chargePointDicts
+      return this.chargePointDicts;
     },
     getTariffGroups(): TariffGroup[] | undefined {
       return this.tariffGroups;

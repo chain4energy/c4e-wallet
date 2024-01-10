@@ -37,7 +37,7 @@ class EvServiceErrorHandler {
     if (onFail) {
       onFail(() => this.defaultErrorHandler(error, evServiceContext), error);
     } else {
-      this.defaultErrorHandler(error, evServiceContext)
+      this.defaultErrorHandler(error, evServiceContext);
     }
   }
 
