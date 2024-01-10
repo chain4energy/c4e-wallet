@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 
-// import Password from "primevue/password";
+import Password from "primevue/password";
 import Checkbox from "primevue/checkbox";
 import {Field, Form} from "vee-validate";
 import {object} from "yup";

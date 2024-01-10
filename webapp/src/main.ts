@@ -9,7 +9,7 @@ import "primevue/resources/themes/lara-light-blue/theme.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 import 'vue-toastification/dist/index.css';
-import "tailwindcss/tailwind.css"
+import "@/assets/tailwindOutput.css"
 
 import PrimeVue from "primevue/config";
 import Toast, {PluginOptions, POSITION, TYPE} from "vue-toastification";
@@ -17,6 +17,8 @@ import SuccessIcon from "@/components/features/SuccessIcon.vue";
 import ErrorIcon from "@/components/features/ErrorIcon.vue";
 import {LoggerService} from "@/services/logger/logger.service";
 import EvApp from "./EvApp.vue";
+import Card from "primevue/card";
+import Button from "primevue/button";
 
 const toastOptions: PluginOptions = {
     // You can set your default options here
@@ -46,5 +48,7 @@ appEv.use(routerEv)
     .use(PrimeVue)
     .use(Toast, toastOptions)
     .provide('logger', logger)
+  .component('Card', Card)
+  .component('Button', Button)
 ;
 appEv.mount('#app');

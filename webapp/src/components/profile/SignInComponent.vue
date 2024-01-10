@@ -8,7 +8,7 @@
         <Form @submit="login" :validation-schema="schema" v-slot="{errors}" >
           <div style="padding: 10px 30px 0;">
             <div >
-              <div class="field col-12">
+              <div class="field col-12 border-2 border-lime-200">
                 <Field style="width:100%" v-model="email" :placeholder="$t('SIGN_IN_VIEW.EMAIL')" name="email" type="text" class="form-control border-lime-600"
                        :class="{'is-invalid': errors.email}"></Field>
                 <div class="invalid-feedback">{{ errors.email ? $t(errors.email) : '' }}</div>
@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 
-// import Password from "primevue/password";
+import Password from "primevue/password";
 import {Field, Form} from "vee-validate";
 import {object} from "yup";
 import * as Yup from "yup";

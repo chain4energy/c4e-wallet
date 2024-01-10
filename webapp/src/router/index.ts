@@ -32,6 +32,8 @@ import ActivateView from "@/views/profile/ActivateView.vue";
 // @ts-ignore
 
 import DgCss from "@/views/DgCss.vue";
+import {resetPasswordRoutes} from "@/router/resetPasswordRoutes";
+import {ownerRoutes} from "@/router/ownerRoutes";
 
 export const evSubAppName ="ev";
 
@@ -108,11 +110,11 @@ const routesEv: Array<RouteRecordRaw> = [
     name: evSubAppName + '_Activate',
     component: ActivateView
   },
-    /*
+
   ... resetPasswordRoutes,
   ...ownerRoutes,
 
-     */
+
   {
     path: '/' + evSubAppName + '/dg',
     name: evSubAppName + '_dg',
