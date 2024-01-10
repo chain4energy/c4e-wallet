@@ -35,7 +35,7 @@
       <div class="w-full flex flex-inline justify-evenly">
         <div class="w-[30%] text-center flex flex-col justify-between">
           <Type2SVG class="max-w-[100px] mx-auto"/>
-          <p class="font-[Audiowide] mt-2 text-xl">11 kW</p>
+          <p class="font-[Audiowide] mt-2 text-xl">{{charger.maxChargingPower}} kW</p>
         </div>
         <div class="text-center flex flex-col justify-between">
           <span class="font-[SevenSegment] text-[90px] -mt-5 text-lime-600">{{ Number(selectedTariff.unitCost).toFixed(2) }}</span>
@@ -93,7 +93,7 @@ import TarrifGroupCNew from "@/components/TariffGroupC-New.vue";
 import C4ELogoSVG from "@/components/svg/C4ELogoSVG.vue";
 import CarSVG from "@/components/svg/CarSVG.vue";
 import IconComponent from "@/components/features/IconComponent.vue";
-import {computed, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import { getSupportedLocales } from '@/utils/supported-locales';
 import { Locale, useI18n } from 'vue-i18n';
 import CountryFlag from 'vue-country-flag-next'; // https://www.npmjs.com/package/vue-country-flag-next
@@ -101,6 +101,7 @@ import { reactive } from 'vue';
 import { changeTitle } from '@/utils/title-changer';
 import Type2SVG from "@/components/svg/Type2SVG.vue";
 import {Tariff} from "@/models/tariff";
+import {useOwnerStore} from "@/store/owner.store";
 
 const locales = reactive(getSupportedLocales());
 const dropdown = ref(false);
@@ -123,6 +124,10 @@ const props = defineProps({
   }
 );
 
+onMounted(() => {
+  useOwnerStore().fetchChargePointDicts();
+})
+
 const currencies = computed(() => {
   return props.chargePoint?.tariffGroup.tariffs.map(el => el.currency)
 });
@@ -135,6 +140,10 @@ const hide = ref<boolean>(false);
 
 const selectedTariff = computed((): Tariff => {
   return props.chargePoint?.tariffGroup.tariffs?.find(el => el.currency === selectedCurrency.value);
+});
+
+const charger = computed(() => {
+  return useOwnerStore().getChargePointDicts?.find(el => el.id === props.chargePoint?.chargePointDictId);
 })
 
 </script>
