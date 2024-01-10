@@ -14,5 +14,10 @@
     "TERMS": "Accept terms and conditions",
     "CHANGE_PASSWORD": "Change password",
     "CHANGE_HEADER": "Changing password of: "
+  },
+  "FORMS": {
+    "VALIDATION_ERRORS": {
+      "PASSWORD_REGEX": "Incorrect password format"
+    }
   }
 }
