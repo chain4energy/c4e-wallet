@@ -40,6 +40,11 @@ export const evSubAppName ="ev";
 
 const routesEv: Array<RouteRecordRaw> = [
   {
+    path: '/',
+    name: "OwnerEntryPoint",
+    redirect: '/' + evSubAppName + '/signIn',
+  },
+  {
     path: '/' + evSubAppName,
     name: "",
     redirect: '/' + evSubAppName + '/signIn',

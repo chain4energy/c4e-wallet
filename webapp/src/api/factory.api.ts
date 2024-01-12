@@ -1,8 +1,9 @@
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
 import {applyAuthTokenInterceptor, getBrowserSessionStorage, IAuthTokens, TokenRefreshRequest} from "axios-jwt";
-import { useConfigurationStore } from "@/store/configuration.store";
+import {useConfigurationStore} from "@/store/configuration.store";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
 import {EvServiceApi} from "@/api/evService.api";
+import {IAuthTokenInterceptorConfig} from "axios-jwt/src/IAuthTokenInterceptorConfig";
 
 let testfileName = '';
 
@@ -11,7 +12,6 @@ class ApiFactory {
   private static instance: ApiFactory;
 
   private _axios: AxiosInstance;
-  private _axiosJwt: AxiosInstance;
   private _axiosJwtEv: AxiosInstance;
 
   private readonly _evServiceApi = new EvServiceApi(() => this._axiosJwtEv);
@@ -20,24 +20,27 @@ class ApiFactory {
 
   // https://www.npmjs.com/package/axios-jwt
 
-  requestRefreshEv: TokenRefreshRequest = async (refreshToken: string): Promise<IAuthTokens | string> => {
-    try {
-      const response = await axios.post(useConfigurationStore().config.evServiceURL + useConfigurationStore().config.queriesEv.REFRESH_TOKEN,  null,{headers: {Authorization: 'Bearer ' + refreshToken}});
-      return { accessToken:response.data.access_token.token, refreshToken:response.data.refresh_token.token };
-    } catch (error) {
-      console.log(JSON.stringify(error));
-      throw error;
-    }
-  };
-
   private constructor() {
     this._axios = axios.create({});
-    this._axiosJwt = axios.create({});
     this._axiosJwtEv = axios.create({});
-    applyAuthTokenInterceptor(this._axiosJwtEv, {requestRefresh: this.requestRefreshEv });
+    applyAuthTokenInterceptor(this._axiosJwtEv, this.authTokenInterceptorConfig);
     applyStorage(getBrowserSessionStorage());
   }
 
+  requestRefresh: TokenRefreshRequest = async (refreshToken: string) => {
+    return axios.post(this.getRefreshTokenUrl(), { refreshToken })
+      .then(response => response.data.access_token);
+  };
+
+  private authTokenInterceptorConfig: IAuthTokenInterceptorConfig = {
+    requestRefresh: this.requestRefresh,
+    header: "Authorization",
+    headerPrefix: "Bearer "
+  };
+
+  private getRefreshTokenUrl() {
+    return useConfigurationStore().config.evServiceURL + useConfigurationStore().config.queriesEv.REFRESH_TOKEN;
+  }
   public static getInstance(): ApiFactory {
     if (!ApiFactory.instance) {
       ApiFactory.instance = new ApiFactory();
@@ -48,6 +51,7 @@ class ApiFactory {
   public evServiceApi(): EvServiceApi {
     return this._evServiceApi;
   }
+
   public runTestMode(testConfigFileName: string) {
     this.testMode = true;
     testfileName = testConfigFileName;
@@ -97,8 +101,8 @@ async function testModeAxios<T = any, R = AxiosResponse<T, any>, D = any>(config
 
     if (params.length > 0) {
       url += '?';
-      for(let i = 0; i < params.length; i++) {
-        url += params[i][0] + '=' + params[i][1] ;
+      for (let i = 0; i < params.length; i++) {
+        url += params[i][0] + '=' + params[i][1];
         if (i < params.length - 1) {
           url += '&';
         }
