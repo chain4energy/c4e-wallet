@@ -24,7 +24,7 @@ const props = defineProps<{tariff: Tariff}>();
 <template>
       <div class="w-full text-center">
         <BackCloseBar @back="emit('back')"/>
-        <span class="font-[Audiowide] text-lime-600 text-4xl">Select amount</span>
+        <span class="font-[Audiowide] text-lime-600 text-4xl">{{$t('HEADERS.SELECT_AMOUNT')}}</span>
       </div>
       <div class="flex flex-col">
         <div class="w-[95%] sm:w-[80%] border-2 border-lime-600 rounded-xl shadow-xl mx-auto my-2 p-2 font-semibold flex flex-inline justify-center items-center transition-all duration-300"
@@ -42,7 +42,7 @@ const props = defineProps<{tariff: Tariff}>();
           </div>
         </div>
       </div>
-      <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center disabled:bg-gray-400" :disabled='!selectedPrice' @click="emit('next', selectedPrice)"><IconComponent name="Check" class="mr-3"/>Accept</Button>
+      <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center disabled:bg-gray-400" :disabled='!selectedPrice' @click="emit('next', selectedPrice)"><IconComponent name="Check" class="mr-3"/>{{$t('COMMON.ACCEPT')}}</Button>
 </template>
 
 <style scoped lang="scss">

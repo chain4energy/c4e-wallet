@@ -1,8 +1,8 @@
 <template>
   <div class="w-full text-center flex flex-col">
     <BackCloseBar @back="emit('back')"/>
-    <span class="font-[Audiowide] text-lime-600 text-4xl">Enter your e-mail</span>
-    <span class="text-lg mt-3">We will send you an email with a link</span>
+    <span class="font-[Audiowide] text-lime-600 text-4xl">{{$t('HEADERS.ENTER_EMAIL')}}</span>
+    <span class="text-lg mt-3">{{$t('HEADERS.ENTER_EMAIL_CAPTION')}}</span>
   </div>
   <div class="w-[95%] sm:w-[80%] mx-auto my-2 p-2 font-semibold flex flex-inline justify-center items-center"
   >
@@ -27,7 +27,7 @@
       <span>{{ $t('SIGN_IN_VIEW.TERMS') }}</span>
     </span>
   </div>
-  <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center disabled:bg-gray-400" :disabled='!(rodo && email)' @click="next"><IconComponent name="Mails" class="mr-3"/>Send</Button>
+  <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center disabled:bg-gray-400" :disabled='!(rodo && email)' @click="next"><IconComponent name="Mails" class="mr-3"/>{{$t('COMMON.SEND')}}</Button>
 
 </template>
 

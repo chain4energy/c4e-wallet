@@ -3,7 +3,9 @@
     "BACK": "Back",
     "NEXT": "Next",
     "LANGUAGE": "Select language",
-    "CURRENCY": "Select currency"
+    "CURRENCY": "Select currency",
+    "ACCEPT": "Accept",
+    "SEND": "Send"
   },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Sign up",
@@ -21,5 +23,14 @@
     "VALIDATION_ERRORS": {
       "PASSWORD_REGEX": "Incorrect password format"
     }
+  },
+  "HEADERS": {
+    "SELECT_AMOUNT": "Select amount",
+    "ENTER_EMAIL": "Enter your e-mail",
+    "ENTER_EMAIL_CAPTION": "We will send you an e-mail with a link",
+    "CHECK_EMAIL": "Check your e-mail",
+    "CHECK_EMAIL_CAPTION": "We have sent you an email with a link",
+    "MSG_DIDNT_ARRIVE": "Message didn't arrive?",
+    "SEND_AGAIN": "Send it again"
   }
 }

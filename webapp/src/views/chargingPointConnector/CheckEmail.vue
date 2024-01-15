@@ -1,15 +1,15 @@
 <template>
   <div class="w-full text-center flex flex-col">
     <BackCloseBar @back="emit('back')"/>
-    <span class="font-[Audiowide] text-lime-600 text-4xl">Check your e-mail</span>
-    <span class="text-lg mt-3">We have sent you an email with a link</span>
+    <span class="font-[Audiowide] text-lime-600 text-4xl">{{$t('HEADERS.CHECK_EMAIL')}}</span>
+    <span class="text-lg mt-3">{{$t('HEADERS.CHECK_EMAIL_CAPTION')}}</span>
   </div>
   <div class="w-1/3 mx-auto">
     <EnvelopeSVG class="bounce2"/>
   </div>
   <div class="flex flex-col items-center">
-    <p>Message didn't arrive?</p>
-    <span class="font-[Audiowide] text-lime-600 cursor-pointer">Send it again</span>
+    <p>{{$t('HEADERS.MSG_DIDNT_ARRIVE')}}</p>
+    <span class="font-[Audiowide] text-lime-600 cursor-pointer">{{$t('HEADERS.SEND_AGAIN')}}</span>
   </div>
 </template>
 <script setup lang="ts">
