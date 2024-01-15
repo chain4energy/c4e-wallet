@@ -19,3 +19,4 @@
 
 # IDE specific
 .idea/
+/webapp/package-lock.json
