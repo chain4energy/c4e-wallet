@@ -1,34 +1,54 @@
 <template>
-  <Form @submit="next" :validation-schema="schema" v-slot="{errors}" >
-    <div style="padding: 10px 30px 0;">
-      <div >
-        <div class="field col-12">
-          <Field style="width:100%" v-model="email" :placeholder="$t('START_CHARGING.EMAIL')" name="email" type="text" class="form-control"
-                 :class="{'is-invalid': errors.email}"></Field>
-          <div class="invalid-feedback">{{ errors.email ? $t(errors.email) : '' }}</div>
-        </div>
-      </div>
-    </div>
-    <div class="flex justify-content-center">
-      <Button class="p-button p-component secondary" style="width: 40%" type="submit">{{ $t('START_CHARGING.BUTTON') }}</Button>
-    </div>
-  </Form>
-  <div style="color: red">
-    {{errorStr}}
+  <div class="w-full text-center flex flex-col">
+    <BackCloseBar @back="emit('back')"/>
+    <span class="font-[Audiowide] text-lime-600 text-4xl">Enter your e-mail</span>
+    <span class="text-lg mt-3">We will send you an email with a link</span>
   </div>
+  <div class="w-[95%] sm:w-[80%] mx-auto my-2 p-2 font-semibold flex flex-inline justify-center items-center"
+  >
+    <div class="w-[150px] text-right">
+      <span class="font-[SevenSegment] text-[32px] sm:text-[40px] mr-1 font-normal">{{price}}</span>
+      <span>{{tariff.currency}}</span>
+    </div>
+    <div class="border-t-2 border-black w-[30px] h-[1px] mx-4 transition-all duration-300"/>
+    <div class="w-[150px] text-left">
+      <span class="font-[SevenSegment] text-[32px] sm:text-[40px] mr-1 font-normal">{{ (price / Number(tariff.unitCost)).toFixed(1) }}</span>
+      <span>{{tariff.unit}}</span>
+    </div>
+  </div>
+  <div>
+    <span class="flex justify-start items-center w-full">
+      <IconComponent name="Mail" class="text-lime-600"/>
+      <InputText v-model="email" placeholder="E-mail" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+    </span>
+    <span class="flex justify-start items-center w-full">
+      <IconComponent name="HeartHandshake" class="text-lime-600"/>
+      <Checkbox name="rodo" class="mx-3" input-class="border-2 border-lime-600" v-model="rodo" :binary="true"/>
+      <span>{{ $t('SIGN_IN_VIEW.TERMS') }}</span>
+    </span>
+  </div>
+  <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center disabled:bg-gray-400" :disabled='!(rodo && email)' @click="next"><IconComponent name="Mails" class="mr-3"/>Send</Button>
+
 </template>
+
 <script setup lang="ts">
 import * as Yup from "yup";
 import {object} from "yup";
-import {Field, Form} from "vee-validate";
 import {useRouter} from "vue-router";
 import {ref} from "vue";
+import BackCloseBar from "@/components/BackCloseBar.vue";
+import {Tariff} from "@/models/tariff";
+import InputText from "primevue/inputtext";
+import Checkbox from "primevue/checkbox";
+import IconComponent from "@/components/features/IconComponent.vue";
 const email = ref<string>();
 const router = useRouter();
 
-const errorStr = ref("");
 
-const emit = defineEmits(['onEmilProvided']);
+const emit = defineEmits(['onEmilProvided','back']);
+const props = defineProps<{tariff: Tariff, price: number}>();
+const rodo = ref<boolean>(false);
+
 
 const schema = object().shape({
   email:  Yup.string().email()

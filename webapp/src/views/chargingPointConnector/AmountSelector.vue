@@ -22,32 +22,27 @@ const props = defineProps<{tariff: Tariff}>();
 </script>
 
 <template>
-  <div class="w-full h-full flex items-center justify-center">
-    <div class="mx-auto min-w-[330px] w-full max-w-[600px] h-full p-2 sm:p-5 flex flex-col justify-between">
       <div class="w-full text-center">
         <BackCloseBar @back="emit('back')"/>
-        <span class="font-[Audiowide] text-lime-600 text-3xl">Select amount</span>
+        <span class="font-[Audiowide] text-lime-600 text-4xl">Select amount</span>
       </div>
       <div class="flex flex-col">
-        <div class="w-[80%] border-2 border-lime-600 rounded-xl shadow-xl mx-auto my-2 py-2 font-semibold flex flex-inline justify-center items-center transition-all duration-300"
+        <div class="w-[95%] sm:w-[80%] border-2 border-lime-600 rounded-xl shadow-xl mx-auto my-2 p-2 font-semibold flex flex-inline justify-center items-center transition-all duration-300"
              :class="selectedPrice === price ? 'bg-lime-600 text-white' : ''"
              v-for="price in priceList" :key="price" @click="selectedPrice = price"
         >
           <div class="w-[150px] text-right">
-            <span class="font-[SevenSegment] text-[40px] mr-1 font-normal">{{price}}</span>
-            <span>{{props.tariff.currency}}</span>
+            <span class="font-[SevenSegment] text-[32px] sm:text-[40px] mr-1 font-normal">{{price}}</span>
+            <span>{{tariff.currency}}</span>
           </div>
           <div class="border-t-2 w-[30px] h-[1px] mx-4 transition-all duration-300" :class="selectedPrice === price ? 'border-white' : 'border-black'"/>
           <div class="w-[150px] text-left">
-            <span class="font-[SevenSegment] text-[40px] mr-1 font-normal">{{ (price / Number(tariff.unitCost)).toFixed(1) }}</span>
+            <span class="font-[SevenSegment] text-[32px] sm:text-[40px] mr-1 font-normal">{{ (price / Number(tariff.unitCost)).toFixed(1) }}</span>
             <span>{{tariff.unit}}</span>
           </div>
         </div>
       </div>
-      <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center disabled:bg-gray-400" :disabled='!selectedPrice' @click="emit('next')"><IconComponent name="Check" class="mr-3"/>Accept</Button>
-
-    </div>
-  </div>
+      <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center disabled:bg-gray-400" :disabled='!selectedPrice' @click="emit('next', selectedPrice)"><IconComponent name="Check" class="mr-3"/>Accept</Button>
 </template>
 
 <style scoped lang="scss">
