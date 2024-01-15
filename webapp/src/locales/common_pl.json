@@ -3,7 +3,9 @@
     "BACK": "Wróć",
     "NEXT": "Dalej",
     "LANGUAGE": "Wybierz język",
-    "CURRENCY": "Wybierz walutę"
+    "CURRENCY": "Wybierz walutę",
+    "ACCEPT": "Wybierz",
+    "SEND": "Wyślij"
   },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Rejestracja",
@@ -21,6 +23,15 @@
     "VALIDATION_ERRORS": {
       "PASSWORD_REGEX": "Nieprawdidłowy format hasła"
     }
+  },
+  "HEADERS": {
+    "SELECT_AMOUNT": "Wybierz kwotę",
+    "ENTER_EMAIL": "Podaj e-mail",
+    "ENTER_EMAIL_CAPTION": "Wyślemy Ci wiadomość z linkiem",
+    "CHECK_EMAIL": "Sprawdź swój e-mail",
+    "CHECK_EMAIL_CAPTION": "Wysłaliśmy Ci wiadomość z linkiem",
+    "MSG_DIDNT_ARRIVE": "Wiadomość nie dotarła?",
+    "SEND_AGAIN": "Wyślij ponownie"
   }
 }
 

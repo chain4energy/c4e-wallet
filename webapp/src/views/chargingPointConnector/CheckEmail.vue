@@ -1,9 +1,21 @@
 <template>
-  <p>we sent an email to:</p>
-  <p>{{ providedEmail }}</p>
-  <p>Please check your email</p>
+  <div class="w-full text-center flex flex-col">
+    <BackCloseBar @back="emit('back')"/>
+    <span class="font-[Audiowide] text-lime-600 text-4xl">{{$t('HEADERS.CHECK_EMAIL')}}</span>
+    <span class="text-lg mt-3">{{$t('HEADERS.CHECK_EMAIL_CAPTION')}}</span>
+  </div>
+  <div class="w-1/3 mx-auto">
+    <EnvelopeSVG class="bounce2"/>
+  </div>
+  <div class="flex flex-col items-center">
+    <p>{{$t('HEADERS.MSG_DIDNT_ARRIVE')}}</p>
+    <span class="font-[Audiowide] text-lime-600 cursor-pointer">{{$t('HEADERS.SEND_AGAIN')}}</span>
+  </div>
 </template>
 <script setup lang="ts">
+
+import BackCloseBar from "@/components/BackCloseBar.vue";
+import EnvelopeSVG from "@/components/svg/EnvelopeSVG.vue";
 
 const props = defineProps({
     providedEmail: {
@@ -13,8 +25,19 @@ const props = defineProps({
   }
 );
 
+const emit = defineEmits(
+  ['back']
+)
+
 </script>
 
 <style scoped lang="scss">
-
+.bounce2 {
+  animation: bounce2 2s ease infinite;
+}
+@keyframes bounce2 {
+  0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+  40% {transform: translateY(-30px);}
+  60% {transform: translateY(-15px);}
+}
 </style>
