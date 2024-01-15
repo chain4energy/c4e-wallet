@@ -35,7 +35,7 @@
       <div class="w-full flex flex-inline justify-evenly">
         <div class="w-[30%] text-center flex flex-col justify-between">
           <Type2SVG class="max-w-[100px] mx-auto"/>
-          <p class="font-[Audiowide] mt-2 text-xl">{{charger.maxChargingPower}} kW</p>
+          <p class="font-[Audiowide] mt-2 text-xl">{{charger?.maxChargingPower}} kW</p>
         </div>
         <div class="text-center flex flex-col justify-between">
           <span class="font-[SevenSegment] text-[90px] -mt-5 text-lime-600">{{ Number(selectedTariff.unitCost).toFixed(2) }}</span>
@@ -80,7 +80,7 @@
           </template>
         </Dropdown>
       </div>
-      <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center" @click="emit('next')"><IconComponent name="PlayCircle" class="mr-3"/>Start</Button>
+      <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center" @click="emit('next', selectedTariff)"><IconComponent name="PlayCircle" class="mr-3"/>Start</Button>
     </div>
   </div>
 </template>
