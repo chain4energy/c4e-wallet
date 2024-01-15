@@ -12,9 +12,9 @@ class ApiFactory {
   private static instance: ApiFactory;
 
   private _axios: AxiosInstance;
-  private _axiosJwtEv: AxiosInstance;
+  private _axiosJwt: AxiosInstance;
 
-  private readonly _evServiceApi = new EvServiceApi(() => this._axiosJwtEv);
+  private readonly _evServiceApi = new EvServiceApi(() => this._axiosJwt);
 
   private testMode = false;
 
@@ -22,8 +22,8 @@ class ApiFactory {
 
   private constructor() {
     this._axios = axios.create({});
-    this._axiosJwtEv = axios.create({});
-    applyAuthTokenInterceptor(this._axiosJwtEv, this.authTokenInterceptorConfig);
+    this._axiosJwt = axios.create({});
+    applyAuthTokenInterceptor(this._axiosJwt, this.authTokenInterceptorConfig);
     applyStorage(getBrowserSessionStorage());
   }
 
@@ -50,6 +50,13 @@ class ApiFactory {
 
   public evServiceApi(): EvServiceApi {
     return this._evServiceApi;
+  }
+
+  public setAxiosInstance(axios: AxiosInstance) {
+    this._axios = axios;
+  }
+  public setAxiosJWTInstance(axios: AxiosInstance) {
+    this._axiosJwt = axios;
   }
 
   public runTestMode(testConfigFileName: string) {
