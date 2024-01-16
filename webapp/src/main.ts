@@ -2,7 +2,7 @@ import {createApp} from "vue";
 import routerEv from "@/router";
 import i18n from "@/plugins/i18n";
 import { createPinia } from 'pinia';
-import piniaPersist from "pinia-plugin-persistedstate";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 import "primevue/resources/themes/lara-light-blue/theme.css";
 import "primevue/resources/primevue.min.css";
@@ -39,7 +39,7 @@ const toastOptions: PluginOptions = {
 const logger = LoggerService.getInstance();
 
 const pinia = createPinia();
-pinia.use(piniaPersist);
+pinia.use(piniaPluginPersistedstate);
 
 console.log("start ev/main.ts");
 const appEv = createApp(EvApp);

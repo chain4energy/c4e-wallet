@@ -26,38 +26,6 @@ export const useConfigurationStore = defineStore({
     };
   },
   actions: {
-    // fetchConfig(configName?: string) {
-    //   logger.logToConsole(LogLevel.DEBUG, 'fetchConfig: ', String(configName));
-    //
-    //   logger.logToConsole(LogLevel.DEBUG, 'current configName: ', this.configName);
-    //   const oldConfig = this.config.isEmpty;
-    //   this.configName = configName ? configName : this.configName;
-    //   logger.logToConsole(LogLevel.DEBUG, 'selected configName: ', this.configName);
-    //
-      //let fileName = getConfigurationProfiles().get(this.configName);
-      //logger.logToConsole(LogLevel.DEBUG, 'selected fileName: ', String(fileName));
-
-      // if (!fileName) {
-      //   // this.configName = defaultConfigName;
-      //   //fileName = getConfigurationProfiles().get(this.configName);
-      // }
-
-      // eslint-disable-next-line
-      //const config = require("../config/json/" + getConfigurationProfiles().get(this.configName));
-
-      //this.config = new Configuration(config);
-      // if (this.config.testMode && this.config.testFileName) {
-      //   apiFactory.runTestMode(this.config.testFileName);
-      // } else {
-      //   apiFactory.runNormalMode();
-      // }
-      //
-      // if (!oldConfig) {
-      //   dataService.onConfigurationChange();
-      // }
-    // },
-
-
     async fetchConfigList(dataService: DataServiceInterface){
       this.configurationChangeHandler = dataService;
       this.configList = new Map<string, Configuration>();
@@ -124,9 +92,6 @@ export const useConfigurationStore = defineStore({
     }
   },
   persist: {
-    enabled: true,
-    strategies: [
-      { storage: sessionStorage, paths: ['configName', "config","configList"] },
-    ]
+     storage: sessionStorage, paths: ['configName', "config","configList"]
   }
 });

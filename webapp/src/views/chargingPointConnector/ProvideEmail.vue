@@ -17,11 +17,11 @@
     </div>
   </div>
   <div>
-    <span class="flex justify-start items-center w-full">
+    <span class="flex justify-center items-center w-full">
 <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
       <InputText v-model="email" placeholder="E-mail" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
     </span>
-    <span class="flex justify-start items-center w-full">
+    <span class="flex justify-center items-center w-full">
 <!--      <IconComponent name="HeartHandshake" class="text-lime-600"/>-->
       <Checkbox name="rodo" class="mx-3" input-class="border-2 border-lime-600" v-model="rodo" :binary="true"/>
       <span @click="rodo=!rodo">{{ $t('SIGN_IN_VIEW.TERMS') }}</span>
