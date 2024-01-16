@@ -40,11 +40,11 @@ describe('ev api tests', () => {
     };
     mockedAxios.request.mockResolvedValue(linkDecodeResponse);
     const result = await api.evDecodeLink('address', true);
-    expect(result.isError()).toBeFalsy();
-    expect(result.isSuccess()).toBeTruthy();
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
     expect(result.error).toBeUndefined();
     // expect(result.data).toStrictEqual(createLinkDecodeResponse());
-    expect(useSplashStore().splashOn).toBeFalsy();
+    expect(useSplashStore().splashOn).toBe(false);
   });
 
   it('decode link - STORAGE', async () => {
@@ -66,10 +66,10 @@ describe('ev api tests', () => {
         onFailError = error;
         onFailCalled = true;
       });
-    expect(onSuccessCalled).toBeTruthy();
-    expect(onFailCalled).toBeFalsy();
+    expect(onSuccessCalled).toBe(true);
+    expect(onFailCalled).toBe(false);
     expect(onFailError).toBeUndefined();
-    expect(useSplashStore().splashOn).toBeFalsy();
+    expect(useSplashStore().splashOn).toBe(false);
     expect(evStore.getAppLinkType).toEqual(AppTypeLink.CHARGE_POINT_CONNECTOR_LINK);
     //TODO:check rest of storage data
   });
