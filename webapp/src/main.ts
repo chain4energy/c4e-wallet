@@ -2,7 +2,7 @@ import {createApp} from "vue";
 import routerEv from "@/router";
 import i18n from "@/plugins/i18n";
 import { createPinia } from 'pinia';
-import piniaPersist from "pinia-plugin-persist";
+import piniaPersist from "pinia-plugin-persistedstate";
 
 import "primevue/resources/themes/lara-light-blue/theme.css";
 import "primevue/resources/primevue.min.css";

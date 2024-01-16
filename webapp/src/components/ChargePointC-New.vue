@@ -45,7 +45,10 @@
         <Dropdown v-model="selectedLocale" :options="locales" optionLabel="name" placeholder="Select language" class="w-full border-b-2 my-4" @change="setLocale">
           <template #value="slotProps">
             <div v-if="slotProps.value" class="flex justify-between">
-              <span class="flex flex-inline"><IconComponent name="Globe" class="text-lime-600 mr-2"/> {{$t('COMMON.LANGUAGE')}}</span>
+              <span class="flex flex-inline">
+<!--                <IconComponent name="Globe" class="text-lime-600 mr-2"/> -->
+                {{$t('COMMON.LANGUAGE')}}
+              </span>
               <span>{{locales.find(el => el.file === slotProps.value).name}}</span>
             </div>
             <span v-else>
@@ -64,7 +67,10 @@
         <Dropdown v-model="selectedCurrency" :options="currencies" optionLabel="name" placeholder="Select currency" class="w-full border-b-2 my-4">
           <template #value="slotProps">
             <div v-if="slotProps.value" class="flex justify-between">
-              <span class="flex flex-inline"><IconComponent name="Coins" class="text-lime-600 mr-2"/> {{$t('COMMON.CURRENCY')}}</span>
+              <span class="flex flex-inline">
+<!--                <IconComponent name="Coins" class="text-lime-600 mr-2"/> -->
+                {{$t('COMMON.CURRENCY')}}
+              </span>
               <span>{{slotProps.value}}</span>
             </div>
             <span v-else>
@@ -78,7 +84,7 @@
           </template>
         </Dropdown>
       </div>
-  <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center" @click="emit('next', selectedTariff)"><IconComponent name="PlayCircle" class="mr-3"/>Start</Button>
+  <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center shadow-md" @click="emit('next', selectedTariff)"><IconComponent name="PlayCircle" class="mr-3"/>Start</Button>
 </template>
 
 <script setup lang="ts">

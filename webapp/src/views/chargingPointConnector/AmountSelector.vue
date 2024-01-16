@@ -29,7 +29,7 @@ const props = defineProps<{tariff: Tariff}>();
       <div class="flex flex-col">
         <div class="w-[95%] sm:w-[80%] border-2 border-lime-600 rounded-xl shadow-xl mx-auto my-2 p-2 font-semibold flex flex-inline justify-center items-center transition-all duration-300"
              :class="selectedPrice === price ? 'bg-lime-600 text-white' : ''"
-             v-for="price in priceList" :key="price" @click="selectedPrice = price"
+             v-for="price in priceList" :key="price" @click="() => {selectedPrice = price; emit('next', selectedPrice)}"
         >
           <div class="w-[150px] text-right">
             <span class="font-[SevenSegment] text-[32px] sm:text-[40px] mr-1 font-normal">{{price}}</span>
@@ -42,7 +42,8 @@ const props = defineProps<{tariff: Tariff}>();
           </div>
         </div>
       </div>
-      <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center disabled:bg-gray-400" :disabled='!selectedPrice' @click="emit('next', selectedPrice)"><IconComponent name="Check" class="mr-3"/>{{$t('COMMON.ACCEPT')}}</Button>
+  <div/>
+<!--      <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center disabled:bg-gray-400" :disabled='!selectedPrice' @click="emit('next', selectedPrice)"><IconComponent name="Check" class="mr-3"/>{{$t('COMMON.ACCEPT')}}</Button>-->
 </template>
 
 <style scoped lang="scss">
