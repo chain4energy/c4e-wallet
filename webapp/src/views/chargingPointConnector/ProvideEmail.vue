@@ -27,7 +27,8 @@
       <span @click="rodo=!rodo">{{ $t('SIGN_IN_VIEW.TERMS') }}</span>
     </span>
   </div>
-  <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center disabled:bg-gray-400 shadow-md" :disabled='!(rodo && email)' @click="next"><IconComponent name="Mails" class="mr-3"/>{{$t('COMMON.SEND')}}</Button>
+
+  <NextButton :disabled='!(rodo && email)' @click="next" :text="$t('COMMON.SEND')" icon="Mails"/>
 
 </template>
 
@@ -41,6 +42,7 @@ import {Tariff} from "@/models/tariff";
 import InputText from "primevue/inputtext";
 import Checkbox from "primevue/checkbox";
 import IconComponent from "@/components/features/IconComponent.vue";
+import NextButton from "@/components/NextButton.vue";
 const email = ref<string>();
 const router = useRouter();
 

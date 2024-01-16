@@ -5,7 +5,8 @@
     "LANGUAGE": "Wybierz język",
     "CURRENCY": "Wybierz walutę",
     "ACCEPT": "Wybierz",
-    "SEND": "Wyślij"
+    "SEND": "Wyślij",
+    "PAY": "Zapłać"
   },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Rejestracja",
@@ -31,7 +32,10 @@
     "CHECK_EMAIL": "Sprawdź swój e-mail",
     "CHECK_EMAIL_CAPTION": "Wysłaliśmy Ci wiadomość z linkiem",
     "MSG_DIDNT_ARRIVE": "Wiadomość nie dotarła?",
-    "SEND_AGAIN": "Wyślij ponownie"
+    "SEND_AGAIN": "Wyślij ponownie",
+    "PAYMENT_NOTE": "Adnotacja",
+    "CONNECT": "Podłącz ładowarkę",
+    "TO_CAR": "do auta"
   }
 }
 

@@ -27,7 +27,7 @@ const props = defineProps<{tariff: Tariff}>();
         <span class="font-[Audiowide] text-lime-600 text-4xl">{{$t('HEADERS.SELECT_AMOUNT')}}</span>
       </div>
       <div class="flex flex-col">
-        <div class="w-[95%] sm:w-[80%] border-2 border-lime-600 rounded-xl shadow-xl mx-auto my-2 p-2 font-semibold flex flex-inline justify-center items-center transition-all duration-300"
+        <div class="w-[95%] sm:w-[80%] border-2 border-lime-600 rounded-xl shadow-lg shadow-gray-500 mx-auto my-2 p-2 font-semibold flex flex-inline justify-center items-center transition-all duration-300"
              :class="selectedPrice === price ? 'bg-lime-600 text-white' : ''"
              v-for="price in priceList" :key="price" @click="() => {selectedPrice = price; emit('next', selectedPrice)}"
         >

@@ -5,7 +5,9 @@
     "LANGUAGE": "Select language",
     "CURRENCY": "Select currency",
     "ACCEPT": "Accept",
-    "SEND": "Send"
+    "SEND": "Send",
+    "PAY": "Pay"
+
   },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Sign up",
@@ -31,6 +33,9 @@
     "CHECK_EMAIL": "Check your e-mail",
     "CHECK_EMAIL_CAPTION": "We have sent you an email with a link",
     "MSG_DIDNT_ARRIVE": "Message didn't arrive?",
-    "SEND_AGAIN": "Send it again"
+    "SEND_AGAIN": "Send it again",
+    "PAYMENT_NOTE": "Payment note",
+    "CONNECT": "Connect the charger",
+    "TO_CAR": "to your car"
   }
 }

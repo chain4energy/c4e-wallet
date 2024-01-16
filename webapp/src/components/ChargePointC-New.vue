@@ -38,9 +38,8 @@
         <div class="text-center flex flex-col justify-between">
           <span class="font-[SevenSegment] text-[90px] -mt-5 text-lime-600">{{ Number(selectedTariff.unitCost).toFixed(2) }}</span>
           <p class="font-[Audiowide] mt-2 text-xl">{{selectedTariff.currency}}/{{selectedTariff.unit}}</p>
-
         </div>
-      </div>
+  </div>
   <div class="flex flex-col w-full mx-auto">
         <Dropdown v-model="selectedLocale" :options="locales" optionLabel="name" placeholder="Select language" class="w-full border-b-2 my-4" @change="setLocale">
           <template #value="slotProps">
@@ -84,7 +83,7 @@
           </template>
         </Dropdown>
       </div>
-  <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center shadow-md" @click="emit('next', selectedTariff)"><IconComponent name="PlayCircle" class="mr-3"/>Start</Button>
+  <NextButton text="Start" icon="PlayCircle" @clicked="emit('next', selectedTariff)"/>
 </template>
 
 <script setup lang="ts">
@@ -104,6 +103,7 @@ import { changeTitle } from '@/utils/title-changer';
 import Type2SVG from "@/components/svg/Type2SVG.vue";
 import {Tariff} from "@/models/tariff";
 import {useOwnerStore} from "@/store/owner.store";
+import NextButton from "@/components/NextButton.vue";
 
 const locales = reactive(getSupportedLocales());
 const dropdown = ref(false);

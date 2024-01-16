@@ -1,20 +1,27 @@
 <template>
-  <Checkbox v-model="useInterval" :binary="true"/>
-  <label for="useInterval" class="ml-2"> turn on interval </label>
-  <ChargingSessionInitPayment v-if="chargingSessionStore.getSessionInfo?.state == SessionState.CREATED" @initPayment="initPayment" amount="50" currency="PLN"></ChargingSessionInitPayment>
-  <ChargingSessionWaitForPayment v-if="chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_RESERVATION_CONFIRMATION"
-                                 :sessionInfo="chargingSessionStore.getSessionInfo"></ChargingSessionWaitForPayment>
-  <ChargingSessionWaiteForConnectAndStart
-    v-if="chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_PLUG_INSERT
-    || chargingSessionStore.getSessionInfo?.state == SessionState.READY_TO_START"
-    :sessionInfo="chargingSessionStore.getSessionInfo"/>
-  <ChargingSessionProgress v-if="chargingSessionStore.getSessionInfo?.state == SessionState.CHARGING
-  || chargingSessionStore.getSessionInfo?.state == SessionState.STOPPING
-  || chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_STARTED"
-                           :sessionInfo="chargingSessionStore.getSessionInfo"
-                           @stop-charging="stopCharging"/>
-  <ChargingSessionSummary v-if="chargingSessionStore.getSessionInfo?.state == SessionState.FINAL
-  || chargingSessionStore.getSessionInfo?.state == SessionState.FINALIZE_ACCOUNTING" :sessionInfo="chargingSessionStore.getSessionInfo"/>
+  <div class="w-full h-full flex items-center justify-center">
+    <div class="mx-auto min-w-[330px] w-full max-w-[600px] h-full p-2 sm:p-5 flex flex-col justify-between">
+      <div class="absolute top-0 left-0 m-3">
+        <Checkbox v-model="useInterval" :binary="true"/>
+        <label for="useInterval" class="ml-2"> turn on interval </label>
+      </div>
+      <ChargingSessionInitPayment v-if="chargingSessionStore.getSessionInfo?.state == SessionState.CREATED" @initPayment="initPayment" amount="50" currency="PLN"></ChargingSessionInitPayment>
+      <ChargingSessionWaitForPayment v-if="chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_RESERVATION_CONFIRMATION "
+                                     :sessionInfo="chargingSessionStore.getSessionInfo"></ChargingSessionWaitForPayment>
+      <ChargingSessionWaiteForConnectAndStart
+        v-if="chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_PLUG_INSERT "
+        :sessionInfo="chargingSessionStore.getSessionInfo"/>
+      <ChargingSessionProgress v-if="chargingSessionStore.getSessionInfo?.state == SessionState.CHARGING
+      || chargingSessionStore.getSessionInfo?.state == SessionState.STOPPING
+      || chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_STARTED
+      || chargingSessionStore.getSessionInfo?.state == SessionState.READY_TO_START
+      "
+                               :sessionInfo="chargingSessionStore.getSessionInfo"
+                               @stop-charging="stopCharging"/>
+      <ChargingSessionSummary v-if="chargingSessionStore.getSessionInfo?.state == SessionState.FINAL
+      || chargingSessionStore.getSessionInfo?.state == SessionState.FINALIZE_ACCOUNTING" :sessionInfo="chargingSessionStore.getSessionInfo"/>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
