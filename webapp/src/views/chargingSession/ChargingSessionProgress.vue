@@ -15,19 +15,34 @@
       <span class="font-[Audiowide] text-2xl ml-4">Connected successfully</span>
     </div>
   </div>
-  <div v-else>
-    <h1>Current session proggers</h1>
-    <p>State {{props.sessionInfo.state}}</p>
-    <div v-if="props.sessionInfo?.state!=SessionState.WAIT_FOR_STARTED">
-      <p>Energia pobrana {{props.sessionInfo.energyConsumed}} kWh</p>
-      <p>Aktualna wartość {{props.sessionInfo.cost}} PLN</p>
-      <p>Czas rozpoczęcia ładowania {{props.sessionInfo.startTime}}</p>
+  <div v-else class="w-full h-full flex flex-col justify-evenly items-center">
+    <h1 class="font-[Audiowide] text-3xl sm:text-4xl text-center text-black">{{sessionInfo?.state === SessionState.READY_TO_START ? $t('HEADERS.PRESS_START') : $t('HEADERS.CHARGING')}}</h1>
+    <CarSVG class="max-w-[450px] min-w-[250px] w-full -ml-10">
+      <ChargerSVG :percent="percent" class="absolute w-1/2 bottom-2 -right-9 sm:-right-11"/>
+    </CarSVG>
+    <div class="w-full flex flex-inline flex-wrap justify-between font-[Audiowide]">
+      <span>{{percent.toFixed(0)}}%</span>
+      <span>LIMIT {{amount}} {{currency}}</span>
+      <ProgressBar :value="percent" class="w-full max-h-2" :mode="sessionInfo?.state === SessionState.WAIT_FOR_STARTED ? 'indeterminate' : 'determinate'"/>
     </div>
-    <Button v-if="props.sessionInfo?.state==SessionState.CHARGING" @click="stopChargingSession()">Stop charging</Button>
-    <Button @click="startChargingSession()" :disabled="props.sessionInfo?.state!=SessionState.READY_TO_START ">Start charging</Button>
-
-    <p v-if="props.sessionInfo?.state==SessionState.STOPPING">Czekanie na zatrzymanie ładowania</p>
-    <p v-if="props.sessionInfo?.state==SessionState.WAIT_FOR_STARTED">Czekanie na rozpoczęcie ładowania</p>
+    <div class="flex flex-inline justify-center gap-10 w-full">
+      <div class="flex flex-inline items-center">
+        <IconComponent name="Timer" class="mr-4 text-lime-600"/>
+        <div class="flex flex-col items-center" :class="sessionInfo?.state === SessionState.WAIT_FOR_STARTED || sessionInfo?.state === SessionState.READY_TO_START ? 'text-gray-400' : ''">
+          <span>{{$t('HEADERS.START_TIME')}}</span>
+          <span class="font-[Audiowide]">{{sessionInfo.startTime ? sessionInfo.startTime : '00:00'}}</span>
+        </div>
+      </div>
+      <div class="flex flex-inline items-center">
+        <IconComponent name="Zap" class="mr-4 text-lime-600"/>
+        <div class="flex flex-col items-center" :class="sessionInfo?.state === SessionState.WAIT_FOR_STARTED || sessionInfo?.state === SessionState.READY_TO_START ? 'text-gray-400' : ''">
+          <span>{{$t('HEADERS.POWER')}}</span>
+          <span class="font-[Audiowide]">{{sessionInfo.energyConsumed ? sessionInfo.energyConsumed : '0'}} kW</span>
+        </div>
+      </div>
+    </div>
+    <NextButton text="Start charging" icon="Power" @click="startChargingSession()" :disabled="sessionInfo?.state === SessionState.WAIT_FOR_STARTED" v-if="sessionInfo?.state === SessionState.READY_TO_START || sessionInfo?.state === SessionState.WAIT_FOR_STARTED"/>
+    <NextButton text="Stop charging" color="bg-red-600" @click="stopChargingSession()" icon="Power" :disabled="sessionInfo.state === SessionState.STOPPING" v-else/>
   </div>
 </template>
 
@@ -39,10 +54,13 @@ import {useEvChargingSessionStore} from "@/store/evChargingSession.store";
 import {ErrorData} from "@/api/base.api";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
 import ChargerPluggedSVG from "@/components/svg/ChargerPluggedSVG.vue"
-import IconComponent from "@/components/features/IconComponent.vue";
 import TickSVG from "@/components/svg/TickSVG.vue";
-import {boolean} from "yup";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
+import ChargerSVG from "@/components/svg/ChargerSVG.vue";
+import CarSVG from "@/components/svg/CarSVG.vue";
+import NextButton from "@/components/NextButton.vue";
+import ProgressBar from "primevue/progressbar";
+import IconComponent from "@/components/features/IconComponent.vue";
 
 const emit = defineEmits(['stopCharging']);
 const chargingSessionStore = useEvChargingSessionStore();
@@ -53,6 +71,14 @@ const props = defineProps({
     type: Object as PropType<SessionInfo> ,
     required: false
   },
+  amount: {
+    type: Number,
+    required: true
+  },
+  currency: {
+    type: String,
+    required: true
+  }
 });
 function stopChargingSession() {
   emit('stopCharging');
@@ -69,7 +95,7 @@ function onError(defaultErrorHandler: () => void, error:ErrorData<EvServiceAppli
   console.log("Error" + error?.message);
 }
 
-const timer = ref<number>(3);
+const timer = ref<number>(4);
 
 const startTimer = () => {
   const timerInterval = 1000; // 1 second interval
@@ -83,6 +109,10 @@ const startTimer = () => {
     }
   }, timerInterval);
 };
+
+const percent = computed (() => {
+  return (props.sessionInfo?.cost/props.amount * 100);
+})
 
 onMounted(startTimer);
 

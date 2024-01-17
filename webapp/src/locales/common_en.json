@@ -7,7 +7,6 @@
     "ACCEPT": "Accept",
     "SEND": "Send",
     "PAY": "Pay"
-
   },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Sign up",
@@ -36,6 +35,11 @@
     "SEND_AGAIN": "Send it again",
     "PAYMENT_NOTE": "Payment note",
     "CONNECT": "Connect the charger",
-    "TO_CAR": "to your car"
+    "TO_CAR": "to your car",
+    "SUMMARY": "Summary",
+    "START_TIME": "Start time",
+    "POWER": "Power",
+    "PRESS_START": "Press START, when you're ready",
+    "CHARGING": "Charging in progress"
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <p>Charging summary</p>
+  <span class="font-[Audiowide] text-lime-600 text-4xl text-center">{{$t('HEADERS.SUMMARY')}}</span>
   <p>state: {{sessionInfo.state}}</p>
 </template>
 

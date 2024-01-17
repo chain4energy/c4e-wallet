@@ -17,6 +17,8 @@
       || chargingSessionStore.getSessionInfo?.state == SessionState.READY_TO_START
       "
                                :sessionInfo="chargingSessionStore.getSessionInfo"
+                               :amount="50"
+                               :currency="'PLN'"
                                @stop-charging="stopCharging"/>
       <ChargingSessionSummary v-if="chargingSessionStore.getSessionInfo?.state == SessionState.FINAL
       || chargingSessionStore.getSessionInfo?.state == SessionState.FINALIZE_ACCOUNTING" :sessionInfo="chargingSessionStore.getSessionInfo"/>
