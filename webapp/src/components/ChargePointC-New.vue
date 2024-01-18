@@ -23,7 +23,7 @@
 
   <div class="flex flex-inline justify-between items-center">
         <div class="w-1/4">
-          <C4ELogoSVG/>
+          <img v-svg-inline :src="require('@/assets/svg/C4ELogo.svg')" alt="C4ELogo.svg" />
         </div>
         <p class="font-[Audiowide]">{{ chargePoint?.name }}</p>
       </div>
@@ -91,12 +91,10 @@
 import {ChargePoint} from "@/models/chargePoint";
 import ChargePointConnectorCNew from "@/components/ChargePointConnectorC-New.vue";
 import TarrifGroupCNew from "@/components/TariffGroupC-New.vue";
-import C4ELogoSVG from "@/components/svg/C4ELogoSVG.vue";
 import CarSVG from "@/components/svg/CarSVG.vue";
-import IconComponent from "@/components/features/IconComponent.vue";
 import {computed, onMounted, ref} from "vue";
 import { getSupportedLocales } from '@/utils/supported-locales';
-import { Locale, useI18n } from 'vue-i18n';
+import { useI18n } from 'vue-i18n';
 import CountryFlag from 'vue-country-flag-next'; // https://www.npmjs.com/package/vue-country-flag-next
 import { reactive } from 'vue';
 import { changeTitle } from '@/utils/title-changer';

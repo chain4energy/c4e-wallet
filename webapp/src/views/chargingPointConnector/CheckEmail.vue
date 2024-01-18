@@ -5,7 +5,7 @@
     <span class="text-lg mt-3">{{$t('HEADERS.CHECK_EMAIL_CAPTION')}}</span>
   </div>
   <div class="w-1/3 mx-auto">
-    <EnvelopeSVG class="bounce2"/>
+    <img v-svg-inline class="bounce2" :src="require('@/assets/svg/envelope.svg')" alt="envelope.svg" />
   </div>
   <div class="flex flex-col items-center">
     <p>{{$t('HEADERS.MSG_DIDNT_ARRIVE')}}</p>
@@ -15,7 +15,6 @@
 <script setup lang="ts">
 
 import BackCloseBar from "@/components/BackCloseBar.vue";
-import EnvelopeSVG from "@/components/svg/EnvelopeSVG.vue";
 
 const props = defineProps({
     providedEmail: {

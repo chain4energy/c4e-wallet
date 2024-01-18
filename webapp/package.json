@@ -43,6 +43,7 @@
     "vue-debounce": "^4.0.1",
     "vue-echarts": "^6.6.8",
     "vue-i18n": "^9.9.0",
+    "vue-inline-svg": "^3.1.2",
     "vue-json-pretty": "^2.3.0",
     "vue-loading-overlay": "6.0.3",
     "vue-markdown-render": "^2.1.1",

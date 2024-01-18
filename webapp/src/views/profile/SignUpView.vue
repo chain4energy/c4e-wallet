@@ -2,7 +2,7 @@
   <div class="w-full h-full flex items-center justify-center">
     <div class="mx-auto min-w-[330px] w-full max-w-[600px] h-full p-2 sm:p-5 flex flex-col justify-between">
       <div class="w-1/4">
-        <C4ELogoSVG/>
+        <img v-svg-inline :src="require('@/assets/svg/C4ELogo.svg')" alt="C4ELogo.svg" />
       </div>
       <div class="w-full sm:w-[70%] mx-auto">
         <CarSVG/>
@@ -64,7 +64,6 @@ import {useEvStore} from "@/store/ev.store";
 import {goTo_ActivateAccountView, goTo_SignInView} from "@/router/goToRoute";
 import CarSVG from "@/components/svg/CarSVG.vue";
 import InputText from "primevue/inputtext";
-import C4ELogoSVG from "@/components/svg/C4ELogoSVG.vue";
 import IconComponent from "@/components/features/IconComponent.vue";
 
 

@@ -10,6 +10,8 @@ import "primeicons/primeicons.css";
 import 'vue-toastification/dist/index.css';
 import "@/assets/tailwind.css";
 
+
+
 import PrimeVue from "primevue/config";
 import Toast, {PluginOptions, POSITION, TYPE} from "vue-toastification";
 import SuccessIcon from "@/components/features/SuccessIcon.vue";
@@ -21,6 +23,9 @@ import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Checkbox from "primevue/checkbox";
 import Dropdown from "primevue/dropdown";
+
+// https://www.npmjs.com/package/vue-svg-inline-plugin
+import VueSvgInlinePlugin from "vue-svg-inline-plugin";
 
 const toastOptions: PluginOptions = {
     // You can set your default options here
@@ -43,6 +48,14 @@ pinia.use(piniaPluginPersistedstate);
 
 console.log("start ev/main.ts");
 const appEv = createApp(EvApp);
+
+
+// use Vue plugin with options
+VueSvgInlinePlugin.install?.(appEv, {
+  attributes: {
+    remove: [  "src", "data-src"  ]
+  }
+});
 
 appEv.use(routerEv)
     .use(pinia)

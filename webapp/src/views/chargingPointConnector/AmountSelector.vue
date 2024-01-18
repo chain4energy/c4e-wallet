@@ -16,7 +16,7 @@ const priceList = computed(() => {
 
 const selectedPrice = ref();
 
-const emit = defineEmits(['next', 'back'])
+const emit = defineEmits(['next', 'back']);
 const props = defineProps<{tariff: Tariff}>();
 
 </script>
