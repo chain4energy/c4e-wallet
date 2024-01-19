@@ -18,7 +18,11 @@
     "REGISTER": "Register",
     "TERMS": "Accept terms and conditions",
     "CHANGE_PASSWORD": "Change password",
-    "CHANGE_HEADER": "Changing password of: "
+    "CHANGE_HEADER": "Changing password of: ",
+    "FORGOT": "Forgot password?",
+    "OR": "or",
+    "DONT_HAVE": "Don't have an account?",
+    "ALREADY": "Already have an account?"
   },
   "FORMS": {
     "VALIDATION_ERRORS": {

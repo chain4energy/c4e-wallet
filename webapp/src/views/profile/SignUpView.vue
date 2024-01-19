@@ -42,7 +42,7 @@
         <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center" type="submit">{{ $t('SIGN_IN_VIEW.SIGN_UP') }}</Button>
       </Form>
       <div>
-        <p class="cursor-pointer text-center">Already have an account? <span @click="goTo_SignInView()" class="mt-3 text-lime-600 font-bold">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</span></p>
+        <p class="cursor-pointer text-center">{{ $t('SIGN_IN_VIEW.ALREADY') }} <span @click="goTo_SignInView()" class="mt-3 text-lime-600 font-bold">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</span></p>
       </div>
     </div>
   </div>
