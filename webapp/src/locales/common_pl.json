@@ -18,7 +18,11 @@
     "REGISTER": "Załóż konto",
     "TERMS": "Akceptuję zasady i warunki",
     "CHANGE_PASSWORD": "Zmiana hasła",
-    "CHANGE_HEADER": "Zmiana hasła konta: "
+    "CHANGE_HEADER": "Zmiana hasła konta: ",
+    "FORGOT": "Zapomniałeś hasła?",
+    "OR": "lub",
+    "DONT_HAVE": "Nie masz jeszcze konta?",
+    "ALREADY": "Masz już konto?"
   },
   "FORMS": {
     "VALIDATION_ERRORS": {
