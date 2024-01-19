@@ -11,7 +11,7 @@
     "build-dev": "npm run check-node-version && vue-cli-service build -mode development",
     "build-preproduction": "npm run check-node-version && vue-cli-service build --mode preproduction",
     "build-production": "npm run check-node-version && vue-cli-service build --mode production",
-    "check-node-version": "node ./../scripts/check_node_version.js",
+    "check-node-version": "node check_node_version.js",
     "production": "npm run check-node-version && vue-cli-service serve --mode production",
     "proxy": "node proxy.js",
     "test:unit:coverage": "npm run check-node-version && vue-cli-service test:unit --coverage"
