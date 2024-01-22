@@ -3,35 +3,59 @@
     <div class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full max-h-full p-2 sm:p-5 flex flex-col justify-between items-center">
       <div class="w-full">
         <BackCloseBar/>
-        <h3 class="font-[Audiowide] text-black text-4xl w-full text-center -mt-5 mb-5">{{$t('HEADERS.ADD_CHARGER')}}</h3>
+        <h3 v-if="!chargerStore.selectedChargePointDict" class="font-[Audiowide] text-black text-4xl w-full text-center -mt-5 mb-5">{{$t('HEADERS.ADD_CHARGER')}}</h3>
       </div>
       <ScrollerWrapper v-if="!chargerStore.selectedChargePointDict">
         <div class="border-2 rounded-xl p-2 border-lime-600 shadow-lg shadow-gray-500 cursor-pointer" v-for="chargePointDict in chargerStore.getChargePointDicts" :key="chargePointDict.name">
           <ChargerTypeDetails :charger-details="chargePointDict" @click="selectChargePointDict(chargePointDict)"/>
         </div>
       </ScrollerWrapper>
-      <div class="selectCharger" v-else>
+      <div class="-mt-8" v-else>
         <ChargerTypeDetails :charger-details="chargerStore.selectedChargePointDict"/>
         <div v-if="chargerStore.selectedChargePointDict">
-          <div class="p-fluid">
-            <h2>Charger Details</h2>
-            <InputText v-model="chargerStore.createChargePointFromDict.id" placeholder="Charger ID"/>
-            <InputText v-model="chargerStore.createChargePointFromDict.name" placeholder="Charger Name"/>
-            <InputText v-model="chargerStore.createChargePointFromDict.identificationCode" placeholder="Identification Code"/>
+          <div>
+            <span class="flex justify-center items-center w-full">
+    <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
+              <InputText v-model="chargerStore.createChargePointFromDict.id" placeholder="Charger ID" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+            </span>
+            <span class="flex justify-center items-center w-full">
+    <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
+              <InputText v-model="chargerStore.createChargePointFromDict.name" placeholder="Charger Name" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+            </span>
+            <span class="flex justify-center items-center w-full">
+    <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
+              <InputText v-model="chargerStore.createChargePointFromDict.identificationCode" placeholder="Identification Code" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+            </span>
           </div>
-          <div class="p-fluid">
-            <h2>Tariff Details</h2>
-            <InputText v-model="createTariffForChargePoint.name" placeholder="Tariff Name"/>
-            <Dropdown v-model="createTariffForChargePoint.currency"
-                      placeholder="Select country"
-                      :options="countryOptions"
-                      optionLabel="name"
-                      optionValue="currency" />
-            <Dropdown v-model="createTariffForChargePoint.unit" placeholder="Select unit" :options="['Wh', 'kWh']"/>
-            <InputText v-model="createTariffForChargePoint.unitCost" placeholder="Unit Cost"/>
+          <div class="w-[70%] mx-auto">
+            <Dropdown v-model="createTariffForChargePoint.currency" :options="currencies" optionLabel="name" placeholder="Select currency" class="w-full border-b-2 my-4">
+              <template #value="slotProps">
+                <div v-if="slotProps.value" class="flex justify-between">
+              <span class="flex flex-inline">
+<!--                <IconComponent name="Coins" class="text-lime-600 mr-2"/> -->
+                {{$t('COMMON.CURRENCY')}}
+              </span>
+                  <span>{{slotProps.value}}</span>
+                </div>
+                <span v-else>
+            {{ slotProps.placeholder }}
+            </span>
+              </template>
+              <template #option="slotProps">
+                <div class="flex items-center text-right justify-end">
+                  <div>{{ slotProps.option }}</div>
+                </div>
+              </template>
+            </Dropdown>
           </div>
-
-          <Button @click="createChargerFromDict()">Add charger</Button>
+          <span class="flex justify-center items-center w-full">
+    <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
+              <InputText v-model="createTariffForChargePoint.unitCost" placeholder="Price per 1kWh" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+          </span>
+          <span class="flex justify-center items-center w-full">
+    <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
+              <InputText v-model="createTariffForChargePoint.name" placeholder="Tariff Name" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+          </span>
         </div>
       </div>
       <div class="w-full flex flex-inline gap-4 justify-center mt-4">
@@ -39,7 +63,7 @@
           <IconComponent name="Undo2"/>
         </Button>
         <div  v-if="chargerStore.selectedChargePointDict">
-          <NextButton text="Add charger" icon="Plus"/>
+          <NextButton text="Add charger" icon="Plus" @clicked="createChargerFromDict()"/>
         </div>
         <NextButton text="Back" icon="Undo2" @clicked="router.back()" v-else/>
       </div>
@@ -72,9 +96,9 @@ const selectChargePointDict = (chargePointDict: ChargePointDict | null) => {
 
 const createTariffForChargePoint = ref<CreateTariffForChargePoint>({
   accountId: undefined,
-  currency: "",
+  currency: "PLN",
   name: "",
-  unit: "",
+  unit: "kWh",
   unitCost: "",
 });
 
@@ -109,6 +133,7 @@ const countryOptions = computed(() => {
   }));
 });
 
+const currencies = ['PLN', 'EUR'];
 
 const createChargerFromDict = async () => {
   await chargerStore.createChargePointFromDictFn(true);

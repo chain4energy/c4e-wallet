@@ -6,7 +6,7 @@
     </div>
     <div v-else class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full max-h-full p-2 sm:p-5 flex flex-col justify-between items-center">
       <div class="w-full">
-        <BackCloseBar @back="useRouter().back"/>
+        <BackCloseBar @back="goTo_EvOwnerDashboardView"/>
         <ChargerTypeDetails :charger-details="chargerDetails" class="w-3/4 mx-auto"/>
       </div>
       <div v-if="connector?.url" >
@@ -73,7 +73,7 @@ const hide = ref<boolean>(false);
 const currency = ref<string>('PLN');
 
 const tariff = computed<Tariff | undefined>(() => {
-  return chargeStore.getSelectedChargePoint?.tariffGroup.tariffs.find(t => t.currency === currency.value);
+  return chargeStore.getSelectedChargePoint?.tariffGroup?.tariffs.find(t => t.currency === currency.value);
 })
 
 const currentTariff = computed(() => {
