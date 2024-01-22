@@ -13,7 +13,7 @@ export enum DecodedLinkType{
 }
 
 export enum DecodedLinkParamsType{
-  CHARGE_POINT_CONNECTOR = "charge-point-connector",
+  CHARGE_POINT_CONNECTOR = "charge-point-evse",
   CHARGING_SESSION = "charging-session"
 }
 export interface LinkDecoder<T> {
@@ -27,14 +27,15 @@ export interface StartChargingAnonumousResponse {
 }
 
 export interface StartChargingAnonumousRequest {
-  login: string;
+  login: string,
+  amount: string,
+  currency: string
 }
 
 export interface InitPaymentRequest{
   "amount": string,
   "currency": string
 }
-
 
 export interface InitPaymentResponse{
   "paymentUrl": string,

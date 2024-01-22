@@ -59,12 +59,12 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async fetchAndAssignChargePointConnectors(cpId: string, lockscreen = true) {
+    async fetchAndAssignChargePointConnectors(cpId: number, lockscreen = true) {
       const response = await apiFactory.evServiceApi().getChargePointConnectors(cpId, lockscreen);
       if (response.isSuccess() && response.data) {
         const cpIndex = this.chargePoints.findIndex(cp => cp.id === cpId);
         if (cpIndex !== -1) {
-          this.chargePoints[cpIndex].chargePointConnectors = response.data;
+          this.chargePoints[cpIndex].chargePointEvses = response.data;
         }
       }
     },
@@ -90,7 +90,7 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async updateChargePoint(cpId: string, updateChargePoint: UpdateChargePoint, lockscreen = true) {
+    async updateChargePoint(cpId: number, updateChargePoint: UpdateChargePoint, lockscreen = true) {
       const response = await apiFactory.evServiceApi().updateChargePoint(cpId, updateChargePoint, lockscreen);
       if (response.isSuccess() && response.data) {
         const index = this.chargePoints.findIndex(cp => cp.id === cpId);
@@ -100,7 +100,7 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async deleteChargePoint(cpId: string, lockscreen = true, onSuccess?: (() => void)) {
+    async deleteChargePoint(cpId: number, lockscreen = true, onSuccess?: (() => void)) {
       const response = await apiFactory.evServiceApi().deleteChargePoint(cpId, lockscreen);
       if (response.isSuccess()) {
         this.chargePoints = this.chargePoints.filter(cp => cp.id !== cpId);
@@ -110,14 +110,14 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async getQrCode(cpId: string, connectorIdentifier: number) {
+    async getQrCode(cpId: number, connectorIdentifier: number) {
       const response = await apiFactory.evServiceApi().getQrCodeLinkForConnector(cpId, connectorIdentifier, true);
       if (response.isSuccess() && response.data) {
         const cpIndex = this.chargePoints.findIndex(cp => cp.id === cpId);
         if (cpIndex !== -1) {
-          const connectorIndex = this.chargePoints[cpIndex].chargePointConnectors?.findIndex(c => c.identifier === connectorIdentifier);
+          const connectorIndex = this.chargePoints[cpIndex].chargePointEvses?.findIndex(c => c.deviceId === connectorIdentifier);
           if (connectorIndex !== undefined && connectorIndex !== -1) {
-            const chargePointConnectors = this.chargePoints[cpIndex].chargePointConnectors;
+            const chargePointConnectors = this.chargePoints[cpIndex].chargePointEvses;
             console.log(response.data.link);
             if (chargePointConnectors) {
               chargePointConnectors[connectorIndex].url = response.data.link;
@@ -189,7 +189,7 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async changeChargePointActiveState(cpId: string, chargePointChangeActiveState: ChargePointChangeActiveState, lockscreen = true, onSuccess?: () => void) {
+    async changeChargePointActiveState(cpId: number, chargePointChangeActiveState: ChargePointChangeActiveState, lockscreen = true, onSuccess?: () => void) {
       const response = await apiFactory.evServiceApi().changeChargePointActiveState(cpId, chargePointChangeActiveState, lockscreen);
       if (response.isSuccess()) {
         const index = this.chargePoints.findIndex(cp => cp.id === cpId);
@@ -213,7 +213,7 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async createTariffForChargePoint(cpId: string, createTariffForChargePointDto: CreateTariffForChargePoint, lockscreen = true, onSuccess: () => void) {
+    async createTariffForChargePoint(cpId: number, createTariffForChargePointDto: CreateTariffForChargePoint, lockscreen = true, onSuccess: () => void) {
       const response = await apiFactory.evServiceApi().createTariffForChargePoint(cpId, createTariffForChargePointDto, lockscreen);
       if (response.isSuccess() && response.data) {
         const newTariff = response.data.tariff;
@@ -234,14 +234,14 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async updateChargePointConnector(cpId: string, connectorId: number, updateChargePointConnector: UpdateChargePointConnector, lockscreen = true) {
+    async updateChargePointConnector(cpId: number, connectorId: number, updateChargePointConnector: UpdateChargePointConnector, lockscreen = true) {
       const response = await apiFactory.evServiceApi().updateChargePointConnector(cpId, connectorId, updateChargePointConnector, lockscreen);
       if (response.isSuccess() && response.data) {
         const cpIndex = this.chargePoints.findIndex(cp => cp.id === cpId);
         if (cpIndex !== -1) {
-          const connectorIndex = this.chargePoints[cpIndex].chargePointConnectors?.findIndex(c => c.id === connectorId);
+          const connectorIndex = this.chargePoints[cpIndex].chargePointEvses?.findIndex(c => c.id === connectorId);
           if (connectorIndex !== undefined && connectorIndex !== -1) {
-            const chargePointConnectors = this.chargePoints[cpIndex].chargePointConnectors;
+            const chargePointConnectors = this.chargePoints[cpIndex].chargePointEvses;
             if (chargePointConnectors) {
               chargePointConnectors[connectorIndex] = response.data;
             }
@@ -250,12 +250,12 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async deleteChargePointConnector(cpId: string, connectorId: number, lockscreen = true) {
+    async deleteChargePointConnector(cpId: number, connectorId: number, lockscreen = true) {
       const response = await apiFactory.evServiceApi().deleteChargePointConnector(cpId, connectorId, lockscreen);
       if (response.isSuccess()) {
         const cpIndex = this.chargePoints.findIndex(cp => cp.id === cpId);
-        if (cpIndex !== -1 && this.chargePoints[cpIndex].chargePointConnectors) {
-          this.chargePoints[cpIndex].chargePointConnectors = this.chargePoints[cpIndex].chargePointConnectors?.filter(c => c.id !== connectorId);
+        if (cpIndex !== -1 && this.chargePoints[cpIndex].chargePointEvses) {
+          this.chargePoints[cpIndex].chargePointEvses = this.chargePoints[cpIndex].chargePointEvses?.filter(c => c.id !== connectorId);
         }
       }
     },
@@ -267,7 +267,7 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    getTariffForChargePoint(cpId: string) {
+    getTariffForChargePoint(cpId: number) {
       const chargePoint = this.chargePoints.find(cp => cp.id === cpId);
       if (!chargePoint || chargePoint.tariffGroupId === undefined) return null;
 

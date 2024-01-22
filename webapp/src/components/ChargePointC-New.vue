@@ -9,8 +9,8 @@
         <p>Status: {{ chargePoint?.status }}</p>
         <p>Integration type: {{ chargePoint?.integrationType }}</p>
         <p>Charge point id: {{ chargePoint?.id }}</p>
-        <p>Connectors number: {{ chargePoint?.chargePointConnectors?.length }}</p>
-        <div v-for="connector in chargePoint?.chargePointConnectors" :key="connector.id">
+        <p>Connectors number: {{ chargePoint?.chargePointEvses?.length }}</p>
+        <div v-for="connector in chargePoint?.chargePointEvses" :key="connector.id">
           <charge-point-connector-c-new :charge-point-connector="connector"/>
         </div>
         <div v-if="chargePoint?.tariffGroup">

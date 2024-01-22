@@ -1,4 +1,4 @@
-import {ChargePointConnectorStatusType} from "@/models/chargePointConnector";
+import {ChargePointConnectorStatusType} from "@/models/chargePointEvses";
 
 export interface ChargerInfo {
   location: string;

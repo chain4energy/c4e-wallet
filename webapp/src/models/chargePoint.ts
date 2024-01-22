@@ -1,13 +1,13 @@
-import {ChargePointConnector} from "@/models/chargePointConnector";
+import {ChargePointEvses} from "@/models/chargePointEvses";
 import {TariffGroup} from "@/models/tariffGroup";
 
 export interface ChargePoint{
-  id: string;
+  id: number;
   accountId?: number;
   chargePointDictId?: number;
   name: string;
-  identificationCode: string;
-  codeType: string;
+  // identificationCode: string;
+  // codeType: string;
   integrationType: string;
   integrationVersion?: string;
   tariffGroupId?: number;
@@ -17,7 +17,7 @@ export interface ChargePoint{
   errorCode?: string;
   addressId?: number;
   locationId?: number;
-  chargePointConnectors?: ChargePointConnector[];
+  chargePointEvses?: ChargePointEvses[];
   tariffGroup:TariffGroup;
   url:string;
 }

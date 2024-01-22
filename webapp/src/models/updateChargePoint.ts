@@ -2,8 +2,8 @@ export interface UpdateChargePoint {
   accountId?: number;
   chargePointDictId?: number;
   name: string;
-  identificationCode: string;
-  codeType: string;
+  // identificationCode: string;
+  // codeType: string;
   integrationType: string;
   integrationVersion?: string;
   addressId?: number;

@@ -1,17 +1,17 @@
 <template>
   <Card>
     <template #title>
-      <h3>Name: {{ chargePointConnector.name }}</h3>
+      <h3>Name: {{ chargePointEvse.name }}</h3>
     </template>
 
     <template #content>
-      <h3>Status: {{ chargePointConnector.status }}</h3>
-      <h3>Identifier: {{ chargePointConnector.identifier }}</h3>
-      <h3 v-if="chargePointConnector.errorCode">Error code: {{ chargePointConnector.errorCode}}</h3>
-      <div v-if="chargePointConnector.url">
-        <a :href="chargePointConnector.url">{{chargePointConnector.url}}</a>
+      <h3>Status: {{ chargePointEvse.status }}</h3>
+      <h3>Identifier: {{ chargePointEvse.deviceId }}</h3>
+      <h3 v-if="chargePointEvse.errorCode">Error code: {{ chargePointEvse.errorCode }}</h3>
+      <div v-if="chargePointEvse.url">
+        <a :href="chargePointEvse.url">{{ chargePointEvse.url }}</a>
         <div class="qrcode">
-          <QrcodeVue :value="chargePointConnector.url" size="200" :render-as="'svg'"></QrcodeVue>
+          <QrcodeVue :value="chargePointEvse.url" size="200" :render-as="'svg'"></QrcodeVue>
 <!--          <img-->
 <!--            class="qrcode__image"-->
 <!--            src="@/assets/svg/C4E.svg"-->
@@ -24,7 +24,7 @@
   </Card>
 </template>
 <script setup lang="ts">
-import {ChargePointConnector} from "@/models/chargePointConnector";
+import {ChargePointEvses} from "@/models/chargePointEvses";
 import {useOwnerStore} from "@/store/owner.store";
 import QrcodeVue from "qrcode.vue";
 import {onMounted} from "vue";
@@ -32,8 +32,8 @@ import {onMounted} from "vue";
 const chargeStore = useOwnerStore();
 
 const props = defineProps({
-    chargePointConnector: {
-      type: Object as () => ChargePointConnector,
+    chargePointEvse: {
+      type: Object as () => ChargePointEvses,
       required: true
     },
     cpId: {
@@ -44,8 +44,8 @@ const props = defineProps({
 );
 
 onMounted(() => {
-  if (!props.chargePointConnector.qrCodeLink) {
-    chargeStore.getQrCode(props.chargePointConnector?.chargePointId, props.chargePointConnector?.identifier);
+  if (!props.chargePointEvse.qrCodeLink) {
+    chargeStore.getQrCode(props.chargePointEvse.chargePointId, props.chargePointEvse?.id);
   }
 });
 

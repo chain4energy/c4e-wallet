@@ -32,7 +32,7 @@ export const useEvChargePointConnectorStore = defineStore({
       });
     },
     async prepareSession(userEmail: string, lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
-      await apiFactory.evServiceApi().prepare(this.chargePointConnectorUrl, userEmail, lockscreen).then(response => {
+      await apiFactory.evServiceApi().prepare(this.chargePointConnectorUrl, userEmail, "50", "EUR", lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess?.();
         } else {

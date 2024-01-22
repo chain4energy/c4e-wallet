@@ -1,12 +1,14 @@
-export interface ChargePointConnector {
+export interface ChargePointEvses {
   id: number;
-  chargePointId?: string;
-  identifier: number;
+  chargePointId: number;
+  deviceId: number;
   name?: string;
   status?: ChargePointConnectorStatusType;
   errorCode?: string;
   active: boolean;
   url?: string;
+  locationId?: number;
+  qrCodeLink: string;
 }
 
 export interface ChargePointConnectorStatusResponse {

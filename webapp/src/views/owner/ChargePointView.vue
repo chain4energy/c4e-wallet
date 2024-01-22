@@ -24,9 +24,9 @@
           </span>
           </Button>
 
-          <div v-for="connector in chargeStore.selectedChargePoint.chargePointConnectors" :key="connector.name">
+          <div v-for="connector in chargeStore.selectedChargePoint.chargePointEvses" :key="connector.name">
             <ChargePointConnectorC :cp-id="chargeStore.selectedChargePoint.id"
-                                   :chargePointConnector="connector"/>
+                                   :chargePointEvse="connector"/>
           </div>
           <TariffC :tariff="currentTariff" v-if="currentTariff" tg-id=""/>
         </div>

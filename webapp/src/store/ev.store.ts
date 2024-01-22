@@ -9,7 +9,7 @@ import {Jwt} from "@/models/user/jwt";
 import {ErrorData} from "@/api/base.api";
 import {DecodedLinkParamsType, DecodedLinkType, DecodeLinkAuthParams, InitPaymentRequest} from "@/models/evServiceCommons";
 import {EvServiceContext, EvServiceErrorHandler} from "@/store/uvServiceErrorHandler";
-import {ChargePointConnectorStatusType} from "@/models/chargePointConnector";
+import {ChargePointConnectorStatusType} from "@/models/chargePointEvses";
 import {ChargePoint} from "@/models/chargePoint";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
 
@@ -135,7 +135,7 @@ export const useEvStore = defineStore({
     },
 
     async prepareSession(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
-      await apiFactory.evServiceApi().prepare(this.chargePointConnectorUrl, this.userEmail, lockscreen).then(response => {
+      await apiFactory.evServiceApi().prepare(this.chargePointConnectorUrl, this.userEmail, "50","EUR" ,lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
         } else {// TODO: error handling
