@@ -6,9 +6,9 @@
     </div>
     <div v-else class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full max-h-full p-2 sm:p-5 flex flex-col justify-between items-center">
       <div class="w-full">
-        <BackCloseBar/>
+        <BackCloseBar @back="useRouter().back"/>
+        <ChargerTypeDetails :charger-details="chargerDetails" class="w-3/4 mx-auto"/>
       </div>
-      <ChargerTypeDetails :charger-details="chargerDetails" class="w-3/4 mx-auto"/>
       <div v-if="connector?.url" >
         <h3 class="font-[Audiowide] mt-3 text-2xl sm:text-3xl w-full text-center">{{ chargeStore.getSelectedChargePoint.name }}</h3>
         <a :href="connector.url" class="hover:bg-lime-600/50 transition block p-3 rounded-xl">
@@ -38,9 +38,6 @@
             Enable
           </span>
         </Button>
-        <div v-for="connector in chargeStore.selectedChargePoint.chargePointConnectors" :key="connector.name">
-          <ChargePointConnectorC :cp-id="chargeStore.selectedChargePoint.id" :chargePointConnector="connector"/>
-        </div>
         <TariffC :tariff="currentTariff" v-if="currentTariff" tg-id=""/>
       </div>
       <div class="w-3/4 flex flex-inline gap-4 justify-center">
@@ -69,6 +66,7 @@ import {ChargePointConnector} from "@/models/chargePointConnector";
 import {Tariff} from "@/models/tariff";
 import NextButton from "@/components/NextButton.vue";
 import IconComponent from "@/components/features/IconComponent.vue";
+import {useRouter} from "vue-router";
 
 const chargeStore = useOwnerStore();
 const hide = ref<boolean>(false);
