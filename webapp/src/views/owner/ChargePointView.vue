@@ -14,7 +14,7 @@
           <h3>Integration type: {{ chargeStore.selectedChargePoint.integrationType }}</h3>
           <h3>Charge point id: {{ chargeStore.selectedChargePoint.id }}</h3>
           <h3>Connectors number: {{ chargeStore.selectedChargePoint.chargePointConnectors?.length }}</h3>
-          <Button @click="deleteChargePoint(chargeStore.selectedChargePoint.id)">Delete</Button>
+          <Button @click="deleteChargePoint(chargeStore.selectedChargePoint)">Delete</Button>
           <Button @click="changeChargePointActiveState()">
           <span v-if="chargeStore.selectedChargePoint.active">
             Disable
@@ -25,7 +25,7 @@
           </Button>
 
           <div v-for="connector in chargeStore.selectedChargePoint.chargePointEvses" :key="connector.name">
-            <ChargePointConnectorC :cp-id="chargeStore.selectedChargePoint.id"
+            <ChargePointEvse :cp-id="chargeStore.selectedChargePoint.id"
                                    :chargePointEvse="connector"/>
           </div>
           <TariffC :tariff="currentTariff" v-if="currentTariff" tg-id=""/>
@@ -39,8 +39,9 @@
 import {useOwnerStore} from "@/store/owner.store";
 import {computed} from "vue";
 import TariffC from "@/components/TariffC.vue";
-import ChargePointConnectorC from "@/components/ChargePointConnectorC.vue";
+import ChargePointEvse from "@/components/ChargePointEvse.vue";
 import {goTo_EvOwnerDashboardView} from "@/router/goToRoute";
+import {ChargePoint} from "@/models/chargePoint";
 
 const chargeStore = useOwnerStore();
 
@@ -57,9 +58,9 @@ const changeChargePointActiveState = () => {
   chargeStore.changeChargePointActiveState(chargeStore.selectedChargePoint.id, chargePointChangeActiveState);
 };
 
-const deleteChargePoint = (id: string | undefined) => {
-  if (id) {
-    chargeStore.deleteChargePoint(id, true, goTo_EvOwnerDashboardView);
+const deleteChargePoint = (chargePoint: ChargePoint | null) => {
+  if (chargePoint) {
+    chargeStore.deleteChargePoint(chargePoint, true, goTo_EvOwnerDashboardView);
   }
 };
 </script>

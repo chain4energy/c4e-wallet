@@ -161,14 +161,9 @@ export class EvServiceApi extends BaseApi {
     return this.evServiceGetCall<ChargePointDict[], EvServiceApplicationError>(url, lockscreen, "getChargePointDicts");
   }
 
-  public getChargePoints(lockscreen: boolean): Promise<RequestResponse<ChargePoint[], ErrorData<EvServiceApplicationError>>> {
-    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point';
-    return this.evServiceGetCall<ChargePoint[], EvServiceApplicationError>(url, lockscreen, "getChargePoints");
-  }
-
   public getChargePointsAll(lockscreen: boolean): Promise<RequestResponse<ChargePoint[], ErrorData<EvServiceApplicationError>>> {
     const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/all';
-    return this.evServiceGetCall<ChargePoint[], EvServiceApplicationError>(url, lockscreen, "getChargePoints");
+    return this.evServiceGetCall<ChargePoint[], EvServiceApplicationError>(url, lockscreen, "getChargePointsAll");
   }
 
   public createChargePoint(createChargePoint: CreateChargePoint, lockscreen: boolean): Promise<RequestResponse<ChargePoint, ErrorData<EvServiceApplicationError>>> {
@@ -191,8 +186,8 @@ export class EvServiceApi extends BaseApi {
     return this.evServicePostCall<UpdateChargePoint, ChargePoint, EvServiceApplicationError>(url, updateChargePoint, lockscreen, "updateChargePoint");
   }
 
-  public deleteChargePoint(cpId: number, lockscreen: boolean): Promise<RequestResponse<void, ErrorData<EvServiceApplicationError>>> {
-    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}/with_tariff', {cpId});
+  public deleteChargePoint(chargePoint: ChargePoint, lockscreen: boolean): Promise<RequestResponse<void, ErrorData<EvServiceApplicationError>>> {
+    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + chargePoint.url + '/with_tariff';
     return this.evServiceEmptyDeleteCall<void, EvServiceApplicationError>(url, lockscreen, "deleteChargePoint");
   }
 
@@ -219,12 +214,9 @@ export class EvServiceApi extends BaseApi {
     return this.evServicePostCall<UpdateChargePointConnector, ChargePointEvses, EvServiceApplicationError>(url, updateChargePointConnector, lockscreen, "updateChargePointConnector");
   }
 
-  public getQrCodeLinkForConnector(cpId: number, evseId: number, lockscreen: boolean): Promise<RequestResponse<HttpLink, ErrorData<EvServiceApplicationError>>> {
-    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}/evse/{evseId}/link', {
-      cpId,
-      evseId
-    });
-    return this.evServiceGetCall<HttpLink, EvServiceApplicationError>(url, lockscreen, "getQrCodeLinkForConnector");
+  public getQrCodeLinkForEvse(evseUrl: string, lockscreen: boolean): Promise<RequestResponse<HttpLink, ErrorData<EvServiceApplicationError>>> {
+    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + evseUrl + '/link';
+    return this.evServiceGetCall<HttpLink, EvServiceApplicationError>(url, lockscreen, "getQrCodeLinkForEvse");
   }
 
   public createTariffForChargePoint(cpId: number, createTariffForChargePointDto: CreateTariffForChargePoint, lockscreen = true): Promise<RequestResponse<CreateTariffForChargePointResponse, ErrorData<EvServiceApplicationError>>> {

@@ -6,7 +6,7 @@ export interface ChargePointEvses {
   status?: ChargePointConnectorStatusType;
   errorCode?: string;
   active: boolean;
-  url?: string;
+  url: string;
   locationId?: number;
   qrCodeLink?: string;
 }

@@ -13,6 +13,7 @@ import {CreateTariff} from "@/models/createTariff";
 import {Tariff} from "@/models/tariff";
 import {CreateTariffForChargePoint} from "@/models/createTariffForChargePoint";
 import {ChargePointChangeActiveState} from "@/models/ChargePointChangeActiveState";
+import {ChargePointEvses} from "@/models/chargePointEvses";
 
 interface OwnerStore {
   selectedTariff: Tariff | null;
@@ -43,13 +44,6 @@ export const useOwnerStore = defineStore({
     async fetchAllChargeStoreData(lockscreen = true) {
       await this.fetchChargePointDicts(lockscreen);
       await this.fetchChargePointsAll(lockscreen);
-    },
-
-    async fetchChargePoints(lockscreen = true) {
-      const response = await apiFactory.evServiceApi().getChargePoints(lockscreen);
-      if (response.isSuccess() && response.data) {
-        this.chargePoints = response.data;
-      }
     },
 
     async fetchChargePointsAll(lockscreen = true) {
@@ -100,27 +94,27 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async deleteChargePoint(cpId: number, lockscreen = true, onSuccess?: (() => void)) {
-      const response = await apiFactory.evServiceApi().deleteChargePoint(cpId, lockscreen);
+    async deleteChargePoint(chargePoint: ChargePoint, lockscreen = true, onSuccess?: (() => void)) {
+      const response = await apiFactory.evServiceApi().deleteChargePoint(chargePoint, lockscreen);
       if (response.isSuccess()) {
-        this.chargePoints = this.chargePoints.filter(cp => cp.id !== cpId);
+        this.chargePoints = this.chargePoints.filter(cp => cp.id !== chargePoint.id);
         if (onSuccess) {
           onSuccess();
         }
       }
     },
 
-    async getQrCode(cpId: number, evseId: number) {
-      const response = await apiFactory.evServiceApi().getQrCodeLinkForConnector(cpId, evseId, true);
+    async getQrCode(evse: ChargePointEvses) {
+      const response = await apiFactory.evServiceApi().getQrCodeLinkForEvse(evse.url, true);
       if (response.isSuccess() && response.data) {
-        const cpIndex = this.chargePoints.findIndex(cp => cp.id === cpId);
-        if (cpIndex !== -1) {
-          const evseIndex = this.chargePoints[cpIndex].chargePointEvses?.findIndex(c => c.id === evseId);
+        const chargePointIndex = this.chargePoints.findIndex(cp => cp.id === evse.chargePointId);
+        if (chargePointIndex !== -1) {
+          const evseIndex = this.chargePoints[chargePointIndex].chargePointEvses?.findIndex(c => c.id === evse.id);
           if (evseIndex !== undefined && evseIndex !== -1) {
-            const chargePointConnectors = this.chargePoints[cpIndex].chargePointEvses;
+            const chargePointEvses = this.chargePoints[chargePointIndex].chargePointEvses;
             console.log(response.data.link);
-            if (chargePointConnectors) {
-              chargePointConnectors[evseIndex].qrCodeLink = response.data.link;
+            if (chargePointEvses) {
+              chargePointEvses[evseIndex].qrCodeLink = response.data.link;
             }
           }
         }

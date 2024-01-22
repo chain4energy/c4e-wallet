@@ -35,17 +35,13 @@ const props = defineProps({
     chargePointEvse: {
       type: Object as () => ChargePointEvses,
       required: true
-    },
-    cpId: {
-      type: String,
-      required: true
-    },
+    }
   }
 );
 
 onMounted(() => {
   if (!props.chargePointEvse.qrCodeLink) {
-    chargeStore.getQrCode(props.chargePointEvse.chargePointId, props.chargePointEvse?.id);
+    chargeStore.getQrCode(props.chargePointEvse);
   }
 });
 

@@ -23,7 +23,7 @@ function mockAccepted() {
   if (evChargingSessionStore.sessionInfo) {
     evChargingSessionStore.sessionInfo.state = SessionState.INIT;
   }
-  evChargingSessionStore.initPayment({ amount:'500', currency: 'PLN'}, true, onSuccess);
+  evChargingSessionStore.initPayment({}, true, onSuccess);
 }
 
 function mockAcceptedAccepted() {

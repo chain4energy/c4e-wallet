@@ -121,7 +121,7 @@ function initPayment(){
   const context = useSessionStorage("context", props.context );
   context.value = props.context;
   stopInterval();
-  chargingSessionStore.initPayment({ amount:'500', currency: 'PLN'}, true, (paymentUrl)=>{
+  chargingSessionStore.initPayment({ }, true, (paymentUrl)=>{
     console.log("Redirect to " + paymentUrl);
     window.location.href=paymentUrl;
   });
