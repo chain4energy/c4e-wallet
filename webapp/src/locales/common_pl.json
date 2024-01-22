@@ -46,7 +46,13 @@
     "PRESS_START": "Wciśnij START, gdy będziesz gotów",
     "CHARGING": "Ładowanie w toku",
     "YOUR_CHARGERS": "Twoje ładowarki"
-
+  },
+  "PLUG_TYPES": {
+    "AC_MENNEKES_TYPE2": "Type 2"
+  },
+  "CHARGE_POINT_STATUS": {
+    "AVAILABLE": "Dostępna",
+    "PREPARING": "W przygotowaniu"
   }
 }
 

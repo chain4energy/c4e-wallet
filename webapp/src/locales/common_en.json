@@ -46,5 +46,12 @@
     "PRESS_START": "Press START, when you're ready",
     "CHARGING": "Charging in progress",
     "YOUR_CHARGERS": "Your chargers"
+  },
+  "PLUG_TYPES": {
+    "AC_MENNEKES_TYPE2": "Type 2"
+  },
+  "CHARGE_POINT_STATUS": {
+    "AVAILABLE": "Available",
+    "PREPARING": "Preparing"
   }
 }
