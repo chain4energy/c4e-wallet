@@ -1,6 +1,6 @@
 export interface ChargePointConnector {
   id: number;
-  chargePointId?: string;
+  chargePointId: string;
   identifier: number;
   name?: string;
   status?: ChargePointConnectorStatusType;

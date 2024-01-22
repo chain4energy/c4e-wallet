@@ -9,7 +9,7 @@
       <h3>Identifier: {{ chargePointConnector.identifier }}</h3>
       <h3 v-if="chargePointConnector.errorCode">Error code: {{ chargePointConnector.errorCode}}</h3>
       <div v-if="chargePointConnector.url">
-        <a :href="chargePointConnector.url">{{chargePointConnector.url}}</a>
+        <a :href="chargePointConnector.url">LINK</a>
         <div class="qrcode">
           <QrcodeVue :value="chargePointConnector.url" size="200" :render-as="'svg'"></QrcodeVue>
 <!--          <img-->
