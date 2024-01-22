@@ -1,6 +1,6 @@
 <template>
     <div class="w-full h-full flex items-center justify-center">
-      <div class="mx-auto min-w-[330px] w-full max-w-[600px] h-full p-2 sm:p-5 flex flex-col justify-between">
+      <div class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full p-2 sm:p-5 flex flex-col justify-between">
         <div class="w-1/4">
           <img v-svg-inline :src="require('@/assets/svg/C4ELogo.svg')" alt="C4ELogo.svg" />
         </div>

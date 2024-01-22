@@ -44,7 +44,9 @@
     "START_TIME": "Start",
     "POWER": "Moc",
     "PRESS_START": "Wciśnij START, gdy będziesz gotów",
-    "CHARGING": "Ładowanie w toku"
+    "CHARGING": "Ładowanie w toku",
+    "YOUR_CHARGERS": "Twoje ładowarki"
+
   }
 }
 

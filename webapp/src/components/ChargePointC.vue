@@ -1,11 +1,12 @@
 <template>
-  <Card>
+  <Card class="w-full border-lime-600 border-2 shadow-lg shadow-black/50">
     <template #title>
-      <h3>Name: {{ chargePoint.name }}</h3>
+      <h3 class="font-[Audiowide]">{{ chargePoint.name }}</h3>
     </template>
 
     <template #content>
       <div style="background: green; color: white">
+        <span>{{chargerDetails.name}}</span>
         <h3>Status: {{ chargePoint.status }}</h3>
         <h3>Integration type: {{ chargePoint.integrationType }}</h3>
         <h3>Charge point id: {{ chargePoint.id }}</h3>
@@ -61,6 +62,10 @@ const changeChargePointActiveState = () => {
   };
   chargeStore.changeChargePointActiveState(props.chargePoint.id, chargePointChangeActiveState);
 };
+
+const chargerDetails = computed(() => {
+  return useOwnerStore().getChargePointDicts?.find(el => el.id === props.chargePoint?.chargePointDictId);
+})
 </script>
 
 <style scoped lang="scss">

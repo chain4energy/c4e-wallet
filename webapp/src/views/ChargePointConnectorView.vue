@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full flex items-center justify-center">
-    <div class="mx-auto min-w-[330px] w-full max-w-[600px] h-full p-2 sm:p-5 flex flex-col justify-between">
+    <div class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full p-2 sm:p-5 flex flex-col justify-between">
       <charge-point-c-new :charge-point="evChargePointConnectorStore.chargePoint as ChargePoint" @next="goToAmountSelector" v-if="pageState==State.INIT" />
       <AmountSelector v-if="pageState==State.AMOUNT_SELECTOR" @next="goToProvideEmail" :tariff="selectedTariff" @back="goToPointSelector"/>
       <ProvideEmail v-if="pageState==State.PROVIDE_EMAIL" @onEmilProvided="emilProvided" :price="selectedPrice" :tariff="selectedTariff" @back="goToAmountSelector"></ProvideEmail>

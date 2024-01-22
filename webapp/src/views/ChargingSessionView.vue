@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full flex items-center justify-center">
-    <div class="mx-auto min-w-[330px] w-full max-w-[600px] h-full p-2 sm:p-5 flex flex-col justify-between">
+    <div class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full p-2 sm:p-5 flex flex-col justify-between">
       <div class="absolute top-0 left-0 m-3">
         <Checkbox v-model="useInterval" :binary="true"/>
         <label for="useInterval" class="ml-2"> turn on interval </label>

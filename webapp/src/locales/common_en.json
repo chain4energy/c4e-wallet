@@ -44,6 +44,7 @@
     "START_TIME": "Start time",
     "POWER": "Power",
     "PRESS_START": "Press START, when you're ready",
-    "CHARGING": "Charging in progress"
+    "CHARGING": "Charging in progress",
+    "YOUR_CHARGERS": "Your chargers"
   }
 }
