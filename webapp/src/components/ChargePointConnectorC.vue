@@ -9,9 +9,9 @@
       <h3>Identifier: {{ chargePointEvse.deviceId }}</h3>
       <h3 v-if="chargePointEvse.errorCode">Error code: {{ chargePointEvse.errorCode }}</h3>
       <div v-if="chargePointEvse.url">
-        <a :href="chargePointEvse.url">{{ chargePointEvse.url }}</a>
+        <a :href="chargePointEvse.qrCodeLink">{{ chargePointEvse.qrCodeLink }}</a>
         <div class="qrcode">
-          <QrcodeVue :value="chargePointEvse.url" size="200" :render-as="'svg'"></QrcodeVue>
+          <QrcodeVue :value="chargePointEvse.qrCodeLink" size="200" :render-as="'svg'"></QrcodeVue>
 <!--          <img-->
 <!--            class="qrcode__image"-->
 <!--            src="@/assets/svg/C4E.svg"-->

@@ -219,10 +219,10 @@ export class EvServiceApi extends BaseApi {
     return this.evServicePostCall<UpdateChargePointConnector, ChargePointEvses, EvServiceApplicationError>(url, updateChargePointConnector, lockscreen, "updateChargePointConnector");
   }
 
-  public getQrCodeLinkForConnector(cpId: number, connectorIdentifier: number, lockscreen: boolean): Promise<RequestResponse<HttpLink, ErrorData<EvServiceApplicationError>>> {
-    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}/evse/{connectorId}/link', {
+  public getQrCodeLinkForConnector(cpId: number, evseId: number, lockscreen: boolean): Promise<RequestResponse<HttpLink, ErrorData<EvServiceApplicationError>>> {
+    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}/evse/{evseId}/link', {
       cpId,
-      connectorId: connectorIdentifier
+      evseId
     });
     return this.evServiceGetCall<HttpLink, EvServiceApplicationError>(url, lockscreen, "getQrCodeLinkForConnector");
   }

@@ -8,7 +8,7 @@ export interface ChargePointEvses {
   active: boolean;
   url?: string;
   locationId?: number;
-  qrCodeLink: string;
+  qrCodeLink?: string;
 }
 
 export interface ChargePointConnectorStatusResponse {

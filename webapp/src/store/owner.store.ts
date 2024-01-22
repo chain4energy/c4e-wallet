@@ -110,17 +110,17 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async getQrCode(cpId: number, connectorIdentifier: number) {
-      const response = await apiFactory.evServiceApi().getQrCodeLinkForConnector(cpId, connectorIdentifier, true);
+    async getQrCode(cpId: number, evseId: number) {
+      const response = await apiFactory.evServiceApi().getQrCodeLinkForConnector(cpId, evseId, true);
       if (response.isSuccess() && response.data) {
         const cpIndex = this.chargePoints.findIndex(cp => cp.id === cpId);
         if (cpIndex !== -1) {
-          const connectorIndex = this.chargePoints[cpIndex].chargePointEvses?.findIndex(c => c.deviceId === connectorIdentifier);
-          if (connectorIndex !== undefined && connectorIndex !== -1) {
+          const evseIndex = this.chargePoints[cpIndex].chargePointEvses?.findIndex(c => c.id === evseId);
+          if (evseIndex !== undefined && evseIndex !== -1) {
             const chargePointConnectors = this.chargePoints[cpIndex].chargePointEvses;
             console.log(response.data.link);
             if (chargePointConnectors) {
-              chargePointConnectors[connectorIndex].url = response.data.link;
+              chargePointConnectors[evseIndex].qrCodeLink = response.data.link;
             }
           }
         }
