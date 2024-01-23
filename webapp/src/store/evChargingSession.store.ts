@@ -43,7 +43,7 @@ export const useEvChargingSessionStore = defineStore({
       });
     },
     async fetchSessionInfo(lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
-      await apiFactory.evServiceApi().getSesisonInfo(this.chargingSessionUrl, lockscreen).then(response => {
+      await apiFactory.evServiceApi().getSessionInfo(this.chargingSessionUrl, lockscreen).then(response => {
         if (response.isSuccess() && response.data) {
           this.sessionInfo = response.data;
         } else {

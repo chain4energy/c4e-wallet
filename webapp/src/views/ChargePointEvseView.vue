@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-full flex items-center justify-center">
     <div class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full p-2 sm:p-5 flex flex-col justify-between">
-      <charge-point-c-new :charge-point="evChargePointConnectorStore.chargePoint as ChargePoint" @next="goToAmountSelector" v-if="pageState==State.INIT" />
+      <charge-point-c-new :charge-point="evChargePointEvseStore.chargePoint as ChargePoint" @next="goToAmountSelector" v-if="pageState==State.INIT"/>
       <AmountSelector v-if="pageState==State.AMOUNT_SELECTOR" @next="goToProvideEmail" :tariff="selectedTariff" @back="goToPointSelector"/>
       <ProvideEmail v-if="pageState==State.PROVIDE_EMAIL" @onEmilProvided="emilProvided" :price="selectedPrice" :tariff="selectedTariff" @back="goToAmountSelector"></ProvideEmail>
       <CheckEmail v-if="pageState==State.CHECK_EMAIL" :provided-email="providedEmail" @back="goToProvideEmail"></CheckEmail>
@@ -14,15 +14,15 @@ import {computed, onMounted, PropType, ref} from "vue";
 import {useRouter} from "vue-router";
 import ChargePointCNew from "@/components/ChargePointC-New.vue";
 import {ChargePoint, ChargePointStatusType} from "@/models/chargePoint";
-import {useEvChargePointConnectorStore} from "@/store/evChargePointConnector.store";
+import {useEvChargePointEvseStore} from "@/store/evChargePointEvse.store";
 import {clearAuthTokens} from "axios-jwt";
 import {useToast} from "vue-toastification";
-import ProvideEmail from "@/views/chargingPointConnector/ProvideEmail.vue";
-import CheckEmail from "@/views/chargingPointConnector/CheckEmail.vue";
-import AmountSelector from "@/views/chargingPointConnector/AmountSelector.vue";
+import ProvideEmail from "@/views/chargingPointEvse/ProvideEmail.vue";
+import CheckEmail from "@/views/chargingPointEvse/CheckEmail.vue";
+import AmountSelector from "@/views/chargingPointEvse/AmountSelector.vue";
 import {Tariff} from "@/models/tariff";
 
-const evChargePointConnectorStore = useEvChargePointConnectorStore();
+const evChargePointEvseStore = useEvChargePointEvseStore();
 const router = useRouter();
 const toast = useToast();
 
@@ -36,25 +36,29 @@ enum State {
 
 const props = defineProps({
   context: {
-    type:  Object as PropType<Array<string>> ,
+    type: Object as PropType<Array<string>>,
     required: false
   },
 });
 
 const pageState = ref(State.NONE);
-const providedEmail= ref('');
+const providedEmail = ref('');
+const selectedTariff = ref<Tariff>({} as Tariff);
+const selectedPrice = ref<number>(0);
 
 onMounted(() => {
-  if (evChargePointConnectorStore.getChargePointConnectorUrl == "") {
+  if (evChargePointEvseStore.getChargePointEvseUrl == "") {
     router.push({name: 'ev_ResourceLink', params: {context: props.context}});
   } else {
     clearAuthTokens();
-    evChargePointConnectorStore.fetchChargePointConnectorAll(true, ()=>{pageState.value = State.INIT;});
+    evChargePointEvseStore.fetchChargePointConnectorAll(true, () => {
+      pageState.value = State.INIT;
+    });
   }
 });
 
 const showButton_Next = computed(() => {
-  return evChargePointConnectorStore.chargePoint && (evChargePointConnectorStore.chargePoint.status == ChargePointStatusType.AVAILABLE || evChargePointConnectorStore.chargePoint.status == ChargePointStatusType.PREPARING);
+  return evChargePointEvseStore.chargePoint && (evChargePointEvseStore.chargePoint.status == ChargePointStatusType.AVAILABLE || evChargePointEvseStore.chargePoint.status == ChargePointStatusType.PREPARING);
 });
 
 function goToPointSelector() {
@@ -72,32 +76,26 @@ function goToProvideEmail(price?: number) {
 
 function goToAmountSelector(tariff?: Tariff) {
   console.log("next step -> goToAmountSelector");
-  if (tariff) selectedTariff.value = tariff;
+  if (tariff) {
+    selectedTariff.value = tariff;
+  }
   // router.push('/ev/startCharging');
   pageState.value = State.AMOUNT_SELECTOR;
 }
 
-function emilProvided(email:string){
+function emilProvided(email: string) {
   console.log("next step -> goToCheckEmail");
   if (email) {
     providedEmail.value = email;
     pageState.value = State.CHECK_EMAIL;
-    evChargePointConnectorStore.prepareSession(email, true, onSuccessPrepareSession, onErrorPrepareSession);
+    evChargePointEvseStore.prepareSession(email, String(selectedPrice.value), selectedTariff.value.currency, true, onSuccessPrepareSession);
     console.log("send request to backend -> start charging");
   }
 }
 
-function onSuccessPrepareSession(){
+function onSuccessPrepareSession() {
   toast.success("We send email to you");
-    //
 }
-
-function onErrorPrepareSession(){
-  //
-}
-
-const selectedTariff = ref<Tariff>({} as Tariff);
-const selectedPrice = ref<number>(0);
 
 </script>
 

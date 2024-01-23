@@ -3,7 +3,7 @@
 import IconComponent from "@/components/features/IconComponent.vue";
 
 const props = defineProps<{text: string, icon?: string, disabled?: boolean, color?: string}>();
-const emit = defineEmits(['clicked'])
+const emit = defineEmits(['clicked']);
 </script>
 
 <template>

@@ -32,7 +32,7 @@
 import Type2SVG from "@/components/svg/Type2SVG.vue";
 import {computed, onBeforeMount, onMounted} from "vue";
 import {useOwnerStore} from "@/store/owner.store";
-import {useEvChargePointConnectorStore} from "@/store/evChargePointConnector.store";
+import {useEvChargePointEvseStore} from "@/store/evChargePointEvse.store";
 import {Tariff} from "@/models/tariff";
 import {ChargePointDict} from "@/models/chargePointDict";
 import {ChargePoint} from "@/models/chargePoint";
@@ -57,19 +57,19 @@ function initPayment() {
 onBeforeMount(async () => {
   await useOwnerStore().fetchChargePointDicts(true);
 
-})
+});
 
 const chargePoint = computed<ChargePoint | undefined>(() => {
-  return useEvChargePointConnectorStore().getChargePoint;
-})
+  return useEvChargePointEvseStore().getChargePoint;
+});
 
 const charger = computed<ChargePointDict>(() => {
   return useOwnerStore().getChargePointDicts?.find(el => el.id === chargePoint.value?.chargePointDictId);
 });
 
 const tariff = computed<Tariff>(() => {
-  return chargePoint.value?.tariffGroup.tariffs.find(el => el.currency === props.currency)
-})
+  return chargePoint.value?.tariffGroup.tariffs.find(el => el.currency === props.currency);
+});
 
 </script>
 

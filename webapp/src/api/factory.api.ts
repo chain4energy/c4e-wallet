@@ -1,5 +1,5 @@
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
-import {applyAuthTokenInterceptor, getBrowserSessionStorage, IAuthTokens, TokenRefreshRequest} from "axios-jwt";
+import {applyAuthTokenInterceptor, getBrowserSessionStorage, TokenRefreshRequest} from "axios-jwt";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
 import {EvServiceApi} from "@/api/evService.api";

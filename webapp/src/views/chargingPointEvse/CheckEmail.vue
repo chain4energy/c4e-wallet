@@ -26,7 +26,7 @@ const props = defineProps({
 
 const emit = defineEmits(
   ['back']
-)
+);
 
 </script>
 

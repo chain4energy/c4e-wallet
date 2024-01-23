@@ -3,7 +3,7 @@ import apiFactory from "@/api/factory.api";
 import {ErrorData} from "@/api/base.api";
 import {DecodedLinkParamsType, DecodedLinkType, DecodeLinkAuthParams} from "@/models/evServiceCommons";
 import {useEvChargingSessionStore} from "@/store/evChargingSession.store";
-import {useEvChargePointConnectorStore} from "@/store/evChargePointConnector.store";
+import {useEvChargePointEvseStore} from "@/store/evChargePointEvse.store";
 import {EvServiceContext} from "@/store/evServiceErrorHandler";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
 import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";
@@ -36,9 +36,9 @@ export const useEvCommonStore = defineStore({
       apiFactory.evServiceApi().evDecodeLink(pathToDecode, lockscreen).then(response => {
         if (response.isSuccess() && response.data) {
           if (response.data.type == DecodedLinkType.RESOURCE_LINK && response.data.params.type == DecodedLinkParamsType.CHARGE_POINT_CONNECTOR) {
-            const chargingSessionStore = useEvChargePointConnectorStore();
+            const chargingSessionStore = useEvChargePointEvseStore();
             this.appTypeLink = AppTypeLink.CHARGE_POINT_CONNECTOR_LINK;
-            chargingSessionStore.chargePointConnectorUrl = response.data.params.path;
+            chargingSessionStore.chargePointEvseUrl = response.data.params.path;
             onSuccess?.();
           } else if (response.data.type == DecodedLinkType.AUTH_RESOURCE_LINK && response.data.params.type == DecodedLinkParamsType.CHARGING_SESSION) {
             const chargingSessionStore = useEvChargingSessionStore();

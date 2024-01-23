@@ -12,10 +12,7 @@
 </template>
 <script setup lang="ts">
 
-import {useEvStore} from "@/store/ev.store";
 import {ChargePointEvse} from "@/models/chargePointEvse";
-
-const evStore = useEvStore();
 
 const props = defineProps({
     chargePointConnector: {

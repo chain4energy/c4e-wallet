@@ -5,23 +5,23 @@ import {ErrorData} from "@/api/base.api";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
 import evServiceErrorHandler, {EvServiceContext} from "@/store/evServiceErrorHandler";
 
-interface EvChargePointConnectorStoreState {
-  chargePointConnectorUrl : string,
+interface EvChargePointEvseStoreState {
+  chargePointEvseUrl : string,
   chargePoint: ChargePoint | undefined;
 }
 
-export const useEvChargePointConnectorStore = defineStore({
-  id: 'evChargePointConnectorStore',
+export const useEvChargePointEvseStore = defineStore({
+  id: 'useEvChargePointEvseStore',
 
-  state: (): EvChargePointConnectorStoreState => {
+  state: (): EvChargePointEvseStoreState => {
     return {
-      chargePointConnectorUrl: "",
+      chargePointEvseUrl: "",
       chargePoint: undefined,
     };
   },
   actions: {
     async fetchChargePointConnectorAll( lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
-      await apiFactory.evServiceApi().getChargePointConnectorAll(this.chargePointConnectorUrl, lockscreen).then(response => {
+      await apiFactory.evServiceApi().getChargePointConnectorAll(this.chargePointEvseUrl, lockscreen).then(response => {
         if (response.isSuccess() && response.data) {
           console.log(JSON.stringify(response.data));
           this.chargePoint = response.data;
@@ -31,8 +31,8 @@ export const useEvChargePointConnectorStore = defineStore({
         }
       });
     },
-    async prepareSession(userEmail: string, lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
-      await apiFactory.evServiceApi().prepare(this.chargePointConnectorUrl, userEmail, "50", "EUR", lockscreen).then(response => {
+    async prepareSession(userEmail: string, amount: string, currency:string ,lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
+      await apiFactory.evServiceApi().prepare(this.chargePointEvseUrl, userEmail, amount, currency, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess?.();
         } else {
@@ -45,8 +45,8 @@ export const useEvChargePointConnectorStore = defineStore({
     getChargePoint(): ChargePoint | undefined{
       return this.chargePoint;
     },
-    getChargePointConnectorUrl(): string{
-      return this.chargePointConnectorUrl;
+    getChargePointEvseUrl(): string{
+      return this.chargePointEvseUrl;
     }
   }
 });

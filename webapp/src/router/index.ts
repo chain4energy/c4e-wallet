@@ -7,7 +7,7 @@ import ResourceLink from "@/views/ResourceLink.vue";
 import ChargingSessionView from "@/views/ChargingSessionView.vue";
 // @ts-ignore
 
-import ChargePointConnectorView from "@/views/ChargePointConnectorView.vue";
+import ChargePointEvseView from "@/views/ChargePointEvseView.vue";
 // @ts-ignore
 
 import ChoosePaymentMethod from "@/views/ChoosePaymentMethod.vue";
@@ -64,9 +64,9 @@ const routesEv: Array<RouteRecordRaw> = [
     // alias: '/' + evSubAppName + '/resourceLink/:context'
   },
   {
-    path: '/' + evSubAppName + '/chargePointConnector/:context(.*)*',
-    name: evSubAppName + '_ChargePointConnector',
-    component: ChargePointConnectorView,
+    path: '/' + evSubAppName + '/chargePointEvse/:context(.*)*',
+    name: evSubAppName + '_ChargePointEvse',
+    component: ChargePointEvseView,
     props: true,
     // alias: '/' + evSubAppName + '/resourceLink/:context'
   },

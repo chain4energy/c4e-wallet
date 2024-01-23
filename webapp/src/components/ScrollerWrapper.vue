@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref} from "vue";
+import {ref} from "vue";
 
 const scrollElement = ref();
 const handleScroll = () => {
@@ -14,7 +14,7 @@ const handleScroll = () => {
     // Check if at the bottom
     atBottom.value = scrollTop + clientHeight === scrollHeight;
   }
-}
+};
 
 const atTop = ref<boolean>(true);
 const atBottom = ref<boolean>(true);

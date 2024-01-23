@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ChargePointDict} from "@/models/chargePointDict";
 
-const props = defineProps<{chargerDetails: ChargePointDict}>()
+const props = defineProps<{chargerDetails: ChargePointDict}>();
 </script>
 
 <template>

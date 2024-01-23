@@ -53,7 +53,7 @@ import {PropType} from "vue/dist/vue";
 import {useEvChargingSessionStore} from "@/store/evChargingSession.store";
 import {ErrorData} from "@/api/base.api";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
-import ChargerPluggedSVG from "@/components/svg/ChargerPluggedSVG.vue"
+import ChargerPluggedSVG from "@/components/svg/ChargerPluggedSVG.vue";
 import TickSVG from "@/components/svg/TickSVG.vue";
 import {computed, onMounted, ref} from "vue";
 import ChargerSVG from "@/components/svg/ChargerSVG.vue";

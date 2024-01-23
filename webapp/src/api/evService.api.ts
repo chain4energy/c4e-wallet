@@ -136,11 +136,12 @@ export class EvServiceApi extends BaseApi {
     return this.evServiceGetCall<ChargePointConnectorStatusResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/status", lockscreen, "evChargePointConnectorLiveStatus");
   }
 
-  public prepare(path: string, login: string, amount:string, currency:string,lockscreen: boolean) {
-    return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepare_anonymous", {login, amount,currency }, lockscreen, "evChargePointInfo");
+  public prepare(path: string, login: string, amount: string, currency: string, lockscreen: boolean) {
+    return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepare_anonymous",
+      {login, amount, currency}, lockscreen, "prepare");
   }
 
-  public getSesisonInfo(path: string, lockscreen: boolean) {
+  public getSessionInfo(path: string, lockscreen: boolean) {
     return this.evServiceGetCall<SessionInfo, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path, lockscreen, "evFetchSesisonInfo");
   }
 
@@ -172,7 +173,7 @@ export class EvServiceApi extends BaseApi {
   }
 
   public changeChargePointActiveState(cpId: number, chargePointChangeActiveState: ChargePointChangeActiveState, lockscreen: boolean): Promise<RequestResponse<void, ErrorData<EvServiceApplicationError>>> {
-    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}/activation_state', { cpId });
+    const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}/activation_state', {cpId});
     return this.evServicePostCall<ChargePointChangeActiveState, void, EvServiceApplicationError>(url, chargePointChangeActiveState, lockscreen, "changeChargePointActiveState");
   }
 
@@ -295,7 +296,7 @@ export class EvServiceApi extends BaseApi {
     return this.evServiceGetCall<LinkDecoder<QrCodeInfoParams>, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + "/v0.1/link/" + path, lockscreen, "evDecodeQrCodeLink");
   }
 
-  public evDecodeLink(path: string, lockscreen: boolean){
+  public evDecodeLink(path: string, lockscreen: boolean) {
     return this.evServiceGetCall<LinkDecoder<DecodeLinkAuthParams | DecodedLinkParamsBase>, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + "/v0.1/link/" + path, lockscreen, "evDecodeLink");
   }
 }

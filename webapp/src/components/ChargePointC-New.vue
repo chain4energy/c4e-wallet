@@ -104,11 +104,10 @@ import {useOwnerStore} from "@/store/owner.store";
 import NextButton from "@/components/NextButton.vue";
 
 const locales = reactive(getSupportedLocales());
-const dropdown = ref(false);
 const i18n = useI18n();
 
 const emit = defineEmits(['next'])
-
+;
 const setLocale = () => {
   if (selectedLocale.value.file) {
     i18n.locale.value = selectedLocale.value.file;
@@ -126,13 +125,13 @@ const props = defineProps({
 
 onMounted(() => {
   useOwnerStore().fetchChargePointDicts();
-})
-
-const currencies = computed(() => {
-  return props.chargePoint?.tariffGroup.tariffs.map(el => el.currency)
 });
 
-const selectedCurrency = ref(currencies.value[0])
+const currencies = computed(() => {
+  return props.chargePoint?.tariffGroup.tariffs.map(el => el.currency);
+});
+
+const selectedCurrency = ref(currencies.value[0]);
 
 const selectedLocale = ref(i18n.locale);
 
@@ -144,7 +143,7 @@ const selectedTariff = computed((): Tariff => {
 
 const charger = computed(() => {
   return useOwnerStore().getChargePointDicts?.find(el => el.id === props.chargePoint?.chargePointDictId);
-})
+});
 
 </script>
 

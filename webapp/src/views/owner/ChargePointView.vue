@@ -75,7 +75,7 @@ const currency = ref<string>('PLN');
 
 const tariff = computed<Tariff | undefined>(() => {
   return chargeStore.getSelectedChargePoint?.tariffGroup?.tariffs.find(t => t.currency === currency.value);
-})
+});
 
 const currentTariff = computed(() => {
   const cpId = chargeStore.getSelectedChargePoint?.id;

@@ -67,7 +67,7 @@ const changeChargePointActiveState = () => {
 
 const chargerDetails = computed<ChargePointDict>(() => {
   return useOwnerStore().getChargePointDicts?.find(el => el.id === props.chargePoint?.chargePointDictId);
-})
+});
 
 const getStatusColor = (status: ChargePointStatusType) => {
   switch (status) {

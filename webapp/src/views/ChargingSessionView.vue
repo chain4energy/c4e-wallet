@@ -35,7 +35,7 @@ import ChargingSessionProgress from "@/views/chargingSession/ChargingSessionProg
 import ChargingSessionSummary from "@/views/chargingSession/ChargingSessionSummary.vue";
 import Checkbox from "primevue/checkbox";
 import {useEvChargingSessionStore} from "@/store/evChargingSession.store";
-import {useEvChargePointConnectorStore} from "@/store/evChargePointConnector.store";
+import {useEvChargePointEvseStore} from "@/store/evChargePointEvse.store";
 import {getChargePointConnectorUrlFromChargerPointConnectorSessionUrl} from "@/services/utils";
 import {clearAuthTokens} from "axios-jwt/src/tokensUtils";
 import ChargingSessionInitPayment from "@/views/chargingSession/ChargingSessionInitPayment.vue";
@@ -44,7 +44,7 @@ import { useSessionStorage } from "@vueuse/core";
 
 const router = useRouter();
 const chargingSessionStore = useEvChargingSessionStore();
-const chargePointConnectorStore = useEvChargePointConnectorStore();
+const chargePointConnectorStore = useEvChargePointEvseStore();
 const useInterval = ref(true);
 
 let interval = 0;
@@ -78,7 +78,7 @@ watch(useInterval, (newValue, oldValue) => {
   }
 });
 function onSuccessLoginToSession() {
-  chargePointConnectorStore.chargePointConnectorUrl = getChargePointConnectorUrlFromChargerPointConnectorSessionUrl(chargingSessionStore.getChargingSessionUrl);
+  chargePointConnectorStore.chargePointEvseUrl = getChargePointConnectorUrlFromChargerPointConnectorSessionUrl(chargingSessionStore.getChargingSessionUrl);
   chargePointConnectorStore.fetchChargePointConnectorAll();
   chargingSessionStore.fetchSessionInfo().then(()=> {
     if (chargingSessionStore.getSessionInfo?.state == SessionState.FINAL) {
