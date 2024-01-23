@@ -15,7 +15,7 @@
         </div>
       </ScrollerWrapper>
       <div class="mt-4">
-        <NextButton text="Next"/>
+        <NextButton text="Add new" icon="Plus" @clicked="goTo_AddChargerView()"/>
       </div>
     </div>
   </div>
@@ -41,4 +41,5 @@ const hide = ref<boolean>(false);
 </script>
 
 <style lang="scss" scoped>
+
 </style>

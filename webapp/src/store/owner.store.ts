@@ -288,5 +288,8 @@ export const useOwnerStore = defineStore({
     getTariffGroups(): TariffGroup[] | undefined {
       return this.tariffGroups;
     },
+    getSelectedChargePoint(): ChargePoint | null {
+      return this.selectedChargePoint;
+    }
   },
 });

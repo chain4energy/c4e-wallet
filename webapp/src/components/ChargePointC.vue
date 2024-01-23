@@ -4,8 +4,8 @@
       <h3 class="font-[Audiowide] w-full text-center text-xl sm:text-3xl">{{ chargePoint.name }}</h3>
     </template>
     <template #content>
-      <div class="flex flex-inline items-center flex-wrap">
-        <div class="flex flex-col flex-1 min-w-[200px] font-[Audiowide] sm:text-lg">
+      <div class="flex flex-inline items-center flex-wrap p-0">
+        <div class="flex flex-col flex-1 min-w-[200px] font-[Audiowide] sm:text-lg mb-2">
           <span>Model - {{chargerDetails.name}}</span>
           <span>Connector - {{$t('PLUG_TYPES.' + chargerDetails.plugType)}}</span>
           <span>Status - <span :class="getStatusColor(chargePoint.status)">{{ $t('CHARGE_POINT_STATUS.' + chargePoint.status) }}</span></span>
@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import {ChargePoint, ChargePointStatusType} from "@/models/chargePoint";
 import {useOwnerStore} from "@/store/owner.store";
-import {computed, ref} from "vue";
+import {computed} from "vue";
 import TariffC from "@/components/TariffC.vue";
 import {goTo_ChargePointView, goTo_EvOwnerDashboardView} from "@/router/goToRoute";
 import {ChargePointDict} from "@/models/chargePointDict";
@@ -79,5 +79,4 @@ const getStatusColor = (status: ChargePointStatusType) => {
 </script>
 
 <style scoped lang="scss">
-
 </style>
