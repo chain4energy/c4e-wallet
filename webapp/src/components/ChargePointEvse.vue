@@ -24,7 +24,7 @@
   </Card>
 </template>
 <script setup lang="ts">
-import {ChargePointEvses} from "@/models/chargePointEvses";
+import {ChargePointEvse} from "@/models/chargePointEvse";
 import {useOwnerStore} from "@/store/owner.store";
 import QrcodeVue from "qrcode.vue";
 import {onMounted} from "vue";
@@ -33,7 +33,7 @@ const chargeStore = useOwnerStore();
 
 const props = defineProps({
     chargePointEvse: {
-      type: Object as () => ChargePointEvses,
+      type: Object as () => ChargePointEvse,
       required: true
     }
   }

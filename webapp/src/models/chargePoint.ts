@@ -1,4 +1,4 @@
-import {ChargePointEvses} from "@/models/chargePointEvses";
+import {ChargePointEvse} from "@/models/chargePointEvse";
 import {TariffGroup} from "@/models/tariffGroup";
 
 export interface ChargePoint{
@@ -17,7 +17,7 @@ export interface ChargePoint{
   errorCode?: string;
   addressId?: number;
   locationId?: number;
-  chargePointEvses?: ChargePointEvses[];
+  chargePointEvses?: ChargePointEvse[];
   tariffGroup:TariffGroup;
   url:string;
 }

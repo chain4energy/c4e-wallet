@@ -1,4 +1,4 @@
-export interface ChargePointEvses {
+export interface ChargePointEvse {
   id: number;
   chargePointId: number;
   deviceId: number;

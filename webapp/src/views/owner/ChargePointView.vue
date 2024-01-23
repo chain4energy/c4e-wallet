@@ -9,10 +9,10 @@
         <BackCloseBar @back="goTo_EvOwnerDashboardView"/>
         <ChargerTypeDetails :charger-details="chargerDetails" class="w-3/4 mx-auto"/>
       </div>
-      <div v-if="connector?.url" >
+      <div v-if="evse?.qrCodeLink" >
         <h3 class="font-[Audiowide] mt-3 text-2xl sm:text-3xl w-full text-center">{{ chargeStore.getSelectedChargePoint.name }}</h3>
-        <a :href="connector.url" class="hover:bg-lime-600/50 transition block p-3 rounded-xl">
-          <QrcodeVue :value="connector.url" size="200" :render-as="'svg'" />
+        <a :href="evse.qrCodeLink" class="hover:bg-lime-600/50 transition block p-3 rounded-xl">
+          <QrcodeVue :value="evse.qrCodeLink" size="200" :render-as="'svg'" />
         </a>
         <!--          <img-->
         <!--            class="qrcode__image"-->
@@ -26,10 +26,10 @@
       </div>
       <div v-if="hide">
         <h3>Status: {{ chargeStore.selectedChargePoint.status }}</h3>
-        <h3>Integration type: {{ chargeStore.selectedChargePoint.integrationType }}</h3>
+<!--        <h3>Integration type: {{ chargeStore.selectedChargePoint.integrationType }}</h3>-->
         <h3>Charge point id: {{ chargeStore.selectedChargePoint.id }}</h3>
-        <h3>Connectors number: {{ chargeStore.selectedChargePoint.chargePointConnectors?.length }}</h3>
-        <Button @click="deleteChargePoint(chargeStore.selectedChargePoint.id)">Delete</Button>
+        <h3>Connectors number: {{ chargeStore.selectedChargePoint.chargePointEvses?.length }}</h3>
+        <Button @click="deleteChargePoint(chargeStore.selectedChargePoint)">Delete</Button>
         <Button @click="changeChargePointActiveState()">
           <span v-if="chargeStore.selectedChargePoint.active">
             Disable
@@ -62,11 +62,12 @@ import ChargerTypeDetails from "@/components/ChargerTypeDetails.vue";
 import {ChargePointDict} from "@/models/chargePointDict";
 import BackCloseBar from "@/components/BackCloseBar.vue";
 import QrcodeVue from "qrcode.vue";
-import {ChargePointConnector} from "@/models/chargePointConnector";
+import {ChargePointEvse} from "@/models/chargePointEvse";
 import {Tariff} from "@/models/tariff";
 import NextButton from "@/components/NextButton.vue";
 import IconComponent from "@/components/features/IconComponent.vue";
 import {useRouter} from "vue-router";
+import {ChargePoint} from "@/models/chargePoint";
 
 const chargeStore = useOwnerStore();
 const hide = ref<boolean>(false);
@@ -99,13 +100,13 @@ const chargerDetails = computed<ChargePointDict>(() => {
   return useOwnerStore().getChargePointDicts?.find(el => el.id === chargeStore.getSelectedChargePoint?.chargePointDictId);
 });
 
-const connector = computed<ChargePointConnector | undefined>(() => {
-  return chargeStore.getSelectedChargePoint?.chargePointConnectors?.[0];
+const evse = computed<ChargePointEvse | undefined>(() => {
+  return chargeStore.getSelectedChargePoint?.chargePointEvses?.[0];
 });
 
 onMounted(() => {
-  if (connector.value && !connector.value?.url) {
-    chargeStore.getQrCode(connector.value.chargePointId, connector.value.identifier);
+  if (evse.value && !evse.value?.qrCodeLink) {
+    chargeStore.getQrCode(evse.value);
   }
 });
 </script>

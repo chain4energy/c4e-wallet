@@ -13,7 +13,7 @@ import {CreateTariff} from "@/models/createTariff";
 import {Tariff} from "@/models/tariff";
 import {CreateTariffForChargePoint} from "@/models/createTariffForChargePoint";
 import {ChargePointChangeActiveState} from "@/models/ChargePointChangeActiveState";
-import {ChargePointEvses} from "@/models/chargePointEvses";
+import {ChargePointEvse} from "@/models/chargePointEvse";
 
 interface OwnerStore {
   selectedTariff: Tariff | null;
@@ -104,7 +104,7 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async getQrCode(evse: ChargePointEvses) {
+    async getQrCode(evse: ChargePointEvse) {
       const response = await apiFactory.evServiceApi().getQrCodeLinkForEvse(evse.url, true);
       if (response.isSuccess() && response.data) {
         const chargePointIndex = this.chargePoints.findIndex(cp => cp.id === evse.chargePointId);

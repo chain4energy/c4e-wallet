@@ -13,13 +13,13 @@
 <script setup lang="ts">
 
 import {useEvStore} from "@/store/ev.store";
-import {ChargePointEvses} from "@/models/chargePointEvses";
+import {ChargePointEvse} from "@/models/chargePointEvse";
 
 const evStore = useEvStore();
 
 const props = defineProps({
     chargePointConnector: {
-      type:  Object as () => ChargePointEvses,
+      type:  Object as () => ChargePointEvse,
       required: true
     },
     showQrCode: {
