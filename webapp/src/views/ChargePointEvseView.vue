@@ -57,9 +57,9 @@ onMounted(() => {
   }
 });
 
-const showButton_Next = computed(() => {
-  return evChargePointEvseStore.chargePoint && (evChargePointEvseStore.chargePoint.status == ChargePointStatusType.AVAILABLE || evChargePointEvseStore.chargePoint.status == ChargePointStatusType.PREPARING);
-});
+// const showButton_Next = computed(() => {
+//   return evChargePointEvseStore.chargePoint && (evChargePointEvseStore.chargePoint.status == ChargePointStatusType.AVAILABLE || evChargePointEvseStore.chargePoint.status == ChargePointStatusType.PREPARING);
+// });
 
 function goToPointSelector() {
   console.log("next step -> goToStart");

@@ -135,7 +135,7 @@ export const useEvStore = defineStore({
     },
 
     async prepareSession(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
-      await apiFactory.evServiceApi().prepare(this.chargePointConnectorUrl, this.userEmail, "50","EUR" ,lockscreen).then(response => {
+      await apiFactory.evServiceApi().prepareAnonymousSession(this.chargePointConnectorUrl, this.userEmail, "50","EUR" ,lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
         } else {// TODO: error handling

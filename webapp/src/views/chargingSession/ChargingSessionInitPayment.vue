@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import Type2SVG from "@/components/svg/Type2SVG.vue";
-import {computed, onBeforeMount, onMounted} from "vue";
+import {computed, onBeforeMount} from "vue";
 import {useOwnerStore} from "@/store/owner.store";
 import {useEvChargePointEvseStore} from "@/store/evChargePointEvse.store";
 import {Tariff} from "@/models/tariff";

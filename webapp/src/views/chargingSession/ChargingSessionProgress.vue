@@ -112,7 +112,7 @@ const startTimer = () => {
 
 const percent = computed (() => {
   return (props.sessionInfo?.cost/props.amount * 100);
-})
+});
 
 onMounted(startTimer);
 

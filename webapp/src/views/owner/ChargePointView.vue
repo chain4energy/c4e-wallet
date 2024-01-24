@@ -56,7 +56,7 @@
 import {useOwnerStore} from "@/store/owner.store";
 import {computed, onMounted, ref} from "vue";
 import TariffC from "@/components/TariffC.vue";
-import ChargePointConnectorC from "@/components/ChargePointConnectorC.vue";
+// import ChargePointConnectorC from "@/components/ChargePointConnectorC.vue";
 import {goTo_EvOwnerDashboardView} from "@/router/goToRoute";
 import ChargerTypeDetails from "@/components/ChargerTypeDetails.vue";
 import {ChargePointDict} from "@/models/chargePointDict";
@@ -66,7 +66,7 @@ import {ChargePointEvse} from "@/models/chargePointEvse";
 import {Tariff} from "@/models/tariff";
 import NextButton from "@/components/NextButton.vue";
 import IconComponent from "@/components/features/IconComponent.vue";
-import {useRouter} from "vue-router";
+// import {useRouter} from "vue-router";
 import {ChargePoint} from "@/models/chargePoint";
 
 const chargeStore = useOwnerStore();

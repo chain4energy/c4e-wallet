@@ -32,7 +32,7 @@ export const useEvChargePointEvseStore = defineStore({
       });
     },
     async prepareSession(userEmail: string, amount: string, currency:string ,lockscreen = true, onSuccess?: (() => void), onFail?: ((defaultErrorHandler: () => void, error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
-      await apiFactory.evServiceApi().prepare(this.chargePointEvseUrl, userEmail, amount, currency, lockscreen).then(response => {
+      await apiFactory.evServiceApi().prepareAnonymousSession(this.chargePointEvseUrl, userEmail, amount, currency, lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess?.();
         } else {

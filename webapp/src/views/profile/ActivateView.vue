@@ -15,7 +15,7 @@
 import OtpComponent from "@/components/OtpComponent.vue";
 import {ref} from "vue";
 import {useToast} from "vue-toastification";
-import {useRouter} from "vue-router";
+// import {useRouter} from "vue-router";
 import {useEvStore} from "@/store/ev.store";
 import {goTo_EvOwnerDashboardView} from "@/router/goToRoute";
 
@@ -25,7 +25,7 @@ const onActivateClick = () => {
   useEvStore().activateEmailAccount(activationCode.value, onSuccess, onError, true);
 };
 const toast = useToast();
-const router = useRouter();
+// const router = useRouter();
 const onSuccess = () => {
   toast.success('Account activated');
   goTo_EvOwnerDashboardView();

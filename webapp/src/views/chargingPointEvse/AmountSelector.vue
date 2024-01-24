@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {computed, ref} from "vue";
-import IconComponent from "@/components/features/IconComponent.vue";
+// import IconComponent from "@/components/features/IconComponent.vue";
 import BackCloseBar from "@/components/BackCloseBar.vue";
 import {Tariff} from "@/models/tariff";
 

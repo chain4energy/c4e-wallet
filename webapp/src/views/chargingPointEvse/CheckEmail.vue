@@ -16,7 +16,7 @@
 
 import BackCloseBar from "@/components/BackCloseBar.vue";
 
-const props = defineProps({
+defineProps({
     providedEmail: {
       type: String,
       required: true

@@ -61,9 +61,9 @@ function next(){
  emit('onEmilProvided', email.value);
 }
 
-function onSucces(){
-  router.push('/ev/startChargingCheckEmail');
-}
+// function onSucces(){
+//   router.push('/ev/startChargingCheckEmail');
+// }
 
 
 </script>

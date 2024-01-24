@@ -57,7 +57,7 @@ import {Field, Form} from "vee-validate";
 import {object} from "yup";
 import * as Yup from "yup";
 import {ref} from "vue";
-import { useRouter} from "vue-router";
+// import { useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {pattern} from "@/utils/passwordPattern";
 import {useEvStore} from "@/store/ev.store";
@@ -89,7 +89,7 @@ function register(){
   }
 }
 
-const router = useRouter();
+// const router = useRouter();
 const toast = useToast();
 const onSuccessEmailSend = () => {
   toast.success('The message has been sent to the e-mail address provided');

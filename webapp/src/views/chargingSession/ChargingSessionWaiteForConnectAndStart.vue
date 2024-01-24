@@ -29,14 +29,10 @@ const props = defineProps({
   },
 });
 
-
-
-
 function connect(){
   connected.value = true;
 
 }
-
 
 </script>
 

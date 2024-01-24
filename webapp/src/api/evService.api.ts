@@ -136,7 +136,7 @@ export class EvServiceApi extends BaseApi {
     return this.evServiceGetCall<ChargePointConnectorStatusResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/status", lockscreen, "evChargePointConnectorLiveStatus");
   }
 
-  public prepare(path: string, login: string, amount: string, currency: string, lockscreen: boolean) {
+  public prepareAnonymousSession(path: string, login: string, amount: string, currency: string, lockscreen: boolean) {
     return this.evServicePostCall<StartChargingAnonumousRequest, StartChargingAnonumousResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/session/prepare_anonymous",
       {login, amount, currency}, lockscreen, "prepare");
   }

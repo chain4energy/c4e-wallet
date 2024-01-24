@@ -73,13 +73,13 @@
 
 <script setup lang="ts">
 import {useOwnerStore} from "@/store/owner.store";
-import ChargePointDictC from "@/components/ChargePointDictC.vue";
+// import ChargePointDictC from "@/components/ChargePointDictC.vue";
 import {ChargePointDict} from "@/models/chargePointDict";
-import {goTo_AddChargerView, goTo_ChargePointView} from "@/router/goToRoute";
+import {goTo_ChargePointView} from "@/router/goToRoute";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Dropdown from "primevue/dropdown";
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import {CreateTariffForChargePoint} from "@/models/createTariffForChargePoint";
 import ChargerTypeDetails from "@/components/ChargerTypeDetails.vue";
 import BackCloseBar from "@/components/BackCloseBar.vue";
@@ -126,12 +126,12 @@ const europeanCountries = [
 ];
 
 
-const countryOptions = computed(() => {
-  return europeanCountries.map(country => ({
-    name: country.name,
-    currency: country.currency
-  }));
-});
+// const countryOptions = computed(() => {
+//   return europeanCountries.map(country => ({
+//     name: country.name,
+//     currency: country.currency
+//   }));
+// });
 
 const currencies = ['PLN', 'EUR'];
 

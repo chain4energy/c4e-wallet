@@ -14,7 +14,7 @@
 
 import {ChargePointEvse} from "@/models/chargePointEvse";
 
-const props = defineProps({
+defineProps({
     chargePointConnector: {
       type:  Object as () => ChargePointEvse,
       required: true
