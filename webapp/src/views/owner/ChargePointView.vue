@@ -24,7 +24,7 @@
         <span class="font-[SevenSegment] text-[70px] text-lime-600">{{ Number(tariff.unitCost).toFixed(2) }}</span>
         <p class="font-[Audiowide] ml-2 mt-2 text-2xl">{{tariff.currency}}/{{tariff.unit}}</p>
       </div>
-      <div v-if="hide">
+      <div v-if="hide && chargeStore.selectedChargePoint">
         <h3>Status: {{ chargeStore.selectedChargePoint.status }}</h3>
         <h3>Integration type: {{ chargeStore.selectedChargePoint.integrationType }}</h3>
         <h3>Charge point id: {{ chargeStore.selectedChargePoint.id }}</h3>
@@ -41,7 +41,7 @@
         <TariffC :tariff="currentTariff" v-if="currentTariff" tg-id=""/>
       </div>
       <div class="w-3/4 flex flex-inline gap-4 justify-center">
-        <Button class="min-w-[50px] rounded-xl py-3 text-center text-lg font-semibold text-white flex justify-center bg-lime-600 shadow-lg shadow-gray-500">
+        <Button class="min-w-[50px] rounded-xl py-3 text-center text-lg font-semibold text-white flex justify-center bg-lime-600 shadow-lg shadow-gray-500" @click="goToEdit">
           <IconComponent name="FilePenLine"/>
         </Button>
         <div>
@@ -56,8 +56,7 @@
 import {useOwnerStore} from "@/store/owner.store";
 import {computed, onMounted, ref} from "vue";
 import TariffC from "@/components/TariffC.vue";
-import ChargePointConnectorC from "@/components/ChargePointConnectorC.vue";
-import {goTo_EvOwnerDashboardView} from "@/router/goToRoute";
+import {goTo_EditChargerView, goTo_EvOwnerDashboardView} from "@/router/goToRoute";
 import ChargerTypeDetails from "@/components/ChargerTypeDetails.vue";
 import {ChargePointDict} from "@/models/chargePointDict";
 import BackCloseBar from "@/components/BackCloseBar.vue";
@@ -66,14 +65,13 @@ import {ChargePointConnector} from "@/models/chargePointConnector";
 import {Tariff} from "@/models/tariff";
 import NextButton from "@/components/NextButton.vue";
 import IconComponent from "@/components/features/IconComponent.vue";
-import {useRouter} from "vue-router";
 
 const chargeStore = useOwnerStore();
 const hide = ref<boolean>(false);
 const currency = ref<string>('PLN');
 
-const tariff = computed<Tariff | undefined>(() => {
-  return chargeStore.getSelectedChargePoint?.tariffGroup?.tariffs.find(t => t.currency === currency.value);
+const tariff = computed<Tariff | null>(() => {
+  return chargeStore.selectedChargePoint?.tariffGroup.tariffs.find(t => t.currency === currency.value);
 })
 
 const currentTariff = computed(() => {
@@ -108,6 +106,12 @@ onMounted(() => {
     chargeStore.getQrCode(connector.value.chargePointId, connector.value.identifier);
   }
 });
+
+const goToEdit = () => {
+  chargeStore.selectedChargePointDict = chargerDetails.value;
+  chargeStore.selectedTariff = tariff.value;
+  goTo_EditChargerView();
+};
 </script>
 
 <style scoped lang="scss">
