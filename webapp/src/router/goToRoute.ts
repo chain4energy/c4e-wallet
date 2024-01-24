@@ -24,6 +24,10 @@ export function goTo_AddChargerView() {
   routerEv.push('/ev/addCharger');
 }
 
+export function goTo_EditChargerView() {
+  routerEv.push('/ev/editCharger');
+}
+
 export function goTo_AddTariffGroupView() {
   routerEv.push('/ev/addTariffGroup');
 }
