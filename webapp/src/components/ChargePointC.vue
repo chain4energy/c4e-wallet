@@ -5,7 +5,7 @@
     </template>
     <template #content>
       <div class="flex flex-inline items-center flex-wrap p-0">
-        <div class="flex flex-col flex-1 min-w-[200px] font-[Audiowide] sm:text-lg mb-2">
+        <div class="flex flex-col flex-1 min-w-[200px] font-weight-600 sm:text-lg mb-2">
           <span>Model - {{chargerDetails.name}}</span>
           <span>Connector - {{$t('PLUG_TYPES.' + chargerDetails.plugType)}}</span>
           <span>Status - <span :class="getStatusColor(chargePoint.status)">{{ $t('CHARGE_POINT_STATUS.' + chargePoint.status.toUpperCase()) }}</span></span>

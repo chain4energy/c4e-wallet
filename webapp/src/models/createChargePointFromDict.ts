@@ -1,7 +1,7 @@
 export interface CreateChargePointFromDict {
   sourceChargePointDictId?: number;
   accountId?: number;
-  id: string;
+  externalId: string;
   name: string;
   identificationCode?: string;
   locationId?: number;

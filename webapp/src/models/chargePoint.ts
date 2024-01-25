@@ -3,6 +3,7 @@ import {TariffGroup} from "@/models/tariffGroup";
 
 export interface ChargePoint{
   id: number;
+  externalId: number;
   accountId?: number;
   chargePointDictId?: number;
   name: string;

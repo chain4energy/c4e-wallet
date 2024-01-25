@@ -18,7 +18,7 @@
           <div>
             <span class="flex justify-center items-center w-full">
     <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
-              <InputText v-model="newCharger.id" :disabled='!!edit' placeholder="Charger ID" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+              <InputText v-model="newCharger.externalId" :disabled='!!edit' placeholder="Charger ID" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
             </span>
             <span class="flex justify-center items-center w-full">
     <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
@@ -101,7 +101,7 @@ onMounted(() => {
     newCharger.value = {
       sourceChargePointDictId: toEdit.chargePointDictId,
       accountId: toEdit.accountId,
-      id: toEdit.id,
+      externalId: toEdit.externalId,
       name: toEdit.name,
       locationId: toEdit?.locationId,
       tariffGroupId: toEdit.tariffGroupId
