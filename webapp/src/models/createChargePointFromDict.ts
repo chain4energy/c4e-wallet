@@ -3,7 +3,7 @@ export interface CreateChargePointFromDict {
   accountId?: number;
   id: string;
   name: string;
-  identificationCode: string;
+  identificationCode?: string;
   locationId?: number;
   tariffGroupId?: number;
 }

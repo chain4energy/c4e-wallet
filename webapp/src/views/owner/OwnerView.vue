@@ -10,7 +10,7 @@
         <div v-if="chargerStore.getChargePoints?.length === 0">
           <h1>You have no chargers</h1>
         </div>
-        <div v-else v-for="charger in chargerStore.getChargePoints" :key="charger.id" class="my-4 w-[85%]">
+        <div v-else v-for="charger in chargerStore.getChargePoints" :key="charger.id" class="my-4 w-[85%] mx-auto">
           <ChargePointC :charge-point="charger" :hide="hide"/>
         </div>
       </ScrollerWrapper>

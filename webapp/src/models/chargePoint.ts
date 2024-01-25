@@ -24,5 +24,7 @@ export interface ChargePoint{
 
 export enum ChargePointStatusType{
   AVAILABLE= 'AVAILABLE',
-  PREPARING='PREPARING'
+  PREPARING='PREPARING',
+  UNKNOWN='UNKNOWN',
+  Created='Created'
 }

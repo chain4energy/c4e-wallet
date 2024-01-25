@@ -5,11 +5,13 @@
         <BackCloseBar @back="handleBack"/>
         <h3 v-if="!chargerStore.selectedChargePointDict" class="font-[Audiowide] text-black text-4xl w-full text-center -mt-5 mb-5">{{$t('HEADERS.ADD_CHARGER')}}</h3>
       </div>
+      <!-- Step 1, model selector -->
       <ScrollerWrapper v-if="!chargerStore.selectedChargePointDict">
-        <div class="border-2 rounded-xl p-2 border-lime-600 shadow-lg shadow-gray-500 cursor-pointer" v-for="chargePointDict in chargerStore.getChargePointDicts" :key="chargePointDict.name">
+        <div class="border-2 rounded-xl p-2 border-lime-600 shadow-lg shadow-gray-500 cursor-pointer my-4 w-[85%] mx-auto" v-for="chargePointDict in chargerStore.getChargePointDicts" :key="chargePointDict.name">
           <ChargerTypeDetails :charger-details="chargePointDict" @click="selectChargePointDict(chargePointDict)"/>
         </div>
       </ScrollerWrapper>
+      <!-- Step 2, fields -->
       <div class="-mt-8" v-else>
         <ChargerTypeDetails :charger-details="chargerStore.selectedChargePointDict"/>
         <div v-if="chargerStore.selectedChargePointDict">
@@ -21,10 +23,6 @@
             <span class="flex justify-center items-center w-full">
     <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
               <InputText v-model="newCharger.name" placeholder="Charger Name" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
-            </span>
-            <span class="flex justify-center items-center w-full">
-    <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
-              <InputText v-model="newCharger.identificationCode" placeholder="Identification Code" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
             </span>
           </div>
           <div class="w-[70%] mx-auto">
@@ -52,12 +50,9 @@
     <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
               <InputText v-model="createTariffForChargePoint.unitCost" placeholder="Price per 1kWh" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
           </span>
-          <span class="flex justify-center items-center w-full">
-    <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
-              <InputText v-model="createTariffForChargePoint.name" placeholder="Tariff Name" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
-          </span>
         </div>
       </div>
+      <!-- Buttons -->
       <div class="w-full flex flex-inline gap-4 justify-center mt-4">
         <Button class="min-w-[50px] rounded-xl py-3 text-center text-lg font-semibold text-white flex justify-center bg-red-600 shadow-lg shadow-gray-500" @click="deleteChargePoint" v-if="chargerStore.selectedChargePointDict && edit">
           <IconComponent name="Trash"/>
@@ -108,10 +103,9 @@ onMounted(() => {
       accountId: toEdit.accountId,
       id: toEdit.id,
       name: toEdit.name,
-      identificationCode: toEdit.identificationCode,
       locationId: toEdit?.locationId,
       tariffGroupId: toEdit.tariffGroupId
-    }
+    } as CreateChargePointFromDict
     const tariff = useOwnerStore().selectedTariff;
     editedTariffId.value = tariff?.id;
     if (tariff) {
@@ -188,7 +182,6 @@ const handleEdit = async () => {
       identificationCode: newCharger.value.identificationCode,
       tariffGroupId: newCharger.value.tariffGroupId,
 
-      codeType: toEdit?.codeType,
       integrationType: toEdit?.integrationType,
       integrationVersion: toEdit?.integrationVersion,
       addressId: toEdit?.addressId,
@@ -215,9 +208,9 @@ const handleEdit = async () => {
 }
 
 const deleteChargePoint = () => {
-  const id = useOwnerStore().getSelectedChargePoint?.id;
-  if (id) {
-    useOwnerStore().deleteChargePoint(id, true, () => {
+  const ch = useOwnerStore().getSelectedChargePoint;
+  if (ch) {
+    useOwnerStore().deleteChargePoint(ch, true, () => {
       useToast().success('Charger has been deleted');
       goTo_EvOwnerDashboardView();});
   }

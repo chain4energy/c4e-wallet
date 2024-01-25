@@ -5,7 +5,7 @@
         <Checkbox v-model="useInterval" :binary="true"/>
         <label for="useInterval" class="ml-2"> turn on interval </label>
       </div>
-      <ChargingSessionInitPayment v-if="chargingSessionStore.getSessionInfo?.state == SessionState.CREATED" @initPayment="initPayment" amount="50" currency="PLN"></ChargingSessionInitPayment>
+      <ChargingSessionInitPayment v-if="chargingSessionStore.getSessionInfo?.state == SessionState.CREATED" @initPayment="initPayment" amount="50" currency="EUR"></ChargingSessionInitPayment>
       <ChargingSessionWaitForPayment v-if="chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_RESERVATION_CONFIRMATION "
                                      :sessionInfo="chargingSessionStore.getSessionInfo"></ChargingSessionWaitForPayment>
       <ChargingSessionWaiteForConnectAndStart

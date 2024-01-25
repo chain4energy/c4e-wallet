@@ -11,7 +11,7 @@
       </div>
       <div v-if="evse?.qrCodeLink" >
         <h3 class="font-[Audiowide] mt-3 text-2xl sm:text-3xl w-full text-center">{{ chargeStore.getSelectedChargePoint.name }}</h3>
-        <a :href="evse.qrCodeLink" class="hover:bg-lime-600/50 transition block p-3 rounded-xl">
+        <a :href="evse.qrCodeLink" class="hover:bg-lime-600/50 transition p-3 rounded-xl flex justify-center items-center">
           <QrcodeVue :value="evse.qrCodeLink" size="200" :render-as="'svg'" />
         </a>
         <!--          <img-->
@@ -68,10 +68,10 @@ import IconComponent from "@/components/features/IconComponent.vue";
 
 const chargeStore = useOwnerStore();
 const hide = ref<boolean>(false);
-const currency = ref<string>('PLN');
+const currency = ref<string>('EUR');
 
 const tariff = computed<Tariff | null>(() => {
-  return chargeStore.selectedChargePoint?.tariffGroup.tariffs.find(t => t.currency === currency.value);
+  return chargeStore.selectedChargePoint?.tariffGroup?.tariffs.find(t => t.currency === currency.value);
 })
 
 const currentTariff = computed(() => {

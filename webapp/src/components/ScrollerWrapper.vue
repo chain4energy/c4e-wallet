@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
+import ScrollPanel from 'primevue/scrollpanel';
+
 
 const scrollElement = ref();
 const handleScroll = () => {
@@ -26,9 +28,9 @@ const atBottom = ref<boolean>(true);
 <template>
   <div class="flex flex-col justify-evenly items-center h-full overflow-scroll w-full">
     <span class="w-1/3 h-[5px] mb-2 sm:mb-4" :class="atTop ? 'bg-gray-500' : 'bg-lime-600'"/>
-    <div class="w-full flex flex-1 flex-col items-center max-h-full overflow-scroll" ref="scrollElement" @scroll="handleScroll">
+    <ScrollPanel class="w-full flex-col items-center max-h-[90%]" ref="scrollElement" @scroll="handleScroll">
       <slot/>
-    </div>
+    </ScrollPanel>
     <span class="w-1/3 h-[5px] mt-2 sm:mt-4" :class="atBottom ? 'bg-gray-500' : 'bg-lime-600'"/>
   </div>
 </template>

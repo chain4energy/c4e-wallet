@@ -10,7 +10,7 @@ const priceList = computed(() => {
     return [50, 75, 100];
   }
   else {
-    return [10, 20, 30];
+    return [20, 30, 40];
   }
 });
 
