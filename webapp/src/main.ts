@@ -26,6 +26,8 @@ import Dropdown from "primevue/dropdown";
 
 // https://www.npmjs.com/package/vue-svg-inline-plugin
 import VueSvgInlinePlugin from "vue-svg-inline-plugin";
+import {applyStorage} from "axios-jwt/src/applyStorage";
+import {getBrowserSessionStorage} from "axios-jwt";
 
 const toastOptions: PluginOptions = {
     // You can set your default options here
@@ -49,6 +51,8 @@ pinia.use(piniaPluginPersistedstate);
 console.log("start ev/main.ts");
 const appEv = createApp(EvApp);
 
+// init storage for jwt - use session storage
+applyStorage(getBrowserSessionStorage());
 
 // use Vue plugin with options
 VueSvgInlinePlugin.install?.(appEv, {
@@ -70,3 +74,5 @@ appEv.use(routerEv)
   .component('Dropdown', Dropdown)
 ;
 appEv.mount('#app');
+
+

@@ -35,6 +35,7 @@ import {CreateTariffForChargePoint, CreateTariffForChargePointResponse} from "@/
 import {ChargePointChangeActiveState} from "@/models/ChargePointChangeActiveState";
 import {HttpLink} from "@/models/httpLink";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
+import {AccountInfoResponseDto} from "@/models/user/AccountInfoResponseDto";
 
 
 export class EvServiceApi extends BaseApi {
@@ -111,6 +112,14 @@ export class EvServiceApi extends BaseApi {
   public async authEmailAccount(emailAccount: PasswordAuthenticateRequest, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<EvServiceApplicationError>>> {
     return this.evServicePostCall<PasswordAuthenticateRequest, Jwt, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.LOGIN_WITH_EMAIL_PASSWORD, emailAccount, lockscreen, "authEmailAccount");
   }
+
+  public async getAccountInfo( lockscreen: boolean): Promise<RequestResponse<AccountInfoResponseDto, ErrorData<EvServiceApplicationError>>> {
+    return this.evServiceGetCall<AccountInfoResponseDto, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.ACCOUNT_INFO, lockscreen, "getAccountInfo");
+  }
+
+  // public async refreshToken(refreshToken: string, lockscreen: boolean): Promise<RequestResponse<Jwt, ErrorData<EvServiceApplicationError>>> {
+  //   return this.evServiceEmptyPostCall<Jwt, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.REFRESH_TOKEN, lockscreen, "refreshToken");
+  // }
 
   public async createEmailAccount(createAccountRequest: CreateAccountRequest, lockscreen: boolean): Promise<RequestResponse<AccountInfo, ErrorData<EvServiceApplicationError>>> {
     return this.evServicePostCall<PasswordAuthenticateRequest, AccountInfo, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.EMAIL_CREATE_ACCOUNT, createAccountRequest, lockscreen, "createEmailAccount");

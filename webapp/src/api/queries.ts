@@ -6,6 +6,7 @@ export default {
     ACTIVATE_ACCOUNT: '/api/activate/{activationCode}',
     REFRESH_TOKEN: '/api/auth/refresh',
     DECODE_RESOURCE_URL: 'api/xxxxx/decode',
-    CENTRAL_SYSTEM_SERVICE: '/api/central-system-service'
+    CENTRAL_SYSTEM_SERVICE: '/api/central-system-service',
+    ACCOUNT_INFO: '/api/accountInfo'
   }
 };

@@ -58,6 +58,7 @@ export interface JsonQueriesEv{
   REFRESH_TOKEN: string;
   DECODE_RESOURCE_URL: string;
   CENTRAL_SYSTEM_SERVICE: string;
+  ACCOUNT_INFO:string;
 }
 
 export interface Configuration {

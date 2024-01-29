@@ -81,6 +81,7 @@ export class QueriesEv implements JsonQueriesEv{
   REFRESH_TOKEN: string;
   DECODE_RESOURCE_URL: string;
   CENTRAL_SYSTEM_SERVICE: string;
+  ACCOUNT_INFO:string;
   constructor (
     queries : JsonQueriesEv | undefined
   ) {
@@ -91,6 +92,7 @@ export class QueriesEv implements JsonQueriesEv{
     this.REFRESH_TOKEN = queries?.REFRESH_TOKEN ? queries?.REFRESH_TOKEN : queriesDefaults.ev.REFRESH_TOKEN;
     this.DECODE_RESOURCE_URL = queries?.DECODE_RESOURCE_URL ? queries?.DECODE_RESOURCE_URL : queriesDefaults.ev.DECODE_RESOURCE_URL;
     this.CENTRAL_SYSTEM_SERVICE = queries?.CENTRAL_SYSTEM_SERVICE ? queries?.CENTRAL_SYSTEM_SERVICE : queriesDefaults.ev.CENTRAL_SYSTEM_SERVICE;
+    this.ACCOUNT_INFO = queries?.ACCOUNT_INFO ? queries?.ACCOUNT_INFO : queriesDefaults.ev.ACCOUNT_INFO;
   }
 }
 

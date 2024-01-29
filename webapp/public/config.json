@@ -450,7 +450,8 @@
       "EMAIL_CREATE_ACCOUNT": "/api/login-service/v0.1/register",
       "ACTIVATE_ACCOUNT": "/api/login-service/v0.1/activate/{activationCode}",
       "REFRESH_TOKEN": "/api/login-service/v0.1/refresh",
-      "CENTRAL_SYSTEM_SERVICE":"/api/central-system-service"
+      "CENTRAL_SYSTEM_SERVICE":"/api/central-system-service",
+      "ACCOUNT_INFO": "/api/login-service/v0.1/accountInfo"
     },
     "operationGas": {
       "vote": 250000,

@@ -88,6 +88,20 @@ export const useEvStore = defineStore({
       }
     },
 
+    // async refreshToken(){
+    //   await apiFactory.evServiceApi().refreshToken()
+    // },
+
+    async getAccountInfo(onSuccess: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true){
+      await apiFactory.evServiceApi().getAccountInfo(lockscreen).then(responseDate => {
+        if (responseDate.isSuccess()) {
+          onSuccess();
+        } else {
+          onFail?.(responseDate.error);
+        }
+      });
+    },
+
     async authEmailAccount(emailAccount: PasswordAuthenticateRequest, onSuccess: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true) {
       await apiFactory.evServiceApi().authEmailAccount(emailAccount, lockscreen).then(responseDate => {
         if (responseDate.isSuccess()) {

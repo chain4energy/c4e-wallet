@@ -1,9 +1,10 @@
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosResponseHeaders} from 'axios';
-import {applyAuthTokenInterceptor, getBrowserSessionStorage, TokenRefreshRequest} from "axios-jwt";
+import {applyAuthTokenInterceptor, getAccessToken, getBrowserSessionStorage, getRefreshToken, setAuthTokens, TokenRefreshRequest} from "axios-jwt";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
 import {EvServiceApi} from "@/api/evService.api";
 import {IAuthTokenInterceptorConfig} from "axios-jwt/src/IAuthTokenInterceptorConfig";
+import {useEvStore} from "@/store/ev.store";
 
 let testfileName = '';
 
@@ -28,8 +29,20 @@ class ApiFactory {
   }
 
   requestRefresh: TokenRefreshRequest = async (refreshToken: string) => {
-    return axios.post(this.getRefreshTokenUrl(), { refreshToken })
-      .then(response => response.data.access_token);
+    console.log("TokenRefreshRequest");
+     return axios.post(this.getRefreshTokenUrl(), undefined, {
+      headers: {
+        'Authorization': `Bearer ${refreshToken}`
+      }
+    })
+      .then(response => {
+        console.log("TokenRefreshRequest OK!!!");
+        setAuthTokens({
+          accessToken: response.data.access_token.token,
+          refreshToken: response.data.refresh_token.token
+        });
+        return response.data.access_token;
+      });
   };
 
   private authTokenInterceptorConfig: IAuthTokenInterceptorConfig = {
