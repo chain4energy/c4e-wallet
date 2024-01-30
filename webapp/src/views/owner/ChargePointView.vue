@@ -6,7 +6,7 @@
     </div>
     <div v-else class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full max-h-full p-2 sm:p-5 flex flex-col justify-between items-center">
       <div class="w-full">
-        <BackCloseBar @back="goTo_EvOwnerDashboardView"/>
+        <BackCloseBar @back="goTo_EvOwnerDashboardView" hamburger/>
         <ChargerTypeDetails :charger-details="chargerDetails" class="w-3/4 mx-auto"/>
       </div>
       <div v-if="evse?.qrCodeLink" >
@@ -45,7 +45,7 @@
           <IconComponent name="FilePenLine"/>
         </Button>
         <div>
-          <NextButton text="Download QR"/>
+          <NextButton text="Download QR" @clicked="downloadQRCode"/>
         </div>
       </div>
     </div>
@@ -61,6 +61,7 @@ import ChargerTypeDetails from "@/components/ChargerTypeDetails.vue";
 import {ChargePointDict} from "@/models/chargePointDict";
 import BackCloseBar from "@/components/BackCloseBar.vue";
 import QrcodeVue from "qrcode.vue";
+import QRCode from 'qrcode';
 import {ChargePointEvse} from "@/models/chargePointEvse";
 import {Tariff} from "@/models/tariff";
 import NextButton from "@/components/NextButton.vue";
@@ -116,6 +117,20 @@ const changeChargePointActiveState = () => {
 const deleteChargePoint = (chargePoint: ChargePoint | null) => {
   if (chargePoint) {
     chargeStore.deleteChargePoint(chargePoint, true, goTo_EvOwnerDashboardView);
+  }
+};
+
+const downloadQRCode = async () => {
+  const link = evse.value?.qrCodeLink;
+  if (link) {
+    await QRCode.toDataURL(link).then(r => {
+      if (r) {
+        const link = document.createElement('a');
+        link.href = r;
+        link.download = 'qr-code.png';
+        link.click();
+      }
+    });
   }
 };
 

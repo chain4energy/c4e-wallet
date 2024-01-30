@@ -48,7 +48,7 @@
           </div>
           <span class="flex justify-center items-center w-full">
     <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
-              <InputText v-model="createTariffForChargePoint.unitCost" placeholder="Price per 1kWh" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+              <InputNumber v-model="createTariffForChargePoint.unitCost" :minFractionDigits="2" :maxFractionDigits="2" placeholder="Price per 1kWh" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
           </span>
         </div>
       </div>
@@ -61,7 +61,7 @@
           <IconComponent name="Undo2"/>
         </Button>
         <div  v-if="chargerStore.selectedChargePointDict">
-          <NextButton text="Edit charger" icon="Pen" @clicked="handleEdit()" v-if="edit"/>
+          <NextButton text="Submit" icon="Save" @clicked="handleEdit()" v-if="edit"/>
           <NextButton text="Add charger" icon="Plus" @clicked="createChargerFromDict()" v-else/>
         </div>
         <NextButton text="Back" icon="Undo2" @clicked="router.back()" v-else/>
@@ -76,6 +76,7 @@ import {ChargePointDict} from "@/models/chargePointDict";
 import { goTo_ChargePointView, goTo_EvOwnerDashboardView} from "@/router/goToRoute";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
+import InputNumber from "primevue/inputnumber";
 import Dropdown from "primevue/dropdown";
 import {onMounted, ref} from "vue";
 import {CreateTariffForChargePoint} from "@/models/createTariffForChargePoint";
@@ -127,8 +128,7 @@ const createTariffForChargePoint = ref<CreateTariffForChargePoint>({
   currency: "PLN",
   name: "",
   unit: "kWh",
-  unitCost: "",
-});
+} as CreateTariffForChargePoint);
 
 const newCharger = ref({} as CreateChargePointFromDict);
 
@@ -166,6 +166,7 @@ const europeanCountries = [
 const currencies = ['PLN', 'EUR'];
 
 const createChargerFromDict = async () => {
+  createTariffForChargePoint.value.unitCost = String(createTariffForChargePoint.value.unitCost);
   chargerStore.createChargePointFromDict = newCharger.value;
   await chargerStore.createChargePointFromDictFn(true);
   if (chargerStore.selectedChargePoint) {
@@ -174,6 +175,8 @@ const createChargerFromDict = async () => {
 };
 
 const handleEdit = async () => {
+  createTariffForChargePoint.value.unitCost = String(createTariffForChargePoint.value.unitCost);
+
   const toEdit = useOwnerStore().getSelectedChargePoint;
   const tariff = useOwnerStore().selectedTariff;
 
