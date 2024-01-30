@@ -193,7 +193,7 @@ export class EvServiceApi extends BaseApi {
 
   public updateChargePoint(cpId: number | string, updateChargePoint: UpdateChargePoint, lockscreen: boolean): Promise<RequestResponse<ChargePoint, ErrorData<EvServiceApplicationError>>> {
     const url = formatString(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/{cpId}', {cpId});
-    return this.evServicePostCall<UpdateChargePoint, ChargePoint, EvServiceApplicationError>(url, updateChargePoint, lockscreen, "updateChargePoint");
+    return this.evServicePutCall<UpdateChargePoint, ChargePoint, EvServiceApplicationError>(url, updateChargePoint, lockscreen, "updateChargePoint");
   }
 
   public deleteChargePoint(chargePoint: ChargePoint, lockscreen: boolean): Promise<RequestResponse<void, ErrorData<EvServiceApplicationError>>> {

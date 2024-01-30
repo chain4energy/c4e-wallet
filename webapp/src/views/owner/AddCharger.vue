@@ -189,7 +189,8 @@ const handleEdit = async () => {
       integrationVersion: toEdit?.integrationVersion,
       addressId: toEdit?.addressId,
       locationId: toEdit?.locationId,
-      authRequired: toEdit?.authRequired
+      authRequired: toEdit?.authRequired,
+      chargingPointOperatorRoleId: toEdit?.chargingPointOperatorRoleId
     } as UpdateChargePoint;
 
   const tariffToSend = {
@@ -199,20 +200,15 @@ const handleEdit = async () => {
 
   const chargerId = toEdit?.id;
   const tariffId = tariff?.id
-  if (chargerId) {
-    await chargerStore.updateChargePoint(chargerId, chargePointToSend, true).then(() => {
+  if (chargerId && chargePointToSend.tariffGroupId && tariffId) {
+    await chargerStore.updateChargePoint(chargerId, chargePointToSend, true);
+
+    await chargerStore.updateTariff(chargePointToSend.tariffGroupId, tariffId, tariffToSend, true, () => {
       chargerStore.fetchAllChargeStoreData().then(() => {
         chargerStore.selectedChargePoint = chargerStore.chargePoints.find(el => el.id === chargerId);
         goTo_ChargePointView();
       });
-    });
-
-    // await chargerStore.updateTariff(chargePointToSend.tariffGroupId, tariffId, tariffToSend, true, () => {
-    //   chargerStore.fetchAllChargeStoreData().then(() => {
-    //     chargerStore.selectedChargePoint = chargerStore.chargePoints.find(el => el.id === chargerId);
-    //     goTo_ChargePointView();
-    //   });
-    // })
+    })
   }
 }
 

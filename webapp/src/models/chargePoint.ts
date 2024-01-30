@@ -8,8 +8,6 @@ export interface ChargePoint{
   deviceId?: string;
   chargePointDictId?: number;
   name: string;
-  // identificationCode: string;
-  // codeType: string;
   integrationType: string;
   integrationVersion?: string;
   tariffGroupId?: number;
@@ -22,6 +20,7 @@ export interface ChargePoint{
   chargePointEvses?: ChargePointEvse[];
   tariffGroup:TariffGroup;
   url:string;
+  chargingPointOperatorRoleId?: number;
 }
 
 export enum ChargePointStatusType{

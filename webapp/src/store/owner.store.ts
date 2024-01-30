@@ -168,7 +168,7 @@ export const useOwnerStore = defineStore({
       const response = await apiFactory.evServiceApi().createTariff(tgId, createTariff, lockscreen);
       if (response.isSuccess() && response.data) {
         const tgIndex = this.tariffGroups.findIndex(tg => tg.id == tgId);
-        if (!this.tariffGroups[tgIndex].tariffs) {
+        if (!this.tariffGroups[tgIndex]?.tariffs) {
           this.tariffGroups[tgIndex].tariffs = [];
         }
         if (tgIndex !== -1) {
@@ -181,14 +181,6 @@ export const useOwnerStore = defineStore({
     async updateTariff(tgId: number, tId: number, updateTariff: UpdateTariff, lockscreen = true, onSuccess: () => void) {
       const response = await apiFactory.evServiceApi().updateTariff(tgId, tId, updateTariff, lockscreen);
       if (response.isSuccess() && response.data) {
-        const tgIndex = this.tariffGroups.findIndex(tg => tg.id === tgId);
-        if (tgIndex !== -1) {
-          const tariffIndex = this.tariffGroups[tgIndex].tariffs.findIndex(t => t.id === tId);
-          if (tariffIndex !== -1) {
-            this.tariffGroups[tgIndex].tariffs[tariffIndex] = response.data;
-          }
-        }
-        this.selectedTariff = null;
         onSuccess();
       }
     },
