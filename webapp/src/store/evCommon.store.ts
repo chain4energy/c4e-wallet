@@ -55,6 +55,9 @@ export const useEvCommonStore = defineStore({
           evServiceErrorHandler.handleError(response.error,  EvServiceContext.DECODE_RESOURCE_LINK, onFail);
         }
       });
+    },
+    logout() {
+      this.loggedIn = false;
     }
   },
   getters: {

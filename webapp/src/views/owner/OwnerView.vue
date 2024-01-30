@@ -3,7 +3,7 @@
     <button @click="hide=!hide" class="border-1 bg-gray-200 z-20 absolute top-0 left-0">DEV - Details</button>
     <div class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full max-h-full p-2 sm:p-5 flex flex-col">
       <div class="w-full">
-        <BackCloseBar hamburger/>
+        <BackCloseBar hamburger hide-back/>
         <h3 class="font-[Audiowide] text-black text-4xl w-full text-center -mt-5 mb-5">{{$t('HEADERS.YOUR_CHARGERS')}}</h3>
       </div>
       <ScrollerWrapper >

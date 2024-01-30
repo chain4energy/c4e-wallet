@@ -12,21 +12,24 @@
         </div>
       </ScrollerWrapper>
       <!-- Step 2, fields -->
-      <div class="-mt-8" v-else>
+      <div class="-mt-8 flex flex-col justify-evenly h-full" v-else>
         <ChargerTypeDetails :charger-details="chargerStore.selectedChargePointDict"/>
         <div v-if="chargerStore.selectedChargePointDict">
           <div>
             <span class="flex justify-center items-center w-full">
     <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
-              <InputText v-model="newCharger.deviceId" :disabled='!!edit' placeholder="Charger ID" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+              <InputText v-model="newCharger.deviceId" :disabled='!!edit' placeholder="Charger ID" class="border-2 border-lime-600 my-2 p-3 rounded-lg w-[90%]"/>
             </span>
             <span class="flex justify-center items-center w-full">
     <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
-              <InputText v-model="newCharger.name" placeholder="Charger Name" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+              <InputText v-model="newCharger.name" placeholder="Charger Name" class="border-2 border-lime-600 my-2 p-3 rounded-lg w-[90%]"/>
             </span>
           </div>
-          <div class="w-[70%] mx-auto">
-            <Dropdown v-model="createTariffForChargePoint.currency" :options="currencies" optionLabel="name" placeholder="Select currency" class="w-full border-b-2 my-4">
+          <div class="w-[90%] mx-auto">
+            <Dropdown v-model="createTariffForChargePoint.currency" :options="currencies" optionLabel="name" placeholder="Select currency" class="w-full mx-auto border-b-2 my-4 outline-0 focus:border-2 focus:border-lime-600/50"
+                      :pt="{item: ({ props, state, context }) => ({
+                          class: context.selected ? 'bg-lime-600/50 text-inherit' : context.focused ? 'bg-lime-600/30' : undefined})}"
+            >
               <template #value="slotProps">
                 <div v-if="slotProps.value" class="flex justify-between">
               <span class="flex flex-inline">
@@ -48,7 +51,7 @@
           </div>
           <span class="flex justify-center items-center w-full">
     <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
-              <InputNumber v-model="createTariffForChargePoint.unitCost" :minFractionDigits="2" :maxFractionDigits="2" placeholder="Price per 1kWh" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+              <InputNumber v-model="createTariffForChargePoint.unitCost" :minFractionDigits="2" :maxFractionDigits="2" placeholder="Price per 1kWh" :suffix='` ${createTariffForChargePoint.currency}/kWh`' class="border-2 border-lime-600 my-2 p-3 rounded-lg w-[90%]"/>
           </span>
         </div>
       </div>
@@ -61,7 +64,7 @@
           <IconComponent name="Undo2"/>
         </Button>
         <div  v-if="chargerStore.selectedChargePointDict">
-          <NextButton text="Submit" icon="Save" @clicked="handleEdit()" v-if="edit"/>
+          <NextButton text="Save" icon="Save" @clicked="handleEdit()" v-if="edit"/>
           <NextButton text="Add charger" icon="Plus" @clicked="createChargerFromDict()" v-else/>
         </div>
         <NextButton text="Back" icon="Undo2" @clicked="router.back()" v-else/>
