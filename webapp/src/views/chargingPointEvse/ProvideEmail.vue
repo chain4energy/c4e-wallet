@@ -41,15 +41,15 @@ import BackCloseBar from "@/components/BackCloseBar.vue";
 import {Tariff} from "@/models/tariff";
 import InputText from "primevue/inputtext";
 import Checkbox from "primevue/checkbox";
-import IconComponent from "@/components/features/IconComponent.vue";
 import NextButton from "@/components/NextButton.vue";
-const email = ref<string>();
+
 const router = useRouter();
 
-
-const emit = defineEmits(['onEmilProvided','back']);
+const emit = defineEmits(['onEmailProvided','back']);
 const props = defineProps<{tariff: Tariff, price: number}>();
+
 const rodo = ref<boolean>(false);
+const email = ref<string>();
 
 
 const schema = object().shape({
@@ -58,12 +58,8 @@ const schema = object().shape({
 });
 
 function next(){
- emit('onEmilProvided', email.value);
+ emit('onEmailProvided', email.value);
 }
-
-// function onSucces(){
-//   router.push('/ev/startChargingCheckEmail');
-// }
 
 
 </script>

@@ -24,17 +24,17 @@
         <span class="font-[SevenSegment] text-[70px] text-lime-600">{{ Number(tariff.unitCost).toFixed(2) }}</span>
         <p class="font-[Audiowide] ml-2 mt-2 text-2xl">{{tariff.currency}}/{{tariff.unit}}</p>
       </div>
-      <div v-if="hide && chargeStore.selectedChargePoint">
-        <h3>Status: {{ chargeStore.selectedChargePoint.status }}</h3>
+      <div v-if="hide && selectedChargePoint">
+        <h3>Status: {{ selectedChargePoint.status }}</h3>
 <!--        <h3>Integration type: {{ chargeStore.selectedChargePoint.integrationType }}</h3>-->
-        <h3>Charge point id: {{ chargeStore.selectedChargePoint.id }}</h3>
-        <h3>Connectors number: {{ chargeStore.selectedChargePoint.chargePointEvses?.length }}</h3>
-        <Button @click="deleteChargePoint(chargeStore.selectedChargePoint)">Delete</Button>
+        <h3>Charge point id: {{ selectedChargePoint.id }}</h3>
+        <h3>Connectors number: {{ selectedChargePoint.chargePointEvses?.length }}</h3>
+        <Button @click="deleteChargePoint(selectedChargePoint)">Delete</Button>
         <Button @click="changeChargePointActiveState()">
-          <span v-if="chargeStore.selectedChargePoint.active">
+          <span v-if="selectedChargePoint.active">
             Disable
           </span>
-          <span v-if="!chargeStore.selectedChargePoint.active">
+          <span v-else>
             Enable
           </span>
         </Button>
@@ -71,14 +71,39 @@ const chargeStore = useOwnerStore();
 const hide = ref<boolean>(false);
 const currency = ref<string>('EUR');
 
+const selectedChargePoint = computed(() => {
+  return chargeStore.getSelectedChargePoint;
+})
+
 const tariff = computed<Tariff | null>(() => {
-  return chargeStore.selectedChargePoint?.tariffGroup?.tariffs.find(t => t.currency === currency.value);
+  return selectedChargePoint.value?.tariffGroup?.tariffs.find(t => t.currency === currency.value);
 })
 
 const currentTariff = computed(() => {
-  const cpId = chargeStore.getSelectedChargePoint?.id;
+  const cpId = selectedChargePoint.value?.id;
   return cpId ? chargeStore.getTariffForChargePoint(cpId) : null;
 });
+
+const chargerDetails = computed<ChargePointDict>(() => {
+  return useOwnerStore().getChargePointDicts?.find(el => el.id === selectedChargePoint.value?.chargePointDictId);
+});
+
+const evse = computed<ChargePointEvse | undefined>(() => {
+  return selectedChargePoint.value?.chargePointEvses?.[0];
+});
+
+onMounted(() => {
+  const evseInside = evse.value;
+  if (evseInside && !evseInside.qrCodeLink) {
+    chargeStore.getQrCode(evseInside);
+  }
+});
+
+const goToEdit = () => {
+  chargeStore.selectedChargePointDict = chargerDetails.value;
+  chargeStore.selectedTariff = tariff.value;
+  goTo_EditChargerView();
+};
 
 const changeChargePointActiveState = () => {
   if (!chargeStore.selectedChargePoint) return console.error("No charge point selected");
@@ -94,25 +119,6 @@ const deleteChargePoint = (chargePoint: ChargePoint | null) => {
   }
 };
 
-const chargerDetails = computed<ChargePointDict>(() => {
-  return useOwnerStore().getChargePointDicts?.find(el => el.id === chargeStore.getSelectedChargePoint?.chargePointDictId);
-});
-
-const evse = computed<ChargePointEvse | undefined>(() => {
-  return chargeStore.getSelectedChargePoint?.chargePointEvses?.[0];
-});
-
-onMounted(() => {
-  if (evse.value && !evse.value?.qrCodeLink) {
-    chargeStore.getQrCode(evse.value);
-  }
-});
-
-const goToEdit = () => {
-  chargeStore.selectedChargePointDict = chargerDetails.value;
-  chargeStore.selectedTariff = tariff.value;
-  goTo_EditChargerView();
-};
 </script>
 
 <style scoped lang="scss">

@@ -7,18 +7,9 @@
 </template>
 
 <script setup lang="ts">
-// import {PropType} from "vue";
-// import {SessionInfo} from "@/models/sessionInfo";
 import HourglassSVG from "@/components/svg/HourglassSVG.vue";
 
 const emit = defineEmits(['initPayment']);
-
-// const props = defineProps({
-//   sessionInfo: {
-//     type: Object as PropType<SessionInfo> ,
-//     required: false
-//   },
-// });
 
 </script>
 

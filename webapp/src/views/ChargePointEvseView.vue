@@ -3,7 +3,7 @@
     <div class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full p-2 sm:p-5 flex flex-col justify-between">
       <charge-point-c-new :charge-point="evChargePointEvseStore.chargePoint as ChargePoint" @next="goToAmountSelector" v-if="pageState==State.INIT"/>
       <AmountSelector v-if="pageState==State.AMOUNT_SELECTOR" @next="goToProvideEmail" :tariff="selectedTariff" @back="goToPointSelector"/>
-      <ProvideEmail v-if="pageState==State.PROVIDE_EMAIL" @onEmilProvided="emilProvided" :price="selectedPrice" :tariff="selectedTariff" @back="goToAmountSelector"></ProvideEmail>
+      <ProvideEmail v-if="pageState==State.PROVIDE_EMAIL" @onEmailProvided="emailProvided" :price="selectedPrice" :tariff="selectedTariff" @back="goToAmountSelector"></ProvideEmail>
       <CheckEmail v-if="pageState==State.CHECK_EMAIL" :provided-email="providedEmail" @back="goToProvideEmail"></CheckEmail>
     </div>
   </div>
@@ -83,7 +83,7 @@ function goToAmountSelector(tariff?: Tariff) {
   pageState.value = State.AMOUNT_SELECTOR;
 }
 
-function emilProvided(email: string) {
+function emailProvided(email: string) {
   console.log("next step -> goToCheckEmail");
   if (email) {
     providedEmail.value = email;
@@ -94,7 +94,7 @@ function emilProvided(email: string) {
 }
 
 function onSuccessPrepareSession() {
-  toast.success("We send email to you");
+  toast.success("We've sent an email to you");
 }
 
 </script>

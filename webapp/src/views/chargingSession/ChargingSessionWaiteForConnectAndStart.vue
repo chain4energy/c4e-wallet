@@ -12,15 +12,9 @@
 
 <script setup lang="ts">
 
-import {SessionInfo, SessionState} from "@/models/sessionInfo";
-import {ErrorData} from "@/api/base.api";
+import {SessionInfo} from "@/models/sessionInfo";
 import {PropType, ref} from "vue";
-import {useEvChargingSessionStore} from "@/store/evChargingSession.store";
-import {EvServiceApplicationError} from "@/models/evServiceErrors";
 import ChargerAnimationSVG from '@/components/svg/ChargerAnimationSVG.vue';
-
-const errorStr = ref("");
-const connected = ref(false);
 
 const props = defineProps({
   sessionInfo: {
@@ -28,6 +22,8 @@ const props = defineProps({
     required: false
   },
 });
+
+const connected = ref(false);
 
 function connect(){
   connected.value = true;

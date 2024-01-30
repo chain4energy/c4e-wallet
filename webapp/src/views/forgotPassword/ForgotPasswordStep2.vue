@@ -1,31 +1,3 @@
-<script setup lang="ts">
-import {onBeforeMount, ref} from "vue";
-import OtpComponent from "@/components/OtpComponent.vue";
-
-const props = defineProps({
-  newPassword: {
-    type: Object,
-    required: true
-  },
-});
-
-onBeforeMount(() => {
-  if (props.newPassword.email) {
-    email.value = props.newPassword.email;
-  }
-});
-
-const emit = defineEmits(['nextPage', 'prevPage', 'update:newPassword']);
-const email = ref<string>();
-const activationCode = ref<string>();
-
-
-const next = () => {
-  emit('nextPage', {pageIndex: 1});
-};
-
-</script>
-
 <template>
 
   <div style="margin-top:40px;padding-bottom: 60px;">
@@ -45,6 +17,33 @@ const next = () => {
   </div>
 
 </template>
+
+
+<script setup lang="ts">
+import {onBeforeMount, ref} from "vue";
+import OtpComponent from "@/components/OtpComponent.vue";
+import {PasswordInterface} from "@/views/forgotPassword/ForgotPasswordView.vue";
+
+const emit = defineEmits(['nextPage', 'prevPage', 'update:newPassword']);
+const props = defineProps<{newPassword: PasswordInterface}>();
+
+
+onBeforeMount(() => {
+  if (props.newPassword.email) {
+    email.value = props.newPassword.email;
+  }
+});
+
+const email = ref<string>();
+const activationCode = ref<string>();
+
+
+const next = () => {
+  emit('nextPage', {pageIndex: 1});
+};
+
+</script>
+
 
 <style scoped lang="scss">
 

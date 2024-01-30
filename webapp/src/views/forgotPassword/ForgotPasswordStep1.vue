@@ -1,40 +1,3 @@
-<script setup lang="ts">
-import {onBeforeMount, ref} from "vue";
-import {object} from "yup";
-import * as Yup from "yup";
-import {Field, Form} from "vee-validate";
-
-
-const props = defineProps({
-  newPassword: {
-    type: Object,
-    required: true
-  },
-});
-
-onBeforeMount(() => {
-  if (props.newPassword?.email) {
-    email.value = props.newPassword.email;
-  }
-});
-
-
-const emit = defineEmits(['nextPage', 'prevPage', 'update:newPassword']);
-const email = ref<string>();
-
-const schema = object().shape({
-  email:  Yup.string()
-    .email("Invalid format")
-    .required( "This field is required"),
-});
-
-const next = () => {
-  emit('update:newPassword', {...props.newPassword, email: email.value});
-  emit('nextPage', {pageIndex: 0});
-};
-
-</script>
-
 <template>
 
   <div style="margin-top:40px;padding-bottom: 60px;">
@@ -66,6 +29,40 @@ const next = () => {
   </div>
 
 </template>
+
+
+<script setup lang="ts">
+import {onBeforeMount, ref} from "vue";
+import {object} from "yup";
+import * as Yup from "yup";
+import {Field, Form} from "vee-validate";
+import {PasswordInterface} from "@/views/forgotPassword/ForgotPasswordView.vue";
+
+const emit = defineEmits(['nextPage', 'prevPage', 'update:newPassword']);
+const props = defineProps<{newPassword: PasswordInterface}>();
+
+onBeforeMount(() => {
+  if (props.newPassword.email) {
+    email.value = props.newPassword.email;
+  }
+});
+
+
+const email = ref<string>();
+
+const schema = object().shape({
+  email:  Yup.string()
+    .email("Invalid format")
+    .required( "This field is required"),
+});
+
+const next = () => {
+  emit('update:newPassword', {...props.newPassword, email: email.value});
+  emit('nextPage', {pageIndex: 0});
+};
+
+</script>
+
 
 <style scoped lang="scss">
 

@@ -50,13 +50,9 @@ const props = defineProps({
     required: true
   },
 });
-function initPayment() {
-  emit('initPayment');
-}
 
 onBeforeMount(async () => {
   await useOwnerStore().fetchChargePointDicts(true);
-
 });
 
 const chargePoint = computed<ChargePoint | undefined>(() => {
@@ -71,6 +67,9 @@ const tariff = computed<Tariff>(() => {
   return chargePoint.value?.tariffGroup.tariffs.find(el => el.currency === props.currency);
 });
 
+function initPayment() {
+  emit('initPayment');
+}
 </script>
 
 <style scoped lang="scss">

@@ -57,7 +57,6 @@ import {Field, Form} from "vee-validate";
 import {object} from "yup";
 import * as Yup from "yup";
 import {ref} from "vue";
-// import { useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {pattern} from "@/utils/passwordPattern";
 import {useEvStore} from "@/store/ev.store";
@@ -78,8 +77,8 @@ const schema = object().shape({
 });
 
 
-const email = ref<string>();
-const password = ref<string>();
+const email = ref<string>('');
+const password = ref<string>('');
 const passwordRetype = ref<string>();
 const termsAccepted = ref<boolean>(false);
 

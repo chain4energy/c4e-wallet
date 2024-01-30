@@ -5,6 +5,7 @@ export interface ChargePoint{
   id: number;
   externalId: number;
   accountId?: number;
+  deviceId?: string;
   chargePointDictId?: number;
   name: string;
   // identificationCode: string;

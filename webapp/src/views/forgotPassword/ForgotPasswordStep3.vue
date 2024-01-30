@@ -4,14 +4,11 @@ import {object} from "yup";
 import * as Yup from "yup";
 import {pattern} from "@/utils/passwordPattern";
 import {Field, Form} from "vee-validate";
+import {PasswordInterface} from "@/views/forgotPassword/ForgotPasswordView.vue";
 
+const emit = defineEmits(['complete', 'prevPage', 'update:newPassword']);
+const props = defineProps<{newPassword: PasswordInterface}>();
 
-const props = defineProps({
-  newPassword: {
-    type: Object,
-    required: true
-  },
-});
 
 onBeforeMount(() => {
   if (props.newPassword.email) {
@@ -19,7 +16,6 @@ onBeforeMount(() => {
   }
 });
 
-const emit = defineEmits(['complete', 'prevPage', 'update:newPassword']);
 const email = ref<string>();
 const password = ref<string>();
 const passwordRetype = ref<string>();

@@ -18,7 +18,7 @@
           <div>
             <span class="flex justify-center items-center w-full">
     <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
-              <InputText v-model="newCharger.externalId" :disabled='!!edit' placeholder="Charger ID" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
+              <InputText v-model="newCharger.deviceId" :disabled='!!edit' placeholder="Charger ID" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
             </span>
             <span class="flex justify-center items-center w-full">
     <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
@@ -77,7 +77,7 @@ import { goTo_ChargePointView, goTo_EvOwnerDashboardView} from "@/router/goToRou
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Dropdown from "primevue/dropdown";
-import {computed, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {CreateTariffForChargePoint} from "@/models/createTariffForChargePoint";
 import ChargerTypeDetails from "@/components/ChargerTypeDetails.vue";
 import BackCloseBar from "@/components/BackCloseBar.vue";
@@ -88,7 +88,9 @@ import IconComponent from "@/components/features/IconComponent.vue";
 import {CreateChargePointFromDict} from "@/models/createChargePointFromDict";
 import {useToast} from "vue-toastification";
 import {UpdateChargePoint} from "@/models/updateChargePoint";
+
 const props = defineProps<{edit?: boolean}>();
+
 const chargerStore = useOwnerStore();
 const router = useRouter();
 const selectChargePointDict = (chargePointDict: ChargePointDict | null) => {
@@ -101,7 +103,7 @@ onMounted(() => {
     newCharger.value = {
       sourceChargePointDictId: toEdit.chargePointDictId,
       accountId: toEdit.accountId,
-      externalId: toEdit.externalId,
+      deviceId: toEdit.deviceId,
       name: toEdit.name,
       locationId: toEdit?.locationId,
       tariffGroupId: toEdit.tariffGroupId
@@ -181,6 +183,7 @@ const handleEdit = async () => {
       name: newCharger.value.name,
       identificationCode: newCharger.value.identificationCode,
       tariffGroupId: newCharger.value.tariffGroupId,
+      deviceId: newCharger.value.deviceId,
 
       integrationType: toEdit?.integrationType,
       integrationVersion: toEdit?.integrationVersion,
@@ -196,14 +199,20 @@ const handleEdit = async () => {
 
   const chargerId = toEdit?.id;
   const tariffId = tariff?.id
-  if (chargerId && tariffId && chargePointToSend.tariffGroupId) {
-    await chargerStore.updateChargePoint(chargerId, chargePointToSend, true);
-    await chargerStore.updateTariff(chargePointToSend.tariffGroupId, tariffId, tariffToSend, true, () => {
+  if (chargerId) {
+    await chargerStore.updateChargePoint(chargerId, chargePointToSend, true).then(() => {
       chargerStore.fetchAllChargeStoreData().then(() => {
         chargerStore.selectedChargePoint = chargerStore.chargePoints.find(el => el.id === chargerId);
         goTo_ChargePointView();
       });
-    })
+    });
+
+    // await chargerStore.updateTariff(chargePointToSend.tariffGroupId, tariffId, tariffToSend, true, () => {
+    //   chargerStore.fetchAllChargeStoreData().then(() => {
+    //     chargerStore.selectedChargePoint = chargerStore.chargePoints.find(el => el.id === chargerId);
+    //     goTo_ChargePointView();
+    //   });
+    // })
   }
 }
 

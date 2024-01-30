@@ -62,10 +62,6 @@ import NextButton from "@/components/NextButton.vue";
 import ProgressBar from "primevue/progressbar";
 import IconComponent from "@/components/features/IconComponent.vue";
 
-const emit = defineEmits(['stopCharging']);
-const chargingSessionStore = useEvChargingSessionStore();
-
-
 const props = defineProps({
   sessionInfo: {
     type: Object as PropType<SessionInfo> ,
@@ -80,6 +76,30 @@ const props = defineProps({
     required: true
   }
 });
+const emit = defineEmits(['stopCharging']);
+
+const chargingSessionStore = useEvChargingSessionStore();
+
+const timer = ref<number>(4);
+
+const percent = computed (() => {
+  return (props.sessionInfo?.cost/props.amount * 100);
+});
+
+const startTimer = () => {
+  const timerInterval = 1000; // 1 second interval
+
+  const countdown = setInterval(() => {
+    if (timer.value >= 1) {
+      timer.value -= 1;
+    } else {
+      clearInterval(countdown);
+      console.log("Timer reached 0 seconds");
+    }
+  }, timerInterval);
+};
+onMounted(startTimer);
+
 function stopChargingSession() {
   emit('stopCharging');
 }
@@ -94,28 +114,6 @@ function onSuccess(){
 function onError(defaultErrorHandler: () => void, error:ErrorData<EvServiceApplicationError> | undefined){
   console.log("Error" + error?.message);
 }
-
-const timer = ref<number>(4);
-
-const startTimer = () => {
-  const timerInterval = 1000; // 1 second interval
-
-  const countdown = setInterval(() => {
-    if (timer.value >= 1) {
-      timer.value -= 1;
-    } else {
-      clearInterval(countdown);
-      console.log("Timer reached 0 seconds");
-    }
-  }, timerInterval);
-};
-
-const percent = computed (() => {
-  return (props.sessionInfo?.cost/props.amount * 100);
-});
-
-onMounted(startTimer);
-
 </script>
 
 <style scoped lang="scss">

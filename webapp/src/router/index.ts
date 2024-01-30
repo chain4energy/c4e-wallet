@@ -1,37 +1,14 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-// @ts-ignore
 import ResourceLink from "@/views/ResourceLink.vue";
-// @ts-ignore
-
-
 import ChargingSessionView from "@/views/ChargingSessionView.vue";
-// @ts-ignore
-
 import ChargePointEvseView from "@/views/ChargePointEvseView.vue";
-// @ts-ignore
-
 import ChoosePaymentMethod from "@/views/ChoosePaymentMethod.vue";
-// @ts-ignore
-
 import WaitForPaymentConfirmation from "@/views/WaitForPaymentConfirmation.vue";
-// @ts-ignore
-
 import PaymentRejected from "@/views/PaymentRejected.vue";
-// @ts-ignore
-
 import MockPayment from "@/views/MockPayment.vue";
-// @ts-ignore
-
 import SignInView from "@/views/profile/SignInView.vue";
-// @ts-ignore
-
 import SignUpView from "@/views/profile/SignUpView.vue";
-// @ts-ignore
-
 import ActivateView from "@/views/profile/ActivateView.vue";
-// @ts-ignore
-
-import DgCss from "@/views/DgCss.vue";
 import {resetPasswordRoutes} from "@/router/resetPasswordRoutes";
 import {ownerRoutes} from "@/router/ownerRoutes";
 
@@ -119,14 +96,6 @@ const routesEv: Array<RouteRecordRaw> = [
   ... resetPasswordRoutes,
   ...ownerRoutes,
 
-
-  {
-    path: '/' + evSubAppName + '/dg',
-    name: evSubAppName + '_dg',
-    component: DgCss,
-    props: true,
-    // alias: '/' + evSubAppName + '/resourceLink/:context'
-  },
 ];
 
 export const routerEv = createRouter({

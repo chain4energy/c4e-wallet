@@ -1,3 +1,18 @@
+<template>
+
+  <div class="card">
+    <Steps :model="items" aria-label="Form Steps" />
+  </div>
+
+  <router-view v-slot="{ Component }" v-model:newPassword="newPassword" @prev-page="prevPage($event)" @next-page="nextPage($event)" @complete="complete">
+    <keep-alive>
+      <component :is="Component" />
+    </keep-alive>
+  </router-view>
+
+</template>
+
+
 <script setup lang="ts">
 import Steps from 'primevue/steps';
 import {computed, ref} from "vue";
@@ -36,25 +51,17 @@ const complete = () => {
   goTo_SignInView();
 };
 
-const newPassword = ref({
+const newPassword = ref<PasswordInterface>({
   email: '',
   password: ''
 });
+
+export interface PasswordInterface {
+  email: string,
+  password: string
+}
 </script>
 
-<template>
-
-  <div class="card">
-    <Steps :model="items" aria-label="Form Steps" />
-  </div>
-
-  <router-view v-slot="{ Component }" v-model:newPassword="newPassword" @prev-page="prevPage($event)" @next-page="nextPage($event)" @complete="complete">
-    <keep-alive>
-      <component :is="Component" />
-    </keep-alive>
-  </router-view>
-
-</template>
 
 <style scoped lang="scss">
 

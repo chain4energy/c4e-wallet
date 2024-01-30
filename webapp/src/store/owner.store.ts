@@ -51,6 +51,7 @@ export const useOwnerStore = defineStore({
     async fetchAllChargeStoreData(lockscreen = true) {
       await this.fetchChargePointDicts(lockscreen);
       await this.fetchChargePointsAll(lockscreen);
+      await this.fetchTariffGroups(lockscreen);
     },
 
     async fetchChargePointsAll(lockscreen = true) {
@@ -93,7 +94,7 @@ export const useOwnerStore = defineStore({
       }
     },
 
-    async updateChargePoint(cpId: number, updateChargePoint: UpdateChargePoint, lockscreen = true) {
+    async updateChargePoint(cpId: number | string, updateChargePoint: UpdateChargePoint, lockscreen = true) {
       const response = await apiFactory.evServiceApi().updateChargePoint(cpId, updateChargePoint, lockscreen);
       if (response.isSuccess() && response.data) {
         const index = this.chargePoints.findIndex(cp => cp.id === cpId);
