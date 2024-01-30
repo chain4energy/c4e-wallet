@@ -22,6 +22,12 @@ class EvServiceErrorHandler {
   private static instance: EvServiceErrorHandler;
   toastService: ToastsService = ToastsService.getInstance();
 
+  private unauthorizedHandler: (undefined | (() => void)) = undefined;
+
+  public setUnauthorizedHandler(unauthorizedHandler: (() => void)) {
+    this.unauthorizedHandler = unauthorizedHandler;
+  }
+
   private constructor() {
     //singleton
   }
@@ -43,7 +49,9 @@ class EvServiceErrorHandler {
 
   private defaultErrorHandler(error?: ErrorData<EvServiceApplicationError>, evServiceContext: EvServiceContext = EvServiceContext.ANY) {
     if (error) {
-      if (error.data) {
+      if (error.status === 401) {
+        this.handleUnauthorizedError();
+      } else if (error.data) {
         switch (evServiceContext) {
           case EvServiceContext.CREATE_ACCOUNT:
             this.handleAccountCreateError(error);
@@ -75,10 +83,26 @@ class EvServiceErrorHandler {
             this.handleCommonServiceError(error);
         }
       } else {
-        this.handleCommonNotServiceError(error);
+        if (this.isRefreshAccessTokenError(error)) {
+          this.handleUnauthorizedError();
+        } else {
+          this.handleCommonNotServiceError(error);
+        }
       }
     } else {
       console.error("handleError - error undefined (shouldn't happen)");
+    }
+  }
+
+  isRefreshAccessTokenError(error: ErrorData<EvServiceApplicationError>): boolean {
+    return error.message.startsWith("Unable to refresh access token for request due to token refresh error");
+  }
+
+  handleUnauthorizedError() {
+    if (this.unauthorizedHandler) {
+      this.unauthorizedHandler();
+    } else {
+      console.log("unauthorizedHandler NOT SET!!!");
     }
   }
 

@@ -9,7 +9,9 @@
       <ChargingSessionWaitForPayment v-if="chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_RESERVATION_CONFIRMATION "
                                      :sessionInfo="chargingSessionStore.getSessionInfo"></ChargingSessionWaitForPayment>
       <ChargingSessionWaiteForConnectAndStart
-        v-if="chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_PLUG_INSERT || chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_CHARGING_START_ACCEPTED "
+        v-if="chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_PLUG_INSERT
+        || chargingSessionStore.getSessionInfo?.state == SessionState.WAIT_FOR_CHARGING_START_ACCEPTED
+          || chargingSessionStore.getSessionInfo?.state == SessionState.STARTING "
         :sessionInfo="chargingSessionStore.getSessionInfo"/>
       <ChargingSessionProgress v-if="chargingSessionStore.getSessionInfo?.state == SessionState.CHARGING
       || chargingSessionStore.getSessionInfo?.state == SessionState.STOPPING

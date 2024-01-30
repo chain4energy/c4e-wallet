@@ -9,13 +9,12 @@ import {ErrorData} from "@/api/base.api";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
 import apiFactory from "@/api/factory.api";
 import {getAccessToken, getBrowserSessionStorage} from "axios-jwt";
-import {applyStorage} from "axios-jwt/src/applyStorage";
-import {goTo_EvOwnerDashboardView} from "@/router/goToRoute";
+import {goTo_EvOwnerDashboardView, goTo_SignInView} from "@/router/goToRoute";
+import {useOwnerStore} from "@/store/owner.store";
 
 class OwnerEvService extends LoggedService implements DataServiceInterface {
 
   private static instance: OwnerEvService;
-  private aaa = apiFactory.evServiceApi();
 
   getServiceType(): ServiceTypeEnum {
     return ServiceTypeEnum.EV_OWNER_SERVICE_API;
@@ -28,6 +27,9 @@ class OwnerEvService extends LoggedService implements DataServiceInterface {
     return OwnerEvService.instance;
   }
 
+  public unauthorizedHandler = ()=>{
+    goTo_SignInView();
+  }
   public async loginPageEntered() {
     this.logToConsole(LogLevel.DEBUG, 'loginPageLoaded');
     this.logToConsole(LogLevel.DEBUG, 'checking current session');
@@ -59,6 +61,10 @@ class OwnerEvService extends LoggedService implements DataServiceInterface {
 
   public authEmailAccount(emailAccount: PasswordAuthenticateRequest, onSuccess: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true) {
     useEvStore().authEmailAccount(emailAccount, onSuccess, onFail, lockscreen);
+  }
+
+  public ownerViewEntered(){
+    useOwnerStore().useWith(this.unauthorizedHandler).fetchAllChargeStoreData();
   }
 }
 

@@ -29,11 +29,12 @@ import {goTo_AddChargerView} from "@/router/goToRoute";
 import ScrollerWrapper from "@/components/ScrollerWrapper.vue";
 import NextButton from "@/components/NextButton.vue";
 import BackCloseBar from "@/components/BackCloseBar.vue";
+import OwnerService from "@/services/ownerEv.service";
 
 const chargerStore = useOwnerStore();
 
 onMounted(async () => {
-  await chargerStore.fetchAllChargeStoreData();
+  OwnerService.ownerViewEntered();
 });
 
 const hide = ref<boolean>(false);

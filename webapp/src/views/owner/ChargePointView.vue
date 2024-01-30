@@ -65,6 +65,7 @@ import {ChargePointEvse} from "@/models/chargePointEvse";
 import {Tariff} from "@/models/tariff";
 import NextButton from "@/components/NextButton.vue";
 import IconComponent from "@/components/features/IconComponent.vue";
+import {ChargePoint} from "@/models/chargePoint";
 
 const chargeStore = useOwnerStore();
 const hide = ref<boolean>(false);

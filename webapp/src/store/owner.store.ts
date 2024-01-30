@@ -14,6 +14,7 @@ import {Tariff} from "@/models/tariff";
 import {CreateTariffForChargePoint} from "@/models/createTariffForChargePoint";
 import {ChargePointChangeActiveState} from "@/models/ChargePointChangeActiveState";
 import {ChargePointEvse} from "@/models/chargePointEvse";
+import EvServiceErrorHandler, {EvServiceContext} from "@/store/evServiceErrorHandler";
 
 interface OwnerStore {
   selectedTariff: Tariff | null;
@@ -41,6 +42,12 @@ export const useOwnerStore = defineStore({
   }),
 
   actions: {
+
+    useWith(unauthorizedHandler : ()=>void){
+      EvServiceErrorHandler.setUnauthorizedHandler(unauthorizedHandler);
+      return this;
+    },
+
     async fetchAllChargeStoreData(lockscreen = true) {
       await this.fetchChargePointDicts(lockscreen);
       await this.fetchChargePointsAll(lockscreen);
@@ -50,6 +57,8 @@ export const useOwnerStore = defineStore({
       const response = await apiFactory.evServiceApi().getChargePointsAll(lockscreen);
       if (response.isSuccess() && response.data) {
         this.chargePoints = response.data;
+      } else {
+        EvServiceErrorHandler.handleError(response.error, EvServiceContext.ANY);
       }
     },
 
@@ -221,7 +230,7 @@ export const useOwnerStore = defineStore({
         const cpIndex = this.chargePoints.findIndex(cp => cp.id === cpId);
         if (cpIndex !== -1) {
           this.chargePoints[cpIndex].tariffGroupId = newTariffGroup.id;
-          await this.updateChargePoint(cpId, { ...this.chargePoints[cpIndex], tariffGroupId: newTariffGroup.id });
+          await this.updateChargePoint(cpId, {...this.chargePoints[cpIndex], tariffGroupId: newTariffGroup.id});
         }
 
         onSuccess();
@@ -258,6 +267,8 @@ export const useOwnerStore = defineStore({
       const response = await apiFactory.evServiceApi().getChargePointDicts(lockscreen);
       if (response.isSuccess() && response.data) {
         this.chargePointDicts = response.data;
+      } else {
+        EvServiceErrorHandler.handleError(response.error, EvServiceContext.ANY);
       }
     },
 
@@ -293,3 +304,12 @@ export const useOwnerStore = defineStore({
     }
   },
 });
+
+export function testt(originalMethod: any, _context: any) {
+  function replacementMethod(this: any, ...args: any[]) {
+    console.log("log1!!!!!!");
+    const result = originalMethod.call(this, ...args);
+    return result;
+  }
+  return replacementMethod;
+}

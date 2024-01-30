@@ -8,7 +8,7 @@ import {RequestResponse} from "@/models/request-response";
 import {Jwt} from "@/models/user/jwt";
 import {ErrorData} from "@/api/base.api";
 import {DecodedLinkParamsType, DecodedLinkType, DecodeLinkAuthParams, InitPaymentRequest} from "@/models/evServiceCommons";
-import {EvServiceContext, EvServiceErrorHandler} from "@/store/uvServiceErrorHandler";
+import EvServiceErrorHandler, {EvServiceContext} from "@/store/evServiceErrorHandler";
 import {ChargePointConnectorStatusType} from "@/models/chargePointEvse";
 import {ChargePoint} from "@/models/chargePoint";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
@@ -23,7 +23,7 @@ interface EvStoreState {
   loggedIn: boolean,
 
   appTypeLink: AppTypeLink | undefined,
-  chargePointConnectorUrl : string,
+  chargePointConnectorUrl: string,
   chargingSessionUrl: string,
   chargingSessionResourceCode: string,
   connectorLiveStatus: ChargePointConnectorStatusType | undefined,
@@ -51,13 +51,18 @@ export const useEvStore = defineStore({
       loggedIn: false,
       connectorLiveStatus: undefined,
       appTypeLink: undefined,
-      chargePointConnectorUrl : "",
-      chargingSessionResourceCode : "",
+      chargePointConnectorUrl: "",
+      chargingSessionResourceCode: "",
       chargingSessionUrl: "",
       chargePoint: undefined
     };
   },
   actions: {
+
+    useWith(unauthorizedHandler : ()=>void){
+      EvServiceErrorHandler.setUnauthorizedHandler(unauthorizedHandler);
+      return this;
+    },
 
     setSessionInfoState(sessionState: SessionState) {
       if (this.sessionInfo) {
@@ -92,7 +97,7 @@ export const useEvStore = defineStore({
     //   await apiFactory.evServiceApi().refreshToken()
     // },
 
-    async getAccountInfo(onSuccess: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true){
+    async getAccountInfo(onSuccess: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true) {
       await apiFactory.evServiceApi().getAccountInfo(lockscreen).then(responseDate => {
         if (responseDate.isSuccess()) {
           onSuccess();
@@ -109,8 +114,11 @@ export const useEvStore = defineStore({
           this.userEmail = emailAccount.login;
           onSuccess();
         } else {
-          EvServiceErrorHandler.getInstance().handleError(responseDate.error, EvServiceContext.LOG_IN);
-          onFail?.(responseDate.error);
+          if (onFail) {
+            onFail(responseDate.error);
+          } else {
+            EvServiceErrorHandler.handleError(responseDate.error, EvServiceContext.LOG_IN);
+          }
         }
       });
     },
@@ -119,25 +127,31 @@ export const useEvStore = defineStore({
         if (responseDate.isSuccess()) {
           onSuccess();
         } else {
-          // UserServiceErrorHandler.getInstance().handleError( res.error, UserServiceContext.CREATE_ACCOUNT);
-          onFail?.(responseDate.error);
+          if (onFail) {
+            onFail(responseDate.error);
+          } else {
+            EvServiceErrorHandler.handleError(responseDate.error, EvServiceContext.CREATE_ACCOUNT);
+          }
         }
       });
     },
-    async activateEmailAccount(code: string, onSuccess: (() => void), onFail?: (() => void), lockscreen = true) {
+    async activateEmailAccount(code: string, onSuccess: (() => void), onFail?: ((error: ErrorData<EvServiceApplicationError> | undefined) => void), lockscreen = true) {
       await apiFactory.evServiceApi().activateEmailAccount(code, lockscreen).then(responseDate => {
         if (responseDate.isSuccess()) {
           this.setTokens(responseDate);
           // this.loginType = LoginTypeEnum.EMAIL;
           onSuccess();
         } else {
-          // UserServiceErrorHandler.getInstance().handleError(responseDate.error, UserServiceContext.ACTIVATE_EMAIL_ACCOUNT);
-          // onFail?.();
+          if (onFail) {
+            onFail(responseDate.error);
+          } else {
+            EvServiceErrorHandler.handleError(responseDate.error, EvServiceContext.ACTIVATE_EMAIL_ACCOUNT);
+          }
         }
       });
     },
 
-    async fetchChargePointConnectorAll(chargePointConnectorUrl:string, lockscreen = true) {
+    async fetchChargePointConnectorAll(chargePointConnectorUrl: string, lockscreen = true) {
       await apiFactory.evServiceApi().getChargePointConnectorAll(chargePointConnectorUrl, lockscreen).then(response => {
         if (response.isSuccess() && response.data) {
           console.log(JSON.stringify(response.data));
@@ -149,7 +163,7 @@ export const useEvStore = defineStore({
     },
 
     async prepareSession(lockscreen = true, onSuccess: (() => void), onFail: ((error: ErrorData<EvServiceApplicationError> | undefined) => void)) {
-      await apiFactory.evServiceApi().prepareAnonymousSession(this.chargePointConnectorUrl, this.userEmail, "50","EUR" ,lockscreen).then(response => {
+      await apiFactory.evServiceApi().prepareAnonymousSession(this.chargePointConnectorUrl, this.userEmail, "50", "EUR", lockscreen).then(response => {
         if (response.isSuccess()) {
           onSuccess();
         } else {// TODO: error handling
@@ -179,7 +193,7 @@ export const useEvStore = defineStore({
       });
     },
 
-    async fetchSessionInfo(chargingSessionUrl:string,lockscreen = true) {
+    async fetchSessionInfo(chargingSessionUrl: string, lockscreen = true) {
       await apiFactory.evServiceApi().getSessionInfo(chargingSessionUrl, lockscreen).then(response => {
         if (response.data) {
           this.sessionInfo = response.data;
@@ -244,13 +258,13 @@ export const useEvStore = defineStore({
     getAppLinkType(): AppTypeLink | undefined {
       return this.appTypeLink;
     },
-    getConnectorLiveStatus(): ChargePointConnectorStatusType | undefined{
+    getConnectorLiveStatus(): ChargePointConnectorStatusType | undefined {
       return this.connectorLiveStatus;
     },
-    getChargePointConnectorUrl(): string | undefined{
+    getChargePointConnectorUrl(): string | undefined {
       return this.chargePointConnectorUrl;
     },
-    getChargingSessionUrl(): string | undefined{
+    getChargingSessionUrl(): string | undefined {
       return this.chargingSessionUrl;
     },
   }

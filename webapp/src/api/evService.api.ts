@@ -172,7 +172,7 @@ export class EvServiceApi extends BaseApi {
   }
 
   public getChargePointsAll(lockscreen: boolean): Promise<RequestResponse<ChargePoint[], ErrorData<EvServiceApplicationError>>> {
-    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/all_charge_points';
+    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + '/v0.1/charge_point/full';
     return this.evServiceGetCall<ChargePoint[], EvServiceApplicationError>(url, lockscreen, "getChargePointsAll");
   }
 
@@ -212,7 +212,7 @@ export class EvServiceApi extends BaseApi {
   }
 
   public getChargePointConnectorAll(path: string, lockscreen: boolean): Promise<RequestResponse<ChargePoint, ErrorData<EvServiceApplicationError>>> {
-    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + '/all';
+    const url = useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + '/full';
     return this.evServiceGetCall<ChargePoint, EvServiceApplicationError>(url, lockscreen, "getChargePointConnectorAll");
   }
 
