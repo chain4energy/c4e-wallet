@@ -1,9 +1,7 @@
 <template>
   <div class="w-full h-full flex items-center justify-center">
     <div class="mx-auto min-w-[330px] w-full max-w-[600px]md:max-w-[900px] h-full p-2 sm:p-5 flex flex-col justify-between">
-      <div class="w-1/4">
-        <img v-svg-inline :src="require('@/assets/svg/C4ELogo.svg')" alt="C4ELogo.svg" />
-      </div>
+      <BackCloseBar hide-back hamburger c4elogo/>
       <div class="w-full sm:w-[70%] mx-auto">
         <CarSVG/>
       </div>
@@ -39,7 +37,7 @@
             </Field>
           </div>
         </div>
-        <Button class="mx-auto w-full sm:w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center" type="submit">{{ $t('SIGN_IN_VIEW.SIGN_UP') }}</Button>
+        <Button class="mx-auto w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center" type="submit">{{ $t('SIGN_IN_VIEW.SIGN_UP') }}</Button>
       </Form>
       <div>
         <p class="cursor-pointer text-center">{{ $t('SIGN_IN_VIEW.ALREADY') }} <span @click="goTo_SignInView()" class="mt-3 text-lime-600 font-bold">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</span></p>
@@ -64,6 +62,7 @@ import {goTo_ActivateAccountView, goTo_SignInView} from "@/router/goToRoute";
 import CarSVG from "@/components/svg/CarSVG.vue";
 import InputText from "primevue/inputtext";
 import IconComponent from "@/components/features/IconComponent.vue";
+import BackCloseBar from "@/components/BackCloseBar.vue";
 
 
 const schema = object().shape({

@@ -48,7 +48,8 @@
     "CHARGING": "Ładowanie w toku",
     "YOUR_CHARGERS": "Twoje ładowarki",
     "ADD_CHARGER": "Dodaj ładowarkę",
-    "WAIT_PAYMENT": "Oczekiwanie na płatność"
+    "WAIT_PAYMENT": "Oczekiwanie na płatność",
+    "HELLO": "Witaj!"
 
   },
   "PLUG_TYPES": {
