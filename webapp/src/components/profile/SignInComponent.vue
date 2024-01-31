@@ -8,28 +8,7 @@
           <CarSVG/>
         </div>
         <div class="flex flex-col w-full mx-auto">
-          <Dropdown v-model="selectedLocale" :options="locales" optionLabel="name" placeholder="Select language" class="w-full border-b-2 my-4" @change="setLocale">
-            <template #value="slotProps">
-              <div v-if="slotProps.value" class="flex justify-between">
-              <span class="flex flex-inline">
-<!--                <IconComponent name="Globe" class="text-lime-600 mr-2"/> -->
-                {{$t('COMMON.LANGUAGE')}}
-              </span>
-                <span>{{locales.find(el => el.file === slotProps.value).name}}</span>
-              </div>
-              <span v-else>
-            {{ slotProps.placeholder }}
-            </span>
-            </template>
-            <template #option="slotProps">
-              <div class="flex items-center text-right justify-end">
-                <div>{{ slotProps.option.name }}</div>
-                <div class="ml-2">
-                  <country-flag :country='slotProps.option.flagCode'/>
-                </div>
-              </div>
-            </template>
-          </Dropdown>
+          <LangSelector/>
           <span class="flex justify-center items-center">
             <IconComponent name="Mail" class="text-lime-600"/>
             <InputText v-model="email" placeholder="E-mail" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
@@ -52,7 +31,6 @@
 </template>
 
 <script setup lang="ts">
-import CountryFlag from 'vue-country-flag-next'; // https://www.npmjs.com/package/vue-country-flag-next
 import Password from "primevue/password";
 import InputText from "primevue/inputtext";
 import {object} from "yup";
@@ -65,6 +43,7 @@ import IconComponent from "@/components/features/IconComponent.vue";
 import {changeTitle} from "@/utils/title-changer";
 import {useI18n} from "vue-i18n";
 import {getSupportedLocales} from "@/utils/supported-locales";
+import LangSelector from "@/components/features/LangSelector.vue";
 
 const schema = object().shape({
   email:  Yup.string()
@@ -72,8 +51,6 @@ const schema = object().shape({
   password:  Yup.string()
     .required( "This field is required")
 });
-
-const i18n=useI18n();
 
 const email = ref<string>();
 const password = ref<string>();
@@ -101,15 +78,6 @@ const toast = useToast();
 const onSuccessAuth = () => {
   toast.success('Successfully logged in');
   emit('onSuccessLogin');
-};
-
-const selectedLocale = ref(i18n.locale);
-
-const setLocale = () => {
-  if (selectedLocale.value.file) {
-    i18n.locale.value = selectedLocale.value.file;
-  }
-  changeTitle();
 };
 
 

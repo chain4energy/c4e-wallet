@@ -17,18 +17,26 @@
     </div>
   </div>
   <div>
-    <span class="flex justify-center items-center w-full">
-<!--      <IconComponent name="Mail" class="text-lime-600"/>-->
-      <InputText v-model="email" placeholder="E-mail" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]"/>
-    </span>
-    <span class="flex justify-center items-center w-full">
-<!--      <IconComponent name="HeartHandshake" class="text-lime-600"/>-->
-      <Checkbox name="rodo" class="mx-3" input-class="border-2 border-lime-600" v-model="rodo" :binary="true"/>
-      <span @click="rodo=!rodo">{{ $t('SIGN_IN_VIEW.TERMS') }}</span>
-    </span>
+    <Form @submit="next" :validation-schema="schema" v-slot="{errors}" >
+      <span class="flex justify-center items-center w-full relative py-4">
+        <Field v-model="email" name="email" type="text" class="form-control">
+          <div class="w-full absolute top-0 text-center text-xs text-red-600">{{ errors.email ? $t(errors.email) : '' }}</div>
+          <!--      <IconComponent name="Mail" class="text-lime-600"/>-->
+          <InputText v-model="email" placeholder="E-mail" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%]" :class="errors.email ? 'border-red-600' : ''"/>
+        </Field>
+      </span>
+      <span class="flex justify-center items-center w-full mb-10 relative">
+        <Field v-model="rodo" name="rodo" type="checkbox" class="form-control">
+          <div class="w-full absolute -top-5 text-center text-xs text-red-600">{{ errors.rodo ? $t(errors.rodo) : '' }}</div>
+          <!--      <IconComponent name="HeartHandshake" class="text-lime-600"/>-->
+          <Checkbox name="rodo" class="mx-3" :pt="{input: `border-2 ${errors.rodo ? 'border-red-600' : 'border-lime-600'}`}" v-model="rodo" :binary="true"/>
+          <span @click="rodo=!rodo">{{ $t('SIGN_IN_VIEW.TERMS') }}</span>
+        </Field>
+      </span>
+      <NextButton :disabled='!(rodo && email)' :text="$t('COMMON.SEND')" icon="Mails" type="submit"/>
+    </Form>
   </div>
 
-  <NextButton :disabled='!(rodo && email)' @click="next" :text="$t('COMMON.SEND')" icon="Mails"/>
 
 </template>
 
@@ -42,6 +50,8 @@ import {Tariff} from "@/models/tariff";
 import InputText from "primevue/inputtext";
 import Checkbox from "primevue/checkbox";
 import NextButton from "@/components/NextButton.vue";
+import {Field} from "vee-validate";
+import {Form} from "vee-validate";
 
 const router = useRouter();
 
@@ -55,6 +65,7 @@ const email = ref<string>();
 const schema = object().shape({
   email:  Yup.string().email()
     .required( "This field is required"),
+  rodo: Yup.boolean().isTrue("You have to accept T&C").required()
 });
 
 function next(){

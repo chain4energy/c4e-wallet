@@ -40,30 +40,9 @@
           <p class="font-[Audiowide] mt-2 text-xl">{{selectedTariff.currency}}/{{selectedTariff.unit}}</p>
         </div>
   </div>
-  <div class="flex flex-col w-full mx-auto">
-        <Dropdown v-model="selectedLocale" :options="locales" optionLabel="name" placeholder="Select language" class="w-full border-b-2 my-4" @change="setLocale">
-          <template #value="slotProps">
-            <div v-if="slotProps.value" class="flex justify-between">
-              <span class="flex flex-inline">
-<!--                <IconComponent name="Globe" class="text-lime-600 mr-2"/> -->
-                {{$t('COMMON.LANGUAGE')}}
-              </span>
-              <span>{{locales.find(el => el.file === slotProps.value).name}}</span>
-            </div>
-            <span v-else>
-            {{ slotProps.placeholder }}
-            </span>
-          </template>
-          <template #option="slotProps">
-            <div class="flex items-center text-right justify-end">
-              <div>{{ slotProps.option.name }}</div>
-              <div class="ml-2">
-                <country-flag :country='slotProps.option.flagCode'/>
-              </div>
-            </div>
-          </template>
-        </Dropdown>
-        <Dropdown v-model="selectedCurrency" :options="currencies" optionLabel="name" placeholder="Select currency" class="w-full border-b-2 my-4">
+  <div class="flex flex-col w-full mx-auto my-2">
+    <LangSelector/>
+    <Dropdown v-model="selectedCurrency" :options="currencies" optionLabel="name" placeholder="Select currency" class="w-full border-b-2">
           <template #value="slotProps">
             <div v-if="slotProps.value" class="flex justify-between">
               <span class="flex flex-inline">
@@ -82,7 +61,7 @@
             </div>
           </template>
         </Dropdown>
-      </div>
+  </div>
   <NextButton text="Start" icon="PlayCircle" @clicked="emit('next', selectedTariff)"/>
 </template>
 
@@ -102,19 +81,9 @@ import Type2SVG from "@/components/svg/Type2SVG.vue";
 import {Tariff} from "@/models/tariff";
 import {useOwnerStore} from "@/store/owner.store";
 import NextButton from "@/components/NextButton.vue";
+import LangSelector from "@/components/features/LangSelector.vue";
 
-const locales = reactive(getSupportedLocales());
-const i18n = useI18n();
-
-const emit = defineEmits(['next'])
-;
-const setLocale = () => {
-  if (selectedLocale.value.file) {
-    i18n.locale.value = selectedLocale.value.file;
-  }
-  changeTitle();
-};
-
+const emit = defineEmits(['next']);
 const props = defineProps({
     chargePoint: {
       type: Object as () => ChargePoint,
@@ -132,8 +101,6 @@ const currencies = computed(() => {
 });
 
 const selectedCurrency = ref(currencies.value[0]);
-
-const selectedLocale = ref(i18n.locale);
 
 const hide = ref<boolean>(false);
 

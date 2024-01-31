@@ -6,7 +6,8 @@
     "CURRENCY": "Wybierz walutę",
     "ACCEPT": "Wybierz",
     "SEND": "Wyślij",
-    "PAY": "Zapłać"
+    "PAY": "Zapłać",
+    "LOGOUT": "Wyloguj się"
   },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Rejestracja",

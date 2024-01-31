@@ -6,7 +6,8 @@
     "CURRENCY": "Select currency",
     "ACCEPT": "Accept",
     "SEND": "Send",
-    "PAY": "Pay"
+    "PAY": "Pay",
+    "LOGOUT": "Logout"
   },
   "SIGN_IN_VIEW": {
     "SIGN_UP": "Sign up",

@@ -4,6 +4,7 @@ import Dialog from "primevue/dialog";
 import {ref} from "vue";
 import NextButton from "@/components/NextButton.vue";
 import {useEvCommonStore} from "@/store/evCommon.store";
+import LangSelector from "@/components/features/LangSelector.vue";
 
 const emit=defineEmits(['back','close', 'hamburger']);
 const props = defineProps<{hamburger?: boolean, hideBack?: boolean}>()
@@ -17,9 +18,10 @@ const visible = ref<boolean>(false);
     <div v-else/>
     <IconComponent v-if='hamburger' name="Menu" @click="visible=true" class="hover:text-lime-600 transition cursor-pointer"/>
     <IconComponent v-else name="X" @click="emit('close')" class="hover:text-lime-600 transition cursor-pointer"/>
-    <Dialog v-model:visible="visible" modal header="Menu" :style="{ width: '25rem' }">
-      <div class="flex justify-content-end gap-2">
-        <NextButton text="Logout" icon="Power" @clicked="() => {useEvCommonStore().logout; visible = false;}"/>
+    <Dialog v-model:visible="visible" modal header="Menu" :style="{ width: '340px' }">
+      <div class="flex flex-col items-center gap-2">
+        <LangSelector/>
+        <NextButton :text="$t('COMMON.LOGOUT')" icon="Power" @clicked="() => {useEvCommonStore().logout; visible = false;}"/>
       </div>
     </Dialog>
   </div>
