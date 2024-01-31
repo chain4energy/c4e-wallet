@@ -17,27 +17,34 @@
   </div>
   <div v-else class="w-full h-full flex flex-col justify-evenly items-center">
     <h1 class="font-[Audiowide] text-3xl sm:text-4xl text-center text-black">{{sessionInfo?.state === SessionState.READY_TO_START ? $t('HEADERS.PRESS_START') : $t('HEADERS.CHARGING')}}</h1>
-    <CarSVG class="max-w-[450px] min-w-[250px] w-full -ml-10">
-      <ChargerSVG :percent="percent" class="absolute w-1/2 bottom-2 -right-9 sm:-right-11"/>
+    <CarSVG class="max-w-[450px] min-w-[230px] w-full -ml-10">
+      <ChargerSVG :percent="percent" class="absolute w-1/2 bottom-2 -right-8 sm:-right-11"/>
     </CarSVG>
     <div class="w-full flex flex-inline flex-wrap justify-between font-[Audiowide]">
       <span>{{percent.toFixed(0)}}%</span>
-      <span>LIMIT {{amount}} {{currency}}</span>
-      <ProgressBar :value="percent" class="w-full max-h-2" :mode="sessionInfo?.state === SessionState.WAIT_FOR_STARTED ? 'indeterminate' : 'determinate'" :pt="{value: 'bg-lime-600'}"/>
+      <span>LIMIT {{Number(sessionInfo.reservationAmount).toFixed(0)}} {{sessionInfo.currency}}</span>
+      <ProgressBar :value="percent" class="w-full max-h-2" :mode="sessionInfo?.state === SessionState.WAIT_FOR_STARTED ? 'indeterminate' : 'determinate'" :pt="{value: 'bg-lime-600'}">{{}}</ProgressBar>
     </div>
-    <div class="flex flex-inline justify-center gap-10 w-full">
-      <div class="flex flex-inline items-center">
+    <div class="flex flex-inline justify-center gap-10 w-full flex-wrap">
+      <div class="flex flex-inline items-center min-w-[140px]">
         <IconComponent name="Timer" class="mr-4 text-lime-600"/>
         <div class="flex flex-col items-center" :class="sessionInfo?.state === SessionState.WAIT_FOR_STARTED || sessionInfo?.state === SessionState.READY_TO_START ? 'text-gray-400' : ''">
           <span>{{$t('HEADERS.START_TIME')}}</span>
           <span class="font-[Audiowide]">{{sessionInfo.startTime ? sessionInfo.startTime : '00:00'}}</span>
         </div>
       </div>
-      <div class="flex flex-inline items-center">
+      <div class="flex flex-inline items-center min-w-[140px]">
         <IconComponent name="Zap" class="mr-4 text-lime-600"/>
         <div class="flex flex-col items-center" :class="sessionInfo?.state === SessionState.WAIT_FOR_STARTED || sessionInfo?.state === SessionState.READY_TO_START ? 'text-gray-400' : ''">
           <span>{{$t('HEADERS.POWER')}}</span>
-          <span class="font-[Audiowide]">{{sessionInfo.energyConsumed ? sessionInfo.energyConsumed : '0'}} kW</span>
+          <span class="font-[Audiowide]">{{(Number(sessionInfo.energyWh)/1000).toFixed(1)}} kWh</span>
+        </div>
+      </div>
+      <div class="flex flex-inline items-center min-w-[140px]">
+        <IconComponent name="Coins" class="mr-4 text-lime-600"/>
+        <div class="flex flex-col items-center" :class="sessionInfo?.state === SessionState.WAIT_FOR_STARTED || sessionInfo?.state === SessionState.READY_TO_START ? 'text-gray-400' : ''">
+          <span>{{$t('HEADERS.COST')}}</span>
+          <span class="font-[Audiowide]">{{(Number(sessionInfo.cost)).toFixed(2)}} {{sessionInfo.currency}}</span>
         </div>
       </div>
     </div>

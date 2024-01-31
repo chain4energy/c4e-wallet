@@ -48,7 +48,8 @@
     "CHARGING": "Charging in progress",
     "YOUR_CHARGERS": "Your chargers",
     "ADD_CHARGER": "Add charger",
-    "WAIT_PAYMENT": "Waiting for payment"
+    "WAIT_PAYMENT": "Waiting for payment",
+    "COST": "Cost"
   },
   "PLUG_TYPES": {
     "AC_MENNEKES_TYPE2": "Type 2"

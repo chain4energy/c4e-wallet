@@ -1,12 +1,12 @@
 <template>
   <span class="font-[Audiowide] text-lime-600 text-4xl text-center">{{$t('HEADERS.SUMMARY')}}</span>
-  <div class="w-full flex flex-inline justify-evenly">
+  <div class="w-full flex flex-col gap-5 justify-evenly">
     <div class="text-center flex flex-col justify-between">
       <span class="font-[SevenSegment] text-[90px] -mt-5 text-lime-600">{{ Number(sessionInfo.cost).toFixed(2) }}</span>
       <p class="font-[Audiowide] mt-2 text-xl">EUR</p>
     </div>
     <div class="text-center flex flex-col justify-between">
-      <span class="font-[SevenSegment] text-[90px] -mt-5 text-lime-600">{{ Number(sessionInfo.energyConsumed).toFixed(2) }}</span>
+      <span class="font-[SevenSegment] text-[90px] -mt-5 text-lime-600">{{ (Number(sessionInfo.energyWh)/1000).toFixed(2) }}</span>
       <p class="font-[Audiowide] mt-2 text-xl">kWh</p>
     </div>
   </div>
