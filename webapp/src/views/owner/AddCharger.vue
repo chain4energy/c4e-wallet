@@ -2,7 +2,7 @@
   <div class="w-full h-full flex items-center justify-center relative">
     <div class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full max-h-full p-2 sm:p-5 flex flex-col justify-between items-center">
       <div class="w-full">
-        <BackCloseBar @back="handleBack"/>
+        <BackCloseBar @back="handleBack" hamburger/>
         <h3 v-if="!chargerStore.selectedChargePointDict" class="font-[Audiowide] text-black text-4xl w-full text-center -mt-5 mb-5">{{$t('HEADERS.ADD_CHARGER')}}</h3>
       </div>
       <!-- Step 1, model selector -->

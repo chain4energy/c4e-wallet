@@ -23,7 +23,7 @@
     <div class="w-full flex flex-inline flex-wrap justify-between font-[Audiowide]">
       <span>{{percent.toFixed(0)}}%</span>
       <span>LIMIT {{amount}} {{currency}}</span>
-      <ProgressBar :value="percent" class="w-full max-h-2" :mode="sessionInfo?.state === SessionState.WAIT_FOR_STARTED ? 'indeterminate' : 'determinate'"/>
+      <ProgressBar :value="percent" class="w-full max-h-2" :mode="sessionInfo?.state === SessionState.WAIT_FOR_STARTED ? 'indeterminate' : 'determinate'" :pt="{value: 'bg-lime-600'}"/>
     </div>
     <div class="flex flex-inline justify-center gap-10 w-full">
       <div class="flex flex-inline items-center">
@@ -42,7 +42,7 @@
       </div>
     </div>
     <NextButton text="Start charging" icon="Power" @click="startChargingSession()" :disabled="sessionInfo?.state === SessionState.WAIT_FOR_STARTED" v-if="sessionInfo?.state === SessionState.READY_TO_START || sessionInfo?.state === SessionState.WAIT_FOR_STARTED"/>
-    <NextButton text="Stop charging" color="bg-red-600" @click="stopChargingSession()" icon="Power" :disabled="sessionInfo.state === SessionState.STOPPING" v-else/>
+    <NextButton text="Stop charging" color="bg-red-600" @click="stopChargingSession()" icon="Power" :disabled="sessionInfo.state === SessionState.STOPPING || stopping" v-else/>
   </div>
 </template>
 
@@ -79,7 +79,7 @@ const props = defineProps({
 const emit = defineEmits(['stopCharging']);
 
 const chargingSessionStore = useEvChargingSessionStore();
-
+const stopping = ref<boolean>(false);
 const timer = ref<number>(4);
 
 const percent = computed (() => {
@@ -101,6 +101,7 @@ const startTimer = () => {
 onMounted(startTimer);
 
 function stopChargingSession() {
+  stopping.value = true;
   emit('stopCharging');
 }
 

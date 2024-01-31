@@ -1,5 +1,5 @@
 <template>
-  <span class="font-[Audiowide] text-lime-600 text-4xl text-center">Waiting for payment</span>
+  <span class="font-[Audiowide] text-lime-600 text-4xl text-center">{{$t('HEADERS.WAIT_PAYMENT')}}</span>
   <div class="w-1/3 mx-auto">
     <HourglassSVG class="gelatine elastic-spin text-lime-600"/>
   </div>

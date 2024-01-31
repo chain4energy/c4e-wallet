@@ -1,6 +1,6 @@
 <template>
   <div class="w-full text-center">
-    <BackCloseBar @back="emit('back')"/>
+    <BackCloseBar @back="emit('back')" hide-right/>
     <span class="font-[Audiowide] text-lime-600 text-4xl">{{$t('HEADERS.SELECT_AMOUNT')}}</span>
   </div>
   <div class="flex flex-col">

@@ -1,6 +1,6 @@
 <template>
   <div class="w-full text-center flex flex-col">
-    <BackCloseBar @back="emit('back')"/>
+    <BackCloseBar @back="emit('back')" hide-right/>
     <span class="font-[Audiowide] text-lime-600 text-4xl">{{$t('HEADERS.CHECK_EMAIL')}}</span>
     <span class="text-lg mt-3">{{$t('HEADERS.CHECK_EMAIL_CAPTION')}}</span>
   </div>

@@ -47,7 +47,8 @@
     "PRESS_START": "Press START, when you're ready",
     "CHARGING": "Charging in progress",
     "YOUR_CHARGERS": "Your chargers",
-    "ADD_CHARGER": "Add charger"
+    "ADD_CHARGER": "Add charger",
+    "WAIT_PAYMENT": "Waiting for payment"
   },
   "PLUG_TYPES": {
     "AC_MENNEKES_TYPE2": "Type 2"
