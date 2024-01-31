@@ -5,9 +5,9 @@ export interface SessionInfo {
   cost:number;
   startTime: Date;
   entDate: Date;
-  reservationAmount?: number;
-  currency?: string;
-  energyWh?: string
+  reservationAmount: string;
+  currency: string;
+  energyWh: string
 }
 
 export enum SessionState {

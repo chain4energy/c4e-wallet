@@ -15,7 +15,7 @@
     <div class="w-[95%] sm:w-[80%] mx-auto my-2 p-2 font-semibold flex flex-inline justify-center items-center text-xl"
     >
       <div class="w-[150px] text-right">
-        <span class="font-[SevenSegment] text-[80px] mr-1 font-normal">{{amount}}</span>
+        <span class="font-[SevenSegment] text-[80px] mr-1 font-normal">{{Number(amount).toFixed(0)}}</span>
         <span>{{tariff?.currency}}</span>
       </div>
       <div class="border-t-2 border-black w-[30px] h-[1px] mx-4 transition-all duration-300"/>
