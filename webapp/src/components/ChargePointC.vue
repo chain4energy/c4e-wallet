@@ -9,22 +9,6 @@
           <span>Model - {{chargerDetails.name}}</span>
           <span>Connector - {{$t('PLUG_TYPES.' + chargerDetails.plugType)}}</span>
           <span>Status - <span :class="getStatusColor(chargePoint.status)">{{ $t('CHARGE_POINT_STATUS.' + chargePoint.status.toUpperCase()) }}</span></span>
-          <div v-if="hide">
-            <h3>Integration type: {{ chargePoint.integrationType }}</h3>
-            <h3>Charge point id: {{ chargePoint.id }}</h3>
-            <h3>Connectors number: {{ chargePoint.chargePointConnectors?.length }}</h3>
-            <Button @click="deleteChargePoint()">Delete</Button>
-            <Button @click="changeChargePointActiveState()">
-            <span v-if="chargePoint.active">
-              Disable
-            </span>
-              <span v-if="!chargePoint.active">
-              Enable
-            </span>
-            </Button>
-            <TariffC :tariff="currentTariff" v-if="currentTariff"/>
-            <h3 v-if="!currentTariff">No active tariffs found</h3>
-          </div>
         </div>
         <div class="w-1/4 min-w-[120px] flex justify-center items-center mx-auto">
           <!-- TODO: Icon from chargePoint data --->
@@ -45,7 +29,7 @@ import {ChargePointDict} from "@/models/chargePointDict";
 
 const chargeStore = useOwnerStore();
 
-const props = defineProps<{chargePoint: ChargePoint, hide?: boolean}>();
+const props = defineProps<{chargePoint: ChargePoint}>();
 
 const navigateToChargePoint = () => {
   chargeStore.selectedChargePoint = props.chargePoint;

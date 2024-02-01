@@ -77,7 +77,9 @@ const selectedChargePoint = computed(() => {
 })
 
 const tariff = computed<Tariff | null>(() => {
-  return selectedChargePoint.value?.tariffGroup?.tariffs.find(t => t.currency === currency.value);
+  const tariffs = selectedChargePoint.value?.tariffGroup?.tariffs;
+  if (tariffs?.length) return tariffs[0];
+  else return null;
 })
 
 const currentTariff = computed(() => {

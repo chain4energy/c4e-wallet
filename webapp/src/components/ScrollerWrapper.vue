@@ -26,7 +26,7 @@ const atBottom = ref<boolean>(true);
 </script>
 
 <template>
-  <div class="flex flex-col justify-evenly items-center h-full overflow-scroll w-full">
+  <div class="flex flex-col justify-evenly items-center h-full overflow-scroll w-full" id="scrollContainer">
     <span class="w-1/3 h-[5px] mb-2 sm:mb-4" :class="atTop ? 'bg-gray-500' : 'bg-lime-600'"/>
     <ScrollPanel class="w-full flex-col items-center max-h-[90%]" ref="scrollElement" @scroll="handleScroll">
       <slot/>
@@ -37,6 +37,12 @@ const atBottom = ref<boolean>(true);
 
 <style scoped>
 
-
+#scrollContainer {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+#scrollContainer::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
 
 </style>

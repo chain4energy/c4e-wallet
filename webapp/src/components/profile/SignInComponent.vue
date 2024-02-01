@@ -16,7 +16,7 @@
             <Password  v-model="password" name="password" :placeholder="$t('SIGN_IN_VIEW.PASSWORD')" toggleMask :feedback="false" class="border-2 border-lime-600 my-2 ml-3 p-3 rounded-lg w-[90%] outline-0"/>
           </span>
         </div>
-        <Button class="mx-auto w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center" @click="login">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</Button>
+        <NextButton class="mx-auto w-[70%] bg-lime-600 rounded-xl py-3 text-center text-white flex justify-center" @click="login">{{ $t('SIGN_IN_VIEW.SIGN_IN') }}</NextButton>
         <div class="w-full flex flex-col items-center">
           <span @click="emit('onForgotPasswordButton')" class="mb-3 text-lime-600">{{ $t('SIGN_IN_VIEW.FORGOT') }}</span>
           <p class="cursor-pointer text-center">{{ $t('SIGN_IN_VIEW.DONT_HAVE') }} <span @click="emit('onSignUpButton')" class="text-lime-600">{{ $t('SIGN_IN_VIEW.REGISTER') }}</span></p>

@@ -1,6 +1,5 @@
 <template>
   <div class="w-full h-full flex items-center justify-center relative">
-    <button @click="hide=!hide" class="border-1 bg-gray-200 z-20 absolute top-0 left-0">DEV - Details</button>
     <div class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full max-h-full p-2 sm:p-5 flex flex-col">
       <div class="w-full">
         <BackCloseBar hamburger hide-back/>
@@ -11,7 +10,7 @@
           <h1>You have no chargers</h1>
         </div>
         <div v-else v-for="charger in chargerStore.getChargePoints" :key="charger.id" class="my-4 w-[85%] mx-auto">
-          <ChargePointC :charge-point="charger" :hide="hide"/>
+          <ChargePointC :charge-point="charger"/>
         </div>
       </ScrollerWrapper>
       <div class="mt-4">

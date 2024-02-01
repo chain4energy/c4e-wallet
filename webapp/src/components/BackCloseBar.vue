@@ -8,6 +8,7 @@ import LangSelector from "@/components/features/LangSelector.vue";
 import OwnerService from "@/services/ownerEv.service";
 import {goTo_SignInView} from "@/router/goToRoute";
 import {useToast} from "vue-toastification";
+import {useRoute} from "vue-router";
 
 const emit=defineEmits(['back','close', 'hamburger']);
 const props = defineProps<{hamburger?: boolean, hideBack?: boolean, hideRight?: boolean, c4elogo?: boolean}>()
@@ -36,7 +37,7 @@ const logout = () => {
   <Dialog v-model:visible="visible" modal header="Menu" :style="{ width: '340px' }">
     <div class="flex flex-col items-center gap-2">
       <LangSelector/>
-      <NextButton :text="$t('COMMON.LOGOUT')" icon="Power" @clicked="logout" v-if="useEvCommonStore().loggedIn"/>
+      <NextButton :text="$t('COMMON.LOGOUT')" icon="Power" @clicked="logout" v-if="!useRoute().fullPath.includes('sign')"/>
     </div>
   </Dialog>
 </template>
