@@ -1,26 +1,4 @@
 <template>
-  <Card v-if="hide">
-    <template #title>
-      <h3>Name: {{ chargePoint?.name }}</h3>
-    </template>
-
-    <template #content>
-      <div style="background: green; color: white">
-        <p>Status: {{ chargePoint?.status }}</p>
-        <p>Integration type: {{ chargePoint?.integrationType }}</p>
-        <p>Charge point id: {{ chargePoint?.id }}</p>
-        <p>Connectors number: {{ chargePoint?.chargePointEvses?.length }}</p>
-        <div v-for="connector in chargePoint?.chargePointEvses" :key="connector.id">
-          <charge-point-connector-c-new :charge-point-connector="connector"/>
-        </div>
-        <div v-if="chargePoint?.tariffGroup">
-          <tarrif-group-c-new :tariff-group="chargePoint.tariffGroup"/>
-        </div>
-      </div>
-    </template>
-  </Card>
-  <button class="absolute top-0 left-0 m-4 border-2 bg-gray-100" @click = "hide = !hide">Hide/Show</button>
-
   <div class="flex flex-inline justify-between items-center">
         <div class="w-1/4">
           <img v-svg-inline :src="require('@/assets/svg/C4ELogo.svg')" alt="C4ELogo.svg" />
@@ -68,15 +46,8 @@
 <script setup lang="ts">
 
 import {ChargePoint} from "@/models/chargePoint";
-import ChargePointConnectorCNew from "@/components/ChargePointConnectorC-New.vue";
-import TarrifGroupCNew from "@/components/TariffGroupC-New.vue";
 import CarSVG from "@/components/svg/CarSVG.vue";
 import {computed, onMounted, ref} from "vue";
-import { getSupportedLocales } from '@/utils/supported-locales';
-import { useI18n } from 'vue-i18n';
-import CountryFlag from 'vue-country-flag-next'; // https://www.npmjs.com/package/vue-country-flag-next
-import { reactive } from 'vue';
-import { changeTitle } from '@/utils/title-changer';
 import Type2SVG from "@/components/svg/Type2SVG.vue";
 import {Tariff} from "@/models/tariff";
 import {useOwnerStore} from "@/store/owner.store";
@@ -101,8 +72,6 @@ const currencies = computed(() => {
 });
 
 const selectedCurrency = ref(currencies.value[0]);
-
-const hide = ref<boolean>(false);
 
 const selectedTariff = computed((): Tariff => {
   return props.chargePoint?.tariffGroup.tariffs?.find(el => el.currency === selectedCurrency.value);
