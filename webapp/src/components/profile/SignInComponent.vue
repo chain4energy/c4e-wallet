@@ -3,7 +3,7 @@
       <div class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full p-2 sm:p-5 flex flex-col justify-between">
         <BackCloseBar hide-back hamburger c4elogo/>
         <div class="w-full sm:w-[70%] mx-auto">
-          <CarSVG/>
+          <CarSVG charger/>
         </div>
         <div class="flex flex-col w-full mx-auto">
           <p class="font-[Audiowide] text-2xl text-center mb-4 text-lime-600">{{$t('HEADERS.HELLO')}}</p>
