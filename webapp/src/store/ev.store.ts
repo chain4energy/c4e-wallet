@@ -9,7 +9,7 @@ import {Jwt} from "@/models/user/jwt";
 import {ErrorData} from "@/api/base.api";
 import {DecodedLinkParamsType, DecodedLinkType, DecodeLinkAuthParams, InitPaymentRequest} from "@/models/evServiceCommons";
 import EvServiceErrorHandler, {EvServiceContext} from "@/store/evServiceErrorHandler";
-import {ChargePointConnectorStatusType} from "@/models/chargePointEvse";
+import {ChargePointEvseStatusType} from "@/models/chargePointEvse";
 import {ChargePoint} from "@/models/chargePoint";
 import {EvServiceApplicationError} from "@/models/evServiceErrors";
 
@@ -26,7 +26,7 @@ interface EvStoreState {
   chargePointConnectorUrl: string,
   chargingSessionUrl: string,
   chargingSessionResourceCode: string,
-  connectorLiveStatus: ChargePointConnectorStatusType | undefined,
+  connectorLiveStatus: ChargePointEvseStatusType | undefined,
   chargePoint: ChargePoint | undefined;
 
 }
@@ -258,7 +258,7 @@ export const useEvStore = defineStore({
     getAppLinkType(): AppTypeLink | undefined {
       return this.appTypeLink;
     },
-    getConnectorLiveStatus(): ChargePointConnectorStatusType | undefined {
+    getConnectorLiveStatus(): ChargePointEvseStatusType | undefined {
       return this.connectorLiveStatus;
     },
     getChargePointConnectorUrl(): string | undefined {

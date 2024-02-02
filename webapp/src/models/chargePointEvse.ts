@@ -3,7 +3,7 @@ export interface ChargePointEvse {
   chargePointId: number;
   deviceId: number;
   name?: string;
-  status?: ChargePointConnectorStatusType;
+  status?: ChargePointEvseStatusType;
   errorCode?: string;
   active: boolean;
   url: string;
@@ -13,8 +13,30 @@ export interface ChargePointEvse {
 
 export interface ChargePointConnectorStatusResponse {
   requestStatus: RequestStatusType;
-  status: ChargePointConnectorStatusType;
+  status: ChargePointEvseStatusType;
   errorCode: string;
+}
+
+export interface ChargePointEvseStatusResponse {
+  deviceStatus: DeviceStatus;
+  availabilityStatus: AvailabilityStatus;
+}
+
+export interface AvailabilityStatus {
+  available: boolean;
+  sessionStatus: SessionStatus;
+}
+
+export interface DeviceStatus{
+  status: ChargePointEvseStatusType;
+}
+
+export enum SessionStatus{
+  ACTIVE = "ACTIVE",
+  COMPLETED = "COMPLETED",
+  INVALID = "INVALID",
+  PENDING = "PENDING",
+  RESERVATION = "RESERVATION"
 }
 
 export enum RequestStatusType{
@@ -22,16 +44,14 @@ export enum RequestStatusType{
   REJECTED = 'Rejected',
   NOTIMPLEMENTED = 'NotImplemented'
 }
-export enum ChargePointConnectorStatusType{
-  DISCONNECTED = 'Disconnected',
-  AVAILABLE = 'Available',
-  PREPARING = 'Preparing',
-  CHARGING = 'Charging',
-  SUSPENDEDEVSE = 'SuspendedEVSE',
-  SUSPENDEDEV = 'SuspendedEV',
-  FINISHING = 'Finishing',
-  RESERVED = 'Reserved',
-  UNAVAILABLE = 'Unavailable',
-  FAULTED = 'Faulted'
-
+export enum ChargePointEvseStatusType{
+  AVAILABLE = 'AVAILABLE',
+  BLOCKED = 'BLOCKED',
+  CHARGING = 'CHARGING',
+  INOPERATIVE = 'INOPERATIVE',
+  OUTOFORDER = 'OUTOFORDER',
+  PLANNED = 'PLANNED',
+  REMOVED = 'REMOVED',
+  RESERVED = 'RESERVED',
+  UNKNOWN = 'UNKNOWN'
 }

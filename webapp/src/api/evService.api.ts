@@ -22,7 +22,7 @@ import {ChargePoint} from "@/models/chargePoint";
 import {CreateChargePoint} from "@/models/createChargePoint";
 import {UpdateChargePoint} from "@/models/updateChargePoint";
 import {UpdateChargePointConnector} from "@/models/updateChargePointConnector";
-import {ChargePointEvse, ChargePointConnectorStatusResponse} from "@/models/chargePointEvse";
+import {ChargePointEvse, ChargePointConnectorStatusResponse, ChargePointEvseStatusResponse} from "@/models/chargePointEvse";
 import {CreateChargePointConnector} from "@/models/createChargePointConnector";
 import {CreateTariff} from "@/models/createTariff";
 import {Tariff} from "@/models/tariff";
@@ -307,5 +307,9 @@ export class EvServiceApi extends BaseApi {
 
   public evDecodeLink(path: string, lockscreen: boolean) {
     return this.evServiceGetCall<LinkDecoder<DecodeLinkAuthParams | DecodedLinkParamsBase>, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + "/v0.1/link/" + path, lockscreen, "evDecodeLink");
+  }
+
+  public getEvseStatus(path: string, lockscreen: boolean){
+    return this.evServiceGetCall<ChargePointEvseStatusResponse, EvServiceApplicationError>(useConfigurationStore().config.queriesEv.CENTRAL_SYSTEM_SERVICE + path + "/status", lockscreen, "getEvseStatus");
   }
 }
