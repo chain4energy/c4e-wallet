@@ -429,7 +429,7 @@
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "publicSaleServiceURL": "http://localhost:8200",
-    "evServiceURL": "http://localhost:8200",
+    "evServiceURL": "http://SOURCE:8200",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "transferDenom": "uc4e",
