@@ -43,14 +43,16 @@
     "TO_CAR": "to your car",
     "SUMMARY": "Summary",
     "START_TIME": "Start time",
-    "POWER": "Power",
+    "ENERGY": "Energy consumed",
+    "POWER": "Average power",
     "PRESS_START": "Press START, when you're ready",
     "CHARGING": "Charging in progress",
     "YOUR_CHARGERS": "Your chargers",
     "ADD_CHARGER": "Add charger",
     "WAIT_PAYMENT": "Waiting for payment",
     "COST": "Cost",
-    "HELLO": "Hello!"
+    "HELLO": "Hello!",
+    "CHARGER_UNAVAILABLE": "Sorry! Charger is currently unavailable"
   },
   "PLUG_TYPES": {
     "AC_MENNEKES_TYPE2": "Type 2"
@@ -60,6 +62,7 @@
     "PREPARING": "Preparing",
     "UNKNOWN": "Unknown",
     "CREATED": "Created",
-    "UNAVAILABLE": "Unavailable"
+    "UNAVAILABLE": "Unavailable",
+    "CHARGING": "Charging"
   }
 }

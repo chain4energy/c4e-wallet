@@ -26,18 +26,25 @@
       <ProgressBar :value="percent" class="w-full max-h-2" :mode="sessionInfo?.state === SessionState.WAIT_FOR_STARTED ? 'indeterminate' : 'determinate'" :pt="{value: 'bg-lime-600'}">{{}}</ProgressBar>
     </div>
     <div class="flex flex-inline justify-center gap-10 w-full flex-wrap">
-      <div class="flex flex-inline items-center min-w-[140px]">
+      <div class="flex flex-inline items-center min-w-[140px]" v-if="sessionInfo?.chargingStartTime">
         <IconComponent name="Timer" class="mr-4 text-lime-600"/>
         <div class="flex flex-col items-center" :class="sessionInfo?.state === SessionState.WAIT_FOR_STARTED || sessionInfo?.state === SessionState.READY_TO_START ? 'text-gray-400' : ''">
           <span>{{$t('HEADERS.START_TIME')}}</span>
-          <span class="font-[Audiowide]">{{sessionInfo.startTime ? sessionInfo.startTime : '00:00'}}</span>
+          <span class="font-[Audiowide]">{{new Date(sessionInfo.chargingStartTime).getHours()}}:{{new Date(sessionInfo.chargingStartTime).getMinutes()}}</span>
+        </div>
+      </div>
+      <div class="flex flex-inline items-center min-w-[140px]">
+        <IconComponent name="BatteryCharging" class="mr-4 text-lime-600"/>
+        <div class="flex flex-col items-center" :class="sessionInfo?.state === SessionState.WAIT_FOR_STARTED || sessionInfo?.state === SessionState.READY_TO_START ? 'text-gray-400' : ''">
+          <span>{{$t('HEADERS.ENERGY')}}</span>
+          <span class="font-[Audiowide]">{{(Number(sessionInfo.energyWh)/1000).toFixed(1)}} kWh</span>
         </div>
       </div>
       <div class="flex flex-inline items-center min-w-[140px]">
         <IconComponent name="Zap" class="mr-4 text-lime-600"/>
         <div class="flex flex-col items-center" :class="sessionInfo?.state === SessionState.WAIT_FOR_STARTED || sessionInfo?.state === SessionState.READY_TO_START ? 'text-gray-400' : ''">
           <span>{{$t('HEADERS.POWER')}}</span>
-          <span class="font-[Audiowide]">{{(Number(sessionInfo.energyWh)/1000).toFixed(1)}} kWh</span>
+          <span class="font-[Audiowide]">{{((Number(sessionInfo.energyWh))/((new Date() - new Date(sessionInfo.chargingStartTime))/3600)).toFixed(1)}} kW</span>
         </div>
       </div>
       <div class="flex flex-inline items-center min-w-[140px]">

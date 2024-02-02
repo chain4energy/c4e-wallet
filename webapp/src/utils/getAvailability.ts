@@ -11,3 +11,10 @@ export enum AvailabilityEnum  {
   CHARGING = 'CHARGING',
   UNAVAILABLE = 'UNAVAILABLE'
 }
+export const getStatusColor = (status: AvailabilityEnum | undefined) => {
+  switch (status) {
+    case AvailabilityEnum.AVAILABLE: return 'text-lime-600';
+    case AvailabilityEnum.CHARGING: return 'text-red-600';
+    default: return 'text-zinc-600';
+  }
+};

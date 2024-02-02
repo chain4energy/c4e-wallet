@@ -45,7 +45,8 @@
       </template>
     </Dropdown>
   </div>
-  <NextButton text="Start" icon="PlayCircle" @clicked="emit('next', selectedTariff)"/>
+  <InlineMessage severity="warn" v-if="status !== AvailabilityEnum.AVAILABLE">{{$t('HEADERS.CHARGER_UNAVAILABLE')}}</InlineMessage>
+  <NextButton text="Start" icon="PlayCircle" @clicked="emit('next', selectedTariff)" v-else/>
 </template>
 
 <script setup lang="ts">
@@ -58,6 +59,9 @@ import {Tariff} from "@/models/tariff";
 import {useOwnerStore} from "@/store/owner.store";
 import NextButton from "@/components/NextButton.vue";
 import LangSelector from "@/components/features/LangSelector.vue";
+import InlineMessage from "primevue/inlinemessage";
+import {AvailabilityEnum, getAvailability} from "@/utils/getAvailability";
+import {useEvStore} from "@/store/ev.store";
 
 const emit = defineEmits(['next']);
 const props = defineProps({
@@ -67,9 +71,13 @@ const props = defineProps({
     }
   }
 );
+const status = ref<AvailabilityEnum>();
 
 onMounted(() => {
   useOwnerStore().fetchChargePointDicts();
+  useEvStore().fetchConnectorLiveStatus(props.chargePoint?.chargePointEvses[0]?.url).then(r => {
+    status.value = getAvailability(r);
+  });
 });
 
 const currencies = computed(() => {

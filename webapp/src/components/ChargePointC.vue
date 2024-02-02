@@ -28,7 +28,7 @@ import {goTo_ChargePointView, goTo_EvOwnerDashboardView} from "@/router/goToRout
 import {ChargePointDict} from "@/models/chargePointDict";
 import {useEvStore} from "@/store/ev.store";
 import {ChargePointEvseStatusResponse} from "@/models/chargePointEvse";
-import {AvailabilityEnum, getAvailability} from "@/utils/getAvailability";
+import {AvailabilityEnum, getAvailability, getStatusColor} from "@/utils/getAvailability";
 
 const chargeStore = useOwnerStore();
 
@@ -51,13 +51,7 @@ const chargerDetails = computed<ChargePointDict>(() => {
   return useOwnerStore().getChargePointDicts?.find(el => el.id === props.chargePoint?.chargePointDictId);
 });
 
-const getStatusColor = (status: AvailabilityEnum | undefined) => {
-  switch (status) {
-    case AvailabilityEnum.AVAILABLE: return 'text-lime-600';
-    case AvailabilityEnum.CHARGING: return 'text-gold-600';
-    default: return 'text-zinc-600';
-  }
-};
+
 
 </script>
 

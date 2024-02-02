@@ -43,13 +43,16 @@
     "TO_CAR": "do auta",
     "SUMMARY": "Podsumowanie",
     "START_TIME": "Start",
-    "POWER": "Moc",
+    "ENERGY": "Pobrana energia",
+    "POWER": "Średnia moc",
     "PRESS_START": "Wciśnij START, gdy będziesz gotów",
     "CHARGING": "Ładowanie w toku",
     "YOUR_CHARGERS": "Twoje ładowarki",
     "ADD_CHARGER": "Dodaj ładowarkę",
     "WAIT_PAYMENT": "Oczekiwanie na płatność",
-    "HELLO": "Witaj!"
+    "HELLO": "Witaj!",
+    "CHARGER_UNAVAILABLE": "Ładowarka jest w tej chwili niedostępna"
+
 
   },
   "PLUG_TYPES": {
@@ -60,7 +63,8 @@
     "PREPARING": "W przygotowaniu",
     "UNKNOWN": "Nieznany",
     "CREATED": "Utworzona",
-    "UNAVAILABLE": "Niedostępna"
+    "UNAVAILABLE": "Niedostępna",
+    "CHARGING": "Ładowanie"
   }
 }
 

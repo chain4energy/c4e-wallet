@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {ChargePointDict} from "@/models/chargePointDict";
+import {AvailabilityEnum, getStatusColor} from "@/utils/getAvailability";
 
-defineProps<{chargerDetails: ChargePointDict}>();
+defineProps<{chargerDetails: ChargePointDict, status?: AvailabilityEnum}>();
 </script>
 
 <template>
@@ -10,6 +11,7 @@ defineProps<{chargerDetails: ChargePointDict}>();
   <div class="flex flex-col min-w-[200px] font-[Roboto] font-medium sm:text-lg mb-2 gap-2">
     <span>{{chargerDetails.description}}</span>
     <span>Connector - {{$t('PLUG_TYPES.' + chargerDetails.plugType)}}</span>
+    <span v-if="status">Status - <span :class="getStatusColor(status)">{{ $t('CHARGE_POINT_STATUS.' + status) }}</span></span>
   </div>
   <div class="w-1/4 min-w-[120px] flex justify-center items-center">
     <!-- TODO: Icon from chargePoint data --->

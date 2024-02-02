@@ -3,8 +3,8 @@ export interface SessionInfo {
   state: SessionState;
   energyConsumed:number;
   cost:number;
-  startTime: Date;
-  entDate: Date;
+  chargingStartTime: string;
+  creationTime: string;
   reservationAmount: string;
   currency: string;
   energyWh: string

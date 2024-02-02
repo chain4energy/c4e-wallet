@@ -6,7 +6,7 @@
     <div v-else class="mx-auto min-w-[330px] w-full max-w-[600px] md:max-w-[900px] h-full max-h-full p-2 sm:p-5 flex flex-col justify-between items-center">
       <div class="w-full">
         <BackCloseBar @back="goTo_EvOwnerDashboardView" hamburger/>
-        <ChargerTypeDetails :charger-details="chargerDetails" class="w-3/4 mx-auto"/>
+        <ChargerTypeDetails :charger-details="chargerDetails" class="w-3/4 mx-auto" :status="status"/>
       </div>
       <div v-if="evse?.qrCodeLink" >
         <h3 class="font-[Audiowide] mt-3 text-2xl sm:text-3xl w-full text-center">{{ chargeStore.getSelectedChargePoint.name }}</h3>
@@ -48,6 +48,8 @@ import {ChargePointEvse} from "@/models/chargePointEvse";
 import {Tariff} from "@/models/tariff";
 import NextButton from "@/components/NextButton.vue";
 import IconComponent from "@/components/features/IconComponent.vue";
+import {AvailabilityEnum, getAvailability} from "@/utils/getAvailability";
+import {useEvStore} from "@/store/ev.store";
 
 const chargeStore = useOwnerStore();
 const currency = ref<string>('EUR');
@@ -71,10 +73,16 @@ const evse = computed<ChargePointEvse | undefined>(() => {
   return selectedChargePoint.value?.chargePointEvses?.[0];
 });
 
+const status = ref<AvailabilityEnum>();
+
+
 onMounted(() => {
   const evseInside = evse.value;
   if (evseInside && !evseInside.qrCodeLink) {
     chargeStore.getQrCode(evseInside);
+    useEvStore().fetchConnectorLiveStatus(evseInside.url).then(r => {
+      status.value = getAvailability(r);
+    });
   }
 });
 
