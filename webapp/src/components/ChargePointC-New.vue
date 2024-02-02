@@ -25,7 +25,8 @@
   </div>
   <div class="flex flex-col w-full mx-auto my-2">
     <LangSelector/>
-    <Dropdown v-model="selectedCurrency" :options="currencies" optionLabel="name" placeholder="Select currency" class="w-full border-b-2">
+    <Dropdown v-model="selectedCurrency" :options="currencies" optionLabel="name" placeholder="Select currency" class="w-full border-b-2" :pt="{item: ({ props, state, context }) => ({
+                          class: context.selected ? 'bg-lime-600/50 text-inherit' : context.focused ? 'bg-lime-600/30' : undefined})}">
       <template #value="slotProps">
         <div v-if="slotProps.value" class="flex justify-between">
           <span class="flex flex-inline">
