@@ -59,6 +59,7 @@
     "AVAILABLE": "Available",
     "PREPARING": "Preparing",
     "UNKNOWN": "Unknown",
-    "CREATED": "Created"
+    "CREATED": "Created",
+    "UNAVAILABLE": "Unavailable"
   }
 }

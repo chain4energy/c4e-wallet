@@ -59,7 +59,8 @@
     "AVAILABLE": "Dostępna",
     "PREPARING": "W przygotowaniu",
     "UNKNOWN": "Nieznany",
-    "CREATED": "Utworzona"
+    "CREATED": "Utworzona",
+    "UNAVAILABLE": "Niedostępna"
   }
 }
 

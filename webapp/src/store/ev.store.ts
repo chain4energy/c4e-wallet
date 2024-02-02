@@ -237,6 +237,15 @@ export const useEvStore = defineStore({
           onFail?.(response.error);
         }
       });
+    },
+    async fetchConnectorLiveStatus(path: string) {
+      return apiFactory.evServiceApi().getEvseStatus(path, true).then(r => {
+        if (r.isSuccess() && r.data)
+          return r.data;
+        else {
+          console.log(r.error);
+        }
+      });
     }
   },
   getters: {
