@@ -151,7 +151,8 @@ export class Configuration implements JsonConfiguration {
       this.keybaseURL = configuration.keybaseURL;
       this.stakingPageURL = configuration.stakingPageURL;
       this.publicSaleServiceURL = configuration.publicSaleServiceURL;
-      this.evServiceURL = configuration.evServiceURL;
+      //replace evService URL
+      this.evServiceURL = replaceUrlToOrigin(configuration.evServiceURL);
       this.addressPrefix = configuration.addressPrefix;
       this.stakingDenom = configuration.stakingDenom;
       this.strategicPoolAddress = configuration.strategicPoolAddress;
@@ -238,5 +239,18 @@ export class Configuration implements JsonConfiguration {
       this.publicSaleVisible = false;
     }
   }
+}
+
+function replaceUrlToOrigin(originalUrl: string | undefined) : string{
+  if(originalUrl && originalUrl.startsWith("http://SOURCE") ) {
+    const urlOrigin = new URL(window.location.origin);
+    console.log("window.location.origin "  + urlOrigin.hostname);
+    const urlFromConfig = new URL(originalUrl);
+    urlFromConfig.hostname = urlOrigin.hostname;
+    const returnVal = urlFromConfig.toString().slice(0, -1);
+    console.log("replacing '" + originalUrl + "' to '" + returnVal + "'");
+    return returnVal;
+  }
+  return 'undefined';
 }
 
