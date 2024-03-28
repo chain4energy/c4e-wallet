@@ -48,6 +48,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Misc Improvements
 
+## [1.2.10](https://github.com/chain4energy/c4e-wallet/releases/tag/1.2.10) - 2024-03-28
+
+### Misc Improvements
+* Hide circulating-supply, 
+
 ## [1.2.9](https://github.com/chain4energy/c4e-wallet/releases/tag/1.2.9) - 2024-01-18
 
 ### Bug fixes
