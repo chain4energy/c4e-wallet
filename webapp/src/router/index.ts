@@ -17,6 +17,7 @@ import SignUpView from "@/views/buyTokens/SignUpView.vue";
 import ProvideVerificationCodeView from "@/views/buyTokens/ProvideVerificationCodeView.vue";
 import {portfolioRoutes} from "@/router/portfolioRoutes";
 import {resetPasswordRoutes} from "@/router/resetPasswordRoutes";
+import boostRoutes from "@/router/boostRoutes";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -137,7 +138,8 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   portfolioRoutes,
-  ...resetPasswordRoutes
+  ...resetPasswordRoutes,
+  boostRoutes
 ];
 
 const router = createRouter({
