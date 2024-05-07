@@ -384,7 +384,8 @@
     "RESETPASSWORD1": "Reset hasła - krok 1",
     "RESETPASSWORD2": "Reset hasła - krok 2",
     "RESETPASSWORD3": "Reset hasła - krok 3",
-    "CHANGEPASSWORD": "Zmiana hasła"
+    "CHANGEPASSWORD": "Zmiana hasła",
+    "BOOST": "Boost"
   },
   "TOAST": {
     "SUCCESS": {

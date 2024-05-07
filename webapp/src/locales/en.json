@@ -391,7 +391,8 @@
     "RESETPASSWORD1": "Reset password - step 1",
     "RESETPASSWORD2": "Reset password - step 2",
     "RESETPASSWORD3": "Reset password - step 3",
-    "CHANGEPASSWORD": "Change password"
+    "CHANGEPASSWORD": "Change password",
+    "BOOST": "Boost"
   },
   "TOAST": {
     "SUCCESS": {

@@ -1,5 +1,6 @@
 <template>
   <span>
+    <BoostPopup :visible="popupOpened" :boost="currentBoost" @close="popupOpened = false;"/>
     <DataTableWrapper :data-key="'pool_description'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick" :paginator="false">
 <!--      <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>-->
       <template v-slot:empty>BOOST</template>
@@ -25,7 +26,7 @@
           <template #body="{data}">
             <span class="p-column-title">Reward (APY)</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ data.apy }}</span>
+            <span>{{ data.apy }}%</span>
           </template>
         </Column>
 <!--        <Column header="Boost" :sortable="false">-->
@@ -76,6 +77,24 @@
           </template>
         </Column>
 
+        <Column header="Your stake" :sortable="false">
+          <template #body>
+            <span class="p-column-title">Your stake</span>
+            <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
+            <span>100 C4E</span>
+          </template>
+        </Column>
+
+        <Column header="Your reward" :sortable="false">
+          <template #body="{data}">
+            <span class="p-column-title">Your reward</span>
+            <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
+            <span>{{ data.apy }} C4E </span>
+          </template>
+        </Column>
+
+
+
         <Column v-if="!isUndelegationsTable()">
           <template #body="{data}">
             <Button class="outlined" @click="checkBTN(data)">
@@ -84,6 +103,8 @@
             </Button>
           </template>
         </Column>
+
+        <!--
         <Column v-if="isLoggedIn && isValidatorsTable()">
           <template #body="{data}">
             <span style="cursor: pointer" @click="onRowExpand(data)" v-if="isValidatorRowExpandable(data)">
@@ -92,127 +113,89 @@
             </span>
           </template>
         </Column>
-<!--        <Column v-if="isValidatorsTable() || isDelegationsTable()" field="status" :header="$t(`STAKING_VIEW.TABLE.STATUS`)" :sortable="true">-->
-<!--          <template #body="{data}">-->
-<!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.STATUS`) }}</span>-->
-<!--            <ValidatorStatusBadge :validator="data"/>-->
-<!--          </template>-->
-<!--        </Column>-->
-<!--        <Column v-if="isValidatorsTable()" field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">-->
-<!--          <template #body="{data}">-->
-<!--            <span class="p-column-title">Comission</span>-->
-<!--            <PercentsView :amount="data.commission.rate" :precision="2"></PercentsView>-->
-<!--          </template>-->
-<!--        </Column>-->
-<!--        <Column v-if="isValidatorsTable()" field="votingPower" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">-->
-<!--          <template #body="{data}">-->
-<!--            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.VOTING_POWER`)}}</span>-->
-<!--            <div v-if="data.votingPower">-->
-<!--            <div v-if="data.votingPower < 0.05" class="commision">-->
-<!--              <div class="level-1" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>-->
-<!--              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>-->
-<!--            </div>-->
-<!--            <div v-if="data.votingPower >= 0.05 && data.votingPower < .10" class="commision">-->
-<!--              <div class="level-2" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>-->
-<!--              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>-->
-<!--            </div>-->
-<!--            <div v-if="data.votingPower >= .10 && data.votingPower < .25" class="commision">-->
-<!--              <div class="level-3" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>-->
-<!--              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>-->
-<!--            </div>-->
-<!--            <div v-if="data.votingPower >= .25" class="commision">-->
-<!--              <div class="level-4" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>-->
-<!--              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>-->
-<!--            </div>-->
-<!--            </div>-->
-<!--            <span v-else>updating</span>-->
-<!--          </template>-->
-<!--        </Column>-->
-<!--        <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.STAKE`)" :sortable="true" sortField="delegatedAmount">-->
-<!--          <template #body="{data}">-->
-<!--            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.STAKE`)}}</span>-->
-<!--            <CoinAmount :amount="new BigIntWrapper(data.delegatedAmount)" :show-denom="true"/>-->
-<!--          </template>-->
-<!--        </Column>-->
-<!--        <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.REWARDS`)" :sortable="true" sortField="rewardsAmountSort">-->
-<!--          <template #body="{data}">-->
-<!--            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.REWARDS`)}}</span>-->
-<!--            <CoinAmount :amount="data.rewardsAmount" :show-denom="true"/>-->
-<!--          </template>-->
-<!--        </Column>-->
-<!--        <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING`)" :sortable="true" sortField="entry.amount">-->
-<!--          <template #body="{data}">-->
-<!--            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.UNSTAKING`)}}</span>-->
-<!--            <CoinAmount :amount="data.entry.amount" :show-denom="true"/>-->
-<!--          </template>-->
-<!--        </Column>-->
-<!--        <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="true" sortField="entry.completionTime">-->
-<!--          <template #body="{data}">-->
-<!--            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)}}</span>-->
-<!--            <span><DateCommon :date="data.entry.getCompletionTimeDate()" /></span>-->
-<!--          </template>-->
-<!--        </Column>-->
-<!--        <Column v-if="!isUndelegationsTable()" field="operator_address">-->
-<!--          <template #body="{data}">-->
-<!--            <Button class="outlined" @click="checkBTN(data)">-->
-<!--              <StakeManagementIcon icon="manage"/>-->
-<!--              {{ $t(`STAKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}-->
-<!--            </Button>-->
-<!--          </template>-->
-<!--        </Column>-->
 
-<!--        <Column v-if="isLoggedIn && isValidatorsTable()">-->
-<!--          <template #body="{data}">-->
-<!--            <span style="cursor: pointer" @click="onRowExpand(data)" v-if="isValidatorRowExpandable(data)">-->
-<!--              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress !== expandedRow[0]?.operatorAddress" name="ChevronRight" />-->
-<!--              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress === expandedRow[0]?.operatorAddress" name="ChevronDown" />-->
-<!--            </span>-->
-<!--          </template>-->
-<!--        </Column>-->
+
+        <Column v-if="isValidatorsTable() || isDelegationsTable()" field="status" :header="$t(`STAKING_VIEW.TABLE.STATUS`)" :sortable="true">
+          <template #body="{data}">
+            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.STATUS`) }}</span>
+            <ValidatorStatusBadge :validator="data"/>
+          </template>
+        </Column>
+        <Column v-if="isValidatorsTable()" field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
+          <template #body="{data}">
+            <span class="p-column-title">Comission</span>
+            <PercentsView :amount="data.commission.rate" :precision="2"></PercentsView>
+          </template>
+        </Column>
+        <Column v-if="isValidatorsTable()" field="votingPower" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">
+          <template #body="{data}">
+            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.VOTING_POWER`)}}</span>
+            <div v-if="data.votingPower">
+            <div v-if="data.votingPower < 0.05" class="commision">
+              <div class="level-1" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
+              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            <div v-if="data.votingPower >= 0.05 && data.votingPower < .10" class="commision">
+              <div class="level-2" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
+              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            <div v-if="data.votingPower >= .10 && data.votingPower < .25" class="commision">
+              <div class="level-3" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
+              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            <div v-if="data.votingPower >= .25" class="commision">
+              <div class="level-4" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
+              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
+            </div>
+            </div>
+            <span v-else>updating</span>
+          </template>
+        </Column>
+        <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.STAKE`)" :sortable="true" sortField="delegatedAmount">
+          <template #body="{data}">
+            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.STAKE`)}}</span>
+            <CoinAmount :amount="new BigIntWrapper(data.delegatedAmount)" :show-denom="true"/>
+          </template>
+        </Column>
+        <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.REWARDS`)" :sortable="true" sortField="rewardsAmountSort">
+          <template #body="{data}">
+            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.REWARDS`)}}</span>
+            <CoinAmount :amount="data.rewardsAmount" :show-denom="true"/>
+          </template>
+        </Column>
+        <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING`)" :sortable="true" sortField="entry.amount">
+          <template #body="{data}">
+            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.UNSTAKING`)}}</span>
+            <CoinAmount :amount="data.entry.amount" :show-denom="true"/>
+          </template>
+        </Column>
+        <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="true" sortField="entry.completionTime">
+          <template #body="{data}">
+            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)}}</span>
+            <span><DateCommon :date="data.entry.getCompletionTimeDate()" /></span>
+          </template>
+        </Column>
+        <Column v-if="!isUndelegationsTable()" field="operator_address">
+          <template #body="{data}">
+            <Button class="outlined" @click="checkBTN(data)">
+              <StakeManagementIcon icon="manage"/>
+              {{ $t(`STAKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}
+            </Button>
+          </template>
+        </Column>
+
+
+        <Column v-if="isLoggedIn && isValidatorsTable()">
+          <template #body="{data}">
+            <span style="cursor: pointer" @click="onRowExpand(data)" v-if="isValidatorRowExpandable(data)">
+              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress !== expandedRow[0]?.operatorAddress" name="ChevronRight" />
+              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress === expandedRow[0]?.operatorAddress" name="ChevronDown" />
+            </span>
+          </template>
+        </Column>
+        -->
 
       </template>
-<!--      <template  v-if="isValidatorsTable()" v-slot:expanded-columns="{expandedData}">-->
-<!--        <div class="flex-container-details">-->
-<!--          <div class="item">-->
-<!--            <div>{{ $t(`STAKING_VIEW.TABLE.STAKE`) }}</div>-->
-<!--            <CoinAmount :amount="new BigIntWrapper(expandedData.data.delegatedAmount)" :show-denom="true"/>-->
-<!--          </div>-->
-<!--          <div class="item">-->
-<!--            <div>{{ $t(`STAKING_VIEW.TABLE.UNSTAKING`) }}</div>-->
-<!--            <CoinAmount :amount="new BigIntWrapper(expandedData.data.undelegatingAmount)" :show-denom="true"/>-->
-<!--          </div>-->
-<!--          <div class="item">-->
-<!--            <div>{{ $t(`STAKING_VIEW.TABLE.REWARDS`) }}</div>-->
-<!--            <CoinAmount :amount="expandedData.data.rewardsAmount" :show-denom="true"/>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div v-if="expandedData.data.undelegatingEntries && expandedData.data.undelegatingEntries.length > 0">-->
-<!--          <div style="max-width: 500px;">-->
-<!--            <DataTableWrapper-->
-<!--              :useExternalGlobalFilter="false"-->
-<!--              :eager-loading-config="createValidatorUndelegationEntriesEagerLoadingConfig(expandedData.data.undelegatingEntries)"-->
-<!--              :paginator="false">-->
-<!--              <template #header>-->
-<!--                <h5 style="font-weight: bolder; margin-top: 20px; margin-bottom: -20px;">{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</h5>-->
-<!--              </template>-->
-<!--              <template v-slot:columns>-->
-<!--                <Column field="amount" header="Amount" style="width: 200px" :sortable="false">-->
-<!--                  <template #body="{data}">-->
-<!--                    <span class="p-column-title">Amount</span>-->
-<!--                    <CoinAmount :amount="data.amount" :show-denom="true"/>-->
-<!--                  </template>-->
-<!--                </Column>-->
-<!--                <Column field="completionTime" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="false">-->
-<!--                  <template #body="{data}">-->
-<!--                    <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)}}</span>-->
-<!--                    <DateCommon :date="data.completionTime" />-->
-<!--                  </template>-->
-<!--                </Column>-->
-<!--              </template>-->
-<!--            </DataTableWrapper>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </template>-->
     </DataTableWrapper>
   </span>
 </template>
@@ -237,6 +220,7 @@ import StakingPopupModal from "@/components/staking/StakingPopupModal.vue";
 import {Boost} from "@/models/store/boost";
 import {BigDecimal} from "@/models/store/big.decimal";
 import StakeManagementIcon from "@/components/commons/StakeManagementIcon.vue";
+import BoostPopup from "@/components/boost/BoostPopup.vue";
 
 function getRedelegationDirection() {
   if (isValidatorsTable()) {
@@ -247,7 +231,7 @@ function getRedelegationDirection() {
 }
 
 const popupOpened = ref(false);
-const currentValidator = ref({});
+const currentBoost = ref({});
 
 const props = defineProps<{
   type: ValidatorsDataTableType,
@@ -262,8 +246,8 @@ async function transactionSuccess(arg: string) {
   popupOpened.value = !popupOpened.value;
 }
 
-function checkBTN(item: Validator){
-  currentValidator.value = item;
+function checkBTN(item: Boost){
+  currentBoost.value = item;
   popupOpened.value = !popupOpened.value;
   return popupOpened;
 }
@@ -288,21 +272,21 @@ function createValidatorUndelegationEntriesEagerLoadingConfig(entries: Unbonding
 
 function createEagerLoadingConfig(): EagerLoadingConfig<Boost>{
   const config = new EagerLoadingConfig<Boost>([new Boost(
-      'description1',
+      'Boost Name 1',
       new Coin(BigInt(1000000), 'uc4e'),
       new Coin(BigInt(500000), 'uc4e'),
       new Coin(BigInt(10000), 'uc4e'),
       75,
       360),
     new Boost(
-      'description2',
+      'Boost Name 2',
       new Coin(BigInt(1000000), 'uc4e'),
       new Coin(BigInt(500000), 'uc4e'),
       new Coin(BigInt(10000), 'uc4e'),
       60,
       270),
     new Boost(
-      'description3',
+      'Boost Name 3',
       new Coin(BigInt(1000000), 'uc4e'),
       new Coin(BigInt(500000), 'uc4e'),
       new Coin(BigInt(10000), 'uc4e'),
