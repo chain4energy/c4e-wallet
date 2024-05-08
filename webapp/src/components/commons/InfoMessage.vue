@@ -1,6 +1,6 @@
 <template>
   <div class="warning">
-      <Icon name="AlertTriangle"/>
+      <Icon name="Info"/>
     <div class="warning-container">
       <h3>{{$t(header, headerVariables)}}</h3>
       <span v-if="textTypeData.type === TextType.STRING" class="warning-text">
@@ -81,7 +81,7 @@ function getTextsLength(key: string): {type: TextType | undefined, amount: numbe
   align-self: center;
   width: 80%;
   background-color: #fef6f6;
-  color: #fc4b53;
+  color: #5ccbef;
   padding: 5px;
   border-radius: 8px;
   align-items: center;

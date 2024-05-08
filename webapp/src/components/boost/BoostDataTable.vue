@@ -16,17 +16,17 @@
       <template v-slot:columns>
 <!--        <Column field="description.moniker" :header="$t(`STAKING_VIEW.TABLE.NAME`)" :sortable="true">-->
         <Column header="Name" :sortable="false">
-          <template #body="{data}">
+          <template #body="slotProps: {data: Boost}">
             <span class="p-column-title">Name</span>
 <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ data.pool_description }}</span>
+            <span>{{ slotProps.data.pool_description }}</span>
           </template>
         </Column>
         <Column header="Reward (APY)" :sortable="false">
-          <template #body="{data}">
+          <template #body="slotProps: {data: Boost}">
             <span class="p-column-title">Reward (APY)</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ data.apy }}%</span>
+            <span>{{ slotProps.data.apy }}%</span>
           </template>
         </Column>
 <!--        <Column header="Boost" :sortable="false">-->
@@ -37,70 +37,60 @@
 <!--          </template>-->
 <!--        </Column>-->
         <Column header="Lock period" :sortable="false">
-          <template #body="{data}">
+          <template #body="slotProps: {data: Boost}">
             <span class="p-column-title">Lock period</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ data.lock_period }} days</span>
+            <span>{{ slotProps.data.lock_period }} days</span>
           </template>
         </Column>
         <Column header="Boost pool" :sortable="false">
-          <template #body="{data}">
+          <template #body="slotProps: {data: Boost}">
             <span class="p-column-title">Reward (APY)</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
 <!--            <span>{{ data.base_tokens }}</span>-->
-            <CoinAmount :amount="data.base_tokens" :show-denom="true"/>/
-                <CoinAmount :amount="data.remaining_tokens" :show-denom="true"/>
+            <CoinAmount :amount="slotProps.data.base_tokens" :show-denom="true"/>
           </template>
         </Column>
 <!--        <Column v-if="isValidatorsTable()" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">-->
         <Column header="Pool Usage">
-          <template #body="{data}">
-            <div v-if="data.percentage_pool_usage">
-              <div v-if="data.percentage_pool_usage < 0.05" class="commision">
-                <div class="level-1" :style="'flex-basis:' + (data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                <PercentsView class="level-border" :amount="data.percentage_pool_usage" :precision="2"></PercentsView>
+          <template #body="slotProps: {data: Boost}">
+            <CoinAmount :amount="slotProps.data.remaining_tokens" :show-tooltip="true" tooltip-only>
+              <div v-if="slotProps.data.percentage_pool_usage">
+                <div v-if="slotProps.data.percentage_pool_usage < 0.05" class="commision">
+                  <div class="level-1" :style="'flex-basis:' + (slotProps.data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="slotProps.data.percentage_pool_usage" :precision="2"></PercentsView>
+                </div>
+                <div v-if="slotProps.data.percentage_pool_usage >= 0.05 && slotProps.data.percentage_pool_usage < 0.10" class="commision">
+                  <div class="level-2" :style="'flex-basis:' + (slotProps.data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="slotProps.data.percentage_pool_usage" :precision="2"></PercentsView>
+                </div>
+                <div v-if="slotProps.data.percentage_pool_usage >= 0.10 && slotProps.data.percentage_pool_usage < 0.25" class="commision">
+                  <div class="level-3" :style="'flex-basis:' + (slotProps.data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="slotProps.data.percentage_pool_usage" :precision="2"></PercentsView>
+                </div>
+                <div v-if="slotProps.data.percentage_pool_usage >= 0.25" class="commision">
+                  <div class="level-4" :style="'flex-basis:' + (slotProps.data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="slotProps.data.percentage_pool_usage" :precision="2"></PercentsView>
+                </div>
               </div>
-              <div v-if="data.percentage_pool_usage >= 0.05 && data.percentage_pool_usage < 0.10" class="commision">
-                <div class="level-2" :style="'flex-basis:' + (data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                <PercentsView class="level-border" :amount="data.percentage_pool_usage" :precision="2"></PercentsView>
-              </div>
-              <div v-if="data.percentage_pool_usage >= 0.10 && data.percentage_pool_usage < 0.25" class="commision">
-                <div class="level-3" :style="'flex-basis:' + (data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                <PercentsView class="level-border" :amount="data.percentage_pool_usage" :precision="2"></PercentsView>
-              </div>
-              <div v-if="data.percentage_pool_usage >= 0.25" class="commision">
-                <div class="level-4" :style="'flex-basis:' + (data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                <PercentsView class="level-border" :amount="data.percentage_pool_usage" :precision="2"></PercentsView>
-              </div>
-            </div>
-            <span v-else>updating</span>
+              <span v-else>updating</span>
+            </CoinAmount>
           </template>
         </Column>
 
         <Column header="Your stake" :sortable="false">
           <template #body>
-            <span class="p-column-title">Your stake</span>
+            <span class="p-column-title">Your contribution</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
             <span>100 C4E</span>
           </template>
         </Column>
 
         <Column header="Your reward" :sortable="false">
-          <template #body="{data}">
+          <template #body="slotProps: {data: Boost}">
             <span class="p-column-title">Your reward</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ data.apy }} C4E </span>
-          </template>
-        </Column>
-
-
-
-        <Column v-if="!isUndelegationsTable()">
-          <template #body="{data}">
-            <Button class="outlined" @click="checkBTN(data)">
-              <StakeManagementIcon icon="manage"/>
-              {{ $t(`STAKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}
-            </Button>
+            <span>{{ slotProps.data.apy }} C4E </span>
           </template>
         </Column>
 
@@ -183,18 +173,21 @@
             </Button>
           </template>
         </Column>
+        -->
 
 
-        <Column v-if="isLoggedIn && isValidatorsTable()">
-          <template #body="{data}">
-            <span style="cursor: pointer" @click="onRowExpand(data)" v-if="isValidatorRowExpandable(data)">
-              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress !== expandedRow[0]?.operatorAddress" name="ChevronRight" />
-              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress === expandedRow[0]?.operatorAddress" name="ChevronDown" />
+        <Column v-if="isLoggedIn">
+          <template #body="slotProps: {data: Boost}">
+            <span style="cursor: pointer" @click="onRowExpand(slotProps.data)">
+            <!--  <Icon @click="onRowExpand(data)" name="ChevronRight" /> -->
+              <Icon @click="onRowExpand(slotProps.data)" :name="expandedRow[0].pool_description === slotProps.data.pool_description ? 'ChevronDown' : 'ChevronUp'" />
             </span>
           </template>
         </Column>
-        -->
 
+      </template>
+      <template #expanded-columns>
+        History.... details....
       </template>
     </DataTableWrapper>
   </span>
@@ -204,70 +197,25 @@
 
 import DataTableWrapper from "@/components/commons/DataTableWrapper.vue";
 import {computed, ref} from "vue";
-import {Validator } from "@/models/store/validator";
 import {useUserStore} from "@/store/user.store";
 import {FilterMatchMode, FilterOperator} from "primevue/api";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
-import { getUnstakings, ValidatorsDataTableType, ValidatorUnstaking } from "@/components/staking/ValidatorsDataTable.ts";
-import { RedelegationDirection } from "@/components/staking/StakingRedelegate.ts";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView";
-import DateCommon from "@/components/commons/DateCommon.vue";
-import ValidatorStatusBadge from "./ValidatorStatusBadge.vue";
-import { UnbondingDelegationEntry } from "@/models/store/staking";
-import {BigIntWrapper, Coin} from "@/models/store/common";
-import StakingPopupModal from "@/components/staking/StakingPopupModal.vue";
+import {Coin} from "@/models/store/common";
 import {Boost} from "@/models/store/boost";
-import {BigDecimal} from "@/models/store/big.decimal";
-import StakeManagementIcon from "@/components/commons/StakeManagementIcon.vue";
 import BoostPopup from "@/components/boost/BoostPopup.vue";
 
-function getRedelegationDirection() {
-  if (isValidatorsTable()) {
-    return RedelegationDirection.FROM;
-  }
-  return RedelegationDirection.TO;
 
-}
 
 const popupOpened = ref(false);
 const currentBoost = ref({});
 
-const props = defineProps<{
-  type: ValidatorsDataTableType,
-  validators: Array<Validator>
-}>();
 
 const userStore = useUserStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
-const expandedRow = ref(Array<Validator>());
+const expandedRow = ref(Array<Boost>());
 
-async function transactionSuccess(arg: string) {
-  popupOpened.value = !popupOpened.value;
-}
-
-function checkBTN(item: Boost){
-  currentBoost.value = item;
-  popupOpened.value = !popupOpened.value;
-  return popupOpened;
-}
-
-function isValidatorsTable() {
-  return props.type === ValidatorsDataTableType.VALIDATORS;
-}
-
-function isDelegationsTable() {
-  return props.type === ValidatorsDataTableType.DELEGATIONS;
-}
-
-function isUndelegationsTable() {
-  return props.type === ValidatorsDataTableType.UNDELEGATIONS;
-}
-
-function createValidatorUndelegationEntriesEagerLoadingConfig(entries: UnbondingDelegationEntry[]): EagerLoadingConfig<UnbondingDelegationEntry>{
-  const config = new EagerLoadingConfig<UnbondingDelegationEntry>(entries);
-  return config;
-}
 
 
 function createEagerLoadingConfig(): EagerLoadingConfig<Boost>{
@@ -296,18 +244,12 @@ function createEagerLoadingConfig(): EagerLoadingConfig<Boost>{
   return config;
 }
 
-function onRowExpand(data: Validator) {
+function onRowExpand(data: Boost) {
   expandedRow.value = (expandedRow.value[0] === data) ? [] : [data];
 }
 
 function onRowClick(event: any) {
-  if (isValidatorRowExpandable(event.data)) {
     onRowExpand(event.data);
-  }
-}
-
-function isValidatorRowExpandable(data: Validator):boolean {
-  return !isUndelegationsTable() && data.delegatedAmount !== 0n;
 }
 
 const filters = ref({
