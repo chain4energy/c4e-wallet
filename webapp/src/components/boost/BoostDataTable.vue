@@ -174,13 +174,21 @@
           </template>
         </Column>
         -->
+         <Column>
+          <template #body="{data}">
+            <Button class="outlined" @click="checkBTN(data)">
+              <StakeManagementIcon icon="manage"/>
+              {{ $t(`STAKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}
+            </Button>
+          </template>
+        </Column>
 
 
         <Column v-if="isLoggedIn">
           <template #body="slotProps: {data: Boost}">
             <span style="cursor: pointer" @click="onRowExpand(slotProps.data)">
             <!--  <Icon @click="onRowExpand(data)" name="ChevronRight" /> -->
-              <Icon @click="onRowExpand(slotProps.data)" :name="expandedRow[0].pool_description === slotProps.data.pool_description ? 'ChevronDown' : 'ChevronUp'" />
+              <Icon @click="onRowExpand(slotProps.data)" :name="expandedRow.length && expandedRow[0].pool_description === slotProps.data.pool_description ? 'ChevronUp' : 'ChevronDown'" />
             </span>
           </template>
         </Column>
@@ -216,7 +224,11 @@ const userStore = useUserStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<Boost>());
 
-
+function checkBTN(item: Boost){
+  currentBoost.value = item;
+  popupOpened.value = !popupOpened.value;
+  return popupOpened;
+}
 
 function createEagerLoadingConfig(): EagerLoadingConfig<Boost>{
   const config = new EagerLoadingConfig<Boost>([new Boost(
@@ -245,7 +257,7 @@ function createEagerLoadingConfig(): EagerLoadingConfig<Boost>{
 }
 
 function onRowExpand(data: Boost) {
-  expandedRow.value = (expandedRow.value[0] === data) ? [] : [data];
+  expandedRow.value = (expandedRow.value.length && expandedRow.value[0].pool_description === data.pool_description) ? [] : [data];
 }
 
 function onRowClick(event: any) {
