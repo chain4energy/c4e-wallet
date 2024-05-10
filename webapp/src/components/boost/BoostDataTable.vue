@@ -205,7 +205,7 @@
 <script setup lang="ts">
 
 import DataTableWrapper from "@/components/commons/DataTableWrapper.vue";
-import {computed, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {FilterMatchMode, FilterOperator} from "primevue/api";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
@@ -214,6 +214,17 @@ import PercentsView from "@/components/commons/PercentsView";
 import {Coin} from "@/models/store/common";
 import {Boost} from "@/models/store/boost";
 import BoostPopup from "@/components/boost/BoostPopup.vue";
+import factoryApi from "@/api/factory.api";
+import {useBoostStore} from "@/store/boost.store";
+import {createRouterBeforeEach} from "@/router/before_each";
+
+onMounted(() => {
+  boostStore.fetchBoostConfig(true);
+});
+
+async function transactionSuccess(arg: string) {
+  popupOpened.value = !popupOpened.value;
+}
 
 
 
@@ -222,6 +233,7 @@ const currentBoost = ref({});
 
 
 const userStore = useUserStore();
+const boostStore = useBoostStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<Boost>());
 
@@ -232,28 +244,7 @@ function checkBTN(item: Boost){
 }
 
 function createEagerLoadingConfig(): EagerLoadingConfig<Boost>{
-  const config = new EagerLoadingConfig<Boost>([new Boost(
-      'Boost Name 1',
-      new Coin(BigInt(1000000), 'uc4e'),
-      new Coin(BigInt(500000), 'uc4e'),
-      new Coin(BigInt(10000), 'uc4e'),
-      75,
-      360),
-    new Boost(
-      'Boost Name 2',
-      new Coin(BigInt(1000000), 'uc4e'),
-      new Coin(BigInt(500000), 'uc4e'),
-      new Coin(BigInt(10000), 'uc4e'),
-      60,
-      270),
-    new Boost(
-      'Boost Name 3',
-      new Coin(BigInt(1000000), 'uc4e'),
-      new Coin(BigInt(500000), 'uc4e'),
-      new Coin(BigInt(10000), 'uc4e'),
-      45,
-      180),
-  ]);
+  const config = new EagerLoadingConfig<Boost>(boostStore.getBoosts);
   return config;
 }
 
