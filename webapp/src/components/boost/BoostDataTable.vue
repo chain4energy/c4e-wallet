@@ -22,6 +22,13 @@
             <span>{{ slotProps.data.pool_description }}</span>
           </template>
         </Column>
+        <Column header="Lock period" :sortable="false">
+          <template #body="slotProps: {data: Boost}">
+            <span class="p-column-title">Lock period</span>
+            <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
+            <span>{{ slotProps.data.lock_period }} days</span>
+          </template>
+        </Column>
         <Column header="Reward (APY)" :sortable="false">
           <template #body="slotProps: {data: Boost}">
             <span class="p-column-title">Reward (APY)</span>
@@ -36,14 +43,8 @@
 <!--            <span>{{ data.apy }}</span>-->
 <!--          </template>-->
 <!--        </Column>-->
-        <Column header="Lock period" :sortable="false">
-          <template #body="slotProps: {data: Boost}">
-            <span class="p-column-title">Lock period</span>
-            <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ slotProps.data.lock_period }} days</span>
-          </template>
-        </Column>
-        <Column header="Boost pool" :sortable="false">
+
+        <Column header="Pool size" :sortable="false">
           <template #body="slotProps: {data: Boost}">
             <span class="p-column-title">Reward (APY)</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
@@ -78,7 +79,7 @@
           </template>
         </Column>
 
-        <Column header="Your stake" :sortable="false">
+        <Column header="Your contribution" :sortable="false">
           <template #body>
             <span class="p-column-title">Your contribution</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
@@ -188,7 +189,7 @@
           <template #body="slotProps: {data: Boost}">
             <span style="cursor: pointer" @click="onRowExpand(slotProps.data)">
             <!--  <Icon @click="onRowExpand(data)" name="ChevronRight" /> -->
-              <Icon @click="onRowExpand(slotProps.data)" :name="expandedRow.length && expandedRow[0].pool_description === slotProps.data.pool_description ? 'ChevronUp' : 'ChevronDown'" />
+              <Icon @click="onRowExpand(slotProps.data)" :name="expandedRow.length && expandedRow[0].pool_description === slotProps.data.pool_description ? 'ChevronUp' : 'ChevronRight'" />
             </span>
           </template>
         </Column>

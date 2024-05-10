@@ -3,34 +3,41 @@
     <Dialog :visible="visible" @update:visible="emit('close')" modal :baseZIndex="-100" :style="{ width: '800px' }" :header="boost.pool_description">
       <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
 
-
-      <div class="validationPopup__header">
-        <div class="validationPopup__headerDescription">
-          <span>APY: {{boost.apy}}%</span>
-          <span>Lock period: {{boost.lock_period}} days</span>
-          <span>Pool usage:</span>
-          <div v-if="boost.percentage_pool_usage">
-            <div v-if="boost.percentage_pool_usage < 0.05" class="commision">
-              <div class="level-1" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
-            </div>
-            <div v-if="boost.percentage_pool_usage >= 0.05 && boost.percentage_pool_usage < 0.10" class="commision">
-              <div class="level-2" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
-            </div>
-            <div v-if="boost.percentage_pool_usage >= 0.10 && boost.percentage_pool_usage < 0.25" class="commision">
-              <div class="level-3" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
-            </div>
-            <div v-if="boost.percentage_pool_usage >= 0.25" class="commision">
-              <div class="level-4" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
-            </div>
+      <div class="boostDetails__header">
+          <div class="boostDetails__header__tile" >
+            <h3>APY:</h3>
+            <h4>{{boost.apy}}%</h4>
+          </div>
+          <div class="boostDetails__header__tile" >
+            <h3>Lock period:</h3>
+            <h4>{{boost.lock_period}} days</h4>
+          </div>
+          <div class="boostDetails__header__tile" >
+            <h3>Pool usage:</h3>
+            <CoinAmount :amount="boost.remaining_tokens" :show-tooltip="true" tooltip-only style="width: 100%;">
+              <div v-if="boost.percentage_pool_usage" style="width: 100%; padding: 8px; margin-bottom: 0.5rem;">
+                <div v-if="boost.percentage_pool_usage < 0.05" class="commision">
+                  <div class="level-1" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
+                </div>
+                <div v-if="boost.percentage_pool_usage >= 0.05 && boost.percentage_pool_usage < 0.10" class="commision">
+                  <div class="level-2" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
+                </div>
+                <div v-if="boost.percentage_pool_usage >= 0.10 && boost.percentage_pool_usage < 0.25" class="commision">
+                  <div class="level-3" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
+                </div>
+                <div v-if="boost.percentage_pool_usage >= 0.25" class="commision">
+                  <div class="level-4" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
+                </div>
+              </div>
+            </CoinAmount>
           </div>
         </div>
-      </div>
 
-      <div style="display: flex; justify-content: center">
+      <div style="display: flex; justify-content: center; margin: 30px auto;">
         <InfoMessage
                         header="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.HEADER"
                         :header-variables="{timeToComplete: boost.lock_period}"
@@ -40,10 +47,7 @@
 
 
       <Form :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body" as="form">
-
         <div class="validationPopup__body">
-          <h3>{{ $t('STAKING_VIEW.STAKING_POPUP.HEADER') }}</h3>
-
           <AmountView
             class="validationPopup__amount"
             :coins="amountToPass"
@@ -90,7 +94,6 @@
 
           </div>
         </div>
-
         <div class="validationPopup__btnHolder" v-if="canModify">
           <div class="validationPopup__btns">
             <div style="flex: 1 1;">
@@ -133,6 +136,7 @@ import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import {BigDecimal} from "@/models/store/big.decimal";
 import {Boost} from "@/models/store/boost";
 import InfoMessage from "@/components/commons/InfoMessage.vue";
+import CoinAmount from "@/components/commons/CoinAmount.vue";
 
 
 const props = defineProps<{
@@ -224,7 +228,6 @@ function getMax() {
 const amountToPass = computed(() => {
   let coins = [];
   coins.push(
-    {amount: props.boost.lock_period, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')},
     {amount: useUserStore().getBalance || 0, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.AVAILABLE_TO_DELEGATE')});
   return coins;
   /*
@@ -430,15 +433,6 @@ const amountToPass = computed(() => {
   }
 }
 
-.validator-image-small {
-  height: 18px;
-  width: 18px;
-}
-
-.validator-image-big {
-  height: 3.5rem;
-  width: 3.5rem;
-}
 
 
 .field-local { // TODO somehow take  global class: field
@@ -572,7 +566,6 @@ const amountToPass = computed(() => {
 }
 
 .commision {
-  width: 100%;
   box-sizing: border-box;
   height: 28px;
   border: 1px solid grey;
@@ -616,4 +609,49 @@ const amountToPass = computed(() => {
   background: $secondary-color;
   color: white;
 }
+
+.boostDetails__header {
+  width: 100%;
+  display: inline-flex;
+  flex-wrap: wrap;
+  // grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  //gap: 24px;
+  box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
+  font-family: 'Inter',sans-serif;
+  align-items: center;
+  font-weight: 700;
+  line-height: 24px;
+  padding: 20px 33px;
+  border-radius: 5px;
+  margin: 10px auto;
+  justify-content: space-around;
+  gap: 20px;
+
+  h3 {
+    padding: 10px 10px;
+    font-size: 1.5rem;
+  }
+  h4 {
+    padding: 10px;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+
+  &__tile {
+    flex: 1 1 20%;
+    min-width: 150px;
+    padding: 10px 5px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Inter',sans-serif;
+    color: #02447A;
+    border: 2px solid #02447A;
+    box-shadow: 0 0 2px 2px #02447A;
+    border-radius: 2px;
+    height: 150px;
+  }
+}
+
 </style>
