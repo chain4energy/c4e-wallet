@@ -120,6 +120,7 @@ export default {
   },
   loyaltyDropService:{
     LOYALTY_DROP_BASE_URL:'/api/loyalty-drop',
-    LOYALTY_DROP_POOL_CONFIGURATIONS_URL:'/v0.1/pool_configurations'
+    LOYALTY_DROP_POOL_CONFIGURATIONS_URL:'/v0.1/pool_configurations',
+    loyaltyDropDefaultDenom:'uc4e'
   }
 };

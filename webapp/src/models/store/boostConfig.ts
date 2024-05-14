@@ -1,6 +1,7 @@
 import {Coin} from "@/models/store/common";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import {string} from "yup";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 export class BoostConfig {
 
@@ -15,14 +16,13 @@ export class BoostConfig {
   apr: number;
   lockPeriod: number;
 
-
-  constructor(poolDescription: string, prefixName: string, baseTokens: Coin, usedTokens: Coin, reservedTokens: Coin, rewardsTokens: Coin, epochPeriod: number, epochStartDate: Date, apr: number, lockPeriod: number) {
+  constructor(poolDescription: string, prefixName: string, baseTokens: number, usedTokens: number, reservedTokens: number, rewardsTokens: number, epochPeriod: number, epochStartDate: Date, apr: number, lockPeriod: number) {
     this.poolDescription = poolDescription;
     this.prefixName = prefixName;
-    this.baseTokens = baseTokens;
-    this.usedTokens = usedTokens;
-    this.reservedTokens = reservedTokens;
-    this.rewardsTokens = rewardsTokens;
+    this.baseTokens = new Coin(BigInt(baseTokens), getDefaultDenom());
+    this.usedTokens = new Coin(BigInt(usedTokens), getDefaultDenom());
+    this.reservedTokens = new Coin(BigInt(reservedTokens), getDefaultDenom());
+    this.rewardsTokens = new Coin(BigInt(rewardsTokens), getDefaultDenom());
     this.epochPeriod = epochPeriod;
     this.epochStartDate = epochStartDate;
     this.apr = apr;
@@ -64,3 +64,7 @@ export enum UserBoostStatusType{
 //   `LAST_REWARD_DATE`     DATE,
 //   CONSTRAINT userBoostFkPoolConfig FOREIGN KEY (`BOOST_POOL_ID`) REFERENCES `POOL_CONFIGURATION` (`ID`)
 // );
+
+function getDefaultDenom():string{
+  return useConfigurationStore().config.loyaltyDropService.loyaltyDropDefaultDenom;
+}
