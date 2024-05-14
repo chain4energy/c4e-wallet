@@ -16,24 +16,24 @@
       <template v-slot:columns>
 <!--        <Column field="description.moniker" :header="$t(`STAKING_VIEW.TABLE.NAME`)" :sortable="true">-->
         <Column header="Name" :sortable="false">
-          <template #body="slotProps: {data: Boost}">
+          <template #body="slotProps: {data: BoostConfig}">
             <span class="p-column-title">Name</span>
 <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ slotProps.data.pool_description }}</span>
+            <span>{{ slotProps.data.poolDescription }}</span>
           </template>
         </Column>
         <Column header="Lock period" :sortable="false">
-          <template #body="slotProps: {data: Boost}">
+          <template #body="slotProps: {data: BoostConfig}">
             <span class="p-column-title">Lock period</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ slotProps.data.lock_period }} days</span>
+            <span>{{ slotProps.data.lockPeriod }} days</span>
           </template>
         </Column>
         <Column header="Reward (APY)" :sortable="false">
-          <template #body="slotProps: {data: Boost}">
+          <template #body="slotProps: {data: BoostConfig}">
             <span class="p-column-title">Reward (APY)</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ slotProps.data.apy }}%</span>
+            <span>{{ slotProps.data.apr }}%</span>
           </template>
         </Column>
 <!--        <Column header="Boost" :sortable="false">-->
@@ -45,36 +45,36 @@
 <!--        </Column>-->
 
         <Column header="Pool size" :sortable="false">
-          <template #body="slotProps: {data: Boost}">
+          <template #body="slotProps: {data: BoostConfig}">
             <span class="p-column-title">Reward (APY)</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
 <!--            <span>{{ data.base_tokens }}</span>-->
-            <CoinAmount :amount="slotProps.data.base_tokens" :show-denom="true"/>
+            <CoinAmount :amount="slotProps.data.baseTokens" :show-denom="true"/>
           </template>
         </Column>
 <!--        <Column v-if="isValidatorsTable()" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">-->
         <Column header="Pool Usage">
-          <template #body="slotProps: {data: Boost}">
-            <CoinAmount :amount="slotProps.data.remaining_tokens" :show-tooltip="true" tooltip-only>
-              <div v-if="slotProps.data.percentage_pool_usage">
-                <div v-if="slotProps.data.percentage_pool_usage < 0.05" class="commision">
-                  <div class="level-1" :style="'flex-basis:' + (slotProps.data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="slotProps.data.percentage_pool_usage" :precision="2"></PercentsView>
-                </div>
-                <div v-if="slotProps.data.percentage_pool_usage >= 0.05 && slotProps.data.percentage_pool_usage < 0.10" class="commision">
-                  <div class="level-2" :style="'flex-basis:' + (slotProps.data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="slotProps.data.percentage_pool_usage" :precision="2"></PercentsView>
-                </div>
-                <div v-if="slotProps.data.percentage_pool_usage >= 0.10 && slotProps.data.percentage_pool_usage < 0.25" class="commision">
-                  <div class="level-3" :style="'flex-basis:' + (slotProps.data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="slotProps.data.percentage_pool_usage" :precision="2"></PercentsView>
-                </div>
-                <div v-if="slotProps.data.percentage_pool_usage >= 0.25" class="commision">
-                  <div class="level-4" :style="'flex-basis:' + (slotProps.data.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="slotProps.data.percentage_pool_usage" :precision="2"></PercentsView>
-                </div>
-              </div>
-              <span v-else>updating</span>
+          <template #body="slotProps: {data: BoostConfig}">
+            <CoinAmount :amount="calculateRemainingTokens(slotProps.data)" :show-tooltip="true" tooltip-only>
+<!--              <div v-if="calculatePercentagePoolUsage(slotProps.data)">-->
+<!--                <div v-if="calculatePercentagePoolUsage(slotProps.data) < 0.05" class="commision">-->
+<!--                  <div class="level-1" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data) * 100).toFixed(2) + '%'"></div>-->
+<!--                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(slotProps.data)" :precision="2"></PercentsView>-->
+<!--                </div>-->
+<!--                <div v-if="calculatePercentagePoolUsage(slotProps.data) >= 0.05 && calculatePercentagePoolUsage(slotProps.data) < 0.10" class="commision">-->
+<!--                  <div class="level-2" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data) * 100).toFixed(2) + '%'"></div>-->
+<!--                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(slotProps.data)" :precision="2"></PercentsView>-->
+<!--                </div>-->
+<!--                <div v-if="calculatePercentagePoolUsage(slotProps.data) >= 0.10 && calculatePercentagePoolUsage(slotProps.data) < 0.25" class="commision">-->
+<!--                  <div class="level-3" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data) * 100).toFixed(2) + '%'"></div>-->
+<!--                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(slotProps.data)" :precision="2"></PercentsView>-->
+<!--                </div>-->
+<!--                <div v-if="calculatePercentagePoolUsage(slotProps.data) >= 0.25" class="commision">-->
+<!--                  <div class="level-4" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data) * 100).toFixed(2) + '%'"></div>-->
+<!--                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(slotProps.data)" :precision="2"></PercentsView>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <span v-else>updating</span>-->
             </CoinAmount>
           </template>
         </Column>
@@ -88,10 +88,10 @@
         </Column>
 
         <Column header="Your reward" :sortable="false">
-          <template #body="slotProps: {data: Boost}">
+          <template #body="slotProps: {data: BoostConfig}">
             <span class="p-column-title">Your reward</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ slotProps.data.apy }} C4E </span>
+            <span>{{ slotProps.data.apr }} C4E </span>
           </template>
         </Column>
 
@@ -186,10 +186,10 @@
 
 
         <Column v-if="isLoggedIn">
-          <template #body="slotProps: {data: Boost}">
+          <template #body="slotProps: {data: BoostConfig}">
             <span style="cursor: pointer" @click="onRowExpand(slotProps.data)">
             <!--  <Icon @click="onRowExpand(data)" name="ChevronRight" /> -->
-              <Icon @click="onRowExpand(slotProps.data)" :name="expandedRow.length && expandedRow[0].pool_description === slotProps.data.pool_description ? 'ChevronUp' : 'ChevronRight'" />
+              <Icon @click="onRowExpand(slotProps.data)" :name="expandedRow.length && expandedRow[0].poolDescription === slotProps.data.poolDescription ? 'ChevronUp' : 'ChevronRight'" />
             </span>
           </template>
         </Column>
@@ -212,13 +212,16 @@ import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView";
 import {Coin} from "@/models/store/common";
-import {Boost} from "@/models/store/boost";
+import {BoostConfig} from "@/models/store/boostConfig";
 import BoostPopup from "@/components/boost/BoostPopup.vue";
 import factoryApi from "@/api/factory.api";
 import {useBoostStore} from "@/store/boost.store";
 import {createRouterBeforeEach} from "@/router/before_each";
+import StakeManagementIcon from "@/components/commons/StakeManagementIcon.vue";
+import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 
 onMounted(() => {
+  console.log("BoostDataTable - onMounted");
   boostStore.fetchBoostConfig(true);
 });
 
@@ -235,50 +238,34 @@ const currentBoost = ref({});
 const userStore = useUserStore();
 const boostStore = useBoostStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
-const expandedRow = ref(Array<Boost>());
+const expandedRow = ref(Array<BoostConfig>());
 
-function checkBTN(item: Boost){
+function checkBTN(item: BoostConfig){
   currentBoost.value = item;
   popupOpened.value = !popupOpened.value;
   return popupOpened;
 }
 
-function createEagerLoadingConfig(): EagerLoadingConfig<Boost>{
-  const config = new EagerLoadingConfig<Boost>(boostStore.getBoosts);
+function createEagerLoadingConfig(): EagerLoadingConfig<BoostConfig>{
+  const config = new EagerLoadingConfig<BoostConfig>(boostStore.getBoosts);
   return config;
 }
 
-function onRowExpand(data: Boost) {
-  expandedRow.value = (expandedRow.value.length && expandedRow.value[0].pool_description === data.pool_description) ? [] : [data];
+function onRowExpand(data: BoostConfig) {
+  expandedRow.value = (expandedRow.value.length && expandedRow.value[0].poolDescription === data.poolDescription) ? [] : [data];
 }
 
 function onRowClick(event: any) {
     onRowExpand(event.data);
 }
 
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  'description.moniker': {
-    operator: FilterOperator.AND,
-    constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-  },
-  'commission.commission_rates.rate': {
-    operator: FilterOperator.AND,
-    constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-  },
-  votingPower: {
-    operator: FilterOperator.AND,
-    constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-  },
-  status: {
-    operator: FilterOperator.AND,
-    constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-  },
-  rewards: {
-    operator: FilterOperator.AND,
-    constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-  },
-});
+function calculateRemainingTokens(data: BoostConfig){
+  return new Coin(data.baseTokens.amount - data.reservedTokens.amount - data.rewardsTokens.amount, 'uc4e');
+}
+
+function calculatePercentagePoolUsage(data: BoostConfig): BigDecimal {
+  return divideBigInts((data.baseTokens.amount + data.reservedTokens.amount ), data.reservedTokens.amount);
+}
 
 </script>
 

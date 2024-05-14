@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Dialog :visible="visible" @update:visible="emit('close')" modal :baseZIndex="-100" :style="{ width: '800px' }" :header="boost.pool_description">
+    <Dialog :visible="visible" @update:visible="emit('close')" modal :baseZIndex="-100" :style="{ width: '800px' }" :header="boost.poolDescription">
       <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
 
       <div class="boostDetails__header">
@@ -10,7 +10,7 @@
           </div>
           <div class="boostDetails__header__tile" >
             <h3>Lock period:</h3>
-            <h4>{{boost.lock_period}} days</h4>
+            <h4>{{ boost.lockPeriod }} days</h4>
           </div>
           <div class="boostDetails__header__tile" >
             <h3>Pool usage:</h3>
@@ -40,9 +40,9 @@
       <div style="display: flex; justify-content: center; margin: 30px auto;">
         <InfoMessage
                         header="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.HEADER"
-                        :header-variables="{timeToComplete: boost.lock_period}"
+                        :header-variables="{timeToComplete: boost.lockPeriod}"
                         texts="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.TEXT"
-                        :texts-variables="{timeToComplete: boost.lock_period}"/>
+                        :texts-variables="{timeToComplete: boost.lockPeriod}"/>
       </div>
 
 
@@ -134,14 +134,14 @@ import {object, setLocale, string} from "yup";
 import i18n from "@/plugins/i18n";
 import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import {BigDecimal} from "@/models/store/big.decimal";
-import {Boost} from "@/models/store/boost";
+import {BoostConfig} from "@/models/store/boostConfig";
 import InfoMessage from "@/components/commons/InfoMessage.vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 
 
 const props = defineProps<{
   visible: boolean,
-  boost: Boost,
+  boost: BoostConfig,
 }>();
 const emit = defineEmits(['close', 'success']);
 

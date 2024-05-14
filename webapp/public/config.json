@@ -305,7 +305,11 @@
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": true,
-    "useAminoOnly": true
+    "useAminoOnly": true,
+    "loyaltyDropService": {
+      "LOYALTY_DROP_BASE_URL": "http://localhost:8090/api/loyalty-drop",
+      "LOYALTY_DROP_POOL_CONFIGURATIONS_URL": "/v0.1/pool_configurations"
+    }
   },
   "pbtest" :{
     "bcApiURL": "api",
@@ -427,7 +431,11 @@
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": true,
-    "useAminoOnly": false
+    "useAminoOnly": false,
+    "loyaltyDropService": {
+      "LOYALTY_DROP_BASE_URL":"http://localhost:8090/api/loyalty-drop",
+      "LOYALTY_DROP_POOL_CONFIGURATIONS_URL":"/v0.1/pool_configurations"
+    }
   },
   "EV-testnet":{
     "bcApiURL": "https://lcd-ev-testnet.c4e.io",

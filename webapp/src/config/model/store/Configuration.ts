@@ -4,7 +4,7 @@ import {
   ViewDenom as JsonViewDenom,
   Configuration as JsonConfiguration,
   KeplrGasPriceSteps as JsonKeplrGasPriceSteps,
-  JsonQueries
+  JsonQueries, JsonLoyaltyDropConfig
 } from "../json/Configuration";
 import queriesDefaults from "@/api/queries";
 export class Gas implements JsonGas {
@@ -133,6 +133,18 @@ export class Queries implements JsonQueries{
   }
 }
 
+export class LoyaltyDropConfig implements JsonLoyaltyDropConfig{
+  LOYALTY_DROP_BASE_URL:string;
+  LOYALTY_DROP_POOL_CONFIGURATIONS_URL:string;
+  constructor (
+    config : JsonLoyaltyDropConfig | undefined
+  ) {
+    this.LOYALTY_DROP_BASE_URL = config?.LOYALTY_DROP_BASE_URL ? config.LOYALTY_DROP_BASE_URL : queriesDefaults.loyaltyDropService.LOYALTY_DROP_BASE_URL;
+    this.LOYALTY_DROP_POOL_CONFIGURATIONS_URL = config?.LOYALTY_DROP_POOL_CONFIGURATIONS_URL ? config.LOYALTY_DROP_POOL_CONFIGURATIONS_URL : queriesDefaults.loyaltyDropService.LOYALTY_DROP_POOL_CONFIGURATIONS_URL;
+  }
+
+}
+
 export class Configuration implements JsonConfiguration {
   bcApiURL: string;
   bcRpcURL: string;
@@ -176,6 +188,8 @@ export class Configuration implements JsonConfiguration {
   transferDenom: string;
   publicSaleVisible: boolean;
   useAminoOnly:boolean;
+  loyaltyDropService: LoyaltyDropConfig;
+
   public static readonly emptyConfiguration = new Configuration();
 
   constructor (
@@ -228,6 +242,7 @@ export class Configuration implements JsonConfiguration {
       this.transferDenom = configuration.transferDenom;
       this.publicSaleVisible=configuration.publicSaleVisible;
       this.useAminoOnly=configuration.useAminoOnly;
+      this.loyaltyDropService = new LoyaltyDropConfig(configuration.loyaltyDropService);
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -271,6 +286,7 @@ export class Configuration implements JsonConfiguration {
       this.transferDenom = '';
       this.publicSaleVisible=false;
       this.useAminoOnly=false;
+      this.loyaltyDropService = new LoyaltyDropConfig(undefined);
     }
   }
 
