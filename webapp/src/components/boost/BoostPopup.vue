@@ -5,36 +5,36 @@
 
       <div class="boostDetails__header">
           <div class="boostDetails__header__tile" >
-            <h3>APY:</h3>
-            <h4>{{boost.apy}}%</h4>
+            <h3>APR:</h3>
+            <h4>{{boost.apr}}%</h4>
           </div>
           <div class="boostDetails__header__tile" >
             <h3>Lock period:</h3>
-            <h4>{{ boost.lockPeriod }} days</h4>
+            <h4>{{ msToDays(boost.lockPeriod) }} days</h4>
           </div>
           <div class="boostDetails__header__tile" >
             <h3>Pool usage:</h3>
-            <CoinAmount :amount="boost.remaining_tokens" :show-tooltip="true" tooltip-only style="width: 100%;">
-              <div v-if="boost.percentage_pool_usage" style="width: 100%; padding: 8px; margin-bottom: 0.5rem;">
-                <div v-if="boost.percentage_pool_usage < 0.05" class="commision">
-                  <div class="level-1" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
+            <CoinAmount :amount="calculateRemainingTokens(boost)" :show-tooltip="true" tooltip-only style="width:90%; margin-bottom: 10px;">
+              <div v-if="calculatePercentagePoolUsage(boost)">
+                <div v-if="calculatePercentagePoolUsage(boost) < 0.05" class="commision">
+                  <div class="level-1" :style="'flex-basis:' + (calculatePercentagePoolUsage(boost) * 100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(boost)" :precision="2"></PercentsView>
                 </div>
-                <div v-if="boost.percentage_pool_usage >= 0.05 && boost.percentage_pool_usage < 0.10" class="commision">
-                  <div class="level-2" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
+                <div v-if="calculatePercentagePoolUsage(boost) >= 0.05 && calculatePercentagePoolUsage(boost) < 0.10" class="commision">
+                  <div class="level-2" :style="'flex-basis:' + calculatePercentagePoolUsage(boost).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(boost)" :precision="2"></PercentsView>
                 </div>
-                <div v-if="boost.percentage_pool_usage >= 0.10 && boost.percentage_pool_usage < 0.25" class="commision">
-                  <div class="level-3" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
+                <div v-if="calculatePercentagePoolUsage(boost) >= 0.10 && calculatePercentagePoolUsage(boost) < 0.25" class="commision">
+                  <div class="level-3" :style="'flex-basis:' + (calculatePercentagePoolUsage(boost) * 100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(boost)" :precision="2"></PercentsView>
                 </div>
-                <div v-if="boost.percentage_pool_usage >= 0.25" class="commision">
-                  <div class="level-4" :style="'flex-basis:' + (boost.percentage_pool_usage * 100).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="boost.percentage_pool_usage" :precision="2"></PercentsView>
+                <div v-if="calculatePercentagePoolUsage(boost) >= 0.25" class="commision">
+                  <div class="level-4" :style="'flex-basis:' + (calculatePercentagePoolUsage(boost) * 100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(boost)" :precision="2"></PercentsView>
                 </div>
               </div>
-            </CoinAmount>
-          </div>
+              <span v-else>updating</span>
+            </CoinAmount>          </div>
         </div>
 
       <div style="display: flex; justify-content: center; margin: 30px auto;">
@@ -97,7 +97,7 @@
         <div class="validationPopup__btnHolder" v-if="canModify">
           <div class="validationPopup__btns">
             <div style="flex: 1 1;">
-              <span>Amount to claim after time passes: <span style="font-weight: bold;">{{amount * (1+ boost.apy/100)}} C4E</span></span>
+              <span>Amount to claim after time passes: <span style="font-weight: bold;">{{(amount * (1+ boost.apr/100)).toFixed(2)}} C4E</span></span>
             </div>
             <Button class="validationPopup__button" disabled type="submit">
               <StakeManagementIcon icon="delegate"/>
@@ -133,10 +133,11 @@ import {computed, onUnmounted, ref, watch} from "vue";
 import {object, setLocale, string} from "yup";
 import i18n from "@/plugins/i18n";
 import {YupSequentialStringSchema} from "@/utils/yup-utils";
-import {BigDecimal} from "@/models/store/big.decimal";
+import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import {BoostConfig} from "@/models/store/boostConfig";
 import InfoMessage from "@/components/commons/InfoMessage.vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
+import {Coin} from "@/models/store/common";
 
 
 const props = defineProps<{
@@ -260,6 +261,18 @@ const amountToPass = computed(() => {
 
    */
 });
+
+function calculateRemainingTokens(data: BoostConfig){
+  return new Coin(data.baseTokens.amount - data.reservedTokens.amount - data.rewardsTokens.amount, 'uc4e');
+}
+
+function calculatePercentagePoolUsage(data: BoostConfig): BigDecimal {
+  return divideBigInts(calculateRemainingTokens(data).amount, data.baseTokens.amount);
+}
+
+function msToDays(milliseconds:  number) {
+  return milliseconds / (1000 * 60 * 60 * 24);
+}
 
 </script>
 
