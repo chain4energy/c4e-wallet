@@ -60,6 +60,7 @@ export interface  JsonLoyaltyDropConfig {
 export interface Configuration {
   bcApiURL: string,
   bcRpcURL: string,
+  bcLoyaltyDropServiceBroadcastRpcURL: string,
   hasuraURL: string,
   keybaseURL: string,
   stakingPageURL: string,

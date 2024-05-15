@@ -2,6 +2,7 @@
   "Mainnet": {
     "bcApiURL": "https://lcd.c4e.io",
     "bcRpcURL": "https://rpc.c4e.io",
+    "bcLoyaltyDropServiceBroadcastRpcURL": "TODO",
     "hasuraURL": "https://hasura.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
@@ -63,7 +64,8 @@
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
-    "bcRpcURL": "http://localhost:8090/api/loyalty-drop/v0.1/broadcast",
+    "bcRpcURL": "https://rpc-dev.c4e.io",
+    "bcLoyaltyDropServiceBroadcastRpcURL": "http://localhost:8090/api/loyalty-drop/v0.1/broadcast",
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
@@ -131,6 +133,7 @@
   "devnet-amoino-only":{
     "bcApiURL": "https://lcd-dev.c4e.io",
     "bcRpcURL": "https://rpc-dev.c4e.io",
+    "bcLoyaltyDropServiceBroadcastRpcURL": "TODO",
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
@@ -194,6 +197,7 @@
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
     "bcRpcURL": "http://10.0.14.81:26657",
+    "bcLoyaltyDropServiceBroadcastRpcURL": "TODO",
     "hasuraURL": "http://10.0.7.86:8080/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
@@ -253,7 +257,8 @@
   },
   "Testnet": {
     "bcApiURL": "https://lcd-testnet.c4e.io",
-    "bcRpcURL": "http://localhost:8090/api/loyalty-drop/v0.1/broadcast",
+    "bcRpcURL": "https://rpc-testnet.c4e.io",
+    "bcLoyaltyDropServiceBroadcastRpcURL": "TODO",
     "hasuraURL": "https://hasura-testnet.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
@@ -318,6 +323,7 @@
   "pbtest" :{
     "bcApiURL": "api",
     "bcRpcURL": "https://rpc.chain4energy.org",
+    "bcLoyaltyDropServiceBroadcastRpcURL": "TODO",
     "hasuraURL": "hasura",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
@@ -379,6 +385,7 @@
   "local":{
     "bcApiURL": "http://localhost:1317",
     "bcRpcURL": "http://localhost:26657",
+    "bcLoyaltyDropServiceBroadcastRpcURL": "TODO",
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
@@ -444,6 +451,7 @@
   "EV-testnet":{
     "bcApiURL": "https://lcd-ev-testnet.c4e.io",
     "bcRpcURL": "https://rpc-ev-testnet.c4e.io",
+    "bcLoyaltyDropServiceBroadcastRpcURL": "TODO",
     "hasuraURL": "https://hasura-ev-testnet.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet-ev-testnet.c4e.io/staking",
@@ -507,6 +515,7 @@
   "docker-compose":{
     "bcApiURL": "https://lcd-dev.c4e.io",
     "bcRpcURL": "https://rpc-dev.c4e.io",
+    "bcLoyaltyDropServiceBroadcastRpcURL": "TODO",
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",

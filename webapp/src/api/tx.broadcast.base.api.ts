@@ -85,10 +85,11 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     fee: StdFee | "auto" | number,
     memo: string,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
-    skipErrorToast = false
+    skipErrorToast = false,
+    useLoyaltyDropServiceRpc = false
   ): Promise<RequestResponse<TxData, TxBroadcastError>>
   {
-    return await this.signAndBroadcastFeeControl(connection, getMessages, fee, memo, false, lockScreen, localSpinner, skipErrorToast)
+    return await this.signAndBroadcastFeeControl(connection, getMessages, fee, memo, false, lockScreen, localSpinner, skipErrorToast, useLoyaltyDropServiceRpc);
   }
 
   protected async signAndBroadcastFeeControl(
@@ -98,7 +99,8 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     memo: string,
     appControlledFee: boolean,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
-    skipErrorToast = false
+    skipErrorToast = false,
+    useLoyaltyDropServiceRpc = false
   ): Promise<RequestResponse<TxData, TxBroadcastError>>
   {
     this.logToConsole(LogLevel.DEBUG, 'signAndBroadcast');
@@ -113,7 +115,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           !skipErrorToast
         );
       }
-      const { client, isLedger } = await this.createClientFeeControl(connection.connectionType, appControlledFee);
+      const { client, isLedger } = await this.createClientFeeControl(connection.connectionType, appControlledFee, useLoyaltyDropServiceRpc);
       clientToDisconnect = client;
       if (client === undefined) {
         return this.createTxErrorResponseWithToast(
@@ -231,7 +233,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     return await this.createClientFeeControl(connectionType, false)
   }
 
-  private async createClientFeeControl(connectionType: ConnectionType, appControlledFee: boolean): Promise<{ client: SigningStargateClient, isLedger: boolean }> {
+  private async createClientFeeControl(connectionType: ConnectionType, appControlledFee: boolean, useLoyaltyDropServiceRpc = false): Promise<{ client: SigningStargateClient, isLedger: boolean }> {
     const { signer, isLedger } = await this.getOfflineSigner(connectionType, appControlledFee);
 
     if (signer == undefined) {
@@ -254,7 +256,8 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     // const aminoTypes = new AminoTypes(createCfeClaimAminoConverters());
     const aminoTypes = new AminoTypes({...createDefaultAminoConverters(), ...createCfeClaimAminoConverters()});
     // myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
-    const rpc = useConfigurationStore().config.bcRpcURL;
+
+    const rpc = useLoyaltyDropServiceRpc ? useConfigurationStore().config.bcLoyaltyDropServiceBroadcastRpcURL : useConfigurationStore().config.bcRpcURL;
     const client = await SigningStargateClient.connectWithSigner(
       rpc,
       signer,
