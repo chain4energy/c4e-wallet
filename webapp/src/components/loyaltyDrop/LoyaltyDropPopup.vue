@@ -6,7 +6,7 @@
       <div class="boostDetails__header">
           <div class="boostDetails__header__tile" >
             <h3>{{$t('BOOST.COMMON.LOCKUP_PERIOD')}}:</h3>
-            <h4>{{ msToDays(boost.lockPeriod) }} {{$t('BOOST.COMMON.DAYS')}}</h4>
+            <h4>{{ msToDays(boost.lockupPeriod) }} {{$t('BOOST.COMMON.DAYS')}}</h4>
           </div>
           <div class="boostDetails__header__tile" >
             <h3>{{$t('BOOST.COMMON.APR')}}:</h3>
@@ -40,7 +40,7 @@
       <div style="display: flex; justify-content: center; margin: 30px auto;">
         <InfoMessage
                         header="BOOST.POPUP.INFO_HEADER"
-                        :header-variables="{timeToComplete: msToDays(boost.lockPeriod)}"
+                        :header-variables="{timeToComplete: msToDays(boost.lockupPeriod)}"
                         texts="BOOST.POPUP.INFO_TEXT"
         />
       </div>
@@ -134,7 +134,7 @@ import {object, setLocale, string} from "yup";
 import i18n from "@/plugins/i18n";
 import {YupSequentialStringSchema} from "@/utils/yup-utils";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
-import {BoostConfig} from "@/models/store/boostConfig";
+import {LoyaltyDropPoolConfig} from "@/models/store/loyaltyDrop";
 import InfoMessage from "@/components/commons/InfoMessage.vue";
 import CoinAmount from "@/components/commons/CoinAmount.vue";
 import {Coin} from "@/models/store/common";
@@ -142,7 +142,7 @@ import {Coin} from "@/models/store/common";
 
 const props = defineProps<{
   visible: boolean,
-  boost: BoostConfig,
+  boost: LoyaltyDropPoolConfig,
 }>();
 const emit = defineEmits(['close', 'success']);
 
@@ -262,11 +262,11 @@ const amountToPass = computed(() => {
    */
 });
 
-function calculateRemainingTokens(data: BoostConfig){
+function calculateRemainingTokens(data: LoyaltyDropPoolConfig){
   return new Coin(data.baseTokens.amount - data.reservedTokens.amount - data.rewardsTokens.amount, 'uc4e');
 }
 
-function calculatePercentagePoolUsage(data: BoostConfig): BigDecimal {
+function calculatePercentagePoolUsage(data: LoyaltyDropPoolConfig): BigDecimal {
   return divideBigInts(calculateRemainingTokens(data).amount, data.baseTokens.amount);
 }
 

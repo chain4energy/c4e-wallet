@@ -52,6 +52,7 @@ export interface JsonQueries {
 export interface  JsonLoyaltyDropConfig {
   LOYALTY_DROP_BASE_URL:string;
   LOYALTY_DROP_POOL_CONFIGURATIONS_URL:string;
+  loyaltyDropUserBootsURL:string;
   loyaltyDropDefaultDenom: string;
 }
 

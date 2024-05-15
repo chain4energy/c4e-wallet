@@ -121,6 +121,7 @@ export default {
   loyaltyDropService:{
     LOYALTY_DROP_BASE_URL:'/api/loyalty-drop',
     LOYALTY_DROP_POOL_CONFIGURATIONS_URL:'/v0.1/pool_configurations',
+    loyaltyDropUserBootsURL:'/v0.1/user_boost/{user_address}',
     loyaltyDropDefaultDenom:'uc4e'
   }
 };

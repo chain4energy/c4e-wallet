@@ -1,14 +1,11 @@
 <template>
-
-<!--  <h4 class="m-0">{{ $t("STAKING_VIEW.VALIDATORS") }}</h4>-->
   <h4 class="m-4">{{$t('BOOST.TITLE')}}</h4>
-
-  <BoostDataTable/>
+  <LoyaltyDropDataTable/>
 </template>
 
 <script setup lang="ts">
 
-import BoostDataTable from "@/components/boost/BoostDataTable.vue";
+import LoyaltyDropDataTable from "@/components/loyaltyDrop/LoyaltyDropDataTable.vue";
 
 </script>
 

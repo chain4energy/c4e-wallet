@@ -136,12 +136,14 @@ export class Queries implements JsonQueries{
 export class LoyaltyDropConfig implements JsonLoyaltyDropConfig{
   LOYALTY_DROP_BASE_URL:string;
   LOYALTY_DROP_POOL_CONFIGURATIONS_URL:string;
+  loyaltyDropUserBootsURL: string;
   loyaltyDropDefaultDenom:string;
   constructor (
     config : JsonLoyaltyDropConfig | undefined
   ) {
     this.LOYALTY_DROP_BASE_URL = config?.LOYALTY_DROP_BASE_URL ? config.LOYALTY_DROP_BASE_URL : queriesDefaults.loyaltyDropService.LOYALTY_DROP_BASE_URL;
     this.LOYALTY_DROP_POOL_CONFIGURATIONS_URL = config?.LOYALTY_DROP_POOL_CONFIGURATIONS_URL ? config.LOYALTY_DROP_POOL_CONFIGURATIONS_URL : queriesDefaults.loyaltyDropService.LOYALTY_DROP_POOL_CONFIGURATIONS_URL;
+    this.loyaltyDropUserBootsURL = config?.loyaltyDropUserBootsURL ? config.loyaltyDropUserBootsURL : queriesDefaults.loyaltyDropService.loyaltyDropUserBootsURL;
     this.loyaltyDropDefaultDenom  = config?.loyaltyDropDefaultDenom ? config.loyaltyDropDefaultDenom: queriesDefaults.loyaltyDropService.loyaltyDropDefaultDenom;
   }
 

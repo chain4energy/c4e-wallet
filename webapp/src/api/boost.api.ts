@@ -1,16 +1,11 @@
 import BaseApi, {ErrorData} from "@/api/base.api";
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
-import {formatString} from "@/utils/string-formatter";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {RequestResponse} from "@/models/request-response";
-import {FaucetResponse} from "@/models/faucet";
-import {BoostConfigResponse} from "@/models/boost/boost";
 import {LocalSpinner} from "@/services/model/localSpinner";
-import {AirdropErrData} from "@/models/blockchain/common";
-import {BlockResponse} from "@/models/blockchain/block";
-import {mapBlock} from "@/models/mapper/block.mapper";
-import {mapBoostConfig} from "@/models/mapper/boost.mapper";
-import {BoostConfig} from "@/models/store/boostConfig";
+import {LoyaltyDropPoolConfig} from "@/models/store/loyaltyDrop";
+import {LoyaltyDropPoolConfigResponse} from "@/models/loyaltydrop/loyaltyDrop";
+import {mapBoostConfig} from "@/models/mapper/loyaltydrop.mapper";
 
 export interface BoostErrData {
   code: number;
@@ -62,9 +57,9 @@ export class BoostApi extends BaseApi {
     );
   }
 
-  public fetchBoostConfig(lockScreen: boolean): Promise<RequestResponse<BoostConfig[], ErrorData<BoostErrData>>>{
+  public fetchLoyaltyDropPoolsConfig(lockScreen: boolean): Promise<RequestResponse<LoyaltyDropPoolConfig[], ErrorData<BoostErrData>>>{
     const url = useConfigurationStore().config.loyaltyDropService.LOYALTY_DROP_BASE_URL + useConfigurationStore().config.loyaltyDropService.LOYALTY_DROP_POOL_CONFIGURATIONS_URL;
-    const mapData = (data: BoostConfigResponse[] | undefined) => { return mapBoostConfig(data); };
+    const mapData = (data: LoyaltyDropPoolConfigResponse[] | undefined) => { return mapBoostConfig(data); };
     return this.axiosBootGetCall(url, mapData, lockScreen, null, 'fetchBoostConfig');
   }
 

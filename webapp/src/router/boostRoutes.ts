@@ -1,8 +1,8 @@
-import BoostView from "@/views/BoostView.vue";
+import LoyaltyDropView from "@/views/LoyaltyDropView.vue";
 
 const boostRoutes = {
   path: '/boost',
   name: 'boost',
-  component: BoostView,
+  component: LoyaltyDropView,
 };
 export default boostRoutes;
