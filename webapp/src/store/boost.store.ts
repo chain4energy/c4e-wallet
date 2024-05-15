@@ -1,9 +1,6 @@
 import {LoyaltyDropPoolConfig, LoyaltyDropUserBoost} from "@/models/store/loyaltyDrop";
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {Coin} from "@/models/store/common";
-import {string} from "yup";
-import {ConnectionInfo} from "@/api/wallet.connecton.api";
 
 interface BoostState {
   loyaltyDropPoolConfigs: LoyaltyDropPoolConfig[]

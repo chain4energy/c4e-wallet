@@ -97,7 +97,7 @@
         <div class="validationPopup__btnHolder" v-if="canModify">
           <div class="validationPopup__btns">
             <div style="flex: 1 1;">
-              <span>{{$t('BOOST.COMMON.AMOUNT')}}: <span style="font-weight: bold;">{{(amount * (1+ boost.apr/100)).toFixed(2)}} C4E</span></span>
+              <span>{{$t('BOOST.POPUP.AMOUNT')}}: <span style="font-weight: bold;">{{(amount * (1+ boost.apr/100)).toFixed(2)}} C4E</span></span>
             </div>
             <Button class="validationPopup__button" type="submit">
               <StakeManagementIcon icon="delegate"/>

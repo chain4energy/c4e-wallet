@@ -643,12 +643,17 @@
   },
   "BOOST": {
     "TITLE": "C4E Lockup Booster",
+    "WITHDRAW_ALL": "Withdraw all available",
     "TABLE": {
       "NO_DATA": "No data found",
       "POOL_SIZE": "Pool size",
       "CONTRIBUTION": "Your contribution",
       "REWARD": "Your reward",
-      "MANAGE": "Manage"
+      "MANAGE": "Manage",
+      "LOCK_START": "Lock start date",
+      "LOCK_END": "Lock end date",
+      "LAST_REWARD": "Last reward withdrawal date",
+      "STATUS": "Status"
     },
     "POPUP": {
       "BALANCE": "Your balance",

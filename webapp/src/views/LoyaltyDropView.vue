@@ -1,9 +1,9 @@
 <template>
   <h4 class="m-4">{{$t('BOOST.TITLE')}}</h4>
   <LoyaltyDropDataTable/>
-  <Button class="outlined" @click="withdraw">
-    <StakeManagementIcon icon="manage"/>Withdraw all available
-    {{ $t('BOOST.TABLE.MANAGE') }}
+  <Button class="outlined mt-5" @click="withdraw">
+    <StakeManagementIcon icon="manage"/>
+    {{ $t('BOOST.WITHDRAW_ALL') }}
   </Button>
 </template>
 
