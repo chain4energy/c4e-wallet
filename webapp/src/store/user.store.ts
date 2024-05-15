@@ -21,6 +21,7 @@ import TxToast from "@/components/commons/TxToast.vue";
 import {Coin} from "@/models/store/common";
 import {calculateLockedVesting} from "@/utils/vesting-utils";
 import {FaucetErrorEnum} from "@/models/faucet";
+import {string} from "yup";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -371,7 +372,44 @@ export const useUserStore = defineStore({
     },
     async updateSpendables(lockscreen: boolean) {
       await fetchSpendableBalances(this.account.address, this, lockscreen);
-    }
+    },
+
+    async createVestingPoolLoyaltyDrop(vestingPoolName: string, amount:number, vestingPeriod: number, vestingType: string): Promise<boolean> {
+      const connectionInfo = this.connectionInfo;
+      return await apiFactory.accountApi().createVestingPoolLoyaltyDrop(connectionInfo, vestingPoolName, amount,vestingPeriod, vestingType)
+        .then(async (resp) => {
+          if (resp.isError()) {
+            await onTxDeliveryFailure(connectionInfo, this, resp, 'Creating loyaltyDrop vesting poll failed: ' + resp.error?.message);
+            return false;
+          } else {
+            const allResults = await Promise.all([
+              fetchBalance(connectionInfo, useUserStore(), true),
+            ]);
+            onTxDeliverySuccess(resp.data);
+            onRefreshingError(allResults);
+            // onClaimAirdropSuccess();//TODO:
+            return true;
+          }
+        });
+    },
+    async vestingPoolWithdrawAllAvailable(): Promise<boolean> {
+      const connectionInfo = this.connectionInfo;
+      return await apiFactory.accountApi().vestingPoolWithdrawAllAvailable(connectionInfo)
+        .then(async (resp) => {
+          if (resp.isError()) {
+            await onTxDeliveryFailure(connectionInfo, this, resp, 'Withdrawing all available from vesting pools ' + resp.error?.message);
+            return false;
+          } else {
+            const allResults = await Promise.all([
+              fetchBalance(connectionInfo, useUserStore(), true),
+            ]);
+            onTxDeliverySuccess(resp.data);
+            onRefreshingError(allResults);
+            // onClaimAirdropSuccess();//TODO:
+            return true;
+          }
+        });
+    },
   },
   getters: {
     getConnectionType(): ConnectionType {
@@ -568,6 +606,11 @@ function onTxDeliverySuccess(tx?: TxData) {
 function onClaimAirdropSuccess() {
    toast.success(i18n.global.t('AIRDROP.SUCCESS'));
 }
+
+// function onClaimAirdropSuccess() {
+//   toast.success(i18n.global.t('AIRDROP.SUCCESS'));
+// }
+
 
 function findMaxTime(periods: VestingPeriods[]) {
  let maxTime = 0;

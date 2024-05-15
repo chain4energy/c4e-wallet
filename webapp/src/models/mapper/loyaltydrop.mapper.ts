@@ -10,6 +10,7 @@ export function mapLoyaltyDropConfig(loyaltyDropPoolConfigResp: LoyaltyDropPoolC
     b.id,
     b.pool_description,
     b.prefix_name,
+    b.vesting_type_name,
     b.base_tokens,
     b.rewards_tokens,
     b.used_tokens,

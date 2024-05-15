@@ -63,7 +63,7 @@
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
-    "bcRpcURL": "https://rpc-dev.c4e.io",
+    "bcRpcURL": "http://localhost:8090/api/loyalty-drop/v0.1/broadcast",
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
@@ -122,7 +122,11 @@
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": false,
-    "useAminoOnly": false
+    "useAminoOnly": false,
+    "loyaltyDropService": {
+      "LOYALTY_DROP_BASE_URL": "http://localhost:8090/api/loyalty-drop",
+      "LOYALTY_DROP_POOL_CONFIGURATIONS_URL": "/v0.1/pool_configurations"
+    }
   },
   "devnet-amoino-only":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -249,7 +253,7 @@
   },
   "Testnet": {
     "bcApiURL": "https://lcd-testnet.c4e.io",
-    "bcRpcURL": "https://rpc-testnet.c4e.io",
+    "bcRpcURL": "http://localhost:8090/api/loyalty-drop/v0.1/broadcast",
     "hasuraURL": "https://hasura-testnet.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
@@ -305,7 +309,7 @@
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": true,
-    "useAminoOnly": true,
+    "useAminoOnly": false,
     "loyaltyDropService": {
       "LOYALTY_DROP_BASE_URL": "http://localhost:8090/api/loyalty-drop",
       "LOYALTY_DROP_POOL_CONFIGURATIONS_URL": "/v0.1/pool_configurations"

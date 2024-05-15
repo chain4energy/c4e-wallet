@@ -20,6 +20,7 @@ export class LoyaltyDropPoolConfig {
   id:number;
   poolDescription: string;
   prefixName: string;
+  vestingType: string;
   baseTokens:	Coin;
   rewardsTokens: Coin;
   usedTokens:	Coin;
@@ -30,11 +31,12 @@ export class LoyaltyDropPoolConfig {
   apr: number;
 
 
-  constructor(id:number, poolDescription: string, prefixName: string, baseTokens: number, rewardsTokens: number, usedTokens: number, reservedTokens: number, epochNumber: number,
+  constructor(id:number, poolDescription: string, prefixName: string, vestingType: string, baseTokens: number, rewardsTokens: number, usedTokens: number, reservedTokens: number, epochNumber: number,
               epochPeriod: number, epochStartDate: Date,   apr: number) {
     this.id = id;
     this.poolDescription = poolDescription;
     this.prefixName = prefixName;
+    this.vestingType = vestingType;
     this.baseTokens =  new Coin(BigInt(baseTokens), getDefaultDenom());
     this.rewardsTokens = new Coin(BigInt(rewardsTokens), getDefaultDenom());
     this.usedTokens = new Coin(BigInt(usedTokens), getDefaultDenom());

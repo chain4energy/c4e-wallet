@@ -46,7 +46,7 @@
       </div>
 
 
-      <Form :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body" as="form">
+      <Form @submit="action"  :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body" as="form">
         <div class="validationPopup__body">
           <AmountView
             class="validationPopup__amount"
@@ -99,7 +99,7 @@
             <div style="flex: 1 1;">
               <span>{{$t('BOOST.COMMON.AMOUNT')}}: <span style="font-weight: bold;">{{(amount * (1+ boost.apr/100)).toFixed(2)}} C4E</span></span>
             </div>
-            <Button class="validationPopup__button" disabled type="submit">
+            <Button class="validationPopup__button" type="submit">
               <StakeManagementIcon icon="delegate"/>
               {{ $t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}
             </Button>
@@ -164,6 +164,7 @@ const canModify = computed<boolean>(() => {
 const amount = ref<number>(0);
 const showReserveCheckbox = ref(false);
 const reservedCoins = useConfigurationStore().config.getConvertedAmount(useConfigurationStore().config.getReservedCoinsAmount());
+import dataService from "@/services/data.service";
 
 // const commissionForOperation = computed(() => {
 //   return (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) || 0;
@@ -205,6 +206,10 @@ function moreThan(value: string | undefined): boolean {
   return checkValue(value, (value: string) => (new BigDecimal(value)).isBiggerThan(0));
 }
 
+async function action() {
+  await dataService.onCreateVestingPoolLoyaltyDrop(props.boost.prefixName+"-" + Math.floor(Math.random() * 100000), amount.value,
+    props.boost.epochPeriod * props.boost.epochNumber / 1000, props.boost.vestingType);
+}
 
 watch(reserveCoins, (next, prev) => {
   if (next) {

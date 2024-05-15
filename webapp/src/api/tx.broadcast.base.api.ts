@@ -25,6 +25,7 @@ import {_arrayBufferToBase64} from "@/utils/sign";
 import {ethers} from "ethers";
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
 import { createCfeClaimAminoConverters } from "./cfeclaim/amino";
+import {MsgCreateVestingPool, MsgWithdrawAllAvailable} from "@/api/cfevesting/tx";
 
 
 const toast = useToast();
@@ -239,9 +240,13 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     const myRegistry = new Registry(defaultRegistryTypes);
     const MsgInitialClaimTypeUrl = "/chain4energy.c4echain.cfeclaim.MsgInitialClaim";
     const MsgClaimTypeUrl = "/chain4energy.c4echain.cfeclaim.MsgClaim";
-    //const RepeatedContinuousVestingAccount = "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount";
+    const MsgCreateVestingPoolTypeUrl = "/chain4energy.c4echain.cfevesting.MsgCreateVestingPool";
+    const MsgWithdrawAllAvailableTypeUrl = "/chain4energy.c4echain.cfevesting.MsgWithdrawAllAvailable";
+//const RepeatedContinuousVestingAccount = "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount";
     myRegistry.register(MsgInitialClaimTypeUrl, MsgInitialClaim);
     myRegistry.register(MsgClaimTypeUrl, MsgClaim);
+    myRegistry.register(MsgWithdrawAllAvailableTypeUrl, MsgWithdrawAllAvailable);
+    myRegistry.register(MsgCreateVestingPoolTypeUrl, MsgCreateVestingPool);
 
     // myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
     console.log(myRegistry);

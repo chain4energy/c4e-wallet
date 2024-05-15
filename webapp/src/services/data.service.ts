@@ -18,6 +18,7 @@ import {useUserServiceStore} from "@/store/userService.store";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import {Campaign, Mission} from "@/models/store/airdrop";
 import {useLoyaltyDropStore} from "@/store/boost.store";
+import {string} from "yup";
 const keplrKeyStoreChange = 'keplr_keystorechange';
 const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
 const leapKeyStoreChange = 'leap_keystorechange';
@@ -499,6 +500,25 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onLoyaltyDropUnselected');
     this.isLoyaltyDropViewSelected = false;
   }
+
+
+  public async onCreateVestingPoolLoyaltyDrop(vestingPoolName: string, amount:number, vestingPeriod: number, vestingType: string, onSuccess?: () => void){
+    await useUserStore().createVestingPoolLoyaltyDrop(vestingPoolName, amount, vestingPeriod, vestingType).then((isTransactionOk)=>{
+      if(isTransactionOk) {
+        onSuccess?.();
+      }
+    });
+  }
+
+  public async onVestingPoolWithdrawAllAvailable(onSuccess?: () => void){
+    await useUserStore().vestingPoolWithdrawAllAvailable().then((isTransactionOk)=>{
+      if(isTransactionOk) {
+        onSuccess?.();
+      }
+    });
+  }
+
+
 
   public async onProposalUpdateVotes(proposalId: number) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalUpdateVotes');
