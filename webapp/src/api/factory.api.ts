@@ -15,7 +15,7 @@ import {PublicSaleServiceApi} from "@/api/publicSaleService.api";
 import {applyStorage} from "axios-jwt/dist/src/applyStorage";
 import {useRouter} from "vue-router";
 import {useUserServiceStore} from "@/store/userService.store";
-import {BoostApi} from "@/api/boost.api";
+import {LoyaltyDropApi} from "@/api/loyaltyDrop.api";
 
 let testfileName = '';
 
@@ -36,7 +36,7 @@ class ApiFactory {
   private readonly _airDropApi = new ClaimApi(() => this._axios);
   private readonly _publicSaleServiceApi = new PublicSaleServiceApi(() => this._axiosJwt);
   private readonly _faucetApi = new FaucetApi(() => this._axios)
-  private readonly _boostApi = new BoostApi(() => this._axios)
+  private readonly _boostApi = new LoyaltyDropApi(() => this._axios)
 
   private testMode = false;
 
@@ -109,7 +109,7 @@ class ApiFactory {
     return this._faucetApi;
   }
 
-  public boostApi(): BoostApi {
+  public boostApi(): LoyaltyDropApi {
     return this._boostApi;
   }
   public setAxiosInstance(axios: AxiosInstance) {

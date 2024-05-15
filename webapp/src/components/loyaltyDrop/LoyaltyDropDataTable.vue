@@ -33,7 +33,7 @@
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
             <span class="p-column-title">{{$t('BOOST.COMMON.APR')}}</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ slotProps.data.apr.toFixed(2) }}%</span>
+            <span>{{ slotProps.data.apr.toFixed(2) * 100}}%</span>
           </template>
         </Column>
 <!--        <Column header="Boost" :sortable="false">-->
@@ -214,14 +214,10 @@ import PercentsView from "@/components/commons/PercentsView";
 import {Coin} from "@/models/store/common";
 import {LoyaltyDropPoolConfig} from "@/models/store/loyaltyDrop";
 import LoyaltyDropPopup from "@/components/loyaltyDrop/LoyaltyDropPopup.vue";
-import {useBoostStore} from "@/store/boost.store";
+import {useLoyaltyDropStore} from "@/store/boost.store";
 import StakeManagementIcon from "@/components/commons/StakeManagementIcon.vue";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 
-onMounted(() => {
-  console.log("BoostDataTable - onMounted");
-  boostStore.fetchBoostConfig(true);
-});
 
 async function transactionSuccess(arg: string) {
   popupOpened.value = !popupOpened.value;
@@ -234,7 +230,7 @@ const currentBoost = ref({});
 
 
 const userStore = useUserStore();
-const boostStore = useBoostStore();
+const boostStore = useLoyaltyDropStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<LoyaltyDropPoolConfig>());
 

@@ -10,7 +10,7 @@
           </div>
           <div class="boostDetails__header__tile" >
             <h3>{{$t('BOOST.COMMON.APR')}}:</h3>
-            <h4>{{boost.apr}}%</h4>
+            <h4>{{boost.apr * 100}}%</h4>
           </div>
           <div class="boostDetails__header__tile" >
             <h3>{{$t('BOOST.COMMON.POOL_USAGE')}}:</h3>

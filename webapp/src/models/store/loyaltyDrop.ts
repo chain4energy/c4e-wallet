@@ -1,5 +1,6 @@
 import {Coin} from "@/models/store/common";
 import {useConfigurationStore} from "@/store/configuration.store";
+import {UserBoostStatusType} from "@/models/loyaltydrop/loyaltyDrop";
 
 export class LoyaltyDropPoolConfig {
 
@@ -16,7 +17,7 @@ export class LoyaltyDropPoolConfig {
   `EPOCH_PERIOD`      BIGINT          NOT NULL,
   `EPOCH_START_DATE`  DATETIME(3)     NOT NULL,
  */
-
+  id:number;
   poolDescription: string;
   prefixName: string;
   baseTokens:	Coin;
@@ -29,8 +30,9 @@ export class LoyaltyDropPoolConfig {
   apr: number;
 
 
-  constructor(poolDescription: string, prefixName: string, baseTokens: number, rewardsTokens: number, usedTokens: number, reservedTokens: number, epochNumber: number,
+  constructor(id:number, poolDescription: string, prefixName: string, baseTokens: number, rewardsTokens: number, usedTokens: number, reservedTokens: number, epochNumber: number,
               epochPeriod: number, epochStartDate: Date,   apr: number) {
+    this.id = id;
     this.poolDescription = poolDescription;
     this.prefixName = prefixName;
     this.baseTokens =  new Coin(BigInt(baseTokens), getDefaultDenom());
@@ -49,7 +51,7 @@ export class LoyaltyDropPoolConfig {
 
 }
 
-export class UserBoost{
+export class LoyaltyDropUserBoost {
 
   /*    `ID`                   INT PRIMARY KEY                                      NOT NULL AUTO_INCREMENT,
     `BOOST_POOL_ID`        INT                                                  NOT NULL,
@@ -63,34 +65,32 @@ export class UserBoost{
     `LOCK_START`           DATETIME(3)                                          NULL,
     `LOCK_END`             DATETIME(3)                                          NULL,
     */
-
+  boostPoolId: number;
   vestingPoolName: string;
   baseAccountAddress: string;
   status: UserBoostStatusType;
   txHash: string;
   grantedRewards: Coin;
   amount:Coin;
+  lastRewardDate:Date;
   lockStart:Date;
   lockEnd:Date;
 
 
-  constructor(vestingPoolName: string, baseAccountAddress: string, status: UserBoostStatusType, txHash: string, grantedRewards: number, amount: number, lockStart: Date, lockEnd: Date) {
+  constructor(boostPoolId: number, vestingPoolName: string, baseAccountAddress: string, status: UserBoostStatusType, txHash: string, grantedRewards: number, amount: number, lastRewardDate:Date, lockStart: Date, lockEnd: Date) {
+    this.boostPoolId = boostPoolId;
     this.vestingPoolName = vestingPoolName;
     this.baseAccountAddress = baseAccountAddress;
     this.status = status;
     this.txHash = txHash;
     this.grantedRewards = new Coin(BigInt(grantedRewards), getDefaultDenom());
     this.amount = new Coin(BigInt(amount), getDefaultDenom());
+    this.lastRewardDate = lastRewardDate;
     this.lockStart = lockStart;
     this.lockEnd = lockEnd;
   }
 }
 
-export enum UserBoostStatusType{
-  TRANSACTION_IN_PROGRESS = 'TRANSACTION_IN_PROGRESS',
-  SUCCESS = 'SUCCESS',
-  ERROR = 'ERROR'
-}
 
 function getDefaultDenom():string{
   return useConfigurationStore().config.loyaltyDropService.loyaltyDropDefaultDenom;

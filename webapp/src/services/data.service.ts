@@ -17,6 +17,7 @@ import {useI18n} from "vue-i18n";
 import {useUserServiceStore} from "@/store/userService.store";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import {Campaign, Mission} from "@/models/store/airdrop";
+import {useLoyaltyDropStore} from "@/store/boost.store";
 const keplrKeyStoreChange = 'keplr_keystorechange';
 const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
 const leapKeyStoreChange = 'leap_keystorechange';
@@ -46,7 +47,7 @@ class DataService extends LoggedService {
   private static instance: DataService;
   private isOnline = navigator.onLine;
   private isClaimAirdropViewSelected = false;
-
+  private isLoyaltyDropViewSelected = false;
 
   public static getInstance(): DataService {
     if (!DataService.instance) {
@@ -353,6 +354,9 @@ class DataService extends LoggedService {
     if (instancce.isClaimAirdropViewSelected && userAddress) {
         useAirDropStore().fetchUsersCampaignData(userAddress, true);
     }
+    if (instancce.isLoyaltyDropViewSelected && userAddress) {
+      useLoyaltyDropStore().fetchLoyaltyDropUserBoost(userAddress,true);
+    }
     onSuccess?.();
   }
 
@@ -480,6 +484,20 @@ class DataService extends LoggedService {
   public onClaimAirdropUnselected() {
     this.logToConsole(LogLevel.DEBUG, 'onClaimAirdropUnselected');
     this.isClaimAirdropViewSelected = false;
+  }
+
+  public onLoyaltyDropSelected() {
+    this.logToConsole(LogLevel.DEBUG, 'onLoyaltyDropSelected');
+    this.isLoyaltyDropViewSelected = true;
+    useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(true);
+    if(useUserStore().getAccount.address){
+      useLoyaltyDropStore().fetchLoyaltyDropUserBoost(useUserStore().getAccount.address,true);
+    }
+  }
+
+  public onLoyaltyDropUnselected() {
+    this.logToConsole(LogLevel.DEBUG, 'onLoyaltyDropUnselected');
+    this.isLoyaltyDropViewSelected = false;
   }
 
   public async onProposalUpdateVotes(proposalId: number) {

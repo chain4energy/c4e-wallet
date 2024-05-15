@@ -6,6 +6,17 @@
 <script setup lang="ts">
 
 import LoyaltyDropDataTable from "@/components/loyaltyDrop/LoyaltyDropDataTable.vue";
+import {onMounted, onUnmounted} from "vue";
+import dataService from "@/services/data.service";
+
+
+onMounted(() => {
+  dataService.onLoyaltyDropSelected();
+});
+
+onUnmounted(() => {
+  dataService.onLoyaltyDropUnselected();
+});
 
 </script>
 

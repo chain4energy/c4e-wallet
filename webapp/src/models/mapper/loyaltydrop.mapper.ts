@@ -1,12 +1,13 @@
-import {LoyaltyDropPoolConfig} from "@/models/store/loyaltyDrop";
-import {LoyaltyDropPoolConfigResponse} from "@/models/loyaltydrop/loyaltyDrop";
+import {LoyaltyDropPoolConfig, LoyaltyDropUserBoost} from "@/models/store/loyaltyDrop";
+import {LoyaltyDropPoolConfigResponse, LoyaltyDropUserBoostResponse} from "@/models/loyaltydrop/loyaltyDrop";
 
-export function mapBoostConfig(loyaltyDropPoolConfigResp: LoyaltyDropPoolConfigResponse[] | undefined): LoyaltyDropPoolConfig[]  {
+export function mapLoyaltyDropConfig(loyaltyDropPoolConfigResp: LoyaltyDropPoolConfigResponse[] | undefined): LoyaltyDropPoolConfig[]  {
   if (loyaltyDropPoolConfigResp === undefined) {
     throw new Error('LoyaltyDropPoolConfigResp is undefined');
   }
   const loyaltyDropPoolConfig:LoyaltyDropPoolConfig[] = Array<LoyaltyDropPoolConfig>();
   loyaltyDropPoolConfigResp.forEach(b=> loyaltyDropPoolConfig.push(new LoyaltyDropPoolConfig(
+    b.id,
     b.pool_description,
     b.prefix_name,
     b.base_tokens,
@@ -20,4 +21,25 @@ export function mapBoostConfig(loyaltyDropPoolConfigResp: LoyaltyDropPoolConfigR
   ))
   );
   return loyaltyDropPoolConfig;
+}
+
+export function mapLoyaltyDropUserBoost(loyaltyDropUserBoostResp: LoyaltyDropUserBoostResponse[] | undefined): LoyaltyDropUserBoost[]  {
+  if (loyaltyDropUserBoostResp === undefined) {
+    throw new Error('LoyaltyDropPoolConfigResp is undefined');
+  }
+  const userBoost:LoyaltyDropUserBoost[] = Array<LoyaltyDropUserBoost>();
+  loyaltyDropUserBoostResp.forEach(b=> userBoost.push(new LoyaltyDropUserBoost(
+    b.boost_pool_id,
+    b.vesting_pool_name,
+    b.base_account_address,
+    b.status,
+    b.tx_hash,
+    b.granted_rewards,
+    b.amount,
+    new Date(b.last_reward_date),
+    new Date(b.lock_start),
+    new Date(b.lock_end)
+    ))
+  );
+  return userBoost;
 }

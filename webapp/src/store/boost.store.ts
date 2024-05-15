@@ -1,53 +1,49 @@
-import {LoyaltyDropPoolConfig, UserBoost} from "@/models/store/loyaltyDrop";
+import {LoyaltyDropPoolConfig, LoyaltyDropUserBoost} from "@/models/store/loyaltyDrop";
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {Coin} from "@/models/store/common";
 import {string} from "yup";
 
 interface BoostState {
-  boosts: LoyaltyDropPoolConfig[]
-  boostVestingAccounts: UserBoost[]
+  loyaltyDropPoolConfigs: LoyaltyDropPoolConfig[]
+  loyaltyDropUserBoosts: LoyaltyDropUserBoost[]
 }
-export const useBoostStore = defineStore({
+export const useLoyaltyDropStore = defineStore({
   id: 'boostsStore',
   state: (): BoostState => {
     return {
-      boosts: Array<LoyaltyDropPoolConfig>(),
-      boostVestingAccounts: Array<UserBoost>()
+      loyaltyDropPoolConfigs: Array<LoyaltyDropPoolConfig>(),
+      loyaltyDropUserBoosts: Array<LoyaltyDropUserBoost>()
     };
   },
   actions: {
-    async fetchBoostConfig(lockscreen = true) {
+    async fetchLoyaltyDropPoolsConfig(lockscreen = true) {
       await apiFactory.boostApi().fetchLoyaltyDropPoolsConfig(lockscreen).then((resp) => {
         if (resp.isSuccess() && resp.data !== undefined) {
           console.log(resp);
-          this.boosts = resp.data;
+          this.loyaltyDropPoolConfigs = resp.data;
         } else {
           //TODO: error handling
         }
       });
     },
-    async fetchUserBoost(lockscreen = true) {
-      // this.boostVestingAccounts = [
-      //   new UserBoost('UserVestingPoolName1'),
-      //   new UserBoost('UserVestingPoolName2'),
-      //   new UserBoost('UserVestingPoolName3'),
-      //   new UserBoost('UserVestingPoolName4')
-      // ];
-      // await apiFactory.boostApi().fetchUserBoosts(lockscreen).then((resp) => {
-      //   if (resp.isSuccess() && resp.data !== undefined) {
-      //     console.log(resp);
-      //     this.params = resp.data;
-      //   }
-      // });
+    async fetchLoyaltyDropUserBoost(address: string, lockscreen = true) {
+      await apiFactory.boostApi().fetchLoyaltyDropUserBoosts(address, lockscreen).then((resp) => {
+        if (resp.isSuccess() && resp.data !== undefined) {
+          console.log(resp);
+          this.loyaltyDropUserBoosts = resp.data;
+        } else {
+          //TODO: error handling
+        }
+      });
     },
   },
   getters: {
     getBoosts():LoyaltyDropPoolConfig[]{
-      return this.boosts;
+      return this.loyaltyDropPoolConfigs;
     },
-    getUserBoosts():UserBoost[]{
-      return this.boostVestingAccounts;
+    getUserBoosts():LoyaltyDropUserBoost[]{
+      return this.loyaltyDropUserBoosts;
     }
   }
 });
