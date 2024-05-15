@@ -392,7 +392,7 @@
     "RESETPASSWORD2": "Reset password - step 2",
     "RESETPASSWORD3": "Reset password - step 3",
     "CHANGEPASSWORD": "Change password",
-    "BOOST": "Boost"
+    "BOOST": "Booster"
   },
   "TOAST": {
     "SUCCESS": {
@@ -639,6 +639,30 @@
     "GENERAL": {
       "yes": "Yes",
       "no": "No"
+    }
+  },
+  "BOOST": {
+    "TITLE": "C4E Lockup Booster",
+    "TABLE": {
+      "NO_DATA": "No data found",
+      "POOL_SIZE": "Pool size",
+      "CONTRIBUTION": "Your contribution",
+      "REWARD": "Your reward",
+      "MANAGE": "Manage"
+    },
+    "POPUP": {
+      "BALANCE": "Your balance",
+      "INFO_HEADER": "This operation will lock your funds for {timeToComplete} days",
+      "INFO_TEXT": "Rewards for the locked-up tokens will be distributed in weekly cycles every Thursday until the end of lock-up period",
+      "RESERVE": "Reserve {amount} C4E for future transactions",
+      "AMOUNT": "Amount to be claimed after lock-up period passes"
+    },
+    "COMMON": {
+      "NAME": "Name",
+      "LOCKUP_PERIOD": "Lockup period",
+      "APR": "Reward (APR)",
+      "POOL_USAGE": "Pool usage",
+      "DAYS": "days"
     }
   }
 }

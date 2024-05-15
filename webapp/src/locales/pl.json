@@ -385,7 +385,7 @@
     "RESETPASSWORD2": "Reset hasła - krok 2",
     "RESETPASSWORD3": "Reset hasła - krok 3",
     "CHANGEPASSWORD": "Zmiana hasła",
-    "BOOST": "Boost"
+    "BOOST": "Booster"
   },
   "TOAST": {
     "SUCCESS": {
@@ -631,6 +631,30 @@
     "GENERAL": {
       "yes": "Tak",
       "no": "Nie"
+    }
+  },
+  "BOOST": {
+    "TITLE": "C4E Lockup Booster",
+    "TABLE": {
+      "NO_DATA": "Brak danych",
+      "POOL_SIZE": "Wielkość puli",
+      "CONTRIBUTION": "Twój wkład",
+      "REWARD": "Twoja nagroda",
+      "MANAGE": "Zarządzaj"
+    },
+    "POPUP": {
+      "BALANCE": "Twój stan konta",
+      "INFO_HEADER": "Ta operacja zablokuje Twoje środki na {timeToComplete} dni",
+      "INFO_TEXT": "Nagrody za zablokowane tokeny będą rozdzielane w cyklach tygodniowych w każdy czwartek do końca okresu blokady",
+      "RESERVE": "Zarezerwuj {amount} C4E na przyszłe transakcje",
+      "AMOUNT": "Kwota do odebrania po zakończeniu okresu blokady"
+    },
+    "COMMON": {
+      "NAME": "Nazwa",
+      "LOCKUP_PERIOD": "Okres blokady",
+      "APR": "Nagroda (APR)",
+      "POOL_USAGE": "Wykorzystanie puli",
+      "DAYS": "dni"
     }
   }
 }

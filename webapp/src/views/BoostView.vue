@@ -1,7 +1,7 @@
 <template>
 
 <!--  <h4 class="m-0">{{ $t("STAKING_VIEW.VALIDATORS") }}</h4>-->
-  <h4 class="m-0">Active pools</h4>
+  <h4 class="m-4">{{$t('BOOST.TITLE')}}</h4>
 
   <BoostDataTable/>
 </template>

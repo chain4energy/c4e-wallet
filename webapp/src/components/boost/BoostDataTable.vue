@@ -3,7 +3,7 @@
     <BoostPopup :visible="popupOpened" :boost="currentBoost" @close="popupOpened = false;"/>
     <DataTableWrapper :data-key="'pool_description'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick" :paginator="false">
 <!--      <template v-slot:empty>{{ $t("STAKING_VIEW.NO_VALIDATORS") }}</template>-->
-      <template v-slot:empty>No data found</template>
+      <template v-slot:empty>{{$t('BOOST.TABLE.NO_DATA')}}</template>
 <!--      <template #header>-->
 <!--        <div>-->
 <!--          <span v-if="isValidatorsTable()" class="p-input-icon-left search-bar">-->
@@ -15,23 +15,23 @@
 <!--      </template>-->
       <template v-slot:columns>
 <!--        <Column field="description.moniker" :header="$t(`STAKING_VIEW.TABLE.NAME`)" :sortable="true">-->
-        <Column header="Name" :sortable="false">
+        <Column :header="$t('BOOST.COMMON.NAME')" :sortable="false">
           <template #body="slotProps: {data: BoostConfig}">
-            <span class="p-column-title">Name</span>
+            <span class="p-column-title">{{$t('BOOST.COMMON.NAME')}}</span>
 <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
             <span>{{ slotProps.data.poolDescription }}</span>
           </template>
         </Column>
-        <Column header="Lock period" :sortable="false">
+        <Column :header="$t('BOOST.COMMON.LOCKUP_PERIOD')" :sortable="false">
           <template #body="slotProps: {data: BoostConfig}">
-            <span class="p-column-title">Lock period</span>
+            <span class="p-column-title">{{$t('BOOST.COMMON.LOCKUP_PERIOD')}}</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ msToDays(slotProps.data.lockPeriod) }} days</span>
+            <span>{{ msToDays(slotProps.data.lockPeriod) }} {{$t('BOOST.COMMON.DAYS')}}</span>
           </template>
         </Column>
-        <Column header="Reward (APR)" :sortable="false">
+        <Column :header="$t('BOOST.COMMON.APR')" :sortable="false">
           <template #body="slotProps: {data: BoostConfig}">
-            <span class="p-column-title">Reward (APR)</span>
+            <span class="p-column-title">{{$t('BOOST.COMMON.APR')}}</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
             <span>{{ slotProps.data.apr.toFixed(2) }}%</span>
           </template>
@@ -44,16 +44,16 @@
 <!--          </template>-->
 <!--        </Column>-->
 
-        <Column header="Pool size" :sortable="false">
+        <Column :header="$t('BOOST.TABLE.POOL_SIZE')" :sortable="false">
           <template #body="slotProps: {data: BoostConfig}">
-            <span class="p-column-title">Reward (APY)</span>
+            <span class="p-column-title">{{$t('BOOST.TABLE.POOL_SIZE')}}</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
 <!--            <span>{{ data.base_tokens }}</span>-->
             <CoinAmount :amount="slotProps.data.baseTokens" :show-denom="true"/>
           </template>
         </Column>
 <!--        <Column v-if="isValidatorsTable()" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">-->
-        <Column header="Pool Usage">
+        <Column :header="$t('BOOST.COMMON.POOL_USAGE')">
           <template #body="slotProps: {data: BoostConfig}">
             <CoinAmount :amount="calculateRemainingTokens(slotProps.data)" :show-tooltip="true" tooltip-only>
               <div v-if="calculatePercentagePoolUsage(slotProps.data)">
@@ -79,17 +79,17 @@
           </template>
         </Column>
 
-        <Column header="Your contribution" :sortable="false">
+        <Column :header="$t('BOOST.TABLE.CONTRIBUTION')" :sortable="false">
           <template #body>
-            <span class="p-column-title">Your contribution</span>
+            <span class="p-column-title">{{$t('BOOST.TABLE.CONTRIBUTION')}}</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
             <span>{{ 'TODO' }} C4E</span>
           </template>
         </Column>
 
-        <Column header="Your reward" :sortable="false">
+        <Column :header="$t('BOOST.TABLE.REWARD')" :sortable="false">
           <template #body="slotProps: {data: BoostConfig}">
-            <span class="p-column-title">Your reward</span>
+            <span class="p-column-title">{{ $t('BOOST.TABLE.REWARD') }}</span>
             <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
             <span>{{ 'TODO' }} C4E </span>
           </template>
@@ -179,7 +179,7 @@
           <template #body="{data}">
             <Button class="outlined" @click="checkBTN(data)">
               <StakeManagementIcon icon="manage"/>
-              {{ $t(`STAKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}
+              {{ $t('BOOST.TABLE.MANAGE') }}
             </Button>
           </template>
         </Column>

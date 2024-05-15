@@ -5,15 +5,15 @@
 
       <div class="boostDetails__header">
           <div class="boostDetails__header__tile" >
-            <h3>APR:</h3>
+            <h3>{{$t('BOOST.COMMON.LOCKUP_PERIOD')}}:</h3>
+            <h4>{{ msToDays(boost.lockPeriod) }} {{$t('BOOST.COMMON.DAYS')}}</h4>
+          </div>
+          <div class="boostDetails__header__tile" >
+            <h3>{{$t('BOOST.COMMON.APR')}}:</h3>
             <h4>{{boost.apr}}%</h4>
           </div>
           <div class="boostDetails__header__tile" >
-            <h3>Lock period:</h3>
-            <h4>{{ msToDays(boost.lockPeriod) }} days</h4>
-          </div>
-          <div class="boostDetails__header__tile" >
-            <h3>Pool usage:</h3>
+            <h3>{{$t('BOOST.COMMON.POOL_USAGE')}}:</h3>
             <CoinAmount :amount="calculateRemainingTokens(boost)" :show-tooltip="true" tooltip-only style="width:90%; margin-bottom: 10px;">
               <div v-if="calculatePercentagePoolUsage(boost)">
                 <div v-if="calculatePercentagePoolUsage(boost) < 0.05" class="commision">
@@ -39,10 +39,10 @@
 
       <div style="display: flex; justify-content: center; margin: 30px auto;">
         <InfoMessage
-                        header="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.HEADER"
-                        :header-variables="{timeToComplete: boost.lockPeriod}"
-                        texts="STAKING_VIEW.STAKING_POPUP.WARNINGS.DELEGATIONS.TEXT"
-                        :texts-variables="{timeToComplete: boost.lockPeriod}"/>
+                        header="BOOST.POPUP.INFO_HEADER"
+                        :header-variables="{timeToComplete: msToDays(boost.lockPeriod)}"
+                        texts="BOOST.POPUP.INFO_TEXT"
+        />
       </div>
 
 
@@ -86,7 +86,7 @@
               <transition name="slide-fade">
                 <div v-if="showReserveCheckbox" class="validationPopup__reservationReq">
                   <input type="checkbox" v-model="reserveCoins"/>
-                  <p>Reserve {{ fee + reservedCoins }} C4E for future transactions</p>
+                  <p>{{$t('BOOST.COMMON.RESERVE', {amount: fee+reservedCoins})}}</p>
                 </div>
               </transition>
 
@@ -97,7 +97,7 @@
         <div class="validationPopup__btnHolder" v-if="canModify">
           <div class="validationPopup__btns">
             <div style="flex: 1 1;">
-              <span>Amount to claim after time passes: <span style="font-weight: bold;">{{(amount * (1+ boost.apr/100)).toFixed(2)}} C4E</span></span>
+              <span>{{$t('BOOST.COMMON.AMOUNT')}}: <span style="font-weight: bold;">{{(amount * (1+ boost.apr/100)).toFixed(2)}} C4E</span></span>
             </div>
             <Button class="validationPopup__button" disabled type="submit">
               <StakeManagementIcon icon="delegate"/>
@@ -229,7 +229,7 @@ function getMax() {
 const amountToPass = computed(() => {
   let coins = [];
   coins.push(
-    {amount: useUserStore().getBalance || 0, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.AVAILABLE_TO_DELEGATE')});
+    {amount: useUserStore().getBalance || 0, header: i18n.global.t('BOOST.POPUP.BALANCE')});
   return coins;
   /*
   switch (stakingAction.value) {
