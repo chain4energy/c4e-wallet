@@ -34,6 +34,7 @@ import {BigDecimal} from "@/models/store/big.decimal";
 import {VoteOption} from "@/models/store/proposal";
 import {BlockchainApiErrorData} from "@/models/blockchain/common";
 import {MsgClaim, MsgInitialClaim} from "@/api/cfeclaim/tx";
+import {MsgCreateVestingPool, MsgWithdrawAllAvailable} from "@/api/cfevesting/tx";
 
 export class AccountApi extends TxBroadcastBaseApi {
 
@@ -412,6 +413,39 @@ export class AccountApi extends TxBroadcastBaseApi {
 //      }
 //    }
 //  }
+
+  public async createVestingPoolLoyaltyDrop(connection: ConnectionInfo, vestingPoolName: string, amount:number, vestingPeriod: number, vestingType: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
+    const config = useConfigurationStore().config;
+
+    const getMessages = (): readonly EncodeObject[] => {
+      const typeUrl = '/chain4energy.c4echain.cfevesting.MsgCreateVestingPool';
+      const val: MsgCreateVestingPool = {
+        owner: connection.account,
+        name: vestingPoolName,
+        amount: amount.toString(),
+        duration: {seconds: vestingPeriod, nanos: 0},
+        vestingType: vestingType
+      };
+      return [{typeUrl: typeUrl, value: val}];
+    };
+    const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true,  null, false, true);
+  }
+
+  public async vestingPoolWithdrawAllAvailable(connection: ConnectionInfo): Promise<RequestResponse<TxData, TxBroadcastError>> {
+    const config = useConfigurationStore().config;
+
+    const getMessages = (): readonly EncodeObject[] => {
+      const typeUrl = '/chain4energy.c4echain.cfevesting.MsgWithdrawAllAvailable';
+      const val: MsgWithdrawAllAvailable = {
+        owner: connection.account,
+      };
+      return [{typeUrl: typeUrl, value: val}];
+    };
+    const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
+    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+  }
+
 
   public async sign(connection: ConnectionInfo, dataToSign: string): Promise<RequestResponse<string, TxBroadcastError>> {
     return this.signDirect(connection, dataToSign, true, null);

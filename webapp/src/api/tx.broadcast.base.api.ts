@@ -25,6 +25,7 @@ import {_arrayBufferToBase64} from "@/utils/sign";
 import {ethers} from "ethers";
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
 import { createCfeClaimAminoConverters } from "./cfeclaim/amino";
+import {MsgCreateVestingPool, MsgWithdrawAllAvailable} from "@/api/cfevesting/tx";
 
 
 const toast = useToast();
@@ -84,10 +85,11 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     fee: StdFee | "auto" | number,
     memo: string,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
-    skipErrorToast = false
+    skipErrorToast = false,
+    useLoyaltyDropServiceRpc = false
   ): Promise<RequestResponse<TxData, TxBroadcastError>>
   {
-    return await this.signAndBroadcastFeeControl(connection, getMessages, fee, memo, false, lockScreen, localSpinner, skipErrorToast)
+    return await this.signAndBroadcastFeeControl(connection, getMessages, fee, memo, false, lockScreen, localSpinner, skipErrorToast, useLoyaltyDropServiceRpc);
   }
 
   protected async signAndBroadcastFeeControl(
@@ -97,7 +99,8 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     memo: string,
     appControlledFee: boolean,
     lockScreen: boolean, localSpinner: LocalSpinner | null,
-    skipErrorToast = false
+    skipErrorToast = false,
+    useLoyaltyDropServiceRpc = false
   ): Promise<RequestResponse<TxData, TxBroadcastError>>
   {
     this.logToConsole(LogLevel.DEBUG, 'signAndBroadcast');
@@ -112,7 +115,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
           !skipErrorToast
         );
       }
-      const { client, isLedger } = await this.createClientFeeControl(connection.connectionType, appControlledFee);
+      const { client, isLedger } = await this.createClientFeeControl(connection.connectionType, appControlledFee, useLoyaltyDropServiceRpc);
       clientToDisconnect = client;
       if (client === undefined) {
         return this.createTxErrorResponseWithToast(
@@ -230,7 +233,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     return await this.createClientFeeControl(connectionType, false)
   }
 
-  private async createClientFeeControl(connectionType: ConnectionType, appControlledFee: boolean): Promise<{ client: SigningStargateClient, isLedger: boolean }> {
+  private async createClientFeeControl(connectionType: ConnectionType, appControlledFee: boolean, useLoyaltyDropServiceRpc = false): Promise<{ client: SigningStargateClient, isLedger: boolean }> {
     const { signer, isLedger } = await this.getOfflineSigner(connectionType, appControlledFee);
 
     if (signer == undefined) {
@@ -239,9 +242,13 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     const myRegistry = new Registry(defaultRegistryTypes);
     const MsgInitialClaimTypeUrl = "/chain4energy.c4echain.cfeclaim.MsgInitialClaim";
     const MsgClaimTypeUrl = "/chain4energy.c4echain.cfeclaim.MsgClaim";
-    //const RepeatedContinuousVestingAccount = "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount";
+    const MsgCreateVestingPoolTypeUrl = "/chain4energy.c4echain.cfevesting.MsgCreateVestingPool";
+    const MsgWithdrawAllAvailableTypeUrl = "/chain4energy.c4echain.cfevesting.MsgWithdrawAllAvailable";
+//const RepeatedContinuousVestingAccount = "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount";
     myRegistry.register(MsgInitialClaimTypeUrl, MsgInitialClaim);
     myRegistry.register(MsgClaimTypeUrl, MsgClaim);
+    myRegistry.register(MsgWithdrawAllAvailableTypeUrl, MsgWithdrawAllAvailable);
+    myRegistry.register(MsgCreateVestingPoolTypeUrl, MsgCreateVestingPool);
 
     // myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
     console.log(myRegistry);
@@ -249,7 +256,8 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     // const aminoTypes = new AminoTypes(createCfeClaimAminoConverters());
     const aminoTypes = new AminoTypes({...createDefaultAminoConverters(), ...createCfeClaimAminoConverters()});
     // myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
-    const rpc = useConfigurationStore().config.bcRpcURL;
+
+    const rpc = useLoyaltyDropServiceRpc ? useConfigurationStore().config.bcLoyaltyDropServiceBroadcastRpcURL : useConfigurationStore().config.bcRpcURL;
     const client = await SigningStargateClient.connectWithSigner(
       rpc,
       signer,

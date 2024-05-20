@@ -49,10 +49,18 @@ export interface JsonQueries {
   SPENDABLE_BALANCES_URL: string;
 }
 
+export interface  JsonLoyaltyDropConfig {
+  LOYALTY_DROP_BASE_URL:string;
+  LOYALTY_DROP_POOL_CONFIGURATIONS_URL:string;
+  loyaltyDropUserBootsURL:string;
+  loyaltyDropDefaultDenom: string;
+}
+
 
 export interface Configuration {
   bcApiURL: string,
   bcRpcURL: string,
+  bcLoyaltyDropServiceBroadcastRpcURL: string,
   hasuraURL: string,
   keybaseURL: string,
   stakingPageURL: string,
@@ -92,4 +100,5 @@ export interface Configuration {
   transferDenom: string;
   publicSaleVisible: boolean;
   useAminoOnly: boolean;
+  loyaltyDropService: JsonLoyaltyDropConfig;
 }
