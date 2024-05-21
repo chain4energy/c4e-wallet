@@ -429,7 +429,7 @@ export class AccountApi extends TxBroadcastBaseApi {
       return [{typeUrl: typeUrl, value: val}];
     };
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
-    return await this.signAndBroadcast(connection, getMessages, fee, '', true,  null, false, true);
+    return await this.signAndBroadcastFeeControl(connection, getMessages, fee, '', true, true, null);
   }
 
   public async vestingPoolWithdrawAllAvailable(connection: ConnectionInfo): Promise<RequestResponse<TxData, TxBroadcastError>> {
@@ -443,7 +443,7 @@ export class AccountApi extends TxBroadcastBaseApi {
       return [{typeUrl: typeUrl, value: val}];
     };
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
-    return await this.signAndBroadcast(connection, getMessages, fee, '', true, null);
+    return await this.signAndBroadcastFeeControl(connection, getMessages, fee, '', true, true, null);
   }
 
 

@@ -152,7 +152,6 @@ export class LoyaltyDropConfig implements JsonLoyaltyDropConfig{
 export class Configuration implements JsonConfiguration {
   bcApiURL: string;
   bcRpcURL: string;
-  bcLoyaltyDropServiceBroadcastRpcURL: string;
   hasuraURL: string;
   keybaseURL: string;
   stakingPageURL: string;
@@ -203,7 +202,6 @@ export class Configuration implements JsonConfiguration {
     if (configuration) {
       this.bcApiURL = configuration.bcApiURL;
       this.bcRpcURL = configuration.bcRpcURL;
-      this.bcLoyaltyDropServiceBroadcastRpcURL = configuration.bcLoyaltyDropServiceBroadcastRpcURL;
       this.hasuraURL = configuration.hasuraURL;
       this.keybaseURL = configuration.keybaseURL;
       this.stakingPageURL = configuration.stakingPageURL;
@@ -246,13 +244,12 @@ export class Configuration implements JsonConfiguration {
       this.tokenReservationDenom = configuration.tokenReservationDenom;
       this.currentPublicSaleRoundId = configuration.currentPublicSaleRoundId;
       this.transferDenom = configuration.transferDenom;
-      this.publicSaleVisible = configuration.publicSaleVisible;
-      this.useAminoOnly = configuration.useAminoOnly;
+      this.publicSaleVisible=configuration.publicSaleVisible;
+      this.useAminoOnly=configuration.useAminoOnly;
       this.loyaltyDropService = new LoyaltyDropConfig(configuration.loyaltyDropService);
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
-      this.bcLoyaltyDropServiceBroadcastRpcURL = '';
       this.hasuraURL = '';
       this.keybaseURL = '';
       this.stakingPageURL = '';
