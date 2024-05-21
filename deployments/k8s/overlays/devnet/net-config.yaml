@@ -5,7 +5,7 @@ data:
     "Devnet": {
       "bcApiURL": "https://lcd-dev.c4e.io",
       "bcRpcURL": "https://rpc-dev.c4e.io",
-      "bcLoyaltyDropServiceBroadcastRpcURL": "http://loyalty-drop-service/api/loyalty-drop/v0.1/broadcast",
+      "bcLoyaltyDropServiceBroadcastRpcURL": "https://loyalty-drop-dev.c4e.io/api/loyalty-drop/v0.1/broadcast",
       "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
       "keybaseURL": "https://keybase.io",
       "stakingPageURL": "https://wallet-dev.c4e.io/staking",
