@@ -21,7 +21,8 @@ import TxToast from "@/components/commons/TxToast.vue";
 import {Coin} from "@/models/store/common";
 import {calculateLockedVesting} from "@/utils/vesting-utils";
 import {FaucetErrorEnum} from "@/models/faucet";
-import {string} from "yup";
+import {useLoyaltyDropStore} from "@/store/boost.store";
+import {TxRaw} from "@/api/cosmostx/tx";
 
 const toast = useToast();
 const logger = new StoreLogger(ServiceTypeEnum.USER_STORE);
@@ -376,16 +377,22 @@ export const useUserStore = defineStore({
 
     async createVestingPoolLoyaltyDrop(vestingPoolName: string, amount:number, vestingPeriod: number, vestingType: string): Promise<boolean> {
       const connectionInfo = this.connectionInfo;
-      return await apiFactory.accountApi().createVestingPoolLoyaltyDrop(connectionInfo, vestingPoolName, amount,vestingPeriod, vestingType)
+      return await apiFactory.accountApi().signMessageForCreateVestingPoolLoyaltyDrop(connectionInfo, vestingPoolName, amount,vestingPeriod, vestingType)
         .then(async (resp) => {
           if (resp.isError()) {
             await onTxDeliveryFailure(connectionInfo, this, resp, 'Creating loyaltyDrop vesting poll failed: ' + resp.error?.message);
             return false;
           } else {
+            console.log("createVestingPoolLoyaltyDrop data:",resp.data);
+            const txBytes = TxRaw.encode(resp.data as TxRaw).finish();
+            const broadcastTransactionReq = {
+              tx_bytes: Array.from(txBytes), // Converting Uint8Array to array for JSON serialization
+            };
+            await useLoyaltyDropStore().fetchSignedMessage( JSON.stringify(broadcastTransactionReq));
             const allResults = await Promise.all([
               fetchBalance(connectionInfo, useUserStore(), true),
             ]);
-            onTxDeliverySuccess(resp.data);
+            // onTxDeliverySuccess(resp.data);
             onRefreshingError(allResults);
             // onClaimAirdropSuccess();//TODO:
             return true;
@@ -571,7 +578,7 @@ async function fetchRewards(connectionInfo: ConnectionInfo, state: UserState, lo
   }
 }
 
-async function onTxDeliveryFailure(connectionInfo: ConnectionInfo, state: UserState, response: RequestResponse<TxData, TxBroadcastError>, message: string) {
+async function onTxDeliveryFailure(connectionInfo: ConnectionInfo, state: UserState, response: RequestResponse<TxData | TxRaw, TxBroadcastError>, message: string) {
   logger.logToConsole(LogLevel.ERROR, message);
   toast.error(message);
   if (response.error?.hasTxData()) {

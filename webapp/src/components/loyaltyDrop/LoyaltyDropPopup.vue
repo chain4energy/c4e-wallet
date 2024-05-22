@@ -73,7 +73,7 @@
                 :disabled="!canModify"></Field>
               <span>{{ $t('COMMON.INPUT.AMOUNT') }}</span>
               <div class="validationPopup__btn">
-                <button type="button" disabled @click="getMax">Max</button>
+                <button type="button" @click="amount = getMax()">Max</button>
                 <p>C4E</p>
               </div>
 
@@ -165,6 +165,8 @@ const amount = ref<number>(0);
 const showReserveCheckbox = ref(false);
 const reservedCoins = useConfigurationStore().config.getConvertedAmount(useConfigurationStore().config.getReservedCoinsAmount());
 import dataService from "@/services/data.service";
+import {formatBigNumberLocalized} from "@/utils/locale-number-formatter";
+import {RedelegationDirection} from "@/components/staking/StakingRedelegate";
 
 // const commissionForOperation = computed(() => {
 //   return (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) || 0;
@@ -187,6 +189,7 @@ const baseSchema = object().shape({
     }),
     string().matches(/^\d*(\.\d{0,6})?$/gm, i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.NUMBER', {decimal: useConfigurationStore().config.getViewDenomDecimals()})),
     string().test('delgation-moreThan', i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MIN'), moreThan),
+    string().test('delgation-lessThan', () => i18n.global.t('STAKING_VIEW.STAKING_POPUP.AMOUNT.MAX', {max: maxAmountMessageData()}), lessThanOrEqualTo)
   ])
 });
 
@@ -207,8 +210,10 @@ function moreThan(value: string | undefined): boolean {
 }
 
 async function action() {
-  await dataService.onCreateVestingPoolLoyaltyDrop(props.boost.prefixName+"-" + Math.floor(Math.random() * 100000), amount.value,
-    props.boost.epochPeriod * props.boost.epochNumber / 1000, props.boost.vestingType);
+  await dataService.onCreateVestingPoolLoyaltyDrop("ld-" + Math.floor(Math.random() * 100000), amount.value,
+    props.boost.epochPeriod * props.boost.epochNumber / 1000, props.boost.vestingType, () => {
+      emit('close')
+    });
 }
 
 watch(reserveCoins, (next, prev) => {
@@ -225,16 +230,22 @@ watch(stakingAction, (next, prev) => {
 });
 
 function getMax() {
-  amount.value = Number(useConfigurationStore().config.getConvertedAmount(useUserStore().getBalance));
-  showReserveCheckbox.value = true;
-  reserveCoins.value = true;
+  console.log('GetMax');
+  const spendables = useUserStore().getSpendableBalance;
+  let retValue = Number(useConfigurationStore().config.getConvertedAmount(spendables?spendables :0)) - Number(reservedCoins) ;
+  if(retValue < 0){
+    retValue = 0;
+  }
+  return retValue;
+  // showReserveCheckbox.value = true;
+  //reserveCoins.value = true;
 }
 
 
 const amountToPass = computed(() => {
   let coins = [];
   coins.push(
-    {amount: useUserStore().getBalance || 0, header: i18n.global.t('BOOST.POPUP.BALANCE')});
+    {amount: useUserStore().getSpendableBalance || 0, header: i18n.global.t('BOOST.POPUP.SPENDABLE')});
   return coins;
   /*
   switch (stakingAction.value) {
@@ -277,6 +288,19 @@ function calculatePercentagePoolUsage(data: LoyaltyDropPoolConfig): BigDecimal {
 
 function msToDays(milliseconds:  number) {
   return milliseconds / (1000 * 60 * 60 * 24);
+}
+
+function maxAmountMessageData(): string {
+  const maxAmount = getMax();
+  return formatBigNumberLocalized(maxAmount.toFixed(useConfigurationStore().config.getViewDenomDecimals()));
+}
+
+function lessThanOrEqualTo(value: string | undefined): boolean {
+  return checkValue(value, (value: string) => {
+    const factor = useConfigurationStore().config.getViewDenomConversionFactor();
+    const maxAmount = getMax();
+    return (new BigDecimal(maxAmount)).multiply(factor).isBiggerThanOrEqualTo(new BigDecimal(value).multiply(factor));
+  });
 }
 
 </script>

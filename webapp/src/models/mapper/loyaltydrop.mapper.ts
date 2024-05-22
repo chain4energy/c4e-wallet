@@ -9,7 +9,6 @@ export function mapLoyaltyDropConfig(loyaltyDropPoolConfigResp: LoyaltyDropPoolC
   loyaltyDropPoolConfigResp.forEach(b=> loyaltyDropPoolConfig.push(new LoyaltyDropPoolConfig(
     b.id,
     b.pool_description,
-    b.prefix_name,
     b.vesting_type_name,
     b.base_tokens,
     b.rewards_tokens,
@@ -24,7 +23,7 @@ export function mapLoyaltyDropConfig(loyaltyDropPoolConfigResp: LoyaltyDropPoolC
   return loyaltyDropPoolConfig;
 }
 
-export function mapLoyaltyDropUserBoost(loyaltyDropUserBoostResp: LoyaltyDropUserBoostResponse[] | undefined): LoyaltyDropUserBoost[]  {
+export function mapLoyaltyDropUserBoostArray(loyaltyDropUserBoostResp: LoyaltyDropUserBoostResponse[] | undefined): LoyaltyDropUserBoost[]  {
   if (loyaltyDropUserBoostResp === undefined) {
     throw new Error('LoyaltyDropPoolConfigResp is undefined');
   }
@@ -37,10 +36,28 @@ export function mapLoyaltyDropUserBoost(loyaltyDropUserBoostResp: LoyaltyDropUse
     b.tx_hash,
     b.granted_rewards,
     b.amount,
-    new Date(b.last_reward_date),
-    new Date(b.lock_start),
-    new Date(b.lock_end)
+    b.last_reward_date ? new Date(b.last_reward_date) : null,
+    b.lock_start ? new Date(b.lock_start) : null,
+    b.lock_end ? new Date(b.lock_end) : null
     ))
   );
   return userBoost;
+}
+
+export function mapLoyaltyDropUserBoost(loyaltyDropUserBoostResp: LoyaltyDropUserBoostResponse | undefined): LoyaltyDropUserBoost{
+  if (loyaltyDropUserBoostResp === undefined) {
+    throw new Error('LoyaltyDropPoolConfigResp is undefined');
+  }
+  return new LoyaltyDropUserBoost(
+    loyaltyDropUserBoostResp.boost_pool_id,
+    loyaltyDropUserBoostResp.vesting_pool_name,
+    loyaltyDropUserBoostResp.base_account_address,
+    loyaltyDropUserBoostResp.status,
+    loyaltyDropUserBoostResp.tx_hash,
+    loyaltyDropUserBoostResp.granted_rewards,
+    loyaltyDropUserBoostResp.amount,
+    loyaltyDropUserBoostResp.last_reward_date ? new Date(loyaltyDropUserBoostResp.last_reward_date) : null,
+    new Date(loyaltyDropUserBoostResp.lock_start),
+    new Date(loyaltyDropUserBoostResp.lock_end)
+  );
 }

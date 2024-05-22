@@ -119,9 +119,10 @@ export default {
     OVERVIEW: 'https://individual-api.synaps.io/v3/onboarding/overview'
   },
   loyaltyDropService:{
-    LOYALTY_DROP_BASE_URL:'/api/loyalty-drop',
-    LOYALTY_DROP_POOL_CONFIGURATIONS_URL:'/v0.1/pool_configurations',
+    loyaltyDropBaseUrl:'/api/loyalty-drop',
+    loyaltyDropPoolConfigurationsUrl:'/v0.1/pool_configurations',
     loyaltyDropUserBootsURL:'/v0.1/user_boost/{user_address}',
-    loyaltyDropDefaultDenom:'uc4e'
+    loyaltyDropDefaultDenom:'uc4e',
+    loyaltyDropBroadcastURL:'/v0.1/broadcast'
   }
 };

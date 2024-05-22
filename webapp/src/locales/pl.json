@@ -649,6 +649,7 @@
     },
     "POPUP": {
       "BALANCE": "Twój stan konta",
+      "SPENDABLE": "Dostępne",
       "INFO_HEADER": "Ta operacja zablokuje Twoje środki na {timeToComplete} dni",
       "INFO_TEXT": "Nagrody za zablokowane tokeny będą rozdzielane w cyklach tygodniowych w każdy czwartek do końca okresu blokady",
       "RESERVE": "Zarezerwuj {amount} C4E na przyszłe transakcje",

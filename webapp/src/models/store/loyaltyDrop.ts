@@ -7,7 +7,6 @@ export class LoyaltyDropPoolConfig {
   /*
  `ID`                INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `POOL_DESCRIPTION`  VARCHAR(55)     NOT NULL,
-  `PREFIX_NAME`       VARCHAR(55)     NOT NULL,
   `VESTING_TYPE_NAME` VARCHAR(55)     NOT NULL,
   `BASE_TOKENS`       BIGINT          NOT NULL,
   `REWARDS_TOKENS`    BIGINT          NOT NULL,
@@ -19,7 +18,6 @@ export class LoyaltyDropPoolConfig {
  */
   id:number;
   poolDescription: string;
-  prefixName: string;
   vestingType: string;
   baseTokens:	Coin;
   rewardsTokens: Coin;
@@ -31,11 +29,10 @@ export class LoyaltyDropPoolConfig {
   apr: number;
 
 
-  constructor(id:number, poolDescription: string, prefixName: string, vestingType: string, baseTokens: number, rewardsTokens: number, usedTokens: number, reservedTokens: number, epochNumber: number,
+  constructor(id:number, poolDescription: string, vestingType: string, baseTokens: number, rewardsTokens: number, usedTokens: number, reservedTokens: number, epochNumber: number,
               epochPeriod: number, epochStartDate: Date,   apr: number) {
     this.id = id;
     this.poolDescription = poolDescription;
-    this.prefixName = prefixName;
     this.vestingType = vestingType;
     this.baseTokens =  new Coin(BigInt(baseTokens), getDefaultDenom());
     this.rewardsTokens = new Coin(BigInt(rewardsTokens), getDefaultDenom());
@@ -72,20 +69,20 @@ export class LoyaltyDropUserBoost {
   baseAccountAddress: string;
   status: UserBoostStatusType;
   txHash: string;
-  grantedRewards: Coin;
+  grantedRewards: Coin | null;
   amount:Coin;
-  lastRewardDate:Date;
-  lockStart:Date;
-  lockEnd:Date;
+  lastRewardDate:Date | null;
+  lockStart:Date | null;
+  lockEnd:Date | null;
 
 
-  constructor(boostPoolId: number, vestingPoolName: string, baseAccountAddress: string, status: UserBoostStatusType, txHash: string, grantedRewards: number, amount: number, lastRewardDate:Date, lockStart: Date, lockEnd: Date) {
+  constructor(boostPoolId: number, vestingPoolName: string, baseAccountAddress: string, status: UserBoostStatusType, txHash: string, grantedRewards: number, amount: number, lastRewardDate:Date | null, lockStart: Date | null, lockEnd: Date | null) {
     this.boostPoolId = boostPoolId;
     this.vestingPoolName = vestingPoolName;
     this.baseAccountAddress = baseAccountAddress;
     this.status = status;
     this.txHash = txHash;
-    this.grantedRewards = new Coin(BigInt(grantedRewards), getDefaultDenom());
+    this.grantedRewards = grantedRewards? new Coin(BigInt(grantedRewards), getDefaultDenom()) : null;
     this.amount = new Coin(BigInt(amount), getDefaultDenom());
     this.lastRewardDate = lastRewardDate;
     this.lockStart = lockStart;

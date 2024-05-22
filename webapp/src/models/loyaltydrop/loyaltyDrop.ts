@@ -1,7 +1,6 @@
 export interface LoyaltyDropPoolConfigResponse {
   id: number,
   pool_description: string,
-  prefix_name: string,
   vesting_type_name:	string,
   base_tokens:	number,
   used_tokens:	number,

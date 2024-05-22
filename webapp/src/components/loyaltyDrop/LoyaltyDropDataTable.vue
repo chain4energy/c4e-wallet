@@ -7,41 +7,25 @@
       <template v-slot:columns>
         <Column :header="$t('BOOST.COMMON.NAME')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <span class="p-column-title">{{$t('BOOST.COMMON.NAME')}}</span>
             <span>{{ slotProps.data.poolDescription }}</span>
           </template>
         </Column>
         <Column :header="$t('BOOST.COMMON.LOCKUP_PERIOD')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <span class="p-column-title">{{$t('BOOST.COMMON.LOCKUP_PERIOD')}}</span>
-            <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
             <span>{{msToDays(slotProps.data.lockupPeriod) }} {{$t('BOOST.COMMON.DAYS')}}</span>
           </template>
         </Column>
         <Column :header="$t('BOOST.COMMON.APR')" :sortable="false">
-          <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <span class="p-column-title">{{$t('BOOST.COMMON.APR')}}</span>
-            <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ slotProps.data.apr.toFixed(2) * 100}}%</span>
+         <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
+            <span>{{ (slotProps.data.apr * 100).toFixed(2)}}%</span>
           </template>
         </Column>
-<!--        <Column header="Boost" :sortable="false">-->
-<!--          <template #body="{data}">-->
-<!--            <span class="p-column-title">Boost</span>-->
-<!--            &lt;!&ndash;            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>&ndash;&gt;-->
-<!--            <span>{{ data.apy }}</span>-->
-<!--          </template>-->
-<!--        </Column>-->
 
         <Column :header="$t('BOOST.TABLE.POOL_SIZE')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <span class="p-column-title">{{$t('BOOST.TABLE.POOL_SIZE')}}</span>
-            <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-<!--            <span>{{ data.base_tokens }}</span>-->
-            <CoinAmount :amount="slotProps.data.baseTokens" :show-denom="true"/>
+            <CoinAmount :amount="slotProps.data.baseTokens" :show-denom="true" :show-tooltip="true"/>
           </template>
         </Column>
-<!--        <Column v-if="isValidatorsTable()" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">-->
         <Column :header="$t('BOOST.COMMON.POOL_USAGE')">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
             <div style="margin-right: 15px;">
@@ -71,102 +55,20 @@
         </Column>
 
         <Column :header="$t('BOOST.TABLE.CONTRIBUTION')" :sortable="false">
+<!--          <template #body>-->
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <span class="p-column-title">{{$t('BOOST.TABLE.CONTRIBUTION')}}</span>
-            <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ userBoosts.find(el => el.boostPoolId === slotProps.data.id) ? userBoosts.find(el => el.boostPoolId === slotProps.data.id).amount.amount : 0}} C4E </span>
+<!--            <span>{{ userBoosts.find(el => el.boostPoolId === slotProps.data.id) ? userBoosts.find(el => el.boostPoolId === slotProps.data.id).amount.amount : 0}} C4E </span>-->
+<!--             <CoinAmount :amount="useLoyaltyDropStore().getUserBoostsByPollId(slotProps.data.id).reduce((acc, item) => acc +parseInt( item.value), 0)" :show-denom="true" :show-tooltip="true"/>-->
+             <CoinAmount :amount="calculateContributionPerPool(userBoosts,slotProps.data.id)" :show-denom="true" :show-tooltip="true"/>
           </template>
         </Column>
 
         <Column :header="$t('BOOST.TABLE.REWARD')" :sortable="false">
-<!--          <template #body="slotProps: {data: LoyaltyDropPoolConfig}">-->
-          <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
+          <template #body>
             <span class="p-column-title">{{ $t('BOOST.TABLE.REWARD') }}</span>
-            <!--            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.NAME`) }}</span>-->
-            <span>{{ userBoosts.find(el => el.boostPoolId === slotProps.data.id) ? userBoosts.find(el => el.boostPoolId === slotProps.data.id).grantedRewards.amount : 0}} C4E </span>
           </template>
         </Column>
 
-        <!--
-        <Column v-if="isLoggedIn && isValidatorsTable()">
-          <template #body="{data}">
-            <span style="cursor: pointer" @click="onRowExpand(data)" v-if="isValidatorRowExpandable(data)">
-              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress !== expandedRow[0]?.operatorAddress" name="ChevronRight" />
-              <Icon @click="onRowExpand(data)" v-if="data.operatorAddress === expandedRow[0]?.operatorAddress" name="ChevronDown" />
-            </span>
-          </template>
-        </Column>
-
-
-        <Column v-if="isValidatorsTable() || isDelegationsTable()" field="status" :header="$t(`STAKING_VIEW.TABLE.STATUS`)" :sortable="true">
-          <template #body="{data}">
-            <span class="p-column-title">{{ $t(`STAKING_VIEW.TABLE.STATUS`) }}</span>
-            <ValidatorStatusBadge :validator="data"/>
-          </template>
-        </Column>
-        <Column v-if="isValidatorsTable()" field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
-          <template #body="{data}">
-            <span class="p-column-title">Comission</span>
-            <PercentsView :amount="data.commission.rate" :precision="2"></PercentsView>
-          </template>
-        </Column>
-        <Column v-if="isValidatorsTable()" field="votingPower" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">
-          <template #body="{data}">
-            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.VOTING_POWER`)}}</span>
-            <div v-if="data.votingPower">
-            <div v-if="data.votingPower < 0.05" class="commision">
-              <div class="level-1" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
-            </div>
-            <div v-if="data.votingPower >= 0.05 && data.votingPower < .10" class="commision">
-              <div class="level-2" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
-            </div>
-            <div v-if="data.votingPower >= .10 && data.votingPower < .25" class="commision">
-              <div class="level-3" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
-            </div>
-            <div v-if="data.votingPower >= .25" class="commision">
-              <div class="level-4" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
-            </div>
-            </div>
-            <span v-else>updating</span>
-          </template>
-        </Column>
-        <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.STAKE`)" :sortable="true" sortField="delegatedAmount">
-          <template #body="{data}">
-            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.STAKE`)}}</span>
-            <CoinAmount :amount="new BigIntWrapper(data.delegatedAmount)" :show-denom="true"/>
-          </template>
-        </Column>
-        <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.REWARDS`)" :sortable="true" sortField="rewardsAmountSort">
-          <template #body="{data}">
-            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.REWARDS`)}}</span>
-            <CoinAmount :amount="data.rewardsAmount" :show-denom="true"/>
-          </template>
-        </Column>
-        <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING`)" :sortable="true" sortField="entry.amount">
-          <template #body="{data}">
-            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.UNSTAKING`)}}</span>
-            <CoinAmount :amount="data.entry.amount" :show-denom="true"/>
-          </template>
-        </Column>
-        <Column v-if="isUndelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)" :sortable="true" sortField="entry.completionTime">
-          <template #body="{data}">
-            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.UNSTAKING_COMPLETION`)}}</span>
-            <span><DateCommon :date="data.entry.getCompletionTimeDate()" /></span>
-          </template>
-        </Column>
-        <Column v-if="!isUndelegationsTable()" field="operator_address">
-          <template #body="{data}">
-            <Button class="outlined" @click="checkBTN(data)">
-              <StakeManagementIcon icon="manage"/>
-              {{ $t(`STAKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}
-            </Button>
-          </template>
-        </Column>
-        -->
          <Column>
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
             <Button class="outlined" @click="checkBTN(slotProps.data)">
@@ -175,7 +77,6 @@
             </Button>
           </template>
         </Column>
-
 
         <Column v-if="isLoggedIn">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
@@ -188,24 +89,60 @@
 
       </template>
       <template v-slot:expanded-columns="slotProps: {expandedData: {data: LoyaltyDropPoolConfig}}">
-        <div v-for="userBoost in userBoosts.filter(el => el.boostPoolId === slotProps.expandedData.data.id)" :key="userBoost.boostPoolId"  class="boostDetails__header">
-          <div class="boostDetails__header__tile" >
-            <h3>{{$t('BOOST.TABLE.LOCK_START')}}:</h3>
-            <h4>{{ userBoost.lockStart.toLocaleDateString() }}</h4>
-          </div>
-          <div class="boostDetails__header__tile" >
-            <h3>{{$t('BOOST.TABLE.LOCK_END')}}:</h3>
-            <h4>{{ userBoost.lockEnd.toLocaleDateString() }}</h4>
-          </div>
-          <div class="boostDetails__header__tile" >
-            <h3>{{$t('BOOST.TABLE.LAST_REWARD')}}:</h3>
-            <h4>{{ userBoost.lastRewardDate.toLocaleDateString() }}</h4>
-          </div>
-          <div class="boostDetails__header__tile" >
-            <h3>{{$t('BOOST.TABLE.STATUS')}}:</h3>
-            <h4>{{ userBoost.status }}</h4>
-          </div>
+        <div >
+            <DataTableWrapper
+              :useExternalGlobalFilter="false"
+              :eager-loading-config="createUserDropLoadingConfig(slotProps.expandedData.data.id)"
+              :paginator="false">
+<!--              <template #header>-->
+<!--                <h5 style="font-weight: bolder; margin-top: 20px; margin-bottom: -20px;">{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</h5>-->
+<!--              </template>-->
+              <template v-slot:columns>
+
+                <Column :header="$t('BOOST.TABLE.LOCK_START')" style="width: 200px" :sortable="false">
+                  <template #body="slotProps: {data: LoyaltyDropUserBoost}">
+                    <span>{{ slotProps.data.lockStart?.toLocaleDateString() }}</span>
+                  </template>
+                </Column>
+                <Column :header="$t('BOOST.TABLE.LOCK_END')" style="width: 200px" :sortable="false">
+                  <template #body="slotProps: {data: LoyaltyDropUserBoost}">
+                   <span>{{ slotProps.data.lockEnd?.toLocaleDateString() }}</span>
+                  </template>
+                </Column>
+                <Column header="Your contribution" style="width: 200px" :sortable="false">
+                  <template #body="slotProps: {data: LoyaltyDropUserBoost}">
+                    <CoinAmount :amount=" slotProps.data.amount" :show-denom="true" :show-tooltip="true"/>
+                  </template>
+                </Column>
+                <Column :header="$t('BOOST.TABLE.LOCK_END')" style="width: 200px" :sortable="false">
+                  <template #body="slotProps: {data: LoyaltyDropUserBoost}">
+                    <span>{{ slotProps.data.lastRewardDate?slotProps.data.lastRewardDate.toLocaleDateString():"-" }}</span>
+                  </template>
+                </Column>
+              </template>
+            </DataTableWrapper>
         </div>
+
+<!--        <div v-for="userBoost in userBoosts.filter(el => el.boostPoolId === slotProps.expandedData.data.id)" :key="userBoost.boostPoolId"  class="boostDetails__header">-->
+<!--          <div class="boostDetails__header__tile" >-->
+<!--            <h3>{{$t('BOOST.TABLE.LOCK_START')}}:</h3>-->
+<!--            <h4>{{ userBoost.lockStart?.toLocaleDateString() }}</h4>-->
+<!--          </div>-->
+<!--          <div class="boostDetails__header__tile" >-->
+<!--            <h3>{{$t('BOOST.TABLE.LOCK_END')}}:</h3>-->
+<!--            <h4>{{ userBoost.lockEnd?.toLocaleDateString() }}</h4>-->
+<!--          </div>-->
+<!--                    <div class="boostDetails__header__tile" >-->
+<!--             <h3>Your contribution:</h3>-->
+<!--                      &lt;!&ndash;            <h4>{{ userBoost.amount    }}</h4>&ndash;&gt;-->
+<!--            <h4> <CoinAmount :amount="userBoost.amount" :show-denom="true"/></h4>-->
+<!--          </div>-->
+<!--          <div class="boostDetails__header__tile" >-->
+<!--            <h3>{{$t('BOOST.TABLE.LAST_REWARD')}}:</h3>-->
+<!--            <h4>{{ userBoost.lastRewardDate?userBoost.lastRewardDate.toLocaleDateString():"-" }}</h4>-->
+<!--          </div>-->
+
+<!--        </div>-->
 
       </template>
     </DataTableWrapper>
@@ -215,17 +152,18 @@
 <script setup lang="ts">
 
 import DataTableWrapper from "@/components/commons/DataTableWrapper.vue";
-import {computed, onMounted, ref} from "vue";
+import {computed, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 import CoinAmount from "../commons/CoinAmount.vue";
 import PercentsView from "@/components/commons/PercentsView";
 import {Coin} from "@/models/store/common";
-import {LoyaltyDropPoolConfig} from "@/models/store/loyaltyDrop";
+import {LoyaltyDropPoolConfig, LoyaltyDropUserBoost} from "@/models/store/loyaltyDrop";
 import LoyaltyDropPopup from "@/components/loyaltyDrop/LoyaltyDropPopup.vue";
 import {useLoyaltyDropStore} from "@/store/boost.store";
 import StakeManagementIcon from "@/components/commons/StakeManagementIcon.vue";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
+import {UnbondingDelegationEntry} from "@/models/store/staking";
 
 
 async function transactionSuccess(arg: string) {
@@ -274,12 +212,25 @@ function calculatePercentagePoolUsage(data: LoyaltyDropPoolConfig): BigDecimal {
   return divideBigInts(calculateRemainingTokens(data).amount, data.baseTokens.amount);
 }
 
-// function calculateLockupPeriod(data: LoyaltyDropPoolConfig) {
-//   return data.epochPeriod * data.epochNumber;
-// }
+function calculateContributionPerPool(userBoosts: LoyaltyDropUserBoost[], poolId: number) {
+  console.log("calculateContributionPerPool poolId:" + poolId);
+  const temp = userBoosts.filter(el => el.boostPoolId === poolId);
+  const tempCoin = new Coin(0n, "uc4e");
+  if (temp && temp.length > 0) {
+    temp.forEach((el) => {
+      tempCoin.add(el.amount);
+    });
+  }
+  return tempCoin;
+}
 
 function msToDays(milliseconds:  number) {
   return milliseconds / (1000 * 60 * 60 * 24);
+}
+
+function createUserDropLoadingConfig(id: number){
+  const config = new EagerLoadingConfig<LoyaltyDropUserBoost>(userBoosts.value.filter(el => el.boostPoolId === id));
+  return config;
 }
 
 </script>
@@ -329,7 +280,7 @@ function msToDays(milliseconds:  number) {
     border: 2px solid #02447A;
     box-shadow: 0 0 2px 2px #02447A;
     border-radius: 2px;
-    height: 150px;
+    //height: 150px;
   }
 }
 

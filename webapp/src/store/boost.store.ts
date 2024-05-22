@@ -28,14 +28,26 @@ export const useLoyaltyDropStore = defineStore({
     async fetchLoyaltyDropUserBoost(address: string, lockscreen = true) {
       await apiFactory.boostApi().fetchLoyaltyDropUserBoosts(address, lockscreen).then((resp) => {
         if (resp.isSuccess() && resp.data !== undefined) {
-          console.log(resp);
+          console.log("fetchLoyaltyDropUserBoost:" + resp);
           this.loyaltyDropUserBoosts = resp.data;
         } else {
+          console.log("fetchLoyaltyDropUserBoost: ERRROR " + resp.error?.message);
           //TODO: error handling
         }
       });
     },
 
+    async fetchSignedMessage( signedMassage: string, lockscreen = true) {
+      console.log("fetchSignedMessage");
+      await apiFactory.boostApi().broadcastSignedMassageToLoyaltyDropService(signedMassage, lockscreen).then((resp) => {
+        if (resp.isSuccess() && resp.data !== undefined) {
+          console.log(resp);
+          this.loyaltyDropUserBoosts.push(resp.data);
+        } else {
+          //TODO: error handling
+        }
+      });
+    },
   },
   getters: {
     getBoosts():LoyaltyDropPoolConfig[]{
@@ -43,6 +55,9 @@ export const useLoyaltyDropStore = defineStore({
     },
     getUserBoosts():LoyaltyDropUserBoost[]{
       return this.loyaltyDropUserBoosts;
+    },
+    getUserBoostsByPollId: (state) => (poolId: number) => {
+      return state.loyaltyDropUserBoosts;//.find(boost => boost.boostPoolId === poolId);
     }
   }
 });

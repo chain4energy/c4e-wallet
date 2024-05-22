@@ -657,6 +657,7 @@
     },
     "POPUP": {
       "BALANCE": "Your balance",
+      "SPENDABLE": "Spendable",
       "INFO_HEADER": "This operation will lock your funds for {timeToComplete} days",
       "INFO_TEXT": "Rewards for the locked-up tokens will be distributed in weekly cycles every Thursday until the end of lock-up period",
       "RESERVE": "Reserve {amount} C4E for future transactions",

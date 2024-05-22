@@ -391,8 +391,12 @@ class DataService extends LoggedService {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
       });
+      this.refreshSpendables(false);
       if(useUserStore().getAccount.address && this.isClaimAirdropViewSelected){
         useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, false);
+      }
+      if(useUserStore().getAccount.address && this.isLoyaltyDropViewSelected){
+        useLoyaltyDropStore().fetchLoyaltyDropUserBoost(useUserStore().getAccount.address, false);
       }
     }
   }

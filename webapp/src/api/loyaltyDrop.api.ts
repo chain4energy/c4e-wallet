@@ -5,7 +5,7 @@ import {RequestResponse} from "@/models/request-response";
 import {LocalSpinner} from "@/services/model/localSpinner";
 import {LoyaltyDropPoolConfig} from "@/models/store/loyaltyDrop";
 import {LoyaltyDropPoolConfigResponse, LoyaltyDropUserBoostResponse} from "@/models/loyaltydrop/loyaltyDrop";
-import {mapLoyaltyDropConfig, mapLoyaltyDropUserBoost} from "@/models/mapper/loyaltydrop.mapper";
+import {mapLoyaltyDropConfig, mapLoyaltyDropUserBoost, mapLoyaltyDropUserBoostArray} from "@/models/mapper/loyaltydrop.mapper";
 import {formatString} from "@/utils/string-formatter";
 
 //TODO: get information from Dawid how error response will look like
@@ -36,8 +36,23 @@ export class LoyaltyDropApi extends BaseApi {
     return ServiceTypeEnum.LOYALTY_DROP_API;
   }
 
-  protected async axiosLoyaltyDropGetCall<T, H>(
-    localUrl: string,
+  messages = {
+    errorResponseName: 'Loyaltydrop data Error',
+    errorResponseMassage: 'Loyaltydrop data error received',
+    errorResponseToast: 'Loyaltydrop data Error: ',
+    mappingErrorMassage: 'Loyaltydrop data mapping error: ',
+  };
+
+  private isResponseError<H>(response: RequestResponse<H, ErrorData<LoyaltyDropErrData>>) {
+    return response.error != undefined;
+  }
+
+  private errorDataToInfo(data: LoyaltyDropErrData){
+    return data.message;
+  }
+
+  private async axiosLoyaltyDropGetCall<T, H>(
+    url: string,
     mapData: (data: H | undefined) => T,
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
@@ -45,22 +60,7 @@ export class LoyaltyDropApi extends BaseApi {
   ): Promise<RequestResponse<T, ErrorData<LoyaltyDropErrData>>> {
     const config = {
       method: 'GET',
-      url: localUrl,
-    };
-
-    const errorDataToInfo = (data: LoyaltyDropErrData) => {
-      return data.message;
-    };
-
-    const isResponseError = (response: RequestResponse<H, ErrorData<LoyaltyDropErrData>>) => {
-      return response.error != undefined;
-    };
-
-    const messages = {
-      errorResponseName: 'Loyaltydrop data Error',
-      errorResponseMassage: 'Loyaltydrop data error received',
-      errorResponseToast: 'Loyaltydrop data Error: ',
-      mappingErrorMassage: 'Loyaltydrop data mapping error: ',
+      url: url,
     };
 
     return this.axiosWith200ErrorCall<T, H, LoyaltyDropErrData>(
@@ -69,22 +69,59 @@ export class LoyaltyDropApi extends BaseApi {
       lockScreen,
       localSpinner,
       logPrefix,
-      isResponseError,
-      messages,
-      errorDataToInfo
+      this.isResponseError,
+      this.messages,
+      this.errorDataToInfo
+    );
+  }
+
+  protected async axiosLoyaltyDropPostCall<R, T, H>(
+    data: R,
+    url: string,
+    mapData: (data: H | undefined) => T,
+    lockScreen: boolean,
+    localSpinner: LocalSpinner | null,
+    logPrefix: string
+  ): Promise<RequestResponse<T, ErrorData<LoyaltyDropErrData>>>
+  {
+    const config = {
+      method: 'POST',
+      url: url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: data
+    };
+
+    return this.axiosWith200ErrorCall<T, H, LoyaltyDropErrData>(
+      config,
+      mapData,
+      lockScreen,
+      localSpinner,
+      logPrefix,
+      this.isResponseError,
+      this.messages,
+      this.errorDataToInfo
     );
   }
 
   public fetchLoyaltyDropPoolsConfig(lockScreen: boolean): Promise<RequestResponse<LoyaltyDropPoolConfig[], ErrorData<LoyaltyDropErrData>>>{
-    const url = useConfigurationStore().config.loyaltyDropService.LOYALTY_DROP_BASE_URL + useConfigurationStore().config.loyaltyDropService.LOYALTY_DROP_POOL_CONFIGURATIONS_URL;
+    const url = useConfigurationStore().config.loyaltyDropService.loyaltyDropBaseUrl + useConfigurationStore().config.loyaltyDropService.loyaltyDropPoolConfigurationsUrl;
     const mapData = (data: LoyaltyDropPoolConfigResponse[] | undefined) => { return mapLoyaltyDropConfig(data); };
     return this.axiosLoyaltyDropGetCall(url, mapData, lockScreen, null, 'fetchLoyaltyDropPoolsConfig');
   }
 
   public fetchLoyaltyDropUserBoosts(accountAddress: string, lockScreen: boolean){
-    const urlTemp = useConfigurationStore().config.loyaltyDropService.LOYALTY_DROP_BASE_URL + useConfigurationStore().config.loyaltyDropService.loyaltyDropUserBootsURL;
+    const urlTemp = useConfigurationStore().config.loyaltyDropService.loyaltyDropBaseUrl + useConfigurationStore().config.loyaltyDropService.loyaltyDropUserBootsURL;
     const url = formatString(urlTemp, {user_address: accountAddress});
-    const mapData = (data: LoyaltyDropUserBoostResponse[] | undefined) => { return mapLoyaltyDropUserBoost(data); };
+    const mapData = (data: LoyaltyDropUserBoostResponse[] | undefined) => { return mapLoyaltyDropUserBoostArray(data); };
     return this.axiosLoyaltyDropGetCall(url, mapData, lockScreen, null, 'fetchLoyaltyDropUserBoosts');
+  }
+
+  public broadcastSignedMassageToLoyaltyDropService(data:string, lockScreen: boolean){
+    const url = useConfigurationStore().config.loyaltyDropService.loyaltyDropBaseUrl + useConfigurationStore().config.loyaltyDropService.loyaltyDropBroadcastURL;
+    const mapData = (data: LoyaltyDropUserBoostResponse | undefined) => { return mapLoyaltyDropUserBoost(data); };
+
+    return this.axiosLoyaltyDropPostCall(data, url, mapData, lockScreen, null, 'broadcastSignedMassageToLoyaltyDropService');
   }
   }

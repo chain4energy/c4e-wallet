@@ -63,7 +63,7 @@
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
-    "bcRpcURL": "http://localhost:8090/api/loyalty-drop/v0.1/broadcast",
+    "bcRpcURL": "https://rpc-dev.c4e.io",
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
@@ -124,8 +124,8 @@
     "publicSaleVisible": false,
     "useAminoOnly": false,
     "loyaltyDropService": {
-      "LOYALTY_DROP_BASE_URL": "http://localhost:8090/api/loyalty-drop",
-      "LOYALTY_DROP_POOL_CONFIGURATIONS_URL": "/v0.1/pool_configurations"
+      "loyaltyDropBaseUrl": "http://localhost:8090/api/loyalty-drop",
+      "loyaltyDropPoolConfigurationsUrl": "/v0.1/pool_configurations"
     }
   },
   "devnet-amoino-only":{

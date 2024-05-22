@@ -35,6 +35,7 @@ import {VoteOption} from "@/models/store/proposal";
 import {BlockchainApiErrorData} from "@/models/blockchain/common";
 import {MsgClaim, MsgInitialClaim} from "@/api/cfeclaim/tx";
 import {MsgCreateVestingPool, MsgWithdrawAllAvailable} from "@/api/cfevesting/tx";
+import {TxRaw} from "@/api/cosmostx/tx";
 
 export class AccountApi extends TxBroadcastBaseApi {
 
@@ -414,22 +415,24 @@ export class AccountApi extends TxBroadcastBaseApi {
 //    }
 //  }
 
-  public async createVestingPoolLoyaltyDrop(connection: ConnectionInfo, vestingPoolName: string, amount:number, vestingPeriod: number, vestingType: string): Promise<RequestResponse<TxData, TxBroadcastError>> {
+  public async signMessageForCreateVestingPoolLoyaltyDrop(connection: ConnectionInfo, vestingPoolName: string, amount:number, vestingPeriod: number, vestingType: string): Promise<RequestResponse<TxRaw, TxBroadcastError>> {
     const config = useConfigurationStore().config;
-
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
     const getMessages = (): readonly EncodeObject[] => {
       const typeUrl = '/chain4energy.c4echain.cfevesting.MsgCreateVestingPool';
       const val: MsgCreateVestingPool = {
         owner: connection.account,
         name: vestingPoolName,
-        amount: amount.toString(),
+        amount: bcAmount.toString(),
         duration: {seconds: vestingPeriod, nanos: 0},
         vestingType: vestingType
       };
       return [{typeUrl: typeUrl, value: val}];
     };
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
-    return await this.signAndBroadcastFeeControl(connection, getMessages, fee, '', true, true, null);
+    const signed =  await this.signMessage(connection, getMessages, fee, '', true, true, null);
+    console.log("signed:", signed);
+    return signed;
   }
 
   public async vestingPoolWithdrawAllAvailable(connection: ConnectionInfo): Promise<RequestResponse<TxData, TxBroadcastError>> {
