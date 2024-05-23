@@ -511,6 +511,7 @@ function clearStateForNonexistentAccount(state: UserState) {
   state.rewards = new Rewards();
   state.delegations = new Delegations();
   state.undelegations = new UnbondingDelegations();
+  state.spendableBalance = [];
 }
 
 function clearStateOnLogout(state: UserState) {

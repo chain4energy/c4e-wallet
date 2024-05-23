@@ -99,24 +99,29 @@
 <!--              </template>-->
               <template v-slot:columns>
 
-                <Column :header="$t('BOOST.TABLE.LOCK_START')" style="width: 200px" :sortable="false">
+                <Column :header="$t('BOOST.TABLE.LOCK_START')" style="width: 200px; text-align: left" :sortable="false">
                   <template #body="slotProps: {data: LoyaltyDropUserBoost}">
-                    <span>{{ slotProps.data.lockStart?.toLocaleDateString() }}</span>
+                    <span>{{ checkDateIsDefined(slotProps.data.lockStart) }}</span>
                   </template>
                 </Column>
-                <Column :header="$t('BOOST.TABLE.LOCK_END')" style="width: 200px" :sortable="false">
+                <Column :header="$t('BOOST.TABLE.LOCK_END')" style="width: 200px; text-align: left" :sortable="false">
                   <template #body="slotProps: {data: LoyaltyDropUserBoost}">
-                   <span>{{ slotProps.data.lockEnd?.toLocaleDateString() }}</span>
+                   <span>{{ checkDateIsDefined(slotProps.data.lockEnd) }}</span>
                   </template>
                 </Column>
-                <Column header="Your contribution" style="width: 200px" :sortable="false">
+                <Column :header="$t('BOOST.TABLE.CONTRIBUTION')" style="width: 200px; text-align: left" :sortable="false">
                   <template #body="slotProps: {data: LoyaltyDropUserBoost}">
                     <CoinAmount :amount=" slotProps.data.amount" :show-denom="true" :show-tooltip="true"/>
                   </template>
                 </Column>
-                <Column :header="$t('BOOST.TABLE.LOCK_END')" style="width: 200px" :sortable="false">
+                <Column :header="$t('BOOST.TABLE.LAST_REWARD')" style="width: 200px; text-align: left" :sortable="false">
                   <template #body="slotProps: {data: LoyaltyDropUserBoost}">
-                    <span>{{ slotProps.data.lastRewardDate?slotProps.data.lastRewardDate.toLocaleDateString():"-" }}</span>
+                    <span>{{ checkDateIsDefined(slotProps.data.lastRewardDate)}}</span>
+                  </template>
+                </Column>
+                <Column :header="$t('BOOST.TABLE.STATUS')" style="width: 200px; text-align: right" :sortable="false" >
+                  <template #body="slotProps: {data: LoyaltyDropUserBoost}" >
+                    <span>{{ $t('BOOST.TABLE.STATUS_TYPE.' + slotProps.data.status )}}</span>
                   </template>
                 </Column>
               </template>
@@ -231,6 +236,14 @@ function msToDays(milliseconds:  number) {
 function createUserDropLoadingConfig(id: number){
   const config = new EagerLoadingConfig<LoyaltyDropUserBoost>(userBoosts.value.filter(el => el.boostPoolId === id));
   return config;
+}
+
+function checkDateIsDefined(date: Date | undefined) {
+  if (date) {
+    return date.toLocaleDateString();
+  } else {
+    return "-";
+  }
 }
 
 </script>

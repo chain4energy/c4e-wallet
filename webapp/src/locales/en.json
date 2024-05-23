@@ -653,7 +653,12 @@
       "LOCK_START": "Lock start date",
       "LOCK_END": "Lock end date",
       "LAST_REWARD": "Last reward withdrawal date",
-      "STATUS": "Status"
+      "STATUS": "Status",
+      "STATUS_TYPE": {
+        "TRANSACTION_IN_PROGRESS": "Waiting for confirmation",
+        "SUCCESS": "Confirmed",
+        "ERROR": "Error"
+      }
     },
     "POPUP": {
       "BALANCE": "Your balance",

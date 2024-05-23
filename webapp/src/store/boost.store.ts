@@ -1,6 +1,7 @@
 import {LoyaltyDropPoolConfig, LoyaltyDropUserBoost} from "@/models/store/loyaltyDrop";
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
+import {Validator} from "@/models/store/validator";
 
 interface BoostState {
   loyaltyDropPoolConfigs: LoyaltyDropPoolConfig[]
@@ -48,6 +49,12 @@ export const useLoyaltyDropStore = defineStore({
         }
       });
     },
+    clear(clearDropPoolConfigs = true) {
+      if(clearDropPoolConfigs) {
+        this.loyaltyDropPoolConfigs = Array<LoyaltyDropPoolConfig>();
+      }
+      this.loyaltyDropUserBoosts = Array<LoyaltyDropUserBoost>();
+    }
   },
   getters: {
     getBoosts():LoyaltyDropPoolConfig[]{

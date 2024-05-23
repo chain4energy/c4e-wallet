@@ -216,6 +216,7 @@ class DataService extends LoggedService {
     // useValidatorsStore().clear();
     useProposalsStore().clearUserVote();
     useUserStore().logOut();
+    useLoyaltyDropStore().clear(false);
   }
 
   public onConfigurationChange() {
@@ -232,10 +233,17 @@ class DataService extends LoggedService {
       useProposalsStore().clear();
       useTokensStore().clear();
       useValidatorsStore().clear();
+      useLoyaltyDropStore().clear();
       this.clearIntervals();
       this.onInit().then( () => {
           if (this.isClaimAirdropViewSelected && useUserStore().getAccount.address) {
             useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+          }
+          if(this.isLoyaltyDropViewSelected){
+            useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(true);
+            if(useUserStore().getAccount.address){
+              useLoyaltyDropStore().fetchLoyaltyDropUserBoost(useUserStore().getAccount.address, true);
+            }
           }
         }
       );
@@ -355,7 +363,8 @@ class DataService extends LoggedService {
     if (instancce.isClaimAirdropViewSelected && userAddress) {
         useAirDropStore().fetchUsersCampaignData(userAddress, true);
     }
-    if (instancce.isLoyaltyDropViewSelected && userAddress) {
+    if (instancce.isLoyaltyDropViewSelected){
+      useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig( true);
       useLoyaltyDropStore().fetchLoyaltyDropUserBoost(userAddress,true);
     }
     onSuccess?.();
