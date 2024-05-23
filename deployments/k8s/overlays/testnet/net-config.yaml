@@ -58,7 +58,10 @@ data:
       "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
       "faucetAvailable": true,
       "currentPublicSaleRoundId": 1,
-      "publicSaleVisible": false
+      "publicSaleVisible": false,
+      "loyaltyDropService": {
+        "loyaltyDropBaseUrl": "https://loyalty-drop-testnet.c4e.io/api/loyalty-drop"
+      }
     },
       "Mainnet": {
         "bcApiURL": "https://lcd.c4e.io",
@@ -116,7 +119,10 @@ data:
         "faucetURL": "",
         "currentPublicSaleRoundId": 1,
         "faucetAvailable": false,
-        "publicSaleVisible": false
+        "publicSaleVisible": false,
+        "loyaltyDropService": {
+          "loyaltyDropBaseUrl": "https://loyalty-drop.c4e.io/api/loyalty-drop"
+        }
       }
     }
 kind: ConfigMap

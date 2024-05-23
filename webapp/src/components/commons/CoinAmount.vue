@@ -1,7 +1,8 @@
 <template>
     <span v-tooltip="{ value: retrieveConvertedAmount() + ' ' + getDenom(), disabled:!props.showTooltip, class:'coin-amount-tooltip'}">
-      <FormattedNumber :amount="retrieveConvertedAmount()" :precision="precision" :reduceBigNumber="reduceBigNumber" />
-      <span v-if="showDenom">&nbsp;{{ getDenom()}}</span>
+      <FormattedNumber :amount="retrieveConvertedAmount()" :precision="precision" :reduceBigNumber="reduceBigNumber" v-if="!tooltipOnly"/>
+      <span v-if="showDenom && !tooltipOnly">&nbsp;{{ getDenom()}}</span>
+      <slot/>
     </span>
 </template>
 
@@ -44,6 +45,10 @@ const props =  defineProps({
     required: false,
     default: false
   },
+  tooltipOnly: {
+    type: Boolean,
+    required: false
+  }
 });
 
 function getDenom(): string {

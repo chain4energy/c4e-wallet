@@ -5,6 +5,7 @@ data:
     "Devnet": {
       "bcApiURL": "https://lcd-dev.c4e.io",
       "bcRpcURL": "https://rpc-dev.c4e.io",
+      "bcLoyaltyDropServiceBroadcastRpcURL": "https://loyalty-drop-dev.c4e.io/api/loyalty-drop/v0.1/broadcast",
       "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
       "keybaseURL": "https://keybase.io",
       "stakingPageURL": "https://wallet-dev.c4e.io/staking",
@@ -60,7 +61,10 @@ data:
       "currentPublicSaleRoundId": 1,
       "faucetAvailable": true,
       "publicSaleVisible": false,
-      "useAminoOnly": false
+      "useAminoOnly": false,
+      "loyaltyDropService": {
+        "loyaltyDropBaseUrl": "https://loyalty-drop-dev.c4e.io/api/loyalty-drop"
+      }
     },
     "Devnet-amino-only": {
       "bcApiURL": "https://lcd-dev.c4e.io",
@@ -120,7 +124,10 @@ data:
       "currentPublicSaleRoundId": 1,
       "faucetAvailable": true,
       "publicSaleVisible": false,
-      "useAminoOnly": true
+      "useAminoOnly": true,
+      "loyaltyDropService": {
+        "loyaltyDropBaseUrl": "https://loyalty-drop-dev.c4e.io/api/loyalty-drop"
+      }
     },
       "Mainnet": {
         "bcApiURL": "https://lcd.c4e.io",
@@ -180,7 +187,10 @@ data:
         "currentPublicSaleRoundId": 1,
         "faucetAvailable": false,
         "publicSaleVisible": false,
-        "useAminoOnly": false
+        "useAminoOnly": false,
+        "loyaltyDropService": {
+          "loyaltyDropBaseUrl": "https://loyalty-drop.c4e.io/api/loyalty-drop"
+        }
       },
       "Testnet": {
         "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -240,7 +250,10 @@ data:
         "currentPublicSaleRoundId": 1,
         "faucetAvailable": true,
         "publicSaleVisible": false,
-        "useAminoOnly": false
+        "useAminoOnly": false,
+        "loyaltyDropService": {
+          "loyaltyDropBaseUrl": "https://loyalty-drop-testnet.c4e.io/api/loyalty-drop"
+        }
       },
       "EV-testnet":{
         "bcApiURL": "https://lcd-ev-testnet.c4e.io",

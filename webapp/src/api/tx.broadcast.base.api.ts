@@ -19,12 +19,13 @@ import {
 } from '@cosmjs/proto-signing';
 import {encodeSecp256k1Pubkey, StdFee } from "@cosmjs/amino";
 import {MsgSignData} from "@/types/tx";
-import {TxRaw} from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import {fromBase64} from "@cosmjs/encoding";
 import {_arrayBufferToBase64} from "@/utils/sign";
 import {ethers} from "ethers";
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
 import { createCfeClaimAminoConverters } from "./cfeclaim/amino";
+import {MsgCreateVestingPool, MsgWithdrawAllAvailable} from "@/api/cfevesting/tx";
+import {TxRaw} from "@/api/cosmostx/tx";
 
 
 const toast = useToast();
@@ -150,6 +151,61 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       }
     }
   }
+
+  protected async signMessage(
+    connection: ConnectionInfo,
+    getMessages: (isLedger: boolean) => readonly EncodeObject[] | TxBroadcastError,
+    fee: StdFee,
+    memo: string,
+    appControlledFee: boolean,
+    lockScreen: boolean, localSpinner: LocalSpinner | null,
+    skipErrorToast = false
+  ): Promise<RequestResponse<TxRaw, TxBroadcastError>>
+  {
+    this.logToConsole(LogLevel.DEBUG, 'sign');
+    this.before(lockScreen, localSpinner);
+    let clientToDisconnect: SigningStargateClient | undefined;
+    try {
+      if (!connection.modifiable) {
+        return this.createTxSignMessageErrorResponseWithToast(
+          new TxBroadcastError('Cannot broadcast transaction with: ' + connection.connectionType + ' signer'),
+          'Transaction Broadcast error',
+          !skipErrorToast
+        );
+      }
+      const { client, isLedger } = await this.createClientFeeControl(connection.connectionType, appControlledFee);
+      clientToDisconnect = client;
+      if (client === undefined) {
+        return this.createTxSignMessageErrorResponseWithToast(
+          new TxBroadcastError('Cannot get signing client'),
+          'Transaction Broadcast error 2',
+          !skipErrorToast
+        );
+      }
+      const messages = getMessages(isLedger);
+      if (messages instanceof TxBroadcastError) {
+        return new RequestResponse<TxRaw, TxBroadcastError>(messages);
+      }
+      console.log("signing");
+      const response = await client.sign(connection.account, messages, fee, memo);
+      console.log("signed response:"+ response);
+      return new RequestResponse<TxRaw, TxBroadcastError>(undefined, response);
+    } catch (err) {
+      this.logToConsole(LogLevel.ERROR, 'Client Response', this.stringify(err));
+      const error = err as Error;
+      return this.createTxSignMessageErrorResponseWithToast(
+        new TxBroadcastError(error.message),
+        'Transaction Broadcast error 4',
+        !skipErrorToast
+      );
+    } finally {
+      this.after(lockScreen, localSpinner);
+      if (clientToDisconnect !== undefined) {
+        clientToDisconnect.disconnect();
+      }
+    }
+  }
+
   protected async simulateDelegation(
     connection: ConnectionInfo,
     getMessages: (isLedger: boolean) => readonly EncodeObject[] | TxBroadcastError,
@@ -239,9 +295,13 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     const myRegistry = new Registry(defaultRegistryTypes);
     const MsgInitialClaimTypeUrl = "/chain4energy.c4echain.cfeclaim.MsgInitialClaim";
     const MsgClaimTypeUrl = "/chain4energy.c4echain.cfeclaim.MsgClaim";
-    //const RepeatedContinuousVestingAccount = "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount";
+    const MsgCreateVestingPoolTypeUrl = "/chain4energy.c4echain.cfevesting.MsgCreateVestingPool";
+    const MsgWithdrawAllAvailableTypeUrl = "/chain4energy.c4echain.cfevesting.MsgWithdrawAllAvailable";
+//const RepeatedContinuousVestingAccount = "/chain4energy.c4echain.cfevesting.RepeatedContinuousVestingAccount";
     myRegistry.register(MsgInitialClaimTypeUrl, MsgInitialClaim);
     myRegistry.register(MsgClaimTypeUrl, MsgClaim);
+    myRegistry.register(MsgWithdrawAllAvailableTypeUrl, MsgWithdrawAllAvailable);
+    myRegistry.register(MsgCreateVestingPoolTypeUrl, MsgCreateVestingPool);
 
     // myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
     console.log(myRegistry);
@@ -363,6 +423,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     return new RequestResponse<TxData, TxBroadcastError>(errorData);
   }
 
+
   private createTxSignErrorResponseWithToast(errorData: TxBroadcastError,toastMessageBeginning: string | undefined, showErrorToast: boolean): RequestResponse<string, TxBroadcastError> {
     if (showErrorToast) {
       const errorDataString = toastMessageBeginning;
@@ -388,6 +449,33 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
       }
     }
     return new RequestResponse<string, TxBroadcastError>(errorData);
+  }
+
+  private createTxSignMessageErrorResponseWithToast(errorData: TxBroadcastError,toastMessageBeginning: string | undefined, showErrorToast: boolean): RequestResponse<TxRaw, TxBroadcastError> {
+    if (showErrorToast) {
+      const errorDataString = toastMessageBeginning;
+      if (errorData.txData !== undefined) {
+        const content = {
+          component: TxToast,
+          props: {
+            tx: errorData.txData,
+            errorTitleMessage: errorDataString
+          },
+        };
+        toast.error(content);
+      } else {
+        const content = {
+          component: TxToast,
+          props: {
+            tx: errorData.txData,
+            errorTitleMessage: errorDataString,
+            errorMessage: errorData.message
+          },
+        };
+        toast.error(content);
+      }
+    }
+    return new RequestResponse<TxRaw, TxBroadcastError>(errorData);
   }
 
   protected async signDirect(

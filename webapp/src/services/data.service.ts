@@ -17,6 +17,8 @@ import {useI18n} from "vue-i18n";
 import {useUserServiceStore} from "@/store/userService.store";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import {Campaign, Mission} from "@/models/store/airdrop";
+import {useLoyaltyDropStore} from "@/store/boost.store";
+import {string} from "yup";
 const keplrKeyStoreChange = 'keplr_keystorechange';
 const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
 const leapKeyStoreChange = 'leap_keystorechange';
@@ -46,7 +48,7 @@ class DataService extends LoggedService {
   private static instance: DataService;
   private isOnline = navigator.onLine;
   private isClaimAirdropViewSelected = false;
-
+  private isLoyaltyDropViewSelected = false;
 
   public static getInstance(): DataService {
     if (!DataService.instance) {
@@ -353,6 +355,9 @@ class DataService extends LoggedService {
     if (instancce.isClaimAirdropViewSelected && userAddress) {
         useAirDropStore().fetchUsersCampaignData(userAddress, true);
     }
+    if (instancce.isLoyaltyDropViewSelected && userAddress) {
+      useLoyaltyDropStore().fetchLoyaltyDropUserBoost(userAddress,true);
+    }
     onSuccess?.();
   }
 
@@ -386,8 +391,12 @@ class DataService extends LoggedService {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
       });
+      this.refreshSpendables(false);
       if(useUserStore().getAccount.address && this.isClaimAirdropViewSelected){
         useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, false);
+      }
+      if(useUserStore().getAccount.address && this.isLoyaltyDropViewSelected){
+        useLoyaltyDropStore().fetchLoyaltyDropUserBoost(useUserStore().getAccount.address, false);
       }
     }
   }
@@ -481,6 +490,39 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onClaimAirdropUnselected');
     this.isClaimAirdropViewSelected = false;
   }
+
+  public onLoyaltyDropSelected() {
+    this.logToConsole(LogLevel.DEBUG, 'onLoyaltyDropSelected');
+    this.isLoyaltyDropViewSelected = true;
+    useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(true);
+    if(useUserStore().getAccount.address){
+      useLoyaltyDropStore().fetchLoyaltyDropUserBoost(useUserStore().getAccount.address,true);
+    }
+  }
+
+  public onLoyaltyDropUnselected() {
+    this.logToConsole(LogLevel.DEBUG, 'onLoyaltyDropUnselected');
+    this.isLoyaltyDropViewSelected = false;
+  }
+
+
+  public async onCreateVestingPoolLoyaltyDrop(vestingPoolName: string, amount:number, vestingPeriod: number, vestingType: string, onSuccess?: () => void){
+    await useUserStore().createVestingPoolLoyaltyDrop(vestingPoolName, amount, vestingPeriod, vestingType).then((isTransactionOk)=>{
+      if(isTransactionOk) {
+        onSuccess?.();
+      }
+    });
+  }
+
+  public async onVestingPoolWithdrawAllAvailable(onSuccess?: () => void){
+    await useUserStore().vestingPoolWithdrawAllAvailable().then((isTransactionOk)=>{
+      if(isTransactionOk) {
+        onSuccess?.();
+      }
+    });
+  }
+
+
 
   public async onProposalUpdateVotes(proposalId: number) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalUpdateVotes');

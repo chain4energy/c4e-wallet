@@ -26,7 +26,8 @@ export default {
     CAMPAIGN_MISSIONS_URL: '/c4e/claim/v1beta1/missions/{campaign_id}',
     AIRDROP_DISTRIBUTIONS: '/c4e/claim/v1beta1/airdrop_distributions/{campaign_id}', //total
     AIRDROP_CLAIMS_LEFT: '/c4e/claim/v1beta1/airdrop_claims_left/{campaign_id}', //delete
-    SPENDABLE_BALANCES_URL: '/cosmos/bank/v1beta1/spendable_balances/{address}'
+    SPENDABLE_BALANCES_URL: '/cosmos/bank/v1beta1/spendable_balances/{address}',
+
   },
   hasura: {
     AVERAGE_BLOCK_TIME_QUERY: 'query AverageBlockTime {' +
@@ -116,5 +117,12 @@ export default {
   },
   synaps: {
     OVERVIEW: 'https://individual-api.synaps.io/v3/onboarding/overview'
+  },
+  loyaltyDropService:{
+    loyaltyDropBaseUrl:'/api/loyalty-drop',
+    loyaltyDropPoolConfigurationsUrl:'/v0.1/pool_configurations',
+    loyaltyDropUserBootsURL:'/v0.1/user_boost/{user_address}',
+    loyaltyDropDefaultDenom:'uc4e',
+    loyaltyDropBroadcastURL:'/v0.1/broadcast'
   }
 };
