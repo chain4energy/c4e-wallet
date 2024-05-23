@@ -57,7 +57,7 @@ export function mapLoyaltyDropUserBoost(loyaltyDropUserBoostResp: LoyaltyDropUse
     loyaltyDropUserBoostResp.granted_rewards,
     loyaltyDropUserBoostResp.amount,
     loyaltyDropUserBoostResp.last_reward_date ? new Date(loyaltyDropUserBoostResp.last_reward_date) : null,
-    new Date(loyaltyDropUserBoostResp.lock_start),
-    new Date(loyaltyDropUserBoostResp.lock_end)
+    loyaltyDropUserBoostResp.lock_start ? new Date(loyaltyDropUserBoostResp.lock_start) : null,
+    loyaltyDropUserBoostResp.lock_end ? new Date(loyaltyDropUserBoostResp.lock_end) : null
   );
 }
