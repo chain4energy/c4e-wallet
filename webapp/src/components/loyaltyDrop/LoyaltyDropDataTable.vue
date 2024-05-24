@@ -1,6 +1,6 @@
 <template>
   <span>
-    <LoyaltyDropPopup :visible="popupOpened" :boost="currentBoost" @close="popupOpened = false;"/>
+    <LoyaltyDropPopup v-if="currentBoost" :visible="popupOpened" :boost="currentBoost" @close="popupOpened = false;"/>
     <DataTableWrapper :data-key="'pool_description'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick" :paginator="false">
       <template v-slot:empty>{{$t('BOOST.TABLE.NO_DATA')}}</template>
 
@@ -177,7 +177,7 @@ async function transactionSuccess(arg: string) {
 
 
 const popupOpened = ref(false);
-const currentBoost = ref({});
+const currentBoost = ref<LoyaltyDropPoolConfig>();
 
 
 const userStore = useUserStore();
