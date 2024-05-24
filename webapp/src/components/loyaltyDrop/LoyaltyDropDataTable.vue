@@ -1,7 +1,7 @@
 <template>
   <span>
     <LoyaltyDropPopup v-if="currentBoost" :visible="popupOpened" :boost="currentBoost" @close="popupOpened = false;"/>
-    <DataTableWrapper :data-key="'pool_description'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" @row-click="onRowClick" :paginator="false">
+    <DataTableWrapper :data-key="'pool_description'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow"  :paginator="false">
       <template v-slot:empty>{{$t('BOOST.TABLE.NO_DATA')}}</template>
 
       <template v-slot:columns>
@@ -77,7 +77,7 @@
 
         <Column v-if="isLoggedIn">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <span style="cursor: pointer" @click="onRowExpand(slotProps.data)" v-if="boostStore.getUserBoosts.find(el => el.boostPoolId === slotProps.data.id)">
+            <span style="cursor: pointer" v-if="boostStore.getUserBoosts.find(el => el.boostPoolId === slotProps.data.id)">
             <!--  <Icon @click="onRowExpand(data)" name="ChevronRight" /> -->
               <Icon @click="onRowExpand(slotProps.data)" :name="expandedRow.length && expandedRow[0].poolDescription === slotProps.data.poolDescription ? 'ChevronUp' : 'ChevronRight'" />
             </span>
@@ -86,7 +86,7 @@
 
       </template>
       <template v-slot:expanded-columns="slotProps: {expandedData: {data: LoyaltyDropPoolConfig}}" >
-        <div >
+        <div class="extended-datatable">
             <DataTableWrapper
               :useExternalGlobalFilter="false"
               :eager-loading-config="createUserDropLoadingConfig(slotProps.expandedData.data.id)"
@@ -477,8 +477,26 @@ function checkDateIsDefined(date: Date | null) {
     }
   }
 
-.p-datatable-row-expansion {
-  background-color: red !important;
+
+:deep {
+  .p-datatable-row-expansion {
+    background-color: #002C50 !important;
+    color: white !important;
+  }
+  .p-datatable .p-datatable-thead > tr > th {
+    border-width: 0;
+    color: white;
+    padding: 5px 0 !important;
+    background: none !important;
+  }
+  .extended-datatable .p-datatable-table .p-datatable-tbody .p-selectable-row:nth-child(2n){
+    background: #E4E4E4 !important;
+  }
+
+  .extended-datatable .p-datatable-table .p-datatable-tbody .p-selectable-row:nth-child(2n+1){
+    background: white !important;
+  }
+
 }
 
 </style>

@@ -387,7 +387,7 @@ class DataService extends LoggedService {
     }
     if (instancce.isLoyaltyDropViewSelected){
       useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig( true);
-      // this.refreshLoyaltyDropUserBoost(true, true);
+      instancce.refreshLoyaltyDropUserBoost(true, true);
       instancce.lastLoyaltyDropUserBoostTimeout = new Date().getTime();
       instancce.loyaltyDropUserBoostIntervalId = instancce.checkAndSetInterval(instancce.loyaltyDropUserBoostIntervalId, refreshLoyaltyDropUserBoost, instancce.loyaltyDropUserBoostTimeout, "refreshLoyaltyDropUserBoost");
     }
