@@ -29,22 +29,22 @@
         <Column :header="$t('BOOST.COMMON.POOL_USAGE')">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
             <div style="margin-right: 15px;">
-              <CoinAmount :amount="calculateRemainingTokens(slotProps.data)" :show-tooltip="true" tooltip-only >
+              <CoinAmount :amount="calculatePoolUsageTokens(slotProps.data) " :show-tooltip="true" tooltip-only >
                 <div v-if="calculatePercentagePoolUsage(slotProps.data)" >
-                  <div v-if="calculatePercentagePoolUsage(slotProps.data) < 0.05" class="commision">
-                    <div class="level-1" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data) * 100).toFixed(2) + '%'"></div>
+                  <div v-if="calculatePercentagePoolUsage(slotProps.data).isBiggerThanOrEqualTo(0.90)" class="commision">
+                    <div class="level-1" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data)).multiply(100).toFixed(2) + '%'"></div>
                     <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(slotProps.data)" :precision="2"></PercentsView>
                   </div>
-                  <div v-if="calculatePercentagePoolUsage(slotProps.data) >= 0.05 && calculatePercentagePoolUsage(slotProps.data) < 0.10" class="commision">
-                    <div class="level-2" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data) * 100).toFixed(2) + '%'"></div>
+                  <div v-if="calculatePercentagePoolUsage(slotProps.data).isBiggerThanOrEqualTo(0.80) && !calculatePercentagePoolUsage(slotProps.data).isBiggerThanOrEqualTo(0.90)" class="commision">
+                    <div class="level-2" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data)).multiply(100).toFixed(2) + '%'"></div>
                     <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(slotProps.data)" :precision="2"></PercentsView>
                   </div>
-                  <div v-if="calculatePercentagePoolUsage(slotProps.data) >= 0.10 && calculatePercentagePoolUsage(slotProps.data) < 0.25" class="commision">
-                    <div class="level-3" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data) * 100).toFixed(2) + '%'"></div>
+                  <div v-if="calculatePercentagePoolUsage(slotProps.data).isBiggerThanOrEqualTo(0.70) && !calculatePercentagePoolUsage(slotProps.data).isBiggerThanOrEqualTo(0.80)" class="commision">
+                    <div class="level-3" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data)).multiply(100).toFixed(2) + '%'"></div>
                     <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(slotProps.data)" :precision="2"></PercentsView>
                   </div>
-                  <div v-if="calculatePercentagePoolUsage(slotProps.data) >= 0.25" class="commision">
-                    <div class="level-4" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data) * 100).toFixed(2) + '%'"></div>
+                  <div v-if="!calculatePercentagePoolUsage(slotProps.data).isBiggerThanOrEqualTo(0.70)" class="commision">
+                    <div class="level-4" :style="'flex-basis:' + (calculatePercentagePoolUsage(slotProps.data)).multiply(100).toFixed(2) + '%'"></div>
                     <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(slotProps.data)" :precision="2"></PercentsView>
                   </div>
                 </div>
@@ -56,13 +56,13 @@
 
         <Column :header="$t('BOOST.TABLE.CONTRIBUTION')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-             <CoinAmount :amount="calculateContributionPerPool(userBoosts,slotProps.data.id)" :show-denom="true" :show-tooltip="true"/>
+             <CoinAmount :amount="calculateContributionPerPool(boostStore.getUserBoosts,slotProps.data.id)" :show-denom="true" :show-tooltip="true"/>
           </template>
         </Column>
 
         <Column :header="$t('BOOST.TABLE.REWARD')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <CoinAmount :amount="calculateRewardsPerPool(userBoosts,slotProps.data.id)" :show-denom="true" :show-tooltip="true"/>
+            <CoinAmount :amount="calculateRewardsPerPool(boostStore.getUserBoosts,slotProps.data.id)" :show-denom="true" :show-tooltip="true"/>
           </template>
         </Column>
 
@@ -77,7 +77,7 @@
 
         <Column v-if="isLoggedIn">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <span style="cursor: pointer" @click="onRowExpand(slotProps.data)" v-if="userBoosts.find(el => el.boostPoolId === slotProps.data.id)">
+            <span style="cursor: pointer" @click="onRowExpand(slotProps.data)" v-if="boostStore.getUserBoosts.find(el => el.boostPoolId === slotProps.data.id)">
             <!--  <Icon @click="onRowExpand(data)" name="ChevronRight" /> -->
               <Icon @click="onRowExpand(slotProps.data)" :name="expandedRow.length && expandedRow[0].poolDescription === slotProps.data.poolDescription ? 'ChevronUp' : 'ChevronRight'" />
             </span>
@@ -160,7 +160,7 @@ import {computed, ref} from "vue";
 import {useUserStore} from "@/store/user.store";
 import {EagerLoadingConfig} from "@/components/commons/EagerLoadingConfig";
 import CoinAmount from "../commons/CoinAmount.vue";
-import PercentsView from "@/components/commons/PercentsView";
+import PercentsView from "@/components/commons/PercentsView.vue";
 import {Coin} from "@/models/store/common";
 import {LoyaltyDropPoolConfig, LoyaltyDropUserBoost} from "@/models/store/loyaltyDrop";
 import LoyaltyDropPopup from "@/components/loyaltyDrop/LoyaltyDropPopup.vue";
@@ -185,10 +185,6 @@ const boostStore = useLoyaltyDropStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<LoyaltyDropPoolConfig>());
 
-const userBoosts = computed(() => {
-  return boostStore.getUserBoosts;
-});
-
 function checkBTN(item: LoyaltyDropPoolConfig){
   currentBoost.value = item;
   popupOpened.value = !popupOpened.value;
@@ -208,12 +204,12 @@ function onRowClick(event: any) {
     onRowExpand(event.data);
 }
 
-function calculateRemainingTokens(data: LoyaltyDropPoolConfig){
-  return new Coin(data.baseTokens.amount - data.reservedTokens.amount - data.rewardsTokens.amount, 'uc4e');
+function calculatePoolUsageTokens(data: LoyaltyDropPoolConfig){
+  return new Coin(data.reservedTokens.amount, data.reservedTokens.denom).add(data.usedTokens);
 }
 
 function calculatePercentagePoolUsage(data: LoyaltyDropPoolConfig): BigDecimal {
-  return divideBigInts(calculateRemainingTokens(data).amount, data.baseTokens.amount);
+  return divideBigInts(data.reservedTokens.amount + data.usedTokens.amount, data.baseTokens.amount);
 }
 
 function calculateContributionPerPool(userBoosts: LoyaltyDropUserBoost[], poolId: number) {
@@ -247,11 +243,11 @@ function msToDays(milliseconds:  number) {
 }
 
 function createUserDropLoadingConfig(id: number){
-  const config = new EagerLoadingConfig<LoyaltyDropUserBoost>(userBoosts.value.filter(el => el.boostPoolId === id));
+  const config = new EagerLoadingConfig<LoyaltyDropUserBoost>(boostStore.getUserBoosts.filter(el => el.boostPoolId === id));
   return config;
 }
 
-function checkDateIsDefined(date: Date | undefined) {
+function checkDateIsDefined(date: Date | null) {
   if (date) {
     return date.toLocaleDateString();
   } else {

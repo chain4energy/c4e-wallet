@@ -56,5 +56,8 @@ module.exports = defineConfig({
       enableInSFC: false,
       enableBridge: false
     }
+  },
+  css:{
+    extract:false
   }
 });
