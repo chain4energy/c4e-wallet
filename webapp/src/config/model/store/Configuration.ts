@@ -139,6 +139,7 @@ export class LoyaltyDropConfig implements JsonLoyaltyDropConfig{
   loyaltyDropUserBootsURL: string;
   loyaltyDropDefaultDenom: string;
   loyaltyDropBroadcastURL: string;
+  loyaltyDropUserBoostRefreshTimeout: number;
   constructor (
     config : JsonLoyaltyDropConfig | undefined
   ) {
@@ -147,6 +148,7 @@ export class LoyaltyDropConfig implements JsonLoyaltyDropConfig{
     this.loyaltyDropUserBootsURL = config?.loyaltyDropUserBootsURL ? config.loyaltyDropUserBootsURL : queriesDefaults.loyaltyDropService.loyaltyDropUserBootsURL;
     this.loyaltyDropDefaultDenom  = config?.loyaltyDropDefaultDenom ? config.loyaltyDropDefaultDenom: queriesDefaults.loyaltyDropService.loyaltyDropDefaultDenom;
     this.loyaltyDropBroadcastURL = config?.loyaltyDropBroadcastURL ? config.loyaltyDropBroadcastURL: queriesDefaults.loyaltyDropService.loyaltyDropBroadcastURL;
+    this.loyaltyDropUserBoostRefreshTimeout = config?.loyaltyDropUserBoostRefreshTimeout ? config.loyaltyDropUserBoostRefreshTimeout: queriesDefaults.loyaltyDropService.loyaltyDropUserBoostRefreshTimeout;
   }
 
 }

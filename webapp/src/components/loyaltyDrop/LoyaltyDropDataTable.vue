@@ -55,17 +55,14 @@
         </Column>
 
         <Column :header="$t('BOOST.TABLE.CONTRIBUTION')" :sortable="false">
-<!--          <template #body>-->
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-<!--            <span>{{ userBoosts.find(el => el.boostPoolId === slotProps.data.id) ? userBoosts.find(el => el.boostPoolId === slotProps.data.id).amount.amount : 0}} C4E </span>-->
-<!--             <CoinAmount :amount="useLoyaltyDropStore().getUserBoostsByPollId(slotProps.data.id).reduce((acc, item) => acc +parseInt( item.value), 0)" :show-denom="true" :show-tooltip="true"/>-->
              <CoinAmount :amount="calculateContributionPerPool(userBoosts,slotProps.data.id)" :show-denom="true" :show-tooltip="true"/>
           </template>
         </Column>
 
         <Column :header="$t('BOOST.TABLE.REWARD')" :sortable="false">
-          <template #body>
-            <span class="p-column-title">{{ $t('BOOST.TABLE.REWARD') }}</span>
+          <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
+            <CoinAmount :amount="calculateRewardsPerPool(userBoosts,slotProps.data.id)" :show-denom="true" :show-tooltip="true"/>
           </template>
         </Column>
 
@@ -88,12 +85,14 @@
         </Column>
 
       </template>
-      <template v-slot:expanded-columns="slotProps: {expandedData: {data: LoyaltyDropPoolConfig}}">
+      <template v-slot:expanded-columns="slotProps: {expandedData: {data: LoyaltyDropPoolConfig}}" >
         <div >
             <DataTableWrapper
               :useExternalGlobalFilter="false"
               :eager-loading-config="createUserDropLoadingConfig(slotProps.expandedData.data.id)"
-              :paginator="false">
+              :paginator="false"
+              >
+
 <!--              <template #header>-->
 <!--                <h5 style="font-weight: bolder; margin-top: 20px; margin-bottom: -20px;">{{ $t("STAKING_VIEW.USER_UNDELEGATIONS") }}</h5>-->
 <!--              </template>-->
@@ -229,6 +228,20 @@ function calculateContributionPerPool(userBoosts: LoyaltyDropUserBoost[], poolId
   return tempCoin;
 }
 
+function calculateRewardsPerPool(userBoosts: LoyaltyDropUserBoost[], poolId: number) {
+  console.log("calculateRewardsPerPool poolId:" + poolId);
+  const temp = userBoosts.filter(el => el.boostPoolId === poolId);
+  const tempCoin = new Coin(0n, "uc4e");
+  if (temp && temp.length > 0) {
+    temp.forEach((el) => {
+      if(el.grantedRewards) {
+        tempCoin.add(el.grantedRewards);
+      }
+    });
+  }
+  return tempCoin;
+}
+
 function msToDays(milliseconds:  number) {
   return milliseconds / (1000 * 60 * 60 * 24);
 }
@@ -251,6 +264,10 @@ function checkDateIsDefined(date: Date | undefined) {
 <style lang="scss" scoped>
 @import '../../styles/variables.scss';
 @import '../../styles/tables.scss';
+
+.test {
+  background-color: red;
+}
 
 .boostDetails__header {
   width: 100%;
@@ -464,4 +481,9 @@ function checkDateIsDefined(date: Date | undefined) {
     }
   }
 
+.p-datatable-row-expansion {
+  background-color: red !important;
+}
+
 </style>
+
