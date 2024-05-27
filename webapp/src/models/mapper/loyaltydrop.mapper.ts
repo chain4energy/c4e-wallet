@@ -14,10 +14,10 @@ export function mapLoyaltyDropConfig(loyaltyDropPoolConfigResp: LoyaltyDropPoolC
     b.rewards_tokens,
     b.used_tokens,
     b.reserved_tokens,
+    b.granted_rewards,
     b.epoch_number,
     b.epoch_period,
-    new Date(b.epoch_start_date),
-    b.apr
+    new Date(b.epoch_start_date)
   ))
   );
   return loyaltyDropPoolConfig;

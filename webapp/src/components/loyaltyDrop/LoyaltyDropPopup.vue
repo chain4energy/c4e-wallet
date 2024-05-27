@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Dialog :visible="visible" @update:visible="emit('close')" modal :baseZIndex="-100" :style="{ width: '800px' }" :header="boost.poolDescription">
+    <Dialog :visible="visible" @update:visible="emit('close')" modal :baseZIndex="-100" :autoZIndex="true" :style="{ width: '800px' }" :header="boost.poolDescription">
       <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
 
       <div class="boostDetails__header">
@@ -10,27 +10,27 @@
           </div>
           <div class="boostDetails__header__tile" >
             <h3>{{$t('BOOST.COMMON.APR')}}:</h3>
-            <h4>{{boost.apr * 100}}%</h4>
+            <h4>{{(calculateApr(boost)).toFixed(2)}}%</h4>
           </div>
           <div class="boostDetails__header__tile" >
             <h3>{{$t('BOOST.COMMON.POOL_USAGE')}}:</h3>
-            <CoinAmount :amount="calculateRemainingTokens(boost)" :show-tooltip="true" tooltip-only style="width:90%; margin-bottom: 10px;">
-              <div v-if="calculatePercentagePoolUsage(boost)">
-                <div v-if="calculatePercentagePoolUsage(boost) < 0.05" class="commision">
-                  <div class="level-1" :style="'flex-basis:' + (calculatePercentagePoolUsage(boost) * 100).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(boost)" :precision="2"></PercentsView>
+            <CoinAmount :amount="poolUsage" :show-tooltip="true" tooltip-only style="width:90%; margin-bottom: 10px;">
+              <div v-if="percentagePoolUsage">
+                <div v-if="percentagePoolUsage.isBiggerThanOrEqualTo(0.90)" class="commision">
+                  <div class="level-1" :style="'flex-basis:' + (percentagePoolUsage).multiply(100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="percentagePoolUsage" :precision="2"></PercentsView>
                 </div>
-                <div v-if="calculatePercentagePoolUsage(boost) >= 0.05 && calculatePercentagePoolUsage(boost) < 0.10" class="commision">
-                  <div class="level-2" :style="'flex-basis:' + calculatePercentagePoolUsage(boost).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(boost)" :precision="2"></PercentsView>
+                <div v-if="percentagePoolUsage.isBiggerThanOrEqualTo(0.80) && !percentagePoolUsage.isBiggerThanOrEqualTo(0.90)" class="commision">
+                  <div class="level-2" :style="'flex-basis:' + (percentagePoolUsage).multiply(100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="percentagePoolUsage" :precision="2"></PercentsView>
                 </div>
-                <div v-if="calculatePercentagePoolUsage(boost) >= 0.10 && calculatePercentagePoolUsage(boost) < 0.25" class="commision">
-                  <div class="level-3" :style="'flex-basis:' + (calculatePercentagePoolUsage(boost) * 100).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(boost)" :precision="2"></PercentsView>
+                <div v-if="percentagePoolUsage.isBiggerThanOrEqualTo(0.70) && !percentagePoolUsage.isBiggerThanOrEqualTo(0.80)" class="commision">
+                  <div class="level-3" :style="'flex-basis:' + (percentagePoolUsage).multiply(100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="percentagePoolUsage" :precision="2"></PercentsView>
                 </div>
-                <div v-if="calculatePercentagePoolUsage(boost) >= 0.25" class="commision">
-                  <div class="level-4" :style="'flex-basis:' + (calculatePercentagePoolUsage(boost) * 100).toFixed(2) + '%'"></div>
-                  <PercentsView class="level-border" :amount="calculatePercentagePoolUsage(boost)" :precision="2"></PercentsView>
+                <div v-if="!percentagePoolUsage.isBiggerThanOrEqualTo(0.70)" class="commision">
+                  <div class="level-4" :style="'flex-basis:' + (percentagePoolUsage).multiply(100).toFixed(2) + '%'"></div>
+                  <PercentsView class="level-border" :amount="percentagePoolUsage" :precision="2"></PercentsView>
                 </div>
               </div>
               <span v-else>updating</span>
@@ -97,11 +97,14 @@
         <div class="validationPopup__btnHolder" v-if="canModify">
           <div class="validationPopup__btns">
             <div style="flex: 1 1;">
-              <span>{{$t('BOOST.POPUP.AMOUNT')}}: <span style="font-weight: bold;">{{(amount * (1+ boost.apr/100)).toFixed(2)}} C4E</span></span>
+              <span>{{$t('BOOST.POPUP.AMOUNT')}}:
+<!--                <span style="font-weight: bold;">{{calculateReward(boost,amount).toFixed(4)}} C4EE</span>-->
+                <CoinAmount :amount="calculateReward(boost,amount)" :show-denom="true" :show-tooltip="true" :reduce-big-number="true" :precision="2"/>
+              </span>
             </div>
             <Button class="validationPopup__button" type="submit">
               <StakeManagementIcon icon="delegate"/>
-              {{ $t('STAKING_VIEW.STAKING_POPUP.DELEGATE') }}
+              {{ $t('BOOST.POPUP.LOCK_C4E') }}
             </Button>
           </div>
         </div>
@@ -161,12 +164,21 @@ const canModify = computed<boolean>(() => {
   return useUserStore().isLoggedIn && useUserStore().connectionInfo.modifiable;
 });
 
+const poolUsage = computed(()=>{
+  return calculatePoolUsageTokens(props.boost);
+});
+
+const percentagePoolUsage = computed(()=>{
+  return calculatePercentagePoolUsage(props.boost);
+});
+
 const amount = ref<number>(0);
 const showReserveCheckbox = ref(false);
 const reservedCoins = useConfigurationStore().config.getConvertedAmount(useConfigurationStore().config.getReservedCoinsAmount());
 import dataService from "@/services/data.service";
 import {formatBigNumberLocalized} from "@/utils/locale-number-formatter";
 import {RedelegationDirection} from "@/components/staking/StakingRedelegate";
+import {calculateApr, calculateReward} from "@/components/loyaltyDrop/LoialtyDropUtil";
 
 // const commissionForOperation = computed(() => {
 //   return (Number(amount.value)/100) * Number(getPercents(props.validator.commission.rate)) || 0;
@@ -230,15 +242,18 @@ watch(stakingAction, (next, prev) => {
 });
 
 function getMax() {
-  console.log('GetMax');
+
   const spendables = useUserStore().getSpendableBalance;
-  let retValue = Number(useConfigurationStore().config.getConvertedAmount(spendables?spendables :0)) - Number(reservedCoins) ;
-  if(retValue < 0){
+  let retValue = Number(useConfigurationStore().config.getConvertedAmount(spendables ? spendables : 0)) - Number(reservedCoins);
+  if (retValue < 0) {
     retValue = 0;
   }
+  const remainingTokens = Number(useConfigurationStore().config.getConvertedAmount(props.boost.baseTokens.amount - props.boost.usedTokens.amount - props.boost.reservedTokens.amount));
+  if (remainingTokens < retValue) {
+    retValue = remainingTokens;
+  }
+  console.log('GetMax: remainingTokens=' + remainingTokens + ' retValue=' + retValue);
   return retValue;
-  // showReserveCheckbox.value = true;
-  //reserveCoins.value = true;
 }
 
 
@@ -278,12 +293,12 @@ const amountToPass = computed(() => {
    */
 });
 
-function calculateRemainingTokens(data: LoyaltyDropPoolConfig){
-  return new Coin(data.baseTokens.amount - data.reservedTokens.amount - data.rewardsTokens.amount, 'uc4e');
+function calculatePoolUsageTokens(data: LoyaltyDropPoolConfig){
+  return new Coin(data.reservedTokens.amount, data.reservedTokens.denom).add(data.usedTokens);
 }
 
 function calculatePercentagePoolUsage(data: LoyaltyDropPoolConfig): BigDecimal {
-  return divideBigInts(calculateRemainingTokens(data).amount, data.baseTokens.amount);
+  return divideBigInts(data.reservedTokens.amount + data.usedTokens.amount, data.baseTokens.amount);
 }
 
 function msToDays(milliseconds:  number) {

@@ -17,7 +17,7 @@
         </Column>
         <Column :header="$t('BOOST.COMMON.APR')" :sortable="false">
          <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <span>{{ (slotProps.data.apr * 100).toFixed(2)}}%</span>
+            <span>{{ (calculateApr(slotProps.data)).toFixed(2)}}%</span>
           </template>
         </Column>
 
@@ -68,7 +68,7 @@
 
          <Column>
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <Button class="outlined-secondary" @click="checkBTN(slotProps.data)">
+            <Button class="outlined-secondary" @click="checkBTN(slotProps.data)" :disabled="calculatePercentagePoolUsage(slotProps.data).isBiggerThanOrEqualTo(1)">
               <StakeManagementIcon icon="manage"/>
               {{ $t('BOOST.TABLE.MANAGE') }}
             </Button>
@@ -168,11 +168,13 @@ import {useLoyaltyDropStore} from "@/store/boost.store";
 import StakeManagementIcon from "@/components/commons/StakeManagementIcon.vue";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import {UnbondingDelegationEntry} from "@/models/store/staking";
+import {calculateApr} from "./LoialtyDropUtil";
 
 
 async function transactionSuccess(arg: string) {
   popupOpened.value = !popupOpened.value;
 }
+
 
 
 
@@ -254,6 +256,8 @@ function checkDateIsDefined(date: Date | null) {
     return "-";
   }
 }
+
+
 
 </script>
 

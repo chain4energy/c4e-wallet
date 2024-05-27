@@ -664,9 +664,10 @@
       "BALANCE": "Your balance",
       "SPENDABLE": "Spendable",
       "INFO_HEADER": "This operation will lock your funds for {timeToComplete} days",
-      "INFO_TEXT": "Rewards for the locked-up tokens will be distributed in weekly cycles every Thursday until the end of lock-up period",
+      "INFO_TEXT": "Rewards for the locked-up tokens will be distributed in weekly cycles until the end of lock-up period",
       "RESERVE": "Reserve {amount} C4E for future transactions",
-      "AMOUNT": "Amount to be claimed after lock-up period passes"
+      "AMOUNT": "C4E Rewards at the end of the lock-up period",
+      "LOCK_C4E": "Lock C4E"
     },
     "COMMON": {
       "NAME": "Name",
