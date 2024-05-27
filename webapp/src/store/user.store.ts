@@ -389,11 +389,17 @@ export const useUserStore = defineStore({
               tx_bytes: Array.from(txBytes), // Converting Uint8Array to array for JSON serialization
             };
             const response = await useLoyaltyDropStore().broadcastSignedMessage( JSON.stringify(broadcastTransactionReq));
-            if(response.isSuccess()) {
+            if(response.isSuccess() && response.data) {
+              console.log("!!!!!" + JSON.stringify(response));
               const allResults = await Promise.all([
                 fetchBalance(connectionInfo, useUserStore(), true),
               ]);
-              onTxBroadcastToLoyaltyDropBackendSuccess(response.data?.txHash);
+
+              const dummyTxData: TxData = new TxData({
+                code:0,
+                transactionHash:response.data.txHash, events: [], gasUsed: 0, gasWanted: 0, height: 0, msgResponses: [], txIndex: 0
+              });
+              onTxBroadcastToLoyaltyDropBackendSuccess(dummyTxData);
               onRefreshingError(allResults);
               return true;
             } else {
@@ -617,7 +623,7 @@ function onTxDeliverySuccess(tx?: TxData) {
   }
 }
 
-function onTxBroadcastToLoyaltyDropBackendSuccess(tx?: string) {
+function onTxBroadcastToLoyaltyDropBackendSuccess(tx?: TxData) {
   if (tx) {
     logger.logToConsole(LogLevel.DEBUG, `Tx: ${tx} success.}`);
     const content = {

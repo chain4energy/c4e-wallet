@@ -224,7 +224,7 @@ function moreThan(value: string | undefined): boolean {
 async function action() {
   await dataService.onCreateVestingPoolLoyaltyDrop("ld-" + Math.floor(Math.random() * 100000), amount.value,
     props.boost.epochPeriod * props.boost.epochNumber / 1000, props.boost.vestingType, () => {
-      emit('close')
+      emit('close');
     });
 }
 
