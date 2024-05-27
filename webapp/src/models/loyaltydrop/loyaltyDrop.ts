@@ -6,10 +6,10 @@ export interface LoyaltyDropPoolConfigResponse {
   used_tokens:	number,
   reserved_tokens: number,
   rewards_tokens:	number,
+  granted_rewards: number,
   epoch_number: number,
   epoch_period: number,
-  epoch_start_date: string,
-  apr: number
+  epoch_start_date: string
 }
 
 export interface LoyaltyDropUserBoostResponse {

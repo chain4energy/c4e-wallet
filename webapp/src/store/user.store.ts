@@ -388,14 +388,26 @@ export const useUserStore = defineStore({
             const broadcastTransactionReq = {
               tx_bytes: Array.from(txBytes), // Converting Uint8Array to array for JSON serialization
             };
-            await useLoyaltyDropStore().fetchSignedMessage( JSON.stringify(broadcastTransactionReq));
-            const allResults = await Promise.all([
-              fetchBalance(connectionInfo, useUserStore(), true),
-            ]);
-            // onTxDeliverySuccess(resp.data);
-            onRefreshingError(allResults);
-            // onClaimAirdropSuccess();//TODO:
-            return true;
+            const response = await useLoyaltyDropStore().broadcastSignedMessage( JSON.stringify(broadcastTransactionReq));
+            if(response.isSuccess() && response.data) {
+              console.log("!!!!!" + JSON.stringify(response));
+              const allResults = await Promise.all([
+                fetchBalance(connectionInfo, useUserStore(), true),
+              ]);
+
+              const dummyTxData: TxData = new TxData({
+                code:0,
+                transactionHash:response.data.txHash, events: [], gasUsed: 0, gasWanted: 0, height: 0, msgResponses: [], txIndex: 0
+              });
+              onTxBroadcastToLoyaltyDropBackendSuccess(dummyTxData);
+              onRefreshingError(allResults);
+              return true;
+            } else {
+              // onClaimAirdropSuccess();//TODO:
+              await onTxDeliveryFailure(connectionInfo, this, resp, 'Broadcast signed message error: ' + resp.error?.message);
+              return false;
+            }
+
           }
         });
     },
@@ -598,6 +610,22 @@ function onRefreshingError(allResults: boolean[]) {
 function onTxDeliverySuccess(tx?: TxData) {
   if (tx) {
     logger.logToConsole(LogLevel.DEBUG, `Tx: ${tx.transactionHash} success. GasUsed: ${tx.gasUsed}`);
+    const content = {
+      component: TxToast,
+      props: {
+        tx: tx
+      },
+    };
+    toast.success(content);
+  } else {
+    logger.logToConsole(LogLevel.WARNING, `Tx delivered successfully but cannt get TX data`);
+    toast.warning(`Tx delivered successfully but cannt get TX data`);
+  }
+}
+
+function onTxBroadcastToLoyaltyDropBackendSuccess(tx?: TxData) {
+  if (tx) {
+    logger.logToConsole(LogLevel.DEBUG, `Tx: ${tx} success.}`);
     const content = {
       component: TxToast,
       props: {

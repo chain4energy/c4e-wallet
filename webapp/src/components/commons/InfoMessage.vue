@@ -23,7 +23,7 @@ const props = defineProps<{
   header: string,
   headerVariables: any,
   texts: string,
-  textsVariables:  any,
+  textsVariables?:  any,
 }>();
 
 const textTypeData = computed(() => getTextsLength(props.texts));

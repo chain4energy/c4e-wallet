@@ -38,15 +38,16 @@ export const useLoyaltyDropStore = defineStore({
       });
     },
 
-    async fetchSignedMessage( signedMassage: string, lockscreen = true) {
-      console.log("fetchSignedMessage");
-      await apiFactory.boostApi().broadcastSignedMassageToLoyaltyDropService(signedMassage, lockscreen).then((resp) => {
+    async broadcastSignedMessage(signedMassage: string, lockscreen = true) {
+      console.log("broadcastSignedMessage");
+      return await apiFactory.boostApi().broadcastSignedMassageToLoyaltyDropService(signedMassage, lockscreen).then((resp) => {
         if (resp.isSuccess() && resp.data !== undefined) {
           console.log(resp);
           this.loyaltyDropUserBoosts.push(resp.data);
         } else {
           //TODO: error handling
         }
+        return resp;
       });
     },
     clear(clearDropPoolConfigs = true) {

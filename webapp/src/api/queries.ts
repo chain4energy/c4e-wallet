@@ -123,6 +123,7 @@ export default {
     loyaltyDropPoolConfigurationsUrl:'/v0.1/pool_configurations',
     loyaltyDropUserBootsURL:'/v0.1/user_boost/{user_address}',
     loyaltyDropDefaultDenom:'uc4e',
-    loyaltyDropBroadcastURL:'/v0.1/broadcast'
+    loyaltyDropBroadcastURL:'/v0.1/broadcast',
+    loyaltyDropUserBoostRefreshTimeout: 30000
   }
 };

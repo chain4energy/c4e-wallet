@@ -189,7 +189,11 @@
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": false,
-    "useAminoOnly": true
+    "useAminoOnly": true,
+    "loyaltyDropService": {
+      "loyaltyDropBaseUrl": "http://localhost:8090/api/loyalty-drop",
+      "loyaltyDropPoolConfigurationsUrl": "/v0.1/pool_configurations"
+    }
   },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",

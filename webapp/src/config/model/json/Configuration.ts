@@ -55,6 +55,7 @@ export interface  JsonLoyaltyDropConfig {
   loyaltyDropUserBootsURL:string;
   loyaltyDropDefaultDenom: string;
   loyaltyDropBroadcastURL: string;
+  loyaltyDropUserBoostRefreshTimeout: number;
 }
 
 
