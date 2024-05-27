@@ -68,7 +68,7 @@
 
          <Column>
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <Button class="outlined" @click="checkBTN(slotProps.data)">
+            <Button class="outlined-secondary" @click="checkBTN(slotProps.data)">
               <StakeManagementIcon icon="manage"/>
               {{ $t('BOOST.TABLE.MANAGE') }}
             </Button>
@@ -479,22 +479,33 @@ function checkDateIsDefined(date: Date | null) {
 
 
 :deep {
-  .p-datatable-row-expansion {
-    background-color: #002C50 !important;
-    color: white !important;
-  }
-  .p-datatable .p-datatable-thead > tr > th {
+  .extended-datatable .p-datatable .p-datatable-thead > tr > th {
     border-width: 0;
-    color: white;
+    color: white !important;
     padding: 5px 0 !important;
     background: none !important;
   }
-  .extended-datatable .p-datatable-table .p-datatable-tbody .p-selectable-row:nth-child(2n){
-    background: #E4E4E4 !important;
+  .p-datatable .p-datatable-tbody > tr {
+    background: none !important;
+
+    td {
+      background: #02447A;
+      color: white;
+    }
   }
 
-  .extended-datatable .p-datatable-table .p-datatable-tbody .p-selectable-row:nth-child(2n+1){
-    background: white !important;
+  .p-datatable-row-expansion {
+    color: white;
+    td {
+      color: #343a40 !important;
+      background-color: #02447A;
+    }
+  }
+  .extended-datatable .p-datatable-table .p-datatable-tbody .p-selectable-row {
+
+    td {
+      background: white;
+    }
   }
 
 }
