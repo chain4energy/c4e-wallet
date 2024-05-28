@@ -341,14 +341,18 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onKeplrKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectKeplr().then(()=>{refreshSpendables(false)});
+    useUserStore().connectKeplr((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo);
+    });
   }
 
   public onCosmostationKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onCosmostationKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectCosmostation().then(()=>{refreshSpendables(false)});
+    useUserStore().connectCosmostation((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo);
+    });
 
   }
 
@@ -356,7 +360,9 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onLeapKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectLeap().then(()=>{refreshSpendables(false)});
+    useUserStore().connectLeap((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo);
+    });
 
   }
 
@@ -380,7 +386,7 @@ class DataService extends LoggedService {
       useProposalsStore().fetchProposalUserVote(propId.proposalId, userAddress);
     }
     // refresh spendables once logged in
-    refreshSpendables(true);
+    // refreshSpendables(true);
 
     if (instancce.isClaimAirdropViewSelected && userAddress) {
         useAirDropStore().fetchUsersCampaignData(userAddress, true);
@@ -536,15 +542,13 @@ class DataService extends LoggedService {
     this.isLoyaltyDropViewSelected = true;
     useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(true);
     this.refreshLoyaltyDropUserBoost(true, true);
-    // if(useUserStore().getAccount.address){
-    //   useLoyaltyDropStore().fetchLoyaltyDropUserBoost(useUserStore().getAccount.address,true);
-    // }
+    this.lastLoyaltyDropUserBoostTimeout = new Date().getTime();
+    this.loyaltyDropUserBoostIntervalId = this.checkAndSetInterval(this.loyaltyDropUserBoostIntervalId, refreshLoyaltyDropUserBoost, this.loyaltyDropUserBoostTimeout, "refreshLoyaltyDropUserBoost");
   }
 
   public onLoyaltyDropUnselected() {
     this.logToConsole(LogLevel.DEBUG, 'onLoyaltyDropUnselected');
     this.isLoyaltyDropViewSelected = false;
-
     window.clearInterval(this.loyaltyDropUserBoostIntervalId);
     this.loyaltyDropUserBoostIntervalId= 0;
   }

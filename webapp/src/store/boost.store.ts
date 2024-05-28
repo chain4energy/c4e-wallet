@@ -2,6 +2,9 @@ import {LoyaltyDropPoolConfig, LoyaltyDropUserBoost} from "@/models/store/loyalt
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {Validator} from "@/models/store/validator";
+import {useToast} from "vue-toastification";
+
+const toast = useToast();
 
 interface BoostState {
   loyaltyDropPoolConfigs: LoyaltyDropPoolConfig[]
@@ -18,22 +21,31 @@ export const useLoyaltyDropStore = defineStore({
   actions: {
     async fetchLoyaltyDropPoolsConfig(lockscreen = true) {
       await apiFactory.boostApi().fetchLoyaltyDropPoolsConfig(lockscreen).then((resp) => {
-        if (resp.isSuccess() && resp.data !== undefined) {
+        if (resp.isSuccess()) {
           console.log(resp);
-          this.loyaltyDropPoolConfigs = resp.data;
+          if(resp.data) {
+            this.loyaltyDropPoolConfigs = resp.data;
+          } else {
+            this.loyaltyDropPoolConfigs.splice(0);
+          }
         } else {
-          //TODO: error handling
+          console.log("fetchLoyaltyDropPoolsConfig: ERROR " + resp.error?.message);
+          toast.error('Error fetching loyalty drop data');
         }
       });
     },
     async fetchLoyaltyDropUserBoost(address: string, lockscreen = true) {
       await apiFactory.boostApi().fetchLoyaltyDropUserBoosts(address, lockscreen).then((resp) => {
-        if (resp.isSuccess() && resp.data !== undefined) {
+        if (resp.isSuccess()) {
           console.log("fetchLoyaltyDropUserBoost:" + resp);
-          this.loyaltyDropUserBoosts = resp.data;
+          if(resp.data) {
+            this.loyaltyDropUserBoosts = resp.data;
+          } else {
+            this.loyaltyDropUserBoosts.splice(0);
+          }
         } else {
-          console.log("fetchLoyaltyDropUserBoost: ERRROR " + resp.error?.message);
-          //TODO: error handling
+          console.log("fetchLoyaltyDropUserBoost: ERROR " + resp.error?.message);
+          toast.error('Error fetching loyalty drop user data');
         }
       });
     },
@@ -45,7 +57,8 @@ export const useLoyaltyDropStore = defineStore({
           console.log(resp);
           this.loyaltyDropUserBoosts.push(resp.data);
         } else {
-          //TODO: error handling
+          console.log("broadcastSignedMessage: ERROR " + resp.error?.message);
+          toast.error('Error broadcasting signed message');
         }
         return resp;
       });

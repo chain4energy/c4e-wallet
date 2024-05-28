@@ -5,6 +5,10 @@ export function mapLoyaltyDropConfig(loyaltyDropPoolConfigResp: LoyaltyDropPoolC
   if (loyaltyDropPoolConfigResp === undefined) {
     throw new Error('LoyaltyDropPoolConfigResp is undefined');
   }
+  if(loyaltyDropPoolConfigResp === null){
+    console.log("loyaltyDropPoolConfigResp is null");
+    return [];
+  }
   const loyaltyDropPoolConfig:LoyaltyDropPoolConfig[] = Array<LoyaltyDropPoolConfig>();
   loyaltyDropPoolConfigResp.forEach(b=> loyaltyDropPoolConfig.push(new LoyaltyDropPoolConfig(
     b.id,
@@ -24,8 +28,14 @@ export function mapLoyaltyDropConfig(loyaltyDropPoolConfigResp: LoyaltyDropPoolC
 }
 
 export function mapLoyaltyDropUserBoostArray(loyaltyDropUserBoostResp: LoyaltyDropUserBoostResponse[] | undefined): LoyaltyDropUserBoost[]  {
+
+
   if (loyaltyDropUserBoostResp === undefined) {
     throw new Error('LoyaltyDropPoolConfigResp is undefined');
+  }
+  if(loyaltyDropUserBoostResp === null){
+    console.log("loyaltyDropUserBoostResp is null");
+    return [];
   }
   const userBoost:LoyaltyDropUserBoost[] = Array<LoyaltyDropUserBoost>();
   loyaltyDropUserBoostResp.forEach(b=> userBoost.push(new LoyaltyDropUserBoost(

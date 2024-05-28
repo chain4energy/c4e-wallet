@@ -644,7 +644,8 @@
       "MANAGE": "Zarządzaj",
       "LOCK_START": "Data rozpoczęcia blokady",
       "LOCK_END": "Data zakończenia blokady",
-      "LAST_REWARD": "Data ostatniego wypłacenia nagrody",
+      "LAST_REWARD_DATE": "Data ostatniego wypłacenia nagrody",
+      "LAST_REWARD": "Ostatnia nagroda",
       "STATUS": "Status",
       "STATUS_TYPE": {
         "TRANSACTION_IN_PROGRESS": "Oczekiwanie na potwierdzenie",
@@ -667,6 +668,16 @@
       "APR": "Nagroda (APR)",
       "POOL_USAGE": "Wykorzystanie puli",
       "DAYS": "dni"
+    },
+    "STATUS": {
+      "ACTIVE": "Aktywny",
+      "CLOSED": "Zakmnięty"
+    },
+    "COUNTER": {
+      "DAYS": "Dni",
+      "HOURS": "Godzin",
+      "MINUTES": "Minut",
+      "STARTS_IN": "Startuje za"
     }
   }
 }

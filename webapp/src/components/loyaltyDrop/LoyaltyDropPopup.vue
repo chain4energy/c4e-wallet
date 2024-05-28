@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Dialog :visible="visible" @update:visible="emit('close')" modal :baseZIndex="-100" :autoZIndex="true" :style="{ width: '800px' }" :header="boost.poolDescription">
+    <Dialog :visible="visible" @update:visible="emit('close')" modal :style="{ width: '800px', 'z-index': '100' }" :header="boost.poolDescription">
       <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
 
       <div class="boostDetails__header">

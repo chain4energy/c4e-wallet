@@ -7,9 +7,23 @@
       <template v-slot:columns>
         <Column :header="$t('BOOST.COMMON.NAME')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <span>{{ slotProps.data.poolDescription }}</span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
+              <div>{{ slotProps.data.poolDescription }}</div>
+              <div style="display: flex; align-items: center; justify-content: center; text-align: center;">
+                <div v-if="slotProps.data.epochStartDate.getTime() - new Date().getTime() > 0" style="margin: auto">
+                  <BoosterCounter :start-date="slotProps.data.epochStartDate" />
+                </div>
+                <div v-else-if="slotProps.data.baseTokens.amount > slotProps.data.reservedTokens.add(slotProps.data.usedTokens).amount">
+                  <StatusBadge :status="true" />
+                </div>
+                <div v-else>
+                  <StatusBadge :status="false" />
+                </div>
+              </div>
+            </div>
           </template>
         </Column>
+
         <Column :header="$t('BOOST.COMMON.LOCKUP_PERIOD')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
             <span>{{msToDays(slotProps.data.lockupPeriod) }} {{$t('BOOST.COMMON.DAYS')}}</span>
@@ -68,7 +82,7 @@
 
          <Column>
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <Button class="outlined-secondary" @click="checkBTN(slotProps.data)" :disabled="calculatePercentagePoolUsage(slotProps.data).isBiggerThanOrEqualTo(1)">
+            <Button class="outlined-secondary" @click="checkBTN(slotProps.data)" :disabled="checkIfActive(slotProps.data)">
               <StakeManagementIcon icon="manage"/>
               {{ $t('BOOST.TABLE.MANAGE') }}
             </Button>
@@ -85,11 +99,11 @@
         </Column>
 
       </template>
-      <template v-slot:expanded-columns="slotProps: {expandedData: {data: LoyaltyDropPoolConfig}}" >
+      <template v-slot:expanded-columns="slotProps1: {expandedData: {data: LoyaltyDropPoolConfig}}" >
         <div class="extended-datatable">
             <DataTableWrapper
               :useExternalGlobalFilter="false"
-              :eager-loading-config="createUserDropLoadingConfig(slotProps.expandedData.data.id)"
+              :eager-loading-config="createUserDropLoadingConfig(slotProps1.expandedData.data.id)"
               :paginator="false"
               >
 
@@ -113,9 +127,15 @@
                     <CoinAmount :amount=" slotProps.data.amount" :show-denom="true" :show-tooltip="true"/>
                   </template>
                 </Column>
-                <Column :header="$t('BOOST.TABLE.LAST_REWARD')" style="width: 200px; text-align: left" :sortable="false">
+                <Column :header="$t('BOOST.TABLE.LAST_REWARD_DATE')" style="width: 200px; text-align: left" :sortable="false">
                   <template #body="slotProps: {data: LoyaltyDropUserBoost}">
                     <span>{{ checkDateIsDefined(slotProps.data.lastRewardDate)}}</span>
+                  </template>
+                </Column>
+                <Column :header="$t('BOOST.TABLE.LAST_REWARD')" style="width: 200px; text-align: left" :sortable="false">
+                  <template #body="slotProps: {data: LoyaltyDropUserBoost}">
+                    <CoinAmount :amount="slotProps.data.lastRewardDate?calculatePayouts(slotProps1.expandedData.data, slotProps.data.amount):'0'"
+                                :show-denom="true" :show-tooltip="false"/>
                   </template>
                 </Column>
                 <Column :header="$t('BOOST.TABLE.STATUS')" style="width: 200px; text-align: right" :sortable="false" >
@@ -168,7 +188,10 @@ import {useLoyaltyDropStore} from "@/store/boost.store";
 import StakeManagementIcon from "@/components/commons/StakeManagementIcon.vue";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import {UnbondingDelegationEntry} from "@/models/store/staking";
-import {calculateApr} from "./LoialtyDropUtil";
+import {calculateApr, calculatePayouts} from "./LoialtyDropUtil";
+import Counter from "@/components/booster/BoosterCounter.vue";
+import BoosterCounter from "@/components/booster/BoosterCounter.vue";
+import StatusBadge from "@/components/booster/StatusBadge.vue";
 
 
 async function transactionSuccess(arg: string) {
@@ -226,6 +249,10 @@ function calculateContributionPerPool(userBoosts: LoyaltyDropUserBoost[], poolId
   return tempCoin;
 }
 
+const checkIfActive = (data: LoyaltyDropPoolConfig) => {
+  return data.baseTokens.amount > data.reservedTokens.add(data.usedTokens).amount && data.epochStartDate.getTime() > new Date().getTime();
+
+}
 function calculateRewardsPerPool(userBoosts: LoyaltyDropUserBoost[], poolId: number) {
   console.log("calculateRewardsPerPool poolId:" + poolId);
   const temp = userBoosts.filter(el => el.boostPoolId === poolId);
@@ -257,6 +284,9 @@ function checkDateIsDefined(date: Date | null) {
   }
 }
 
+const calcTimeToStart = ((time: Date) => {
+  return time.getTime() - new Date(Date.now()).getTime();
+});
 
 
 </script>
@@ -502,16 +532,15 @@ function checkDateIsDefined(date: Date | null) {
     color: white;
     td {
       color: #343a40 !important;
-      background-color: #02447A;
+      background-color: #477cb4 !important;
     }
   }
   .extended-datatable .p-datatable-table .p-datatable-tbody .p-selectable-row {
 
     td {
-      background: white;
+      background: white !important;
     }
   }
-
 }
 
 </style>

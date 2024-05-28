@@ -652,7 +652,8 @@
       "MANAGE": "Manage",
       "LOCK_START": "Lock start date",
       "LOCK_END": "Lock end date",
-      "LAST_REWARD": "Last reward withdrawal date",
+      "LAST_REWARD_DATE": "Last payout date",
+      "LAST_REWARD": "Last payout",
       "STATUS": "Status",
       "STATUS_TYPE": {
         "TRANSACTION_IN_PROGRESS": "Waiting for confirmation",
@@ -675,6 +676,16 @@
       "APR": "Reward (APR)",
       "POOL_USAGE": "Pool usage",
       "DAYS": "days"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "CLOSED": "Closed"
+    },
+    "COUNTER": {
+      "DAYS": "Days",
+      "HOURS": "Hours",
+      "MINUTES": "Mins",
+      "STARTS_IN": "Starts in"
     }
   }
 }
