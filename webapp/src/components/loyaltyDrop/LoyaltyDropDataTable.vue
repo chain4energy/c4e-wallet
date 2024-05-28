@@ -7,9 +7,23 @@
       <template v-slot:columns>
         <Column :header="$t('BOOST.COMMON.NAME')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <span>{{ slotProps.data.poolDescription }}</span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
+              <div>{{ slotProps.data.poolDescription }}</div>
+              <div style="text-align: center">
+                <div v-if="slotProps.data.epochStartDate.getTime() - new Date().getTime() > 0" style="margin: 10px">
+                  <BoosterCounter :start-date="slotProps.data.epochStartDate" />
+                </div>
+                <div v-else-if="slotProps.data.baseTokens.amount > slotProps.data.reservedTokens.add(slotProps.data.usedTokens).amount">
+                  <StatusBadge :status="true" />
+                </div>
+                <div v-else>
+                  <StatusBadge :status="false" />
+                </div>
+              </div>
+            </div>
           </template>
         </Column>
+
         <Column :header="$t('BOOST.COMMON.LOCKUP_PERIOD')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
             <span>{{msToDays(slotProps.data.lockupPeriod) }} {{$t('BOOST.COMMON.DAYS')}}</span>
@@ -169,6 +183,9 @@ import StakeManagementIcon from "@/components/commons/StakeManagementIcon.vue";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import {UnbondingDelegationEntry} from "@/models/store/staking";
 import {calculateApr} from "./LoialtyDropUtil";
+import Counter from "@/components/booster/BoosterCounter.vue";
+import BoosterCounter from "@/components/booster/BoosterCounter.vue";
+import StatusBadge from "@/components/booster/StatusBadge.vue";
 
 
 async function transactionSuccess(arg: string) {
@@ -257,6 +274,9 @@ function checkDateIsDefined(date: Date | null) {
   }
 }
 
+const calcTimeToStart = ((time: Date) => {
+  return time.getTime() - new Date(Date.now()).getTime();
+});
 
 
 </script>
@@ -502,13 +522,13 @@ function checkDateIsDefined(date: Date | null) {
     color: white;
     td {
       color: #343a40 !important;
-      background-color: #02447A;
+      background-color: #0164b4 !important;
     }
   }
   .extended-datatable .p-datatable-table .p-datatable-tbody .p-selectable-row {
 
     td {
-      background: white;
+      background: white !important;
     }
   }
 

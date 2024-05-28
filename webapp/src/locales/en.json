@@ -675,6 +675,10 @@
       "APR": "Reward (APR)",
       "POOL_USAGE": "Pool usage",
       "DAYS": "days"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "CLOSED": "Closed"
     }
   }
 }

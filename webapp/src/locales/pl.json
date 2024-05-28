@@ -667,6 +667,10 @@
       "APR": "Nagroda (APR)",
       "POOL_USAGE": "Wykorzystanie puli",
       "DAYS": "dni"
+    },
+    "STATUS": {
+      "ACTIVE": "Aktywny",
+      "CLOSED": "Zakmnięty"
     }
   }
 }
