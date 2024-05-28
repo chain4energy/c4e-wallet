@@ -1,20 +1,31 @@
 <template>
-  <div class="booster-container">
-    <div class="booster-container__box">
-      <div>{{days}}</div>
-      <div>Days</div>
+  <div class="booster">
+    <div>
+      {{$t('BOOST.COUNTER.STARTS_IN')}}
     </div>
-    <div style="margin:auto">:</div>
-    <div class="booster-container__box">
-      <div>{{ hours }}</div>
-      <div>Hours</div>
-    </div>
-    <div style="margin:auto">:</div>
-    <div class="booster-container__box">
-      <div>{{ minutes }}</div>
-      <div>Mins</div>
+    <div class="booster-container">
+      <div class="booster-container__box">
+        <div>{{days}}D</div>
+<!--        <div>{{$t('BOOST.COUNTER.DAYS')}}</div>-->
+      </div>
+      <div style="margin:auto">:</div>
+      <div class="booster-container__box">
+        <div>{{ hours }}H</div>
+<!--        <div>{{$t('BOOST.COUNTER.HOURS')}}</div>-->
+      </div>
+      <div style="margin:auto">:</div>
+      <div class="booster-container__box">
+        <div>{{ minutes }}M</div>
+<!--        <div>{{$t('BOOST.COUNTER.MINUTES')}}</div>-->
+      </div>
+      <div style="margin:auto">:</div>
+      <div class="booster-container__box">
+        <div>{{ seconds }}S</div>
+        <!--        <div>{{$t('BOOST.COUNTER.MINUTES')}}</div>-->
+      </div>
     </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
@@ -65,19 +76,23 @@ onUnmounted(() => {
 
 
 <style scoped lang="scss">
+.booster {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
 .booster-container {
-  max-width: 200px;
+  max-width: 140px;
+  padding: 0 5px;
+  //max-height: 70px;
   display: flex;
   flex-direction: row;
   text-align: center;
   justify-content: center;
-  font-size: 0.8rem;
-  font-weight: bold;
   border-radius: 10px;
-  background: linear-gradient(90deg, rgba(90,55,142,1) 0%, rgba(79,22,139,1) 35%, rgba(134,32,162,1) 100%);
+  background: #72bf44;
 
   &__box {
-    padding: 10px;
+    padding: 5px 2px;
   }
 
 }

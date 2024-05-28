@@ -9,8 +9,8 @@
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
             <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
               <div>{{ slotProps.data.poolDescription }}</div>
-              <div style="text-align: center">
-                <div v-if="slotProps.data.epochStartDate.getTime() - new Date().getTime() > 0" style="margin: 10px">
+              <div style="display: flex; align-items: center; justify-content: center; text-align: center;">
+                <div v-if="slotProps.data.epochStartDate.getTime() - new Date().getTime() > 0" style="margin: auto">
                   <BoosterCounter :start-date="slotProps.data.epochStartDate" />
                 </div>
                 <div v-else-if="slotProps.data.baseTokens.amount > slotProps.data.reservedTokens.add(slotProps.data.usedTokens).amount">
@@ -82,7 +82,7 @@
 
          <Column>
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <Button class="outlined-secondary" @click="checkBTN(slotProps.data)" :disabled="calculatePercentagePoolUsage(slotProps.data).isBiggerThanOrEqualTo(1)">
+            <Button class="outlined-secondary" @click="checkBTN(slotProps.data)" :disabled="checkIfActive(slotProps.data)">
               <StakeManagementIcon icon="manage"/>
               {{ $t('BOOST.TABLE.MANAGE') }}
             </Button>
@@ -243,6 +243,10 @@ function calculateContributionPerPool(userBoosts: LoyaltyDropUserBoost[], poolId
   return tempCoin;
 }
 
+const checkIfActive = (data: LoyaltyDropPoolConfig) => {
+  return data.baseTokens.amount > data.reservedTokens.add(data.usedTokens).amount && data.epochStartDate.getTime() > new Date().getTime();
+
+}
 function calculateRewardsPerPool(userBoosts: LoyaltyDropUserBoost[], poolId: number) {
   console.log("calculateRewardsPerPool poolId:" + poolId);
   const temp = userBoosts.filter(el => el.boostPoolId === poolId);
@@ -522,7 +526,7 @@ const calcTimeToStart = ((time: Date) => {
     color: white;
     td {
       color: #343a40 !important;
-      background-color: #0164b4 !important;
+      background-color: #477cb4 !important;
     }
   }
   .extended-datatable .p-datatable-table .p-datatable-tbody .p-selectable-row {

@@ -671,6 +671,12 @@
     "STATUS": {
       "ACTIVE": "Aktywny",
       "CLOSED": "Zakmnięty"
+    },
+    "COUNTER": {
+      "DAYS": "Dni",
+      "HOURS": "Godzin",
+      "MINUTES": "Minut",
+      "STARTS_IN": "Startuje za"
     }
   }
 }
