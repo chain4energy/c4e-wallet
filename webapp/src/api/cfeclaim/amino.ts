@@ -63,25 +63,33 @@ export function createCustomAminoConverters(): AminoConverters {
                   name,
                   owner,
                 }: MsgCreateVestingPool): AminoMsgCreateVestingPool["value"] => ({
-        amount: amount,
-        duration: duration,
+        amount,
+        duration: duration?(duration.seconds * 1000000000 + duration.nanos).toString():"0",
         name: name,
-        vestingType,
-        owner: owner,
+        vesting_type: vestingType,
+        owner,
       }),
       fromAmino: ({
                     amount,
                     duration,
                     name,
                     owner,
-                    vestingType,
-                  }: AminoMsgCreateVestingPool["value"]): MsgCreateVestingPool => ({
-       amount,
-        duration,
-        name,
-        owner,
-        vestingType
-      }),
+                    vesting_type,
+                  }: AminoMsgCreateVestingPool["value"]): MsgCreateVestingPool => {
+        const durationInNanoseconds = parseInt(duration, 10);
+        const seconds = Math.floor(durationInNanoseconds / 1_000_000_000);
+        const nanos = durationInNanoseconds % 1_000_000_000;
+        return {
+          amount,
+          duration: {
+            seconds,
+            nanos,
+          },
+          name,
+          owner,
+          vestingType: vesting_type
+        }
+      },
     },
     "/chain4energy.c4echain.cfevesting.MsgWithdrawAllAvailable": {
       aminoType: "cfevesting/WithdrawAllAvailable",
@@ -112,10 +120,10 @@ export interface AminoMsgCreateVestingPool extends AminoMsg {
   readonly type: "cfevesting/CreateVestingPool";
   readonly value: {
     readonly amount: string,
-    readonly duration: Duration | undefined,
+    readonly duration: string,
     readonly name: string,
-    readonly vestingType: string,
     readonly owner: string,
+    readonly vesting_type: string,
   };
 }
 
@@ -139,3 +147,4 @@ export interface AminoMsgClaim extends AminoMsg {
     mission_id: string;
   };
 }
+
