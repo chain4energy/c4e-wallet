@@ -99,11 +99,11 @@
         </Column>
 
       </template>
-      <template v-slot:expanded-columns="slotProps: {expandedData: {data: LoyaltyDropPoolConfig}}" >
+      <template v-slot:expanded-columns="slotProps1: {expandedData: {data: LoyaltyDropPoolConfig}}" >
         <div class="extended-datatable">
             <DataTableWrapper
               :useExternalGlobalFilter="false"
-              :eager-loading-config="createUserDropLoadingConfig(slotProps.expandedData.data.id)"
+              :eager-loading-config="createUserDropLoadingConfig(slotProps1.expandedData.data.id)"
               :paginator="false"
               >
 
@@ -127,9 +127,15 @@
                     <CoinAmount :amount=" slotProps.data.amount" :show-denom="true" :show-tooltip="true"/>
                   </template>
                 </Column>
-                <Column :header="$t('BOOST.TABLE.LAST_REWARD')" style="width: 200px; text-align: left" :sortable="false">
+                <Column :header="$t('BOOST.TABLE.LAST_REWARD_DATE')" style="width: 200px; text-align: left" :sortable="false">
                   <template #body="slotProps: {data: LoyaltyDropUserBoost}">
                     <span>{{ checkDateIsDefined(slotProps.data.lastRewardDate)}}</span>
+                  </template>
+                </Column>
+                <Column :header="$t('BOOST.TABLE.LAST_REWARD')" style="width: 200px; text-align: left" :sortable="false">
+                  <template #body="slotProps: {data: LoyaltyDropUserBoost}">
+                    <CoinAmount :amount="slotProps.data.lastRewardDate?calculatePayouts(slotProps1.expandedData.data, slotProps.data.amount):'0'"
+                                :show-denom="true" :show-tooltip="false"/>
                   </template>
                 </Column>
                 <Column :header="$t('BOOST.TABLE.STATUS')" style="width: 200px; text-align: right" :sortable="false" >
@@ -182,7 +188,7 @@ import {useLoyaltyDropStore} from "@/store/boost.store";
 import StakeManagementIcon from "@/components/commons/StakeManagementIcon.vue";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import {UnbondingDelegationEntry} from "@/models/store/staking";
-import {calculateApr} from "./LoialtyDropUtil";
+import {calculateApr, calculatePayouts} from "./LoialtyDropUtil";
 import Counter from "@/components/booster/BoosterCounter.vue";
 import BoosterCounter from "@/components/booster/BoosterCounter.vue";
 import StatusBadge from "@/components/booster/StatusBadge.vue";
@@ -535,7 +541,6 @@ const calcTimeToStart = ((time: Date) => {
       background: white !important;
     }
   }
-
 }
 
 </style>

@@ -9,10 +9,32 @@ import {mapLoyaltyDropConfig, mapLoyaltyDropUserBoost, mapLoyaltyDropUserBoostAr
 import {formatString} from "@/utils/string-formatter";
 
 //TODO: get information from Dawid how error response will look like
-export interface LoyaltyDropErrData {
-  code: number;
-  message: string;
-  details?: string;
+
+export interface ServiceApplicationError /* extends BaseServiceApplicationError */{
+  service: ServiceApplicationErrorService,
+  code: number,
+  name: string,
+  codespace: ServiceApplicationErrorCodespace,
+  message: string,
+  iid: string,
+  ts: Date,
+  cause: ServiceApplicationError,
+  data?: any
+}
+
+export enum ServiceApplicationErrorService {
+  LOYALTY_DROP_SERVICE = 'loyalty-drop-service'
+}
+
+export enum ServiceApplicationErrorCodespace {
+  API = 'api',
+  AUTH = 'auth',
+  NOTIFIER = 'notifier',
+  PAYMENT_GW = 'payment-gw',
+  PERSISTENCE = 'persistence',
+  BASE_PERSISTENCE = 'base_persistence',
+  SERVICE = 'service',
+  SIGNATURE = 'signature'
 }
 
 // export interface LoyaltyDropServiceApplicationError /* extends BaseServiceApplicationError */{
@@ -43,11 +65,11 @@ export class LoyaltyDropApi extends BaseApi {
     mappingErrorMassage: 'Loyaltydrop data mapping error: ',
   };
 
-  private isResponseError<H>(response: RequestResponse<H, ErrorData<LoyaltyDropErrData>>) {
+  private isResponseError<H>(response: RequestResponse<H, ErrorData<ServiceApplicationError>>) {
     return response.error != undefined;
   }
 
-  private errorDataToInfo(data: LoyaltyDropErrData){
+  private errorDataToInfo(data: ServiceApplicationError){
     return data.message;
   }
 
@@ -57,13 +79,13 @@ export class LoyaltyDropApi extends BaseApi {
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
     logPrefix: string
-  ): Promise<RequestResponse<T, ErrorData<LoyaltyDropErrData>>> {
+  ): Promise<RequestResponse<T, ErrorData<ServiceApplicationError>>> {
     const config = {
       method: 'GET',
       url: url,
     };
 
-    return this.axiosWith200ErrorCall<T, H, LoyaltyDropErrData>(
+    return this.axiosWith200ErrorCall<T, H, ServiceApplicationError>(
       config,
       mapData,
       lockScreen,
@@ -82,7 +104,7 @@ export class LoyaltyDropApi extends BaseApi {
     lockScreen: boolean,
     localSpinner: LocalSpinner | null,
     logPrefix: string
-  ): Promise<RequestResponse<T, ErrorData<LoyaltyDropErrData>>>
+  ): Promise<RequestResponse<T, ErrorData<ServiceApplicationError>>>
   {
     const config = {
       method: 'POST',
@@ -93,7 +115,7 @@ export class LoyaltyDropApi extends BaseApi {
       data: data
     };
 
-    return this.axiosWith200ErrorCall<T, H, LoyaltyDropErrData>(
+    return this.axiosWith200ErrorCall<T, H, ServiceApplicationError>(
       config,
       mapData,
       lockScreen,
@@ -105,7 +127,7 @@ export class LoyaltyDropApi extends BaseApi {
     );
   }
 
-  public fetchLoyaltyDropPoolsConfig(lockScreen: boolean): Promise<RequestResponse<LoyaltyDropPoolConfig[], ErrorData<LoyaltyDropErrData>>>{
+  public fetchLoyaltyDropPoolsConfig(lockScreen: boolean): Promise<RequestResponse<LoyaltyDropPoolConfig[], ErrorData<ServiceApplicationError>>>{
     const url = useConfigurationStore().config.loyaltyDropService.loyaltyDropBaseUrl + useConfigurationStore().config.loyaltyDropService.loyaltyDropPoolConfigurationsUrl;
     const mapData = (data: LoyaltyDropPoolConfigResponse[] | undefined) => { return mapLoyaltyDropConfig(data); };
     return this.axiosLoyaltyDropGetCall(url, mapData, lockScreen, null, 'fetchLoyaltyDropPoolsConfig');

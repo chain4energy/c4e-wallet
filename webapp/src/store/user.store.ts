@@ -158,7 +158,7 @@ export const useUserStore = defineStore({
           if (account.type !== AccountType.Nonexistent) {
             const allResults = await Promise.all([
               fetchBalance(connectionInfo, this, lockscreen),
-           //   fetchSpendableBalances(connectionInfo, this, lockscreen),
+              fetchSpendableBalances(connectionInfo, this, lockscreen),
               fetchRewards(connectionInfo, this, lockscreen),
               fetchDelegations(connectionInfo, this, lockscreen),
               fetchUnbondingDelegations(connectionInfo, this, lockscreen),
@@ -360,6 +360,7 @@ export const useUserStore = defineStore({
           if(res.isSuccess()) {
             if(this.account.address) {
               fetchBalance(this.connectionInfo, this, true);
+              fetchSpendableBalances(this.connectionInfo, this, true);
             }
             successCallback();
           } else {
