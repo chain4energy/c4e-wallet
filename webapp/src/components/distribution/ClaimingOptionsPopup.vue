@@ -1,0 +1,169 @@
+<template>
+  <div class="claimingOptionsPopup">
+    <div class="claimingOptionsPopup__background" @click="$emit('close')"></div>
+
+    <div class="claimingOptionsPopup__holder" v-if="!accountOfVestingType">
+      <div class="claimingOptionsPopup__x" @click="$emit('close')"><Icon name="X" style="height: 25px;"/></div>
+
+      <h3>{{$t('AIRDROP.CLAIM_TO_ADDRESS')}}</h3>
+      <div class="claimingOptionsPopup__content">
+        {{ address }}
+      </div>
+      <Button @click="claim">{{ $t('COMMON.CLAIM') }}</Button>
+    </div>
+
+    <div class="claimingOptionsPopup__holder" v-if="accountOfVestingType">
+      <h3>{{$t('AIRDROP.CLAIM_TO_DESTINATION_ADDRESS')}}</h3>
+      <div class="claimingOptionsPopup__content">
+        <Form @submit="claim" :validation-schema="addressSchema" v-slot="{ errors }" class="loginEmail__body">
+          <div class="loginEmail__description">
+            <div class="field">
+              <Field v-model="address" name="address" placeholder=" " type="text" class="form-control"
+                     style="width: 100%;" :class="{ 'is-invalid': errors.address }"></Field>
+              <span>{{ $t('CONNECT.INSERT_ADDRESS') }}</span>
+              <div class="invalid-feedback">
+                {{ errors.address ? errors.address : "" }}
+              </div>
+              <Button type="submit">{{ $t('COMMON.CLAIM') }}</Button>
+            </div>
+          </div>
+        </Form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import {useUserStore} from '@/store/user.store';
+import {computed, defineEmits, onMounted, ref} from "vue";
+import {Field, Form} from "vee-validate";
+import {object, string} from "yup";
+import {YupSequentialStringSchema} from "@/utils/yup-utils";
+import i18n from "@/plugins/i18n";
+import {useConfigurationStore} from "@/store/configuration.store";
+import * as bench32 from "bech32";
+import {AccountType} from "@/models/store/account";
+import Icon from "@/components/features/IconComponent.vue";
+
+const emit = defineEmits(['close', 'claim']);
+
+const address = ref('');
+
+const accountOfVestingType = computed(() => useUserStore().getAccount.type === AccountType.ContinuousVestingAccount);
+
+onMounted(() => {
+  if (!accountOfVestingType.value) {
+    address.value = useUserStore().getAccount.address;
+  }
+})
+
+let errorMessageType = '';
+
+function claim() {
+  emit('claim', address.value);
+}
+async function validateAddress(address: string | undefined) {
+  if (!address) {
+    errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.EMPTY');
+    return false;
+  }
+  try {
+    const words = bench32.decode(address);
+    if (words?.prefix !== useConfigurationStore().config.addressPrefix) {
+      errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.NOT_THIS_NETWORK', {prefix: useConfigurationStore().config.addressPrefix});
+    }
+    return true;
+  } catch (err) {
+    onWrongAddress(address, String(err));
+    return false;
+  }
+}
+
+function onWrongAddress(address: string, err: string) {
+  switch (err.slice(7)) {
+    case address + ' too short' || 'Data too short':
+      errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.TOO_SHORT');
+      break;
+    case 'No separator character for ' + address:
+      errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.SEPARATOR');
+      break;
+    case 'Invalid checksum for ' + address:
+      errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.CHECK_SUM');
+      break;
+    default:
+      errorMessageType = i18n.global.t('CONNECT.ADDRESS_VALIDATION.INVALID');
+      break;
+  }
+}
+
+const addressSchema = object().shape({
+  address: YupSequentialStringSchema([
+    string().required(i18n.global.t('CONNECT.ADDRESS_VALIDATION.EMPTY')),
+    string().test('validate Address', i18n.global.t('CONNECT.ADDRESS_VALIDATION.NOT_THIS_NETWORK', {prefix: useConfigurationStore().config.addressPrefix}), (address: string | undefined) => {
+      if (!address) {
+        return false;
+      }
+      return address.startsWith(useConfigurationStore().config.addressPrefix);
+    }),
+    string().test('validate Address', i18n.global.t(errorMessageType), validateAddress)
+  ])
+});
+
+
+</script>
+
+<style scoped lang="scss">
+.claimingOptionsPopup {
+  color: #001b31;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  z-index: 10;
+
+  &__background {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: #0F3153;
+    opacity: 0.85;
+    z-index: -1;
+  }
+
+  &__holder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    max-width: 650px;
+    width: 90%;
+    min-height: 292px;
+    background-color: #FFFFFF;
+    padding: 30px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
+    border-radius: 8px;
+    position: relative;
+  }
+
+  &__content {
+    width: 100%;
+    @media (max-width: 604px) {
+      overflow: scroll;
+    }
+  }
+
+  &__x {
+    position: absolute;
+    right:0;
+    top:20px;
+    cursor: pointer;
+
+  }
+}
+</style>

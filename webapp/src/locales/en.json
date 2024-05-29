@@ -367,6 +367,7 @@
     "PRIVACY_POLICY": "Privacy policy",
     "TERMS_CONDITIONS": "Terms & conditions",
     "AIRDROP": "Airdrop",
+    "DISTRIBUTION": "Claim Seed/Private",
     "FAUCET": "Faucet",
     "BUYTOKENS": "Buy tokens",
     "PROFILE": "Profile",
@@ -665,7 +666,9 @@
       "BALANCE": "Your balance",
       "SPENDABLE": "Spendable",
       "INFO_HEADER": "This operation will lock your funds for {timeToComplete} days",
-      "INFO_TEXT": "Rewards for the locked-up tokens will be distributed in weekly cycles until the end of lock-up period",
+      "INFO_TEXT_1": "1. Opting for a longer lockup period will earn a better APR.",
+      "INFO_TEXT_2": "2. All rewards are paid in C4E in weekly cycles and automatically sent to wallets.",
+      "INFO_TEXT_3": "3. Users are not allowed to withdraw their locked tokens until the redemption period is over.",
       "RESERVE": "Reserve {amount} C4E for future transactions",
       "AMOUNT": "C4E Rewards at the end of the lock-up period",
       "LOCK_C4E": "Lock C4E"

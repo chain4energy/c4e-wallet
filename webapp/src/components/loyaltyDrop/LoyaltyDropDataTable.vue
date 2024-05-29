@@ -8,7 +8,7 @@
         <Column :header="$t('BOOST.COMMON.NAME')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
             <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
-              <div>{{ slotProps.data.poolDescription }}</div>
+              <div style="margin-left: 10px; font-weight:bold">{{ slotProps.data.poolDescription }}</div>
               <div style="display: flex; align-items: center; justify-content: center; text-align: center;">
                 <div v-if="slotProps.data.epochStartDate.getTime() - new Date().getTime() > 0" style="margin: auto">
                   <BoosterCounter :start-date="slotProps.data.epochStartDate" />

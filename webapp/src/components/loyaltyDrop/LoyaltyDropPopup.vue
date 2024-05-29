@@ -37,15 +37,24 @@
             </CoinAmount>          </div>
         </div>
 
-      <div style="display: flex; justify-content: center; margin: 30px auto;">
+      <div style="display: flex; justify-content: center; margin: 10px auto">
         <InfoMessage
                         header="BOOST.POPUP.INFO_HEADER"
                         :header-variables="{timeToComplete: msToDays(boost.lockupPeriod)}"
-                        texts="BOOST.POPUP.INFO_TEXT"
+                        :texts="['BOOST.POPUP.INFO_TEXT_1',
+                        'BOOST.POPUP.INFO_TEXT_2',
+                        'BOOST.POPUP.INFO_TEXT_3']"
+
         />
+        <!--        'BOOST.POPUP.INFO_TEXT'+-->
       </div>
-
-
+<!--      <div style="display: flex; justify-content: center; margin: 10px auto">-->
+<!--        <div style="display: flex; justify-content: center; flex-direction: column;">-->
+<!--          <span>1.	Opting for a longer staking period will earn a better APR.</span>-->
+<!--          <span>2.	All rewards are paid in C4E in weekly cycles and automatically sent to wallets.</span>-->
+<!--          <span>3.	Users are not allowed to unstake their staked tokens until the redemption period is over.</span>-->
+<!--        </div>-->
+<!--      </div>-->
       <Form @submit="action"  :validation-schema="baseSchema" v-slot="{ errors }" class="validationPopup__body" as="form">
         <div class="validationPopup__body">
           <AmountView
@@ -351,7 +360,7 @@ function lessThanOrEqualTo(value: string | undefined): boolean {
   }
 
   &__amount {
-    padding: 5%;
+    padding: 0px 20px;
     box-shadow: 0 4px 20px rgb(0 0 0 / 11%);
     background: #FFFFFF;
     border-radius: 8px;
