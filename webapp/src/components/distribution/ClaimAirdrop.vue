@@ -369,7 +369,7 @@ function generateSocialMediaMessage(campaign: Campaign, mission?: Mission) {
   /////////////////////////
   if (isFinal) {
     // const campaignAmount = retrieveConvertedAmount(campaign.amount);
-    socialMediaMessage.value = i18n.t('AIRDROP.SHARE_MESSAGE_CAMPAIGN_COMPLETED');
+    socialMediaMessage.value = i18n.t('DISTRIBUTION.SHARE_MESSAGE_CAMPAIGN_COMPLETED');
     isFinal = false;
   } else {
     const missionAmount = transformToExpView(Number(mission?.weight) / 1000000);
@@ -410,9 +410,10 @@ function onSuccessClaim(campaign: Campaign, mission: Mission){
 }
 
 function hideTotalDistribution(campaign: Campaign){
-  const airDropTotal = airDropStore.getAirDropTotal;
-  const campaignConfig = airDropTotal.campaignAllocations?.find((e)=> e.name == campaign.name);
-  return campaignConfig ? campaignConfig.hide_total_distribution : false;
+  return true;
+  // const airDropTotal = airDropStore.getAirDropTotal;
+  // const campaignConfig = airDropTotal.campaignAllocations?.find((e)=> e.name == campaign.name);
+  // return campaignConfig ? campaignConfig.hide_total_distribution : false;
 }
 
 function encodeUrlPart(toEncode: string){

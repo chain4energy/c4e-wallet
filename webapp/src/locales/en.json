@@ -483,7 +483,8 @@
     "VERSION": "Version"
   },
   "DISTRIBUTION": {
-    "CLAIM_AIRDROP": "Claim Seed/Private"
+    "CLAIM_AIRDROP": "Claim Seed/Private",
+    "SHARE_MESSAGE_CAMPAIGN_COMPLETED": "I have completed the {'@'}Chain4Energy Campaign and received #C4E!"
   },
   "FAUCET": {
     "WELCOME": "Welcome to our testnet! Are you looking for some tokens to start?\nYou can top up your account with 100 C4E every 24 hours",

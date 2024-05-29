@@ -471,7 +471,8 @@
     "PRIVACY": "Polityka prywatności"
   },
   "DISTRIBUTION": {
-    "CLAIM_AIRDROP": "Odbierz Seed/Private"
+    "CLAIM_AIRDROP": "Odbierz Seed/Private",
+    "SHARE_MESSAGE_CAMPAIGN_COMPLETED": "I have completed the {'@'}Chain4Energy Campaign and received #C4E!"
   },
   "HEADER": {
     "TOP_UP_ACCOUNT": "Kranik",
