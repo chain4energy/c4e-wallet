@@ -291,7 +291,7 @@ export const useUserStore = defineStore({
     },
     async claimInitialAirdrop(campaignId: string, extraAddress: string): Promise<boolean> {
       const connectionInfo = this.connectionInfo;
-      return await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, (!extraAddress || extraAddress === '') ? extraAddress:this.account.address)
+      return await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, (!extraAddress || extraAddress === '') ? this.account.address : extraAddress)
         .then(async (resp) => {
           if (resp.isError()) {
             await onTxDeliveryFailure(connectionInfo, this, resp, 'Claiming airdrop rewards failed: ' + resp.error?.message);
