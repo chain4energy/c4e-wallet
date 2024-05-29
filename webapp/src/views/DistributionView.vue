@@ -3,7 +3,7 @@
   <TabView class="airDrop__tabview">
     <TabPanel>
       <template #header>
-        <div>{{$t('AIRDROP.CLAIM_AIRDROP')}}</div>
+        <div>{{$t('DISTRIBUTION.CLAIM_AIRDROP')}}</div>
       </template>
       <ClaimAirDrop/>
     </TabPanel>
@@ -14,8 +14,7 @@
 <script setup lang="ts">
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import AirDropTotal from "@/components/airdrop/AirDropTotal.vue";
-import ClaimAirDrop from "@/components/airdrop/ClaimAirdrop.vue";
+import ClaimAirDrop from "@/components/distribution/ClaimAirdrop.vue";
 
 </script>
 

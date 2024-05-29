@@ -300,7 +300,7 @@
       "WARNINGS": {
         "DELEGATIONS": {
           "HEADER": "Staking will lock your funds for {timeToComplete} days",
-          "TEXT": "You will need to undelegate in order for your staked assets to be liquid again. This proccess will take {timeToComplete} days to complete"
+          "TEXT": "You will need to undelegate in order for your staked assets to be liquid again. This process will take {timeToComplete} days to complete"
         },
         "UNDELEGATIONS": {
           "HEADER": "Once the unbonding period begins you will:",
@@ -481,6 +481,9 @@
   "HEADER": {
     "TOP_UP_ACCOUNT": "Faucet",
     "VERSION": "Version"
+  },
+  "DISTRIBUTION": {
+    "CLAIM_AIRDROP": "Claim Seed/Private"
   },
   "FAUCET": {
     "WELCOME": "Welcome to our testnet! Are you looking for some tokens to start?\nYou can top up your account with 100 C4E every 24 hours",

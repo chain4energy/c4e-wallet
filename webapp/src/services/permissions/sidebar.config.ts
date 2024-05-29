@@ -106,7 +106,7 @@ export class SidebarConfig{
     retVal.id = 8;
     retVal.href = '/distribution';
     retVal.title = 'Distribution';
-    retVal.icon = new SidebarIcon('Split');
+    retVal.icon = new SidebarIcon('HandCoins');
     return retVal;
   }
 

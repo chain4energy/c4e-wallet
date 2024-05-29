@@ -8,7 +8,7 @@
         <Column :header="$t('BOOST.COMMON.NAME')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
             <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
-              <div style="margin-left: 10px; font-weight:bold">{{ slotProps.data.poolDescription }}</div>
+              <div style="margin-left: 10px; font-weight:bold">{{ slotProps.data.poolDescription }}<Icon v-for="i in calculateRockets(slotProps.data.poolDescription ) " :key="i" name="Rocket" style="margin-left: 10px ; color: #72bf44;"/></div>
               <div style="display: flex; align-items: center; justify-content: center; text-align: center;">
                 <div v-if="slotProps.data.epochStartDate.getTime() - new Date().getTime() > 0" style="margin: auto">
                   <BoosterCounter :start-date="slotProps.data.epochStartDate" />
@@ -192,6 +192,7 @@ import {calculateApr, calculatePayouts} from "./LoialtyDropUtil";
 import Counter from "@/components/booster/BoosterCounter.vue";
 import BoosterCounter from "@/components/booster/BoosterCounter.vue";
 import StatusBadge from "@/components/booster/StatusBadge.vue";
+import Icon from "@/components/features/IconComponent.vue";
 
 
 async function transactionSuccess(arg: string) {
@@ -209,6 +210,22 @@ const userStore = useUserStore();
 const boostStore = useLoyaltyDropStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<LoyaltyDropPoolConfig>());
+
+function calculateRockets(str: string) {
+  if (str.indexOf('3m') >= 0) {
+    return 1;
+  }
+  if (str.indexOf('6m') >= 0) {
+    return 2;
+  }
+  if (str.indexOf('9m') >= 0) {
+    return 3;
+  }
+  if (str.indexOf('12m') >= 0) {
+    return 4;
+  }
+  return 0;
+}
 
 function checkBTN(item: LoyaltyDropPoolConfig){
   currentBoost.value = item;

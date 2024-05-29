@@ -470,6 +470,9 @@
     "TERMS": "Zasady i warunki",
     "PRIVACY": "Polityka prywatności"
   },
+  "DISTRIBUTION": {
+    "CLAIM_AIRDROP": "Odbierz Seed/Private"
+  },
   "HEADER": {
     "TOP_UP_ACCOUNT": "Kranik",
     "VERSION": "Wersja"
