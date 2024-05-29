@@ -10,9 +10,8 @@ export function calculateApr(data: LoyaltyDropPoolConfig) {
 }
 
 export function calculateReward(data: LoyaltyDropPoolConfig, lockedAmount: number) {
-  const factor = useConfigurationStore().config.getViewDenomConversionFactor();
   const amountTemp = divideBigInts( data.rewardsTokens.amount, data.baseTokens.amount).multiply(lockedAmount);
-  return new BigDecimal(amountTemp).multiply(factor);
+  return new BigDecimal(amountTemp);
 }
 
 export function calculatePayouts(data: LoyaltyDropPoolConfig, lockedAmount: Coin) {

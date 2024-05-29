@@ -108,7 +108,7 @@
             <div style="flex: 1 1;">
               <span>{{$t('BOOST.POPUP.AMOUNT')}}:
 <!--                <span style="font-weight: bold;">{{calculateReward(boost,amount).toFixed(4)}} C4EE</span>-->
-                <CoinAmount :amount="calculateReward(boost,amount)" :show-denom="true" :show-tooltip="true" :reduce-big-number="true" :precision="2"/>
+                <CoinAmount :amount="calculateReward(boost,amount * useConfigurationStore().config.getViewDenomConversionFactor())" :show-denom="true" :show-tooltip="true" :reduce-big-number="true" :precision="2"/>
               </span>
             </div>
             <Button class="validationPopup__button" type="submit">
