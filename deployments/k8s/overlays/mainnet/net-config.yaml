@@ -60,7 +60,7 @@ data:
          "faucetAvailable": false,
          "publicSaleVisible": false,
          "loyaltyDropService": {
-           "loyaltyDropBaseUrl": "https://loyalty-drop.c4e.io/api/loyalty-drop"
+           "loyaltyDropBaseUrl": "https://loyalty-drop-mainnet.c4e.io/api/loyalty-drop"
          }
        },
        "Testnet": {

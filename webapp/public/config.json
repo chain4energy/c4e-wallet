@@ -60,6 +60,9 @@
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": true,
     "useAminoOnly": false,
+    "loyaltyDropService": {
+      "loyaltyDropBaseUrl": "https://loyalty-drop-mainnet.c4e.io/api/loyalty-drop"
+    },
     "circulatingSupplyVisible" : true
   },
   "devnet":{
