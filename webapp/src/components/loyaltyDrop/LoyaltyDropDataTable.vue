@@ -10,7 +10,7 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
               <div style="margin-left: 10px; font-weight:bold">
                 <div>
-                    <Icon v-for="i in calculateRockets(slotProps.data.poolDescription ) " :key="i" name="Rocket" style="margin-left: 2px ; color: #72bf44;"/>
+                    <Icon v-for="i in calculateRockets(slotProps.data.poolDescription ) " :key="i" name="Rocket" :style="'color:'+calculateColor(i)" style="height: 18px"/>
                 </div>
                 {{ slotProps.data.poolDescription }}
               </div>
@@ -231,6 +231,23 @@ function calculateRockets(str: string) {
   }
   return 0;
 }
+
+function calculateColor(i:number){
+  if (i==1) {
+    return "#a5a501";
+  }
+  if (i==2) {
+    return "#bebe00";
+  }
+  if(i==3) {
+    return "#e1e101";
+  }
+  if (i==4) {
+    return "#ffff00";
+  }
+  return "#ffffff";
+}
+
 
 function checkBTN(item: LoyaltyDropPoolConfig){
   currentBoost.value = item;

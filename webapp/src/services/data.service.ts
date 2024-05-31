@@ -38,6 +38,7 @@ class DataService extends LoggedService {
   private lastAccountTimeout = 0;
   private lastSpendablesTimeout = 0;
   private lastLoyaltyDropUserBoostTimeout = 0;
+  private lastLoyaltyDropPoolsConfigTimeout = 0;
 
   private blockIntervalId = 0;
   private dashboardIntervalId = 0;
@@ -45,6 +46,7 @@ class DataService extends LoggedService {
   private accountIntervalId = 0;
   private spendablesIntervalId = 0;
   private loyaltyDropUserBoostIntervalId = 0;
+  private loyaltyDropPoolsConfigIntervalId = 0;
 
   private onProposalDetailsError?: () => void;
 
@@ -96,10 +98,11 @@ class DataService extends LoggedService {
         this.refreshBlocksData();
         this.refreshDashboard();
         this.refreshValidators();
+        this.refreshLoyaltyDropPoolsConfig();
         this.setIntervals();
-        // if(this.isLoyaltyDropViewSelected){
-        //   useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(false);
-        // }
+        if(useUserStore().isLoggedIn) {
+          this.refreshAccountData();
+        }
       }
     }, false);
     window.addEventListener('blur', () => {
@@ -158,7 +161,7 @@ class DataService extends LoggedService {
       this.accountIntervalId = this.checkAndSetInterval(this.accountIntervalId, refreshAccountData, this.accountTimeout, "refreshAccountData");
       if(this.isLoyaltyDropViewSelected){
         this.lastLoyaltyDropUserBoostTimeout = now;
-        this.loyaltyDropUserBoostIntervalId = this.checkAndSetInterval(this.loyaltyDropUserBoostIntervalId, refreshLoyaltyDropUserBoost, this.loyaltyDropUserBoostTimeout, "refreshLoyaltyDropUserBoost");
+        this.loyaltyDropUserBoostIntervalId = this.checkAndSetInterval(this.loyaltyDropUserBoostIntervalId, refreshLoyaltyDrop, this.loyaltyDropUserBoostTimeout, "refreshLoyaltyDropUserBoost");
       }
     }
   }
@@ -264,9 +267,6 @@ class DataService extends LoggedService {
           if(this.isLoyaltyDropViewSelected){
             useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(true);
             this.refreshLoyaltyDropUserBoost(true, true);
-            // if(useUserStore().getAccount.address){
-            //   useLoyaltyDropStore().fetchLoyaltyDropUserBoost(useUserStore().getAccount.address, true);
-            // }
           }
         }
       );
@@ -396,7 +396,7 @@ class DataService extends LoggedService {
       useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig( true);
       instancce.refreshLoyaltyDropUserBoost(true, true);
       instancce.lastLoyaltyDropUserBoostTimeout = new Date().getTime();
-      instancce.loyaltyDropUserBoostIntervalId = instancce.checkAndSetInterval(instancce.loyaltyDropUserBoostIntervalId, refreshLoyaltyDropUserBoost, instancce.loyaltyDropUserBoostTimeout, "refreshLoyaltyDropUserBoost");
+      instancce.loyaltyDropUserBoostIntervalId = instancce.checkAndSetInterval(instancce.loyaltyDropUserBoostIntervalId, refreshLoyaltyDrop, instancce.loyaltyDropUserBoostTimeout, "refreshLoyaltyDropUserBoost");
     }
     onSuccess?.();
   }
@@ -428,6 +428,9 @@ class DataService extends LoggedService {
       this.refreshSpendables(false);
       if(useUserStore().getAccount.address && this.isClaimAirdropViewSelected){
         useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, false);
+      }
+      if(this.isLoyaltyDropViewSelected){
+        this.refreshLoyaltyDropUserBoost(true, true);
       }
       // if(useUserStore().getAccount.address && this.isLoyaltyDropViewSelected){
       //   this.refreshLoyaltyDropUserBoost(false, true);
@@ -496,6 +499,15 @@ class DataService extends LoggedService {
     }
   }
 
+  public refreshLoyaltyDropPoolsConfig() {
+    this.logToConsole(LogLevel.DEBUG, 'refreshLoyaltyDropPoolsConfig');
+    if (this.isLoyaltyDropViewSelected && !this.skipRefreshing(this.lastLoyaltyDropPoolsConfigTimeout, 'refreshLoyaltyDropPoolsConfig')) {
+      useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(false).then(() => {
+        this.lastLoyaltyDropPoolsConfigTimeout = new Date().getTime();
+      });
+    }
+  }
+
   private enableKeplrAccountChangeListener() {
     this.logToConsole(LogLevel.DEBUG, 'enableKeplrAccountChangeListener');
     window.addEventListener(keplrKeyStoreChange, keystoreChangeListener);
@@ -545,7 +557,7 @@ class DataService extends LoggedService {
     useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(true);
     this.refreshLoyaltyDropUserBoost(true, true);
     this.lastLoyaltyDropUserBoostTimeout = new Date().getTime();
-    this.loyaltyDropUserBoostIntervalId = this.checkAndSetInterval(this.loyaltyDropUserBoostIntervalId, refreshLoyaltyDropUserBoost, this.loyaltyDropUserBoostTimeout, "refreshLoyaltyDropUserBoost");
+    this.loyaltyDropUserBoostIntervalId = this.checkAndSetInterval(this.loyaltyDropUserBoostIntervalId, refreshLoyaltyDrop, this.loyaltyDropUserBoostTimeout, "refreshLoyaltyDropUserBoost");
   }
 
   public onLoyaltyDropUnselected() {
@@ -636,6 +648,7 @@ function refreshSpendables(lockscreen: boolean) {
   DataService.getInstance().refreshSpendables(lockscreen);
 }
 
-function refreshLoyaltyDropUserBoost() {
+function refreshLoyaltyDrop() {
   DataService.getInstance().refreshLoyaltyDropUserBoost(false);
+  DataService.getInstance().refreshLoyaltyDropPoolsConfig();
 }
