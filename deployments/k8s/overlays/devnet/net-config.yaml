@@ -190,7 +190,8 @@ data:
         "useAminoOnly": false,
         "loyaltyDropService": {
           "loyaltyDropBaseUrl": "https://loyalty-drop.c4e.io/api/loyalty-drop"
-        }
+        },
+        "circulatingSupplyVisible" : true
       },
       "Testnet": {
         "bcApiURL": "https://lcd-testnet.c4e.io",
