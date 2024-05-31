@@ -78,6 +78,7 @@ export class KeplrGasPriceSteps implements JsonKeplrGasPriceSteps{
 export class Queries implements JsonQueries{
   STAKING_POOL_URL: string;
   TOTAL_SUPPLY_URL: string;
+  CIRCULATING_SUPPLY_URL:string;
   COMMUNITY_POOL_URL: string;
   PROPOSALS_URL: string;
   PROPOSALS_BY_ID_URL: string;
@@ -107,6 +108,7 @@ export class Queries implements JsonQueries{
   ) {
     this.STAKING_POOL_URL = queries?.STAKING_POOL_URL ? queries.STAKING_POOL_URL : queriesDefaults.blockchain.STAKING_POOL_URL;
     this.TOTAL_SUPPLY_URL = queries?.TOTAL_SUPPLY_URL ? queries.TOTAL_SUPPLY_URL : queriesDefaults.blockchain.TOTAL_SUPPLY_URL;
+    this.CIRCULATING_SUPPLY_URL = queries?.CIRCULATING_SUPPLY_URL ? queries.CIRCULATING_SUPPLY_URL : queriesDefaults.blockchain.CIRCULATING_SUPPLY_URL;
     this.COMMUNITY_POOL_URL = queries?.COMMUNITY_POOL_URL ? queries.COMMUNITY_POOL_URL : queriesDefaults.blockchain.COMMUNITY_POOL_URL;
     this.PROPOSALS_URL = queries?.PROPOSALS_URL ? queries.PROPOSALS_URL : queriesDefaults.blockchain.PROPOSALS_URL;
     this.PROPOSALS_BY_ID_URL = queries?.PROPOSALS_BY_ID_URL ? queries.PROPOSALS_BY_ID_URL : queriesDefaults.blockchain.PROPOSALS_BY_ID_URL;
@@ -197,6 +199,7 @@ export class Configuration implements JsonConfiguration {
   publicSaleVisible: boolean;
   useAminoOnly:boolean;
   loyaltyDropService: LoyaltyDropConfig;
+  circulatingSupplyVisible: boolean;
 
   public static readonly emptyConfiguration = new Configuration();
 
@@ -251,6 +254,7 @@ export class Configuration implements JsonConfiguration {
       this.publicSaleVisible=configuration.publicSaleVisible;
       this.useAminoOnly=configuration.useAminoOnly;
       this.loyaltyDropService = new LoyaltyDropConfig(configuration.loyaltyDropService);
+      this.circulatingSupplyVisible = configuration.circulatingSupplyVisible;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -295,6 +299,7 @@ export class Configuration implements JsonConfiguration {
       this.publicSaleVisible=false;
       this.useAminoOnly=false;
       this.loyaltyDropService = new LoyaltyDropConfig(undefined);
+      this.circulatingSupplyVisible = false;
     }
   }
 

@@ -18,7 +18,8 @@ interface TokensState {
   communityPool: DecCoin
   strategicReversePool: Coin
   strategicReversePoolUnbonded: Coin,
-  airdropPool: Coin
+  airdropPool: Coin,
+  circulatingSupply: Coin,
   inflation: number,
   lockedVesting: bigint,
   shareParameter: number;
@@ -36,6 +37,7 @@ export const useTokensStore = defineStore({
       strategicReversePool: emptyCoin,
       strategicReversePoolUnbonded: emptyCoin,
       airdropPool: emptyCoin,
+      circulatingSupply: emptyCoin,
       inflation: Number.NaN,
       lockedVesting: BigInt(0),
       shareParameter: Number.NaN
@@ -62,6 +64,17 @@ export const useTokensStore = defineStore({
           const message = 'Error fetching total supply data';
           logger.logToConsole(LogLevel.ERROR, message);
           ToastsService.getInstance().errorToast(ToastsTypeEnum.TOTAL_SUPPLY, message);
+        }
+      });
+    },
+    async fetchCirculatingSupply(lockscreen = true) {
+      await apiFactory.tokensApi().fetchCirculatingSupply(lockscreen).then(response => {
+        if (response.isSuccess() && response.data !== undefined) {
+          this.circulatingSupply = response.data;
+        } else {
+          const message = 'Error fetching circulating supply data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.CIRCULATING_SUPPLY, message);
         }
       });
     },
@@ -174,6 +187,7 @@ export const useTokensStore = defineStore({
       const emptyCoin = new Coin(0n, denom);
       this.stakingPool = new StakingPool(0n, 0n);
       this.totalSupply = emptyCoin;
+      this.circulatingSupply = emptyCoin;
       this.communityPool = new DecCoin(new BigDecimal(0), denom);
       this.strategicReversePool = emptyCoin;
       this.airdropPool = emptyCoin;
@@ -198,13 +212,8 @@ export const useTokensStore = defineStore({
     getTotalSupply(): Coin {
       return this.totalSupply;
     },
-    getCirculatingSupply(): DecCoin {
-      const amount =  this.getTotalUnbonded
-                    - this.strategicReversePoolUnbonded.amount
-                    - this.getAirdropPool.amount
-                    - this.getLockedVesting;
-      const amountDec = new BigDecimal(amount).subtract(this.communityPool.amount);
-      return new DecCoin(amountDec, this.totalSupply.denom);
+    getCirculatingSupply(): Coin {
+      return this.circulatingSupply;
     },
     getCommunityPool(): DecCoin {
       return this.communityPool;

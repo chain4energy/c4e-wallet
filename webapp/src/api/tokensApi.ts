@@ -17,6 +17,7 @@ import { Vestings } from "@/models/blockchain/c4e.vesting";
 import {DistributorParamsResponse} from "@/models/blockchain/distributorParams";
 import {mapDistributorParameters} from "@/models/mapper/distributor.parameters.mapper";
 import {useConfigurationStore} from "@/store/configuration.store";
+import { Coin as BcCoin } from "@/models/blockchain/common";
 
 export class TokensApi extends BaseApi {
 
@@ -33,6 +34,12 @@ export class TokensApi extends BaseApi {
     const mapData = (bcData: SupplyResponse | undefined) => {return mapCoin(bcData?.amount, denom);};
     return  await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.TOTAL_SUPPLY_URL, {denom: denom}),
       mapData, lockscreen, null, 'fetchTotalSupply - ');
+  }
+
+  public async fetchCirculatingSupply(lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>> {
+    const mapData = (bcData: BcCoin | undefined) => {return mapCoin(bcData, bcData?.denom);};
+    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.CIRCULATING_SUPPLY_URL,
+      mapData, lockscreen, null, 'fetchCirculatingSupply - ');
   }
 
   public async fetchInflation(lockscreen: boolean): Promise<RequestResponse<number, ErrorData<BlockchainApiErrorData>>> {

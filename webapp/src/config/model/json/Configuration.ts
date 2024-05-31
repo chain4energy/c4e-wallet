@@ -24,6 +24,7 @@ export interface ViewDenom {
 export interface JsonQueries {
   STAKING_POOL_URL: string;
   TOTAL_SUPPLY_URL: string;
+  CIRCULATING_SUPPLY_URL: string;
   COMMUNITY_POOL_URL: string;
   PROPOSALS_URL: string;
   PROPOSALS_BY_ID_URL: string;
@@ -102,4 +103,5 @@ export interface Configuration {
   publicSaleVisible: boolean;
   useAminoOnly: boolean;
   loyaltyDropService: JsonLoyaltyDropConfig;
+  circulatingSupplyVisible:  boolean;
 }

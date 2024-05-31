@@ -59,7 +59,8 @@
     "faucetAvailable": false,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": true,
-    "useAminoOnly": false
+    "useAminoOnly": false,
+    "circulatingSupplyVisible" : true
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
