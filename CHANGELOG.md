@@ -51,7 +51,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.1](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.1) - 2024-05-31
 
 ### Misc Improvements
-* Circulating-supply corrections,
+* Primevue version upgrade
+
+## [1.3.0](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.0) - 2024-05-31
+
+### Misc Improvements
+* Circulating-supply corrections
 
 ### Features
 * Loyalty drop (boots)
