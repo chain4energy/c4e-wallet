@@ -18,7 +18,7 @@
                 <div v-if="slotProps.data.epochStartDate.getTime() - new Date().getTime() > 0" style="margin: auto">
                   <BoosterCounter :start-date="slotProps.data.epochStartDate" />
                 </div>
-                <div v-else-if="slotProps.data.baseTokens.amount > slotProps.data.reservedTokens.add(slotProps.data.usedTokens).amount">
+                <div v-else-if="slotProps.data.baseTokens.amount > new Coin(slotProps.data.reservedTokens.amount, slotProps.data.reservedTokens.denom).add(slotProps.data.usedTokens).amount">
                   <StatusBadge :status="true" />
                 </div>
                 <div v-else>
@@ -289,9 +289,11 @@ function calculateContributionPerPool(userBoosts: LoyaltyDropUserBoost[], poolId
 }
 
 const checkIfActive = (data: LoyaltyDropPoolConfig) => {
-  return data.baseTokens.amount > data.reservedTokens.add(data.usedTokens).amount && data.epochStartDate.getTime() > new Date().getTime();
-
+  const tempCoin = new Coin(0n, "uc4e");
+  tempCoin.add( data.reservedTokens);
+  return data.baseTokens.amount > tempCoin.add(data.usedTokens).amount && data.epochStartDate.getTime() > new Date().getTime();
 }
+
 function calculateRewardsPerPool(userBoosts: LoyaltyDropUserBoost[], poolId: number) {
   console.log("calculateRewardsPerPool poolId:" + poolId);
   const temp = userBoosts.filter(el => el.boostPoolId === poolId);
