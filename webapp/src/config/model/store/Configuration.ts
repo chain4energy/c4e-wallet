@@ -220,11 +220,11 @@ export class Configuration implements JsonConfiguration {
       this.publicSaleServiceURL = configuration.publicSaleServiceURL;
       this.addressPrefix = configuration.addressPrefix;
       this.stakingDenom = configuration.stakingDenom;
-      this.coinGeckoId = configuration.coinGeckoId ?? '';
-      this.nodeProviderName = configuration.nodeProviderName ?? '';
-      this.nodeProviderEmail = configuration.nodeProviderEmail ?? '';
-      this.nodeProviderWebsite = configuration.nodeProviderWebsite ?? '';
-      this.chainSymbolImageUrl = configuration.chainSymbolImageUrl ?? '';
+      this.coinGeckoId = configuration.coinGeckoId;
+      this.nodeProviderName = configuration.nodeProviderName;
+      this.nodeProviderEmail = configuration.nodeProviderEmail;
+      this.nodeProviderWebsite = configuration.nodeProviderWebsite;
+      this.chainSymbolImageUrl = configuration.chainSymbolImageUrl;
       this.strategicPoolAddress = configuration.strategicPoolAddress;
       this.airdropPoolAddress = configuration.airdropPoolAddress;
       this.chainId = configuration.chainId;
