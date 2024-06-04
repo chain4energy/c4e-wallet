@@ -76,6 +76,12 @@ export default {
       '    not_bonded_tokens: not_bonded_tokens' +
       '    proposal_id '+
       '  }' +
+      '}',
+    TOKEN_PRICE_HISTORY: 'query TokenPriceHistory {' +
+      'tokenPrice: token_price_history(where: {unit_name: {_eq: denom}}, limit: limit, order_by: {timestamp: desc}) {' +
+      '    price' +
+      '    timestamp' +
+      '  }' +
       '}'
   },
   keybase: {

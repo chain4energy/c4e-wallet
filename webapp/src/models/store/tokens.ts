@@ -8,3 +8,14 @@ export class StakingPool {
   }
 
 }
+
+export class TokenPrice {
+  price: number;
+  timestamp: Date;
+
+  constructor(price: number, timestamp: Date) {
+    this.price = price;
+    this.timestamp = timestamp;
+  }
+}
+

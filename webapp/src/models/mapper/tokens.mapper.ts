@@ -1,5 +1,6 @@
-import { StakingPool as BcStakingPool} from "@/models/blockchain/tokens";
-import { StakingPool as StoreStakingPool } from "@/models/store/tokens";
+import {StakingPool as BcStakingPool} from "@/models/blockchain/tokens";
+import {StakingPool as StoreStakingPool, TokenPrice} from "@/models/store/tokens";
+import {TokenPriceHistoryResponse} from "@/models/hasura/tokenPrice";
 
 export function mapStakingPool(pool: BcStakingPool | undefined): StoreStakingPool  {
   if (pool === undefined) {
@@ -11,3 +12,20 @@ export function mapStakingPool(pool: BcStakingPool | undefined): StoreStakingPoo
   return new StoreStakingPool(BigInt(pool.bonded_tokens), BigInt(pool.not_bonded_tokens));
 }
 
+
+export function mapTokenPriceHistory(hasuraData: TokenPriceHistoryResponse | undefined):TokenPrice[] {
+  if (hasuraData === undefined) {
+    throw new Error('mapTokenPriceHistory - TokenPriceHistoryResponse response is undefined');
+  }
+  if (hasuraData.data === undefined) {
+    throw new Error('mapValidatorDescription - TokenPriceHistoryResponse.data is undefined');
+  }
+  if (hasuraData.data.tokenPrice === undefined) {
+    throw new Error('mapValidatorDescription - TokenPriceHistoryResponse.data.tokenPrice is undefined');
+  }
+  const retVal = new Array<TokenPrice>();
+  hasuraData.data.tokenPrice.forEach(el => {
+    retVal.push(new TokenPrice(Number(el.price),new Date(el.timestamp)));
+  });
+  return retVal;
+}

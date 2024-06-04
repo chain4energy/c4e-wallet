@@ -1,14 +1,14 @@
 import {ServiceTypeEnum} from "@/services/logger/service-type.enum";
 import {RequestResponse} from "@/models/request-response";
 import BaseApi, {ErrorData} from "@/api/base.api";
-import {StakingPool} from "@/models/store/tokens";
+import {StakingPool, TokenPrice} from "@/models/store/tokens";
 import {
   CommunityPoolResponse,
   InflationResponse,
   StakingPoolResponse,
   SupplyResponse
 } from "@/models/blockchain/tokens";
-import {mapStakingPool} from "@/models/mapper/tokens.mapper";
+import {mapStakingPool, mapTokenPriceHistory} from "@/models/mapper/tokens.mapper";
 import {Coin, DecCoin} from "@/models/store/common";
 import {findByDenomAndMapDecCoin, mapCoin} from "@/models/mapper/common.mapper";
 import {formatString} from "@/utils/string-formatter";
@@ -18,6 +18,12 @@ import {DistributorParamsResponse} from "@/models/blockchain/distributorParams";
 import {mapDistributorParameters} from "@/models/mapper/distributor.parameters.mapper";
 import {useConfigurationStore} from "@/store/configuration.store";
 import { Coin as BcCoin } from "@/models/blockchain/common";
+import {ProposalDetailsTally} from "@/models/store/proposal";
+import {HasuraErrorData} from "@/models/hasura/error";
+import {ProposalsDetailsTallyResult} from "@/models/blockchain/proposals";
+import {mapProposalsDetailsTallyListResponse} from "@/models/mapper/proposals.mapper";
+import queries from "@/api/queries";
+import {TokenPriceHistoryResponse} from "@/models/hasura/tokenPrice";
 
 export class TokensApi extends BaseApi {
 
@@ -73,5 +79,12 @@ export class TokensApi extends BaseApi {
     const mapData = (bcData: DistributorParamsResponse | undefined) => {return mapDistributorParameters(bcData?.params);};
     return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.DISTRIBUTOR_PARAMS_URL,
       mapData, lockscreen, null, 'fetchDistributorParams - ');
+  }
+
+  public async fetchTokenPriceHistory(denom: string, limit: number, lockscreen: boolean): Promise<RequestResponse<TokenPrice[], ErrorData<HasuraErrorData>>> {
+    const mapData = (hasureData: TokenPriceHistoryResponse | undefined) => {
+      return mapTokenPriceHistory(hasureData);
+    };
+    return this.axiosHasuraCall(formatString(queries.hasura.TOKEN_PRICE_HISTORY, {denom: denom, limit: limit}), mapData, lockscreen, null, 'fetchTokenPriceHistory - ');
   }
 }
