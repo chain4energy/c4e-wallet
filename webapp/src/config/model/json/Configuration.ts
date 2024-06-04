@@ -69,6 +69,11 @@ export interface Configuration {
   publicSaleServiceURL: string,
   addressPrefix: string,
   stakingDenom: string,
+  coinGeckoId: string,
+  nodeProviderName: string,
+  nodeProviderEmail: string;
+  nodeProviderWebsite: string;
+  chainSymbolImageUrl: string,
   strategicPoolAddress: string[],
   airdropPoolAddress: string,
   chainId: string,

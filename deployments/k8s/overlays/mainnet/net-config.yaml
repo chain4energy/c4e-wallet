@@ -10,6 +10,11 @@ data:
          "stakingPageURL": "https://wallet.c4e.io/staking",
          "addressPrefix": "c4e",
          "stakingDenom": "uc4e",
+         "nodeProviderName": "C4E",
+         "nodeProviderEmail": "integration.support@c4e.io",
+         "nodeProviderWebsite": "https://c4e.io",
+         "coinGeckoId": "chain4energy",
+         "chainSymbolImageUrl": "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/perun/chain.png",
          "transferDenom": "uc4e",
          "tokenReservationDenom": "uc4e",
          "strategicPoolAddress": [
@@ -71,6 +76,10 @@ data:
          "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
          "addressPrefix": "c4e",
          "stakingDenom": "uc4e",
+         "nodeProviderName": "C4E",
+         "nodeProviderEmail": "integration.support@c4e.io",
+         "nodeProviderWebsite": "https://c4e.io",
+         "chainSymbolImageUrl": "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/perun/chain.png",
          "transferDenom": "uc4e",
          "tokenReservationDenom": "uc4e",
          "strategicPoolAddress": [
