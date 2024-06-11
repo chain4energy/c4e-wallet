@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {StakingPool} from "@/models/store/tokens";
+import {StakingPool, TokenPrice} from "@/models/store/tokens";
 import {Coin, DecCoin} from "@/models/store/common";
 import {useConfigurationStore} from "./configuration.store";
 import {StoreLogger} from "@/services/logged.service";
@@ -9,6 +9,7 @@ import {LogLevel} from "@/services/logger/log-level";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import {ToastsService} from "@/services/toasts/toasts.service";
 import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";
+import {Currency} from "@/models/currency";
 
 const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
 
@@ -22,7 +23,8 @@ interface TokensState {
   circulatingSupply: Coin,
   inflation: number,
   lockedVesting: bigint,
-  shareParameter: number;
+  shareParameter: number,
+  tokenPrice: TokenPrice
 }
 
 export const useTokensStore = defineStore({
@@ -40,7 +42,8 @@ export const useTokensStore = defineStore({
       circulatingSupply: emptyCoin,
       inflation: Number.NaN,
       lockedVesting: BigInt(0),
-      shareParameter: Number.NaN
+      shareParameter: Number.NaN,
+      tokenPrice: new TokenPrice(0, new Date(), Currency.USD)
     };
   },
   actions: {
@@ -172,6 +175,23 @@ export const useTokensStore = defineStore({
         }
       });
     },
+    async fetchTokenPriceHistory(lockscreen = true) {
+      // const denom = useConfigurationStore().config.stakingDenom;
+      //TODO:
+      await apiFactory.tokensApi().fetchTokenPriceHistory("c4e", 1, lockscreen).then(response => {
+        if (response.isSuccess() && response.data !== undefined) {
+          if (response.data.length > 0) {
+            this.tokenPrice = response.data[0];
+          } else {
+            this.tokenPrice = new TokenPrice(0, new Date(), Currency.USD);
+          }
+        } else {
+          const message = 'Error fetching token price';
+          logger.logToConsole(LogLevel.ERROR, message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.TOKEN_PRICE, message);
+        }
+      });
+    },
     fetchLockedVesting: async function (lockscreen = true) {
       await apiFactory.tokensApi().fetchVestingLockedNotDelegated(lockscreen).then(response => {
         if (response.isSuccess() && response.data !== undefined) {
@@ -261,5 +281,8 @@ export const useTokensStore = defineStore({
       }
       return divideBigInts(this.stakingPool.notBondedTokens, this.totalSupply.amount);
     },
+    getTokenPrice():TokenPrice{
+      return this.tokenPrice;
+    }
   }
 });

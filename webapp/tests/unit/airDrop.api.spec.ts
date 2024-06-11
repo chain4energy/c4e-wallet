@@ -18,15 +18,15 @@ jest.mock('axios', () => {
       }
     })),
     request: jest.fn(),
-  }
-})
+  };
+});
 const mockedAxios = mockAxios();
-const api = apiFactory.airDropApi()
+const api = apiFactory.airDropApi();
 const address = 'c4e17ncvyer9eemq36adyf6fex84nz9cvp2pmqja46';
 
 describe('airdrop api tests', () => {
   beforeEach(() => {
-    setActivePinia(createPinia())
+    setActivePinia(createPinia());
   });
 
   afterEach(() => {

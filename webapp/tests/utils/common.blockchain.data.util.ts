@@ -1,6 +1,9 @@
 import { BigDecimal } from "@/models/store/big.decimal";
 import { Coin, DecCoin } from "@/models/store/common";
 import { AxiosError, AxiosResponse } from "axios";
+import {TokenPrice} from "@/models/store/tokens";
+import {Currency} from "@/models/currency";
+import sinonChai from "cypress/types/sinon-chai";
 
 export const accountNotFoundErrorMessage = 'rpc error: code = NotFound desc = account c4e1xe3x4w0ma4dv805q0rhe0c7xk3mv24vatg7pm3 not found: key not found';
 export const axiosErrorMessagePrefix = 'Request failed with status code ';
@@ -50,4 +53,14 @@ export function expectDecCoin(coin: DecCoin | undefined, expectedAmount: BigDeci
   expect(coin?.amount).toStrictEqual(expectedAmount);
   expect(coin?.denom).toBe(expectedDenom);
 
+}
+
+export function expectTokenPrice(tokenPrice: TokenPrice | undefined, price: number, timestamp: string | undefined, currency: Currency) {
+  expect(tokenPrice).not.toBeUndefined();
+  expect(tokenPrice).toBeInstanceOf(TokenPrice);
+  expect(tokenPrice?.price).toBe(price);
+  if(timestamp) {
+    expect(tokenPrice?.timestamp).toStrictEqual(new Date(timestamp));
+  }
+  expect(tokenPrice?.currency).toBe(currency);
 }

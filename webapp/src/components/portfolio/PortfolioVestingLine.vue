@@ -2,7 +2,7 @@
 
   <div class="portfolioVesting__line">
     <div class="mobile-hidden">
-      <C4EIcon size="75" icon="c4e-green"/>
+      <C4EIcon size="75" icon="c4e-grey-new"/>
     </div>
     <div class="portfolioVesting__tile start-date">
       <h3>{{ new Date(vesting.startTime*1000).toLocaleString() }}</h3>

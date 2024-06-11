@@ -24,7 +24,7 @@ import { createErrorResponse as createHasuraErrorResponse, createHasuraError } f
 
 const mockedAxios = mockAxios();
 // const mockedAxios = axios as jest.Mocked<typeof axios>;
-const api = apiFactory.proposalsApi()
+const api = apiFactory.proposalsApi();
 jest.mock('axios', () => {
   return {
     create: jest.fn(() => ({
@@ -36,12 +36,12 @@ jest.mock('axios', () => {
     })),
     request: jest.fn(),
     AxiosError: jest.fn()
-  }
-})
+  };
+});
 
 describe('test proposals API', () => {
   beforeEach(() => {
-    setActivePinia(createPinia())
+    setActivePinia(createPinia());
     useConfigurationStore().config.stakingDenom = defaultDenom;
 
   });
@@ -56,10 +56,10 @@ describe('test proposals API', () => {
     };
 
     mockedAxios.request.mockResolvedValue(proposals);
-    const result = await api.fetchProposals('1', false)
-    expect(result.response.isError()).toBe(false)
-    expect(result.response.isSuccess()).toBe(true)
-    expect(result.response.error).toBeUndefined()
+    const result = await api.fetchProposals('1', false);
+    expect(result.response.isError()).toBe(false);
+    expect(result.response.isSuccess()).toBe(true);
+    expect(result.response.error).toBeUndefined();
 
     expectProposals(result.response.data);
   });
@@ -81,17 +81,17 @@ describe('test proposals API', () => {
   it('fetch tally params', async ()=> {
     const quorum = 0.23432;
     const threshold = 0.987;
-    const vetoThreshold = 0.3678
+    const vetoThreshold = 0.3678;
     const tally = {
       data: createTallyParamsResponseData(quorum.toString(), threshold.toString(), vetoThreshold.toString())
     };
 
     mockedAxios.request.mockResolvedValue(tally);
-    const result = await api.fetchTallyParams(false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
-    expect(result.data).not.toBeUndefined()
+    const result = await api.fetchTallyParams(false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+    expect(result.data).not.toBeUndefined();
     if (result.data) {
       expectTallyParams(result.data, quorum, threshold, vetoThreshold);
     }
@@ -104,10 +104,10 @@ describe('test proposals API', () => {
 
     mockedAxios.request.mockResolvedValue(tally);
     const result = await api.fetchTallyParams(false)
-    expect(result.isError()).toBe(true)
-    expect(result.isSuccess()).toBe(false)
-    expect(result.data).toBeUndefined()
-    expect(result.error).not.toBeUndefined()
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.data).toBeUndefined();
+    expect(result.error).not.toBeUndefined();
     expect(result.error?.name).toBe(defaultErrorName);
     expect(result.error?.message).toBe('mapTallyParams - tally params is undefined');
     expect(result.error?.data).toBeUndefined();
@@ -121,7 +121,7 @@ describe('test proposals API', () => {
     const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValueOnce(error);
-    const result = await api.fetchTallyParams(false)
+    const result = await api.fetchTallyParams(false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -140,11 +140,11 @@ describe('test proposals API', () => {
     };
 
     mockedAxios.request.mockResolvedValue(tally);
-    const result = await api.fetchDepositParams(false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
-    expect(result.data).not.toBeUndefined()
+    const result = await api.fetchDepositParams(false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+    expect(result.data).not.toBeUndefined();
     if (result.data) {
       expectCoin(result.data, amount, defaultDenom);
     }
@@ -156,11 +156,11 @@ describe('test proposals API', () => {
     };
 
     mockedAxios.request.mockResolvedValue(tally);
-    const result = await api.fetchDepositParams(false)
-    expect(result.isError()).toBe(true)
-    expect(result.isSuccess()).toBe(false)
-    expect(result.data).toBeUndefined()
-    expect(result.error).not.toBeUndefined()
+    const result = await api.fetchDepositParams(false);
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.data).toBeUndefined();
+    expect(result.error).not.toBeUndefined();
     expect(result.error?.name).toBe(defaultErrorName);
     expect(result.error?.message).toBe('mapDepositParams - deposit params is undefined');
     expect(result.error?.data).toBeUndefined();
@@ -174,7 +174,7 @@ describe('test proposals API', () => {
     const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValueOnce(error);
-    const result = await api.fetchDepositParams(false)
+    const result = await api.fetchDepositParams(false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -191,12 +191,12 @@ describe('test proposals API', () => {
     };
 
     mockedAxios.request.mockResolvedValue(proposal);
-    const result = await api.fetchProposalById(Number(proposal.data.proposal.id), false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
+    const result = await api.fetchProposalById(Number(proposal.data.proposal.id), false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
     expect(result.error).toBeUndefined();
     expect(result.data).not.toBeUndefined();
-    expect(result.data?.proposal.proposalId).toEqual(Number(proposal.data.proposal.id))
+    expect(result.data?.proposal.proposalId).toEqual(Number(proposal.data.proposal.id));
   });
 
   it('fetch one proposal - wrong data', async ()=> {
@@ -205,11 +205,11 @@ describe('test proposals API', () => {
     };
 
     mockedAxios.request.mockResolvedValue(tally);
-    const result = await api.fetchProposalById(12, false)
-    expect(result.isError()).toBe(true)
-    expect(result.isSuccess()).toBe(false)
-    expect(result.data).toBeUndefined()
-    expect(result.error).not.toBeUndefined()
+    const result = await api.fetchProposalById(12, false);
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.data).toBeUndefined();
+    expect(result.error).not.toBeUndefined();
     expect(result.error?.name).toBe(defaultErrorName);
     expect(result.error?.message).toBe('Proposal is undefined');
     expect(result.error?.data).toBeUndefined();
@@ -223,7 +223,7 @@ describe('test proposals API', () => {
     const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValueOnce(error);
-    const result = await api.fetchProposalById(13, false)
+    const result = await api.fetchProposalById(13, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -252,11 +252,11 @@ describe('test proposals API', () => {
     };
 
     mockedAxios.request.mockResolvedValue(tally);
-    const result = await api.fetchVotingProposalTallyResult(2, false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
-    expect(result.data).not.toBeUndefined()
+    const result = await api.fetchVotingProposalTallyResult(2, false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+    expect(result.data).not.toBeUndefined();
     if (result.data) {
       expectTallyResult(result.data, yes, abstain, no, noWithVeto);
     }
@@ -268,11 +268,11 @@ describe('test proposals API', () => {
     };
 
     mockedAxios.request.mockResolvedValue(tally);
-    const result = await api.fetchVotingProposalTallyResult(2, false)
-    expect(result.isError()).toBe(true)
-    expect(result.isSuccess()).toBe(false)
-    expect(result.data).toBeUndefined()
-    expect(result.error).not.toBeUndefined()
+    const result = await api.fetchVotingProposalTallyResult(2, false);
+    expect(result.isError()).toBe(true);
+    expect(result.isSuccess()).toBe(false);
+    expect(result.data).toBeUndefined();
+    expect(result.error).not.toBeUndefined();
     expect(result.error?.name).toBe(defaultErrorName);
     expect(result.error?.message).toBe('mapProposalTallyResult -tally is undefined');
     expect(result.error?.data).toBeUndefined();
@@ -286,7 +286,7 @@ describe('test proposals API', () => {
     const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValueOnce(error);
-    const result = await api.fetchVotingProposalTallyResult(2, false)
+    const result = await api.fetchVotingProposalTallyResult(2, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -313,11 +313,11 @@ describe('test proposals API', () => {
     };
 
     mockedAxios.request.mockResolvedValue(vote);
-    const result = await api.fetchProposalVote(2, 'testAddr', false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
-    expect(result.data).not.toBeUndefined()
+    const result = await api.fetchProposalVote(2, 'testAddr', false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+    expect(result.data).not.toBeUndefined();
     if (result.data) {
       expect(result.data).toBe(VoteOption.Yes);
     }
@@ -326,11 +326,11 @@ describe('test proposals API', () => {
   it('fetch user vote - hasura err', async ()=> {
     const errMessage = 'err message';
     const vote = {
-      data: createHasuraError(errMessage)
+      data: createHasuraError("$",errMessage)
     };
 
     mockedAxios.request.mockResolvedValue(vote);
-    const result = await api.fetchProposalVote(2, '', false)
+    const result = await api.fetchProposalVote(2, '', false);
     expect(result.data).toBeUndefined();
     expect(result.error).not.toBeUndefined();
     expect(result.error?.message).toBe(defaultHasuraErrorMessage);
@@ -348,7 +348,7 @@ describe('test proposals API', () => {
     };
 
     mockedAxios.request.mockResolvedValue(vote);
-    const result = await api.fetchProposalVote(2, '', false)
+    const result = await api.fetchProposalVote(2, '', false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultErrorName);
@@ -362,7 +362,7 @@ describe('test proposals API', () => {
     const error = createHasuraErrorResponse(status);
 
     mockedAxios.request.mockRejectedValueOnce(error);
-    const result = await api.fetchProposalVote(2, '', false)
+    const result = await api.fetchProposalVote(2, '', false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);

@@ -271,35 +271,6 @@ const amountToPass = computed(() => {
   coins.push(
     {amount: useUserStore().getSpendableBalance || 0, header: i18n.global.t('BOOST.POPUP.SPENDABLE')});
   return coins;
-  /*
-  switch (stakingAction.value) {
-    case StakingAction.DELEGATE: {
-      coins = [];
-      coins.push(
-        {amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')},
-        {amount: useUserStore().getBalance || 0, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.AVAILABLE_TO_DELEGATE')});
-      break;
-    }
-    case StakingAction.UNDELEGATE: {
-      coins = [];
-      coins.push({amount: props.validator.undelegatingAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.UNDELEGATED')}, {
-        amount: props.validator.delegatedAmount,
-        header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')
-      });
-      break;
-    }
-    case StakingAction.REDELEGATE: {
-      coins = [];
-      coins.push({amount: props.validator.delegatedAmount, header: i18n.global.t('STAKING_VIEW.STAKING_POPUP.DELEGATED')});
-      break;
-    }
-    default:
-      coins = [];
-      coins.push(0);
-      break;
-  }
-
-   */
 });
 
 function calculatePoolUsageTokens(data: LoyaltyDropPoolConfig){

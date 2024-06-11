@@ -4,7 +4,7 @@
     <div class="userdata__accountData-base" >
       <AmountView
         :coins="representData"
-        :showVesting="vestingStatus"
+        :showVesting="true"
         :reduceBigNumber="true"
         :precision="2"
       >
@@ -33,8 +33,21 @@
 
   <div class="userdata__rewards">
     <div class="userdata__rewardAmount">
+<!--      <AmountView-->
+<!--        :coins=" [{amount: useUserStore().getSpendableBalance || 0, header: i18n.global.t('USER_DATA.CLAIM_HEADER'), showDenom:true, showPrice:true}]"-->
+<!--        :show-denom="true"-->
+<!--        :precision="4"-->
+<!--        :orig-denom="useConfigurationStore().config.getConvertedDenom()"-->
+<!--        :reduce-big-number="false">-->
+<!--      </AmountView>-->
       <p class="userdata__claimText">{{ $t('USER_DATA.CLAIM_HEADER') }}</p>
       <CoinAmount class="userdata__claimAmount" :amount="useUserStore().getTotalRewards" :show-denom="true"/>
+<!--      <CoinAmount style="font-size: 0.7rem"-->
+<!--                  :amount="calculatePrice(useUserStore().getTotalRewards, price)"-->
+<!--                  default-view-denom="$"-->
+<!--                  :tooltip-precision=2-->
+<!--                  :precision="2"-->
+<!--                  :reduce-big-number="true" :show-tooltip="true" :show-denom="true"  :denom-as-prefix="true"/>-->
     </div>
     <Button class="outlined-secondary" @click="claimRewards">{{ $t('USER_DATA.CLAIM_REWARDS') }}</Button>
 
@@ -51,6 +64,9 @@ import AmountView from "@/components/commons/AmountView.vue";
 import i18n from "@/plugins/i18n";
 import CoinAmount from "../commons/CoinAmount.vue";
 import dataService from "@/services/data.service";
+import {calculatePrice} from "@/utils/token-price";
+import {useTokensStore} from "@/store/tokens.store";
+import {useConfigurationStore} from "@/store/configuration.store";
 
 function claimRewards(){
   dataService.onClaimRewards();
@@ -60,29 +76,43 @@ const total = computed(() => useUserStore().getTotal);
 const locked = computed(()=> useUserStore().getVestingLockAmount);
 const available = computed(() => useUserStore().getBalance);
 const stacked = computed(()=> useUserStore().getTotalDelegated);
-const unstaked = computed(()=> useUserStore().getTotalUndelegating);
+// const unstaked = computed(()=> useUserStore().getTotalUndelegating);
+const unstaked = computed(()=> useUserStore().getSpendableBalance);
 const vestingStatus = true;
+
+const price = computed( ()=>{
+  return useTokensStore().getTokenPrice;
+});
+
 const representData = computed(()=> {
   const coins = [
     {
       header : i18n.global.t('USER_DATA.TOTAL'),
       amount: total.value || 0,
       showDenom: true,
+      showPrice: true,
+      allowCopyValue: true
     },
     {
       header : i18n.global.t('USER_DATA.AVAILABLE'),
       amount: available.value || 0,
       showDenom: false,
+      showPrice: true,
+      allowCopyValue: true
     },
     {
       header : i18n.global.t('USER_DATA.STAKED'),
       amount: stacked.value || 0,
       showDenom: false,
+      showPrice: true,
+      allowCopyValue: true
     },
     {
-      header : i18n.global.t('USER_DATA.UNSTAKING'),
+      header : i18n.global.t('USER_DATA.SPENDABLE'),
       amount: unstaked.value || 0,
       showDenom: false,
+      showPrice: true,
+      allowCopyValue: true
    },
   ];
   return coins;
@@ -105,6 +135,7 @@ const representData = computed(()=> {
   flex-direction: row;
   justify-content: space-between;
   width: 80%;
+  max-width: 1200px;
   max-height: 80px;
   margin-left: auto;
   margin-right: auto;
@@ -188,9 +219,9 @@ const representData = computed(()=> {
     line-height: 27px;
     text-align: center;
     color: #FFFFFF;
-    :nth-child(1){
-      margin-right: 16px;
-    }
+    //:nth-child(1){
+    //  margin-right: 16px;
+    //}
   }
 
   button{

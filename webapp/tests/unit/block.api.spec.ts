@@ -22,17 +22,17 @@ jest.mock('axios', () => {
   }
 })
 const mockedAxios = mockAxios();
-const api = apiFactory.blockApi()
+const api = apiFactory.blockApi();
 
 describe('block api tests', () => {
   beforeEach(() => {
-    setActivePinia(createPinia())
+    setActivePinia(createPinia());
   });
 
   afterEach(() => {
     expect(useSplashStore().splashCounter).toBe(0);
     mockedAxios.request.mockClear();
-  })
+  });
 
   it('gets latest block - exists', async () => {
     const height = 123412;
@@ -44,9 +44,9 @@ describe('block api tests', () => {
 
     mockedAxios.request.mockResolvedValue(latestBlock);
     const result = await api.fetchLatestBlock(false);
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
 
     expectBlock(result.data, height, time);
 
@@ -96,9 +96,9 @@ describe('block api tests', () => {
 
     mockedAxios.request.mockResolvedValue(avgResp);
     const result = await api.fetchAverageBlockTime(false);
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
 
     expect(result.data).toBe(avgTime);
 
@@ -123,7 +123,7 @@ describe('block api tests', () => {
   it('gets average block time - hasura error', async () => {
     const errorMessage = 'my error message';
     const avgResp = {
-      data: createHasuraError(errorMessage),
+      data: createHasuraError("$.selectionSet.average_block_time_per_hour.selectionSet.average_timeh", errorMessage),
     };
 
     mockedAxios.request.mockResolvedValue(avgResp);

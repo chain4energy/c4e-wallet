@@ -1,6 +1,7 @@
 import {StakingPool as BcStakingPool} from "@/models/blockchain/tokens";
 import {StakingPool as StoreStakingPool, TokenPrice} from "@/models/store/tokens";
 import {TokenPriceHistoryResponse} from "@/models/hasura/tokenPrice";
+import {Currency} from "@/models/currency";
 
 export function mapStakingPool(pool: BcStakingPool | undefined): StoreStakingPool  {
   if (pool === undefined) {
@@ -25,7 +26,7 @@ export function mapTokenPriceHistory(hasuraData: TokenPriceHistoryResponse | und
   }
   const retVal = new Array<TokenPrice>();
   hasuraData.data.tokenPrice.forEach(el => {
-    retVal.push(new TokenPrice(Number(el.price),new Date(el.timestamp)));
+    retVal.push(new TokenPrice(Number(el.price),new Date(el.timestamp), Currency.USD));
   });
   return retVal;
 }

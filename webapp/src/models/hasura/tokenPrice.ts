@@ -5,6 +5,6 @@ export interface TokenPriceHistoryResponse {
 }
 
 export interface TokenPriceResponse {
-  price: string,
+  price: number,
   timestamp: string,
 }
