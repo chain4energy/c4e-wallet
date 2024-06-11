@@ -10,20 +10,24 @@ export function mapLoyaltyDropConfig(loyaltyDropPoolConfigResp: LoyaltyDropPoolC
     return [];
   }
   const loyaltyDropPoolConfig:LoyaltyDropPoolConfig[] = Array<LoyaltyDropPoolConfig>();
-  loyaltyDropPoolConfigResp.forEach(b=> loyaltyDropPoolConfig.push(new LoyaltyDropPoolConfig(
-    b.id,
-    b.pool_description,
-    b.vesting_type_name,
-    b.base_tokens,
-    b.rewards_tokens,
-    b.used_tokens,
-    b.reserved_tokens,
-    b.granted_rewards,
-    b.epoch_number,
-    b.epoch_period,
-    new Date(b.epoch_start_date)
-  ))
-  );
+  try {
+    loyaltyDropPoolConfigResp.forEach(b => loyaltyDropPoolConfig.push(new LoyaltyDropPoolConfig(
+        b.id,
+        b.pool_description,
+        b.vesting_type_name,
+        b.base_tokens,
+        b.rewards_tokens,
+        b.used_tokens,
+        b.reserved_tokens,
+        b.granted_rewards,
+        b.epoch_number,
+        b.epoch_period,
+        new Date(b.epoch_start_date)
+      ))
+    );
+  } catch (error: any) {
+    throw new Error('LoyaltyDropPoolConfigResp mapper error: ' + error.toLocaleString());
+  }
   return loyaltyDropPoolConfig;
 }
 

@@ -337,7 +337,7 @@ const calcTimeToStart = ((time: Date) => {
 @import '../../styles/tables.scss';
 
 .test {
-  background-color: red;
+  background-color: #ff5151;
 }
 
 .boostDetails__header {
@@ -493,7 +493,7 @@ const calcTimeToStart = ((time: Date) => {
   }
 
   .level-1 {
-      background: $consumption-red;
+      background: #ff5151;
       color: white;
     }
 

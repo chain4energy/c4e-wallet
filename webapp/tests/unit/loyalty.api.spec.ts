@@ -96,7 +96,7 @@ describe('tokens api tests', () => {
     const result = await api.fetchLoyaltyDropPoolsConfig(false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
-    expect(result.error?.message).toBe('LoyaltyDropPoolConfigResp is undefined');
+    expect(result.error?.message).toBe('LoyaltyDropPoolConfigResp mapper error: TypeError: loyaltyDropPoolConfigResp.forEach is not a function');
     expect(result.error?.data).toBeUndefined();
 
   });
