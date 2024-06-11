@@ -5,24 +5,45 @@
       <div class="userdata-container" :class="useUserStore().isContinuousVestingAccount || useUserStore().isPeriodicVestingAccount ? '' : 'width-95'">
         <div class="userdata-option" v-for="(items, index) in props.coins" :key="index">
           <span class="header" v-if="items.header">{{items.header}}</span>
-          <CoinAmount :amount="convertAmount(items.amount)" :precision="precision" :show-denom="items.showDenom || showDenom" :show-tooltip="true" :reduce-big-number="reduceBigNumber"/>
+          <CoinAmount :amount="convertAmount(items.amount)"
+                      :precision="precision"
+                      :show-denom="items.showDenom || showDenom"
+                      :show-tooltip="true"
+                      :reduce-big-number="reduceBigNumber"
+                      />
+          <CoinAmount v-if="items.showPrice" style="font-size: 0.7rem; font-weight: normal"
+                      :amount="calculatePrice(items.amount, price)"
+                      default-view-denom="$"
+                      :tooltip-precision=2
+                      :precision="precision"
+                      :reduce-big-number="reduceBigNumber"
+                      :show-tooltip="true"
+                      :show-denom="true"
+                      :denom-as-prefix="true"
+                      :allow-copy-value="false"/>
         </div>
       </div>
       <span class="vesting-container" v-if="(useUserStore().isContinuousVestingAccount || useUserStore().isPeriodicVestingAccount) && showVesting">
-        <div class="vesting-flag">Vesting</div>
-        <div class="userdata-option vesting-first" v-if="useUserStore().isContinuousVestingAccount || useUserStore().isPeriodicVestingAccount">
-              <span class="header">{{ $t('USER_DATA.LOCKED') }}</span>
-              <CoinAmount :key="locked" :amount="convertAmount(locked)" :precision="precision" :reduce-big-number="reduceBigNumber" :show-tooltip="true" :show-denom="true"/>
-        </div>
-        <div class="userdata-option vesting" v-if="useUserStore().isContinuousVestingAccount">
-              <span class="header">{{ $t('USER_DATA.VESTING_END') }}</span>
-              <b><DateCommon :date="useUserStore().getAccount.continuousVestingData?.endTime" :show-time="false" :showTooltip="true" /></b>
-        </div>
-        <div class="userdata-option vesting" v-if="useUserStore().isPeriodicVestingAccount">
-              <span class="header">{{ $t('USER_DATA.VESTING_END') }}</span>
-              <b><DateCommon :date="useUserStore().getMaxTime" :show-time="false" :showTooltip="true" /></b>
-        </div>
-        <div class="userdata-option vesting" v-if="!useUserStore().isContinuousVestingAccount || useUserStore().isPeriodicVestingAccount"></div>
+        <div class="vesting-flag" @click="onVestingClick">Vesting</div>
+<!--        <div class="userdata-option vesting-first" v-if="useUserStore().isContinuousVestingAccount || useUserStore().isPeriodicVestingAccount">-->
+<!--              <span class="header">{{ $t('USER_DATA.LOCKED') }}</span>-->
+<!--              <CoinAmount :key="locked" :amount="convertAmount(locked)" :precision="precision" :reduce-big-number="reduceBigNumber" :show-tooltip="true" :show-denom="true"/>-->
+<!--              <CoinAmount style="font-size: 0.7rem"-->
+<!--                          :amount="calculatePrice(locked, price)"-->
+<!--                          default-view-denom="$"-->
+<!--                          :tooltip-precision=2-->
+<!--                          :precision="precision"-->
+<!--                          :reduce-big-number="reduceBigNumber" :show-tooltip="true" :show-denom="true"  :denom-as-prefix="true"/>-->
+<!--        </div>-->
+<!--        <div class="userdata-option vesting" v-if="useUserStore().isContinuousVestingAccount">-->
+<!--              <span class="header">{{ $t('USER_DATA.VESTING_END') }}</span>-->
+<!--              <b><DateCommon :date="useUserStore().getAccount.continuousVestingData?.endTime" :show-time="false" :showTooltip="true" /></b>-->
+<!--        </div>-->
+<!--        <div class="userdata-option vesting" v-if="useUserStore().isPeriodicVestingAccount">-->
+<!--              <span class="header">{{ $t('USER_DATA.VESTING_END') }}</span>-->
+<!--              <b><DateCommon :date="useUserStore().getMaxTime" :show-time="false" :showTooltip="true" /></b>-->
+<!--        </div>-->
+<!--        <div class="userdata-option vesting" v-if="!useUserStore().isContinuousVestingAccount || useUserStore().isPeriodicVestingAccount"></div>-->
 
       </span>
     </div>
@@ -39,6 +60,12 @@ import { useUserStore } from "@/store/user.store";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import {useBlockStore} from "@/store/block.store";
 import dataService from "@/services/data.service";
+import {useTokensStore} from "@/store/tokens.store";
+import {useConfigurationStore} from "@/store/configuration.store";
+import {calculatePrice} from "@/utils/token-price";
+import {useRouter} from "vue-router";
+
+const router = useRouter();
 
 const props = defineProps<{
   coins:[
@@ -46,6 +73,8 @@ const props = defineProps<{
       header: string | undefined,
       amount: bigint | number | BigDecimal | Coin | DecCoin,
       showDenom: boolean,
+      showPrice: boolean,
+      allowCopyValue: boolean
     }
   ]
   precision?: number,
@@ -64,12 +93,17 @@ const locked = computed(()=> {
   return useUserStore().getVestingLockAmount;
 });
 
-
+const price = computed( ()=>{
+  return useTokensStore().getTokenPrice;
+});
 
 onMounted(() =>{
   dataService.refreshValidators();
 });
 
+function onVestingClick(){
+  router.push('/portfolio');
+}
 
 </script>
 
@@ -80,7 +114,7 @@ onMounted(() =>{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 55%;
+  width: 90%;
   height: 80px;
   overflow: hidden;
   z-index: 2;
@@ -113,9 +147,10 @@ onMounted(() =>{
   padding: 5px;
   border-radius: 5px;
   position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translate(-30%, -50%);
+  cursor: pointer;
+  //left: 0;
+  //top: 50%;
+  //transform: translate(-30%, -50%);
   font-size: 0.6em;
 }
 .userdata-option {
@@ -137,12 +172,12 @@ onMounted(() =>{
   justify-content: space-evenly;
   background: #E6FFF1;
   position: relative;
-  min-width: 40%;
+  min-width: 10%;
   height: 80px;
 
   &::before {
     content: '';
-    clip-path: polygon(3% 50%, 0 0, 0 100%);
+    clip-path: polygon(20% 50%, 0 0, 0 100%);
     background: white;
     position: absolute;
     width: 100%;

@@ -7,5 +7,6 @@ export enum PagesEnum{
   BUYTOKENS,
   PROFILE,
   PORTFOLIO,
-  BOOST
+  BOOST,
+  DISTRIBUTION
 }

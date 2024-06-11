@@ -158,7 +158,7 @@ export const useUserStore = defineStore({
           if (account.type !== AccountType.Nonexistent) {
             const allResults = await Promise.all([
               fetchBalance(connectionInfo, this, lockscreen),
-           //   fetchSpendableBalances(connectionInfo, this, lockscreen),
+              fetchSpendableBalances(connectionInfo, this, lockscreen),
               fetchRewards(connectionInfo, this, lockscreen),
               fetchDelegations(connectionInfo, this, lockscreen),
               fetchUnbondingDelegations(connectionInfo, this, lockscreen),
@@ -210,7 +210,7 @@ export const useUserStore = defineStore({
         }
       });
     },
-    async sendTokens(target: string, amount: number, fee?: number | undefined) {
+    async sendTokens(target: string, amount: number, fee?: number | undefined, onSuccess?: () => void) {
       const connectionInfo = this.connectionInfo;
       await apiFactory.accountApi().sendTokens(connectionInfo, target, amount, fee).then(async (resp) => {
         if (resp.isError()) {
@@ -224,7 +224,7 @@ export const useUserStore = defineStore({
           ]);
           onTxDeliverySuccess(resp.data);
           onRefreshingError(allResults);
-
+          onSuccess?.();
         }
       });
     },
@@ -283,6 +283,7 @@ export const useUserStore = defineStore({
           const allResults = await Promise.all([
             fetchBalance(connectionInfo, this, true),
             fetchRewards(connectionInfo, this, true),
+            fetchSpendableBalances(connectionInfo, this, true)
           ]);
           onTxDeliverySuccess(resp.data);
           onRefreshingError(allResults);
@@ -291,7 +292,7 @@ export const useUserStore = defineStore({
     },
     async claimInitialAirdrop(campaignId: string, extraAddress: string): Promise<boolean> {
       const connectionInfo = this.connectionInfo;
-      return await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, (!extraAddress || extraAddress === '') ? extraAddress:this.account.address)
+      return await apiFactory.accountApi().claimInitialAirDrop(connectionInfo, campaignId, (!extraAddress || extraAddress === '') ? this.account.address : extraAddress)
         .then(async (resp) => {
           if (resp.isError()) {
             await onTxDeliveryFailure(connectionInfo, this, resp, 'Claiming airdrop rewards failed: ' + resp.error?.message);
@@ -360,6 +361,7 @@ export const useUserStore = defineStore({
           if(res.isSuccess()) {
             if(this.account.address) {
               fetchBalance(this.connectionInfo, this, true);
+              fetchSpendableBalances(this.connectionInfo, this, true);
             }
             successCallback();
           } else {
@@ -388,14 +390,31 @@ export const useUserStore = defineStore({
             const broadcastTransactionReq = {
               tx_bytes: Array.from(txBytes), // Converting Uint8Array to array for JSON serialization
             };
-            await useLoyaltyDropStore().fetchSignedMessage( JSON.stringify(broadcastTransactionReq));
-            const allResults = await Promise.all([
-              fetchBalance(connectionInfo, useUserStore(), true),
-            ]);
-            // onTxDeliverySuccess(resp.data);
-            onRefreshingError(allResults);
-            // onClaimAirdropSuccess();//TODO:
-            return true;
+            const response = await useLoyaltyDropStore().broadcastSignedMessage( JSON.stringify(broadcastTransactionReq));
+            if(response.isSuccess() && response.data) {
+              console.log("!!!!!" + JSON.stringify(response));
+              const allResults = await Promise.all([
+                fetchBalance(connectionInfo, useUserStore(), true),
+              ]);
+              //
+              // const dummyTxData: TxData = new TxData({
+              //   code:0,
+              //   transactionHash:response.data.txHash, events: [], gasUsed: 0, gasWanted: 0, height: 0, msgResponses: [], txIndex: 0
+              // });
+              // onTxBroadcastToLoyaltyDropBackendSuccess(dummyTxData);
+
+              onTxBroadcastToLoyaltyDropBackendSuccess({
+                  code:0,
+                  transactionHash:response.data.txHash, gasUsed: 0, gasWanted: 0, height: 0
+                });
+              onRefreshingError(allResults);
+              return true;
+            } else {
+              onClaimAirdropSuccess();//TODO:
+              await onTxDeliveryFailure(connectionInfo, this, resp, 'Broadcast signed message error: ' + resp.error?.message);
+              return false;
+            }
+
           }
         });
     },
@@ -511,6 +530,7 @@ function clearStateForNonexistentAccount(state: UserState) {
   state.rewards = new Rewards();
   state.delegations = new Delegations();
   state.undelegations = new UnbondingDelegations();
+  state.spendableBalance = [];
 }
 
 function clearStateOnLogout(state: UserState) {
@@ -597,6 +617,22 @@ function onRefreshingError(allResults: boolean[]) {
 function onTxDeliverySuccess(tx?: TxData) {
   if (tx) {
     logger.logToConsole(LogLevel.DEBUG, `Tx: ${tx.transactionHash} success. GasUsed: ${tx.gasUsed}`);
+    const content = {
+      component: TxToast,
+      props: {
+        tx: tx
+      },
+    };
+    toast.success(content);
+  } else {
+    logger.logToConsole(LogLevel.WARNING, `Tx delivered successfully but cannt get TX data`);
+    toast.warning(`Tx delivered successfully but cannt get TX data`);
+  }
+}
+
+function onTxBroadcastToLoyaltyDropBackendSuccess(tx?: TxData) {
+  if (tx) {
+    logger.logToConsole(LogLevel.DEBUG, `Tx: ${tx} success.}`);
     const content = {
       component: TxToast,
       props: {

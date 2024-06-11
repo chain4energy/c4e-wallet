@@ -68,5 +68,5 @@ export function reduceBigNumber(locale: string, number: bigint | number | BigDec
     val = val.divide(1e3);
     suffix = 'k';
   }
-  return formatBigNumber(locale, val.toFixed(precision)) + (suffix !== '' ? ` ${suffix}` : '');
+  return formatBigNumber(locale, val.toFixed(precision)) + (suffix !== '' ? `${suffix}` : '');
 }

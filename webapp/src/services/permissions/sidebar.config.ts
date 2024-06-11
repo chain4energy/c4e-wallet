@@ -14,7 +14,7 @@ export class SidebarConfig{
     this.config.set(PagesEnum.PROFILE, this.createProfile());
     this.config.set(PagesEnum.FAUCET, this.createFaucet());
     this.config.set(PagesEnum.BOOST, this.createBoost());
-
+    this.config.set(PagesEnum.DISTRIBUTION, this.createDistribution());
   }
 
   getConfigForPage(page: PagesEnum): SidebarElement | undefined{
@@ -98,6 +98,15 @@ export class SidebarConfig{
     retVal.href = '/boost';
     retVal.title = 'Boost';
     retVal.icon = new SidebarIcon('Rocket');
+    return retVal;
+  }
+
+  private createDistribution(): SidebarElement{
+    const retVal = new SidebarElement();
+    retVal.id = 8;
+    retVal.href = '/distribution';
+    retVal.title = 'Distribution';
+    retVal.icon = new SidebarIcon('HandCoins');
     return retVal;
   }
 

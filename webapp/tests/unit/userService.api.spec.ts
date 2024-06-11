@@ -1,21 +1,12 @@
-import { setActivePinia, createPinia } from 'pinia'
+import { setActivePinia, createPinia } from 'pinia';
 import apiFactory from "@/api/factory.api";
-import {mockAxios, mockAxiosJWT} from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
-import { axiosErrorMessagePrefix, defaultAxiosErrorName, createErrorResponse as createBlockchainErrorResponse, defaultErrorName } from '../utils/common.blockchain.data.util';
-import { createBlockResponseData, expectBlock } from '../utils/block.blockchain.data.util';
-import { AverageBlockTimeResponse } from '@/models/hasura/average.block.time';
-import { createAveragetBlockTimeResponseData } from '../utils/average.block.time.hasura.data.util';
-import { createErrorResponse as createHasuraErrorResponse, createHasuraError, defaultHasuraErrorMessage, defaultHasuraErrorName } from '../utils/common.hasura.data.util';
-import { useUserServiceStore } from '@/store/userService.store';
 import { WalletType } from '@/utils/wallet-type';
 import {
   createAuthWalletInitResponse,
-  createAuthWalletResponse,
-  createRegisterEmailResponse
+  createAuthWalletResponse
 } from "../utils/user.service.data.utill";
-import {useUserStore} from "@/store/user.store";
-
+import {mockAxiosJWT} from "../utils/mock.util";
 
 jest.mock('axios', () => {
   return {
@@ -27,20 +18,20 @@ jest.mock('axios', () => {
       }
     })),
     request: jest.fn(),
-  }
-})
+  };
+});
 const mockedAxios = mockAxiosJWT();
 const api = apiFactory.publicSaleServiceApi();
 
 describe('user service api tests', () => {
   beforeEach(() => {
-    setActivePinia(createPinia())
+    setActivePinia(createPinia());
   });
 
   afterEach(() => {
     expect(useSplashStore().splashCounter).toBe(0);
     mockedAxios.request.mockClear();
-  })
+  });
 
   it('register keplr', async () => {
 

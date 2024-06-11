@@ -1,6 +1,6 @@
 <template>
 <div>
-  <Dialog :visible="visible" @update:visible="emit('close')" modal header=" " :baseZIndex="-100" :style="{ width: '800px' }">
+  <Dialog :visible="visible" @update:visible="emit('close')" modal header=" " :style="{ width: '800px', 'z-index':'1000' }">
     <LoginPopUp :showAddressOption="false" v-if="loginPopupStatus" @close="loginPopupStatus =! loginPopupStatus"/>
 
 

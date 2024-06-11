@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
-import {StakingPool} from "@/models/store/tokens";
+import {StakingPool, TokenPrice} from "@/models/store/tokens";
 import {Coin, DecCoin} from "@/models/store/common";
 import {useConfigurationStore} from "./configuration.store";
 import {StoreLogger} from "@/services/logged.service";
@@ -9,6 +9,7 @@ import {LogLevel} from "@/services/logger/log-level";
 import {BigDecimal, divideBigInts} from "@/models/store/big.decimal";
 import {ToastsService} from "@/services/toasts/toasts.service";
 import {ToastsTypeEnum} from "@/services/toasts/toasts-type.enum";
+import {Currency} from "@/models/currency";
 
 const logger = new StoreLogger(ServiceTypeEnum.TOKENS_STORE);
 
@@ -18,10 +19,12 @@ interface TokensState {
   communityPool: DecCoin
   strategicReversePool: Coin
   strategicReversePoolUnbonded: Coin,
-  airdropPool: Coin
+  airdropPool: Coin,
+  circulatingSupply: Coin,
   inflation: number,
   lockedVesting: bigint,
-  shareParameter: number;
+  shareParameter: number,
+  tokenPrice: TokenPrice
 }
 
 export const useTokensStore = defineStore({
@@ -36,9 +39,11 @@ export const useTokensStore = defineStore({
       strategicReversePool: emptyCoin,
       strategicReversePoolUnbonded: emptyCoin,
       airdropPool: emptyCoin,
+      circulatingSupply: emptyCoin,
       inflation: Number.NaN,
       lockedVesting: BigInt(0),
-      shareParameter: Number.NaN
+      shareParameter: Number.NaN,
+      tokenPrice: new TokenPrice(0, new Date(), Currency.USD)
     };
   },
   actions: {
@@ -62,6 +67,17 @@ export const useTokensStore = defineStore({
           const message = 'Error fetching total supply data';
           logger.logToConsole(LogLevel.ERROR, message);
           ToastsService.getInstance().errorToast(ToastsTypeEnum.TOTAL_SUPPLY, message);
+        }
+      });
+    },
+    async fetchCirculatingSupply(lockscreen = true) {
+      await apiFactory.tokensApi().fetchCirculatingSupply(lockscreen).then(response => {
+        if (response.isSuccess() && response.data !== undefined) {
+          this.circulatingSupply = response.data;
+        } else {
+          const message = 'Error fetching circulating supply data';
+          logger.logToConsole(LogLevel.ERROR, message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.CIRCULATING_SUPPLY, message);
         }
       });
     },
@@ -159,6 +175,23 @@ export const useTokensStore = defineStore({
         }
       });
     },
+    async fetchTokenPriceHistory(lockscreen = true) {
+      // const denom = useConfigurationStore().config.stakingDenom;
+      //TODO:
+      await apiFactory.tokensApi().fetchTokenPriceHistory("c4e", 1, lockscreen).then(response => {
+        if (response.isSuccess() && response.data !== undefined) {
+          if (response.data.length > 0) {
+            this.tokenPrice = response.data[0];
+          } else {
+            this.tokenPrice = new TokenPrice(0, new Date(), Currency.USD);
+          }
+        } else {
+          const message = 'Error fetching token price';
+          logger.logToConsole(LogLevel.ERROR, message);
+          ToastsService.getInstance().errorToast(ToastsTypeEnum.TOKEN_PRICE, message);
+        }
+      });
+    },
     fetchLockedVesting: async function (lockscreen = true) {
       await apiFactory.tokensApi().fetchVestingLockedNotDelegated(lockscreen).then(response => {
         if (response.isSuccess() && response.data !== undefined) {
@@ -174,6 +207,7 @@ export const useTokensStore = defineStore({
       const emptyCoin = new Coin(0n, denom);
       this.stakingPool = new StakingPool(0n, 0n);
       this.totalSupply = emptyCoin;
+      this.circulatingSupply = emptyCoin;
       this.communityPool = new DecCoin(new BigDecimal(0), denom);
       this.strategicReversePool = emptyCoin;
       this.airdropPool = emptyCoin;
@@ -198,13 +232,8 @@ export const useTokensStore = defineStore({
     getTotalSupply(): Coin {
       return this.totalSupply;
     },
-    getCirculatingSupply(): DecCoin {
-      const amount =  this.getTotalUnbonded
-                    - this.strategicReversePoolUnbonded.amount
-                    - this.getAirdropPool.amount
-                    - this.getLockedVesting;
-      const amountDec = new BigDecimal(amount).subtract(this.communityPool.amount);
-      return new DecCoin(amountDec, this.totalSupply.denom);
+    getCirculatingSupply(): Coin {
+      return this.circulatingSupply;
     },
     getCommunityPool(): DecCoin {
       return this.communityPool;
@@ -252,5 +281,8 @@ export const useTokensStore = defineStore({
       }
       return divideBigInts(this.stakingPool.notBondedTokens, this.totalSupply.amount);
     },
+    getTokenPrice():TokenPrice{
+      return this.tokenPrice;
+    }
   }
 });

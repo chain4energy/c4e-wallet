@@ -78,6 +78,7 @@ export class KeplrGasPriceSteps implements JsonKeplrGasPriceSteps{
 export class Queries implements JsonQueries{
   STAKING_POOL_URL: string;
   TOTAL_SUPPLY_URL: string;
+  CIRCULATING_SUPPLY_URL:string;
   COMMUNITY_POOL_URL: string;
   PROPOSALS_URL: string;
   PROPOSALS_BY_ID_URL: string;
@@ -107,6 +108,7 @@ export class Queries implements JsonQueries{
   ) {
     this.STAKING_POOL_URL = queries?.STAKING_POOL_URL ? queries.STAKING_POOL_URL : queriesDefaults.blockchain.STAKING_POOL_URL;
     this.TOTAL_SUPPLY_URL = queries?.TOTAL_SUPPLY_URL ? queries.TOTAL_SUPPLY_URL : queriesDefaults.blockchain.TOTAL_SUPPLY_URL;
+    this.CIRCULATING_SUPPLY_URL = queries?.CIRCULATING_SUPPLY_URL ? queries.CIRCULATING_SUPPLY_URL : queriesDefaults.blockchain.CIRCULATING_SUPPLY_URL;
     this.COMMUNITY_POOL_URL = queries?.COMMUNITY_POOL_URL ? queries.COMMUNITY_POOL_URL : queriesDefaults.blockchain.COMMUNITY_POOL_URL;
     this.PROPOSALS_URL = queries?.PROPOSALS_URL ? queries.PROPOSALS_URL : queriesDefaults.blockchain.PROPOSALS_URL;
     this.PROPOSALS_BY_ID_URL = queries?.PROPOSALS_BY_ID_URL ? queries.PROPOSALS_BY_ID_URL : queriesDefaults.blockchain.PROPOSALS_BY_ID_URL;
@@ -139,6 +141,7 @@ export class LoyaltyDropConfig implements JsonLoyaltyDropConfig{
   loyaltyDropUserBootsURL: string;
   loyaltyDropDefaultDenom: string;
   loyaltyDropBroadcastURL: string;
+  loyaltyDropUserBoostRefreshTimeout: number;
   constructor (
     config : JsonLoyaltyDropConfig | undefined
   ) {
@@ -147,6 +150,7 @@ export class LoyaltyDropConfig implements JsonLoyaltyDropConfig{
     this.loyaltyDropUserBootsURL = config?.loyaltyDropUserBootsURL ? config.loyaltyDropUserBootsURL : queriesDefaults.loyaltyDropService.loyaltyDropUserBootsURL;
     this.loyaltyDropDefaultDenom  = config?.loyaltyDropDefaultDenom ? config.loyaltyDropDefaultDenom: queriesDefaults.loyaltyDropService.loyaltyDropDefaultDenom;
     this.loyaltyDropBroadcastURL = config?.loyaltyDropBroadcastURL ? config.loyaltyDropBroadcastURL: queriesDefaults.loyaltyDropService.loyaltyDropBroadcastURL;
+    this.loyaltyDropUserBoostRefreshTimeout = config?.loyaltyDropUserBoostRefreshTimeout ? config.loyaltyDropUserBoostRefreshTimeout: queriesDefaults.loyaltyDropService.loyaltyDropUserBoostRefreshTimeout;
   }
 
 }
@@ -160,7 +164,12 @@ export class Configuration implements JsonConfiguration {
   publicSaleServiceURL: string;
   addressPrefix: string;
   stakingDenom: string;
+  coinGeckoId: string;
+  chainSymbolImageUrl: string;
   tokenReservationDenom: string;
+  nodeProviderName: string;
+  nodeProviderEmail: string;
+  nodeProviderWebsite: string;
   strategicPoolAddress: string[];
   airdropPoolAddress: string;
   chainId: string;
@@ -195,6 +204,7 @@ export class Configuration implements JsonConfiguration {
   publicSaleVisible: boolean;
   useAminoOnly:boolean;
   loyaltyDropService: LoyaltyDropConfig;
+  circulatingSupplyVisible: boolean;
 
   public static readonly emptyConfiguration = new Configuration();
 
@@ -210,6 +220,11 @@ export class Configuration implements JsonConfiguration {
       this.publicSaleServiceURL = configuration.publicSaleServiceURL;
       this.addressPrefix = configuration.addressPrefix;
       this.stakingDenom = configuration.stakingDenom;
+      this.coinGeckoId = configuration.coinGeckoId;
+      this.nodeProviderName = configuration.nodeProviderName;
+      this.nodeProviderEmail = configuration.nodeProviderEmail;
+      this.nodeProviderWebsite = configuration.nodeProviderWebsite;
+      this.chainSymbolImageUrl = configuration.chainSymbolImageUrl;
       this.strategicPoolAddress = configuration.strategicPoolAddress;
       this.airdropPoolAddress = configuration.airdropPoolAddress;
       this.chainId = configuration.chainId;
@@ -249,6 +264,7 @@ export class Configuration implements JsonConfiguration {
       this.publicSaleVisible=configuration.publicSaleVisible;
       this.useAminoOnly=configuration.useAminoOnly;
       this.loyaltyDropService = new LoyaltyDropConfig(configuration.loyaltyDropService);
+      this.circulatingSupplyVisible = configuration.circulatingSupplyVisible;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -258,10 +274,15 @@ export class Configuration implements JsonConfiguration {
       this.publicSaleServiceURL = ' ';
       this.addressPrefix = '';
       this.stakingDenom = '';
+      this.chainSymbolImageUrl = '';
       this.strategicPoolAddress = [''];
       this.airdropPoolAddress = '';
       this.chainId = '';
       this.networkName = '';
+      this.coinGeckoId = '';
+      this.nodeProviderName = '';
+      this.nodeProviderEmail = '';
+      this.nodeProviderWebsite = '';
       this.keplrNetworkName = '';
       this.operationGas = new Gas(undefined);
       const viewDenoms = Array<ViewDenom>();
@@ -293,6 +314,7 @@ export class Configuration implements JsonConfiguration {
       this.publicSaleVisible=false;
       this.useAminoOnly=false;
       this.loyaltyDropService = new LoyaltyDropConfig(undefined);
+      this.circulatingSupplyVisible = false;
     }
   }
 

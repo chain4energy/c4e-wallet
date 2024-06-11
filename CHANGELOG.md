@@ -48,6 +48,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Misc Improvements
 
+## [1.3.4](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.4) - 2024-06-11
+
+### Misc Improvements
+* C4E Price view
+
+## [1.3.3](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.3) - 2024-06-04
+
+### Misc Improvements
+* Configuration update
+
+## [1.3.2](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.2) - 2024-06-03
+
+### Misc Improvements
+* Boost pool usage correction
+
+## [1.3.1](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.1) - 2024-06-03
+
+### Misc Improvements
+* Primevue version upgrade
+
+## [1.3.0](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.0) - 2024-05-31
+
+### Misc Improvements
+* Circulating-supply corrections
+
+### Features
+* Loyalty drop (boots)
+* Distribution
+
 ## [1.2.10](https://github.com/chain4energy/c4e-wallet/releases/tag/1.2.10) - 2024-03-28
 
 ### Misc Improvements

@@ -1,0 +1,215 @@
+[
+  {
+    "id": 2,
+    "accountId": 2,
+    "chargePointDictId": 2,
+    "name": "HABU_PB",
+    "deviceId": "PL*GCG*E011221225GK0508",
+    "chargingPointOperatorRoleId": 2,
+    "integrationType": "OCPI",
+    "integrationVersion": "2.2.1",
+    "locationId": 2,
+    "tariffGroupId": 1,
+    "authRequired": false,
+    "active": true,
+    "status": "UNKNOWN",
+    "errorCode": "NO_ERROR",
+    "chargePointEvses": [
+      {
+        "id": 2,
+        "chargePointId": 2,
+        "deviceId": "PL*GCG*E011221225GK0508",
+        "accountId": 2,
+        "name": "EVSE_HABU_PB",
+        "chargingPointOperatorRoleId": 2,
+        "locationId": 2,
+        "status": "UNKNOWN",
+        "active": true,
+        "url": "/v0.1/charge_point/2/evse/2"
+      }
+    ],
+    "tariffGroup": {
+      "id": 1,
+      "name": "Tariff Group 1",
+      "accountId": 1,
+      "active": true,
+      "startDate": "2024-02-13T08:51:40Z",
+      "endDate": null,
+      "tariffs": [
+        {
+          "id": 1,
+          "tariffGroupId": 1,
+          "name": "Tariff 1",
+          "accountId": 1,
+          "currency": "EUR",
+          "unit": "kWh",
+          "margin": "0.020000000000000000",
+          "systemMargin": "0.000000000000000000",
+          "unitCost": "0.150000000000000000",
+          "fullCost": "0.170000000000000000",
+          "active": true,
+          "startDate": "2024-02-13T08:51:40Z",
+          "endDate": null,
+          "url": "/v0.1/tariff/1"
+        }
+      ],
+      "url": "/v0.1/tariff_group/1"
+    },
+    "location": {
+      "id": 2,
+      "chargingPointOperatorRoleId": 2,
+      "accountId": 2,
+      "name": "Location 1",
+      "longitude": "123.456789000000000000",
+      "latitude": "12.345678000000000000",
+      "country": "Country1",
+      "state": "State1",
+      "postalCode": "12345",
+      "city": "City1",
+      "streetAddress": "Street Address 1"
+    },
+    "url": "/v0.1/charge_point/2"
+  },
+  {
+    "id": 3,
+    "accountId": 2,
+    "chargePointDictId": 1,
+    "name": "SIMULATOR01",
+    "deviceId": "PL*SIM*SIMULATOR01",
+    "chargingPointOperatorRoleId": 1,
+    "integrationType": "OCPI",
+    "integrationVersion": "2.2.1",
+    "locationId": 3,
+    "tariffGroupId": 1,
+    "authRequired": false,
+    "active": true,
+    "status": "UNKNOWN",
+    "errorCode": "NO_ERROR",
+    "chargePointEvses": [
+      {
+        "id": 3,
+        "chargePointId": 3,
+        "deviceId": "PL*SIM*SIMULATOR01",
+        "accountId": 2,
+        "name": "EVSE_SIMULATOR01",
+        "chargingPointOperatorRoleId": 1,
+        "externalId": "external_evse_id_01",
+        "locationId": 3,
+        "status": "AVAILABLE",
+        "active": true,
+        "url": "/v0.1/charge_point/3/evse/3"
+      }
+    ],
+    "tariffGroup": {
+      "id": 1,
+      "name": "Tariff Group 1",
+      "accountId": 1,
+      "active": true,
+      "startDate": "2024-02-13T08:51:40Z",
+      "endDate": null,
+      "tariffs": [
+        {
+          "id": 1,
+          "tariffGroupId": 1,
+          "name": "Tariff 1",
+          "accountId": 1,
+          "currency": "EUR",
+          "unit": "kWh",
+          "margin": "0.020000000000000000",
+          "systemMargin": "0.000000000000000000",
+          "unitCost": "0.150000000000000000",
+          "fullCost": "0.170000000000000000",
+          "active": true,
+          "startDate": "2024-02-13T08:51:40Z",
+          "endDate": null,
+          "url": "/v0.1/tariff/1"
+        }
+      ],
+      "url": "/v0.1/tariff_group/1"
+    },
+    "location": {
+      "id": 3,
+      "chargingPointOperatorRoleId": 1,
+      "accountId": 2,
+      "externalId": "external_location_id_01",
+      "name": "Location 1",
+      "longitude": "12.123000000000000000",
+      "latitude": "12.123000000000000000",
+      "country": "country",
+      "city": "city",
+      "streetAddress": "address"
+    },
+    "url": "/v0.1/charge_point/3"
+  },
+  {
+    "id": 4,
+    "accountId": 2,
+    "chargePointDictId": 1,
+    "name": "SIMULATOR02",
+    "deviceId": "PL*SIM*SIMULATOR02",
+    "chargingPointOperatorRoleId": 1,
+    "integrationType": "OCPI",
+    "integrationVersion": "2.2.1",
+    "locationId": 4,
+    "tariffGroupId": 1,
+    "authRequired": false,
+    "active": true,
+    "status": "UNKNOWN",
+    "errorCode": "NO_ERROR",
+    "chargePointEvses": [
+      {
+        "id": 4,
+        "chargePointId": 4,
+        "deviceId": "PL*SIM*SIMULATOR02",
+        "accountId": 2,
+        "name": "EVSE_SIMULATOR02",
+        "chargingPointOperatorRoleId": 1,
+        "externalId": "external_evse_id_02",
+        "locationId": 4,
+        "status": "AVAILABLE",
+        "active": true,
+        "url": "/v0.1/charge_point/4/evse/4"
+      }
+    ],
+    "tariffGroup": {
+      "id": 1,
+      "name": "Tariff Group 1",
+      "accountId": 1,
+      "active": true,
+      "startDate": "2024-02-13T08:51:40Z",
+      "endDate": null,
+      "tariffs": [
+        {
+          "id": 1,
+          "tariffGroupId": 1,
+          "name": "Tariff 1",
+          "accountId": 1,
+          "currency": "EUR",
+          "unit": "kWh",
+          "margin": "0.020000000000000000",
+          "systemMargin": "0.000000000000000000",
+          "unitCost": "0.150000000000000000",
+          "fullCost": "0.170000000000000000",
+          "active": true,
+          "startDate": "2024-02-13T08:51:40Z",
+          "endDate": null,
+          "url": "/v0.1/tariff/1"
+        }
+      ],
+      "url": "/v0.1/tariff_group/1"
+    },
+    "location": {
+      "id": 4,
+      "chargingPointOperatorRoleId": 1,
+      "accountId": 2,
+      "externalId": "external_location_id_02",
+      "name": "Location 2",
+      "longitude": "12.123000000000000000",
+      "latitude": "12.123000000000000000",
+      "country": "country",
+      "city": "city",
+      "streetAddress": "address"
+    },
+    "url": "/v0.1/charge_point/4"
+  }
+]

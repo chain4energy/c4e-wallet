@@ -1,17 +1,12 @@
 <template>
-  <div class="warning">
+  <div class="info">
       <Icon name="Info"/>
-    <div class="warning-container">
+    <div class="info-container">
       <h3>{{$t(header, headerVariables)}}</h3>
-      <span v-if="textTypeData.type === TextType.STRING" class="warning-text">
-        {{$t(texts, textsVariables)}}
-      </span>
-      <ul class="warning-text" style="margin-bottom: 0 !important" v-else-if="textTypeData.type === TextType.ARRAY">
-        <li v-for="index in textTypeData.amount" :key="index">
-          {{$t(`${texts}[${index - 1}]`, textsVariables)}}
-        </li>
-      </ul>
-    </div>
+        <span v-for="itext in texts"   v-bind:key="itext" class="info-text">
+          {{$t(itext)}}
+        </span>
+      </div>
   </div>
 </template>
 
@@ -22,60 +17,24 @@ import i18n from "@/plugins/i18n";
 const props = defineProps<{
   header: string,
   headerVariables: any,
-  texts: string,
-  textsVariables:  any,
+  texts: string[],
+  textsVariables?:  any[],
 }>();
 
-const textTypeData = computed(() => getTextsLength(props.texts));
-
-enum TextType {
-  STRING,
-  ARRAY
-}
-
-function getTextsLength(key: string): {type: TextType | undefined, amount: number } {
-  const split = key.split('.');
-  // console.log("locale:" + JSON.stringify(i18n.global.locale.value));
-  let result: any = i18n.global.getLocaleMessage(i18n.global.locale.value);
-  split.forEach((s) => {
-    result = result[s];
-    if (!result) {
-      return {
-        type: undefined,
-        amount: 0
-      };
-    }
-  });
-  if (typeof result === 'string') {
-    return {
-      type: TextType.STRING,
-      amount: 1
-    };
-  } else if ( result instanceof Array) {
-    return {
-      type: TextType.ARRAY,
-      amount: result.length
-    };
-  }
-  return {
-    type: undefined,
-    amount: 0
-  };
-}
 </script>
 
 <style scoped lang="scss">
 
 
-.warning-container {
+.info-container {
   display: flex;
   flex-direction: column;
   text-align: left;
 }
-.warning-text{
+.info-text{
   color: black;
 }
-.warning{
+.info{
   display: grid;
   grid-template-columns: 1fr 7fr;
   align-self: center;

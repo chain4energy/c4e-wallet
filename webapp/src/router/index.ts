@@ -18,6 +18,7 @@ import ProvideVerificationCodeView from "@/views/buyTokens/ProvideVerificationCo
 import {portfolioRoutes} from "@/router/portfolioRoutes";
 import {resetPasswordRoutes} from "@/router/resetPasswordRoutes";
 import boostRoutes from "@/router/boostRoutes";
+import DistributionView from "@/views/DistributionView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -57,6 +58,11 @@ const routes: Array<RouteRecordRaw> = [
     path:'/airdrop',
     name: 'airdrop',
     component: AirDropView,
+  },
+  {
+    path:'/distribution',
+    name: 'distribution',
+    component: DistributionView,
   },
   {
     path: '/faq',

@@ -23,14 +23,14 @@ export class LoyaltyDropPoolConfig {
   rewardsTokens: Coin;
   usedTokens:	Coin;
   reservedTokens: Coin;
+  grantedRewards: Coin;
   epochNumber: number;
   epochPeriod: number;
   epochStartDate: Date;
-  apr: number;
 
 
-  constructor(id:number, poolDescription: string, vestingType: string, baseTokens: number, rewardsTokens: number, usedTokens: number, reservedTokens: number, epochNumber: number,
-              epochPeriod: number, epochStartDate: Date,   apr: number) {
+  constructor(id:number, poolDescription: string, vestingType: string, baseTokens: number, rewardsTokens: number, usedTokens: number, reservedTokens: number, grantedRewards: number, epochNumber: number,
+              epochPeriod: number, epochStartDate: Date) {
     this.id = id;
     this.poolDescription = poolDescription;
     this.vestingType = vestingType;
@@ -38,10 +38,10 @@ export class LoyaltyDropPoolConfig {
     this.rewardsTokens = new Coin(BigInt(rewardsTokens), getDefaultDenom());
     this.usedTokens = new Coin(BigInt(usedTokens), getDefaultDenom());
     this.reservedTokens = new Coin(BigInt(reservedTokens), getDefaultDenom());
+    this.grantedRewards= new Coin(BigInt(grantedRewards), getDefaultDenom());
     this.epochNumber = epochNumber;
     this.epochPeriod = epochPeriod;
     this.epochStartDate = epochStartDate;
-    this.apr = apr;
   }
 
   public get lockupPeriod() {

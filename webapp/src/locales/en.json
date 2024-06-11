@@ -300,7 +300,7 @@
       "WARNINGS": {
         "DELEGATIONS": {
           "HEADER": "Staking will lock your funds for {timeToComplete} days",
-          "TEXT": "You will need to undelegate in order for your staked assets to be liquid again. This proccess will take {timeToComplete} days to complete"
+          "TEXT": "You will need to undelegate in order for your staked assets to be liquid again. This process will take {timeToComplete} days to complete"
         },
         "UNDELEGATIONS": {
           "HEADER": "Once the unbonding period begins you will:",
@@ -328,9 +328,9 @@
   },
   "USER_DATA": {
     "TOTAL": "Total",
-    "AVAILABLE": "Balance",
+    "AVAILABLE": "Available for staking",
     "STAKED": "Staked",
-    "UNSTAKING": "Unstaking",
+    "SPENDABLE": "Available for use",
     "CLAIM_REWARDS": "Claim",
     "LOCKED": "Locked",
     "VESTING_END": "Vesting end",
@@ -367,6 +367,7 @@
     "PRIVACY_POLICY": "Privacy policy",
     "TERMS_CONDITIONS": "Terms & conditions",
     "AIRDROP": "Airdrop",
+    "DISTRIBUTION": "Claim Seed/Private",
     "FAUCET": "Faucet",
     "BUYTOKENS": "Buy tokens",
     "PROFILE": "Profile",
@@ -468,7 +469,8 @@
   },
   "COPY": {
     "ADDRESS": "Address has been copied to clipboard",
-    "TX_HASH": "TX hash has been copied to clipboard"
+    "TX_HASH": "TX hash has been copied to clipboard",
+    "VALUE": "Value has been copied to clipboard"
   },
   "DISCLAIMER": "The information provided on this website; web applications; mobile applications does not constitute investment advice, financial advice, trading advice, or any other sort of advice and you should not treat any of the content as such. Crescent Foundation Limited(”Crescent Foundation”) does not recommend that any cryptocurrency should be bought, sold, or held by you. Do conduct your own due diligence and consult your financial advisor before making any investment decisions. </br> Crescent Foundation will strive to ensure accuracy of information listed on this website; web applications; mobile applications although it will not hold any responsibility for any missing or wrong information. Crescent Foundation provides all information *as is.* You understand that you are using any and all information available here at your own risk.<br/>The appearance of third party advertisements and hyperlinks on this website; web applications; mobile applications does not constitute an endorsement, guarantee, warranty, or recommendation by Crescent Foundation. Do conduct your own due diligence before deciding to use any third party services.<br/>Before using our service, you should review the relevant <a href='https://docs.c4e.io/' target='_blank'>documentation</a> to make sure you understand how the service works.",
   "NUMBER_FORMAT_LOCALE": "en-US",
@@ -480,6 +482,10 @@
   "HEADER": {
     "TOP_UP_ACCOUNT": "Faucet",
     "VERSION": "Version"
+  },
+  "DISTRIBUTION": {
+    "CLAIM_AIRDROP": "Claim Seed/Private",
+    "SHARE_MESSAGE_CAMPAIGN_COMPLETED": "I have completed the {'@'}Chain4Energy Campaign and received #C4E!"
   },
   "FAUCET": {
     "WELCOME": "Welcome to our testnet! Are you looking for some tokens to start?\nYou can top up your account with 100 C4E every 24 hours",
@@ -614,8 +620,9 @@
     }
   },
   "PORTFOLIO_VIEW": {
-    "BALANCE": "Balance",
-    "SPENDABLE": "Spendable",
+    "TOKEN_PRICE": "C4E price",
+    "BALANCE": "Available for staking",
+    "SPENDABLE": "Available for use",
     "LOCKED": "Locked",
     "SEND": "Send",
     "RECEIVE": "Receive",
@@ -652,16 +659,25 @@
       "MANAGE": "Manage",
       "LOCK_START": "Lock start date",
       "LOCK_END": "Lock end date",
-      "LAST_REWARD": "Last reward withdrawal date",
-      "STATUS": "Status"
+      "LAST_REWARD_DATE": "Last payout date",
+      "LAST_REWARD": "Last payout",
+      "STATUS": "Status",
+      "STATUS_TYPE": {
+        "TRANSACTION_IN_PROGRESS": "Waiting for confirmation",
+        "SUCCESS": "Confirmed",
+        "ERROR": "Error"
+      }
     },
     "POPUP": {
       "BALANCE": "Your balance",
       "SPENDABLE": "Spendable",
       "INFO_HEADER": "This operation will lock your funds for {timeToComplete} days",
-      "INFO_TEXT": "Rewards for the locked-up tokens will be distributed in weekly cycles every Thursday until the end of lock-up period",
+      "INFO_TEXT_1": "1. Opting for a longer lockup period will earn a better APR.",
+      "INFO_TEXT_2": "2. All rewards are paid in C4E in weekly cycles and automatically sent to wallets.",
+      "INFO_TEXT_3": "3. Users are not allowed to withdraw their locked tokens until the redemption period is over.",
       "RESERVE": "Reserve {amount} C4E for future transactions",
-      "AMOUNT": "Amount to be claimed after lock-up period passes"
+      "AMOUNT": "C4E Rewards at the end of the lock-up period",
+      "LOCK_C4E": "Lock C4E"
     },
     "COMMON": {
       "NAME": "Name",
@@ -669,6 +685,16 @@
       "APR": "Reward (APR)",
       "POOL_USAGE": "Pool usage",
       "DAYS": "days"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "CLOSED": "Closed"
+    },
+    "COUNTER": {
+      "DAYS": "Days",
+      "HOURS": "Hours",
+      "MINUTES": "Mins",
+      "STARTS_IN": "Starts in"
     }
   }
 }

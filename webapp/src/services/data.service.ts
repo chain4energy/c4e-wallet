@@ -31,17 +31,22 @@ class DataService extends LoggedService {
   private validatorsTimeout = 10000;
   private accountTimeout = 10000;
   private spendableTimeout = 10000;
+  private loyaltyDropUserBoostTimeout = 10000;
   private lastBlockTimeout = 0;
   private lastDashboardTimeout = 0;
   private lastValidatorsTimeout = 0;
   private lastAccountTimeout = 0;
   private lastSpendablesTimeout = 0;
+  private lastLoyaltyDropUserBoostTimeout = 0;
+  private lastLoyaltyDropPoolsConfigTimeout = 0;
 
   private blockIntervalId = 0;
   private dashboardIntervalId = 0;
   private validatorsIntervalId = 0;
   private accountIntervalId = 0;
   private spendablesIntervalId = 0;
+  private loyaltyDropUserBoostIntervalId = 0;
+  private loyaltyDropPoolsConfigIntervalId = 0;
 
   private onProposalDetailsError?: () => void;
 
@@ -64,11 +69,13 @@ class DataService extends LoggedService {
   public async onAppStart() {
     const i18n = useI18n();
     window.addEventListener('offline', () => {
+      DataService.getInstance().logToConsole(LogLevel.DEBUG, 'Event offline');
       this.isOnline = navigator.onLine;
       useToast().error(i18n.t('TOAST.INTERNET_CONNECTION.OFFLINE'), {icon: WifiOffIcon, timeout: false});
       this.clearIntervals();
     });
     window.addEventListener('online', () => {
+      DataService.getInstance().logToConsole(LogLevel.DEBUG, 'Event online');
       this.isOnline = navigator.onLine;
       useToast().clear();
       useToast().error(i18n.t('TOAST.INTERNET_CONNECTION.ONLINE'), {icon: WifiIcon });
@@ -82,25 +89,34 @@ class DataService extends LoggedService {
         this.dashboardTimeout = config.dashboardDataRefreshTimeout;
         this.validatorsTimeout = config.validatorsDataRefreshTimeout;
         this.accountTimeout = config.accountDataRefreshTimeout;
+        this.loyaltyDropUserBoostTimeout = config.loyaltyDropService.loyaltyDropUserBoostRefreshTimeout;
       }
     );
     window.addEventListener('focus', () => {
+      DataService.getInstance().logToConsole(LogLevel.DEBUG, 'Event focus');
       if(this.isOnline) {
         this.refreshBlocksData();
         this.refreshDashboard();
         this.refreshValidators();
+        this.refreshLoyaltyDropPoolsConfig();
         this.setIntervals();
+        if(useUserStore().isLoggedIn) {
+          this.refreshAccountData();
+        }
       }
     }, false);
     window.addEventListener('blur', () => {
+      DataService.getInstance().logToConsole(LogLevel.DEBUG, 'Event blur');
       this.clearIntervals();
     }, false);
 
     window.ethereum.on('networkChanged', function(networkId: number){
+      DataService.getInstance().logToConsole(LogLevel.DEBUG, 'Ethereum networkChanged');
       useUserStore().metamaskConnectionInfo.networkId = networkId;
     });
 
     window.ethereum.on('accountsChanged', function (accounts: string[]) {
+      DataService.getInstance().logToConsole(LogLevel.DEBUG, 'Ethereum accountsChanged');
       useUserStore().metamaskConnectionInfo.address = accounts[0];
     });
   }
@@ -114,10 +130,12 @@ class DataService extends LoggedService {
         useBlockStore().fetchAverageBlockTime(lockScreen),
         useTokensStore().fetchPools(lockScreen),
         useTokensStore().fetchTotalSupply(lockScreen),
+        useTokensStore().fetchCirculatingSupply(lockScreen),
         useTokensStore().fetchStakingPool(lockScreen),
         useTokensStore().fetchInflation(lockScreen),
         useTokensStore().fetchLockedVesting(lockScreen),
         useTokensStore().fetchDistributorParams(lockScreen),
+        useTokensStore().fetchTokenPriceHistory(lockScreen),
         useValidatorsStore().fetchValidators(lockScreen),
         useValidatorsStore().fetchStackingParams(lockScreen),
         useProposalsStore().fetchTallyParams(),
@@ -129,23 +147,28 @@ class DataService extends LoggedService {
     }
   }
   public setIntervals() {
-    console.log("setIntervals!!!!!");
+    this.logToConsole(LogLevel.DEBUG, 'setIntervals');
     const now = new Date().getTime();
     this.lastBlockTimeout = now;
     this.lastDashboardTimeout = now;
     this.lastValidatorsTimeout = now;
 
 
-    this.blockIntervalId = this.checkAndSetInterval(this.blockIntervalId, refreshBlocksData, this.blockTimeout);
-    this.dashboardIntervalId = this.checkAndSetInterval(this.dashboardIntervalId, refreshDashboard, this.dashboardTimeout);
-    this.validatorsIntervalId = this.checkAndSetInterval(this.validatorsIntervalId, refreshValidators, this.validatorsTimeout);
+    this.blockIntervalId = this.checkAndSetInterval(this.blockIntervalId, refreshBlocksData, this.blockTimeout, "refreshBlocksData");
+    this.dashboardIntervalId = this.checkAndSetInterval(this.dashboardIntervalId, refreshDashboard, this.dashboardTimeout, "refreshDashboard");
+    this.validatorsIntervalId = this.checkAndSetInterval(this.validatorsIntervalId, refreshValidators, this.validatorsTimeout, "refreshValidators");
     if (useUserStore().isLoggedIn) {
       this.lastAccountTimeout = now;
-      this.accountIntervalId = this.checkAndSetInterval(this.accountIntervalId, refreshAccountData, this.accountTimeout);
+      this.accountIntervalId = this.checkAndSetInterval(this.accountIntervalId, refreshAccountData, this.accountTimeout, "refreshAccountData");
+      if(this.isLoyaltyDropViewSelected){
+        this.lastLoyaltyDropUserBoostTimeout = now;
+        this.loyaltyDropUserBoostIntervalId = this.checkAndSetInterval(this.loyaltyDropUserBoostIntervalId, refreshLoyaltyDrop, this.loyaltyDropUserBoostTimeout, "refreshLoyaltyDropUserBoost");
+      }
     }
   }
 
-  private checkAndSetInterval(intervalId: number, functionToCall: (() => void), timeout: number): number {
+  private checkAndSetInterval(intervalId: number, functionToCall: (() => void), timeout: number, extraLogInfo = ''): number {
+    this.logToConsole(LogLevel.DEBUG, extraLogInfo + ' checkAndSetInterval:' + timeout);
     if (intervalId != 0) {
       window.clearInterval(intervalId);
     }
@@ -153,7 +176,7 @@ class DataService extends LoggedService {
   }
 
   public clearIntervals() {
-    console.log("clearIntervals!!!!!");
+    this.logToConsole(LogLevel.DEBUG, 'clearIntervals');
     window.clearInterval(this.blockIntervalId);
     this.blockIntervalId = 0;
     window.clearInterval(this.dashboardIntervalId);
@@ -164,6 +187,9 @@ class DataService extends LoggedService {
     this.accountIntervalId= 0;
     window.clearInterval(this.spendablesIntervalId);
     this.spendablesIntervalId= 0;
+    window.clearInterval(this.loyaltyDropUserBoostIntervalId);
+    this.loyaltyDropUserBoostIntervalId= 0;
+
   }
   async waitTillCondition(condition: () => boolean) {
     while (!condition()) {
@@ -216,6 +242,7 @@ class DataService extends LoggedService {
     // useValidatorsStore().clear();
     useProposalsStore().clearUserVote();
     useUserStore().logOut();
+    useLoyaltyDropStore().clear(false);
   }
 
   public onConfigurationChange() {
@@ -232,10 +259,15 @@ class DataService extends LoggedService {
       useProposalsStore().clear();
       useTokensStore().clear();
       useValidatorsStore().clear();
+      useLoyaltyDropStore().clear();
       this.clearIntervals();
       this.onInit().then( () => {
           if (this.isClaimAirdropViewSelected && useUserStore().getAccount.address) {
             useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
+          }
+          if(this.isLoyaltyDropViewSelected){
+            useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(true);
+            this.refreshLoyaltyDropUserBoost(true, true);
           }
         }
       );
@@ -250,16 +282,16 @@ class DataService extends LoggedService {
   public onPortfolioSelected() {
     this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected refreshs');
     this.refreshSpendables(true, true);
-    this.checkAndSetInterval(this.spendablesIntervalId,()=>{refreshSpendables(false)}, this.spendableTimeout )
-    if (useUserStore().isLoggedIn) {
-      this.refreshAccountData();
-    }
+    // this.checkAndSetInterval(this.spendablesIntervalId,()=>{refreshSpendables(false)}, this.spendableTimeout, 'refreshSpendables' );
+    // if (useUserStore().isLoggedIn) {
+    //   this.refreshAccountData();
+    // }
   }
 
   public onPortfolioUnselected() {
     this.logToConsole(LogLevel.DEBUG, 'onPortfolioUnselected');
-    window.clearInterval(this.spendablesIntervalId);
-    this.spendablesIntervalId = 0;
+    // window.clearInterval(this.spendablesIntervalId);
+    // this.spendablesIntervalId = 0;
   }
 
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
@@ -272,7 +304,7 @@ class DataService extends LoggedService {
   }
 
   public onInfoView() {
-
+    this.logToConsole(LogLevel.DEBUG, 'onInfoView');
     usePublicSalesStore().fetchRoundInfoList();
     usePublicSalesStore().fetchRoundInfo(useConfigurationStore().config.currentPublicSaleRoundId, undefined,false);
 
@@ -311,14 +343,18 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onKeplrKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectKeplr().then(()=>{refreshSpendables(false)});
+    useUserStore().connectKeplr((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo);
+    });
   }
 
   public onCosmostationKeyStoreChange() {
     this.logToConsole(LogLevel.DEBUG, 'onCosmostationKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectCosmostation().then(()=>{refreshSpendables(false)});
+    useUserStore().connectCosmostation((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo);
+    });
 
   }
 
@@ -326,7 +362,9 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onLeapKeyStoreChange');
     usePublicSalesStore().toggleWarning(true);
     useUserStore().logOut();
-    useUserStore().connectLeap().then(()=>{refreshSpendables(false)});
+    useUserStore().connectLeap((connetionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connetionInfo);
+    });
 
   }
 
@@ -343,51 +381,48 @@ class DataService extends LoggedService {
       instancce.enableLeapAccountChangeListener();
     }
     instancce.lastAccountTimeout = new Date().getTime();
-    instancce.accountIntervalId = instancce.checkAndSetInterval(instancce.accountIntervalId, refreshAccountData, instancce.accountTimeout);
+    instancce.accountIntervalId = instancce.checkAndSetInterval(instancce.accountIntervalId, refreshAccountData, instancce.accountTimeout, "refreshAccountData");
     const propId = useProposalsStore().proposal;
     const userAddress = useUserStore().getAccount.address;
     if (propId !== undefined && userAddress !== '') {
       useProposalsStore().fetchProposalUserVote(propId.proposalId, userAddress);
     }
     // refresh spendables once logged in
-    refreshSpendables(true);
+    // refreshSpendables(true);
 
     if (instancce.isClaimAirdropViewSelected && userAddress) {
         useAirDropStore().fetchUsersCampaignData(userAddress, true);
     }
-    if (instancce.isLoyaltyDropViewSelected && userAddress) {
-      useLoyaltyDropStore().fetchLoyaltyDropUserBoost(userAddress,true);
+    if (instancce.isLoyaltyDropViewSelected){
+      useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig( true);
+      instancce.refreshLoyaltyDropUserBoost(true, true);
+      instancce.lastLoyaltyDropUserBoostTimeout = new Date().getTime();
+      instancce.loyaltyDropUserBoostIntervalId = instancce.checkAndSetInterval(instancce.loyaltyDropUserBoostIntervalId, refreshLoyaltyDrop, instancce.loyaltyDropUserBoostTimeout, "refreshLoyaltyDropUserBoost");
     }
     onSuccess?.();
   }
 
   private onMetamaskConnectSuccess(onSuccess?: () => void) {
-
+    this.logToConsole(LogLevel.DEBUG, 'onMetamaskConnectSuccess');
     if (onSuccess) {
       onSuccess();
     }
   }
 
-  private skipRefreshing(lastTimeout: number): boolean {
+  private skipRefreshing(lastTimeout: number, extraLogInfo = ''): boolean {
     const now = new Date().getTime();
     this.logToConsole(
-      LogLevel.DEBUG,
-      'skipRefreshing: ',
-      lastTimeout.toString(),
-      this.minBetweenRefreshmentsPeriod.toString(),
-      now.toString());
+      LogLevel.DEBUG, extraLogInfo + ' skipRefreshing: ', lastTimeout.toString(), this.minBetweenRefreshmentsPeriod.toString(), now.toString(), (now-lastTimeout).toString() );
     const result = (lastTimeout + this.minBetweenRefreshmentsPeriod) >= now;
     this.logToConsole(
-      LogLevel.DEBUG,
-      'skipRefreshing result: ',
-      result.toString()
+      LogLevel.DEBUG, extraLogInfo + ' skipRefreshing result: ', result.toString()
     );
     return result;
   }
 
   public refreshAccountData() {
     this.logToConsole(LogLevel.DEBUG, 'refreshAccountData');
-    if (!this.skipRefreshing(this.lastAccountTimeout)) {
+    if (!this.skipRefreshing(this.lastAccountTimeout, 'refreshAccountData')) {
       useUserStore().fetchAccountData(false).then(() => {
         this.lastAccountTimeout = new Date().getTime();
       });
@@ -395,9 +430,13 @@ class DataService extends LoggedService {
       if(useUserStore().getAccount.address && this.isClaimAirdropViewSelected){
         useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, false);
       }
-      if(useUserStore().getAccount.address && this.isLoyaltyDropViewSelected){
-        useLoyaltyDropStore().fetchLoyaltyDropUserBoost(useUserStore().getAccount.address, false);
+      if(this.isLoyaltyDropViewSelected){
+        this.refreshLoyaltyDropUserBoost(true, true);
       }
+      // if(useUserStore().getAccount.address && this.isLoyaltyDropViewSelected){
+      //   this.refreshLoyaltyDropUserBoost(false, true);
+      //   // useLoyaltyDropStore().fetchLoyaltyDropUserBoost(useUserStore().getAccount.adressd, false);
+      // }
     }
   }
 
@@ -405,7 +444,7 @@ class DataService extends LoggedService {
     // f-n refreshing spendable balances from API
     if (useUserStore().getAccount.address) {
       this.logToConsole(LogLevel.DEBUG, 'refreshSpendables');
-      if (force || !this.skipRefreshing(this.lastSpendablesTimeout)) {
+      if (force || !this.skipRefreshing(this.lastSpendablesTimeout, 'refreshSpendables')) {
         useUserStore().updateSpendables(lockscreen).then(() => {
           this.lastSpendablesTimeout = new Date().getTime();
         });
@@ -413,9 +452,21 @@ class DataService extends LoggedService {
     }
   }
 
+  public refreshLoyaltyDropUserBoost(lockscreen: boolean, force = false) {
+    if (useUserStore().getAccount.address) {
+      this.logToConsole(LogLevel.DEBUG, 'refreshLoyaltyDropUserBoost');
+      if (force || !this.skipRefreshing(this.lastLoyaltyDropUserBoostTimeout, 'refreshLoyaltyDropUserBoost')) {
+        useLoyaltyDropStore().fetchLoyaltyDropUserBoost(useUserStore().getAccount.address,true).then(() => {
+          this.lastLoyaltyDropUserBoostTimeout = new Date().getTime();
+        });
+      }
+    }
+  }
+
+
   public refreshBlocksData() {
     this.logToConsole(LogLevel.DEBUG, 'refreshBlocksData');
-    if (!this.skipRefreshing(this.lastBlockTimeout)) {
+    if (!this.skipRefreshing(this.lastBlockTimeout, 'refreshBlocksData')) {
       useBlockStore().fetchLatestBlock(false).then(() => {
         this.lastBlockTimeout = new Date().getTime();
       });
@@ -424,15 +475,17 @@ class DataService extends LoggedService {
 
   public refreshDashboard() {
     this.logToConsole(LogLevel.DEBUG, 'refreshDashboard');
-    if (!this.skipRefreshing(this.lastDashboardTimeout)) {
+    if (!this.skipRefreshing(this.lastDashboardTimeout, 'refreshDashboard')) {
       const lockScreen = false;
       Promise.all([
         useBlockStore().fetchAverageBlockTime(lockScreen),
         useTokensStore().fetchPools(lockScreen),
         useTokensStore().fetchTotalSupply(lockScreen),
+        useTokensStore().fetchCirculatingSupply(lockScreen),
         useTokensStore().fetchStakingPool(lockScreen),
         useTokensStore().fetchInflation(lockScreen),
         useTokensStore().fetchLockedVesting(lockScreen),
+        useTokensStore().fetchTokenPriceHistory(lockScreen),
       ]).then(() => {
         this.lastDashboardTimeout = new Date().getTime();
       });
@@ -441,9 +494,18 @@ class DataService extends LoggedService {
 
   public refreshValidators() {
     this.logToConsole(LogLevel.DEBUG, 'refreshValidators');
-    if (!this.skipRefreshing(this.lastValidatorsTimeout)) {
+    if (!this.skipRefreshing(this.lastValidatorsTimeout, 'refreshValidators')) {
       useBlockStore().fetchLatestBlock(false).then(() => {
         this.lastValidatorsTimeout = new Date().getTime();
+      });
+    }
+  }
+
+  public refreshLoyaltyDropPoolsConfig() {
+    this.logToConsole(LogLevel.DEBUG, 'refreshLoyaltyDropPoolsConfig');
+    if (this.isLoyaltyDropViewSelected && !this.skipRefreshing(this.lastLoyaltyDropPoolsConfigTimeout, 'refreshLoyaltyDropPoolsConfig')) {
+      useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(false).then(() => {
+        this.lastLoyaltyDropPoolsConfigTimeout = new Date().getTime();
       });
     }
   }
@@ -495,16 +557,17 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onLoyaltyDropSelected');
     this.isLoyaltyDropViewSelected = true;
     useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(true);
-    if(useUserStore().getAccount.address){
-      useLoyaltyDropStore().fetchLoyaltyDropUserBoost(useUserStore().getAccount.address,true);
-    }
+    this.refreshLoyaltyDropUserBoost(true, true);
+    this.lastLoyaltyDropUserBoostTimeout = new Date().getTime();
+    this.loyaltyDropUserBoostIntervalId = this.checkAndSetInterval(this.loyaltyDropUserBoostIntervalId, refreshLoyaltyDrop, this.loyaltyDropUserBoostTimeout, "refreshLoyaltyDropUserBoost");
   }
 
   public onLoyaltyDropUnselected() {
     this.logToConsole(LogLevel.DEBUG, 'onLoyaltyDropUnselected');
     this.isLoyaltyDropViewSelected = false;
+    window.clearInterval(this.loyaltyDropUserBoostIntervalId);
+    this.loyaltyDropUserBoostIntervalId= 0;
   }
-
 
   public async onCreateVestingPoolLoyaltyDrop(vestingPoolName: string, amount:number, vestingPeriod: number, vestingType: string, onSuccess?: () => void){
     await useUserStore().createVestingPoolLoyaltyDrop(vestingPoolName, amount, vestingPeriod, vestingType).then((isTransactionOk)=>{
@@ -521,8 +584,6 @@ class DataService extends LoggedService {
       }
     });
   }
-
-
 
   public async onProposalUpdateVotes(proposalId: number) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalUpdateVotes');
@@ -587,4 +648,9 @@ function refreshValidators() {
 
 function refreshSpendables(lockscreen: boolean) {
   DataService.getInstance().refreshSpendables(lockscreen);
+}
+
+function refreshLoyaltyDrop() {
+  DataService.getInstance().refreshLoyaltyDropUserBoost(false);
+  DataService.getInstance().refreshLoyaltyDropPoolsConfig();
 }

@@ -24,6 +24,7 @@ export interface ViewDenom {
 export interface JsonQueries {
   STAKING_POOL_URL: string;
   TOTAL_SUPPLY_URL: string;
+  CIRCULATING_SUPPLY_URL: string;
   COMMUNITY_POOL_URL: string;
   PROPOSALS_URL: string;
   PROPOSALS_BY_ID_URL: string;
@@ -55,6 +56,7 @@ export interface  JsonLoyaltyDropConfig {
   loyaltyDropUserBootsURL:string;
   loyaltyDropDefaultDenom: string;
   loyaltyDropBroadcastURL: string;
+  loyaltyDropUserBoostRefreshTimeout: number;
 }
 
 
@@ -67,6 +69,11 @@ export interface Configuration {
   publicSaleServiceURL: string,
   addressPrefix: string,
   stakingDenom: string,
+  coinGeckoId: string,
+  nodeProviderName: string,
+  nodeProviderEmail: string;
+  nodeProviderWebsite: string;
+  chainSymbolImageUrl: string,
   strategicPoolAddress: string[],
   airdropPoolAddress: string,
   chainId: string,
@@ -101,4 +108,5 @@ export interface Configuration {
   publicSaleVisible: boolean;
   useAminoOnly: boolean;
   loyaltyDropService: JsonLoyaltyDropConfig;
+  circulatingSupplyVisible:  boolean;
 }

@@ -8,7 +8,12 @@
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "nodeProviderName": "C4E",
+    "nodeProviderEmail": "integration.support@c4e.io",
+    "nodeProviderWebsite": "https://c4e.io",
     "transferDenom": "uc4e",
+    "chainSymbolImageUrl": "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/perun/chain.png",
+    "coinGeckoId": "chain4energy",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
       "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
@@ -32,6 +37,11 @@
       {
         "denom": "uc4e",
         "viewDenom": "C4E",
+        "coinDecimals": 6
+      },
+      {
+        "denom": "u$",
+        "viewDenom": "$",
         "coinDecimals": 6
       }
     ],
@@ -59,7 +69,11 @@
     "faucetAvailable": false,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": true,
-    "useAminoOnly": false
+    "useAminoOnly": false,
+    "loyaltyDropService": {
+      "loyaltyDropBaseUrl": "https://loyalty-drop-mainnet.c4e.io/api/loyalty-drop"
+    },
+    "circulatingSupplyVisible" : true
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -69,6 +83,9 @@
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "publicSaleServiceURL": "/api-devnet",
     "addressPrefix": "c4e",
+    "nodeProviderName": "C4E",
+    "nodeProviderEmail": "integration.support@c4e.io",
+    "nodeProviderWebsite": "https://c4e.io",
     "stakingDenom": "uc4e",
     "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
@@ -95,6 +112,11 @@
       {
         "denom": "uc4e",
         "viewDenom": "C4E",
+        "coinDecimals": 6
+      },
+      {
+        "denom": "u$",
+        "viewDenom": "$",
         "coinDecimals": 6
       }
     ],
@@ -137,6 +159,9 @@
     "publicSaleServiceURL": "/api-devnet",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "nodeProviderName": "C4E",
+    "nodeProviderEmail": "integration.support@c4e.io",
+    "nodeProviderWebsite": "https://c4e.io",
     "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
@@ -162,6 +187,11 @@
       {
         "denom": "uc4e",
         "viewDenom": "C4E",
+        "coinDecimals": 6
+      },
+      {
+        "denom": "u$",
+        "viewDenom": "$",
         "coinDecimals": 6
       }
     ],
@@ -189,7 +219,11 @@
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": false,
-    "useAminoOnly": true
+    "useAminoOnly": true,
+    "loyaltyDropService": {
+      "loyaltyDropBaseUrl": "http://localhost:8090/api/loyalty-drop",
+      "loyaltyDropPoolConfigurationsUrl": "/v0.1/pool_configurations"
+    }
   },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
@@ -198,6 +232,9 @@
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://app-testnet.chain4energy.org/",
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
+    "nodeProviderName": "C4E",
+    "nodeProviderEmail": "integration.support@c4e.io",
+    "nodeProviderWebsite": "https://c4e.io",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "transferDenom": "uc4e",
@@ -222,6 +259,11 @@
       {
         "denom": "uc4e",
         "viewDenom": "C4E",
+        "coinDecimals": 6
+      },
+      {
+        "denom": "u$",
+        "viewDenom": "$",
         "coinDecimals": 6
       }
     ],
@@ -260,6 +302,9 @@
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "nodeProviderName": "C4E",
+    "nodeProviderEmail": "integration.support@c4e.io",
+    "nodeProviderWebsite": "https://c4e.io",
     "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
@@ -282,6 +327,11 @@
       {
         "denom": "uc4e",
         "viewDenom": "C4E",
+        "coinDecimals": 6
+      },
+      {
+        "denom": "u$",
+        "viewDenom": "$",
         "coinDecimals": 6
       }
     ],
@@ -324,6 +374,9 @@
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "nodeProviderName": "C4E",
+    "nodeProviderEmail": "integration.support@c4e.io",
+    "nodeProviderWebsite": "https://c4e.io",
     "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
@@ -348,6 +401,11 @@
       {
         "denom": "uc4e",
         "viewDenom": "C4E",
+        "coinDecimals": 6
+      },
+      {
+        "denom": "u$",
+        "viewDenom": "$",
         "coinDecimals": 6
       }
     ],
@@ -385,6 +443,9 @@
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "nodeProviderName": "C4E",
+    "nodeProviderEmail": "integration.support@c4e.io",
+    "nodeProviderWebsite": "https://c4e.io",
     "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
@@ -409,6 +470,11 @@
       {
         "denom": "uc4e",
         "viewDenom": "C4E",
+        "coinDecimals": 6
+      },
+      {
+        "denom": "u$",
+        "viewDenom": "$",
         "coinDecimals": 6
       }
     ],
@@ -450,6 +516,9 @@
     "publicSaleServiceURL": "https://wallet.c4e.io/userService",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
+    "nodeProviderName": "C4E",
+    "nodeProviderEmail": "integration.support@c4e.io",
+    "nodeProviderWebsite": "https://c4e.io",
     "transferDenom": "uc4e",
     "tokenReservationDenom": "uc4e",
     "strategicPoolAddress": [
@@ -475,6 +544,11 @@
       {
         "denom": "uc4e",
         "viewDenom": "C4E",
+        "coinDecimals": 6
+      },
+      {
+        "denom": "u$",
+        "viewDenom": "$",
         "coinDecimals": 6
       }
     ],
@@ -511,6 +585,9 @@
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
     "publicSaleServiceURL": "http://localhost:8200",
+    "nodeProviderName": "C4E",
+    "nodeProviderEmail": "integration.support@c4e.io",
+    "nodeProviderWebsite": "https://c4e.io",
     "addressPrefix": "c4e",
     "stakingDenom": "uc4e",
     "transferDenom": "uc4e",
@@ -537,6 +614,11 @@
       {
         "denom": "uc4e",
         "viewDenom": "C4E",
+        "coinDecimals": 6
+      },
+      {
+        "denom": "u$",
+        "viewDenom": "$",
         "coinDecimals": 6
       }
     ],

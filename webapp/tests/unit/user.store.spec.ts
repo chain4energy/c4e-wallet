@@ -1,4 +1,4 @@
-import { setActivePinia, createPinia } from 'pinia'
+import { setActivePinia, createPinia } from 'pinia';
 import { useUserStore } from '@/store/user.store';
 import { useConfigurationStore } from '@/store/configuration.store';
 import { defaultDenom, createErrorResponse } from "../utils/common.blockchain.data.util";
@@ -30,8 +30,8 @@ jest.mock('axios', () => {
     })),
     request: jest.fn(),
     AxiosError: jest.fn()
-  }
-})
+  };
+});
 const mockedAxios = mockAxios();
 
 const { mockedOfflineSigner, mockedSigningStargateClient } = mockKeplr();
@@ -42,7 +42,7 @@ const accountData: AccountData  = {
   address: address,
   algo: "secp256k1",
   pubkey: new Uint8Array([12,34]),
-}
+};
 mockedOfflineSigner.getAccounts.mockResolvedValue([accountData]);
 
 describe('user store tests', () => {
@@ -207,7 +207,7 @@ describe('user store tests', () => {
   });
 
   it('connects Keplr - Error connecting Keplr', async () => {
-    const balanceAmount = '49031887606805'
+    const balanceAmount = '49031887606805';
     const userStore = useUserStore();
     userStore.logOut();
     const account = { data: createBaseAccountResponseData(address) };
@@ -293,7 +293,7 @@ describe('user store tests', () => {
 
     await userStore.delegate('validator', 12321);
 
-    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr)
+    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr);
 
   });
 
@@ -361,7 +361,7 @@ describe('user store tests', () => {
 
     await userStore.redelegate('validator', 'validator2', 12321);
 
-    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr)
+    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr);
 
   });
 
@@ -525,22 +525,22 @@ describe('user store tests', () => {
     userStore.calculateVestingLocked(new Date(startTime-1000000));
     expect(userStore.getVestingLockAmount).toBe(amount);
 
-    userStore.calculateVestingLocked(new Date(startTime))
+    userStore.calculateVestingLocked(new Date(startTime));
     expect(userStore.getVestingLockAmount).toBe(amount);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/4))
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/4));
     expect(userStore.getVestingLockAmount).toBe(amount - amount/4n);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/2))
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/2));
     expect(userStore.getVestingLockAmount).toBe(amount/2n);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis-yearInMillis/4))
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis-yearInMillis/4));
     expect(userStore.getVestingLockAmount).toBe(amount/4n);
 
-    userStore.calculateVestingLocked(new Date(endTime))
+    userStore.calculateVestingLocked(new Date(endTime));
     expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(endTime+1000000))
+    userStore.calculateVestingLocked(new Date(endTime+1000000));
     expect(userStore.getVestingLockAmount).toBe(0n);
 
   });
@@ -553,7 +553,7 @@ describe('user store tests', () => {
     const startTime = currentDate.getTime();
     const yearInMillis = 365*24*3600*1000;
     const endTime = startTime + yearInMillis;
-    const amount = 1000000n
+    const amount = 1000000n;
     const origVesting = new Coin(amount, defaultDenom);
     const vestingData = new ContinuousVestingData(new Date(startTime), new Date(endTime), [origVesting]);
 
@@ -563,22 +563,22 @@ describe('user store tests', () => {
     userStore.calculateVestingLocked(new Date(startTime-1000000));
     expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(startTime))
+    userStore.calculateVestingLocked(new Date(startTime));
     expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/4))
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/4));
     expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/2))
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis/2));
     expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(startTime+yearInMillis-yearInMillis/4))
+    userStore.calculateVestingLocked(new Date(startTime+yearInMillis-yearInMillis/4));
     expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(endTime))
+    userStore.calculateVestingLocked(new Date(endTime));
     expect(userStore.getVestingLockAmount).toBe(0n);
 
-    userStore.calculateVestingLocked(new Date(endTime+1000000))
+    userStore.calculateVestingLocked(new Date(endTime+1000000));
     expect(userStore.getVestingLockAmount).toBe(0n);
 
   });
@@ -687,7 +687,7 @@ async function testConnectRewardsError(connect: () => Promise<void>) {
 
   const userStore = useUserStore();
   userStore.logOut();
-  const balanceAmount = '49031887606805'
+  const balanceAmount = '49031887606805';
 
   const account = { data: createBaseAccountResponseData(address) };
   const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
@@ -712,7 +712,7 @@ async function testConnectDelegationsError(connect: () => Promise<void>) {
 
   const userStore = useUserStore();
   userStore.logOut();
-  const balanceAmount = '49031887606805'
+  const balanceAmount = '49031887606805';
 
   const account = { data: createBaseAccountResponseData(address) };
   const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
@@ -737,7 +737,7 @@ async function testConnectUndelegationError(connect: () => Promise<void>) {
 
   const userStore = useUserStore();
   userStore.logOut();
-  const balanceAmount = '49031887606805'
+  const balanceAmount = '49031887606805';
 
   const account = { data: createBaseAccountResponseData(address) };
   const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };

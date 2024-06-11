@@ -45,7 +45,15 @@
 
       <div class="container-fluid d-flex justify-content-between">
         <span class="d-flex" style="align-items: center">
-        <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36" @click="onLogoClick()" />
+          <div class="navbar-brand" style="display:flex; flex-direction: column; text-align:center" @click="onLogoClick()">
+<!--            <div style="text-align:center">-->
+              <Image :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36"  />
+<!--            </div>-->
+<!--            <div>-->
+<!--            <TokenPriceComponent style="font-size: 0.8rem; margin-top: 4px"></TokenPriceComponent>-->
+<!--              <span style="font-size: 0.8rem; margin-top: 4px" >{{useTokensStore().getTokenPrice.price}} USD</span>-->
+<!--            </div>-->
+          </div>
         <div class="bottom-container">
         <h2>{{ $t("SECTION_TITLES." + currentRouteName?.toUpperCase()) }}</h2>
           <breadcrumbs-component/>
@@ -177,6 +185,8 @@ import * as GovernanceIcon from "@/components/commons/GovernanceIcon.vue";
 import dataService from "@/services/data.service";
 import {useUserServiceStore} from "@/store/userService.store";
 import UserIcon from "@/components/features/UserIcon.vue";
+import {useTokensStore} from "../../store/tokens.store";
+import TokenPriceComponent from "@/components/TokenPriceComponent.vue";
 
 const router = useRouter();
 const loginPopupStatus = ref(false);

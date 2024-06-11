@@ -23,7 +23,7 @@ import {fromBase64} from "@cosmjs/encoding";
 import {_arrayBufferToBase64} from "@/utils/sign";
 import {ethers} from "ethers";
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
-import { createCfeClaimAminoConverters } from "./cfeclaim/amino";
+import { createCustomAminoConverters } from "./cfeclaim/amino";
 import {MsgCreateVestingPool, MsgWithdrawAllAvailable} from "@/api/cfevesting/tx";
 import {TxRaw} from "@/api/cosmostx/tx";
 
@@ -307,7 +307,7 @@ export default abstract class TxBroadcastBaseApi extends BaseApi {
     console.log(myRegistry);
 
     // const aminoTypes = new AminoTypes(createCfeClaimAminoConverters());
-    const aminoTypes = new AminoTypes({...createDefaultAminoConverters(), ...createCfeClaimAminoConverters()});
+    const aminoTypes = new AminoTypes({...createDefaultAminoConverters(), ...createCustomAminoConverters()});
     // myRegistry.register(RepeatedContinuousVestingAccount, MsgInitialClaim);
     const rpc = useConfigurationStore().config.bcRpcURL;
     const client = await SigningStargateClient.connectWithSigner(

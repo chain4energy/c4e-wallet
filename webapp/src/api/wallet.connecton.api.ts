@@ -176,6 +176,12 @@ export default class WalletConnectionApi extends LoggedService {
       chainName: config.keplrNetworkName,
       rpc: config.bcRpcURL,
       rest: config.bcApiURL,
+      nodeProvider: {
+        name: config.nodeProviderName,
+        email: config.nodeProviderEmail,
+        website: config.nodeProviderWebsite
+      },
+      chainSymbolImageUrl: config.chainSymbolImageUrl,
       bip44: {
         coinType: 118
       },
@@ -190,20 +196,26 @@ export default class WalletConnectionApi extends LoggedService {
       stakeCurrency: {
         coinDenom: config.getConvertedDenom(),
         coinMinimalDenom: config.stakingDenom,
-        coinDecimals: config.getViewDenomDecimals()
+        coinDecimals: config.getViewDenomDecimals(),
+        coinGeckoId: config.coinGeckoId,
+        coinImageUrl: config.chainSymbolImageUrl,
       },
       feeCurrencies: [
         {
           coinDenom: config.getConvertedDenom(),
           coinMinimalDenom: config.stakingDenom,
-          coinDecimals: config.getViewDenomDecimals()
+          coinDecimals: config.getViewDenomDecimals(),
+          coinGeckoId: config.coinGeckoId,
+          coinImageUrl: config.chainSymbolImageUrl,
         }
       ],
       currencies: [
         {
           coinDenom: config.getConvertedDenom(),
           coinMinimalDenom: config.stakingDenom,
-          coinDecimals: config.getViewDenomDecimals()
+          coinDecimals: config.getViewDenomDecimals(),
+          coinGeckoId: config.coinGeckoId,
+          coinImageUrl: config.chainSymbolImageUrl,
         }
       ],
       coinType: 118,

@@ -10,6 +10,11 @@ data:
          "stakingPageURL": "https://wallet.c4e.io/staking",
          "addressPrefix": "c4e",
          "stakingDenom": "uc4e",
+         "nodeProviderName": "C4E",
+         "nodeProviderEmail": "integration.support@c4e.io",
+         "nodeProviderWebsite": "https://c4e.io",
+         "coinGeckoId": "chain4energy",
+         "chainSymbolImageUrl": "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/perun/chain.png",
          "transferDenom": "uc4e",
          "tokenReservationDenom": "uc4e",
          "strategicPoolAddress": [
@@ -32,6 +37,11 @@ data:
            {
              "denom": "uc4e",
              "viewDenom": "C4E",
+             "coinDecimals": 6
+           },
+           {
+             "denom": "u$",
+             "viewDenom": "$",
              "coinDecimals": 6
            }
          ],
@@ -60,8 +70,9 @@ data:
          "faucetAvailable": false,
          "publicSaleVisible": false,
          "loyaltyDropService": {
-           "loyaltyDropBaseUrl": "https://loyalty-drop.c4e.io/api/loyalty-drop"
-         }
+           "loyaltyDropBaseUrl": "https://loyalty-drop-mainnet.c4e.io/api/loyalty-drop"
+         },
+         "circulatingSupplyVisible" : true
        },
        "Testnet": {
          "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -71,6 +82,10 @@ data:
          "stakingPageURL": "https://wallet-testnet.c4e.io/staking",
          "addressPrefix": "c4e",
          "stakingDenom": "uc4e",
+         "nodeProviderName": "C4E",
+         "nodeProviderEmail": "integration.support@c4e.io",
+         "nodeProviderWebsite": "https://c4e.io",
+         "chainSymbolImageUrl": "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/main/images/perun/chain.png",
          "transferDenom": "uc4e",
          "tokenReservationDenom": "uc4e",
          "strategicPoolAddress": [
@@ -94,7 +109,12 @@ data:
              "denom": "uc4e",
              "viewDenom": "C4E",
              "coinDecimals": 6
-           }
+           },
+          {
+            "denom": "u$",
+            "viewDenom": "$",
+            "coinDecimals": 6
+          }
          ],
          "keplrGasPriceSteps": {
            "low": 0.00,

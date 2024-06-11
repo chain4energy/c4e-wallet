@@ -1,6 +1,7 @@
 <template >
   <div v-if="configConfigured !== ''" class="container-fluid">
-    <div class="dashboard-grid">
+    <InfoBanner style="margin-bottom: 20px"/>
+    <div class="dashboard-grid" :class="circulatingSupplyVisible?'dashboard-grid':'dashboard-grid-noCS'">
       <div class="inflation">
         <DashboardInflation />
       </div>
@@ -13,9 +14,9 @@
       <div class="tokenomics">
         <tokenomics-dashboard />
       </div>
-<!--      <div class="circulating-supply">-->
-<!--        <CirculatingSupply />-->
-<!--      </div>-->
+      <div v-if="circulatingSupplyVisible" class="circulating-supply">
+        <CirculatingSupply/>
+      </div>
       <div class="total-supply">
         <total-supply />
       </div>
@@ -34,7 +35,6 @@
 </template>
 
 <script setup lang="ts">
-
 import DashboardPools from "@/components/dashboard/DashboardPools.vue";
 import TotalSupply from "@/components/dashboard/TotalSupply.vue";
 import LatestBlock from "@/components/dashboard/LatestBlock.vue";
@@ -46,11 +46,15 @@ import DashboardInflation from "@/components/dashboard/DashboardInflation.vue";
 import StakingApr from "@/components/dashboard/StakingApr.vue";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {computed} from "vue";
+import InfoBanner from "@/components/dashboard/InfoBanner.vue";
 
 const configConfigured = computed(() => {
   return useConfigurationStore().getConfigName;
 });
 
+const circulatingSupplyVisible = computed(() => {
+  return useConfigurationStore().config.circulatingSupplyVisible;
+});
 </script>
 
 <style scoped lang="scss">
@@ -59,6 +63,25 @@ const configConfigured = computed(() => {
 }
 
 .dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+  box-sizing: border-box;
+  .banner { grid-area: 1 / 1 / 2 / 6; }
+  .inflation { grid-area: 1 / 1 / 2 / 6; }
+  .stacking-apr { grid-area: 1 / 6 / 2 / 11; }
+  .pools { grid-area: 2 / 1 / 4 / 5; }
+  .tokenomics { grid-area: 2 / 5 / 4 / 11; }
+  .circulating-supply { grid-area: 4 / 1 / 5 / 3; }
+  .total-supply { grid-area: 4 / 3 / 5 / 5; }
+  .validators { grid-area: 4 / 5 / 5 / 7; }
+  .latest-block {grid-area: 4 / 7 / 5 / 9;}
+  .max-supply { grid-area: 4 / 9 / 5 / 11; }
+}
+
+.dashboard-grid-noCS {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(4, 1fr);

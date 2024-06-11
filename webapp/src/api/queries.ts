@@ -2,6 +2,7 @@ export default {
   blockchain: {
     STAKING_POOL_URL: '/cosmos/staking/v1beta1/pool',
     TOTAL_SUPPLY_URL: '/cosmos/bank/v1beta1/supply/by_denom?denom={denom}',
+    CIRCULATING_SUPPLY_URL: '/c4e/general/v1beta1/circulatingSupply',
     COMMUNITY_POOL_URL: '/cosmos/distribution/v1beta1/community_pool',
     PROPOSALS_URL: '/cosmos/gov/v1/proposals',
     PROPOSALS_BY_ID_URL: '/cosmos/gov/v1/proposals/{id}',
@@ -75,6 +76,12 @@ export default {
       '    not_bonded_tokens: not_bonded_tokens' +
       '    proposal_id '+
       '  }' +
+      '}',
+    TOKEN_PRICE_HISTORY: 'query TokenPriceHistory {' +
+      'tokenPrice: token_price_history(where: {unit_name: {_eq: "{denom}"}}, limit: {limit}, order_by: {timestamp: desc}) {' +
+      '    price' +
+      '    timestamp' +
+      '  }' +
       '}'
   },
   keybase: {
@@ -123,6 +130,7 @@ export default {
     loyaltyDropPoolConfigurationsUrl:'/v0.1/pool_configurations',
     loyaltyDropUserBootsURL:'/v0.1/user_boost/{user_address}',
     loyaltyDropDefaultDenom:'uc4e',
-    loyaltyDropBroadcastURL:'/v0.1/broadcast'
+    loyaltyDropBroadcastURL:'/v0.1/broadcast',
+    loyaltyDropUserBoostRefreshTimeout: 30000
   }
 };
