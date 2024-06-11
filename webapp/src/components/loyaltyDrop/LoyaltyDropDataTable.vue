@@ -7,14 +7,14 @@
       <template v-slot:columns>
         <Column :header="$t('BOOST.COMMON.NAME')" :sortable="false">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
+            <div style="display: grid; grid-template-columns: 3fr 1fr; align-items: center; width: 100%">
               <div style="margin-left: 10px; font-weight:bold">
                 <div>
                     <Icon v-for="i in calculateRockets(slotProps.data.poolDescription ) " :key="i" name="Rocket" :style="'color:'+calculateColor(i)" style="height: 18px"/>
                 </div>
                 {{ slotProps.data.poolDescription }}
               </div>
-              <div style="display: flex; align-items: center; justify-content: center; text-align: center;">
+              <div class="pool-status">
                 <div v-if="slotProps.data.epochStartDate.getTime() - new Date().getTime() > 0" style="margin: auto">
                   <BoosterCounter :start-date="slotProps.data.epochStartDate" />
                 </div>
@@ -47,7 +47,7 @@
         </Column>
         <Column :header="$t('BOOST.COMMON.POOL_USAGE')">
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <div style="margin-right: 15px;">
+            <div style="padding-right: 15px; width: 100%">
               <CoinAmount :amount="calculatePoolUsageTokens(slotProps.data) " :show-tooltip="true" tooltip-only >
                 <div v-if="calculatePercentagePoolUsage(slotProps.data)" >
                   <div v-if="calculatePercentagePoolUsage(slotProps.data).isBiggerThanOrEqualTo(0.90)" class="commision">
@@ -383,6 +383,10 @@ const calcTimeToStart = ((time: Date) => {
     border-radius: 2px;
     //height: 150px;
   }
+}
+
+.pool-status{
+  display: flex; align-items: center; justify-content: left; text-align: center;
 }
 
 .flex-container-details {

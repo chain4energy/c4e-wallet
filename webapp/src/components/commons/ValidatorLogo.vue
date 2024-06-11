@@ -1,13 +1,20 @@
 <template>
-  <img v-if="validator.description.pictureUrl" class="c4e-validator-image" :src="validator.description.pictureUrl"/>
+  <img v-if="validator.description.pictureUrl && !imageLoadingError" class="c4e-validator-image" :src="validator.description.pictureUrl" @error="setAltImg"/>
 </template>
 
 <script setup lang="ts">
 import { ValidatorBase } from '@/models/store/validator.js';
+import {ref} from "vue";
+const imageLoadingError = ref(false);
 
 const props = defineProps<{
   validator: ValidatorBase,
 }>();
+
+function setAltImg(event:any) {
+  imageLoadingError.value = true;
+  console.log("(Img) Validator " + props.validator.description.moniker + " has wrong imag url. Cannot get content. Skipping. " + props.validator.description.pictureUrl);
+}
 
 </script>
 <style scoped>

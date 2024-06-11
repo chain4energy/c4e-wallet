@@ -48,7 +48,7 @@
         <Column v-if="isValidatorsTable()" field="votingPower" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">
           <template #body="{data}">
             <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.VOTING_POWER`)}}</span>
-            <div v-if="data.votingPower">
+            <div v-if="data.votingPower" style="width: 100%">
             <div v-if="data.votingPower < 0.05" class="commision">
               <div class="level-1" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
               <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
