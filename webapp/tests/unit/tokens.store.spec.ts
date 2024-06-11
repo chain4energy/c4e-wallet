@@ -1,9 +1,16 @@
 import { setActivePinia, createPinia } from 'pinia'
 import { mockAxios } from '../utils/mock.util';
 import { useSplashStore } from '@/store/splash.store';
-import { createErrorResponse, defaultDenom, expectCoin, expectDecCoin } from '../utils/common.blockchain.data.util';
+import {createErrorResponse, defaultDenom, expectCoin, expectDecCoin, expectTokenPrice} from '../utils/common.blockchain.data.util';
 import { useTokensStore } from '@/store/tokens.store';
-import { createCommunityPoolResponseData, createStakingPoolResponseData, createSupplyResponseData, createVestingsLocked, expectStakingPool } from '../utils/tokens.blockchain.data.util';
+import {
+  createCommunityPoolResponseData,
+  createStakingPoolResponseData,
+  createSupplyResponseData,
+  createTokenPriceHistorySingleElement,
+  createVestingsLocked,
+  expectStakingPool
+} from '../utils/tokens.blockchain.data.util';
 import { useConfigurationStore } from '@/store/configuration.store';
 import { createSingleBalanceResponseData } from '../utils/account.blockchain.data.util';
 import { BigDecimal } from '@/models/store/big.decimal';
@@ -15,6 +22,7 @@ import {
   defaultDelegatorUnbondingDelegationsEntriesAmounts,
   defaultDelegatorUnbondingDelegationsValidators
 } from "../utils/staking.blockchain.data.util";
+import {Currency} from "@/models/currency";
 
 jest.mock('axios', () => {
   return {
@@ -198,6 +206,29 @@ describe('tokens store tests', () => {
     await tokensStore.fetchLockedVesting();
 
     expect(tokensStore.getLockedVesting).toBe(0n)
+  });
+
+  it('fetches token price history - success', async () => {
+    const tokensStore = useTokensStore();
+    const price =  0.076694;
+    const timestamp = "2024-06-07T10:03:02.935";
+    const tokenPriceHistory = {
+      data: createTokenPriceHistorySingleElement(price, timestamp)
+    };
+
+    mockedAxios.request.mockResolvedValueOnce(tokenPriceHistory);
+    await tokensStore.fetchTokenPriceHistory();
+    expectTokenPrice(tokensStore.getTokenPrice, price, timestamp, Currency.USD);
+
+  });
+
+  it('fetches token price history - error', async () => {
+    const tokensStore = useTokensStore();
+    const validatorsError = createErrorResponse(404, 5, 'some error');
+    mockedAxios.request.mockRejectedValueOnce(validatorsError);
+    await tokensStore.fetchTokenPriceHistory();
+
+    expectTokenPrice(tokensStore.getTokenPrice, 0, undefined, Currency.USD);
   });
 
 });

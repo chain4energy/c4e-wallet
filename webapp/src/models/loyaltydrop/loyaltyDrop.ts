@@ -19,11 +19,11 @@ export interface LoyaltyDropUserBoostResponse {
   base_account_address: string,
   status: UserBoostStatusType,
   tx_hash:  string,
-  granted_rewards:number,
+  granted_rewards: number | null,
   amount: number,
-  last_reward_date:string,
-  lock_start: string,
-  lock_end: string
+  last_reward_date: string | null,
+  lock_start: string | null,
+  lock_end: string | null,
  }
 
 

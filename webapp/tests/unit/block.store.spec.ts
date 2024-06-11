@@ -22,13 +22,13 @@ jest.mock('axios', () => {
     })),
     request: jest.fn(),
     AxiosError: jest.fn()
-  }
-})
+  };
+});
 const mockedAxios = mockAxios();
 
 describe('block store tests', () => {
   beforeEach(() => {
-    setActivePinia(createPinia())
+    setActivePinia(createPinia());
     useConfigurationStore().config.stakingDenom = defaultDenom;
 
   });
@@ -96,7 +96,7 @@ describe('block store tests', () => {
     const startTime = currentDate.getTime();
     const yearInMillis = 365*24*3600*1000;
     const endTime = startTime + yearInMillis;
-    const amount = 1000000n
+    const amount = 1000000n;
     const origVesting = new Coin(BigInt(amount), defaultDenom);
     const vestingData = new ContinuousVestingData(new Date(startTime), new Date(endTime), [origVesting]);
 
@@ -136,7 +136,7 @@ describe('block store tests', () => {
     await blockStore.fetchLatestBlock();
     expect(userStore.getVestingLockAmount).toBe(0n);
 
-    console.log('sdfdsfsdfsfd: ' + amount/4n)
+    console.log('sdfdsfsdfsfd: ' + amount/4n);
   });
 
 });

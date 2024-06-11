@@ -3,7 +3,18 @@
   <div class="portfolioSummary">
 
     <div class="mobile-hidden">
-      <C4EIcon size="100" icon="c4e-green"/>
+      <C4EIcon size="100" icon="c4e-grey-new"/>
+    </div>
+    <div class="portfolioSummary__tile" >
+      <h3>{{$t("PORTFOLIO_VIEW.TOKEN_PRICE")}}</h3>
+      <h4>
+        <CoinAmount :amount="calculatePrice(1000000,useTokensStore().getTokenPrice)"
+                    default-view-denom="$"
+                    :precision=6
+                    :show-denom="true"
+                    :denom-as-prefix="true"/>
+      </h4>
+      <!-- <h5>$<FormattedNumber :amount="amountToUSD(totalBalance)" :precision="2"/></h5> -->
     </div>
     <div class="portfolioSummary__tile" >
       <h3>{{$t("PORTFOLIO_VIEW.BALANCE")}}</h3>
@@ -51,14 +62,7 @@
     <div style="display: flex; align-items: center; justify-content:center; flex-direction: column;">
       <h3>{{ $t("PORTFOLIO_VIEW.SEND") }}</h3>
       <div class="field">
-        <Field
-          v-model="targetAddress"
-          name="targetAddress"
-          placeholder=" "
-          type="text"
-          class="form-control"
-          style="width: 100%;"
-        />
+        <Field v-model="targetAddress" name="targetAddress" placeholder=" " type="text" class="form-control" style="width: 100%;"/>
         <span style="text-transform: capitalize">{{ $t('COMMON.INPUT.ADDRESS') }}</span>
       </div>
       <div class="field">
@@ -72,11 +76,11 @@
           />
         <span style="text-transform: capitalize">{{ $t('COMMON.INPUT.AMOUNT') }}</span>
         <div class="validationPopup__btn">
-          <button type="button" @click.prevent="simulate">Max</button>
+          <button type="button" @click.prevent="simulate" :disabled="!enableButton">Max</button>
           <p>C4E</p>
         </div>
       </div>
-      <Button class="secondary" @click="handleSend">{{$t("PORTFOLIO_VIEW.SEND")}}</Button>
+      <Button class="secondary" @click="handleSend" :disabled="!enableButton">{{$t("PORTFOLIO_VIEW.SEND")}}</Button>
     </div>
   </Dialog>
 
@@ -97,12 +101,18 @@ import { Copy } from 'lucide-vue-next';
 import dataService from "@/services/data.service";
 import {Field} from "vee-validate";
 import {useConfigurationStore} from "@/store/configuration.store";
+import {calculatePrice} from "@/utils/token-price";
+import {useTokensStore} from "@/store/tokens.store";
 // import FormattedNumber from "@/components/commons/FormattedNumber.vue"; - future USD ratio
 
 const userStore = useUserStore();
 
 const totalBalance = computed(()=> {
   return userStore.getBalance;
+});
+
+const enableButton = computed(()=> {
+  return targetAddress.value && targetAddress.value.length==42;
 });
 
 const spendableBalance = computed(()=> {
@@ -153,7 +163,7 @@ const fee = ref(0);
 
 
 const handleSend = () => {
-  useUserStore().sendTokens(targetAddress.value, amount.value, usedGas.value);
+  useUserStore().sendTokens(targetAddress.value, amount.value, usedGas.value, onSuccessSend);
 };
 
 async function simulate(){
@@ -172,6 +182,10 @@ async function simulate(){
   } else {
     fee.value = 0;
   }
+}
+
+function onSuccessSend(){
+  sendDialogVisible.value = false;
 }
 
 </script>
@@ -196,7 +210,7 @@ async function simulate(){
   justify-content: space-around;
 
   div {
-    flex: 1 1 20%;
+    flex: 1 1 10%;
     min-width: 200px;
   }
   h3 {

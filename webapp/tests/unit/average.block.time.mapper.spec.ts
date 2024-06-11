@@ -19,14 +19,14 @@ describe('map block', () => {
           address: 'address',
     } as unknown as AverageBlockTimeResponse;
 
-    expect(() => {mapAverageBlockTime(avgResp)}).toThrowError(new Error('mapAverageBlockTime - no average block time defined or to many elements'));
+    expect(() => {mapAverageBlockTime(avgResp);}).toThrowError(new Error('mapAverageBlockTime - no average block time defined or to many elements'));
   });
 
   it('maps undefined average block time response', async () => {
-    expect(() => {mapAverageBlockTime(undefined)}).toThrowError(new Error('mapAverageBlockTime - average block time response is undefined'));
+    expect(() => {mapAverageBlockTime(undefined);}).toThrowError(new Error('mapAverageBlockTime - average block time response is undefined'));
 
   });
 
-  
+
 
 });

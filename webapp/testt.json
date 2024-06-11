@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1,
+    "name": "Charge Point Type 1",
+    "description": "Description 1",
+    "integrationType": "OCPI",
+    "chargingPointOperatorRoleId": 1,
+    "integrationVersion": "1.0",
+    "plugType": "AC_MENNEKES_TYPE2",
+    "currentPhases": 3,
+    "maxChargingPower": 22,
+    "numberOfEvses": 1,
+    "authRequired": true
+  },
+  {
+    "id": 2,
+    "name": "Charge Point Type 2",
+    "description": "Description 1",
+    "integrationType": "OCPI",
+    "chargingPointOperatorRoleId": 2,
+    "integrationVersion": "1.0",
+    "plugType": "AC_MENNEKES_TYPE2",
+    "currentPhases": 3,
+    "maxChargingPower": 22,
+    "numberOfEvses": 1,
+    "authRequired": true
+  }
+]

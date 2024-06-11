@@ -1,16 +1,16 @@
-import { StakingPool } from "@/models/store/tokens"
+import { StakingPool } from "@/models/store/tokens";
 
 export function createStakingPoolResponseData(bonded: string, notBonded: string) {
   return {
     pool:  createStakingPool(bonded, notBonded)
-  }
+  };
 }
 
 export function createStakingPool(bonded: string, notBonded: string) {
   return {
     bonded_tokens: bonded,
     not_bonded_tokens: notBonded
-  }
+  };
 }
 
 export function createSupplyResponseData(amount: string, denom: string) {
@@ -19,7 +19,7 @@ export function createSupplyResponseData(amount: string, denom: string) {
       amount: amount,
       denom: denom
     }
-  }
+  };
 }
 
 export function createCommunityPoolResponseData(amount: string, denom: string) {
@@ -36,7 +36,7 @@ export function createCommunityPoolResponseData(amount: string, denom: string) {
   coins[5] = expectedBcCoin;
   return {
     pool: coins
-  }
+  };
 }
 
 export function expectStakingPool(stakingPool: StakingPool | undefined, expectedBonded: bigint, expectedNotBonded: bigint) {
@@ -51,7 +51,7 @@ export function createVestingsLocked(vestingAllAmount: string, delegatedVestingA
     vesting_in_pools_amount: "0",
     vesting_in_accounts_amount: "0",
     delegated_vesting_amount: delegatedVestingAmount
-  }
+  };
 }
 
 export const defaultDistributionParams = [
@@ -100,4 +100,15 @@ export function createDistributorParamsResponseData(distributionParams = default
       sub_distributors: distributionParamsArray
     }
   };
+}
+
+
+export function createTokenPriceHistorySingleElement(price:number, date:string){
+  return {data: {
+    tokenPrice:
+      [{
+        price: price,
+        timestamp: date
+      }]
+  }};
 }

@@ -20,14 +20,14 @@ describe('map block', () => {
           address: 'address',
     } as unknown as BlockResponse;
 
-    expect(() => {mapBlock(bcPool)}).toThrowError(new Error('mapBlock - no height or time defined'));
+    expect(() => {mapBlock(bcPool);}).toThrowError(new Error('mapBlock - no height or time defined'));
   });
 
   it('maps undefined block response', async () => {
-    expect(() => {mapBlock(undefined)}).toThrowError(new Error('mapBlock - block response is undefined'));
+    expect(() => {mapBlock(undefined);}).toThrowError(new Error('mapBlock - block response is undefined'));
 
   });
 
-  
+
 
 });

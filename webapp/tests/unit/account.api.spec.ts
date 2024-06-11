@@ -1,4 +1,4 @@
-import { setActivePinia, createPinia } from 'pinia'
+import { setActivePinia, createPinia } from 'pinia';
 import { AxiosResponse } from 'axios';
 import { AccountType } from "@/models/store/account";
 import apiFactory from "@/api/factory.api";
@@ -20,7 +20,7 @@ import {
 import { MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
 import {
   MsgWithdrawDelegatorReward
-} from "cosmjs-types/cosmos/distribution/v1beta1/tx"
+} from "cosmjs-types/cosmos/distribution/v1beta1/tx";
 import { RequestResponse } from '@/models/request-response';
 import { TxBroadcastError, TxData } from '@/api/tx.broadcast.base.api';
 import Long from 'long';
@@ -41,19 +41,19 @@ jest.mock('axios', () => {
     })),
     request: jest.fn(),
     AxiosError: jest.fn()
-  }
-})
+  };
+});
 const mockedAxios = mockAxios();
-const api = apiFactory.accountApi()
+const api = apiFactory.accountApi();
 
-const mockedSigningStargateClient = mockKeplr().mockedSigningStargateClient
+const mockedSigningStargateClient = mockKeplr().mockedSigningStargateClient;
 
-const address = 'c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55'
-const validatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue'
-const secondValidatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue'
+const address = 'c4e17svcuc8dt7gr4hlu3rmeu5u0jpc7snar3kdr55';
+const validatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue';
+const secondValidatorAddress = 'c4evaloperdwq987fwdqn9u2q09-h2d9ue';
 
 const denom = defaultDenom;
-const memo = defaultMemo
+const memo = defaultMemo;
 
 const gas = defaultGas;
 
@@ -64,14 +64,14 @@ const txErrorResponse = defaultTxErrorResponse;
 
 describe('account api tests', () => {
   beforeEach(() => {
-    setActivePinia(createPinia())
+    setActivePinia(createPinia());
   });
 
   afterEach(() => {
     expect(useSplashStore().splashCounter).toBe(0);
     mockedAxios.request.mockClear();
     mockedAxios.request.mockReset();
-  })
+  });
 
   it('gets BaseAccount', async () => {
     const account = {
@@ -79,10 +79,10 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(account);
-    const result = await api.fetchAccount(address, false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
+    const result = await api.fetchAccount(address, false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
 
     expectBaseAccount(result.data, address);
     // expect(result.data?.address).toBe(address)
@@ -147,11 +147,11 @@ describe('account api tests', () => {
 
     mockedAxios.request.mockRejectedValue(error);
     const result = await api.fetchAccount(address, false);
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
-    expect(result.data?.address).toBe(address)
-    expect(result.data?.type).toBe(AccountType.Nonexistent)
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+    expect(result.data?.address).toBe(address);
+    expect(result.data?.type).toBe(AccountType.Nonexistent);
     expect(result.data?.continuousVestingData).toBeUndefined();
   });
 
@@ -224,12 +224,12 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(balance);
-    const result = await api.fetchBalance(address, denom, false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
-    expect(result.data?.amount).toBe(amount)
-    expect(result.data?.denom).toBe(denom)
+    const result = await api.fetchBalance(address, denom, false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+    expect(result.data?.amount).toBe(amount);
+    expect(result.data?.denom).toBe(denom);
   });
 
   it('gets balance with error', async () => {
@@ -247,7 +247,7 @@ describe('account api tests', () => {
     const error = createErrorResponse(status, 3, errorMessage);
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchBalance(address, denom, false)
+    const result = await api.fetchBalance(address, denom, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -280,12 +280,12 @@ describe('account api tests', () => {
 
     const result = await api.fetchSpendableBalances(address, false);
 
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
-    expect(result.data).toBeDefined()
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+    expect(result.data).toBeDefined();
     //@ts-ignore
-    expect(result.data[0].amount).toBe(amount)
+    expect(result.data[0].amount).toBe(amount);
   });
 
   it('gets delegator delegations - delegations exist', async () => {
@@ -314,10 +314,10 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(delegations);
-    const result = await api.fetchDelegations(address, false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
+    const result = await api.fetchDelegations(address, false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
     expect(result.data?.delegations.size).toBe(0);
     expect(result.data?.totalDelegated).toBe(0n);
   });
@@ -345,8 +345,8 @@ describe('account api tests', () => {
       '100016000000',
     ];
 
-    const validatorsAll = validators1.concat(validators2)
-    const balancesAll = balances1.concat(balances2)
+    const validatorsAll = validators1.concat(validators2);
+    const balancesAll = balances1.concat(balances2);
 
     const delegations1 = {
       data: createDelegatorDelegationsResponseData(address, validators1, balances1, defaultDenom, 0, 'my_key')
@@ -385,7 +385,7 @@ describe('account api tests', () => {
     const error = createAxiosError(axiosErrorMessage, response as AxiosResponse);
 
     mockedAxios.request.mockRejectedValue(error);
-    const result = await api.fetchDelegations(address, false)
+    const result = await api.fetchDelegations(address, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -424,7 +424,7 @@ describe('account api tests', () => {
     mockedAxios.request.mockResolvedValueOnce(delegations1);
     mockedAxios.request.mockRejectedValue(error);
 
-    const result = await api.fetchDelegations(address, false)
+    const result = await api.fetchDelegations(address, false);
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultAxiosErrorName);
@@ -439,10 +439,10 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(undelegations);
-    const result = await api.fetchUnbondingDelegations(address, false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
+    const result = await api.fetchUnbondingDelegations(address, false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
 
     expectDelegatorUnbondingDelegations(result.data);
     // expect(result.data?.undelegations.size).toBe(defaultDelegatorUnbondingDelegationsValidators.length);
@@ -465,10 +465,10 @@ describe('account api tests', () => {
     };
 
     mockedAxios.request.mockResolvedValue(undelegations);
-    const result = await api.fetchUnbondingDelegations(address, false)
-    expect(result.isError()).toBe(false)
-    expect(result.isSuccess()).toBe(true)
-    expect(result.error).toBeUndefined()
+    const result = await api.fetchUnbondingDelegations(address, false);
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
     expect(result.data?.undelegations.size).toBe(0);
     expect(result.data?.totalUndelegating).toBe(0n);
   });
@@ -496,8 +496,8 @@ describe('account api tests', () => {
       ['100016000000', '75632'],
     ];
 
-    const validatorsAll = validators1.concat(validators2)
-    const entiresAll = entries1.concat(entries2)
+    const validatorsAll = validators1.concat(validators2);
+    const entiresAll = entries1.concat(entries2);
 
     const undelegations1 = {
       data: createDelegatorUnbondingDelegationsResponseData(address, validators1, entries1, 0, 'my_key')
@@ -643,71 +643,71 @@ describe('account api tests', () => {
 
   it('delegates using keplr', async () => {
     const amount = 12345;
-    const action = () => {return api.delegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);}
+    const action = () => {return api.delegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);};
     const signingMessage = await keplrTxSuccess(action);
     expectMsgDelegate(signingMessage, amount);
   });
 
   it('delegates using keplr with error', async () => {
     const amount = 12345;
-    const action = () => {return api.delegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);}
-    const signingMessage = await keplrTxError(action)
+    const action = () => {return api.delegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);};
+    const signingMessage = await keplrTxError(action);
     expectMsgDelegate(signingMessage, amount);
   });
 
   it('undelegates using keplr', async () => {
     const amount = 12345;
-    const action = () => {return api.undelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);}
-    const signingMessage = await keplrTxSuccess(action)
+    const action = () => {return api.undelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);};
+    const signingMessage = await keplrTxSuccess(action);
     expectMsgUndelegate(signingMessage, amount);
   });
 
   it('undelegates using keplr with error', async () => {
     const amount = 12345;
-    const action = () => {return api.undelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);}
-    const signingMessage = await keplrTxError(action)
+    const action = () => {return api.undelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, amount);};
+    const signingMessage = await keplrTxError(action);
     expectMsgUndelegate(signingMessage, amount);
   });
 
   it('redelegates using keplr', async () => {
     const amount = 12345;
-    const action = () => {return api.redelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, secondValidatorAddress, amount);}
-    const signingMessage = await keplrTxSuccess(action)
+    const action = () => {return api.redelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, secondValidatorAddress, amount);};
+    const signingMessage = await keplrTxSuccess(action);
     expectMsgBeginRedelegate(signingMessage, amount);
   });
 
   it('redelegates using keplr with error', async () => {
     const amount = 12345;
-    const action = () => {return api.redelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, secondValidatorAddress, amount);}
-    const signingMessage = await keplrTxError(action)
+    const action = () => {return api.redelegate(new ConnectionInfo(address, true, ConnectionType.Keplr), validatorAddress, secondValidatorAddress, amount);};
+    const signingMessage = await keplrTxError(action);
     expectMsgBeginRedelegate(signingMessage, amount);
   });
 
   it('votes using keplr', async () => {
     const proposalId = 342;
     const option = VoteOption.Abstain;
-    const action = () => {return api.vote(new ConnectionInfo(address, true, ConnectionType.Keplr), option, proposalId);}
-    const signingMessage = await keplrTxSuccess(action)
+    const action = () => {return api.vote(new ConnectionInfo(address, true, ConnectionType.Keplr), option, proposalId);};
+    const signingMessage = await keplrTxSuccess(action);
     expectMsgVote(signingMessage, option, proposalId);
   });
 
   it('votes using keplr with error', async () => {
     const proposalId = 213;
     const option = VoteOption.Yes;
-    const action = () => {return api.vote(new ConnectionInfo(address, true, ConnectionType.Keplr), option, proposalId);}
-    const signingMessage = await keplrTxError(action)
+    const action = () => {return api.vote(new ConnectionInfo(address, true, ConnectionType.Keplr), option, proposalId);};
+    const signingMessage = await keplrTxError(action);
     expectMsgVote(signingMessage, option, proposalId);
   });
 
   it('claims rewards using keplr', async () => {
-    const action = () => {return api.claimRewards(new ConnectionInfo(address, true, ConnectionType.Keplr), defaultRewardsValidators.values());}
-    const signingMessage = await keplrTxSuccess(action)
+    const action = () => {return api.claimRewards(new ConnectionInfo(address, true, ConnectionType.Keplr), defaultRewardsValidators.values());};
+    const signingMessage = await keplrTxSuccess(action);
     expectMsgWithdrawDelegatorReward(signingMessage, defaultRewardsValidators);
   });
 
   it('claims rewards using keplr with error', async () => {
-    const action = () => {return api.claimRewards(new ConnectionInfo(address, true, ConnectionType.Keplr), defaultRewardsValidators.values());}
-    const signingMessage = await keplrTxError(action)
+    const action = () => {return api.claimRewards(new ConnectionInfo(address, true, ConnectionType.Keplr), defaultRewardsValidators.values());};
+    const signingMessage = await keplrTxError(action);
     expectMsgWithdrawDelegatorReward(signingMessage, defaultRewardsValidators);
   });
 
@@ -847,8 +847,8 @@ async function keplrTxError(action: () => Promise<RequestResponse<TxData, TxBroa
   expect(response.error?.message).toBe('Deliver tx failure');
 
   expect(response.error?.txData).not.toBeUndefined();
-  expectTx(txErrorResponse, response.error?.txData)
-  return signingMessage
+  expectTx(txErrorResponse, response.error?.txData);
+  return signingMessage;
 }
 
 function expectTx(expected: DeliverTxResponse, received?: TxData) {
@@ -875,7 +875,7 @@ function expectMsgDelegate(signingMessage: {
       delegatorAddress: address,
       validatorAddress: validatorAddress
     }
-  ])
+  ]);
 }
 
 function expectMsgUndelegate(signingMessage: {
@@ -893,7 +893,7 @@ function expectMsgUndelegate(signingMessage: {
       delegatorAddress: address,
       validatorAddress: validatorAddress
     }
-  ])
+  ]);
 }
 
 function expectMsgBeginRedelegate(signingMessage: {
@@ -912,7 +912,7 @@ function expectMsgBeginRedelegate(signingMessage: {
       validatorSrcAddress: validatorAddress,
       validatorDstAddress: secondValidatorAddress
     }
-  ])
+  ]);
 }
 
 function expectMsgVote(signingMessage: {
@@ -936,12 +936,12 @@ function expectMsgWithdrawDelegatorReward(signingMessage: {
   fee: StdFee | "auto" | number | undefined,
   memo: string | undefined
 }, validators: string[]) {
-  const messages = new Array<MsgWithdrawDelegatorReward>()
+  const messages = new Array<MsgWithdrawDelegatorReward>();
   validators.forEach(v => messages.push({
     delegatorAddress: address,
     validatorAddress: v
-  }))
-  expectMessage<MsgWithdrawDelegatorReward>(signingMessage, gas.claimRewards, msgWithdrawDelegatorRewardTypeUrl, messages)
+  }));
+  expectMessage<MsgWithdrawDelegatorReward>(signingMessage, gas.claimRewards, msgWithdrawDelegatorRewardTypeUrl, messages);
 }
 
 function expectMessage<M>(signingMessage: {
@@ -956,7 +956,7 @@ function expectMessage<M>(signingMessage: {
   expect(signingMessage.messages).not.toBe(undefined);
   expect(signingMessage.messages?.length).toBe(expectedMessages.length);
   if (signingMessage.messages === undefined) {
-    throw new Error('signingMessage.messages === undefined')
+    throw new Error('signingMessage.messages === undefined');
   }
   for (let i = 0; i < expectedMessages.length ; i++) {
     const message = signingMessage.messages[i] as unknown as {

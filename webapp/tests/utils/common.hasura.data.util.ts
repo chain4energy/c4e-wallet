@@ -5,18 +5,18 @@ export const defaultHasuraErrorName = 'HasuraError';
 export const defaultHasuraErrorMessage = 'Hasura error received';
 
 
-export function createHasuraError(message: string) {
+export function createHasuraError(path: string, message: string) {
   return {
     errors: [
       {
         extensions: {
-          path: "$.selectionSet.average_block_time_per_hour.selectionSet.average_timeh",
+          path: path,
           code: "validation-failed"
         },
         message: message
       }
     ]
-  }
+  };
 }
 
 export function createAxiosError(message: string, response: AxiosResponse, name = defaultAxiosErrorName): AxiosError {

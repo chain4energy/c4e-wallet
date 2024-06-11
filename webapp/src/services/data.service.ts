@@ -135,6 +135,7 @@ class DataService extends LoggedService {
         useTokensStore().fetchInflation(lockScreen),
         useTokensStore().fetchLockedVesting(lockScreen),
         useTokensStore().fetchDistributorParams(lockScreen),
+        useTokensStore().fetchTokenPriceHistory(lockScreen),
         useValidatorsStore().fetchValidators(lockScreen),
         useValidatorsStore().fetchStackingParams(lockScreen),
         useProposalsStore().fetchTallyParams(),
@@ -281,16 +282,16 @@ class DataService extends LoggedService {
   public onPortfolioSelected() {
     this.logToConsole(LogLevel.DEBUG, 'onPortfolioSelected refreshs');
     this.refreshSpendables(true, true);
-    this.checkAndSetInterval(this.spendablesIntervalId,()=>{refreshSpendables(false)}, this.spendableTimeout, 'refreshSpendables' );
-    if (useUserStore().isLoggedIn) {
-      this.refreshAccountData();
-    }
+    // this.checkAndSetInterval(this.spendablesIntervalId,()=>{refreshSpendables(false)}, this.spendableTimeout, 'refreshSpendables' );
+    // if (useUserStore().isLoggedIn) {
+    //   this.refreshAccountData();
+    // }
   }
 
   public onPortfolioUnselected() {
     this.logToConsole(LogLevel.DEBUG, 'onPortfolioUnselected');
-    window.clearInterval(this.spendablesIntervalId);
-    this.spendablesIntervalId = 0;
+    // window.clearInterval(this.spendablesIntervalId);
+    // this.spendablesIntervalId = 0;
   }
 
   public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
@@ -484,6 +485,7 @@ class DataService extends LoggedService {
         useTokensStore().fetchStakingPool(lockScreen),
         useTokensStore().fetchInflation(lockScreen),
         useTokensStore().fetchLockedVesting(lockScreen),
+        useTokensStore().fetchTokenPriceHistory(lockScreen),
       ]).then(() => {
         this.lastDashboardTimeout = new Date().getTime();
       });

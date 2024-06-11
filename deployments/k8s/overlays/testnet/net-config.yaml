@@ -37,6 +37,11 @@ data:
           "denom": "uc4e",
           "viewDenom": "C4E",
           "coinDecimals": 6
+        },
+        {
+          "denom": "u$",
+          "viewDenom": "$",
+          "coinDecimals": 6
         }
       ],
       "keplrGasPriceSteps": {
@@ -102,6 +107,11 @@ data:
           {
             "denom": "uc4e",
             "viewDenom": "C4E",
+            "coinDecimals": 6
+          },
+          {
+            "denom": "u$",
+            "viewDenom": "$",
             "coinDecimals": 6
           }
         ],

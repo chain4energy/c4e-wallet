@@ -210,7 +210,7 @@ export const useUserStore = defineStore({
         }
       });
     },
-    async sendTokens(target: string, amount: number, fee?: number | undefined) {
+    async sendTokens(target: string, amount: number, fee?: number | undefined, onSuccess?: () => void) {
       const connectionInfo = this.connectionInfo;
       await apiFactory.accountApi().sendTokens(connectionInfo, target, amount, fee).then(async (resp) => {
         if (resp.isError()) {
@@ -224,7 +224,7 @@ export const useUserStore = defineStore({
           ]);
           onTxDeliverySuccess(resp.data);
           onRefreshingError(allResults);
-
+          onSuccess?.();
         }
       });
     },
@@ -283,6 +283,7 @@ export const useUserStore = defineStore({
           const allResults = await Promise.all([
             fetchBalance(connectionInfo, this, true),
             fetchRewards(connectionInfo, this, true),
+            fetchSpendableBalances(connectionInfo, this, true)
           ]);
           onTxDeliverySuccess(resp.data);
           onRefreshingError(allResults);
@@ -395,16 +396,21 @@ export const useUserStore = defineStore({
               const allResults = await Promise.all([
                 fetchBalance(connectionInfo, useUserStore(), true),
               ]);
+              //
+              // const dummyTxData: TxData = new TxData({
+              //   code:0,
+              //   transactionHash:response.data.txHash, events: [], gasUsed: 0, gasWanted: 0, height: 0, msgResponses: [], txIndex: 0
+              // });
+              // onTxBroadcastToLoyaltyDropBackendSuccess(dummyTxData);
 
-              const dummyTxData: TxData = new TxData({
-                code:0,
-                transactionHash:response.data.txHash, events: [], gasUsed: 0, gasWanted: 0, height: 0, msgResponses: [], txIndex: 0
-              });
-              onTxBroadcastToLoyaltyDropBackendSuccess(dummyTxData);
+              onTxBroadcastToLoyaltyDropBackendSuccess({
+                  code:0,
+                  transactionHash:response.data.txHash, gasUsed: 0, gasWanted: 0, height: 0
+                });
               onRefreshingError(allResults);
               return true;
             } else {
-              // onClaimAirdropSuccess();//TODO:
+              onClaimAirdropSuccess();//TODO:
               await onTxDeliveryFailure(connectionInfo, this, resp, 'Broadcast signed message error: ' + resp.error?.message);
               return false;
             }

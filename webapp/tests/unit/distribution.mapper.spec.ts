@@ -13,11 +13,11 @@ const validatorAddress = defaultDelegatorDelegationsValidators[0];
 describe('tests mapping of staking related data', () => {
 
   it('maps undefined reward', async () => {
-    expect(() => {mapReward(undefined)}).toThrowError(new Error(`Reward is undefined`))
+    expect(() => {mapReward(undefined);}).toThrowError(new Error(`Reward is undefined`));
   });
 
   it('maps reward', async () => {
-    const rewardCoins = defaultRewardsCoins[0]
+    const rewardCoins = defaultRewardsCoins[0];
     const bcReward = createRewards([validatorAddress], [rewardCoins])[0];
     const storeReward = mapReward(bcReward);
 
@@ -26,25 +26,25 @@ describe('tests mapping of staking related data', () => {
       expect(storeReward.rewards[i].amount).toStrictEqual(new BigDecimal(rewardCoins[i].amount));
       expect(storeReward.rewards[i].denom).toBe(rewardCoins[i].denom);
     }
-    expect(storeReward.validatorAddress).toBe(validatorAddress);    
+    expect(storeReward.validatorAddress).toBe(validatorAddress);
   });
 
   it('maps undefined rewards response', async () => {
-    expect(() => {mapRewards(undefined)}).toThrowError(new Error(`RewardsResponse list is undefined`))
+    expect(() => {mapRewards(undefined);}).toThrowError(new Error(`RewardsResponse list is undefined`));
   });
 
   it('maps rewards response with undefined rewards', async () => {
-    const bcRewards = { rewards: undefined, total: new Array<{ denom: string, amount: string }>() } as unknown as RewardsResponse
-    expect(() => {mapRewards(bcRewards)}).toThrowError(new Error(`Reward list is undefined`))
+    const bcRewards = { rewards: undefined, total: new Array<{ denom: string, amount: string }>() } as unknown as RewardsResponse;
+    expect(() => {mapRewards(bcRewards);}).toThrowError(new Error(`Reward list is undefined`));
   });
 
   it('maps rewards response with undefined total', async () => {
-    const bcRewards = { rewards: new Array<Reward>(), total: undefined } as unknown as RewardsResponse
-    expect(() => {mapRewards(bcRewards)}).toThrowError(new Error(`Total rewards list is undefined`))
+    const bcRewards = { rewards: new Array<Reward>(), total: undefined } as unknown as RewardsResponse;
+    expect(() => {mapRewards(bcRewards);}).toThrowError(new Error(`Total rewards list is undefined`));
   });
 
   it('maps rewards', async () => {
-    setActivePinia(createPinia())
+    setActivePinia(createPinia());
     useConfigurationStore().config.stakingDenom = defaultDenom;
 
     const bcRewardsData = createRewardsResponseData() as RewardsResponse;
