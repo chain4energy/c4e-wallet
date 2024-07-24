@@ -94,8 +94,8 @@
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
     ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-    "chainId": "veles-dev-test-1",
-    "networkName": "Dev(veles-dev-test-1)",
+    "chainId": "flame-2",
+    "networkName": "Dev(flame-2)",
     "keplrNetworkName": "C4E Veles Dev",
     "queries": {
     },
@@ -169,9 +169,9 @@
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
     ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-    "chainId": "veles-dev-test-1",
-    "networkName": "Dev-Amino-Only(veles-dev-test-1)",
-    "keplrNetworkName": "C4E Veles Dev Amino Only",
+    "chainId": "flame-2",
+    "networkName": "Dev-Amino-Only(flame-2)",
+    "keplrNetworkName": "C4E Flame Dev Amino Only",
     "queries": {
     },
     "operationGas": {
@@ -597,9 +597,9 @@
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
     ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-    "chainId": "veles-dev-test-1",
-    "networkName": "Dev+docker-compose(veles-dev-1)",
-    "keplrNetworkName": "C4E Veles Dev",
+    "chainId": "flame-2",
+    "networkName": "Dev+docker-compose(flame-2)",
+    "keplrNetworkName": "C4E Flame Dev",
     "queries": {
     },
     "operationGas": {
