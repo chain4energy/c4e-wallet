@@ -2,6 +2,7 @@
 
   <DataTable :value="getValues()"
              class="row-spacing"
+             :row-class="()=>{return rowClass}"
              selectionMode="single"
              :showGridlines="false"
              :lazy="isLazyLoading()"
@@ -107,6 +108,10 @@ const props = defineProps({
   paginator: {
     type: Boolean,
     default: true
+  },
+  rowClass: {
+    type: String,
+    default: undefined
   },
 });
 

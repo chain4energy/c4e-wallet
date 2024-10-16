@@ -1,13 +1,15 @@
 <template>
   <span>
     <LoyaltyDropPopup v-if="currentBoost" :visible="popupOpened" :boost="currentBoost" @close="popupOpened = false;"/>
-    <DataTableWrapper :data-key="'pool_description'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow"  :paginator="false">
+    <DataTableWrapper :data-key="'pool_description'" :useExternalGlobalFilter="false" :eager-loading-config="createEagerLoadingConfig()" :expanded-rows="expandedRow" :paginator="false">
       <template v-slot:empty>{{$t('BOOST.TABLE.NO_DATA')}}</template>
 
-      <template v-slot:columns>
+      <template v-slot:columns >
         <Column :header="$t('BOOST.COMMON.NAME')" :sortable="false">
+<!--        <Column :header="$t('BOOST.COMMON.NAME')" :sortable="false"  :pt="{root:{style:'background:green'}}">-->
+<!--        <Column :header="$t('BOOST.COMMON.NAME')" :sortable="false"  :pt="test(data)">-->
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <div style="display: grid; grid-template-columns: 3fr 1fr; align-items: center; width: 100%">
+            <div style="display: grid; grid-template-columns: 3fr 1fr; align-items: center; width: 100%" >
               <div style="margin-left: 10px; font-weight:bold">
                 <div>
                     <Icon v-for="i in calculateRockets(slotProps.data.poolDescription ) " :key="i" name="Rocket" :style="'color:'+calculateColor(i)" style="height: 18px"/>
@@ -18,10 +20,11 @@
                 <div v-if="slotProps.data.epochStartDate.getTime() - new Date().getTime() > 0" style="margin: auto">
                   <BoosterCounter :start-date="slotProps.data.epochStartDate" />
                 </div>
-                <div v-else-if="slotProps.data.baseTokens.amount > new Coin(slotProps.data.reservedTokens.amount, slotProps.data.reservedTokens.denom).add(slotProps.data.usedTokens).amount">
+<!--                <div v-else-if="slotProps.data.baseTokens.amount > new Coin(slotProps.data.reservedTokens.amount, slotProps.data.reservedTokens.denom).add(slotProps.data.usedTokens).amount" style="margin: auto">-->
+                <div v-else-if="isClosed(slotProps.data)" style="margin: auto">
                   <StatusBadge :status="true" />
                 </div>
-                <div v-else>
+                <div v-else style="margin: auto">
                   <StatusBadge :status="false" />
                 </div>
               </div>
@@ -87,7 +90,7 @@
 
          <Column>
           <template #body="slotProps: {data: LoyaltyDropPoolConfig}">
-            <Button class="outlined-secondary" @click="checkBTN(slotProps.data)" :disabled="checkIfActive(slotProps.data)">
+            <Button class="outlined-secondary" @click="checkBTN(slotProps.data)" :disabled="checkIfActive(slotProps.data) || isClosed()">
               <StakeManagementIcon icon="manage"/>
               {{ $t('BOOST.TABLE.MANAGE') }}
             </Button>
@@ -102,7 +105,7 @@
             </span>
           </template>
         </Column>
-
+<!--        </div>-->
       </template>
       <template v-slot:expanded-columns="slotProps1: {expandedData: {data: LoyaltyDropPoolConfig}}" >
         <div class="extended-datatable">
@@ -216,6 +219,10 @@ const boostStore = useLoyaltyDropStore();
 const isLoggedIn = computed(() => userStore.isLoggedIn);
 const expandedRow = ref(Array<LoyaltyDropPoolConfig>());
 
+function test(ttt){
+  console.log("!!!TTT" +  JSON.stringify(ttt));
+}
+
 function calculateRockets(str: string) {
   if (str.indexOf('3m') >= 0) {
     return 1;
@@ -248,6 +255,13 @@ function calculateColor(i:number){
   return "#ffffff";
 }
 
+function isClosed(item: LoyaltyDropPoolConfig){
+  if(item){
+    return item.baseTokens.amount > new Coin(item.reservedTokens.amount, item.reservedTokens.denom).add(item.usedTokens).amount;
+  } else {
+    return true;
+  }
+}
 
 function checkBTN(item: LoyaltyDropPoolConfig){
   currentBoost.value = item;
@@ -256,7 +270,15 @@ function checkBTN(item: LoyaltyDropPoolConfig){
 }
 
 function createEagerLoadingConfig(): EagerLoadingConfig<LoyaltyDropPoolConfig>{
-  const config = new EagerLoadingConfig<LoyaltyDropPoolConfig>(boostStore.getBoosts);
+  const boosts = boostStore.getBoosts;
+  // const index = boosts.findIndex((item, i, arr) =>
+  //   isClosed(item) && isClosed(arr[i - 1])
+  // );
+  // if (index !== -1) {
+  //   // Wstawiamy nowy rekord na znalezionym indeksie
+  //   boosts.splice(index, 0, new LoyaltyDropPoolDivider());
+  // }
+  const config = new EagerLoadingConfig<LoyaltyDropPoolConfig>(boosts);
   return config;
 }
 
@@ -289,10 +311,8 @@ function calculateContributionPerPool(userBoosts: LoyaltyDropUserBoost[], poolId
 }
 
 const checkIfActive = (data: LoyaltyDropPoolConfig) => {
-  const tempCoin = new Coin(0n, "uc4e");
-  tempCoin.add( data.reservedTokens);
-  return data.baseTokens.amount > tempCoin.add(data.usedTokens).amount && data.epochStartDate.getTime() > new Date().getTime();
-}
+  return !isClosed(data) && data.epochStartDate.getTime() > new Date().getTime();
+};
 
 function calculateRewardsPerPool(userBoosts: LoyaltyDropUserBoost[], poolId: number) {
   console.log("calculateRewardsPerPool poolId:" + poolId);
@@ -309,7 +329,7 @@ function calculateRewardsPerPool(userBoosts: LoyaltyDropUserBoost[], poolId: num
 }
 
 function msToDays(milliseconds:  number) {
-  return milliseconds / (1000 * 60 * 60 * 24);
+  return  Math.floor(milliseconds / (1000 * 60 * 60 * 24));
 }
 
 function createUserDropLoadingConfig(id: number){
@@ -556,6 +576,10 @@ const calcTimeToStart = ((time: Date) => {
     }
   }
 
+.row-class {
+  background: #1c7a02 ;
+  color: white;
+}
 
 :deep {
   .extended-datatable .p-datatable .p-datatable-thead > tr > th {
@@ -564,6 +588,7 @@ const calcTimeToStart = ((time: Date) => {
     padding: 5px 0 !important;
     background: none !important;
   }
+
   .p-datatable .p-datatable-tbody > tr {
     background: none !important;
 
@@ -572,6 +597,17 @@ const calcTimeToStart = ((time: Date) => {
       color: white;
     }
   }
+
+  //.p-datatable .p-datatable-tbody  > tr > td {
+  //  background: #8D99A4;
+  //  color: white;
+  //}
+  //:deep {
+    .row-class {
+      background: #1c7a02;
+      color: white;
+    }
+  //}
 
   .p-datatable-row-expansion {
     color: white;
@@ -586,6 +622,7 @@ const calcTimeToStart = ((time: Date) => {
       background: white !important;
     }
   }
+
 }
 
 </style>
