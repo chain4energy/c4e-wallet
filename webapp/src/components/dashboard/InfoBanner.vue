@@ -2,7 +2,7 @@
   <div class="tile" style="background-color:#FFD700">
     <div class="text info-box">
       <div class="flex">
-        Tu jest napis Now for 90% APR
+        Join now for an exclusive ChargEra token boost!
       </div>
       <Button @click="onClick" class="secondary">
         <div class="blink_me" style="font-weight: bolder; margin-right: 4px">Boost your C4E here!!!
