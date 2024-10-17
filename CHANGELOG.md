@@ -50,8 +50,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.3.4](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.4) - 2024-06-11
 
-### Misc Improvements
+### Features
 * C4E Price view
+
+### Misc Improvements
+* Percentage component - CSS correction
+* User data view refactoring
 
 ## [1.3.3](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.3) - 2024-06-04
 

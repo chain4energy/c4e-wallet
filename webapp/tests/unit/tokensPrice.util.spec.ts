@@ -44,28 +44,28 @@ describe('map tokens', () => {
     const calculatedPrice = calculatePrice(new Coin(1n, "c4e"), createTokenPrice(0.5));
     expect(calculatedPrice).toBeInstanceOf(DecCoin);
     expect((calculatedPrice as DecCoin).amount.toString()).toBe('0.5');
-    expect((calculatedPrice as DecCoin).denom).toBe('c4e');
+    expect((calculatedPrice as DecCoin).denom).toBe('$');
   });
 
   it('calculate price - Coin - uc4e', async () => {
     const calculatedPrice = calculatePrice(new Coin(100n, "uc4e"), createTokenPrice(0.5));
     expect(calculatedPrice).toBeInstanceOf(DecCoin);
     expect((calculatedPrice as DecCoin).amount.toString()).toBe('50');
-    expect((calculatedPrice as DecCoin).denom).toBe('uc4e');
+    expect((calculatedPrice as DecCoin).denom).toBe('$');
   });
 
   it('calculate price - DecCoin - c4e', async () => {
     const calculatedPrice = calculatePrice(new DecCoin(new BigDecimal(1000n), "c4e"), createTokenPrice(0.5));
     expect(calculatedPrice).toBeInstanceOf(DecCoin);
     expect((calculatedPrice as DecCoin).amount.toString()).toBe('500');
-    expect((calculatedPrice as DecCoin).denom).toBe('c4e');
+    expect((calculatedPrice as DecCoin).denom).toBe('$');
   });
 
   it('calculate price - DecCoin - uc4e', async () => {
     const calculatedPrice = calculatePrice(new DecCoin(new BigDecimal(1n), "uc4e"), createTokenPrice(0.5));
     expect(calculatedPrice).toBeInstanceOf(DecCoin);
     expect((calculatedPrice as DecCoin).amount.toString()).toBe('0.5');
-    expect((calculatedPrice as DecCoin).denom).toBe('uc4e');
+    expect((calculatedPrice as DecCoin).denom).toBe('$');
   });
 
 });

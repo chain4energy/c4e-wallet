@@ -25,7 +25,7 @@ const props = defineProps<{
 }
 
 .jailed {
-  background: red;
+  background: #ff5151;
   box-shadow: none;
 }
 </style>
