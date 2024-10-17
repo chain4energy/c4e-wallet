@@ -269,15 +269,9 @@ function checkBTN(item: LoyaltyDropPoolConfig){
   return popupOpened;
 }
 
+
 function createEagerLoadingConfig(): EagerLoadingConfig<LoyaltyDropPoolConfig>{
   const boosts = boostStore.getBoosts;
-  // const index = boosts.findIndex((item, i, arr) =>
-  //   isClosed(item) && isClosed(arr[i - 1])
-  // );
-  // if (index !== -1) {
-  //   // Wstawiamy nowy rekord na znalezionym indeksie
-  //   boosts.splice(index, 0, new LoyaltyDropPoolDivider());
-  // }
   const config = new EagerLoadingConfig<LoyaltyDropPoolConfig>(boosts);
   return config;
 }

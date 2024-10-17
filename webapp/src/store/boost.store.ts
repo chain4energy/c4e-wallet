@@ -74,15 +74,15 @@ export const useLoyaltyDropStore = defineStore({
   getters: {
     getBoosts():LoyaltyDropPoolConfig[]{
       return this.loyaltyDropPoolConfigs.sort((a,b) => {
-        // Porównaj isActive
+        // compare isActive
         if (isClosed(a) === isClosed(b)) {
-          // Jeśli isActive jest takie samo, porównaj id
+          // if isActive is the same , compare id
           return a.id - b.id;
         } else {
-          // Umieść aktywne elementy przed nieaktywnymi
+          // Place active items before inactive ones
           return isClosed(a) ? -1 : 1;
         }
-      })
+      });
     },
     getUserBoosts():LoyaltyDropUserBoost[]{
       return this.loyaltyDropUserBoosts;
