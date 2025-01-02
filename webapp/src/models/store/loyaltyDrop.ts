@@ -16,12 +16,12 @@ export class LoyaltyDropPoolConfig {
   `EPOCH_PERIOD`      BIGINT          NOT NULL,
   `EPOCH_START_DATE`  DATETIME(3)     NOT NULL,
  */
-  id:number;
+  id: number;
   poolDescription: string;
   vestingType: string;
-  baseTokens:	Coin;
+  baseTokens: Coin;
   rewardsTokens: Coin;
-  usedTokens:	Coin;
+  usedTokens: Coin;
   reservedTokens: Coin;
   grantedRewards: Coin;
   epochNumber: number;
@@ -29,16 +29,16 @@ export class LoyaltyDropPoolConfig {
   epochStartDate: Date;
 
 
-  constructor(id:number, poolDescription: string, vestingType: string, baseTokens: number, rewardsTokens: number, usedTokens: number, reservedTokens: number, grantedRewards: number, epochNumber: number,
+  constructor(id: number, poolDescription: string, vestingType: string, baseTokens: number, rewardsTokens: number, usedTokens: number, reservedTokens: number, grantedRewards: number, epochNumber: number,
               epochPeriod: number, epochStartDate: Date) {
     this.id = id;
     this.poolDescription = poolDescription;
     this.vestingType = vestingType;
-    this.baseTokens =  new Coin(BigInt(baseTokens), getDefaultDenom());
+    this.baseTokens = new Coin(BigInt(baseTokens), getDefaultDenom());
     this.rewardsTokens = new Coin(BigInt(rewardsTokens), getDefaultDenom());
     this.usedTokens = new Coin(BigInt(usedTokens), getDefaultDenom());
     this.reservedTokens = new Coin(BigInt(reservedTokens), getDefaultDenom());
-    this.grantedRewards= new Coin(BigInt(grantedRewards), getDefaultDenom());
+    this.grantedRewards = new Coin(BigInt(grantedRewards ? grantedRewards : 0), getDefaultDenom());
     this.epochNumber = epochNumber;
     this.epochPeriod = epochPeriod;
     this.epochStartDate = epochStartDate;
@@ -70,19 +70,19 @@ export class LoyaltyDropUserBoost {
   status: UserBoostStatusType;
   txHash: string;
   grantedRewards: Coin | null;
-  amount:Coin;
-  lastRewardDate:Date | null;
-  lockStart:Date | null;
-  lockEnd:Date | null;
+  amount: Coin;
+  lastRewardDate: Date | null;
+  lockStart: Date | null;
+  lockEnd: Date | null;
 
 
-  constructor(boostPoolId: number, vestingPoolName: string, baseAccountAddress: string, status: UserBoostStatusType, txHash: string, grantedRewards: number, amount: number, lastRewardDate:Date | null, lockStart: Date | null, lockEnd: Date | null) {
+  constructor(boostPoolId: number, vestingPoolName: string, baseAccountAddress: string, status: UserBoostStatusType, txHash: string, grantedRewards: number, amount: number, lastRewardDate: Date | null, lockStart: Date | null, lockEnd: Date | null) {
     this.boostPoolId = boostPoolId;
     this.vestingPoolName = vestingPoolName;
     this.baseAccountAddress = baseAccountAddress;
     this.status = status;
     this.txHash = txHash;
-    this.grantedRewards = grantedRewards? new Coin(BigInt(grantedRewards), getDefaultDenom()) : null;
+    this.grantedRewards = grantedRewards ? new Coin(BigInt(grantedRewards), getDefaultDenom()) : null;
     this.amount = new Coin(BigInt(amount), getDefaultDenom());
     this.lastRewardDate = lastRewardDate;
     this.lockStart = lockStart;
@@ -91,6 +91,6 @@ export class LoyaltyDropUserBoost {
 }
 
 
-function getDefaultDenom():string{
+function getDefaultDenom(): string {
   return useConfigurationStore().config.loyaltyDropService.loyaltyDropDefaultDenom;
 }
