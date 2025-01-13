@@ -116,5 +116,5 @@ export interface Configuration {
   loyaltyDropService: JsonLoyaltyDropConfig;
   circulatingSupplyVisible:  boolean;
   proposalMappings: JsonProposalMappingConfig[];
-  ipfsPublicGateway: string;
+  ipfsPublicGateway: string[];
 }

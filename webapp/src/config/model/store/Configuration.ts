@@ -223,7 +223,7 @@ export class Configuration implements JsonConfiguration {
   loyaltyDropService: LoyaltyDropConfig;
   circulatingSupplyVisible: boolean;
   proposalMappings: ProposalMappingConfig[];
-  ipfsPublicGateway: string;
+  ipfsPublicGateway: string[];
 
   public static readonly emptyConfiguration = new Configuration();
 
@@ -341,7 +341,7 @@ export class Configuration implements JsonConfiguration {
       this.loyaltyDropService = new LoyaltyDropConfig(undefined);
       this.circulatingSupplyVisible = false;
       this.proposalMappings =  Array<ProposalMappingConfig>();
-      this.ipfsPublicGateway = '';
+      this.ipfsPublicGateway = [];
     }
   }
 

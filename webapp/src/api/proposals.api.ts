@@ -117,23 +117,42 @@ export class ProposalsApi extends BaseApi {
     return this.axiosHasuraCall(formatString(queries.hasura.PROPOSALS_DETAILS_TALLY_LIST_QUERY, {proposalsIds: ids}), mapData, lockscreen, null, 'fetchProposalsDetailsTallyList - ');
   }
 
-  public async fetchProposalInfoFromIpfs(cid: string, lockscreen: boolean): Promise<RequestResponse<ProposalInfoIpfs| null, ErrorData<IpfsErrorData>>> {
-    const url = useConfigurationStore().config.ipfsPublicGateway + cid;
-    const config = {
-      method: 'GET',
-      url: url,
-    };
+  public async fetchProposalInfoFromIpfs(cid: string, lockscreen: boolean): Promise<RequestResponse<ProposalInfoIpfs | null, ErrorData<IpfsErrorData>>> {
+    const urls = useConfigurationStore().config.ipfsPublicGateway;
+
     const messages = {
       errorResponseName: 'Ipfs data Error',
       errorResponseMassage: 'Ipfs data error received',
       errorResponseToast: 'Ipfs data Error: ',
       mappingErrorMassage: 'Ipfs data mapping error: ',
     };
-    const isResponseError = (response: RequestResponse<ProposalInfoIpfs, ErrorData<IpfsErrorData>>) => {return response.isError();};
+    const isResponseError = (response: RequestResponse<ProposalInfoIpfs, ErrorData<IpfsErrorData>>) => {
+      return response.isError();
+    };
 
     const mapper = (data: IpfsProposalInfo | undefined) => {
       return mapProposalInfoFromIpFs(data);
     };
-    return this.axiosWith200ErrorCall(config, mapper, lockscreen, null, 'fetchProposalInfoFromIpfs - ', isResponseError, messages);
+
+    let response: RequestResponse<ProposalInfoIpfs | null, ErrorData<IpfsErrorData>> = new RequestResponse();
+    for (const ulr of urls) {
+      const config = {
+        method: 'GET',
+        url: ulr + cid,
+      };
+      try {
+        response = await this.axiosWith200ErrorCall(config, mapper, lockscreen, null, 'fetchProposalInfoFromIpfs - ', isResponseError, messages);
+        if (response.isSuccess()) {
+          console.log("IPFS success");
+          return response;
+        } else {
+          console.log("Ipfs Error. URL:" + ulr + " err:" + response.error);
+        }
+      } catch (e) {
+        const err = e as Error;
+        console.log("Ipfs Error. URL:" + ulr + " err:" + err.message);
+      }
+    }
+    return response;
   }
 }

@@ -251,7 +251,7 @@ export const useProposalsStore = defineStore({
       }
       const selectedProposal = this.getSelectedProposal.proposal;
       if (selectedProposal && !selectedProposal.proposalInfoIps && isIpfsLink(selectedProposal.metaData)) {
-        this.fetchSelectedProposalInfoFromIpfs(selectedProposal.metaData);
+        await this.fetchSelectedProposalInfoFromIpfs(selectedProposal.metaData);
       }
       return this.selectedProposal.proposal;
     },

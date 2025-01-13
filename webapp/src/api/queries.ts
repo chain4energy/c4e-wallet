@@ -144,6 +144,5 @@ export default {
     },
     proposalMessagePropertiesToShow:[]
   },
-  // ipfsPublicGateway: 'https://ipfs.io/ipfs/',
-  ipfsPublicGateway: 'https://gateway.pinata.cloud/ipfs/'
+  ipfsPublicGateway: ['https://gateway.pinata.cloud/ipfs/', 'https://ipfs.io/ipfs/', 'https://dweb.link/ipfs/']
 };

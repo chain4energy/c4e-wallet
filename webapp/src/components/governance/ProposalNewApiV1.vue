@@ -1,22 +1,20 @@
 <template>
   <div v-if="proposal && proposal.messages">
 <!--    NewApiV1-->
-<!--    <div v-for="key in Object.keys(proposal.messages)" :key="key"  class="box">-->
-<!--      <div v-if="proposal.messages[key] != null" style="margin-top: 20px;" class="info">-->
-<!--        <span>{{key}}</span>-->
-<!--      </div>-->
-<!--      <div v-if="proposal.messages[key] != null" class="json">-->
-<!--        <span style="color: gray">Value:</span>-->
-<!--        <vue-json-pretty :data="proposal.messages[key]" />-->
-<!--      </div>-->
-<!--    </div>-->
-
     <div v-for="key in Object.keys(proposal.messages)" :key="key"  class="box">
       <div style="margin-top: 20px;" class="info">
-        <span>{{$t('GOVERNANCE_VIEW.KEY')}}:</span>
-        <span>{{getElementFromMessageType(proposal.messages[key].type, getKeyPositionFromConfig(proposal.messages[key]))}}</span>
-        <span>{{$t('GOVERNANCE_VIEW.SUBSPACE')}}:</span>
-        <span>{{getElementFromMessageType(proposal.messages[key].type, getSubspaceositionFromConfig(proposal.messages[key]))}}</span>
+        <span>{{$t('GOVERNANCE_VIEW.MODULE')}}:</span>
+          <span>
+            <div style="display: inline-block; width: auto;"  v-tooltip.top="{ value: getElementFromMessageType(proposal.messages[key].type, getKeyPositionFromConfig(proposal.messages[key])), escape: true }">
+              {{getElementFromMessageType(proposal.messages[key].type, getKeyPositionFromConfig(proposal.messages[key]))}}
+            </div>
+          </span>
+        <span>{{$t('GOVERNANCE_VIEW.MESSAGE')}}:</span>
+          <span >
+            <div style="display: inline-block; width: auto;" v-tooltip.top="{ value: getElementFromMessageType(proposal.messages[key].type, getSubspaceositionFromConfig(proposal.messages[key])), escape: true }">
+              {{getElementFromMessageType(proposal.messages[key].type, getSubspaceositionFromConfig(proposal.messages[key]))}}
+            </div>
+          </span>
       </div>
       <div class="json">
         <span style="color: gray">Value:</span>
@@ -86,7 +84,10 @@ function getSubspaceositionFromConfig(message:ProposalMessage){
     }
 
     span:nth-child(odd) {
-      color: grey;
+
+    }
+    div {
+      color: black;
     }
 
   }
