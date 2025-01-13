@@ -15,7 +15,7 @@ module.exports = defineConfig({
     static :{
       directory: path.join('./dev/', '/')
     },
-    host: '',
+    host: 'localhost',
     port: 9000,
     proxy: {
       '^/app': {
@@ -25,7 +25,17 @@ module.exports = defineConfig({
       '^/api-devnet': {
         target: 'http://198.244.154.101:31876',
         changeOrigin: true,
-        pathRewrite: function (path, req) { return path.replace('/api-devnet', '') }
+        pathRewrite: function (path, req) { return path.replace('/api-devnet', ''); }
+      },
+      '^/lcd': {
+        target: 'http://127.0.0.1:31317',
+        changeOrigin: true,
+        pathRewrite: function (path, req) { return path.replace('/lcd', '') ;}
+      },
+      '^/rpc': {
+        target: 'http://127.0.0.1:26657',
+        changeOrigin: true,
+        pathRewrite: function (path, req) { return path.replace('/rpc', ''); }
       },
     }
   },

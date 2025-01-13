@@ -28,7 +28,10 @@ export interface Proposal {
   total_deposit:Array<Coin>
   voting_start_time: string,
   voting_end_time: string,
-  metadata: string
+  metadata: string,
+  title: string,
+  summary: string,
+  proposer: string
 }
 
 export interface ProposalAmount {
@@ -109,6 +112,7 @@ export interface Message {
   sub_distributor: SubDistributor | undefined,
   start_time: string,
   minters: Minter[]
+  params: string | undefined
 
 }
 export interface SubDistributor {
@@ -135,3 +139,5 @@ export interface Minter {
   end_time: string | undefined;
   config: any | undefined;
 }
+
+

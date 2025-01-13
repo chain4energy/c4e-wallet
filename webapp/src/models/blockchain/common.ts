@@ -14,6 +14,11 @@ export interface AirdropErrData {
   code: number;
   message: string;
   details?: string;
+}
 
+export interface IpfsErrorData {
+  code: number;
+  message: string;
+  details?: string;
 }
 

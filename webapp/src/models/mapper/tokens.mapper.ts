@@ -5,7 +5,8 @@ import {Currency} from "@/models/currency";
 
 export function mapStakingPool(pool: BcStakingPool | undefined): StoreStakingPool  {
   if (pool === undefined) {
-      throw new Error('Staking Pool is undefined');
+      // throw new Error('Staking Pool is undefined');
+    return new StoreStakingPool(BigInt(0), BigInt(0));
   }
   if (pool.bonded_tokens === undefined || pool.not_bonded_tokens === undefined) {
     throw new Error('no bonded_tokens or not_bonded_tokens defined');

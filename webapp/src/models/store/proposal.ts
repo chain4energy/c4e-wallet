@@ -4,6 +4,8 @@ import { BigDecimal, divideBigInts } from "./big.decimal";
 import { VoteOption as CosmVoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
 import {StakingPool} from "@/models/store/tokens";
 import {useTokensStore} from "@/store/tokens.store";
+import {string} from "yup";
+import {IpfsProposalInfo} from "@/models/ipfs/ipfs";
 
 export enum ProposalStatus {
   PASSED= 'PROPOSAL_STATUS_PASSED' ,
@@ -31,9 +33,12 @@ export class Proposal {
   totalDeposit: Array<Coin>;
   votingStartTime: Date;
   votingEndTime :Date;
-  messages: ProposalMessage | undefined;
+  messages: ProposalMessage[] | undefined;
   type: ProposalType;
   metaData: string;
+  title: string | undefined; //for new api
+  summary: string | undefined; //for new api
+  proposalInfoIps: ProposalInfoIpfs | undefined;
   constructor (
     proposalId: number,
     content: ProposalContent | undefined,
@@ -44,9 +49,12 @@ export class Proposal {
     totalDeposit: Array<Coin>,
     votingStartTime: Date,
     votingEndTime: Date,
-    messages: ProposalMessage | undefined,
+    messages: ProposalMessage[] | undefined,
     type: ProposalType,
-    metadata: string
+    metadata: string,
+    title?: string,
+    summary?: string,
+    proposalInfoIps?: ProposalInfoIpfs
   ) {
     this.proposalId = proposalId;
     this.content = content;
@@ -60,6 +68,9 @@ export class Proposal {
     this.messages = messages;
     this.type = type;
     this.metaData = metadata;
+    this.title = title;
+    this.summary = summary;
+    this.proposalInfoIps = proposalInfoIps;
   }
 
   public isDepositPeriod() {
@@ -106,8 +117,12 @@ export class ProposalMessage {
   subDistributor: SubDistributor | undefined;
   startTime: string;
   minters: Minter[] | undefined;
+  params: string | undefined;
 
-  constructor(type: string, authority: string, sub_distributor_name: string, destination_name: string, burnShare: string, share: string, sub_distributors: SubDistributor[] | undefined, sub_distributor: SubDistributor | undefined, start_time: string, minters: Minter[] | undefined) {
+  constructor(type: string, authority: string, sub_distributor_name: string, destination_name: string,
+              burnShare: string, share: string, sub_distributors: SubDistributor[] | undefined,
+              sub_distributor: SubDistributor | undefined, start_time: string, minters: Minter[] | undefined,
+              params: string | undefined) {
     this.type = type;
     this.authority = authority;
     this.sub_distributor_name = sub_distributor_name;
@@ -118,6 +133,7 @@ export class ProposalMessage {
     this.subDistributor = sub_distributor;
     this.startTime = start_time;
     this.minters = minters;
+    this.params = params;
   }
 }
 export class SubDistributor {
@@ -189,7 +205,9 @@ export enum ProposalType {
   COMMUNITY_POOL_SPEND='/cosmos.distribution.v1beta1.CommunityPoolSpendProposal',
   CANCEL_SOFTWARE_UPGRADE ='/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal',
   PARAMETER_CHANGE = '/cosmos.params.v1beta1.ParameterChangeProposal',
-  LEGACY_CONTENT = '/cosmos.gov.v1.MsgExecLegacyContent'
+  LEGACY_CONTENT = '/cosmos.gov.v1.MsgExecLegacyContent',
+  // UPDATE_PARAMS = '/chain4energy.c4echain.cfeminter.MsgUpdateParams',
+  // UPDATE_SUB_DISTRIBUTOR_DESTINATION_SHARE_PARAM = '/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam'
 }
 export class ProposalsChanges{
   subspace: string;
@@ -393,3 +411,20 @@ export class ProposalDetailsTally {
   }
 }
 
+export class ProposalInfoIpfs {
+  title: string;
+  authors: string[];
+  summary: string;
+  details: string;
+  proposal_forum_url: string;
+  vote_option_context: string;
+
+  constructor(title: string, authors: string[], summary: string, details: string, proposal_forum_url: string, vote_option_context: string) {
+    this.title = title;
+    this.authors = authors;
+    this.summary = summary;
+    this.details = details;
+    this.proposal_forum_url = proposal_forum_url;
+    this.vote_option_context = vote_option_context;
+  }
+}

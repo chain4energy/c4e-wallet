@@ -7,26 +7,7 @@
 
     <div class="top">
       <span class="id fw-bold">#{{ proposal.proposalId }} </span>
-      <div v-if="proposal.status == 'PROPOSAL_STATUS_VOTING_PERIOD'" class="voting-status voting">
-        <Icon :name=icons.get(proposal.status)>
-        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
-      </div>
-      <div v-if="proposal.status == 'PROPOSAL_STATUS_REJECTED'" class="voting-status rejected">
-        <Icon :name=icons.get(proposal.status)>
-        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
-      </div>
-      <div v-if="proposal.status == 'PROPOSAL_STATUS_PASSED'" class="voting-status accepted">
-        <Icon :name=icons.get(proposal.status)>
-        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
-      </div>
-      <div v-if="proposal.status == 'PROPOSAL_STATUS_DEPOSIT_PERIOD'" class="voting-status deposit">
-        <Icon :name=icons.get(proposal.status)>
-        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
-      </div>
-      <div v-if="proposal.status == 'PROPOSAL_STATUS_FAILED'" class="voting-status failed">
-        <Icon :name=icons.get(proposal.status)>
-        </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
-      </div>
+      <ProposalStatusV class="voting-status" :proposal="proposal"/>
     </div>
 
     <div class="middle">
@@ -140,10 +121,12 @@ import {Proposal, ProposalStatus } from "@/models/store/proposal";
 import { createProposalListChartData } from '@/charts/governance';
 import { useProposalsStore } from '@/store/proposals.store';
 import CoinAmount from '../commons/CoinAmount.vue';
-import PercentsView from "@/components/commons/PercentsView";
+import PercentsView from "@/components/commons/PercentsView.vue";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import {BigIntWrapper} from "@/models/store/common";
 import {BigDecimal} from "@/models/store/big.decimal";
+import ProposalStatusV from "@/components/governance/ProposalStatusV.vue";
+
 
 use([
   SVGRenderer,
@@ -160,14 +143,7 @@ const props = defineProps<{
 
 const router = useRouter();
 
-const icons  = new Map<string, string>([
-  [ProposalStatus.PASSED, "CheckSquare"],
-  [ProposalStatus.REJECTED, "XCircle"],
-  [ProposalStatus.DEPOSIT_PERIOD, ""],
-  [ProposalStatus.FAILED, ""],
-  [ProposalStatus.VOTING_PERIOD, ""],
-  [ProposalStatus.UNSPECIFIED, ""]
-]);
+
 
 const tooltipOption = ref('');
 const tooltipValue = ref('');
@@ -177,7 +153,7 @@ const tooltipPosY = ref(0);
 const tooltipBorderColor = ref('');
 const proposalStore = useProposalsStore();
 
-const showTooltip = (option, value) => {
+const showTooltip = (option:string, value:string) => {
   if(option == 'YES') {
     tooltipBorderColor.value = '#72bf44';
   }
@@ -204,7 +180,7 @@ const showTooltip = (option, value) => {
   showChartTooltip.value = true;
 };
 
-const updateTooltipPosition = (e) => {
+const updateTooltipPosition = (e:any) => {
   let x = e.clientX;
   let y = e.clientY;
 
@@ -307,36 +283,40 @@ const showDetailsClick = () => {
   router.push({name: 'governanceDetails', params: {id: props.proposal.proposalId}});
 };
 
-const option = computed(() => {
-  return createProposalListChartData(
-    {
-      amount: yes.value,
-      percentage: yesPercentage.value
-    },
-    {
-      amount: abstain.value,
-      percentage: abstainPercentage.value
-    },
-    {
-      amount: no.value,
-      percentage: noPercentage.value
-    },
-    {
-      amount: noWithVeto.value,
-      percentage: noWithVetoPercentage.value
-    },
-    sumOfVotes.value
-  );
-});
+// const option = computed(() => {
+//   return createProposalListChartData(
+//     {
+//       amount: yes.value,
+//       percentage: yesPercentage.value
+//     },
+//     {
+//       amount: abstain.value,
+//       percentage: abstainPercentage.value
+//     },
+//     {
+//       amount: no.value,
+//       percentage: noPercentage.value
+//     },
+//     {
+//       amount: noWithVeto.value,
+//       percentage: noWithVetoPercentage.value
+//     },
+//     sumOfVotes.value
+//   );
+// });
 
 const getTitle = () => {
-  if(props.proposal?.content?.title) {
+  if(props.proposal?.title){
+    return props.proposal?.title;
+  } else if(props.proposal?.content?.title) {
     return props.proposal?.content?.title;
   } else if(props.proposal && props.proposal?.metaData) {
     try {
       return JSON.parse(props.proposal.metaData).description;
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      const error = err as Error;
+      console.log(error.message);
+      return undefined;
     }
   }
 };
@@ -379,43 +359,18 @@ const getTitle = () => {
       float: right;
       height: 50px;
       width: 150px;
-      padding: 15px 0px;
-      margin-left: auto;
-      margin-right: auto;
+      //padding: 15px 0px;
+      //margin-left: auto;
+      //margin-right: auto;
       border-radius: 0 10px 0 10px;
       display: flex;
       align-items: center;
       justify-content: center;
 
-      svg {
-        margin-right: 5px;
-      }
+
     }
 
-    .voting {
-      background-color: $primary-blue-color;
-      color: white;
-    }
 
-    .accepted {
-      background-color: $primary-green-color;
-      color: $primary-blue-color;
-    }
-
-    .rejected {
-      background-color: $error-red-color;
-      color: white;
-    }
-
-    .failed {
-      background-color: black;
-      color: white;
-    }
-
-    .deposit {
-      background-color: grey;
-      color: rgb(77, 77, 77);
-    }
   }
   .middle {
     height: 44%;

@@ -1,12 +1,14 @@
 <template>
-  <div v-if="proposal !== undefined">
-    <div v-for="key in Object.keys(proposal.messages)" :key="key"  class="box">
-      <div v-if="proposal.messages[key] != null" style="margin-top: 20px;" class="info">
-        <span>{{key}}</span>
-      </div>
-      <div v-if="proposal.messages[key] != null" class="json">
-        <span style="color: gray">Value:</span>
-        <vue-json-pretty :data="proposal.messages[key]" />
+  <div v-if="proposal && proposal.messages">
+    <div v-for="message in proposal.messages"  :key="message" >
+      <div v-for="key in Object.keys(message)" :key="key"  class="box">
+        <div v-if="message[key] != null" style="margin-top: 20px;" class="info">
+          <span>{{key}}</span>
+        </div>
+        <div v-if="message[key] != null" class="json">
+          <span style="color: gray">Value:</span>
+          <vue-json-pretty :data="message[key]" />
+        </div>
       </div>
     </div>
   </div>
@@ -21,6 +23,8 @@ import 'vue-json-pretty/lib/styles.css';
 const props = defineProps<{
   proposal?: Proposal
 }>();
+
+console.log("ProposalNotLegacyContent");
 
 </script>
 

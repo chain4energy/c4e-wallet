@@ -103,7 +103,8 @@
     "SUBSPACE": "Podprzestrzeń",
     "AMOUNT": "Ilość",
     "VIEW_IN_EXPLORER": "Zobacz w eksploratorze",
-    "AUTOMATIC_REFRESH": "Automatyczne odświeżanie"
+    "AUTOMATIC_REFRESH": "Automatyczne odświeżanie",
+    "VIEW_ON_FORUM": "Link do forum"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Oddelegowane tokeny",

@@ -73,7 +73,36 @@
     "loyaltyDropService": {
       "loyaltyDropBaseUrl": "https://loyalty-drop-mainnet.c4e.io/api/loyalty-drop"
     },
-    "circulatingSupplyVisible" : true
+    "circulatingSupplyVisible" : true,
+    "proposalMappings": [
+      {
+        "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 1,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "params"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "startTime",
+          "minters"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "sub_distributor_name",
+          "destination_name",
+          "share"
+        ]
+      }
+    ]
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -148,7 +177,36 @@
     "loyaltyDropService": {
       "loyaltyDropBaseUrl": "http://localhost:8090/api/loyalty-drop",
       "loyaltyDropPoolConfigurationsUrl": "/v0.1/pool_configurations"
-    }
+    },
+    "proposalMappings": [
+      {
+        "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 1,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "params"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "startTime",
+          "minters"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "sub_distributor_name",
+          "destination_name",
+          "share"
+        ]
+      }
+    ]
   },
   "devnet-amoino-only":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -223,7 +281,36 @@
     "loyaltyDropService": {
       "loyaltyDropBaseUrl": "http://localhost:8090/api/loyalty-drop",
       "loyaltyDropPoolConfigurationsUrl": "/v0.1/pool_configurations"
-    }
+    },
+    "proposalMappings": [
+      {
+        "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 1,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "params"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "startTime",
+          "minters"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "sub_distributor_name",
+          "destination_name",
+          "share"
+        ]
+      }
+    ]
   },
   "internal Testnet": {
     "bcApiURL": "http://10.0.14.81:1317",
@@ -291,7 +378,36 @@
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": true,
-    "useAminoOnly": false
+    "useAminoOnly": false,
+    "proposalMappings": [
+      {
+        "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 1,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "params"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "startTime",
+          "minters"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "sub_distributor_name",
+          "destination_name",
+          "share"
+        ]
+      }
+    ]
   },
   "Testnet": {
     "bcApiURL": "https://lcd-testnet.c4e.io",
@@ -362,7 +478,36 @@
     "publicSaleVisible": false,
     "loyaltyDropService": {
       "loyaltyDropBaseUrl": "https://loyalty-drop-testnet.c4e.io/api/loyalty-drop"
-    }
+    },
+    "proposalMappings": [
+      {
+        "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 1,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "params"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "startTime",
+          "minters"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "sub_distributor_name",
+          "destination_name",
+          "share"
+        ]
+      }
+    ]
   },
   "pbtest" :{
     "bcApiURL": "api",
@@ -431,7 +576,36 @@
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": true,
-    "useAminoOnly": false
+    "useAminoOnly": false,
+    "proposalMappings": [
+      {
+        "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 1,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "params"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "startTime",
+          "minters"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "sub_distributor_name",
+          "destination_name",
+          "share"
+        ]
+      }
+    ]
   },
   "local":{
     "bcApiURL": "http://localhost:1317",
@@ -504,7 +678,36 @@
     "loyaltyDropService": {
       "LOYALTY_DROP_BASE_URL":"http://localhost:8090/api/loyalty-drop",
       "LOYALTY_DROP_POOL_CONFIGURATIONS_URL":"/v0.1/pool_configurations"
-    }
+    },
+    "proposalMappings": [
+      {
+        "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 1,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "params"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "startTime",
+          "minters"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "sub_distributor_name",
+          "destination_name",
+          "share"
+        ]
+      }
+    ]
   },
   "EV-testnet":{
     "bcApiURL": "https://lcd-ev-testnet.c4e.io",
@@ -575,7 +778,36 @@
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": true,
-    "useAminoOnly": false
+    "useAminoOnly": false,
+    "proposalMappings": [
+      {
+        "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 1,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "params"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "startTime",
+          "minters"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "sub_distributor_name",
+          "destination_name",
+          "share"
+        ]
+      }
+    ]
   },
   "docker-compose":{
     "bcApiURL": "https://lcd-dev.c4e.io",
@@ -645,6 +877,134 @@
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": true,
-    "useAminoOnly": false
+    "useAminoOnly": false,
+    "proposalMappings": [
+      {
+        "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 1,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "params"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "startTime",
+          "minters"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "sub_distributor_name",
+          "destination_name",
+          "share"
+        ]
+      }
+    ]
+  },
+  "docker-compose-local":{
+    "bcApiURL": "http://localhost:9000/lcd",
+    "bcRpcURL": "http://localhost:9000/rpc",
+    "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
+    "keybaseURL": "https://keybase.io",
+    "stakingPageURL": "https://wallet.c4e.io/staking",
+    "publicSaleServiceURL": "http://localhost:8200",
+    "nodeProviderName": "C4E",
+    "nodeProviderEmail": "integration.support@c4e.io",
+    "nodeProviderWebsite": "https://c4e.io",
+    "addressPrefix": "c4e",
+    "stakingDenom": "uc4e",
+    "transferDenom": "uc4e",
+    "tokenReservationDenom": "uc4e",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+    ],
+    "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+    "chainId": "flame-2",
+    "networkName": "Dev+docker-compose(dg-proposal-dev)",
+    "keplrNetworkName": "C4E Flame Dev",
+    "queries": {
+    },
+    "operationGas": {
+      "vote": 250000,
+      "delegate": 250000,
+      "undelegate": 250000,
+      "redelegate": 250000,
+      "claimRewards": 250000,
+      "transfer": 250000
+    },
+    "viewDenoms": [
+      {
+        "denom": "uc4e",
+        "viewDenom": "C4E",
+        "coinDecimals": 6
+      },
+      {
+        "denom": "u$",
+        "viewDenom": "$",
+        "coinDecimals": 6
+      }
+    ],
+    "keplrGasPriceSteps": {
+      "low": 0.01,
+      "average": 0.025,
+      "high": 0.03
+    },
+    "reservedCoinsAmount": 250000,
+    "minPeriodBetweenDataRefresh": 1000,
+    "blockDataRefreshTimeout": 30000,
+    "dashboardDataRefreshTimeout": 300000,
+    "validatorsDataRefreshTimeout":600000,
+    "accountDataRefreshTimeout": 90000,
+    "proposalsPageLimit": 50,
+    "explorerUrl": "https://explorer.c4e.io",
+    "explorerAccount": "https://explorer.c4e.io/accounts/",
+    "explorerTx": "https://explorer.c4e.io/transactions/",
+    "isMainNetwork": false,
+    "airdropBaseURL": "",
+    "proposalVotingRefreshTimeout": 30000,
+    "airdropDefaultDenom": "uc4e",
+    "targetInflationAprMultiplier": 5,
+    "faucetURL": "https://faucet-dev.c4e.io/send/{address}",
+    "faucetAvailable": true,
+    "currentPublicSaleRoundId": 1,
+    "publicSaleVisible": true,
+    "useAminoOnly": false,
+    "proposalMappings": [
+      {
+        "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 1,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "params"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "startTime",
+          "minters"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "sub_distributor_name",
+          "destination_name",
+          "share"
+        ]
+      }
+    ]
   }
 }

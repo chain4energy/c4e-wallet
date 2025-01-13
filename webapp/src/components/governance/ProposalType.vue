@@ -13,12 +13,25 @@ const props = defineProps<{
 function getProposalInfo() {
   let type = undefined;
   if(props.proposal?.messages) {
-    type = props.proposal.messages.type;
+    type = props.proposal.messages[0].type;
   } else {
-    type= props.proposal?.content?.type;
+    if(props.proposal?.content?.type) {
+      type = props.proposal?.content?.type;
+    } else {
+      return i18n.global.t('GOVERNANCE_VIEW.PROPOSAL_TYPE.TEXT_PROPOSAL');
+    }
   }
   switch(type) {
     case '/cosmos.params.v1beta1.ParameterChangeProposal': {
+      return i18n.global.t('GOVERNANCE_VIEW.PROPOSAL_TYPE.PARAMETER_CHANGE_PROPOSAL');
+    }
+    case '/cosmos.staking.v1beta1.MsgUpdateParams': {
+      return i18n.global.t('GOVERNANCE_VIEW.PROPOSAL_TYPE.PARAMETER_CHANGE_PROPOSAL');
+    }
+    case '/chain4energy.c4echain.cfeminter.MsgUpdateParams': {
+      return i18n.global.t('GOVERNANCE_VIEW.PROPOSAL_TYPE.PARAMETER_CHANGE_PROPOSAL');
+    }
+    case '/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam': {
       return i18n.global.t('GOVERNANCE_VIEW.PROPOSAL_TYPE.PARAMETER_CHANGE_PROPOSAL');
     }
     case '/cosmos.distribution.v1beta1.CommunityPoolSpendProposal': {

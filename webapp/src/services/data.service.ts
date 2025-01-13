@@ -18,7 +18,8 @@ import {useUserServiceStore} from "@/store/userService.store";
 import {usePublicSalesStore} from "@/store/publicSales.store";
 import {Campaign, Mission} from "@/models/store/airdrop";
 import {useLoyaltyDropStore} from "@/store/boost.store";
-import {string} from "yup";
+import {ProposalStatus} from "@/models/store/proposal";
+
 const keplrKeyStoreChange = 'keplr_keystorechange';
 const cosmostationKeyStoreChange = 'cosmostation_keystorechange';
 const leapKeyStoreChange = 'leap_keystorechange';
@@ -261,19 +262,23 @@ class DataService extends LoggedService {
       useValidatorsStore().clear();
       useLoyaltyDropStore().clear();
       this.clearIntervals();
-      this.onInit().then( () => {
+      this.onInit().then(() => {
           if (this.isClaimAirdropViewSelected && useUserStore().getAccount.address) {
             useAirDropStore().fetchUsersCampaignData(useUserStore().getAccount.address, true);
           }
-          if(this.isLoyaltyDropViewSelected){
+          if (this.isLoyaltyDropViewSelected) {
             useLoyaltyDropStore().fetchLoyaltyDropPoolsConfig(true);
             this.refreshLoyaltyDropUserBoost(true, true);
           }
         }
       );
       if (refreshProposals) {
+        useProposalsStore().clearProposals();
         useProposalsStore().fetchProposals(true);
       }
+    } catch(err) {
+      const error = err as Error;
+      this.logToConsole(LogLevel.ERROR, "onConfigurationChange ERROR!!!", error.message);
     } finally {
       useSplashStore().decrement();
     }
@@ -294,13 +299,30 @@ class DataService extends LoggedService {
     // this.spendablesIntervalId = 0;
   }
 
-  public onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
+  public async onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
     this.onProposalDetailsError = onError;
-    useProposalsStore().fetchProposalsDetailsTally(proposeId).then(() => {
-      useProposalsStore().fetchProposalById(proposeId, onSuccess, onError);
+    console.log("!!!:" + useTokensStore().getTotalBonded );
+    //wait for bondedTokens will be fetched
+    await this.waitTillCondition(() => {
+      return useTokensStore().getStakingPool.bondedTokens != 0n;
     });
+    console.log("!!!:" + useTokensStore().getTotalBonded );
+    const promises = Array<Promise<any>>();
+    promises.push(useProposalsStore().fetchSelectedProposal(proposeId));
+    promises.push(useProposalsStore().fetchSelectedProposalDetailsTally(proposeId));
+    // promises.push(useProposalsStore().fetchSelectedProposalInfoFromIpfs(proposeId));
+    if(useUserStore().isLoggedIn){
+      promises.push( useProposalsStore().fetchSelectedProposalUserVote(proposeId, useUserStore().getAccount.address));
+    }
+    await Promise.all(promises);
 
+    // await useProposalsStore().fetchSelectedProposal(proposeId);
+    // await useProposalsStore().fetchSelectedProposalDetailsTally(proposeId);
+    // if(useUserStore().isLoggedIn){
+    //   await useProposalsStore().fetchSelectedProposalUserVote(proposeId, useUserStore().getAccount.address);
+    // }
+    onSuccess?.();
   }
 
   public onInfoView() {
@@ -318,7 +340,8 @@ class DataService extends LoggedService {
 
   public onProposalUnselected() {
     this.logToConsole(LogLevel.DEBUG, 'onProposalUnselected');
-    useProposalsStore().clearProposal();
+    // useProposalsStore().clearProposal();
+    useProposalsStore().clearSelectedProposal();
     this.onProposalDetailsError = undefined;
   }
 
@@ -382,10 +405,10 @@ class DataService extends LoggedService {
     }
     instancce.lastAccountTimeout = new Date().getTime();
     instancce.accountIntervalId = instancce.checkAndSetInterval(instancce.accountIntervalId, refreshAccountData, instancce.accountTimeout, "refreshAccountData");
-    const propId = useProposalsStore().proposal;
+    const propId = useProposalsStore().selectedProposal.proposal;
     const userAddress = useUserStore().getAccount.address;
     if (propId !== undefined && userAddress !== '') {
-      useProposalsStore().fetchProposalUserVote(propId.proposalId, userAddress);
+      useProposalsStore().fetchSelectedProposalUserVote(propId.proposalId, userAddress);
     }
     // refresh spendables once logged in
     // refreshSpendables(true);
@@ -589,10 +612,10 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onProposalUpdateVotes');
     await useProposalsStore().fetchVotingProposalTallyResult(proposalId, true, false);
   }
+
   public onClaimRewards() {
     this.logToConsole(LogLevel.DEBUG, 'onClaimRewards');
     useUserStore().claimRewards();
-
   }
 
   public async onClaimInitialAirdrop(campaign: Campaign, mission: Mission, address: string, onSuccessClaim?: (campaign: Campaign, mission: Mission) => void){
