@@ -1,10 +1,10 @@
 import {
-  GovernanceParameters,
+  GovernanceParameters, Message,
   Proposal as BcProposal,
   ProposalsDetailsTallyResult,
   Tally
 } from "@/models/blockchain/proposals";
-import { mapCoin } from "@/models/mapper/common.mapper";
+import {mapCoin} from "@/models/mapper/common.mapper";
 import {
   Proposal as StoreProposal,
   ProposalContent,
@@ -18,24 +18,26 @@ import {
   ProposalsChanges,
   ProposalDetailsTally,
   SubDistributor,
-  Account, Destinations, Minter, ProposalMessage,
+  Account, Destinations, Minter, ProposalMessage, ProposalInfoIpfs,
 } from "@/models/store/proposal";
-import { Coin } from "@/models/store/common";
-import { useConfigurationStore } from "@/store/configuration.store";
-import { ProposalVoteResponse } from "../hasura/proposal.vote";
+import {Coin} from "@/models/store/common";
+import {useConfigurationStore} from "@/store/configuration.store";
+import {ProposalVoteResponse} from "../hasura/proposal.vote";
 import {mapStakingPool} from "@/models/mapper/tokens.mapper";
 import {StakingPool as StoreStakingPool} from "@/models/store/tokens";
+import {IpfsProposalInfo} from "@/models/ipfs/ipfs";
 
-export function mapProposals(proposals: BcProposal[] | undefined): { proposals: StoreProposal[], numberOfActive: number }  {
+export function mapProposals(proposals: BcProposal[] | undefined): { proposals: StoreProposal[], numberOfActive: number } {
   if (proposals === undefined) {
     throw new Error('Proposals list is undefined');
   }
   const result = Array<StoreProposal>();
   const active = mapAndAddProposalsToArray(result, proposals);
 
-  return { proposals: result, numberOfActive: active};
+  return {proposals: result, numberOfActive: active};
 }
-export function mapProposalByID(proposal: BcProposal | undefined): { proposal: StoreProposal}  {
+
+export function mapProposalByID(proposal: BcProposal | undefined): { proposal: StoreProposal } {
   if (proposal === undefined) {
     throw new Error('Proposal is undefined');
   }
@@ -45,21 +47,25 @@ export function mapProposalByID(proposal: BcProposal | undefined): { proposal: S
     throw new Error('Proposal is undefined');
   }
 
-  return { proposal: result};
+  return {proposal: result};
 }
 
-export function mapAndAddProposals(proposalsDst: StoreProposal[], bcProposals: BcProposal[] | undefined, numberOfActive: number): { proposals: StoreProposal[], numberOfActive: number}  {
+export function mapAndAddProposals(proposalsDst: StoreProposal[], bcProposals: BcProposal[] | undefined, numberOfActive: number): {
+  proposals: StoreProposal[],
+  numberOfActive: number
+} {
   if (bcProposals === undefined) {
     throw new Error('BcProposal list is undefined');
   }
   const active = numberOfActive + mapAndAddProposalsToArray(proposalsDst, bcProposals);
-  return { proposals: proposalsDst, numberOfActive: active};
+  return {proposals: proposalsDst, numberOfActive: active};
 }
-function mapAndAddProposalsToArray(array: StoreProposal[], bcValidators: BcProposal[]): number  {
+
+function mapAndAddProposalsToArray(array: StoreProposal[], bcValidators: BcProposal[]): number {
   let active = 0;
   bcValidators.forEach(proposal => {
     const mapped = mapProposal(proposal);
-    if(mapped!=undefined) {
+    if (mapped != undefined) {
       array.push(mapped);
       if (mapped.status === ProposalStatus.PASSED) {
         active++;
@@ -68,15 +74,21 @@ function mapAndAddProposalsToArray(array: StoreProposal[], bcValidators: BcPropo
   });
   return active;
 }
+
 export function mapProposalTallyResult(tally?: Tally): ProposalTallyResult {
   if (tally === undefined) {
-    throw new Error('mapProposalTallyResult -tally is undefined');
+    // throw new Error('mapProposalTallyResult -tally is undefined');
+    return new ProposalTallyResult(
+      BigInt(0),
+      BigInt(0),
+      BigInt(0),
+      BigInt(0));
   }
 
   if (tally.yes_count === undefined ||
-      tally.no_count === undefined ||
-      tally.abstain_count === undefined ||
-      tally.no_with_veto_count === undefined) {
+    tally.no_count === undefined ||
+    tally.abstain_count === undefined ||
+    tally.no_with_veto_count === undefined) {
     throw new Error('mapProposalTallyResult - some of tally votes is undefined');
   }
   return new ProposalTallyResult(
@@ -85,47 +97,20 @@ export function mapProposalTallyResult(tally?: Tally): ProposalTallyResult {
     BigInt(tally.no_count),
     BigInt(tally.no_with_veto_count));
 }
-export function mapProposal(proposal: BcProposal | undefined): StoreProposal | undefined  {
+
+export function mapProposal(proposal: BcProposal | undefined): StoreProposal | undefined {
   if (proposal === undefined) {
     throw new Error('proposal is undefined');
   }
   const status = mapProposalStatus(proposal.status);
   const finalTallyResult = mapProposalTallyResult(proposal.final_tally_result);
-  const totalDeposit = proposal.total_deposit.map((el)=> {
+  const totalDeposit = proposal.total_deposit.map((el) => {
     return mapCoin(el, el.denom);
   });
-  if(proposal.messages.length == 0)
-    return undefined;
- if(proposal.messages[0]['@type'] === ProposalType.LEGACY_CONTENT) {
-
-    let changes = undefined;
-    if(proposal.messages[0].content?.changes) {
-      changes = proposal.messages[0]?.content?.changes.map((el)=> {
-        return new ProposalsChanges(
-          el.subspace, el.key, el.value
-        );
-      });
-    }
-    let proposalPlan = undefined;
-    const plan = proposal.messages[0]?.content?.plan;
-    if(plan) {
-      proposalPlan = new ProposalsPlan(plan.height, plan.info, plan.name, plan.time, plan.upgraded_client_state);
-    }
-
-    let amount = undefined;
-    if(proposal.messages[0]?.content?.amount) {
-      amount = proposal.messages[0].content.amount.map((el)=> {
-        return new ProposalsAmount(
-          el.denom, Number(el.amount)
-        );
-      });
-    }
-
-    const content = new ProposalContent( proposal.messages[0].content["@type"] as ProposalType, proposal?.messages[0]?.content?.title, proposal.messages[0].content.description, changes, proposalPlan, proposal.messages[0].content.recipient, amount);
-
+  if (proposal.messages.length == 0) {
     return new StoreProposal(
       Number(proposal.id),
-      content, status,
+      undefined, status,
       finalTallyResult,
       new Date(proposal.submit_time),
       new Date(proposal.deposit_end_time),
@@ -133,60 +118,113 @@ export function mapProposal(proposal: BcProposal | undefined): StoreProposal | u
       new Date(proposal.voting_start_time),
       new Date(proposal.voting_end_time),
       undefined,
-      proposal.messages[0]["@type"],
-      proposal.metadata
+      ProposalType.TEXT,
+      proposal.metadata,
+      proposal.title,
+      proposal.summary
     );
+  }
+  if (proposal.messages.length == 1 && proposal.messages[0]['@type'] === ProposalType.LEGACY_CONTENT) {
+    return mapProposalLegacyContent(proposal, status, finalTallyResult, totalDeposit);
   } else {
-   let subDistributors = undefined;
-   if(proposal.messages[0].sub_distributors) {
-     subDistributors = proposal.messages[0].sub_distributors.map(el => {
-       let sources = undefined;
-       sources = el.sources.map(source => {
-         return new Account(source.id, source.type);
-       });
-       const destinations = new Destinations(el.destinations.burn_share, el.destinations.primary_share, el.destinations.shares);
-       return new SubDistributor(el.name, sources, destinations);
-     });
-   }
+    const proposalMessages = new Array<ProposalMessage>();
+    proposal.messages.forEach(message => {
+      proposalMessages.push(mapProposalMessage(message));
+    });
+    return new StoreProposal(
+      Number(proposal.id),
+      undefined, status,
+      finalTallyResult,
+      new Date(proposal.submit_time),
+      new Date(proposal.deposit_end_time),
+      totalDeposit,
+      new Date(proposal.voting_start_time),
+      new Date(proposal.voting_end_time),
+      proposalMessages,
+      proposal.messages[0]["@type"] as ProposalType,
+      proposal.metadata,
+      proposal.title,
+      proposal.summary
+    );
+  }
+}
 
-   let subDistributor = undefined;
-   const bcSubDistributor = proposal.messages[0].sub_distributor;
-   if(bcSubDistributor) {
-     const destinations = new Destinations(bcSubDistributor.destinations.burn_share, bcSubDistributor.destinations.primary_share, bcSubDistributor.destinations.shares);
-     subDistributor = new SubDistributor(bcSubDistributor.name,
-       bcSubDistributor.sources,
-       destinations);
-   }
-
-   let minters = undefined;
-   const bcMinters = proposal.messages[0].minters;
-   if(bcMinters) {
-     minters = bcMinters.map(el => {
-       return new Minter(el.sequence_id, el.end_time, el.config);
-     });
-   }
-   const proposalMessages = proposal.messages[0];
-   const messages = new ProposalMessage(proposalMessages["@type"] as ProposalType, proposalMessages.authority, proposalMessages.sub_distributor_name,
-     proposalMessages.destination_name, proposalMessages.burnShare, proposalMessages.share, subDistributors, subDistributor, proposalMessages.start_time, minters);
-
-   return new StoreProposal(
-     Number(proposal.id),
-     undefined, status,
-     finalTallyResult,
-     new Date(proposal.submit_time),
-     new Date(proposal.deposit_end_time),
-     totalDeposit,
-     new Date(proposal.voting_start_time),
-     new Date(proposal.voting_end_time),
-     messages,
-     proposal.messages[0]["@type"] as ProposalType,
-     proposal.metadata
-   );
+function mapProposalLegacyContent(proposal: BcProposal, status: ProposalStatus, finalTallyResult: ProposalTallyResult, totalDeposit: Coin[]){
+  let changes = undefined;
+  if (proposal.messages[0].content?.changes) {
+    changes = proposal.messages[0]?.content?.changes.map((el) => {
+      return new ProposalsChanges(
+        el.subspace, el.key, el.value
+      );
+    });
+  }
+  let proposalPlan = undefined;
+  const plan = proposal.messages[0]?.content?.plan;
+  if (plan) {
+    proposalPlan = new ProposalsPlan(plan.height, plan.info, plan.name, plan.time, plan.upgraded_client_state);
   }
 
+  let amount = undefined;
+  if (proposal.messages[0]?.content?.amount) {
+    amount = proposal.messages[0].content.amount.map((el) => {
+      return new ProposalsAmount(
+        el.denom, Number(el.amount)
+      );
+    });
+  }
 
+  const content = new ProposalContent(proposal.messages[0].content["@type"] as ProposalType, proposal?.messages[0]?.content?.title, proposal.messages[0].content.description, changes, proposalPlan, proposal.messages[0].content.recipient, amount);
+
+  return new StoreProposal(
+    Number(proposal.id),
+    content, status,
+    finalTallyResult,
+    new Date(proposal.submit_time),
+    new Date(proposal.deposit_end_time),
+    totalDeposit,
+    new Date(proposal.voting_start_time),
+    new Date(proposal.voting_end_time),
+    undefined,
+    proposal.messages[0]["@type"] as ProposalType,
+    proposal.metadata
+  );
 }
-function mapProposalStatus(proposalStatus: string | undefined): ProposalStatus  {
+
+function mapProposalMessage(bcMessage: Message) {
+  let subDistributors = undefined;
+  if (bcMessage.sub_distributors) {
+    subDistributors = bcMessage.sub_distributors.map(el => {
+      let sources = undefined;
+      sources = el.sources.map(source => {
+        return new Account(source.id, source.type);
+      });
+      const destinations = new Destinations(el.destinations.burn_share, el.destinations.primary_share, el.destinations.shares);
+      return new SubDistributor(el.name, sources, destinations);
+    });
+  }
+
+  let subDistributor = undefined;
+  const bcSubDistributor = bcMessage.sub_distributor;
+  if (bcSubDistributor) {
+    const destinations = new Destinations(bcSubDistributor.destinations.burn_share, bcSubDistributor.destinations.primary_share, bcSubDistributor.destinations.shares);
+    subDistributor = new SubDistributor(bcSubDistributor.name,
+      bcSubDistributor.sources,
+      destinations);
+  }
+  let minters = undefined;
+  const bcMinters = bcMessage.minters;
+  if (bcMinters) {
+    minters = bcMinters.map(el => {
+      return new Minter(el.sequence_id, el.end_time, el.config);
+    });
+  }
+  const message = new ProposalMessage(bcMessage["@type"] as ProposalType, bcMessage.authority, bcMessage.sub_distributor_name,
+    bcMessage.destination_name, bcMessage.burnShare, bcMessage.share, subDistributors, subDistributor, bcMessage.start_time,
+    minters, bcMessage.params);
+  return message;
+}
+
+function mapProposalStatus(proposalStatus: string | undefined): ProposalStatus {
   switch (proposalStatus) {
     case "PROPOSAL_STATUS_REJECTED": {
       return ProposalStatus.REJECTED;
@@ -194,7 +232,7 @@ function mapProposalStatus(proposalStatus: string | undefined): ProposalStatus  
     case "PROPOSAL_STATUS_PASSED": {
       return ProposalStatus.PASSED;
     }
-    case "PROPOSAL_STATUS_FAILED":{
+    case "PROPOSAL_STATUS_FAILED": {
       return ProposalStatus.FAILED;
     }
     case "PROPOSAL_STATUS_UNSPECIFIED": {
@@ -203,7 +241,7 @@ function mapProposalStatus(proposalStatus: string | undefined): ProposalStatus  
     case "PROPOSAL_STATUS_DEPOSIT_PERIOD": {
       return ProposalStatus.DEPOSIT_PERIOD;
     }
-    case "PROPOSAL_STATUS_VOTING_PERIOD":{
+    case "PROPOSAL_STATUS_VOTING_PERIOD": {
       return ProposalStatus.VOTING_PERIOD;
     }
     default:
@@ -212,7 +250,7 @@ function mapProposalStatus(proposalStatus: string | undefined): ProposalStatus  
 }
 
 
-export function mapTallyParams(governanceParams: GovernanceParameters | undefined): TallyParams  {
+export function mapTallyParams(governanceParams: GovernanceParameters | undefined): TallyParams {
   if (governanceParams === undefined) {
     throw new Error('mapTallyParams - governanceParams is undefined');
   }
@@ -230,7 +268,7 @@ export function mapTallyParams(governanceParams: GovernanceParameters | undefine
     Number(governanceParams.tally_params.veto_threshold));
 }
 
-export function mapDepositParams(governanceParams: GovernanceParameters | undefined): Coin  {
+export function mapDepositParams(governanceParams: GovernanceParameters | undefined): Coin {
   if (governanceParams === undefined) {
     throw new Error('mapDepositParams - governanceParams is undefined');
   }
@@ -264,7 +302,7 @@ export function mapProposalVoteResponse(proposalVoteResponse: ProposalVoteRespon
     case "VOTE_OPTION_ABSTAIN": {
       return VoteOption.Abstain;
     }
-    case "VOTE_OPTION_NO":{
+    case "VOTE_OPTION_NO": {
       return VoteOption.No;
     }
     case "VOTE_OPTION_NO_WITH_VETO": {
@@ -274,6 +312,7 @@ export function mapProposalVoteResponse(proposalVoteResponse: ProposalVoteRespon
       throw new Error(`Unsupported vote option: '${proposalVoteResponse.data.proposal_vote[0].option}'`);
   }
 }
+
 export function mapProposalsDetailsTallyResponse(proposalsDetailsTallyResponse: ProposalsDetailsTallyResult | undefined): ProposalDetailsTally | null {
   if (proposalsDetailsTallyResponse === undefined) {
     throw new Error('mapProposalsDetailsTallyResponse - mapProposalsDetailsTallyResponse is undefined');
@@ -312,16 +351,23 @@ export function mapProposalsDetailsTallyListResponse(proposalsDetailsTallyRespon
   });
   proposalsDetailsTallyResponse.data.stakingPool.forEach(res => {
     const stakingPool = mapStakingPool(res);
-    if(res.proposal_id)
+    if (res.proposal_id)
       stakingPoolMap.set(res.proposal_id, stakingPool);
   });
   const resultMap = new Map<number, ProposalDetailsTally>();
 
   finallTallyMap.forEach((value: ProposalTallyResult, key: number) => {
     const stakingPool = stakingPoolMap.get(key);
-    if(stakingPool)
+    if (stakingPool)
       resultMap.set(key, new ProposalDetailsTally(value, stakingPool));
   });
 
   return resultMap;
+}
+
+export function mapProposalInfoFromIpFs(proposalInfoFromIpfs: IpfsProposalInfo | undefined): ProposalInfoIpfs{
+  if (proposalInfoFromIpfs === undefined) {
+    throw new Error('mapProposalInfoFromIpFs - proposalInfoFromIpfsResponse is undefined');
+  }
+  return new ProposalInfoIpfs(proposalInfoFromIpfs.title, proposalInfoFromIpfs.authors, proposalInfoFromIpfs.summary, proposalInfoFromIpfs.details, proposalInfoFromIpfs.proposal_forum_url, proposalInfoFromIpfs.vote_option_context);
 }

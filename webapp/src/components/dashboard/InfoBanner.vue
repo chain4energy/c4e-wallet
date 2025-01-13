@@ -2,7 +2,7 @@
   <div class="tile" style="background-color:#FFD700">
     <div class="text info-box">
       <div class="flex">
-        Join Now for 90% APR
+        Join now for an exclusive ChargEra token boost!
       </div>
       <Button @click="onClick" class="secondary">
         <div class="blink_me" style="font-weight: bolder; margin-right: 4px">Boost your C4E here!!!
@@ -18,9 +18,10 @@
 <script setup lang="ts">
 import Icon from "@/components/features/IconComponent.vue";
 import {useRouter} from "vue-router";
+
 const router = useRouter();
 
-function onClick(){
+function onClick() {
   router.push('boost');
 }
 
@@ -29,11 +30,11 @@ function onClick(){
 
 <style scoped lang="scss">
 
-.info-box{
+.info-box {
   justify-content: center;
-  display:flex;
+  display: flex;
   flex-direction: row;
-  text-align:center;
+  text-align: center;
   width: 100%;
   align-items: center;
 }

@@ -10,17 +10,17 @@
       </div>
       <div style="margin:auto">:</div>
       <div class="booster-container__box">
-        <div>{{ hours }}H</div>
+        <div>{{ hours.toString().padStart(2, '0') }}H</div>
 <!--        <div>{{$t('BOOST.COUNTER.HOURS')}}</div>-->
       </div>
       <div style="margin:auto">:</div>
       <div class="booster-container__box">
-        <div>{{ minutes }}M</div>
+        <div>{{ minutes.toString().padStart(2, '0') }}M</div>
 <!--        <div>{{$t('BOOST.COUNTER.MINUTES')}}</div>-->
       </div>
       <div style="margin:auto">:</div>
       <div class="booster-container__box">
-        <div>{{ seconds }}S</div>
+        <div>{{ seconds.toString().padStart(2, '0') }}S</div>
         <!--        <div>{{$t('BOOST.COUNTER.MINUTES')}}</div>-->
       </div>
     </div>

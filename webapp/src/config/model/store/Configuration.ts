@@ -4,9 +4,10 @@ import {
   ViewDenom as JsonViewDenom,
   Configuration as JsonConfiguration,
   KeplrGasPriceSteps as JsonKeplrGasPriceSteps,
-  JsonQueries, JsonLoyaltyDropConfig
+  JsonQueries, JsonLoyaltyDropConfig, JsonProposalMappingConfig
 } from "../json/Configuration";
 import queriesDefaults from "@/api/queries";
+import {string} from "yup";
 export class Gas implements JsonGas {
   vote: number;
   delegate: number;
@@ -155,6 +156,22 @@ export class LoyaltyDropConfig implements JsonLoyaltyDropConfig{
 
 }
 
+export class ProposalMappingConfig implements JsonProposalMappingConfig{
+  proposalType: string;
+  proposalMassageTypeKeyPosition: number;
+  proposalMassageTypeSubspacePosition: number;
+  proposalMessagePropertiesToShow: string[];
+
+  constructor(
+    config: JsonProposalMappingConfig | undefined
+  ) {
+    this.proposalType = config?.proposalType ? config.proposalType : queriesDefaults.proposalMappingConfig.proposalType;
+    this.proposalMessagePropertiesToShow = config?.proposalMessagePropertiesToShow ? config.proposalMessagePropertiesToShow : queriesDefaults.proposalMappingConfig.proposalMessagePropertiesToShow;
+    this.proposalMassageTypeKeyPosition = config?.proposalMassageTypeKeyPosition ? config.proposalMassageTypeKeyPosition : queriesDefaults.proposalMappingConfig.proposalMassageTypeKeyPosition;
+    this.proposalMassageTypeSubspacePosition = config?.proposalMassageTypeSubspacePosition ? config.proposalMassageTypeSubspacePosition : queriesDefaults.proposalMappingConfig.proposalMassageTypeSubspacePosition;
+  }
+}
+
 export class Configuration implements JsonConfiguration {
   bcApiURL: string;
   bcRpcURL: string;
@@ -205,6 +222,8 @@ export class Configuration implements JsonConfiguration {
   useAminoOnly:boolean;
   loyaltyDropService: LoyaltyDropConfig;
   circulatingSupplyVisible: boolean;
+  proposalMappings: ProposalMappingConfig[];
+  ipfsPublicGateway: string[];
 
   public static readonly emptyConfiguration = new Configuration();
 
@@ -265,6 +284,12 @@ export class Configuration implements JsonConfiguration {
       this.useAminoOnly=configuration.useAminoOnly;
       this.loyaltyDropService = new LoyaltyDropConfig(configuration.loyaltyDropService);
       this.circulatingSupplyVisible = configuration.circulatingSupplyVisible;
+      const proposalMappings = Array<ProposalMappingConfig>();
+      if (configuration.proposalMappings) {
+        configuration.proposalMappings.forEach(m => {proposalMappings.push(new ProposalMappingConfig(m));});
+      }
+      this.proposalMappings = proposalMappings;
+      this.ipfsPublicGateway = configuration.ipfsPublicGateway ? configuration.ipfsPublicGateway : queriesDefaults.ipfsPublicGateway;
     } else {
       this.bcApiURL = '';
       this.bcRpcURL = '';
@@ -315,6 +340,8 @@ export class Configuration implements JsonConfiguration {
       this.useAminoOnly=false;
       this.loyaltyDropService = new LoyaltyDropConfig(undefined);
       this.circulatingSupplyVisible = false;
+      this.proposalMappings =  Array<ProposalMappingConfig>();
+      this.ipfsPublicGateway = [];
     }
   }
 

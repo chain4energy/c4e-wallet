@@ -59,6 +59,12 @@ export interface  JsonLoyaltyDropConfig {
   loyaltyDropUserBoostRefreshTimeout: number;
 }
 
+export interface JsonProposalMappingConfig {
+  proposalType: string;
+  proposalMassageTypeKeyPosition: number,
+  proposalMassageTypeSubspacePosition: number,
+  proposalMessagePropertiesToShow: string[];
+}
 
 export interface Configuration {
   bcApiURL: string,
@@ -109,4 +115,6 @@ export interface Configuration {
   useAminoOnly: boolean;
   loyaltyDropService: JsonLoyaltyDropConfig;
   circulatingSupplyVisible:  boolean;
+  proposalMappings: JsonProposalMappingConfig[];
+  ipfsPublicGateway: string[];
 }

@@ -103,7 +103,10 @@
     "SUBSPACE": "Subspace",
     "AMOUNT": "Amount",
     "VIEW_IN_EXPLORER": "View in explorer",
-    "AUTOMATIC_REFRESH": "Automatic refresh"
+    "AUTOMATIC_REFRESH": "Automatic refresh",
+    "VIEW_ON_FORUM": "Forum link",
+    "MODULE": "Module",
+    "MESSAGE": "Message"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Bonded tokens",

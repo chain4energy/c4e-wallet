@@ -282,7 +282,7 @@ function calculatePercentagePoolUsage(data: LoyaltyDropPoolConfig): BigDecimal {
 }
 
 function msToDays(milliseconds:  number) {
-  return milliseconds / (1000 * 60 * 60 * 24);
+  return Math.floor(milliseconds / (1000 * 60 * 60 * 24));
 }
 
 function maxAmountMessageData(): string {

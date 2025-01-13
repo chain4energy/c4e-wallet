@@ -75,7 +75,7 @@
     "VOTE": "Głosuj",
     "USER_VOTE": "Zagłosowałeś:",
     "PROPOSAL_TYPE": {
-      "PARAMETER_CHANGE_PROPOSAL": "Wnosek o zmianę parametru",
+      "PARAMETER_CHANGE_PROPOSAL": "Wniosek o zmianę parametru",
       "COMMUNITY_POOL_SPEND_PROPOSAL": "Wniosek o wydatek kwoty z puli społęczności",
       "COMMUNITY_POOL_SPEND_PROPOSAL_WITH_DEPOSIT": "Wniosek o wydatek kwoty z puli społęczności z depozytem",
       "TEXT_PROPOSAL": "Wniosek tekstowy",
@@ -103,7 +103,10 @@
     "SUBSPACE": "Podprzestrzeń",
     "AMOUNT": "Ilość",
     "VIEW_IN_EXPLORER": "Zobacz w eksploratorze",
-    "AUTOMATIC_REFRESH": "Automatyczne odświeżanie"
+    "AUTOMATIC_REFRESH": "Automatyczne odświeżanie",
+    "VIEW_ON_FORUM": "Link do forum",
+    "MODULE": "Moduł",
+    "MESSAGE": "Message"
   },
   "DASHBOARD_VIEW": {
     "BONDED_TOKENS": "Oddelegowane tokeny",

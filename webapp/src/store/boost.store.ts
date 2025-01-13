@@ -3,6 +3,7 @@ import {defineStore} from "pinia";
 import apiFactory from "@/api/factory.api";
 import {Validator} from "@/models/store/validator";
 import {useToast} from "vue-toastification";
+import {Coin} from "@/models/store/common";
 
 const toast = useToast();
 
@@ -72,7 +73,16 @@ export const useLoyaltyDropStore = defineStore({
   },
   getters: {
     getBoosts():LoyaltyDropPoolConfig[]{
-      return this.loyaltyDropPoolConfigs;
+      return this.loyaltyDropPoolConfigs.sort((a,b) => {
+        // compare isActive
+        if (isClosed(a) === isClosed(b)) {
+          // if isActive is the same , compare id
+          return a.id - b.id;
+        } else {
+          // Place active items before inactive ones
+          return isClosed(a) ? -1 : 1;
+        }
+      });
     },
     getUserBoosts():LoyaltyDropUserBoost[]{
       return this.loyaltyDropUserBoosts;
@@ -82,3 +92,11 @@ export const useLoyaltyDropStore = defineStore({
     }
   }
 });
+
+function isClosed(item: LoyaltyDropPoolConfig){
+  if(item){
+    return item.baseTokens.amount > new Coin(item.reservedTokens.amount, item.reservedTokens.denom).add(item.usedTokens).amount;
+  } else {
+    return true;
+  }
+}

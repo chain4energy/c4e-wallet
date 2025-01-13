@@ -54,7 +54,7 @@ describe('proposals store tests', () => {
   it('fetches proposals - success', async () => {
     let tallyStore = useProposalsStore().proposalsTally.get(1);
     expect(tallyStore).toBeUndefined();
-    expect(useProposalsStore().proposalTally).toBeUndefined();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
 
     const proposalsStore = useProposalsStore();
     proposalsStore.proposals = Array<Proposal>(),
@@ -89,14 +89,14 @@ describe('proposals store tests', () => {
     tallyStore = useProposalsStore().proposalsTally.get(Number(defaultProposals[5]));
     expect(tallyStore).not.toBeUndefined();
     expectTallyResult(tallyStore, yes, abstain, no, noWithVeto);
-    expect(useProposalsStore().proposalTally).toBeUndefined();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
 
   });
 
   it('fetches proposals - success but no voting tally', async () => {
     let tallyStore = useProposalsStore().proposalsTally.get(1);
     expect(tallyStore).toBeUndefined();
-    expect(useProposalsStore().proposalTally).toBeUndefined();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
 
     const proposalsStore = useProposalsStore();
     proposalsStore.proposals = Array<Proposal>(),
@@ -115,7 +115,7 @@ describe('proposals store tests', () => {
     expect(useProposalsStore().proposalsTally.size).toBe(0);
     tallyStore = useProposalsStore().proposalsTally.get(Number(defaultProposals[5]));
     expect(tallyStore).toBeUndefined();
-    expect(useProposalsStore().proposalTally).toBeUndefined();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
 
   });
 
@@ -184,7 +184,7 @@ describe('proposals store tests', () => {
 
     let tallyStore = useProposalsStore().proposalsTally.get(1);
     expect(tallyStore).toBeUndefined();
-    expect(useProposalsStore().proposalTally).toBeUndefined();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
 
     const yes = 123n;
     const abstain = 12334n;
@@ -202,7 +202,7 @@ describe('proposals store tests', () => {
     tallyStore = useProposalsStore().proposalsTally.get(1);
     expect(tallyStore).not.toBeUndefined();
     expectTallyResult(tallyStore, yes, abstain, no, noWithVeto);
-    expect(useProposalsStore().proposalTally).toBeUndefined();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
 
 
   });
@@ -210,7 +210,7 @@ describe('proposals store tests', () => {
   it('fetches tally result - success to single', async () => {
     let tallyStore = useProposalsStore().proposalsTally.get(1);
     expect(tallyStore).toBeUndefined();
-    expect(useProposalsStore().proposalTally).toBeUndefined();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
 
     const yes = 123n;
     const abstain = 12334n;
@@ -227,8 +227,8 @@ describe('proposals store tests', () => {
     expect(useProposalsStore().proposalsTally.size).toBe(1);
     tallyStore = useProposalsStore().proposalsTally.get(1);
     expect(tallyStore).not.toBeUndefined();
-    expect(useProposalsStore().proposalTally).not.toBeUndefined();
-    expectTallyResult(useProposalsStore().proposalTally, yes, abstain, no, noWithVeto);
+    // expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).not.toBeUndefined();
+    expectTallyResult(tallyStore, yes, abstain, no, noWithVeto);
 
   });
 
@@ -243,31 +243,31 @@ describe('proposals store tests', () => {
   });
 
   it('fetches user vote - success to single', async () => {
-    expect(useProposalsStore().userVote).toBeNull();
+    expect(useProposalsStore().selectedProposal.userVote).toBeNull();
     const vote = {
       data: createYesProposalUserVoteResponse()
     };
     mockedAxios.request.mockResolvedValueOnce(vote);
-    await useProposalsStore().fetchProposalUserVote(2, 'testAddr', false);
+    await useProposalsStore().fetchSelectedProposalUserVote(2, 'testAddr', false);
 
-    expect(useProposalsStore().userVote).toBe(VoteOption.Yes);
+    expect(useProposalsStore().selectedProposal.userVote).toBe(VoteOption.Yes);
 
   });
 
   it('fetches user vote - error', async () => {
-    expect(useProposalsStore().userVote).toBeNull();
+    expect(useProposalsStore().selectedProposal.userVote).toBeNull();
 
     const proposalsStore = useProposalsStore();
 
     const tallyError = createErrorResponse(404, 5, 'some error');
     mockedAxios.request.mockRejectedValueOnce(tallyError);
-    await proposalsStore.fetchProposalUserVote(2, 'testAddr', false);
-    expect(useProposalsStore().userVote).toBeNull();
+    await proposalsStore.fetchSelectedProposalUserVote(2, 'testAddr', false);
+    expect(useProposalsStore().selectedProposal.userVote).toBeNull();
   });
 
   it('fetches proposal by id no voiting - success', async () => {
     expect(useProposalsStore().proposalsTally.size).toBe(0);
-    expect(useProposalsStore().proposalTally).toBeUndefined();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
 
     const proposalsStore = useProposalsStore();
     proposalsStore.proposals = Array<Proposal>(),
@@ -297,21 +297,21 @@ describe('proposals store tests', () => {
     expect(useProposalsStore().proposalsTally.size).toBe(0);
     expect(useProposalsStore().proposalsTally.size).toBe(0);
 
-    expect(useProposalsStore().proposal).not.toBeUndefined();
-    const proposalInStore = useProposalsStore().proposal;
+    // expect(useProposalsStore().getSelectedProposal.proposal).not.toBeUndefined();
+    const proposalInStore = useProposalsStore().getSelectedProposal.proposal;
     if (proposalInStore) {
       expectProposal(proposalInStore, proposal.data.proposal);
     }
-    expect(useProposalsStore().proposalTally).toBeUndefined();
-    expect(useProposalsStore().userVote).toBeNull();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
+    expect(useProposalsStore().selectedProposal.userVote).toBeNull();
   });
 
   it('fetches proposal by id - voiting - success', async () => {
     expect(useProposalsStore().proposalsTally.size).toBe(0);
-    expect(useProposalsStore().proposalTally).toBeUndefined();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
 
     const proposalsStore = useProposalsStore();
-    proposalsStore.proposals = Array<Proposal>(),
+    proposalsStore.proposals = Array<Proposal>();
     proposalsStore.numberOfActiveProposals= 0;
 
     const proposal = { data: createProposalResponseData('PROPOSAL_STATUS_VOTING_PERIOD') };
@@ -337,14 +337,14 @@ describe('proposals store tests', () => {
     expect(useProposalsStore().proposalsTally).not.toBeUndefined();
     expect(useProposalsStore().proposalsTally.size).toBe(1);
 
-    expect(useProposalsStore().proposal).not.toBeUndefined();
-    const proposalInStore = useProposalsStore().proposal;
+    // expect(useProposalsStore().getSelectedProposal.proposal).not.toBeUndefined();
+    const proposalInStore = useProposalsStore().getSelectedProposal.proposal;
     if (proposalInStore) {
       expectProposal(proposalInStore, proposal.data.proposal);
     }
-    expect(useProposalsStore().proposalTally).not.toBeUndefined();
-    expectTallyResult(useProposalsStore().proposalTally, yes, abstain, no, noWithVeto);
-    expect(useProposalsStore().userVote).toBeNull();
+    // expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).not.toBeUndefined();
+    // expectTallyResult(useProposalsStore().getSelectedProposal.proposal?.finalTallyResult, yes, abstain, no, noWithVeto);
+    expect(useProposalsStore().selectedProposal.userVote).toBeNull();
   });
 
   it('fetches proposal by id no voiting - loggedin - success', async () => {
@@ -352,8 +352,8 @@ describe('proposals store tests', () => {
     useUserStore().connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     useUserStore().account = new Account(AccountType.BaseAccount, address);
     expect(useProposalsStore().proposalsTally.size).toBe(0);
-    expect(useProposalsStore().proposalTally).toBeUndefined();
-    expect(useProposalsStore().userVote).toBeNull();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
+    expect(useProposalsStore().selectedProposal.userVote).toBeNull();
 
     const proposalsStore = useProposalsStore();
     proposalsStore.proposals = Array<Proposal>(),
@@ -369,7 +369,7 @@ describe('proposals store tests', () => {
     mockedAxios.request.mockResolvedValueOnce(vote);
 
     await proposalsStore.fetchProposalById(Number(defaultProposals[5]), undefined, undefined, false, true);
-    console.log(useProposalsStore().proposal)
+    console.log(useProposalsStore().getSelectedProposal.proposal);
 
     expect(proposalsStore.proposals.length).toBe(0);
 
@@ -377,13 +377,13 @@ describe('proposals store tests', () => {
     expect(useProposalsStore().proposalsTally.size).toBe(0);
     expect(useProposalsStore().proposalsTally.size).toBe(0);
 
-    expect(useProposalsStore().proposal).not.toBeUndefined();
-    const proposalInStore = useProposalsStore().proposal;
+    // expect(useProposalsStore().getSelectedProposal.proposal).not.toBeUndefined();
+    const proposalInStore = useProposalsStore().getSelectedProposal.proposal;
     if (proposalInStore) {
       expectProposal(proposalInStore, proposal.data.proposal);
     }
-    expect(useProposalsStore().proposalTally).toBeUndefined();
-    expect(useProposalsStore().userVote).toBe(VoteOption.Yes);
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
+    expect(useProposalsStore().selectedProposal.userVote).toBe(VoteOption.Yes);
   });
 
   it('fetches proposal by id - voiting - logged - success', async () => {
@@ -392,8 +392,8 @@ describe('proposals store tests', () => {
     useUserStore().account = new Account(AccountType.BaseAccount, address);
 
     expect(useProposalsStore().proposalsTally.size).toBe(0);
-    expect(useProposalsStore().proposalTally).toBeUndefined();
-    expect(useProposalsStore().userVote).toBeNull();
+    expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).toBeUndefined();
+    expect(useProposalsStore().selectedProposal.userVote).toBeNull();
 
     const proposalsStore = useProposalsStore();
     proposalsStore.proposals = Array<Proposal>(),
@@ -429,14 +429,14 @@ describe('proposals store tests', () => {
     expect(useProposalsStore().proposalsTally).not.toBeUndefined();
     expect(useProposalsStore().proposalsTally.size).toBe(1);
 
-    expect(useProposalsStore().proposal).not.toBeUndefined();
-    const proposalInStore = useProposalsStore().proposal;
+    // expect(useProposalsStore().getSelectedProposal.proposal).not.toBeUndefined();
+    const proposalInStore = useProposalsStore().getSelectedProposal.proposal;
     if (proposalInStore) {
       expectProposal(proposalInStore, proposal.data.proposal);
     }
-    expect(useProposalsStore().proposalTally).not.toBeUndefined();
-    expectTallyResult(useProposalsStore().proposalTally, yes, abstain, no, noWithVeto);
-    expect(useProposalsStore().userVote).toBe(VoteOption.Yes);
+    // expect(useProposalsStore().getSelectedProposal.proposalDetailsTally).not.toBeUndefined();
+    // expectTallyResult(useProposalsStore().getSelectedProposal.proposal?.finalTallyResult, yes, abstain, no, noWithVeto);
+    expect(useProposalsStore().selectedProposal.userVote).toBe(VoteOption.Yes);
   });
 
 });

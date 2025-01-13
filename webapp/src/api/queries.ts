@@ -1,3 +1,5 @@
+import {ProposalMappingConfig} from "@/config/model/store/Configuration";
+
 export default {
   blockchain: {
     STAKING_POOL_URL: '/cosmos/staking/v1beta1/pool',
@@ -132,5 +134,15 @@ export default {
     loyaltyDropDefaultDenom:'uc4e',
     loyaltyDropBroadcastURL:'/v0.1/broadcast',
     loyaltyDropUserBoostRefreshTimeout: 30000
-  }
+  },
+  proposalMappingConfig:{
+    proposalType:'',
+    proposalMassageTypeKeyPosition: 0,
+    proposalMassageTypeSubspacePosition: 0,
+    proposalMappingParams:{
+      proposalTypeText:'',
+    },
+    proposalMessagePropertiesToShow:[]
+  },
+  ipfsPublicGateway: ['https://gateway.pinata.cloud/ipfs/', 'https://ipfs.io/ipfs/', 'https://dweb.link/ipfs/']
 };

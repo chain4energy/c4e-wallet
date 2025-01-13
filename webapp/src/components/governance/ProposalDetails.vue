@@ -1,27 +1,8 @@
 <template>
   <div v-if="proposal" class="details-container">
-    <div v-if="proposal.status == 'PROPOSAL_STATUS_VOTING_PERIOD'" class="voting-status voting">
-      <Icon :name=icons.get(proposal.status)>
-      </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
-    </div>
-    <div v-if="proposal.status == 'PROPOSAL_STATUS_REJECTED'" class="voting-status rejected">
-      <Icon :name=icons.get(proposal.status)>
-      </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
-    </div>
-    <div v-if="proposal.status == 'PROPOSAL_STATUS_PASSED'" class="voting-status accepted">
-      <Icon :name=icons.get(proposal.status)>
-      </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
-    </div>
-    <div v-if="proposal.status == 'PROPOSAL_STATUS_DEPOSIT_PERIOD'" class="voting-status deposit">
-      <Icon :name=icons.get(proposal.status)>
-      </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
-    </div>
-    <div v-if="proposal.status == 'PROPOSAL_STATUS_FAILED'" class="voting-status failed">
-      <Icon :name=icons.get(proposal.status)>
-      </Icon> {{ $t("GOVERNANCE_VIEW."+proposal.status)  }}
-    </div>
+    <ProposalStatusV class="voting-status" :proposal="proposal"/>
     <div class="id"><h3>#{{ proposal.proposalId }}</h3> </div>
-    <h4 style="padding-left:20px">{{ proposal?.content?.title }}</h4>
+    <h4 style="padding-left:20px">{{ title }}</h4>
     <div v-if="voted === VoteOption.Yes" class="vote user-vote-yes">
       {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.YES') }}</b>
     </div>
@@ -35,36 +16,45 @@
       {{ $t("GOVERNANCE_VIEW.USER_VOTE") }} <b>{{ $t('GOVERNANCE_VIEW.VOTING_OPTIONS.NO_WITH_VETO') }}</b>
     </div>
     <div class="info">
-        <span>{{ $t("GOVERNANCE_VIEW.TOTAL_DEPOSIT") }}:</span>
-        <CoinAmount :amount="proposal.getTotalDepositByDenom()" :show-denom="true"/>
-        <span>{{ $t("GOVERNANCE_VIEW.VOTING_START") }}:</span>
-        <span>
-          <DateCommon :date="proposal.votingStartTime" :showTime="true"/>
-        </span>
-        <span>{{ $t("GOVERNANCE_VIEW.VOTING_END") }}:</span>
-        <span>
-          <DateCommon :date="proposal.votingEndTime" :showTime="true"/>
-        </span>
-        <span>{{ $t("GOVERNANCE_VIEW.TYPE") }}:</span>
-        <ProposalType :proposal="proposal" />
-        <span>{{ $t("GOVERNANCE_VIEW.SUBMIT_TIME") }}:</span>
-        <span>
-          <DateCommon :date="proposal.submitTime" :showTime="true"/>
-        </span>
-        <span>{{ $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") }}:</span>
-        <span>
-          <DateCommon :date="proposal.depositEndTime" :showTime="true"/>
-        </span>
-        <span>{{ $t("GOVERNANCE_VIEW.QUORUM") }}:</span>
-        <span><PercentsView :amount="proposalsStore.getTallyParams.quorum" :precision="2"/></span>
-        <span>{{ $t("GOVERNANCE_VIEW.THRESHOLD") }}:</span>
-        <span>
-          <PercentsView :amount="proposalsStore.getTallyParams.threshold" :precision="2"/>
-        </span>
-        <span>{{ $t("GOVERNANCE_VIEW.VETO_THRESHOLD") }}:</span>
-        <span>
-          <PercentsView :amount="proposalsStore.getTallyParams.vetoThreshold" :precision="2"/>
-        </span>
+      <span>{{ $t("GOVERNANCE_VIEW.TOTAL_DEPOSIT") }}:</span>
+      <CoinAmount :amount="proposal.getTotalDepositByDenom()" :show-denom="true"/>
+
+      <span>{{ $t("GOVERNANCE_VIEW.VOTING_START") }}:</span>
+      <span>
+        <DateCommon :date="proposal.votingStartTime" :showTime="true"/>
+      </span>
+
+      <span>{{ $t("GOVERNANCE_VIEW.VOTING_END") }}:</span>
+      <span>
+        <DateCommon :date="proposal.votingEndTime" :showTime="true"/>
+      </span>
+
+      <span>{{ $t("GOVERNANCE_VIEW.TYPE") }}:</span>
+      <ProposalType :proposal="proposal" />
+
+      <span>{{ $t("GOVERNANCE_VIEW.SUBMIT_TIME") }}:</span>
+      <span>
+        <DateCommon :date="proposal.submitTime" :showTime="true"/>
+      </span>
+
+      <span>{{ $t("GOVERNANCE_VIEW.DEPOSIT_END_TIME") }}:</span>
+      <span>
+        <DateCommon :date="proposal.depositEndTime" :showTime="true"/>
+      </span>
+
+      <span>{{ $t("GOVERNANCE_VIEW.QUORUM") }}:</span>
+      <span><PercentsView :amount="proposalsStore.getTallyParams.quorum" :precision="2"/></span>
+
+      <span>{{ $t("GOVERNANCE_VIEW.THRESHOLD") }}:</span>
+      <span>
+        <PercentsView :amount="proposalsStore.getTallyParams.threshold" :precision="2"/>
+      </span>
+
+      <span>{{ $t("GOVERNANCE_VIEW.VETO_THRESHOLD") }}:</span>
+      <span>
+        <PercentsView :amount="proposalsStore.getTallyParams.vetoThreshold" :precision="2"/>
+      </span>
+
       <span>{{ $t("GOVERNANCE_VIEW.VIEW_IN_EXPLORER") }}:</span>
       <span><a v-bind:href="url" target="_blank">{{url}}</a></span>
 
@@ -75,40 +65,37 @@
 <script setup lang="ts">
 
 import {useProposalsStore} from "@/store/proposals.store";
-import {Proposal, ProposalStatus} from "@/models/store/proposal";
 import { VoteOption } from "@/models/store/proposal";
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import CoinAmount from "../commons/CoinAmount.vue";
-import PercentsView from "@/components/commons/PercentsView";
+import PercentsView from "@/components/commons/PercentsView.vue";
 import DateCommon from "@/components/commons/DateCommon.vue";
 import ProposalType from "./ProposalType.vue";
 import {useConfigurationStore} from "@/store/configuration.store";
+import ProposalStatusV from "@/components/governance/ProposalStatusV.vue";
 
-const props = defineProps<{
-  proposal?: Proposal
-}>();
-
-onMounted(() => {
-  console.log(props.proposal);
+const proposal = computed(() => {
+  return useProposalsStore().getSelectedProposal.proposal;
 });
 
 const proposalsStore = useProposalsStore();
-const url = useConfigurationStore().config.explorerUrl + "/proposals/" + props.proposal?.proposalId;
-// const formattedDate = (value: Date) => {
-//   return moment(value).format('DD MMMM YYYY HH:mm:ss');
-// };
+const url = useConfigurationStore().config.explorerUrl + "/proposals/" + proposal.value?.proposalId;
 
 const voted = computed(() => {
-  return useProposalsStore().userVote;
+  return useProposalsStore().getSelectedProposal.userVote;
 });
-const icons  = new Map<string, string>([
-  [ProposalStatus.PASSED, "CheckSquare"],
-  [ProposalStatus.REJECTED, "XCircle"],
-  [ProposalStatus.DEPOSIT_PERIOD, ""],
-  [ProposalStatus.FAILED, ""],
-  [ProposalStatus.VOTING_PERIOD, ""],
-  [ProposalStatus.UNSPECIFIED, ""]
-]);
+
+const title = computed(()=>{
+  return proposal.value?.content?.title ?? proposal.value?.title;
+});
+// const icons  = new Map<string, string>([
+//   [ProposalStatus.PASSED, "CheckSquare"],
+//   [ProposalStatus.REJECTED, "XCircle"],
+//   [ProposalStatus.DEPOSIT_PERIOD, ""],
+//   [ProposalStatus.FAILED, ""],
+//   [ProposalStatus.VOTING_PERIOD, ""],
+//   [ProposalStatus.UNSPECIFIED, ""]
+// ]);
 </script>
 
 <style scoped lang="scss">
@@ -123,43 +110,43 @@ const icons  = new Map<string, string>([
     float: right;
     height: 50px;
     width: 150px;
-    padding: 15px 0px;
-    margin-left: auto;
-    margin-right: auto;
+    //padding: 15px 0px;
+    //margin-left: auto;
+    //margin-right: auto;
     border-radius: 0 10px 0 10px;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    svg {
-      margin-right: 5px;
-    }
+    //svg {
+    //  margin-right: 5px;
+    //}
   }
 
-  .voting {
-    background-color: $primary-blue-color;
-    color: white;
-  }
-
-  .accepted {
-    background-color: $primary-green-color;
-    color: $primary-blue-color;
-  }
-
-  .rejected {
-    background-color: $error-red-color;
-    color: white;
-  }
-
-  .failed {
-    background-color: black;
-    color: white;
-  }
-
-  .deposit {
-    background-color: grey;
-    color: rgb(77, 77, 77);
-  }
+  //.voting {
+  //  background-color: $primary-blue-color;
+  //  color: white;
+  //}
+  //
+  //.accepted {
+  //  background-color: $primary-green-color;
+  //  color: $primary-blue-color;
+  //}
+  //
+  //.rejected {
+  //  background-color: $error-red-color;
+  //  color: white;
+  //}
+  //
+  //.failed {
+  //  background-color: black;
+  //  color: white;
+  //}
+  //
+  //.deposit {
+  //  background-color: grey;
+  //  color: rgb(77, 77, 77);
+  //}
   .id{
     padding: 15px 20px;
   }

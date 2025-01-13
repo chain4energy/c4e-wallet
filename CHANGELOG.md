@@ -48,6 +48,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Misc Improvements
 
+## [1.3.5](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.5) - 2025-01-13
+
+### Misc Improvements
+* New proposal api support
+
+## [1.3.4](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.4) - 2024-10-22
+
+### Misc Improvements
+* Booster corrections
+
 ## [1.3.3](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.3) - 2024-06-11
 
 ### Features

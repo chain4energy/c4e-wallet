@@ -424,9 +424,10 @@ export class AccountApi extends TxBroadcastBaseApi {
         owner: connection.account,
         name: vestingPoolName,
         amount: bcAmount.toString(),
-        duration: {seconds: vestingPeriod, nanos: 0},
+        duration: {seconds: Math.trunc(vestingPeriod), nanos: (Math.trunc(vestingPeriod%1*1000))*1000000},
         vestingType: vestingType
       };
+      console.log("!!! MsgCreateVestingPool: " + JSON.stringify(val));
       return [{typeUrl: typeUrl, value: val}];
     };
     const fee = this.createFee(config.operationGas.claimRewards, config.stakingDenom);
