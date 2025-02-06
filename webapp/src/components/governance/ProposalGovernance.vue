@@ -204,21 +204,37 @@ const quorumPercentage = computed(() => {
 });
 
 const yesPercentage = computed(() => {
+  if(props.proposal.status == ProposalStatus.VOTING_PERIOD){
+    const yesPercentage = proposalStore.getProposalTally(props.proposal)?.getYesPercentage();
+    return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
+  }
   const yesPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYesPercentage();
   return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
 });
 
 const noPercentage = computed(() => {
+  if(props.proposal.status == ProposalStatus.VOTING_PERIOD){
+    const noPercentage = proposalStore.getProposalTally(props.proposal)?.getNoPercentage();
+    return noPercentage!=undefined ? noPercentage : new BigDecimal(0);
+  }
   const noPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoPercentage();
   return noPercentage!=undefined ? noPercentage : new BigDecimal(0);
 });
 
 const abstainPercentage = computed(() => {
+  if(props.proposal.status == ProposalStatus.VOTING_PERIOD){
+    const abstainPercentage = proposalStore.getProposalTally(props.proposal)?.getAbstainPercentage();
+    return abstainPercentage!=undefined ? abstainPercentage : new BigDecimal(0);
+  }
   const abstainPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getAbstainPercentage();
   return abstainPercentage != undefined ? abstainPercentage : new BigDecimal(0);
 });
 
 const noWithVetoPercentage = computed(() => {
+  if(props.proposal.status == ProposalStatus.VOTING_PERIOD){
+    const noWithVetoPercentage = proposalStore.getProposalTally(props.proposal)?.getNoWithVetoPercentage();
+    return noWithVetoPercentage!=undefined ? noWithVetoPercentage : new BigDecimal(0);
+  }
   const noWithVetoPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoWithVetoPercentage();
   return noWithVetoPercentage != undefined ? noWithVetoPercentage : new BigDecimal(0);
 });
@@ -229,6 +245,10 @@ const noWithVetoPercentage = computed(() => {
 // });
 
 const yesPercentageChart = computed(() => {
+  // if(props.proposal.status == ProposalStatus.VOTING_PERIOD){
+  //   const yesPercentage = proposalStore.getProposalTally(props.proposal)?.getYesPercentage();
+  //   return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
+  // }
   const yesPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYesPercentageChart();
   return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
 });

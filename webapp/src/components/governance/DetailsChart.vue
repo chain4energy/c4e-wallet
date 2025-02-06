@@ -178,7 +178,7 @@ const updateVotes = async () => {
 const yes = computed(() => {
   const value = selectedProposal.value;
   return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposal?.finalTallyResult?.yes : value.proposalDetailsTally?.getYes();
+    value.proposalTally?.yes : value.proposalDetailsTally?.getYes();
   // const res = selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
   //   selectedProposal.value.proposal.finalTallyResult?.yes : proposalsStore.getProposalDetailsTally?.getYes();
   // if(res != undefined) {
@@ -190,7 +190,7 @@ const yes = computed(() => {
 const no = computed(() => {
   const value = selectedProposal.value;
   return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposal?.finalTallyResult?.no : value.proposalDetailsTally?.getNo();
+    value.proposalTally?.no : value.proposalDetailsTally?.getNo();
   // const res = selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
   //   selectedProposal.value.proposal.finalTallyResult?.no : proposalsStore.getProposalDetailsTally?.getNo();
   // if(res != undefined) {
@@ -202,7 +202,7 @@ const no = computed(() => {
 const abstain = computed(() => {
   const value = selectedProposal.value;
   return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposal?.finalTallyResult?.abstain : value.proposalDetailsTally?.getAbstain();
+    value.proposalTally?.abstain : value.proposalDetailsTally?.getAbstain();
   // const res = selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
   //   selectedProposal.value.proposal.finalTallyResult?.abstain : proposalsStore.getProposalDetailsTally?.getAbstain();
   // if(res != undefined) {
@@ -214,7 +214,7 @@ const abstain = computed(() => {
 const noWithVeto = computed(() => {
   const value = selectedProposal.value;
   return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposal?.finalTallyResult?.noWithVeto : value.proposalDetailsTally?.getNoWithVeto();
+    value.proposalTally?.noWithVeto : value.proposalDetailsTally?.getNoWithVeto();
   // const res = selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
   //   selectedProposal.value.proposal.finalTallyResult?.noWithVeto : proposalsStore.getProposalDetailsTally?.getNoWithVeto();
   // if(res != undefined) {
@@ -239,42 +239,31 @@ const notVoted = computed(() => {
 const yesPercentage = computed(() => {
   const value = selectedProposal.value;
   return value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposal?.finalTallyResult.getYesPercentage() : value.proposalDetailsTally?.getYesPercentage();
-  // return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-  //   proposalsStore.proposalTally?.getYesPercentage() : useProposalsStore().getProposalDetailsTally?.getYesPercentage();
+    value.proposalTally?.getYesPercentage() : value.proposalDetailsTally?.getYesPercentage();
 });
 
 const noPercentage = computed(() => {
   const value = selectedProposal.value;
   return value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposal?.finalTallyResult.getNoPercentage() : value.proposalDetailsTally?.getNoPercentage();
-  // return value.proposal?.finalTallyResult.getNoPercentage() ?? value.proposalDetailsTally?.getNoPercentage();
-  // return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-  //   proposalsStore.proposalTally?.getNoPercentage() : useProposalsStore().getProposalDetailsTally?.getNoPercentage();
+    value.proposalTally?.getNoPercentage() : value.proposalDetailsTally?.getNoPercentage();
 });
 
 const abstainPercentage = computed(() => {
   const value = selectedProposal.value;
   return value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposal?.finalTallyResult.getAbstainPercentage() : value.proposalDetailsTally?.getAbstainPercentage();
-  // return value.proposal?.finalTallyResult.getAbstainPercentage() ?? value.proposalDetailsTally?.getAbstainPercentage();
-  // return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-  //   proposalsStore.proposalTally?.getAbstainPercentage() : useProposalsStore().getProposalDetailsTally?.getAbstainPercentage();
+    value.proposalTally?.getAbstainPercentage() : value.proposalDetailsTally?.getAbstainPercentage();
 });
 
 const noWithVetoPercentage = computed(() => {
   const value = selectedProposal.value;
   return value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposal?.finalTallyResult.getNoWithVetoPercentage() : value.proposalDetailsTally?.getNoWithVetoPercentage();
-  // return value.proposal?.finalTallyResult.getNoWithVetoPercentage() ?? value.proposalDetailsTally?.getNoWithVetoPercentage();
-  // return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-  //   proposalsStore.proposalTally?.getNoWithVetoPercentage() : useProposalsStore().getProposalDetailsTally?.getNoWithVetoPercentage();
+    value.proposalTally?.getNoWithVetoPercentage() : value.proposalDetailsTally?.getNoWithVetoPercentage();
 });
 
 const totalVotes = computed(() => {
   let total: bigint | undefined;
   if(selectedProposal.value.proposal?.status == ProposalStatus.VOTING_PERIOD) {
-    total = selectedProposal.value.proposal?.finalTallyResult?.total;
+    total = selectedProposal.value.proposalTally?.total;
   } else {
     total = selectedProposal.value.proposalDetailsTally?.total;
   }

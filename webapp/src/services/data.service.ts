@@ -315,6 +315,7 @@ class DataService extends LoggedService {
     if(useUserStore().isLoggedIn){
       promises.push( useProposalsStore().fetchSelectedProposalUserVote(proposeId, useUserStore().getAccount.address));
     }
+    promises.push(useProposalsStore().fetchVotingProposalTallyResult(proposeId, true));
     await Promise.all(promises);
 
     // await useProposalsStore().fetchSelectedProposal(proposeId);

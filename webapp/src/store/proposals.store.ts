@@ -19,6 +19,7 @@ interface SelectedProposal {
   proposal?: Proposal
   userVote: VoteOption | null;
   proposalDetailsTally?: ProposalDetailsTally | null;
+  proposalTally?: ProposalTallyResult | null;
 }
 
 interface ProposalsState {
@@ -158,12 +159,14 @@ export const useProposalsStore = defineStore({
           if (!tally) {
             promises.push(this.fetchVotingProposalTallyResult(id, true, lockscreen));
           } else {
+            this.selectedProposal.proposalTally = tally;
             // this.proposalTally = tally;
           }
         }
         if (promises.length > 0) {
           await Promise.all(promises);
         }
+        this.selectedProposal.proposal = proposal;
         // this.proposal = proposal;
         if (onSuccess) {
           onSuccess();
@@ -174,19 +177,20 @@ export const useProposalsStore = defineStore({
     },
 
     async fetchVotingProposalTallyResult(id: number, storeSingle: boolean, lockscreen = true) {
-      logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult');
+      logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult id:' + id);
       await apiFactory.proposalsApi().fetchVotingProposalTallyResult(id, lockscreen).then((resp) => {
         if (resp.isSuccess() && resp.data !== undefined) {
+          logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult yes: ', String(resp.data.yes));
+          logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult abstain: ', String(resp.data.abstain));
+          logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult no: ', String(resp.data.no));
+          logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult noWithVeto: ', String(resp.data.noWithVeto));
           if (storeSingle) {
-            // this.proposalTally = resp.data;
-            this.proposalsTally.set(id, resp.data);
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(resp.data.yes));
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(resp.data.abstain));
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(resp.data.no));
-            logger.logToConsole(LogLevel.INFO, 'fetchVotingProposalTallyResult: ', String(resp.data.noWithVeto));
-          } else {
-            this.proposalsTally.set(id, resp.data);
+            if(this.selectedProposal.proposal?.proposalId == id){
+              this.selectedProposal.proposalTally = resp.data;
+            }
           }
+          this.proposalsTally.set(id, resp.data);
+
         } else {
           const message = 'Error fetching proposal tally data';
           logger.logToConsole(LogLevel.ERROR, message);
@@ -256,7 +260,7 @@ export const useProposalsStore = defineStore({
       return this.selectedProposal.proposal;
     },
     async fetchSelectedProposalUserVote(proposalId: number, voter: string, lockscreen = true) {
-      logger.logToConsole(LogLevel.INFO, 'fetchSelectedProposalUserVote');
+      logger.logToConsole(LogLevel.INFO, 'fetchSelectedProposalUserVote proposalId:' + proposalId);
       await apiFactory.proposalsApi().fetchProposalVote(proposalId, voter, lockscreen).then((resp) => {
         if (resp.isSuccess() && resp.data !== undefined) {
           this.selectedProposal.userVote = resp.data;
@@ -311,7 +315,7 @@ export const useProposalsStore = defineStore({
       // });
     },
     async fetchSelectedProposalDetailsTally(proposalId: number, lockscreen = true) {
-      const proposalDetailsTally = this.getProposalDetailsTallyByProposalId(proposalId);
+      const proposalDetailsTally = this.getProposalDetailsTallyById(proposalId);
       if (proposalDetailsTally) {
         this.selectedProposal.proposalDetailsTally = proposalDetailsTally;
         return this.selectedProposal.proposalDetailsTally;
@@ -430,12 +434,12 @@ export const useProposalsStore = defineStore({
       };
 
     },
-    getProposalDetailsTallyByProposalId(): (proposalId: number) => ProposalDetailsTally | undefined {
-      return (proposalId: number) => {
-        return this.proposalDetailsTallyMap.get(proposalId);
-      };
-
-    },
+    // getProposalDetailsTallyByProposalId(): (proposalId: number) => ProposalDetailsTally | undefined {
+    //   return (proposalId: number) => {
+    //     return this.proposalDetailsTallyMap.get(proposalId);
+    //   };
+    //
+    // },
     // getSelectedProposalTally(): ProposalTallyResult {
     //   if (!this.proposal) {
     //     return new ProposalTallyResult(0n, 0n, 0n, 0n);

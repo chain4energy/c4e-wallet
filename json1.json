@@ -1,215 +1,97 @@
-[
-  {
-    "id": 2,
-    "accountId": 2,
-    "chargePointDictId": 2,
-    "name": "HABU_PB",
-    "deviceId": "PL*GCG*E011221225GK0508",
-    "chargingPointOperatorRoleId": 2,
-    "integrationType": "OCPI",
-    "integrationVersion": "2.2.1",
-    "locationId": 2,
-    "tariffGroupId": 1,
-    "authRequired": false,
-    "active": true,
-    "status": "UNKNOWN",
-    "errorCode": "NO_ERROR",
-    "chargePointEvses": [
-      {
-        "id": 2,
-        "chargePointId": 2,
-        "deviceId": "PL*GCG*E011221225GK0508",
-        "accountId": 2,
-        "name": "EVSE_HABU_PB",
-        "chargingPointOperatorRoleId": 2,
-        "locationId": 2,
-        "status": "UNKNOWN",
-        "active": true,
-        "url": "/v0.1/charge_point/2/evse/2"
-      }
-    ],
-    "tariffGroup": {
-      "id": 1,
-      "name": "Tariff Group 1",
-      "accountId": 1,
-      "active": true,
-      "startDate": "2024-02-13T08:51:40Z",
-      "endDate": null,
-      "tariffs": [
+{
+  "proposals": [
+    {
+      "id": "2",
+      "messages": [
         {
-          "id": 1,
-          "tariffGroupId": 1,
-          "name": "Tariff 1",
-          "accountId": 1,
-          "currency": "EUR",
-          "unit": "kWh",
-          "margin": "0.020000000000000000",
-          "systemMargin": "0.000000000000000000",
-          "unitCost": "0.150000000000000000",
-          "fullCost": "0.170000000000000000",
-          "active": true,
-          "startDate": "2024-02-13T08:51:40Z",
-          "endDate": null,
-          "url": "/v0.1/tariff/1"
+          "@type": "/cosmos.staking.v1beta1.MsgUpdateParams",
+          "authority": "c4e10d07y265gmmuvt4z0w9aw880jnsr700je62g0d",
+          "params": {
+            "unbonding_time": "1814400s",
+            "max_validators": 50,
+            "max_entries": 7,
+            "historical_entries": 10000,
+            "bond_denom": "uc4e",
+            "min_commission_rate": "0.000000000000000000"
+          }
         }
       ],
-      "url": "/v0.1/tariff_group/1"
-    },
-    "location": {
-      "id": 2,
-      "chargingPointOperatorRoleId": 2,
-      "accountId": 2,
-      "name": "Location 1",
-      "longitude": "123.456789000000000000",
-      "latitude": "12.345678000000000000",
-      "country": "Country1",
-      "state": "State1",
-      "postalCode": "12345",
-      "city": "City1",
-      "streetAddress": "Street Address 1"
-    },
-    "url": "/v0.1/charge_point/2"
-  },
-  {
-    "id": 3,
-    "accountId": 2,
-    "chargePointDictId": 1,
-    "name": "SIMULATOR01",
-    "deviceId": "PL*SIM*SIMULATOR01",
-    "chargingPointOperatorRoleId": 1,
-    "integrationType": "OCPI",
-    "integrationVersion": "2.2.1",
-    "locationId": 3,
-    "tariffGroupId": 1,
-    "authRequired": false,
-    "active": true,
-    "status": "UNKNOWN",
-    "errorCode": "NO_ERROR",
-    "chargePointEvses": [
-      {
-        "id": 3,
-        "chargePointId": 3,
-        "deviceId": "PL*SIM*SIMULATOR01",
-        "accountId": 2,
-        "name": "EVSE_SIMULATOR01",
-        "chargingPointOperatorRoleId": 1,
-        "externalId": "external_evse_id_01",
-        "locationId": 3,
-        "status": "AVAILABLE",
-        "active": true,
-        "url": "/v0.1/charge_point/3/evse/3"
-      }
-    ],
-    "tariffGroup": {
-      "id": 1,
-      "name": "Tariff Group 1",
-      "accountId": 1,
-      "active": true,
-      "startDate": "2024-02-13T08:51:40Z",
-      "endDate": null,
-      "tariffs": [
+      "status": "PROPOSAL_STATUS_REJECTED",
+      "final_tally_result": {
+        "yes_count": "0",
+        "abstain_count": "0",
+        "no_count": "0",
+        "no_with_veto_count": "0"
+      },
+      "submit_time": "2025-01-07T08:36:08.109137345Z",
+      "deposit_end_time": "2025-01-09T08:36:08.109137345Z",
+      "total_deposit": [
         {
-          "id": 1,
-          "tariffGroupId": 1,
-          "name": "Tariff 1",
-          "accountId": 1,
-          "currency": "EUR",
-          "unit": "kWh",
-          "margin": "0.020000000000000000",
-          "systemMargin": "0.000000000000000000",
-          "unitCost": "0.150000000000000000",
-          "fullCost": "0.170000000000000000",
-          "active": true,
-          "startDate": "2024-02-13T08:51:40Z",
-          "endDate": null,
-          "url": "/v0.1/tariff/1"
+          "denom": "uc4e",
+          "amount": "10000000000000"
         }
       ],
-      "url": "/v0.1/tariff_group/1"
+      "voting_start_time": "2025-01-07T08:36:08.109137345Z",
+      "voting_end_time": "2025-01-07T08:37:38.109137345Z",
+      "metadata": "ipfs://CID",
+      "title": "fdgdfg",
+      "summary": "dsfdsf",
+      "proposer": "c4e1yyjfd5cj5nd0jrlvrhc5p3mnkcn8v9q8fdd9gs"
     },
-    "location": {
-      "id": 3,
-      "chargingPointOperatorRoleId": 1,
-      "accountId": 2,
-      "externalId": "external_location_id_01",
-      "name": "Location 1",
-      "longitude": "12.123000000000000000",
-      "latitude": "12.123000000000000000",
-      "country": "country",
-      "city": "city",
-      "streetAddress": "address"
-    },
-    "url": "/v0.1/charge_point/3"
-  },
-  {
-    "id": 4,
-    "accountId": 2,
-    "chargePointDictId": 1,
-    "name": "SIMULATOR02",
-    "deviceId": "PL*SIM*SIMULATOR02",
-    "chargingPointOperatorRoleId": 1,
-    "integrationType": "OCPI",
-    "integrationVersion": "2.2.1",
-    "locationId": 4,
-    "tariffGroupId": 1,
-    "authRequired": false,
-    "active": true,
-    "status": "UNKNOWN",
-    "errorCode": "NO_ERROR",
-    "chargePointEvses": [
-      {
-        "id": 4,
-        "chargePointId": 4,
-        "deviceId": "PL*SIM*SIMULATOR02",
-        "accountId": 2,
-        "name": "EVSE_SIMULATOR02",
-        "chargingPointOperatorRoleId": 1,
-        "externalId": "external_evse_id_02",
-        "locationId": 4,
-        "status": "AVAILABLE",
-        "active": true,
-        "url": "/v0.1/charge_point/4/evse/4"
-      }
-    ],
-    "tariffGroup": {
-      "id": 1,
-      "name": "Tariff Group 1",
-      "accountId": 1,
-      "active": true,
-      "startDate": "2024-02-13T08:51:40Z",
-      "endDate": null,
-      "tariffs": [
+    {
+      "id": "1",
+      "messages": [
         {
-          "id": 1,
-          "tariffGroupId": 1,
-          "name": "Tariff 1",
-          "accountId": 1,
-          "currency": "EUR",
-          "unit": "kWh",
-          "margin": "0.020000000000000000",
-          "systemMargin": "0.000000000000000000",
-          "unitCost": "0.150000000000000000",
-          "fullCost": "0.170000000000000000",
-          "active": true,
-          "startDate": "2024-02-13T08:51:40Z",
-          "endDate": null,
-          "url": "/v0.1/tariff/1"
+          "@type": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+          "authority": "c4e10d07y265gmmuvt4z0w9aw880jnsr700je62g0d",
+          "mint_denom": "uc4e",
+          "start_time": "2024-08-15T06:16:38Z",
+          "minters": [
+            {
+              "sequence_id": 1,
+              "end_time": null,
+              "config": {
+                "@type": "/chain4energy.c4echain.cfeminter.ExponentialStepMinting",
+                "step_duration": "126230400s",
+                "amount": "160000000000000",
+                "amount_multiplier": "0.500000000000000000"
+              }
+            }
+          ]
+        },
+        {
+          "@type": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+          "authority": "c4e10d07y265gmmuvt4z0w9aw880jnsr700je62g0d",
+          "sub_distributor_name": "inflation_and_fee_distributor",
+          "destination_name": "usage_incentives",
+          "share": "0.400000000000000000"
         }
       ],
-      "url": "/v0.1/tariff_group/1"
-    },
-    "location": {
-      "id": 4,
-      "chargingPointOperatorRoleId": 1,
-      "accountId": 2,
-      "externalId": "external_location_id_02",
-      "name": "Location 2",
-      "longitude": "12.123000000000000000",
-      "latitude": "12.123000000000000000",
-      "country": "country",
-      "city": "city",
-      "streetAddress": "address"
-    },
-    "url": "/v0.1/charge_point/4"
+      "status": "PROPOSAL_STATUS_REJECTED",
+      "final_tally_result": {
+        "yes_count": "0",
+        "abstain_count": "0",
+        "no_count": "0",
+        "no_with_veto_count": "0"
+      },
+      "submit_time": "2025-01-03T08:43:38.956151243Z",
+      "deposit_end_time": "2025-01-05T08:43:38.956151243Z",
+      "total_deposit": [
+        {
+          "denom": "uc4e",
+          "amount": "10000000"
+        }
+      ],
+      "voting_start_time": "2025-01-03T08:43:38.956151243Z",
+      "voting_end_time": "2025-01-03T08:45:08.956151243Z",
+      "metadata": "ipfs://CID",
+      "title": "Test",
+      "summary": "dfdsd",
+      "proposer": "c4e1yyjfd5cj5nd0jrlvrhc5p3mnkcn8v9q8fdd9gs"
+    }
+  ],
+  "pagination": {
+    "next_key": null,
+    "total": "0"
   }
-]
+}
