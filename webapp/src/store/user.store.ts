@@ -132,13 +132,25 @@ export const useUserStore = defineStore({
           logger.logToConsole(LogLevel.DEBUG, 'Connected: ', JSON.stringify(this.connectionInfo));
 
           const address = this.connectionInfo.account;
+          const chainId = useConfigurationStore().config.chainId;
+
           await this.fetchAccountData();
           if (this.isLoggedIn) {
             if (onSuccess !== undefined) {
               onSuccess(response.data);
             }
-            logger.logToConsole(LogLevel.DEBUG, 'Address: "' + address + '" Connected');
-            toast.success(i18n.global.t('TOAST.SUCCESS.ADDRESS_CONNECTED', {address: address}));
+            const prevChainIdKey = `prev_chain_id_${address}`;
+            const sessionKey = `address_connected_${address}_${chainId}`;
+            const prevChainId = sessionStorage.getItem(prevChainIdKey);
+
+            // show connected toast once on site refresh
+            // if chainId has changed, show the toast again
+            if (!sessionStorage.getItem(sessionKey) || prevChainId !== chainId) {
+              logger.logToConsole(LogLevel.DEBUG, 'Address: "' + address + '" Connected');
+              toast.success(i18n.global.t('TOAST.SUCCESS.ADDRESS_CONNECTED', {address: address}));
+              sessionStorage.setItem(sessionKey, 'shown');
+              sessionStorage.setItem(prevChainIdKey, chainId);
+            }
           } else {
             logger.logToConsole(LogLevel.ERROR, 'Address: "' + address + '" Connection failed');
             toast.error('Address: "' + address + '" Connection failed');

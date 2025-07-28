@@ -131,6 +131,10 @@ class BigDecimalImpl implements BigDecimal {
 }
 
 export function divideBigInts(dividend: bigint, divisor: bigint) {
+  // stop from division by zero
+  if (divisor === 0n) {
+    return new BigDecimal(0n);
+  }
   return divideBigIntsWithRoundToBigDecimal(dividend * SHIFT, divisor);
 }
 
@@ -138,6 +142,10 @@ export const BigDecimal: BigDecimalConstructor = BigDecimalImpl;
 
 
 function divideBigIntsWithRoundToBigDecimal(dividend: bigint, divisor: bigint) {
+  // stop from division by zero
+  if (divisor === 0n) {
+    return new BigDecimal(0n);
+  }
   return fromInternalValue(divideBigIntsWithRound(ROUNDED, dividend, divisor));
 }
 

@@ -111,15 +111,25 @@ class DataService extends LoggedService {
       this.clearIntervals();
     }, false);
 
-    window.ethereum.on('networkChanged', function(networkId: number){
-      DataService.getInstance().logToConsole(LogLevel.DEBUG, 'Ethereum networkChanged');
-      useUserStore().metamaskConnectionInfo.networkId = networkId;
-    });
 
-    window.ethereum.on('accountsChanged', function (accounts: string[]) {
-      DataService.getInstance().logToConsole(LogLevel.DEBUG, 'Ethereum accountsChanged');
-      useUserStore().metamaskConnectionInfo.address = accounts[0];
-    });
+    //TODO: remove all metamask related code
+
+    // check for metamask, throw a toast if not installed and do nothing
+    if (!window.ethereum) {
+      /*this.logToConsole(LogLevel.ERROR, 'Metamask not installed');      // uncomment to log the error and display a toast
+      useToast().error(i18n.t('Metamask not installed.'));*/
+      return 0;
+    } /*else {
+      window.ethereum.on('networkChanged', function(networkId: number){
+        DataService.getInstance().logToConsole(LogLevel.DEBUG, 'Ethereum networkChanged');
+        useUserStore().metamaskConnectionInfo.networkId = networkId;
+      });
+
+      window.ethereum.on('accountsChanged', function (accounts: string[]) {
+        DataService.getInstance().logToConsole(LogLevel.DEBUG, 'Ethereum accountsChanged');
+        useUserStore().metamaskConnectionInfo.address = accounts[0];
+      });
+    }*/
   }
   private async onInit() {
     this.logToConsole(LogLevel.DEBUG, 'onInit');

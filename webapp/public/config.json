@@ -31,7 +31,7 @@
       "undelegate": 320000,
       "redelegate": 440000,
       "claimRewards": 320000,
-      "transfer": 320000
+      "transfer": 3200000
     },
     "viewDenoms": [
       {
@@ -68,7 +68,7 @@
     "faucetURL": "",
     "faucetAvailable": false,
     "currentPublicSaleRoundId": 1,
-    "publicSaleVisible": true,
+    "publicSaleVisible": false,
     "useAminoOnly": false,
     "loyaltyDropService": {
       "loyaltyDropBaseUrl": "https://loyalty-drop-mainnet.c4e.io/api/loyalty-drop"
@@ -437,7 +437,7 @@
       "undelegate": 320000,
       "redelegate": 440000,
       "claimRewards": 320000,
-      "transfer": 320000
+      "transfer": 400000
     },
     "viewDenoms": [
       {
@@ -977,6 +977,108 @@
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": true,
     "useAminoOnly": false,
+    "proposalMappings": [
+      {
+        "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 1,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "params"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfeminter.MsgUpdateParams",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "startTime",
+          "minters"
+        ]
+      },
+      {
+        "proposalType": "/chain4energy.c4echain.cfedistributor.MsgUpdateSubDistributorDestinationShareParam",
+        "proposalMassageTypeKeyPosition": 2,
+        "proposalMassageTypeSubspacePosition": 3,
+        "proposalMessagePropertiesToShow": [
+          "sub_distributor_name",
+          "destination_name",
+          "share"
+        ]
+      }
+    ]
+  },
+"local-docker":{
+    "bcApiURL": "http://localhost:31317",
+    "bcRpcURL": "http://localhost:31657",
+    "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
+    "keybaseURL": "https://keybase.io",
+    "stakingPageURL": "https://wallet.c4e.io/staking",
+    "publicSaleServiceURL": "https://wallet.c4e.io/userService",
+    "addressPrefix": "c4e",
+    "stakingDenom": "uc4e",
+    "nodeProviderName": "C4E",
+    "nodeProviderEmail": "integration.support@c4e.io",
+    "nodeProviderWebsite": "https://c4e.io",
+    "transferDenom": "uc4e",
+    "tokenReservationDenom": "uc4e",
+    "strategicPoolAddress": [
+      "c4e1hcfjejmxzl8d95xka5j8cjegmf32u2lee3q422",
+      "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
+    ],
+    "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
+    "chainId": "c4e-chain-compose",
+    "networkName": "Local Docker",
+    "keplrNetworkName": "C4E Local Docker",
+    "queries": {
+    },
+    "operationGas": {
+      "vote": 250000,
+      "delegate": 250000,
+      "undelegate": 250000,
+      "redelegate": 250000,
+      "claimRewards": 250000,
+      "transfer": 3200000
+    },
+    "viewDenoms": [
+      {
+        "denom": "uc4e",
+        "viewDenom": "C4E",
+        "coinDecimals": 6
+      },
+      {
+        "denom": "u$",
+        "viewDenom": "$",
+        "coinDecimals": 6
+      }
+    ],
+    "keplrGasPriceSteps": {
+      "low": 0.00,
+      "average": 0.025,
+      "high": 0.03
+    },
+    "minPeriodBetweenDataRefresh": 1000,
+    "blockDataRefreshTimeout": 30000,
+    "dashboardDataRefreshTimeout": 300000,
+    "validatorsDataRefreshTimeout":600000,
+    "accountDataRefreshTimeout": 90000,
+    "proposalsPageLimit": 50,
+    "explorerUrl": "https://explorer.c4e.io",
+    "explorerAccount": "https://explorer.c4e.io/accounts/",
+    "explorerTx": "https://explorer.c4e.io/transactions/",
+    "isMainNetwork": false,
+    "airdropBaseURL": "",
+    "airdropDefaultDenom": "uc4e",
+    "proposalVotingRefreshTimeout": 30000,
+    "targetInflationAprMultiplier": 5,
+    "faucetURL": "https://mobileapp-faucet.c4e.io/send/{address}",
+    "faucetAvailable": true,
+    "currentPublicSaleRoundId": 1,
+    "publicSaleVisible": true,
+    "useAminoOnly": false,
+    "loyaltyDropService": {
+      "LOYALTY_DROP_BASE_URL":"http://localhost:8090/api/loyalty-drop",
+      "LOYALTY_DROP_POOL_CONFIGURATIONS_URL":"/v0.1/pool_configurations"
+    },
     "proposalMappings": [
       {
         "proposalType": "/cosmos.staking.v1beta1.MsgUpdateParams",

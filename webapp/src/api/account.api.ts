@@ -128,7 +128,7 @@ export class AccountApi extends TxBroadcastBaseApi {
 
   public async sendTokens(connection: ConnectionInfo, target: string, amount: number, reservedFee?: number | undefined): Promise<RequestResponse<TxData, TxBroadcastError>> {
     const config = useConfigurationStore().config;
-    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false);
+    const bcAmount = new BigDecimal(amount).multiply(config.getViewDenomConversionFactor()).toFixed(0, false); //TODO: add adaptive fee
     const getMessages = (isLedger: boolean): readonly EncodeObject[] => {
       const typeUrl = '/cosmos.bank.v1beta1.MsgSend';
       const val = {

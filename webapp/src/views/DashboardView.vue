@@ -46,7 +46,9 @@ import DashboardInflation from "@/components/dashboard/DashboardInflation.vue";
 import StakingApr from "@/components/dashboard/StakingApr.vue";
 import {useConfigurationStore} from "@/store/configuration.store";
 import {computed} from "vue";
-import InfoBanner from "@/components/dashboard/InfoBanner.vue";
+
+// uncomment for "Join now for an exclusive ChargEra token boost!" banner on dashboard
+//import InfoBanner from "@/components/dashboard/InfoBanner.vue";
 
 const configConfigured = computed(() => {
   return useConfigurationStore().getConfigName;

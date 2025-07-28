@@ -90,7 +90,7 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeMount, onMounted, ref} from "vue";
+import {computed, onUnmounted, ref, watch} from "vue";
 import {PieChart} from "echarts/charts";
 import VChart from "vue-echarts";
 import {use} from "echarts/core";
@@ -108,7 +108,6 @@ import PercentsView from "@/components/commons/PercentsView.vue";
 import GovernanceIcon from "../commons/GovernanceIcon.vue";
 import {useTokensStore} from "@/store/tokens.store";
 import {BigIntWrapper} from "@/models/store/common";
-import ProgressBarComponent from "@/components/features/ProgressBarComponent.vue";
 import dataService from "@/services/data.service";
 
 use([
@@ -119,39 +118,36 @@ use([
   LegendComponent
 ]);
 
-onBeforeMount(async () => {
-  if (selectedProposal.value?.proposal?.status && selectedProposal.value?.proposal.status !== ProposalStatus.VOTING_PERIOD) {
-    await dataService.onProposalUpdateVotes(selectedProposal.value?.proposal.proposalId);
+// reactive access to currently selected proposal from the store
+const selectedProposal = computed(() => useProposalsStore().selectedProposal);
+
+// fetch latest vote counts for the selected proposal
+const updateVotes = async () => {
+  if (selectedProposal.value.proposal?.proposalId) {
+    await dataService.onProposalUpdateVotes(selectedProposal.value.proposal.proposalId);
   }
+};
+
+let voteRefreshInterval: ReturnType<typeof setInterval> | undefined;
+
+watch(selectedProposal, async (newProposal) => {
+  clearInterval(voteRefreshInterval);
+
+  if (newProposal?.proposal?.proposalId) {
+    if (newProposal.proposal.status === ProposalStatus.VOTING_PERIOD) {
+      await updateVotes(); // initial fetch
+      voteRefreshInterval = setInterval(updateVotes, useConfigurationStore().getConfig.proposalVotingRefreshTimeout);
+    } else if (newProposal.proposal.status) {
+      await dataService.onProposalUpdateVotes(newProposal.proposal.proposalId);
+    }
+  }
+}, { immediate: true });
+
+onUnmounted(() => {
+  clearInterval(voteRefreshInterval);
 });
 
-onBeforeMount(()=>{
-  console.log("Selected proposal:" + JSON.stringify(selectedProposal.value));
-  console.log("Selected proposal - yes:" + yes.value);
-  console.log("Selected proposal - no:" + yes.value);
-  console.log("Selected proposal - abstain:" + abstain.value);
-  console.log("Selected proposal - noWithVeto:" + noWithVeto.value);
-  console.log("Selected proposal - notVoted:" + notVoted.value);
-});
-
-const selectedProposal = computed(()=>{
-  return useProposalsStore().selectedProposal;
-});
-
-function wrapBigInt(value :bigint| undefined){
-  return value!==undefined ? new BigIntWrapper(value) : 0;
-}
-
-if(selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD) {
-  setInterval(() => {
-    updateVotes();
-  },useConfigurationStore().getConfig.proposalVotingRefreshTimeout);
-}
-
-const childRef = ref<InstanceType<typeof ProgressBarComponent>>();
-
-
-const icons  = new Map<string, string>([
+const icons = new Map<string, string>([
   [ProposalStatus.PASSED, 'CheckSquare'],
   [ProposalStatus.REJECTED, 'XCircle'],
   [ProposalStatus.VOTING_PERIOD, ''],
@@ -160,148 +156,59 @@ const icons  = new Map<string, string>([
   [ProposalStatus.FAILED, ''],
 ]);
 
-const proposalsStore = useProposalsStore();
-const sumOfVotes = computed(() => {
-  // const val = useProposalsStore().getProposalDetailsTally?.totalChart;
-  const val = selectedProposal.value.proposalDetailsTally?.totalChart;
-  return (val && val > 0) ? val : -1n;
-});
+// computed properties for vote counts, total votes, bonded tokens, and percentages
+// using the new api
+const yes = computed(() => selectedProposal.value.proposalTally?.yes);
+const no = computed(() => selectedProposal.value.proposalTally?.no);
+const abstain = computed(() => selectedProposal.value.proposalTally?.abstain);
+const noWithVeto = computed(() => selectedProposal.value.proposalTally?.noWithVeto);
 
-const updateVotes = async () => {
-  if(selectedProposal.value.proposal?.proposalId) {
-    console.log('refresh');
-    await dataService.onProposalUpdateVotes(selectedProposal.value.proposal.proposalId);
-  }
-  childRef.value?.startFillingBar();
-};
-
-const yes = computed(() => {
-  const value = selectedProposal.value;
-  return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposalTally?.yes : value.proposalDetailsTally?.getYes();
-  // const res = selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-  //   selectedProposal.value.proposal.finalTallyResult?.yes : proposalsStore.getProposalDetailsTally?.getYes();
-  // if(res != undefined) {
-  //   return res;
-  // }
-  // return undefined;
-});
-
-const no = computed(() => {
-  const value = selectedProposal.value;
-  return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposalTally?.no : value.proposalDetailsTally?.getNo();
-  // const res = selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-  //   selectedProposal.value.proposal.finalTallyResult?.no : proposalsStore.getProposalDetailsTally?.getNo();
-  // if(res != undefined) {
-  //   return res;
-  // }
-  // return undefined;
-});
-
-const abstain = computed(() => {
-  const value = selectedProposal.value;
-  return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposalTally?.abstain : value.proposalDetailsTally?.getAbstain();
-  // const res = selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-  //   selectedProposal.value.proposal.finalTallyResult?.abstain : proposalsStore.getProposalDetailsTally?.getAbstain();
-  // if(res != undefined) {
-  //   return res;
-  // }
-  // return undefined;
-});
-
-const noWithVeto = computed(() => {
-  const value = selectedProposal.value;
-  return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposalTally?.noWithVeto : value.proposalDetailsTally?.getNoWithVeto();
-  // const res = selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-  //   selectedProposal.value.proposal.finalTallyResult?.noWithVeto : proposalsStore.getProposalDetailsTally?.getNoWithVeto();
-  // if(res != undefined) {
-  //   return res;
-  // }
-  // return undefined;
-});
+const totalVotes = computed(() => selectedProposal.value.proposalTally?.total);
+const bondedTokens = computed(() => useTokensStore().getStakingPool.bondedTokens);
 
 const notVoted = computed(() => {
-  const total = selectedProposal.value.proposalDetailsTally?.total ?? 0n;
-  return selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    (useTokensStore().getStakingPool.bondedTokens - total) : selectedProposal.value.proposalDetailsTally?.getNotVoted();
-  // return  useTokensStore().getStakingPool.bondedTokens - total;
-  // const res = selectedProposal.value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-  //   useTokensStore().getStakingPool.bondedTokens - total : proposalsStore.getProposalDetailsTally?.getNotVoted();
-  // if(res != undefined) {
-  //   return res;
-  // }
-  // return undefined;
+  const bonded = bondedTokens.value ?? 0n;
+  const voted = totalVotes.value ?? 0n;
+  return bonded > voted ? bonded - voted : 0n;
 });
 
-const yesPercentage = computed(() => {
-  const value = selectedProposal.value;
-  return value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposalTally?.getYesPercentage() : value.proposalDetailsTally?.getYesPercentage();
-});
+const yesPercentage = computed(() => selectedProposal.value.proposalTally?.getYesPercentage());
+const noPercentage = computed(() => selectedProposal.value.proposalTally?.getNoPercentage());
+const abstainPercentage = computed(() => selectedProposal.value.proposalTally?.getAbstainPercentage());
+const noWithVetoPercentage = computed(() => selectedProposal.value.proposalTally?.getNoWithVetoPercentage());
 
-const noPercentage = computed(() => {
-  const value = selectedProposal.value;
-  return value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposalTally?.getNoPercentage() : value.proposalDetailsTally?.getNoPercentage();
-});
 
-const abstainPercentage = computed(() => {
-  const value = selectedProposal.value;
-  return value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposalTally?.getAbstainPercentage() : value.proposalDetailsTally?.getAbstainPercentage();
-});
-
-const noWithVetoPercentage = computed(() => {
-  const value = selectedProposal.value;
-  return value.proposal?.status === ProposalStatus.VOTING_PERIOD ?
-    value.proposalTally?.getNoWithVetoPercentage() : value.proposalDetailsTally?.getNoWithVetoPercentage();
-});
-
-const totalVotes = computed(() => {
-  let total: bigint | undefined;
-  if(selectedProposal.value.proposal?.status == ProposalStatus.VOTING_PERIOD) {
-    total = selectedProposal.value.proposalTally?.total;
-  } else {
-    total = selectedProposal.value.proposalDetailsTally?.total;
-  }
-  return total;
-});
-
-const bondedTokens = computed(() => {
-  let bonded: bigint | undefined;
-  if(selectedProposal.value.proposal?.status == ProposalStatus.VOTING_PERIOD) {
-    bonded = useTokensStore().getStakingPool.bondedTokens;
-  } else {
-    //bonded = useProposalsStore().getProposalDetailsTally?.stakingPool.bondedTokens;
-    bonded = selectedProposal.value.proposalDetailsTally?.stakingPool.bondedTokens;
-  }
-  return bonded;
-});
-
+// proposal chart //
 const option = computed(() => {
-  if (yes.value==undefined || abstain.value==undefined || no.value==undefined || noWithVeto.value==undefined || notVoted.value==undefined) {
+  if (yes.value === undefined || abstain.value === undefined || no.value === undefined || noWithVeto.value === undefined) {
     return false;
   }
 
-  return createProposalDetailsChartData(useConfigurationStore().config.getConvertedAmount(yes.value),
+  const currentTotalVotes = totalVotes.value ?? 0n;
+
+  return createProposalDetailsChartData(
+    useConfigurationStore().config.getConvertedAmount(yes.value),
     useConfigurationStore().config.getConvertedAmount(abstain.value),
     useConfigurationStore().config.getConvertedAmount(no.value),
     useConfigurationStore().config.getConvertedAmount(noWithVeto.value),
     useConfigurationStore().config.getConvertedAmount(notVoted.value),
-    sumOfVotes.value);
+    currentTotalVotes
+  );
 });
+
+function wrapBigInt(value: bigint | undefined) {
+  return value !== undefined ? new BigIntWrapper(value) : new BigIntWrapper(0n);
+}
 
 function getProposalTitle() {
   return selectedProposal.value?.proposal?.content?.title ?? '';
-  // const result = useProposalsStore().getProposal?.content?.title;
-  // return result ? result : '';
 }
 
-function calculatePercents(a, b, precision){
-  const result= (a/b) *100;
+function calculatePercents(a?: number, b?: number, precision?: number) {
+  if (a === undefined || b === undefined || b === 0) {
+    return (0).toFixed(precision || 0);
+  }
+  const result = (a / b) * 100;
   return result.toFixed(precision);
 }
 
@@ -382,6 +289,14 @@ function getProposalStatus(): ProposalStatus{
 
 .abstain {
   background: #27697f;
+}
+
+.not-voted {
+  background: #cccccc;
+}
+
+.not-voted {
+  background: #cccccc;
 }
 
 .gov-icon {

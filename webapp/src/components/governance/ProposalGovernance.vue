@@ -196,7 +196,7 @@ const thresholdPercentage = computed(() => {
 });
 
 const thresholdPercentagePosition = computed(() => {
-  return yesPercentage.value.add(noPercentage.value).subtract(abstainPercentage.value).subtract(noWithVetoPercentage.value).multiply(useProposalsStore().getTallyParams.threshold * 100)
+  return yesPercentage.value.add(noPercentage.value).subtract(abstainPercentage.value).subtract(noWithVetoPercentage.value).multiply(useProposalsStore().getTallyParams.threshold * 100);
 });
 
 const quorumPercentage = computed(() => {
@@ -204,39 +204,23 @@ const quorumPercentage = computed(() => {
 });
 
 const yesPercentage = computed(() => {
-  if(props.proposal.status == ProposalStatus.VOTING_PERIOD){
-    const yesPercentage = proposalStore.getProposalTally(props.proposal)?.getYesPercentage();
-    return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
-  }
-  const yesPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYesPercentage();
+  const yesPercentage = proposalStore.getProposalTally(props.proposal)?.getYesPercentage();
   return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
 });
 
 const noPercentage = computed(() => {
-  if(props.proposal.status == ProposalStatus.VOTING_PERIOD){
-    const noPercentage = proposalStore.getProposalTally(props.proposal)?.getNoPercentage();
-    return noPercentage!=undefined ? noPercentage : new BigDecimal(0);
-  }
-  const noPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoPercentage();
+  const noPercentage = proposalStore.getProposalTally(props.proposal)?.getNoPercentage();
   return noPercentage!=undefined ? noPercentage : new BigDecimal(0);
 });
 
 const abstainPercentage = computed(() => {
-  if(props.proposal.status == ProposalStatus.VOTING_PERIOD){
-    const abstainPercentage = proposalStore.getProposalTally(props.proposal)?.getAbstainPercentage();
-    return abstainPercentage!=undefined ? abstainPercentage : new BigDecimal(0);
-  }
-  const abstainPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getAbstainPercentage();
-  return abstainPercentage != undefined ? abstainPercentage : new BigDecimal(0);
+  const abstainPercentage = proposalStore.getProposalTally(props.proposal)?.getAbstainPercentage();
+  return abstainPercentage!=undefined ? abstainPercentage : new BigDecimal(0);
 });
 
 const noWithVetoPercentage = computed(() => {
-  if(props.proposal.status == ProposalStatus.VOTING_PERIOD){
-    const noWithVetoPercentage = proposalStore.getProposalTally(props.proposal)?.getNoWithVetoPercentage();
-    return noWithVetoPercentage!=undefined ? noWithVetoPercentage : new BigDecimal(0);
-  }
-  const noWithVetoPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoWithVetoPercentage();
-  return noWithVetoPercentage != undefined ? noWithVetoPercentage : new BigDecimal(0);
+  const noWithVetoPercentage = proposalStore.getProposalTally(props.proposal)?.getNoWithVetoPercentage();
+  return noWithVetoPercentage!=undefined ? noWithVetoPercentage : new BigDecimal(0);
 });
 
 // const notVotedPercentage = computed(() => {
@@ -249,22 +233,22 @@ const yesPercentageChart = computed(() => {
   //   const yesPercentage = proposalStore.getProposalTally(props.proposal)?.getYesPercentage();
   //   return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
   // }
-  const yesPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYesPercentageChart();
+  const yesPercentage = proposalStore.getProposalTally(props.proposal)?.getYesPercentage();
   return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
 });
 
 const noPercentageChart = computed(() => {
-  const noPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoPercentageChart();
+  const noPercentage = proposalStore.getProposalTally(props.proposal)?.getNoPercentage();
   return noPercentage!=undefined ? noPercentage : new BigDecimal(0);
 });
 
 const abstainPercentageChart = computed(() => {
-  const abstainPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getAbstainPercentageChart();
+  const abstainPercentage = proposalStore.getProposalTally(props.proposal)?.getAbstainPercentage();
   return abstainPercentage != undefined ? abstainPercentage : new BigDecimal(0);
 });
 
 const noWithVetoPercentageChart = computed(() => {
-  const noWithVetoPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoWithVetoPercentageChart();
+  const noWithVetoPercentage = proposalStore.getProposalTally(props.proposal)?.getNoWithVetoPercentage();
   return noWithVetoPercentage != undefined ? noWithVetoPercentage : new BigDecimal(0);
 });
 
@@ -274,22 +258,22 @@ const notVotedPercentageChart = computed(() => {
 });
 
 const yes = computed(() => {
-  const yes = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getYes();
+  const yes = proposalStore.getProposalTally(props.proposal)?.getYes();
   return yes != undefined ? yes : 0n;
 });
 
 const no = computed(() => {
-  const no = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNo();
+  const no = proposalStore.getProposalTally(props.proposal)?.getNo();
   return no!=undefined ? no : 0n;
 });
 
 const abstain = computed(() => {
-  const abstain = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getAbstain();
+  const abstain = proposalStore.getProposalTally(props.proposal)?.getAbstain();
   return abstain != undefined ? abstain : 0n;
 });
 
 const noWithVeto = computed(() => {
- const noWithVeto = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNoWithVeto();
+  const noWithVeto = proposalStore.getProposalTally(props.proposal)?.getNoWithVeto();
  return noWithVeto!=undefined ? noWithVeto : 0n;
 });
 

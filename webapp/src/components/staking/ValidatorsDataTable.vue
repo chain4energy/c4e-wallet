@@ -313,7 +313,7 @@ const filters = ref({
 }
 .badge-staking {
   height: 20px;
-  transform: translateX(-100%);
+  transform: translateX(-75%);    /* Adjusted to make the "unstaking" badge not overlap with the left panel */
   margin-right: -20px;
   padding: 2px 5px;
   font-size: 10px;

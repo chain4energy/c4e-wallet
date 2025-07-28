@@ -260,28 +260,32 @@ function getTextForTimeColumn(campaign: Campaign) {
   }
 }
 
+// fix time calculation to display properly
 function calculateTimeToPass(campaign: Campaign) {
   const startDate = campaign.start_time;
   const endDate = campaign.end_time;
-  if (new Date(startDate).getTime() < new Date(Date.now()).getTime() && new Date(endDate).getTime() > new Date(Date.now()).getTime()) {
-    const now = new Date(Date.now());
-    const difference = new Date(endDate).getTime() - now.getTime();
+  const now = Date.now();
+  const startTime = new Date(startDate).getTime();
+  const endTime = new Date(endDate).getTime();
+
+  if (startTime < now && endTime > now) {
+    const difference = endTime - now;
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
     const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
     return `${days}D ${hours}H ${minutes}M ${seconds}S`;
-  } else if (campaign.enabled){
-    const now = new Date(Date.now());
-    const difference = new Date(startDate).getTime() - now.getTime();
-    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-    return `${days}D ${hours}H ${minutes}M ${seconds}S`;
-  // }else if(new Date(startDate).getTime() > new Date(Date.now()).getTime()) {
-  } else if(!campaign.enabled) {
-    return i18n.t('AIRDROP.SOON');
+  } else if (startTime > now) {
+    if(campaign.enabled) {
+      const difference = startTime - now;
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+      return `${days}D ${hours}H ${minutes}M ${seconds}S`;
+    } else {
+      return i18n.t('AIRDROP.SOON');
+    }
   } else {
     return '';
   }

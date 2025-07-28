@@ -43,10 +43,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Features
+- **Governance API**: Updated the application to integrate with the new governance API for enhanced data accuracy and display.
 
 ### Bug fixes
+- Fixed an issue in the governance module where percentage calculation could lead to a division by zero error.
+- Fixed a bug that caused the "Address Connected" message to display twice when the website was reloaded.
+- Fixed an issue where the timer for ended Airdrop campaigns displayed incorrectly.
+- Corrected minor spelling errors across the webpage.
 
 ### Misc Improvements
+- **Governance**: Updated the `DetailsChart` and Governance page to correctly display vote values.
+- **UI**: Moved the "Staked" and "Unstaking" badges on the Validators page to the right for better visibility.
+- **UI**: Removed the "Join now for an exclusive ChargEra token boost!" banner.
+- **Web**: Updated the office location listed on the Terms and Conditions page.
+- **Web**: Removed an unnecessary MetaMask check on page load.
+- **Fees**: Increased the transfer fee from 320000 to 3200000 on Mainnet.
 
 ## [1.3.5](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.5) - 2025-01-13
 

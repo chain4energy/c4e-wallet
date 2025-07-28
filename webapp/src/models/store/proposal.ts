@@ -266,29 +266,46 @@ export class ProposalTallyResult{
     if (this.total <= 0n) {
       return new BigDecimal(0);
     }
-    return divideBigInts(this.yes, useTokensStore().getStakingPool.bondedTokens);
+    return divideBigInts(this.yes, this.total);
   }
 
   public getAbstainPercentage(): BigDecimal{
     if (this.total <= 0n) {
       return new BigDecimal(0);
     }
-    return divideBigInts(this.abstain, useTokensStore().getStakingPool.bondedTokens);
+    return divideBigInts(this.abstain, this.total);
   }
 
   public getNoPercentage(): BigDecimal {
     if (this.total <= 0n) {
       return new BigDecimal(0);
     }
-    return divideBigInts(this.no, useTokensStore().getStakingPool.bondedTokens);
+    return divideBigInts(this.no, this.total);
   }
 
   public getNoWithVetoPercentage(): BigDecimal {
     if (this.total <= 0n) {
       return new BigDecimal(0);
     }
-    return divideBigInts(this.noWithVeto, useTokensStore().getStakingPool.bondedTokens);
+    return divideBigInts(this.noWithVeto, this.total);
   }
+
+  public getYes(): bigint{
+    return this.yes;
+  }
+
+  public getNo(): bigint {
+    return this.no;
+  }
+
+  public getAbstain(): bigint {
+    return this.abstain;
+  }
+
+  public getNoWithVeto(): bigint {
+    return this.noWithVeto;
+  }
+
 }
 
 export class TallyParams {
