@@ -234,6 +234,13 @@ class DataService extends LoggedService {
     });
   }
 
+  public onChargEraLogIn(onSuccess?: () => void) {
+    this.logToConsole(LogLevel.DEBUG, 'onChargEraLogIn');
+    useUserStore().connectChargEra((connectionInfo: ConnectionInfo) => {
+      this.onLoginSuccess(connectionInfo, onSuccess);
+    });
+  }
+
   public onAddressLogIn(address: string, onSuccess?: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onAddressLogIn');
     useUserStore().connectAsAddress(address, (connetionInfo: ConnectionInfo) => {this.onLoginSuccess(connetionInfo, onSuccess);});
@@ -307,6 +314,16 @@ class DataService extends LoggedService {
     this.logToConsole(LogLevel.DEBUG, 'onPortfolioUnselected');
     // window.clearInterval(this.spendablesIntervalId);
     // this.spendablesIntervalId = 0;
+  }
+
+  public onChargEraSelected() {
+    this.logToConsole(LogLevel.DEBUG, 'onChargEraSelected');
+    // fetch ChargEra data
+  }
+
+  public onChargEraUnselected() {
+    this.logToConsole(LogLevel.DEBUG, 'onChargEraUnselected');
+    // clear ChargEra data
   }
 
   public async onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {

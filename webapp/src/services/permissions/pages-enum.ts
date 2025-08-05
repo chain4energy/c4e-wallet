@@ -8,5 +8,6 @@ export enum PagesEnum{
   PROFILE,
   PORTFOLIO,
   BOOST,
-  DISTRIBUTION
+  DISTRIBUTION,
+  CHARGERA
 }

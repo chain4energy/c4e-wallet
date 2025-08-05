@@ -60,6 +60,17 @@
           </div>
         </div>
       </div>
+      <div style="margin-top: 10px" class="box" :class="{'box__inactive': !termsAccepted}" @click="() => {if (termsAccepted) $emit('chargEra')}  " v-if="!isMobile()">
+        <div style="margin-left: 25px; margin-right: 20px; ">
+          <img style="height:50px;;padding-top: 6px;" src="@/assets/chargeraIcon.png">
+        </div>
+        <span>{{ ('Connect with ChargEra Network') }}</span>
+        <div style="margin-left:auto" class="nextStep">
+          <div class="iconContainer" style="background-color: #72bf44">
+            <Icon style="color:white" class="icon" name="ArrowRightCircle"></Icon>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>

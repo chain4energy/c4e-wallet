@@ -100,6 +100,12 @@ export const useUserStore = defineStore({
         onSuccess
       );
     },
+    async connectChargEra(onSuccess?: (connectionInfo: ConnectionInfo) => void) {
+      await this.connect(
+        apiFactory.walletApi().connectChargEra(),
+        onSuccess
+      );
+    },
     async connectMetamask(onSuccess?: () => void) {
         return apiFactory.walletApi().connectMetamask().then(response => {
           if(response.isSuccess() && response.data != undefined){

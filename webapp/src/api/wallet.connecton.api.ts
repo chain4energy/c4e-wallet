@@ -20,6 +20,7 @@ export enum ConnectionType {
   Metamask,
   Leap,
   Email,
+  ChargEra,
 }
 
 export class ConnectionInfo {
@@ -55,6 +56,10 @@ export class ConnectionInfo {
 
   public isLeap(): boolean {
     return this.connectionType === ConnectionType.Leap;
+  }
+
+  public isChargEra(): boolean {
+    return this.connectionType === ConnectionType.ChargEra;
   }
 
   public isAddress(): boolean {
@@ -96,6 +101,11 @@ export default class WalletConnectionApi extends LoggedService {
   public connectLeap(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
     return this.connect(ConnectionType.Leap);
   }
+
+  public connectChargEra(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
+    return this.connect(ConnectionType.ChargEra);
+  }
+
   public async connectMetamask(): Promise<RequestResponse<MetamaskConnectionInfo, ConnectionError>> {
     const ethereum = window.ethereum;
     if (typeof window.ethereum !== 'undefined') {
@@ -136,6 +146,8 @@ export default class WalletConnectionApi extends LoggedService {
       extension = window.leap;
       connectTypeMessage = 'connectLeap';
       notInstalledMessage = 'Leap not installed';
+    } else if(connectionType == ConnectionType.ChargEra) {
+      return new RequestResponse<ConnectionInfo, ConnectionError>(new ConnectionError('ChargEra connection not implemented yet'));
     }
 
     try {

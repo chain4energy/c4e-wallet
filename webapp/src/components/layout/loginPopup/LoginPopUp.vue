@@ -5,6 +5,7 @@
     <transition v-bind="loginType" name="slide-fade" mode="out-in">
       <component @keplr="keplrConnect"
                  @leap="leapConnect"
+                 @chargEra="chargEraConnect"
                  @back="loginType = LoginChoose"
                  @typeChange="(comp) => loginType = comp"
                  @close="$emit('close')"
@@ -56,6 +57,10 @@ function cosmostationConnect() {
 
 const leapConnect = () => {
   dataService.onLeapLogIn(() => {emit('close');emit('connected');});
+};
+
+const chargEraConnect = () => {
+  dataService.onChargEraLogIn(() => {emit('close');emit('connected');});
 };
 
 </script>
