@@ -30,10 +30,33 @@ export class TokensApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
     return ServiceTypeEnum.TOKENS_API;
   }
+
   public async fetchStakingPool(lockscreen: boolean): Promise<RequestResponse<StakingPool, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: StakingPoolResponse | undefined) => { return mapStakingPool(bcData?.pool); };
-    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.STAKING_POOL_URL,
+    const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.STAKING_POOL_URL,
       mapData, lockscreen, null, 'fetchStakingPool - ');
+
+    // add validation using the validateOrError method with error creator
+    return result.validateOrError(
+      (data) => {
+        // check if data exists and has valid staking pool values
+        if (!data) {
+          return "Staking Pool is undefined";
+        }
+        // check if both bonded and not bonded tokens are 0
+        if (data.bondedTokens === 0n && data.notBondedTokens === 0n) {
+          return "Staking Pool is undefined";
+        }
+        return null; // no validation error
+      },
+      (message) => {
+        return {
+          name: 'Error',
+          message: message,
+          data: undefined
+        } as ErrorData<BlockchainApiErrorData>;
+      }
+    );
   }
 
   public async fetchTotalSupply(denom: string, lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>> {

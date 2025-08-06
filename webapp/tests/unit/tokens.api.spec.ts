@@ -84,6 +84,13 @@ describe('tokens api tests', () => {
 
     mockedAxios.request.mockResolvedValue(stakingPool);
     const result = await api.fetchStakingPool(false);
+
+    // Add debugging
+    // console.log('Result:', result);
+    // console.log('Result.error:', result.error);
+    // console.log('Result.isError():', result.isError());
+    // console.log('Result.isSuccess():', result.isSuccess());
+
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.error?.name).toBe(defaultErrorName);
