@@ -257,3 +257,18 @@ export function expectContinuousVestingAccount(account: Account | undefined, exp
   expect(origVesting?.amount).toBe(BigInt(defaultContinuousVestingAccountOriginalVesting[0].amount));
   expect(origVesting?.denom).toBe(defaultContinuousVestingAccountOriginalVesting[0].denom);
 }
+
+export function createSpendableBalancesResponseData(address: string, denom = defaultDenom, amount = '49031887606805') {
+  return {
+    balances: [
+      {
+        denom: denom,
+        amount: amount
+      }
+    ],
+    pagination: {
+      next_key: null,
+      total: '1'
+    }
+  };
+}

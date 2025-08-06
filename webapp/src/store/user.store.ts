@@ -168,22 +168,44 @@ export const useUserStore = defineStore({
         if (response.isSuccess() && response.data !== undefined) {
           const account = response.data;
           if (account.type !== AccountType.Nonexistent) {
-            const allResults = await Promise.all([
+            // execute api calls and handle failures individually
+            const [balanceResult, spendableResult, rewardsResult, delegationsResult, undelegationsResult] = await Promise.all([
               fetchBalance(connectionInfo, this, lockscreen),
               fetchSpendableBalances(connectionInfo, this, lockscreen),
               fetchRewards(connectionInfo, this, lockscreen),
               fetchDelegations(connectionInfo, this, lockscreen),
               fetchUnbondingDelegations(connectionInfo, this, lockscreen),
             ]);
-            if (!allResults.every(r => r)) {
+
+            // only clear connection if critical calls fail
+            if (!balanceResult) {
+              logger.logToConsole(LogLevel.ERROR, 'Balance fetch failed');
               clearStateOnLogout(this);
               return;
+            }
+
+            // log warnings for other failures but keep connection
+            if (!spendableResult) {
+              logger.logToConsole(LogLevel.WARNING, 'Spendable balances fetch failed');
+            }
+            if (!rewardsResult) {
+              logger.logToConsole(LogLevel.WARNING, 'Rewards fetch failed');
+              this.rewards = new Rewards();
+            }
+            if (!delegationsResult) {
+              logger.logToConsole(LogLevel.WARNING, 'Delegations fetch failed');
+              this.delegations = new Delegations();
+            }
+            if (!undelegationsResult) {
+              logger.logToConsole(LogLevel.WARNING, 'Unbonding delegations fetch failed');
+              this.undelegations = new UnbondingDelegations();
             }
           } else {
             clearStateForNonexistentAccount(this);
           }
           this.account = account;
         } else {
+          // clear only if the main account fetch fails
           clearStateOnLogout(this);
         }
       });
