@@ -12,7 +12,7 @@ export class RequestResponse<T, E> {
   }
 
   public isError(): boolean {
-    return this.error !== undefined && this.error !== null;
+    return !this.isSuccess();
   }
 
 }
