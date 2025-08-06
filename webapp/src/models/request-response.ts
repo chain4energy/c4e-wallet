@@ -8,11 +8,11 @@ export class RequestResponse<T, E> {
   }
 
   public isSuccess(): boolean {
-    return this.error === undefined;
+    return this.error === undefined || this.error === null;
   }
 
   public isError(): boolean {
-    return this.error !== undefined;
+    return this.error !== undefined && this.error !== null;
   }
 
 }

@@ -63,7 +63,11 @@ describe('tests mapping of proposals related data',  () => {
 
 
   it('map tally result - undefined tally params', async ()=> {
-    expect(()=> {mapProposalTallyResult(undefined);}).toThrowError(new Error('mapProposalTallyResult -tally is undefined'));
+    const result = mapProposalTallyResult(undefined);
+    expect(result.yes).toBe(BigInt(0));
+    expect(result.abstain).toBe(BigInt(0));
+    expect(result.no).toBe(BigInt(0));
+    expect(result.noWithVeto).toBe(BigInt(0));
   });
 
   it('map tally result - no yes', async ()=> {
