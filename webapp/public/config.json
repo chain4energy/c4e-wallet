@@ -106,7 +106,7 @@
   },
   "devnet":{
     "bcApiURL": "https://lcd-dev.c4e.io",
-    "bcRpcURL": "https://rpc-dev.c4e.io",
+    "bcRpcURL": "https://rpc-devnet.c4e.io",
     "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
     "keybaseURL": "https://keybase.io",
     "stakingPageURL": "https://wallet.c4e.io/staking",
@@ -123,8 +123,8 @@
       "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
     ],
     "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-    "chainId": "flame-2",
-    "networkName": "Dev(flame-2)",
+    "chainId": "veles-dev-test-1",
+    "networkName": "Dev(veles-dev-test-1)",
     "keplrNetworkName": "C4E Veles Dev",
     "queries": {
     },
@@ -471,7 +471,7 @@
     "proposalVotingRefreshTimeout": 30000,
     "airdropDefaultDenom": "uc4e",
     "targetInflationAprMultiplier": 5,
-    "faucetURL": "https://faucet-testnet.c4e.io/send/{address}",
+    "faucetURL": "https://localhost:8081/send/{address}",
     "faucetAvailable": true,
     "currentPublicSaleRoundId": 1,
     "useAminoOnly": false,
