@@ -4,7 +4,7 @@ data:
     {
     "Devnet": {
       "bcApiURL": "https://lcd-dev.c4e.io",
-      "bcRpcURL": "https://rpc-dev.c4e.io",
+      "bcRpcURL": "https://rpc-devnet.c4e.io",
       "bcLoyaltyDropServiceBroadcastRpcURL": "https://loyalty-drop-dev.c4e.io/api/loyalty-drop/v0.1/broadcast",
       "hasuraURL": "https://hasura-dev.c4e.io/v1/graphql",
       "keybaseURL": "https://keybase.io",
@@ -23,8 +23,8 @@ data:
         "c4e1cqhjt97p9kwhef3ht9g3qn8u9tnfcv3y2kc669"
       ],
       "airdropPoolAddress": "c4e1dutmadwfernuzmzk8ndtfah254yhrnv34y68ts",
-      "chainId": "flame-2",
-      "networkName": "Devnet(flame-2)",
+      "chainId": "veles-dev-test-1",
+      "networkName": "Devnet(veles-dev-test-1)",
       "keplrNetworkName": "Chain4Energy Devnet",
       "operationGas": {
         "vote": 320000,

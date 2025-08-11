@@ -15,7 +15,7 @@
         {{ $t("GOVERNANCE_VIEW.CURRENT_TURNOUT") }}
       </span>
       <span>
-        {{calculatePercents(Number(totalVotes), Number(bondedTokens), 2)}}%
+        {{calculatePercents(Number(totalVotes ?? 0n), Number(bondedTokens ?? 0n), 2)}}%
       </span>
     </div>
 
@@ -180,18 +180,20 @@ const noWithVetoPercentage = computed(() => selectedProposal.value.proposalTally
 
 // proposal chart //
 const option = computed(() => {
-  if (yes.value === undefined || abstain.value === undefined || no.value === undefined || noWithVeto.value === undefined) {
-    return false;
-  }
-
+  // Use 0n as default values for undefined vote counts
+  const yesValue = yes.value ?? 0n;
+  const abstainValue = abstain.value ?? 0n;
+  const noValue = no.value ?? 0n;
+  const noWithVetoValue = noWithVeto.value ?? 0n;
+  const notVotedValue = notVoted.value ?? 0n;
   const currentTotalVotes = totalVotes.value ?? 0n;
 
   return createProposalDetailsChartData(
-    useConfigurationStore().config.getConvertedAmount(yes.value),
-    useConfigurationStore().config.getConvertedAmount(abstain.value),
-    useConfigurationStore().config.getConvertedAmount(no.value),
-    useConfigurationStore().config.getConvertedAmount(noWithVeto.value),
-    useConfigurationStore().config.getConvertedAmount(notVoted.value),
+    useConfigurationStore().config.getConvertedAmount(yesValue),
+    useConfigurationStore().config.getConvertedAmount(abstainValue),
+    useConfigurationStore().config.getConvertedAmount(noValue),
+    useConfigurationStore().config.getConvertedAmount(noWithVetoValue),
+    useConfigurationStore().config.getConvertedAmount(notVotedValue),
     currentTotalVotes
   );
 });
