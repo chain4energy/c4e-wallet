@@ -32,11 +32,11 @@
     <div class="bottom" @mousemove="updateTooltipPosition($event)" v-if="proposal.status !== ProposalStatus.DEPOSIT_PERIOD">
       <div class="chartbox">
         <div style="height:20px" class="chartdiv">
-          <div @mouseover="showTooltip('YES', '')" @mouseout="hideTooltip" class="yes" :style="'flex-basis:' + yesPercentageChart * 100 + '%'"></div>
-          <div @mouseover="showTooltip('ABSTAIN', '')" @mouseout="hideTooltip" class="abstain" :style="'flex-basis:' + abstainPercentageChart * 100 + '%'"></div>
-          <div @mouseover="showTooltip('NO', '')" @mouseout="hideTooltip" class="no" :style="'flex-basis:' + noPercentageChart * 100 + '%'"></div>
-          <div @mouseover="showTooltip('NO_WITH_VETO', '')" @mouseout="hideTooltip" class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentageChart * 100 + '%'"></div>
-          <div @mouseover="showTooltip('NOT_VOTED', '')" @mouseout="hideTooltip" class="not-voted" :style="'flex-basis:' + notVotedPercentageChart * 100 + '%'"></div>
+          <div @mouseover="showTooltip('YES', yesPercentageChart.multiply(100).toFixed(2) + '%')" @mouseout="hideTooltip" class="yes" :style="'flex-basis:' + yesPercentageChart.multiply(100).toFixed(2) + '%'"></div>
+          <div @mouseover="showTooltip('ABSTAIN', abstainPercentageChart.multiply(100).toFixed(2) + '%')" @mouseout="hideTooltip" class="abstain" :style="'flex-basis:' + abstainPercentageChart.multiply(100).toFixed(2) + '%'"></div>
+          <div @mouseover="showTooltip('NO', noPercentageChart.multiply(100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no" :style="'flex-basis:' + noPercentageChart.multiply(100).toFixed(2) + '%'"></div>
+          <div @mouseover="showTooltip('NO_WITH_VETO', noWithVetoPercentageChart.multiply(100).toFixed(2) + '%')" @mouseout="hideTooltip" class="no-with-veto" :style="'flex-basis:' + noWithVetoPercentageChart.multiply(100).toFixed(2) + '%'"></div>
+          <div @mouseover="showTooltip('NOT_VOTED', notVotedPercentageChart.multiply(100).toFixed(2) + '%')" @mouseout="hideTooltip" class="not-voted" :style="'flex-basis:' + notVotedPercentageChart.multiply(100).toFixed(2) + '%'"></div>
 
 
           <!-- <v-chart :option="option" /> -->
@@ -120,6 +120,7 @@ import {useRouter} from "vue-router";
 import {Proposal, ProposalStatus } from "@/models/store/proposal";
 import { createProposalListChartData } from '@/charts/governance';
 import { useProposalsStore } from '@/store/proposals.store';
+import { useTokensStore } from '@/store/tokens.store';
 import CoinAmount from '../commons/CoinAmount.vue';
 import PercentsView from "@/components/commons/PercentsView.vue";
 import DateCommon from "@/components/commons/DateCommon.vue";
@@ -152,6 +153,7 @@ const tooltipPosX = ref(0);
 const tooltipPosY = ref(0);
 const tooltipBorderColor = ref('');
 const proposalStore = useProposalsStore();
+const tokensStore = useTokensStore();
 
 const showTooltip = (option:string, value:string) => {
   if(option == 'YES') {
@@ -229,32 +231,48 @@ const noWithVetoPercentage = computed(() => {
 // });
 
 const yesPercentageChart = computed(() => {
-  // if(props.proposal.status == ProposalStatus.VOTING_PERIOD){
-  //   const yesPercentage = proposalStore.getProposalTally(props.proposal)?.getYesPercentage();
-  //   return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
-  // }
-  const yesPercentage = proposalStore.getProposalTally(props.proposal)?.getYesPercentage();
-  return yesPercentage!=undefined ? yesPercentage : new BigDecimal(0);
+  const bondedTokens = tokensStore.getStakingPool.bondedTokens;
+  if (bondedTokens <= 0n) {
+    return new BigDecimal(0);
+  }
+  return new BigDecimal(yes.value).divide(new BigDecimal(bondedTokens));
 });
 
 const noPercentageChart = computed(() => {
-  const noPercentage = proposalStore.getProposalTally(props.proposal)?.getNoPercentage();
-  return noPercentage!=undefined ? noPercentage : new BigDecimal(0);
+  const bondedTokens = tokensStore.getStakingPool.bondedTokens;
+  if (bondedTokens <= 0n) {
+    return new BigDecimal(0);
+  }
+  return new BigDecimal(no.value).divide(new BigDecimal(bondedTokens));
 });
 
 const abstainPercentageChart = computed(() => {
-  const abstainPercentage = proposalStore.getProposalTally(props.proposal)?.getAbstainPercentage();
-  return abstainPercentage != undefined ? abstainPercentage : new BigDecimal(0);
+  const bondedTokens = tokensStore.getStakingPool.bondedTokens;
+  if (bondedTokens <= 0n) {
+    return new BigDecimal(0);
+  }
+  return new BigDecimal(abstain.value).divide(new BigDecimal(bondedTokens));
 });
 
 const noWithVetoPercentageChart = computed(() => {
-  const noWithVetoPercentage = proposalStore.getProposalTally(props.proposal)?.getNoWithVetoPercentage();
-  return noWithVetoPercentage != undefined ? noWithVetoPercentage : new BigDecimal(0);
+  const bondedTokens = tokensStore.getStakingPool.bondedTokens;
+  if (bondedTokens <= 0n) {
+    return new BigDecimal(0);
+  }
+  return new BigDecimal(noWithVeto.value).divide(new BigDecimal(bondedTokens));
 });
 
+// calculate not voted percentage of bonded tokens
 const notVotedPercentageChart = computed(() => {
-  const notVotedPercentage = proposalStore.getProposalDetailsTallyById(props.proposal.proposalId)?.getNotVotedPercentageChart();
-  return notVotedPercentage != undefined ? notVotedPercentage : new BigDecimal(0);
+  const bondedTokens = tokensStore.getStakingPool.bondedTokens;
+  const totalVotes = yes.value + no.value + abstain.value + noWithVeto.value;
+  const notVoted = bondedTokens - totalVotes;
+
+  if (bondedTokens <= 0n) {
+    return new BigDecimal(0);
+  }
+
+  return new BigDecimal(notVoted).divide(new BigDecimal(bondedTokens));
 });
 
 const yes = computed(() => {
