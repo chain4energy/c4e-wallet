@@ -63,7 +63,21 @@ export class ProposalsApi extends BaseApi {
 
     const result = await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.PROPOSALS_BY_ID_URL, {id: id}),
       mapData, lockscreen, null, 'fetchAllProposals - ');
-    return result;
+    return result.validateOrError(
+      (data) => {
+        if (!data) {
+          return "Proposal is undefined";
+        }
+        return null; // no error
+      },
+      (message) => {
+        return {
+          name: 'Error',
+          message: message,
+          data: undefined
+        } as ErrorData<BlockchainApiErrorData>;
+      }
+    );
   }
 
   public async fetchTallyParams(lockscreen: boolean): Promise<RequestResponse<TallyParams, ErrorData<BlockchainApiErrorData>>> {
@@ -73,7 +87,22 @@ export class ProposalsApi extends BaseApi {
 
     const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.TALLYING_URL,
       mapData, lockscreen, null, 'fetchTallyParams - ');
-    return result;
+
+    return result.validateOrError(
+      (data) => {
+        if (!data) {
+          return "mapTallyParams - tally params is undefined";
+        }
+        return null; // no error
+      },
+      (message) => {
+        return {
+          name: 'Error',
+          message: message,
+          data: undefined
+        } as ErrorData<BlockchainApiErrorData>;
+      }
+    );
   }
 
   public async fetchDepositParams(lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>> {
@@ -83,7 +112,21 @@ export class ProposalsApi extends BaseApi {
 
     const result = await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.DEPOSIT_URL,
       mapData, lockscreen, null, 'fetchDepositParams - ');
-    return result;
+    return result.validateOrError(
+      (data) => {
+        if (!data) {
+          return "mapDepositParams - deposit params is undefined";
+        }
+        return null; // no error
+      },
+      (message) => {
+        return {
+          name: 'Error',
+          message: message,
+          data: undefined
+        } as ErrorData<BlockchainApiErrorData>;
+      }
+    );
   }
 
   public async fetchVotingProposalTallyResult(id: number, lockscreen: boolean): Promise<RequestResponse<ProposalTallyResult, ErrorData<BlockchainApiErrorData>>> {
@@ -93,14 +136,49 @@ export class ProposalsApi extends BaseApi {
 
     const result = await this.axiosGetBlockchainApiCall(formatString(useConfigurationStore().config.queries.PROPOSAL_TALLY_URL, {id: id}),
       mapData, lockscreen, null, 'fetchVotingProposalTallyResult - ');
-    return result;
+
+    return result.validateOrError(
+      (data) => {
+        if (!data) {
+          return "mapProposalTallyResult - tally is undefined";
+        }
+
+        if (data.yes === 0n && data.abstain === 0n && data.no === 0n && data.noWithVeto === 0n) {
+          return "mapProposalTallyResult - tally is undefined";
+        }
+        return null;
+      },
+      (message) => {
+        return {
+          name: 'Error',
+          message: message,
+          data: undefined
+        } as ErrorData<BlockchainApiErrorData>;
+      }
+    );
   }
 
   public async fetchProposalVote(id: number, voter: string, lockscreen: boolean): Promise<RequestResponse<VoteOption | null, ErrorData<HasuraErrorData>>> {
     const mapData = (hasureData: ProposalVoteResponse | undefined) => {
       return mapProposalVoteResponse(hasureData);
     };
-    return this.axiosHasuraCall(formatString(queries.hasura.PROPOSAL_USER_VOTE_QUERY, {proposalId: id, voter: voter}), mapData, lockscreen, null, 'fetchProposalVote - ');
+    const result = await this.axiosHasuraCall(formatString(queries.hasura.PROPOSAL_USER_VOTE_QUERY, {proposalId: id, voter: voter}), mapData, lockscreen, null, 'fetchProposalVote - ');
+
+    return result.validateOrError(
+      (data) => {
+        if (data === undefined) {
+          return "mapProposalVoteResponse - proposal vote response data is undefined";
+        }
+        return null;
+      },
+      (message) => {
+        return {
+          name: 'Error',
+          message: message,
+          data: undefined
+        } as ErrorData<HasuraErrorData>;
+      }
+    );
   }
 
   public async fetchProposalsDetailsTally(id: number, lockscreen: boolean): Promise<RequestResponse<ProposalDetailsTally | null, ErrorData<HasuraErrorData>>> {

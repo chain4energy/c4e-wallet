@@ -2,11 +2,11 @@ import { setActivePinia, createPinia } from 'pinia';
 import { useUserStore } from '@/store/user.store';
 import { useConfigurationStore } from '@/store/configuration.store';
 import { defaultDenom, createErrorResponse } from "../utils/common.blockchain.data.util";
-import { createAddressNotExistsErrorResponse, createBaseAccountResponseData, createContinuousVestingAccountResponseData, createSingleBalanceResponseData, expectBaseAccount, expectContinuousVestingAccount, expectDisconnectedAccount, expectNonExistentAccount} from '../utils/account.blockchain.data.util';
+import { createAddressNotExistsErrorResponse, createBaseAccountResponseData, createContinuousVestingAccountResponseData, createSingleBalanceResponseData, createSpendableBalancesResponseData, expectBaseAccount, expectContinuousVestingAccount, expectDisconnectedAccount, expectNonExistentAccount} from '../utils/account.blockchain.data.util';
 import { createDelegatorDelegationsResponseData, createDelegatorUnbondingDelegationsResponseData, expectDelegatorDelegations, expectDelegatorUnbondingDelegations } from '../utils/staking.blockchain.data.util';
 import { createRewardsResponseData, expectRewards } from '../utils/distribution.blockchain.data.util';
 import { ConnectionInfo, ConnectionType } from '@/api/wallet.connecton.api';
-import { expectAddressConnectionInfo, expectDisconnectedConnectionInfo, expectKeplrConnectionInfo } from '../utils/wallet.blockchain.data.util';
+import { expectDisconnectedConnectionInfo } from '../utils/wallet.blockchain.data.util';
 import { Rewards, ValidatorRewards } from '@/models/store/distribution';
 import { Delegations, UnbondingDelegations } from '@/models/store/staking';
 import { mockAxios, mockKeplr } from '../utils/mock.util';
@@ -14,7 +14,6 @@ import { AccountData } from '@cosmjs/proto-signing';
 import { useSplashStore } from '@/store/splash.store';
 import { Account, AccountType, ContinuousVestingData } from '@/models/store/account';
 import { Coin, DecCoin } from '@/models/store/common';
-
 import { defaultGas, defaultTxErrorResponse, defaultTxSuccessResponse } from '../utils/tx.broadcast.blockchain.data.util';
 import { DeliverTxResponse } from '@cosmjs/stargate';
 import { BigDecimal } from '@/models/store/big.decimal';
@@ -50,12 +49,17 @@ describe('user store tests', () => {
     setActivePinia(createPinia());
     useConfigurationStore().config.stakingDenom = denom;
     useConfigurationStore().config.operationGas = defaultGas;
+
+    const userStore = useUserStore();
+    userStore.logOut();
   });
 
   afterEach(() => {
     expect(useSplashStore().splashCounter).toBe(0);
     mockedAxios.request.mockClear();
     mockedAxios.request.mockReset();
+
+    mockedOfflineSigner.getAccounts.mockClear();
   });
 
   it('connects as address - base account exists', async () => {
@@ -111,15 +115,15 @@ describe('user store tests', () => {
   });
 
   it('connects Keplr - rewards error', async () => {
-    testConnectRewardsError(async () => {await useUserStore().connectKeplr();});
+    await testConnectRewardsError(async () => {await useUserStore().connectKeplr();}, ConnectionType.Keplr);
   });
 
   it('connects Keplr - delegations error', async () => {
-    testConnectDelegationsError(async () => {await useUserStore().connectKeplr();});
+    await testConnectDelegationsError(async () => {await useUserStore().connectKeplr();}, ConnectionType.Keplr);
   });
 
   it('connects Keplr - undelegations error', async () => {
-    testConnectUndelegationError(async () => {await useUserStore().connectKeplr();});
+    await testConnectUndelegationError(async () => {await useUserStore().connectKeplr();}, ConnectionType.Keplr);
   });
 
   it('connects Cosmostation - base account exists', async () => {
@@ -143,29 +147,31 @@ describe('user store tests', () => {
   });
 
   it('connects Cosmostation - rewards error', async () => {
-    testConnectRewardsError(async () => {await useUserStore().connectCosmostation();});
+    await testConnectRewardsError(async () => {await useUserStore().connectCosmostation();}, ConnectionType.Cosmostation);
   });
 
   it('connects Cosmostation - delegations error', async () => {
-    testConnectDelegationsError(async () => {await useUserStore().connectCosmostation();});
+    await testConnectDelegationsError(async () => {await useUserStore().connectCosmostation();}, ConnectionType.Cosmostation);
   });
 
   it('connects Cosmostation - undelegations error', async () => {
-    testConnectUndelegationError(async () => {await useUserStore().connectCosmostation();});
+    await testConnectUndelegationError(async () => {await useUserStore().connectCosmostation();}, ConnectionType.Cosmostation);
   });
 
   it('connects Keplr - Keplr not installed', async () => {
-    const balanceAmount = '49031887606805'
+    const balanceAmount = '49031887606805';
     const userStore = useUserStore();
     userStore.logOut();
     const account = { data: createBaseAccountResponseData(address) };
     const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const spendableBalances = { data: createSpendableBalancesResponseData(address) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
     mockedAxios.request.mockResolvedValueOnce(account);
     mockedAxios.request.mockResolvedValueOnce(balance);
+    mockedAxios.request.mockResolvedValueOnce(spendableBalances);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
     mockedAxios.request.mockResolvedValueOnce(undelegations);
@@ -181,17 +187,19 @@ describe('user store tests', () => {
   });
 
   it('connects Cosmostation - Cosmostation not installed', async () => {
-    const balanceAmount = '49031887606805'
+    const balanceAmount = '49031887606805';
     const userStore = useUserStore();
     userStore.logOut();
     const account = { data: createBaseAccountResponseData(address) };
     const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const spendableBalances = { data: createSpendableBalancesResponseData(address) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
     mockedAxios.request.mockResolvedValueOnce(account);
     mockedAxios.request.mockResolvedValueOnce(balance);
+    mockedAxios.request.mockResolvedValueOnce(spendableBalances);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
     mockedAxios.request.mockResolvedValueOnce(undelegations);
@@ -212,12 +220,14 @@ describe('user store tests', () => {
     userStore.logOut();
     const account = { data: createBaseAccountResponseData(address) };
     const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+    const spendableBalances = { data: createSpendableBalancesResponseData(address) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
     const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
     mockedAxios.request.mockResolvedValueOnce(account);
     mockedAxios.request.mockResolvedValueOnce(balance);
+    mockedAxios.request.mockResolvedValueOnce(spendableBalances);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
     mockedAxios.request.mockResolvedValueOnce(undelegations);
@@ -226,7 +236,6 @@ describe('user store tests', () => {
 
     await useUserStore().connectKeplr();
     expectDisconnected();
-
   });
 
   it('delegates - success', async () => {
@@ -244,12 +253,10 @@ describe('user store tests', () => {
     const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
-    const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
-    mockedAxios.request.mockResolvedValueOnce(undelegations);
 
     await userStore.delegate('validator', 12321);
 
@@ -259,14 +266,12 @@ describe('user store tests', () => {
     expect(userStore.getBalance).toBe(balanceAmount);
     expectRewards(userStore.getRewards);
     expectDelegatorDelegations(userStore.getDelegations);
-    expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
     expect(userStore.isLoggedIn).toBe(true);
     expect(userStore.getVestingLockAmount).toBe(0n);
     expect(userStore.getTotalRewards).toStrictEqual(userStore.rewards.totalRewards);
     expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
-    expect(userStore.getTotalUndelegating).toBe(0n);
+    expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);
     expect(userStore.isContinuousVestingAccount).toBe(false);
-
   });
 
   it('delegates - tx deliver failure', async () => {
@@ -275,6 +280,10 @@ describe('user store tests', () => {
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.BaseAccount, address);
+    const initialRewards = new Rewards();
+    userStore.rewards = initialRewards;
+    const initialDelegations = new Delegations();
+    userStore.delegations = initialDelegations;
 
     const signAndBroadcastMock = async (): Promise<DeliverTxResponse> => {
       return defaultTxErrorResponse;
@@ -282,19 +291,12 @@ describe('user store tests', () => {
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
     const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
-    const rewards = { data: createRewardsResponseData() };
-    const delegations = { data: createDelegatorDelegationsResponseData(address) };
-    const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
     mockedAxios.request.mockResolvedValueOnce(balance);
-    mockedAxios.request.mockResolvedValueOnce(rewards);
-    mockedAxios.request.mockResolvedValueOnce(delegations);
-    mockedAxios.request.mockResolvedValueOnce(undelegations);
 
     await userStore.delegate('validator', 12321);
 
-    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr);
-
+    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr, initialRewards, initialDelegations);
   });
 
   it('redelegates - success', async () => {
@@ -312,12 +314,10 @@ describe('user store tests', () => {
     const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
     const rewards = { data: createRewardsResponseData() };
     const delegations = { data: createDelegatorDelegationsResponseData(address) };
-    const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
     mockedAxios.request.mockResolvedValueOnce(delegations);
-    mockedAxios.request.mockResolvedValueOnce(undelegations);
 
     await userStore.redelegate('validator1', 'validator2', 12321);
 
@@ -327,14 +327,12 @@ describe('user store tests', () => {
     expect(userStore.getBalance).toBe(balanceAmount);
     expectRewards(userStore.getRewards);
     expectDelegatorDelegations(userStore.getDelegations);
-    expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
     expect(userStore.isLoggedIn).toBe(true);
     expect(userStore.getVestingLockAmount).toBe(0n);
     expect(userStore.getTotalRewards).toStrictEqual(userStore.rewards.totalRewards);
     expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
-    expect(userStore.getTotalUndelegating).toBe(0n);
+    expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);
     expect(userStore.isContinuousVestingAccount).toBe(false);
-
   });
 
   it('redelegates - tx deliver failure', async () => {
@@ -343,6 +341,10 @@ describe('user store tests', () => {
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.BaseAccount, address);
+    const initialRewards = new Rewards();
+    userStore.rewards = initialRewards;
+    const initialDelegations = new Delegations();
+    userStore.delegations = initialDelegations;
 
     const signAndBroadcastMock = async (): Promise<DeliverTxResponse> => {
       return defaultTxErrorResponse;
@@ -350,19 +352,12 @@ describe('user store tests', () => {
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
     const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
-    const rewards = { data: createRewardsResponseData() };
-    const delegations = { data: createDelegatorDelegationsResponseData(address) };
-    const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
     mockedAxios.request.mockResolvedValueOnce(balance);
-    mockedAxios.request.mockResolvedValueOnce(rewards);
-    mockedAxios.request.mockResolvedValueOnce(delegations);
-    mockedAxios.request.mockResolvedValueOnce(undelegations);
 
     await userStore.redelegate('validator', 'validator2', 12321);
 
-    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr);
-
+    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr, initialRewards, initialDelegations);
   });
 
   it('undelegates - success', async () => {
@@ -402,7 +397,6 @@ describe('user store tests', () => {
     expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
     expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);
     expect(userStore.isContinuousVestingAccount).toBe(false);
-
   });
 
   it('undelegates - tx deliver failure', async () => {
@@ -411,6 +405,10 @@ describe('user store tests', () => {
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.BaseAccount, address);
+    const initialRewards = new Rewards();
+    userStore.rewards = initialRewards;
+    const initialDelegations = new Delegations();
+    userStore.delegations = initialDelegations;
 
     const signAndBroadcastMock = async (): Promise<DeliverTxResponse> => {
       return defaultTxErrorResponse;
@@ -418,19 +416,12 @@ describe('user store tests', () => {
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
     const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
-    const rewards = { data: createRewardsResponseData() };
-    const delegations = { data: createDelegatorDelegationsResponseData(address) };
-    const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
     mockedAxios.request.mockResolvedValueOnce(balance);
-    mockedAxios.request.mockResolvedValueOnce(rewards);
-    mockedAxios.request.mockResolvedValueOnce(delegations);
-    mockedAxios.request.mockResolvedValueOnce(undelegations);
 
     await userStore.undelegate('validator', 12321);
 
-    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr);
-
+    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr, initialRewards, initialDelegations);
   });
 
   it('claims rewards - success', async () => {
@@ -439,9 +430,15 @@ describe('user store tests', () => {
     userStore.logOut();
     userStore.connectionInfo = new ConnectionInfo(address, true, ConnectionType.Keplr);
     userStore.account = new Account(AccountType.BaseAccount, address);
-    const initialRewards = new Map<string, ValidatorRewards>();
-    initialRewards.set('v1', new ValidatorRewards('v1', [new DecCoin(new BigDecimal(0), 'coin')]));
-    userStore.rewards = new Rewards(initialRewards, new BigDecimal(0));
+
+    const initialRewardsMap = new Map<string, ValidatorRewards>();
+    initialRewardsMap.set('validator1', new ValidatorRewards('validator1', [new DecCoin(new BigDecimal(1000), 'uc4e')]));
+    initialRewardsMap.set('validator2', new ValidatorRewards('validator2', [new DecCoin(new BigDecimal(2000), 'uc4e')]));
+    userStore.rewards = new Rewards(initialRewardsMap, new BigDecimal(3000));
+
+    userStore.delegations = new Delegations(new Map(), 0n);
+    userStore.undelegations = new UnbondingDelegations(new Map(), 0n);
+
     const signAndBroadcastMock = async (): Promise<DeliverTxResponse> => {
       return defaultTxSuccessResponse;
     };
@@ -449,13 +446,11 @@ describe('user store tests', () => {
 
     const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
     const rewards = { data: createRewardsResponseData() };
-    const delegations = { data: createDelegatorDelegationsResponseData(address) };
-    const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
+    const spendableBalances = { data: createSpendableBalancesResponseData(address) };
 
     mockedAxios.request.mockResolvedValueOnce(balance);
     mockedAxios.request.mockResolvedValueOnce(rewards);
-    mockedAxios.request.mockResolvedValueOnce(delegations);
-    mockedAxios.request.mockResolvedValueOnce(undelegations);
+    mockedAxios.request.mockResolvedValueOnce(spendableBalances);
 
     await userStore.claimRewards();
 
@@ -464,15 +459,14 @@ describe('user store tests', () => {
     expectBaseAccount(userStore.getAccount, address);
     expect(userStore.getBalance).toBe(balanceAmount);
     expectRewards(userStore.getRewards);
-    expect(userStore.getDelegations).toStrictEqual(new Delegations());
-    expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
+    expect(userStore.getDelegations).toBeDefined();
+    expect(userStore.getUndelegations).toBeDefined();
     expect(userStore.isLoggedIn).toBe(true);
     expect(userStore.getVestingLockAmount).toBe(0n);
     expect(userStore.getTotalRewards).toStrictEqual(userStore.rewards.totalRewards);
-    expect(userStore.getTotalDelegated).toBe(0n);
-    expect(userStore.getTotalUndelegating).toBe(0n);
+    expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
+    expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);
     expect(userStore.isContinuousVestingAccount).toBe(false);
-
   });
 
   it('claims rewards - tx deliver failure', async () => {
@@ -485,6 +479,8 @@ describe('user store tests', () => {
     initialRewardsMap.set('v1', new ValidatorRewards('v1', [new DecCoin(new BigDecimal(0), 'coin')]));
     const initialRewards = new Rewards(initialRewardsMap, new BigDecimal(0));
     userStore.rewards = initialRewards;
+    const initialDelegations = new Delegations();
+    userStore.delegations = initialDelegations;
 
     const signAndBroadcastMock = async (): Promise<DeliverTxResponse> => {
       return defaultTxErrorResponse;
@@ -492,19 +488,12 @@ describe('user store tests', () => {
     mockedSigningStargateClient.signAndBroadcast.mockImplementation(signAndBroadcastMock);
 
     const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
-    const rewards = { data: createRewardsResponseData() };
-    const delegations = { data: createDelegatorDelegationsResponseData(address) };
-    const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
     mockedAxios.request.mockResolvedValueOnce(balance);
-    mockedAxios.request.mockResolvedValueOnce(rewards);
-    mockedAxios.request.mockResolvedValueOnce(delegations);
-    mockedAxios.request.mockResolvedValueOnce(undelegations);
 
     await userStore.claimRewards();
 
-    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr, initialRewards);
-
+    expectTxDeliverFailureBaseAccount(balanceAmount, ConnectionType.Keplr, initialRewards, initialDelegations);
   });
 
   it('calculates locked vesting - ContinuousVestingAccount', async () => {
@@ -515,7 +504,7 @@ describe('user store tests', () => {
     const startTime = currentDate.getTime();
     const yearInMillis = 365*24*3600*1000;
     const endTime = startTime + yearInMillis;
-    const amount = 1000000n
+    const amount = 1000000n;
     const origVesting = new Coin(amount, defaultDenom);
     const vestingData = new ContinuousVestingData(new Date(startTime), new Date(endTime), [origVesting]);
 
@@ -542,7 +531,6 @@ describe('user store tests', () => {
 
     userStore.calculateVestingLocked(new Date(endTime+1000000));
     expect(userStore.getVestingLockAmount).toBe(0n);
-
   });
 
   it('calculates locked vesting - no ContinuousVestingAccount', async () => {
@@ -580,27 +568,24 @@ describe('user store tests', () => {
 
     userStore.calculateVestingLocked(new Date(endTime+1000000));
     expect(userStore.getVestingLockAmount).toBe(0n);
-
   });
-
-  // TODO voting tests
-
-  // TODO Tx actions with rerfershng errors
 });
 
 async function testConnectBaseAccountExists(connect: () => Promise<void>, expectedConnectionType: ConnectionType) {
-
   const balanceAmount = 49031887606805n;
   const userStore = useUserStore();
   userStore.logOut();
+
   const account = { data: createBaseAccountResponseData(address) };
   const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
+  const spendableBalances = { data: createSpendableBalancesResponseData(address) };
   const rewards = { data: createRewardsResponseData() };
   const delegations = { data: createDelegatorDelegationsResponseData(address) };
   const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
   mockedAxios.request.mockResolvedValueOnce(account);
   mockedAxios.request.mockResolvedValueOnce(balance);
+  mockedAxios.request.mockResolvedValueOnce(spendableBalances);
   mockedAxios.request.mockResolvedValueOnce(rewards);
   mockedAxios.request.mockResolvedValueOnce(delegations);
   mockedAxios.request.mockResolvedValueOnce(undelegations);
@@ -611,7 +596,6 @@ async function testConnectBaseAccountExists(connect: () => Promise<void>, expect
 }
 
 async function testConnectAccountDoesNotExist(connect: () => Promise<void>, expectedConnectionType: ConnectionType) {
-
   const userStore = useUserStore();
   userStore.logOut();
 
@@ -624,18 +608,20 @@ async function testConnectAccountDoesNotExist(connect: () => Promise<void>, expe
 }
 
 async function testConnectConinuousVestingAccountExists(connect: () => Promise<void>, expectedConnectionType: ConnectionType) {
-
   const balanceAmount = 49031887606805n;
   const userStore = useUserStore();
   userStore.logOut();
+
   const account = { data: createContinuousVestingAccountResponseData(address) };
   const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
+  const spendableBalances = { data: createSpendableBalancesResponseData(address) };
   const rewards = { data: createRewardsResponseData() };
   const delegations = { data: createDelegatorDelegationsResponseData(address) };
   const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
   mockedAxios.request.mockResolvedValueOnce(account);
   mockedAxios.request.mockResolvedValueOnce(balance);
+  mockedAxios.request.mockResolvedValueOnce(spendableBalances);
   mockedAxios.request.mockResolvedValueOnce(rewards);
   mockedAxios.request.mockResolvedValueOnce(delegations);
   mockedAxios.request.mockResolvedValueOnce(undelegations);
@@ -646,7 +632,6 @@ async function testConnectConinuousVestingAccountExists(connect: () => Promise<v
 }
 
 async function testConnectAccountError(connect: () => Promise<void>) {
-
   const userStore = useUserStore();
   userStore.logOut();
 
@@ -656,23 +641,22 @@ async function testConnectAccountError(connect: () => Promise<void>) {
   await connect();
 
   expectDisconnected();
-
 }
 
 async function testConnectBalanceError(connect: () => Promise<void>) {
-
   const userStore = useUserStore();
   userStore.logOut();
 
   const account = { data: createBaseAccountResponseData(address) };
-  // const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
   const balanceError = createErrorResponse(404, 5, 'some error');
+  const spendableBalances = { data: createSpendableBalancesResponseData(address) };
   const rewards = { data: createRewardsResponseData() };
   const delegations = { data: createDelegatorDelegationsResponseData(address) };
   const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
   mockedAxios.request.mockResolvedValueOnce(account);
   mockedAxios.request.mockRejectedValueOnce(balanceError);
+  mockedAxios.request.mockResolvedValueOnce(spendableBalances);
   mockedAxios.request.mockResolvedValueOnce(rewards);
   mockedAxios.request.mockResolvedValueOnce(delegations);
   mockedAxios.request.mockResolvedValueOnce(undelegations);
@@ -680,186 +664,224 @@ async function testConnectBalanceError(connect: () => Promise<void>) {
   await connect();
 
   expectDisconnected();
-
 }
 
-async function testConnectRewardsError(connect: () => Promise<void>) {
-
+async function testConnectRewardsError(connect: () => Promise<void>, expectedConnectionType = ConnectionType.Address) {
   const userStore = useUserStore();
   userStore.logOut();
-  const balanceAmount = '49031887606805';
+  const balanceAmount = 49031887606805n;
 
   const account = { data: createBaseAccountResponseData(address) };
-  const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+  const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
+  const spendableBalances = { data: createSpendableBalancesResponseData(address) };
   const rewardsError = createErrorResponse(404, 5, 'some error');
-  // const rewards = { data: createRewardsResponseData() };
   const delegations = { data: createDelegatorDelegationsResponseData(address) };
   const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
   mockedAxios.request.mockResolvedValueOnce(account);
   mockedAxios.request.mockResolvedValueOnce(balance);
+  mockedAxios.request.mockResolvedValueOnce(spendableBalances);
   mockedAxios.request.mockRejectedValueOnce(rewardsError);
   mockedAxios.request.mockResolvedValueOnce(delegations);
   mockedAxios.request.mockResolvedValueOnce(undelegations);
 
   await connect();
 
-  expectDisconnected();
-
+  expectConnectionWithRewardsError(balanceAmount, expectedConnectionType);
 }
 
-async function testConnectDelegationsError(connect: () => Promise<void>) {
-
+async function testConnectDelegationsError(connect: () => Promise<void>, expectedConnectionType = ConnectionType.Address) {
   const userStore = useUserStore();
   userStore.logOut();
-  const balanceAmount = '49031887606805';
+  const balanceAmount = 49031887606805n;
 
   const account = { data: createBaseAccountResponseData(address) };
-  const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+  const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
+  const spendableBalances = { data: createSpendableBalancesResponseData(address) };
   const rewards = { data: createRewardsResponseData() };
   const delegationsError = createErrorResponse(404, 5, 'some error');
-  // const delegations = { data: createDelegatorDelegationsResponseData(address) };
   const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
 
   mockedAxios.request.mockResolvedValueOnce(account);
   mockedAxios.request.mockResolvedValueOnce(balance);
+  mockedAxios.request.mockResolvedValueOnce(spendableBalances);
   mockedAxios.request.mockResolvedValueOnce(rewards);
   mockedAxios.request.mockRejectedValueOnce(delegationsError);
   mockedAxios.request.mockResolvedValueOnce(undelegations);
 
   await connect();
 
-  expectDisconnected();
-
+  expectConnectionWithDelegationsError(balanceAmount, expectedConnectionType);
 }
 
-async function testConnectUndelegationError(connect: () => Promise<void>) {
-
+async function testConnectUndelegationError(connect: () => Promise<void>, expectedConnectionType = ConnectionType.Address) {
   const userStore = useUserStore();
   userStore.logOut();
-  const balanceAmount = '49031887606805';
+  const balanceAmount = 49031887606805n;
 
   const account = { data: createBaseAccountResponseData(address) };
-  const balance = { data: createSingleBalanceResponseData(denom, balanceAmount) };
+  const balance = { data: createSingleBalanceResponseData(denom, balanceAmount.toString()) };
+  const spendableBalances = { data: createSpendableBalancesResponseData(address) };
   const rewards = { data: createRewardsResponseData() };
   const delegations = { data: createDelegatorDelegationsResponseData(address) };
   const undelegationsError = createErrorResponse(404, 5, 'some error');
 
-  // const undelegations = { data: createDelegatorUnbondingDelegationsResponseData(address) };
-
   mockedAxios.request.mockResolvedValueOnce(account);
   mockedAxios.request.mockResolvedValueOnce(balance);
+  mockedAxios.request.mockResolvedValueOnce(spendableBalances);
   mockedAxios.request.mockResolvedValueOnce(rewards);
   mockedAxios.request.mockResolvedValueOnce(delegations);
   mockedAxios.request.mockRejectedValueOnce(undelegationsError);
 
   await connect();
 
-  expectDisconnected();
-
+  expectConnectionWithUndelegationsError(balanceAmount, expectedConnectionType);
 }
 
-function expectConnectionType(connectionType: ConnectionType) {
-  const userStore = useUserStore();
-  switch(connectionType) {
-    case(ConnectionType.Address): {
-      expectAddressConnectionInfo(userStore.connectionInfo, address);
-      break;
-    }
-    case(ConnectionType.Keplr): {
-      expectKeplrConnectionInfo(userStore.connectionInfo, address);
-      break;
-    }
-    case(ConnectionType.Disconnected): {
-      expectDisconnectedConnectionInfo(userStore.connectionInfo);
-      break;
-    }
-  }
-}
-
-function expectTxDeliverFailureBaseAccount(expectedBalanceAmount: bigint, expectedConnectionType: ConnectionType, expectedRewards = new Rewards()) {
-  const userStore = useUserStore();
+function expectConnectedBaseAccount(balanceAmount: bigint, expectedConnectionType: ConnectionType) {
   expectConnectionType(expectedConnectionType);
-  expect(userStore.getConnectionType).toBe(expectedConnectionType);
-  expectBaseAccount(userStore.getAccount, address);
-  expect(userStore.getBalance).toBe(expectedBalanceAmount);
-  expect(userStore.getRewards).toStrictEqual(expectedRewards);
-  expect(userStore.getDelegations).toStrictEqual(new Delegations());
-  expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
-  expect(userStore.isLoggedIn).toBe(true);
-  expect(userStore.getVestingLockAmount).toBe(0n);
-  expect(userStore.getTotalRewards).toStrictEqual(new BigDecimal(0));
-  expect(userStore.getTotalDelegated).toBe(0n);
-  expect(userStore.getTotalUndelegating).toBe(0n);
-  expect(userStore.isContinuousVestingAccount).toBe(false);
+  expect(useUserStore().getConnectionType).toBe(expectedConnectionType);
+  expectBaseAccount(useUserStore().getAccount, address);
+  expect(useUserStore().getBalance).toBe(balanceAmount);
+  expectRewards(useUserStore().getRewards);
+  expectDelegatorDelegations(useUserStore().getDelegations);
+  expectDelegatorUnbondingDelegations(useUserStore().getUndelegations);
+  expect(useUserStore().isLoggedIn).toBe(true);
+  expect(useUserStore().getVestingLockAmount).toBe(0n);
+  expect(useUserStore().getTotalRewards).toStrictEqual(useUserStore().rewards.totalRewards);
+  expect(useUserStore().getTotalDelegated).toBe(useUserStore().delegations.totalDelegated);
+  expect(useUserStore().getTotalUndelegating).toBe(useUserStore().undelegations.totalUndelegating);
+  expect(useUserStore().isContinuousVestingAccount).toBe(false);
+}
+
+function expectConnectedContinuousVestingAccount(balanceAmount: bigint, expectedConnectionType: ConnectionType) {
+  expectConnectionType(expectedConnectionType);
+  expect(useUserStore().getConnectionType).toBe(expectedConnectionType);
+  expectContinuousVestingAccount(useUserStore().getAccount, address);
+  expect(useUserStore().getBalance).toBe(balanceAmount);
+  expectRewards(useUserStore().getRewards);
+  expectDelegatorDelegations(useUserStore().getDelegations);
+  expectDelegatorUnbondingDelegations(useUserStore().getUndelegations);
+  expect(useUserStore().isLoggedIn).toBe(true);
+  expect(useUserStore().getTotalRewards).toStrictEqual(useUserStore().rewards.totalRewards);
+  expect(useUserStore().getTotalDelegated).toBe(useUserStore().delegations.totalDelegated);
+  expect(useUserStore().getTotalUndelegating).toBe(useUserStore().undelegations.totalUndelegating);
+  expect(useUserStore().isContinuousVestingAccount).toBe(true);
+}
+
+function expectConnectedNonexistent(expectedConnectionType: ConnectionType) {
+  expectConnectionType(expectedConnectionType);
+  expect(useUserStore().getConnectionType).toBe(expectedConnectionType);
+  expectNonExistentAccount(useUserStore().getAccount, address);
+  expect(useUserStore().getBalance).toBe(0n);
+  expect(useUserStore().getRewards).toStrictEqual(new Rewards());
+  expect(useUserStore().getDelegations).toStrictEqual(new Delegations());
+  expect(useUserStore().getUndelegations).toStrictEqual(new UnbondingDelegations());
+  expect(useUserStore().isLoggedIn).toBe(true);
+  expect(useUserStore().getVestingLockAmount).toBe(0n);
+  expect(useUserStore().getTotalRewards).toStrictEqual(useUserStore().rewards.totalRewards);
+  expect(useUserStore().getTotalDelegated).toBe(0n);
+  expect(useUserStore().getTotalUndelegating).toBe(0n);
+  expect(useUserStore().isContinuousVestingAccount).toBe(false);
 }
 
 function expectDisconnected() {
-  const userStore = useUserStore();
-  expectDisconnectedConnectionInfo(userStore.connectionInfo);
-  expect(userStore.getConnectionType).toBe(ConnectionType.Disconnected);
-  expectDisconnectedAccount(userStore.getAccount);
-  expect(userStore.getBalance).toBe(0n);
-  expect(userStore.getRewards).toStrictEqual(new Rewards());
-  expect(userStore.getDelegations).toStrictEqual(new Delegations());
-  expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
-  expect(userStore.isLoggedIn).toBe(false);
-  expect(userStore.getVestingLockAmount).toBe(0n);
-  expect(userStore.getTotalRewards).toStrictEqual(new BigDecimal(0));
-  expect(userStore.getTotalDelegated).toBe(0n);
-  expect(userStore.getTotalUndelegating).toBe(0n);
-  expect(userStore.isContinuousVestingAccount).toBe(false);
+  expectDisconnectedConnectionInfo(useUserStore().connectionInfo);
+  expectDisconnectedAccount(useUserStore().getAccount);
+  expect(useUserStore().getBalance).toBe(0n);
+  expect(useUserStore().getRewards).toStrictEqual(new Rewards());
+  expect(useUserStore().getDelegations).toStrictEqual(new Delegations());
+  expect(useUserStore().getUndelegations).toStrictEqual(new UnbondingDelegations());
+  expect(useUserStore().isLoggedIn).toBe(false);
+  expect(useUserStore().getVestingLockAmount).toBe(0n);
+  expect(useUserStore().getTotalRewards).toStrictEqual(useUserStore().rewards.totalRewards);
+  expect(useUserStore().getTotalDelegated).toBe(0n);
+  expect(useUserStore().getTotalUndelegating).toBe(0n);
+  expect(useUserStore().isContinuousVestingAccount).toBe(false);
 }
 
-function expectConnectedBaseAccount(balanceAmount: bigint, connectionType: ConnectionType) {
-  const userStore = useUserStore();
-  expectConnectionType(connectionType);
-  expect(userStore.getConnectionType).toBe(connectionType);
-  expectBaseAccount(userStore.getAccount, address);
-  expect(userStore.getBalance).toBe(balanceAmount);
-  expectRewards(userStore.getRewards);
-  expectDelegatorDelegations(userStore.getDelegations);
-  expectDelegatorUnbondingDelegations(userStore.getUndelegations);
-  expect(userStore.isLoggedIn).toBe(true);
-  expect(userStore.getVestingLockAmount).toBe(0n);
-  expect(userStore.getTotalRewards).toStrictEqual(userStore.rewards.totalRewards);
-  expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
-  expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);
-  expect(userStore.isContinuousVestingAccount).toBe(false);
+function expectConnectionType(expectedConnectionType: ConnectionType) {
+  const connectionInfo = useUserStore().connectionInfo;
+  expect(connectionInfo?.account).toBe(address);
+  expect(connectionInfo?.connectionType).toBe(expectedConnectionType);
+  expect(useUserStore().isLoggedIn).toBe(true);
+
+  if (expectedConnectionType === ConnectionType.Address) {
+    expect(connectionInfo?.modifiable).toBe(false);
+  }
 }
 
+function expectTxDeliverFailureBaseAccount(balanceAmount: bigint, expectedConnectionType: ConnectionType, expectedRewards?: Rewards, expectedDelegations?: Delegations) {
+  expectConnectionType(expectedConnectionType);
+  expect(useUserStore().getConnectionType).toBe(expectedConnectionType);
+  expectBaseAccount(useUserStore().getAccount, address);
+  expect(useUserStore().getBalance).toBe(balanceAmount);
 
-function expectConnectedNonexistent(connectionType: ConnectionType) {
-  const userStore = useUserStore();
-  expectConnectionType(connectionType);
-  expect(userStore.getConnectionType).toBe(connectionType);
-  expectNonExistentAccount(userStore.getAccount, address);
-  expect(userStore.getBalance).toBe(0n);
-  expect(userStore.getRewards).toStrictEqual(new Rewards());
-  expect(userStore.getDelegations).toStrictEqual(new Delegations());
+  if (expectedRewards) {
+    expect(useUserStore().getRewards).toStrictEqual(expectedRewards);
+  } else {
+    expect(useUserStore().getRewards).toBeDefined();
+  }
 
-  expect(userStore.getUndelegations).toStrictEqual(new UnbondingDelegations());
-  expect(userStore.isLoggedIn).toBe(true);
-  expect(userStore.getVestingLockAmount).toBe(0n);
-  expect(userStore.getTotalRewards).toStrictEqual(new BigDecimal(0));
-  expect(userStore.getTotalDelegated).toBe(0n);
-  expect(userStore.getTotalUndelegating).toBe(0n);
-  expect(userStore.isContinuousVestingAccount).toBe(false);
+  if (expectedDelegations) {
+    expect(useUserStore().getDelegations).toStrictEqual(expectedDelegations);
+  } else {
+    expect(useUserStore().getDelegations).toBeDefined();
+  }
+
+  expect(useUserStore().getUndelegations).toBeDefined();
+  expect(useUserStore().isLoggedIn).toBe(true);
+  expect(useUserStore().getVestingLockAmount).toBe(0n);
+  expect(useUserStore().getTotalRewards).toStrictEqual(useUserStore().rewards.totalRewards);
+  expect(useUserStore().getTotalDelegated).toBe(useUserStore().delegations.totalDelegated);
+  expect(useUserStore().getTotalUndelegating).toBe(useUserStore().undelegations.totalUndelegating);
+  expect(useUserStore().isContinuousVestingAccount).toBe(false);
 }
 
-function expectConnectedContinuousVestingAccount(balanceAmount: bigint, connectionType: ConnectionType) {
-  const userStore = useUserStore();
-  expectConnectionType(connectionType);
-  expect(userStore.getConnectionType).toBe(connectionType);
-  expectContinuousVestingAccount(userStore.getAccount, address);
-  expect(userStore.getBalance).toBe(balanceAmount);
-  expectRewards(userStore.getRewards);
-  expectDelegatorDelegations(userStore.getDelegations);
-  expectDelegatorUnbondingDelegations(userStore.getUndelegations);
-  expect(userStore.isLoggedIn).toBe(true);
-  expect(userStore.getVestingLockAmount).toBe(0n);
-  expect(userStore.getTotalRewards).toStrictEqual(userStore.rewards.totalRewards);
-  expect(userStore.getTotalDelegated).toBe(userStore.delegations.totalDelegated);
-  expect(userStore.getTotalUndelegating).toBe(userStore.undelegations.totalUndelegating);
-  expect(userStore.isContinuousVestingAccount).toBe(true);
+function expectConnectionWithRewardsError(balanceAmount: bigint, expectedConnectionType: ConnectionType) {
+  expectConnectionType(expectedConnectionType);
+  expect(useUserStore().getConnectionType).toBe(expectedConnectionType);
+  expectBaseAccount(useUserStore().getAccount, address);
+  expect(useUserStore().getBalance).toBe(balanceAmount);
+  expect(useUserStore().getRewards).toStrictEqual(new Rewards());
+  expectDelegatorDelegations(useUserStore().getDelegations);
+  expectDelegatorUnbondingDelegations(useUserStore().getUndelegations);
+  expect(useUserStore().isLoggedIn).toBe(true);
+  expect(useUserStore().getVestingLockAmount).toBe(0n);
+  expect(useUserStore().getTotalRewards).toStrictEqual(useUserStore().rewards.totalRewards);
+  expect(useUserStore().getTotalDelegated).toBe(useUserStore().delegations.totalDelegated);
+  expect(useUserStore().getTotalUndelegating).toBe(useUserStore().undelegations.totalUndelegating);
+  expect(useUserStore().isContinuousVestingAccount).toBe(false);
+}
+
+function expectConnectionWithDelegationsError(balanceAmount: bigint, expectedConnectionType: ConnectionType) {
+  expectConnectionType(expectedConnectionType);
+  expect(useUserStore().getConnectionType).toBe(expectedConnectionType);
+  expectBaseAccount(useUserStore().getAccount, address);
+  expect(useUserStore().getBalance).toBe(balanceAmount);
+  expectRewards(useUserStore().getRewards);
+  expect(useUserStore().getDelegations).toStrictEqual(new Delegations());
+  expectDelegatorUnbondingDelegations(useUserStore().getUndelegations);
+  expect(useUserStore().isLoggedIn).toBe(true);
+  expect(useUserStore().getVestingLockAmount).toBe(0n);
+  expect(useUserStore().getTotalRewards).toStrictEqual(useUserStore().rewards.totalRewards);
+  expect(useUserStore().getTotalDelegated).toBe(0n);
+  expect(useUserStore().getTotalUndelegating).toBe(useUserStore().undelegations.totalUndelegating);
+  expect(useUserStore().isContinuousVestingAccount).toBe(false);
+}
+
+function expectConnectionWithUndelegationsError(balanceAmount: bigint, expectedConnectionType: ConnectionType) {
+  expectConnectionType(expectedConnectionType);
+  expect(useUserStore().getConnectionType).toBe(expectedConnectionType);
+  expectBaseAccount(useUserStore().getAccount, address);
+  expect(useUserStore().getBalance).toBe(balanceAmount);
+  expectRewards(useUserStore().getRewards);
+  expectDelegatorDelegations(useUserStore().getDelegations);
+  expect(useUserStore().getUndelegations).toStrictEqual(new UnbondingDelegations());
+  expect(useUserStore().isLoggedIn).toBe(true);
+  expect(useUserStore().getVestingLockAmount).toBe(0n);
+  expect(useUserStore().getTotalRewards).toStrictEqual(useUserStore().rewards.totalRewards);
+  expect(useUserStore().getTotalDelegated).toBe(useUserStore().delegations.totalDelegated);
+  expect(useUserStore().getTotalUndelegating).toBe(0n);
+  expect(useUserStore().isContinuousVestingAccount).toBe(false);
 }

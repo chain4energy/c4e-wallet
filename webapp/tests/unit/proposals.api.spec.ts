@@ -269,12 +269,26 @@ describe('test proposals API', () => {
 
     mockedAxios.request.mockResolvedValue(tally);
     const result = await api.fetchVotingProposalTallyResult(2, false);
+
+    // Add debugging
+    //console.log('=== FETCH TALLY RESULT DEBUG ===');
+    //console.log('Result:', result);
+    //console.log('Result.error:', result.error);
+    //console.log('Result.data:', result.data);
+    //console.log('Result.isError():', result.isError());
+    //console.log('Result.isSuccess():', result.isSuccess());
+    //console.log('Expected error message:', 'mapProposalTallyResult - tally is undefined');
+    //console.log('Actual error message:', result.error?.message);
+    //console.log('Expected error name:', defaultErrorName);
+    //console.log('Actual error name:', result.error?.name);
+    //console.log('================================');
+
     expect(result.isError()).toBe(true);
     expect(result.isSuccess()).toBe(false);
     expect(result.data).toBeUndefined();
     expect(result.error).not.toBeUndefined();
     expect(result.error?.name).toBe(defaultErrorName);
-    expect(result.error?.message).toBe('mapProposalTallyResult -tally is undefined');
+    expect(result.error?.message).toBe('mapProposalTallyResult - tally is undefined');
     expect(result.error?.data).toBeUndefined();
 
   });

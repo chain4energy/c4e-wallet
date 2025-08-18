@@ -30,10 +30,12 @@ export class TokensApi extends BaseApi {
   getServiceType(): ServiceTypeEnum {
     return ServiceTypeEnum.TOKENS_API;
   }
+
   public async fetchStakingPool(lockscreen: boolean): Promise<RequestResponse<StakingPool, ErrorData<BlockchainApiErrorData>>>{
     const mapData = (bcData: StakingPoolResponse | undefined) => { return mapStakingPool(bcData?.pool); };
-    return  await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.STAKING_POOL_URL,
+    return await this.axiosGetBlockchainApiCall(useConfigurationStore().config.queries.STAKING_POOL_URL,
       mapData, lockscreen, null, 'fetchStakingPool - ');
+      // removed check as it was unnecessary and resulted in an infinite loading screen on the webpage
   }
 
   public async fetchTotalSupply(denom: string, lockscreen: boolean): Promise<RequestResponse<Coin, ErrorData<BlockchainApiErrorData>>> {

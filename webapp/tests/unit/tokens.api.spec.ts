@@ -79,16 +79,17 @@ describe('tokens api tests', () => {
 
   it('gets staking pool - bad data', async () => {
     const stakingPool = {
-      data: {}
+      data: {}  // returns 0n, 0n which is a proper behavior and is already handled properly
     };
 
     mockedAxios.request.mockResolvedValue(stakingPool);
     const result = await api.fetchStakingPool(false);
-    expect(result.isError()).toBe(true);
-    expect(result.isSuccess()).toBe(false);
-    expect(result.error?.name).toBe(defaultErrorName);
-    expect(result.error?.message).toBe('Staking Pool is undefined');
-    expect(result.error?.data).toBeUndefined();
+
+    expect(result.isError()).toBe(false);
+    expect(result.isSuccess()).toBe(true);
+    expect(result.error).toBeUndefined();
+
+    expectStakingPool(result.data, 0n, 0n);
   });
 
   it('gets total supply - exists', async () => {

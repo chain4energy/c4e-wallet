@@ -27,8 +27,10 @@ describe('map tokens', () => {
   });
 
   it('maps undefined coin and denom', async () => {
-    expect(() => {mapStakingPool(undefined);}).toThrowError(new Error('Staking Pool is undefined'));
-
+    const pool = mapStakingPool(undefined);
+    expect(pool).toBeInstanceOf(StoreStakingPool);
+    expect(pool.bondedTokens).toBe(BigInt(0));
+    expect(pool.notBondedTokens).toBe(BigInt(0));
   });
 
   it('maps token price - ok', async () => {
