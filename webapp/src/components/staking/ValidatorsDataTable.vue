@@ -39,34 +39,13 @@
             <ValidatorStatusBadge :validator="data"/>
           </template>
         </Column>
-        <Column v-if="isValidatorsTable()" field="commission.rate" header="Commission" :sortable="true" sortField="commission.rate">
+        <Column v-if="isValidatorsTable()" field="commission.rate" :sortable="true" sortField="commission.rate" bodyStyle="text-align: center;">
+          <template #header>
+            <div style="text-align: center; width: 100%;">Commission</div>
+          </template>
           <template #body="{data}">
             <span class="p-column-title">Comission</span>
             <PercentsView :amount="data.commission.rate" :precision="2"></PercentsView>
-          </template>
-        </Column>
-        <Column v-if="isValidatorsTable()" field="votingPower" :header="$t(`STAKING_VIEW.TABLE.VOTING_POWER`)" :sortable="true" sortField="tokens">
-          <template #body="{data}">
-            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.VOTING_POWER`)}}</span>
-            <div v-if="data.votingPower" style="width: 100%">
-            <div v-if="data.votingPower < 0.05" class="commision">
-              <div class="level-1" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
-            </div>
-            <div v-if="data.votingPower >= 0.05 && data.votingPower < .10" class="commision">
-              <div class="level-2" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
-            </div>
-            <div v-if="data.votingPower >= .10 && data.votingPower < .25" class="commision">
-              <div class="level-3" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
-            </div>
-            <div v-if="data.votingPower >= .25" class="commision">
-              <div class="level-4" :style="'flex-basis:' + (data.votingPower * 100).toFixed(2) + '%'"></div>
-              <PercentsView class="level-border" :amount="data.votingPower" :precision="2"></PercentsView>
-            </div>
-            </div>
-            <span v-else>updating</span>
           </template>
         </Column>
         <Column v-if="isDelegationsTable()" :header="$t(`STAKING_VIEW.TABLE.STAKE`)" :sortable="true" sortField="delegatedAmount">
@@ -93,12 +72,17 @@
             <span><DateCommon :date="data.entry.getCompletionTimeDate()" /></span>
           </template>
         </Column>
-        <Column v-if="!isUndelegationsTable()" field="operator_address">
+
+        <Column v-if="isValidatorsTable()" field="votingPower" :sortable="true" sortField="tokens" bodyStyle="text-align: center;">
+          <template #header>
+            <div style="text-align: center; width: 100%;">{{$t(`STAKING_VIEW.TABLE.VOTING_POWER`)}}</div>
+          </template>
           <template #body="{data}">
-            <Button class="outlined" @click="checkBTN(data)">
-              <StakeManagementIcon icon="manage"/>
-              {{ $t(`STAKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}
-            </Button>
+            <span class="p-column-title">{{$t(`STAKING_VIEW.TABLE.VOTING_POWER`)}}</span>
+            <span v-if="data.votingPower">
+              <PercentsView :amount="data.votingPower" :precision="2"></PercentsView>
+            </span>
+            <span v-else>updating</span>
           </template>
         </Column>
 
@@ -108,6 +92,15 @@
               <Icon @click="onRowExpand(data)" v-if="data.operatorAddress !== expandedRow[0]?.operatorAddress" name="ChevronRight" />
               <Icon @click="onRowExpand(data)" v-if="data.operatorAddress === expandedRow[0]?.operatorAddress" name="ChevronDown" />
             </span>
+          </template>
+        </Column>
+
+        <Column v-if="!isUndelegationsTable()" field="operator_address">
+          <template #body="{data}">
+            <Button class="outlined" @click="checkBTN(data)">
+              <StakeManagementIcon icon="manage"/>
+              {{ $t(`STAKING_VIEW.TABLE_BUTTONS.MANAGE_BTN`) }}
+            </Button>
           </template>
         </Column>
 
@@ -441,9 +434,71 @@ const filters = ref({
       transform: none !important;
     }
 
-    .p-datatable .p-datatable-tbody > tr > td > .p-column-title {
-      display: block;
+    // hide table headers on mobile
+    .p-datatable .p-datatable-thead {
+      display: none !important;
     }
+
+    // show column titles inside cards
+    .p-datatable .p-datatable-tbody > tr > td > .p-column-title {
+      display: block !important;
+      font-weight: 600;
+      color: #666;
+      font-size: 0.875rem;
+      margin-bottom: 4px;
+    }
+
+    // mobile validator cards with proper spacing and styling
+    .p-datatable .p-datatable-tbody > tr {
+      display: block !important;
+      margin-bottom: 20px !important;
+      border-radius: 12px !important;
+      background: white !important;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1) !important;
+      border: 1px solid #e5e7eb !important;
+      overflow: hidden !important;
+      padding: 16px !important;
+    }
+
+    .p-datatable .p-datatable-tbody > tr > td {
+      display: block !important;
+      border: none !important;
+      padding: 8px 0 !important;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .p-datatable .p-datatable-tbody > tr > td:last-child {
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+
+    .p-datatable .p-datatable-tbody > tr:last-child {
+      margin-bottom: 0 !important;
+    }
+
+    // remove default table styling on mobile
+    .p-datatable .p-datatable-tbody {
+      border: none !important;
+    }
+
+    .p-datatable {
+      border: none !important;
+    }
+  }
+  //
+
+  .p-datatable .p-datatable-thead > tr > th .p-column-header-content {
+    justify-content: center !important;
+  }
+
+  .p-datatable .p-datatable-thead > tr > th[data-field="commission.rate"],
+  .p-datatable .p-datatable-thead > tr > th[data-field="votingPower"] {
+    text-align: center !important;
+  }
+
+  .p-datatable .p-datatable-thead > tr > th[data-field="commission.rate"] .p-sortable-column-icon,
+  .p-datatable .p-datatable-thead > tr > th[data-field="votingPower"] .p-sortable-column-icon {
+    margin-left: 0.25rem;
   }
 
 </style>

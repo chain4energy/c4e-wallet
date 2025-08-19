@@ -8,18 +8,6 @@
     <TabView lazy>
       <TabPanel>
         <template #header>
-          <ValidatorsStatusLabel status="all"/>
-        </template>
-        <ValidatorsDataTable :validators="useValidatorsStore().getValidators" :type="ValidatorsDataTableType.VALIDATORS"/>
-      </TabPanel>
-      <!-- <TabPanel v-if="isLoggedIn">
-        <template #header>
-          <ValidatorsStatusLabel status="staked"/>
-        </template>
-        <ValidatorsDataTable :validators="useValidatorsStore().getUserValidators" :type="ValidatorsDataTableType.VALIDATORS"/>
-      </TabPanel> -->
-      <TabPanel>
-        <template #header>
           <ValidatorsStatusLabel status="active"/>
         </template>
         <ValidatorsDataTable :validators="useValidatorsStore().getActiveValidators" :type="ValidatorsDataTableType.VALIDATORS"/>
@@ -30,6 +18,20 @@
         </template>
         <ValidatorsDataTable :validators="useValidatorsStore().getInactiveValidators" :type="ValidatorsDataTableType.VALIDATORS"/>
       </TabPanel>
+
+      <TabPanel>
+        <template #header>
+          <ValidatorsStatusLabel status="all"/>
+        </template>
+        <ValidatorsDataTable :validators="useValidatorsStore().getValidators" :type="ValidatorsDataTableType.VALIDATORS"/>
+      </TabPanel>
+      <!-- <TabPanel v-if="isLoggedIn">
+        <template #header>
+          <ValidatorsStatusLabel status="staked"/>
+        </template>
+        <ValidatorsDataTable :validators="useValidatorsStore().getUserValidators" :type="ValidatorsDataTableType.VALIDATORS"/>
+      </TabPanel> -->
+
     </TabView>
 
   </div>
