@@ -191,8 +191,11 @@ export const useProposalsStore = defineStore({
           }
           this.proposalsTally.set(id, resp.data);
 
+        } else if (resp.data == undefined) {
+          return 0;
+
         } else {
-          const message = 'Error fetching proposal tally data';
+          const message = 'Error fetching proposal tally data. Data: ' + resp.data;
           logger.logToConsole(LogLevel.ERROR, message);
           ToastsService.getInstance().errorToast(ToastsTypeEnum.PROPOSAL_TALLY_RESULT, message);
         }
