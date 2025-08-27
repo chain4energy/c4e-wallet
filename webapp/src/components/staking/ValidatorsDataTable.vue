@@ -275,16 +275,20 @@ const filters = ref({
 .flex-container-details {
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
 
   .item {
     display: flex;
     flex-direction: column;
+    text-align: center;
 
     div {
       padding: 10px 10px 0 10px;
       margin: 0 10px;
       font-size: 1em;
       color: gray;
+      text-align: center;
     }
   }
 }

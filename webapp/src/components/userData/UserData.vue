@@ -125,10 +125,6 @@ const representData = computed(()=> {
 .vesting {
   display: flex;
   flex-wrap: nowrap;
-
-  div {
-
-  }
 }
 .userdata{
   display: flex;
@@ -279,10 +275,23 @@ const representData = computed(()=> {
   .userdata {
     height: 80px;
     transition: 0.2s all ease-in-out;
+    overflow: hidden;
 
     &:hover {
       height: auto;
       max-height: initial;
+    }
+
+    &__accountData {
+      width: 100% !important;
+
+      &-base {
+        width: 100% !important;
+        margin-left: 0 !important;
+        justify-content: space-between !important;
+        flex-direction: row !important;
+        align-items: flex-start !important;
+      }
     }
 
     &__rewards {
@@ -290,9 +299,25 @@ const representData = computed(()=> {
       height: auto;
       padding: 10px;
       justify-content: center;
+      width: 100% !important;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+      .userdata__rewardAmount {
+        text-align: center !important;
+        margin-bottom: 10px !important;
+      }
+    }
+
+    &:hover &__rewards {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    &__claimAmount {
+      text-align: center !important;
     }
   }
-
-
 }
 </style>

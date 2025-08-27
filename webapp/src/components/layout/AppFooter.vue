@@ -95,6 +95,27 @@ onMounted(() => {
     background-color: white;
   }
 }
+
+// make the footer be at the bottom of the page for mobile
+@media screen and (max-width: 950px) {
+  .footer {
+    width: 100% !important;
+    margin-left: 0 !important;
+    padding: 15px 5% !important;
+    position: static !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: auto !important;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1) !important;
+    margin-top: 20px !important;
+
+    span {
+      font-size: 0.875rem;
+      margin-left: 10px;
+    }
+  }
+}
 </style>
 
 

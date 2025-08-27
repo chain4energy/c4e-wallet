@@ -115,7 +115,7 @@
     </div>
     <div class="mobile-menu" :class="dropdown ? 'mobile-menu-open' : ''">
       <div class="header">
-        <Image class="navbar-brand" :src="require('../../assets/c4elogo-new.svg')" alt="Image" height="36"/>
+        <Image class="navbar-brand" :src="require('../../assets/c4elogo-dark.png')" alt="Image" height="48"/>
         <div @click="toggleDropdown">
           <Icon name="X"/>
         </div>
@@ -134,8 +134,8 @@
           $t('COMMON.CONNECT')
         }}
       </Button>
+      <span>Connected to:</span>
       <span style="display: flex;width: 100%;align-items: center;justify-content: space-around; margin: 10px 0;">
-          <span>Connected to:</span>
           <span>
             <span class="net-changer">
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">

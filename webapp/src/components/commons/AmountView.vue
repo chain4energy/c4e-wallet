@@ -229,13 +229,62 @@ function onVestingClick(){
 
 @media screen and (max-width: 650px) {
   .userdata-container {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     height: auto;
-    padding: 10px;
-    justify-content: center;
+    padding: 8px;
+    justify-content: space-between;
+    width: 100%;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
 
     .userdata-option{
-      margin: 10px;
+      transition: all 0.2s ease-in-out;
+      width: calc(50% - 2px);
+      margin: 0;
+      min-width: 0;
+      flex-shrink: 1;
+
+      &:first-child {
+        text-align: left;
+        align-items: flex-start;
+      }
+
+      &:nth-child(2) {
+        text-align: right;
+        align-items: flex-end;
+      }
+
+      &:nth-child(3) {
+        display: none;
+        text-align: left;
+        align-items: flex-start;
+      }
+
+      &:nth-child(4) {
+        display: none;
+        text-align: right;
+        align-items: flex-end;
+      }
+
+      .header {
+        font-size: 0.7em !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    &:hover,
+    .userdata:hover & {
+      flex-wrap: wrap;
+      gap: 4px;
+
+      .userdata-option {
+        &:nth-child(3),
+        &:nth-child(4) {
+          display: flex !important;
+        }
+      }
     }
   }
 
@@ -249,5 +298,20 @@ function onVestingClick(){
         margin: 10px;
       }
     }
+}
+
+@media screen and (max-width: 375px) {
+  .userdata-container {
+    padding: 6px !important;
+    gap: 2px !important;
+
+    .userdata-option {
+      width: calc(50% - 1px) !important;
+
+      .header {
+        font-size: 0.65em !important;
+      }
+    }
+  }
 }
 </style>

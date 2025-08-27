@@ -50,4 +50,12 @@ window.onload = async () =>{
 
 <style lang="scss">
 @import './styles/app.scss';
+
+// hide currentblockchain component on mobile
+@media screen and (max-width: 950px) {
+  .currentBlockchain,
+  app-sidebar {
+    display: none !important;
+  }
+}
 </style>
