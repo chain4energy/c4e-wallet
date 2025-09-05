@@ -15,6 +15,9 @@ export class PermissionsService{
     if(this.chargEraVisible()) {
       tempPagesEnum.push(PagesEnum.CHARGERA);
     }
+    if(this.greenTreasuryVisible()) {
+      tempPagesEnum.push(PagesEnum.GREENTREASURY);
+    }
     return tempPagesEnum;
   }
 
@@ -28,6 +31,10 @@ export class PermissionsService{
 
   chargEraVisible(): boolean {
     return useConfigurationStore().config.chargEraVisible;
+  }
+
+  greenTreasuryVisible(): boolean {
+    return useConfigurationStore().config.greenTreasuryVisible;
   }
 
   createSideBar(): SidebarElement[]{

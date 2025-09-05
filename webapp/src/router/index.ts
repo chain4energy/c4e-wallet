@@ -17,6 +17,7 @@ import SignUpView from "@/views/buyTokens/SignUpView.vue";
 import ProvideVerificationCodeView from "@/views/buyTokens/ProvideVerificationCodeView.vue";
 import {portfolioRoutes} from "@/router/portfolioRoutes";
 import { chargeraRoutes } from '@/router/chargeraRoutes';
+import { greenTreasuryRoutes } from '@/router/greenTreasury';
 import {resetPasswordRoutes} from "@/router/resetPasswordRoutes";
 import boostRoutes from "@/router/boostRoutes";
 import DistributionView from "@/views/DistributionView.vue";
@@ -147,7 +148,8 @@ const routes: Array<RouteRecordRaw> = [
   portfolioRoutes,
   ...resetPasswordRoutes,
   boostRoutes,
-  chargeraRoutes
+  chargeraRoutes,
+  greenTreasuryRoutes
 ];
 
 const router = createRouter({

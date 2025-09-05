@@ -11,6 +11,17 @@
     "CONNECT_TERMS": "I have read and accept {0} and {1}",
     "CONNECT_TERMS_LINK_TERMS": "Terms & Conditions",
     "CONNECT_TERMS_LINK_POLICY": "Privacy Policy",
+    "CHARGERA_LOGIN": "ChargEra Login",
+    "CHARGERA_LOGIN_MESSAGE": "Please sign in to your ChargEra account to connect your wallet",
+    "EMAIL": "Email",
+    "EMAIL_PLACEHOLDER": "Enter your email address",
+    "PASSWORD": "Password",
+    "PASSWORD_PLACEHOLDER": "Enter your password",
+    "LOGIN": "Login",
+    "LOGIN_SUCCESS": "Successfully logged in!",
+    "LOGIN_FAILED": "Login failed. Please check your credentials.",
+    "FORGOT_PASSWORD": "Forgot Password?",
+    "CREATE_ACCOUNT": "Create Account",
     "ADDRESS_HELP": "Explore with any address",
     "INSERT_ADDRESS": "Blockchain address",
     "VIEW_EXPLORER": "View on explorer",
@@ -363,6 +374,7 @@
     "STAKING": "Staking",
     "DASHBOARD": "Dashboard",
     "CHARGERA": "ChargEra",
+    "GREENTREASURY": "Green Treasury",
     "PROPOSALSLIST": "Governance",
     "GOVERNANCE": "Governance",
     "GOVERNANCE_PROPOSALSLIST": "Governance",
@@ -622,6 +634,12 @@
     "VALIDATION_ERRORS": {
       "PASSWORD_REGEX": "The password must consist of min. 8 characters (Must contain one letter, one number, one special character)"
     }
+  },
+  "VALIDATION": {
+    "EMAIL_REQUIRED": "Email is required",
+    "EMAIL_INVALID": "Please enter a valid email address",
+    "PASSWORD_REQUIRED": "Password is required",
+    "PASSWORD_MIN_LENGTH": "Password must be at least 6 characters long"
   },
   "PORTFOLIO_VIEW": {
     "TOKEN_PRICE": "C4E price",

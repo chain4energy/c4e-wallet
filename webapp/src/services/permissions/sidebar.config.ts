@@ -16,6 +16,7 @@ export class SidebarConfig{
     this.config.set(PagesEnum.BOOST, this.createBoost());
     this.config.set(PagesEnum.DISTRIBUTION, this.createDistribution());
     this.config.set(PagesEnum.CHARGERA, this.createChargEra());
+    this.config.set(PagesEnum.GREENTREASURY, this.createGreenTreasury());
   }
 
   getConfigForPage(page: PagesEnum): SidebarElement | undefined{
@@ -117,6 +118,15 @@ export class SidebarConfig{
     retVal.href = '/chargera';
     retVal.title = 'ChargEra';
     retVal.icon = new SidebarIcon('HandCoins');
+    return retVal;
+  }
+
+  private createGreenTreasury(): SidebarElement{
+    const retVal = new SidebarElement();
+    retVal.id = 10;
+    retVal.href = '/greentreasury';
+    retVal.title = 'GreenTreasury';
+    retVal.icon = new SidebarIcon('TreeDeciduous');
     return retVal;
   }
 

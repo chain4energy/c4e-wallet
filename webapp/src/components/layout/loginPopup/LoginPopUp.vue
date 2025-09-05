@@ -7,9 +7,10 @@
                  @leap="leapConnect"
                  @chargEra="chargEraConnect"
                  @back="loginType = LoginChoose"
-                 @typeChange="(comp) => loginType = comp"
+                 @typeChange="(comp: Component) => loginType = comp"
                  @close="$emit('close')"
                  @cosmostation="cosmostationConnect"
+                 @loginSuccess="onChargEraLoginSuccess"
                  :showAddressOption="props.showAddressOption"
                  v-bind:is="loginType">
       </component>
@@ -20,8 +21,9 @@
 
 <script setup lang="ts">
 import LoginChoose from '@/components/layout/loginPopup/LoginChoose.vue';
+import ChargEraLogin from '@/components/layout/loginPopup/ChargEraLogin.vue';
 
-import { onUnmounted, shallowRef } from "vue";
+import { onUnmounted, shallowRef, Component } from "vue";
 import dataService from '@/services/data.service';
 
 const props = defineProps({
@@ -39,7 +41,7 @@ onUnmounted(() => {
 
 const emit = defineEmits(['close', 'typeChange', 'connected']);
 
-const loginType = shallowRef(LoginChoose);
+const loginType = shallowRef<Component>(LoginChoose);
 
 function keplrConnect(){
   dataService.onKeplrLogIn(() => {emit('close');emit('connected');});
@@ -60,7 +62,20 @@ const leapConnect = () => {
 };
 
 const chargEraConnect = () => {
-  dataService.onChargEraLogIn(() => {emit('close');emit('connected');});
+  loginType.value = ChargEraLogin;
+};
+
+const onChargEraLoginSuccess = (userData: {email: string, token?: string, user?: unknown, address?: string}) => {
+  // handle successful ChargEra login
+  console.log('LoginPopUp: ChargEra login successful for:', userData.email);
+  console.log('LoginPopUp: Using address-based connection for ChargEra...');
+  // use the address from ChargEra response or fallback to static address
+  const chargEraAddress = userData.address || 'c4e1mzy0xrh86cyesp37t7sk67qzza6svchsajs9r7';
+  dataService.onAddressLogIn(chargEraAddress, () => {
+    console.log('LoginPopUp: Address connection successful, closing popup...');
+    emit('close');
+    emit('connected');
+  });
 };
 
 </script>

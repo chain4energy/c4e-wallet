@@ -87,7 +87,7 @@ export default class WalletConnectionApi extends LoggedService {
       false,
       ConnectionType.Address,
     );
-    return new RequestResponse<ConnectionInfo, any>(undefined, connection);
+    return new RequestResponse<ConnectionInfo, ConnectionError>(undefined, connection);
   }
 
   public connectKeplr(): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
@@ -127,7 +127,7 @@ export default class WalletConnectionApi extends LoggedService {
 
     const metamaskConnectionInfo: MetamaskConnectionInfo = {address:address, networkId: chainId};
 
-    return new RequestResponse<MetamaskConnectionInfo, any>(undefined, metamaskConnectionInfo);
+    return new RequestResponse<MetamaskConnectionInfo, ConnectionError>(undefined, metamaskConnectionInfo);
   }
   public async connect(connectionType: ConnectionType): Promise<RequestResponse<ConnectionInfo, ConnectionError>> {
     useSplashStore().increment();
@@ -147,7 +147,15 @@ export default class WalletConnectionApi extends LoggedService {
       connectTypeMessage = 'connectLeap';
       notInstalledMessage = 'Leap not installed';
     } else if(connectionType == ConnectionType.ChargEra) {
-      return new RequestResponse<ConnectionInfo, ConnectionError>(new ConnectionError('ChargEra connection not implemented yet'));
+      const mockChargEraConnection: ConnectionInfo = new ConnectionInfo(
+        //'c4e1chargera' + Math.random().toString(36).substring(2, 15), // generate a mock address
+        'c4e1mzy0xrh86cyesp37t7sk67qzza6svchsajs9r7', // fixed address for testing
+        true,
+        ConnectionType.ChargEra,
+        new Uint8Array(32), // mock public key
+        'ChargEra User'
+      );
+      return new RequestResponse<ConnectionInfo, ConnectionError>(undefined, mockChargEraConnection);
     }
 
     try {
@@ -166,7 +174,7 @@ export default class WalletConnectionApi extends LoggedService {
           account[0].pubkey,
           key?.name,
         );
-        return new RequestResponse<ConnectionInfo, any>(undefined, connection);
+        return new RequestResponse<ConnectionInfo, ConnectionError>(undefined, connection);
       } else {
         this.logToConsole(LogLevel.ERROR, connectTypeMessage+': '+notInstalledMessage);
         toast.error(notInstalledMessage);

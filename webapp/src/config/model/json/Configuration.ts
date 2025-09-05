@@ -113,6 +113,7 @@ export interface Configuration {
   transferDenom: string;
   publicSaleVisible: boolean;
   chargEraVisible: boolean;
+  greenTreasuryVisible: boolean;
   useAminoOnly: boolean;
   loyaltyDropService: JsonLoyaltyDropConfig;
   circulatingSupplyVisible:  boolean;

@@ -326,6 +326,16 @@ class DataService extends LoggedService {
     // clear ChargEra data
   }
 
+  public onGreenTreasurySelected() {
+    this.logToConsole(LogLevel.DEBUG, 'onGreenTreasurySelected');
+    // fetch Green Treasury data
+  }
+
+  public onGreenTreasuryUnselected() {
+    this.logToConsole(LogLevel.DEBUG, 'onGreenTreasuryUnselected');
+    // clear Green Treasury data
+  }
+
   public async onProposalSelected(proposeId: number, onSuccess: () => void, onError: () => void) {
     this.logToConsole(LogLevel.DEBUG, 'onProposalSelected');
     this.onProposalDetailsError = onError;
