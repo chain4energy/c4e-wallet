@@ -143,9 +143,17 @@ const routes: Array<RouteRecordRaw> = [
       isPublicSale: true
     },
   },
+  {
+    path: '/greentreasury',
+    name: 'greentreasury',
+    component: () => import('@/views/GreenTreasuryView.vue'),
+      meta: {
+      requiresNotMainNetwork: true
+    }
+  },
   portfolioRoutes,
   ...resetPasswordRoutes,
-  boostRoutes
+  boostRoutes,
 ];
 
 const router = createRouter({

@@ -68,6 +68,7 @@ data:
       "faucetAvailable": true,
       "currentPublicSaleRoundId": 1,
       "publicSaleVisible": false,
+      "greenTreasuryVisible": true,
       "loyaltyDropService": {
         "loyaltyDropBaseUrl": "https://loyalty-drop-testnet.c4e.io/api/loyalty-drop"
       },
@@ -168,6 +169,7 @@ data:
         "currentPublicSaleRoundId": 1,
         "faucetAvailable": false,
         "publicSaleVisible": false,
+        "greenTreasuryVisible": true,
         "loyaltyDropService": {
           "loyaltyDropBaseUrl": "https://loyalty-drop-mainnet.c4e.io/api/loyalty-drop"
         },

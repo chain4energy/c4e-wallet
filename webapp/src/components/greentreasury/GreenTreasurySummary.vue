@@ -66,18 +66,19 @@
 
       <div v-else-if="fundData.length > 0" class="community-pool-data">
         <div class="data-summary">
-          <p><strong>Deposits:</strong> {{ fundData.length }}</p>
+          <p><strong>Total Deposits:</strong> {{ fundData.length }}</p>
         </div>
 
         <div class="amounts-list">
           <h3></h3>
-          <div class="amounts-grid">
+          <div class="amounts-grid" :style="gridStyle">
             <div
-              v-for="(fund, index) in fundData.slice(0, 20)"
+              v-for="(fund, index) in paginatedFundData"
               :key="index"
               class="amount-item"
             >
               <div class="amount-value">{{ formatFundAmount(fund.amount) }}</div>
+              <div class="timestamp" :title="`${splitTimestamp(fund.timestamp).date} ${splitTimestamp(fund.timestamp).time}`">{{ splitTimestamp(fund.timestamp).date }}</div>
               <div
                 class="depositor-address"
                 @click="copyAddress(fund.depositor)"
@@ -86,6 +87,28 @@
                 {{ shortenAddress(fund.depositor) }}
               </div>
             </div>
+          </div>
+
+          <div class="pagination-controls">
+            <button
+              @click="goToPage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="pagination-btn"
+            >
+              ← Previous
+            </button>
+
+            <div class="page-info">
+              <span>Page {{ currentPage }} of {{ totalPages }}</span>
+            </div>
+
+            <button
+              @click="goToPage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="pagination-btn"
+            >
+              Next →
+            </button>
           </div>
         </div>
       </div>
@@ -96,7 +119,7 @@
     </div>
   </div>
 </template><script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { getCommunityPoolFundData, type FundData } from '@/services/communityPool.service';
 import { calculateChartData, type CommunityPoolChartData } from '@/services/communityPoolChart.service';
 import { useToast } from "vue-toastification";
@@ -105,6 +128,24 @@ import i18n from "@/plugins/i18n";
 const loading = ref(false);
 const error = ref<string | null>(null);
 const fundData = ref<FundData[]>([]);
+
+// pagination variables
+const currentPage = ref(1);
+const windowWidth = ref(window.innerWidth);
+
+// dynamic items per page based on screen width
+const itemsPerPage = computed(() => {
+  const width = windowWidth.value;
+
+  // calculate based on breakpoints and available space
+  if (width >= 1400) return 7;      // large screens: 7 items
+  else if (width >= 1200) return 6; // desktop: 6 items
+  else if (width >= 1000) return 5; // medium desktop: 5 items
+  else if (width >= 800) return 4;  // tablet landscape: 4 items
+  else if (width >= 600) return 3;  // tablet portrait: 3 items
+  else if (width >= 400) return 2;  // mobile landscape: 2 items
+  else return 1;                    // small mobile: 1 item
+});
 
 const chartLoading = ref(false);
 const chartError = ref<string | null>(null);
@@ -119,6 +160,48 @@ const remainingPercentage = computed(() => {
   if (!chartData.value) return 100;
   return (chartData.value.remainingPool / chartData.value.totalPool) * 100;
 });
+
+// pagination computed properties
+const totalPages = computed(() => {
+  return Math.ceil(fundData.value.length / itemsPerPage.value);
+});
+
+const paginatedFundData = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return fundData.value.slice(start, end);
+});
+
+// dynamic grid style based on items per page
+const gridStyle = computed(() => ({
+  gridTemplateColumns: `repeat(${itemsPerPage.value}, 1fr)`
+}));
+
+// pagination functions
+const goToPage = (page: number) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+};
+
+// window resize handler
+const handleResize = () => {
+  windowWidth.value = window.innerWidth;
+
+  // adjust current page if it becomes invalid due to items per page change
+  if (currentPage.value > totalPages.value && totalPages.value > 0) {
+    currentPage.value = totalPages.value;
+  }
+};
+
+// keyboard navigation
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'ArrowLeft' && currentPage.value > 1) {
+    goToPage(currentPage.value - 1);
+  } else if (event.key === 'ArrowRight' && currentPage.value < totalPages.value) {
+    goToPage(currentPage.value + 1);
+  }
+};
 
 const formatAmount = (amount: number): string => {
   return amount.toLocaleString('en-US', {
@@ -169,6 +252,14 @@ const copyAddress = async (address: string) => {
   }
 };
 
+const splitTimestamp = (timestamp: string): { date: string; time: string } => {
+  if (timestamp === 'N/A') return { date: 'N/A', time: 'N/A' };
+
+  const dateObj = new Date(timestamp);
+  if (isNaN(dateObj.getTime())) return {date: 'Invalid Date', time: 'Invalid Time'};
+  return { date: dateObj.toLocaleDateString(), time: dateObj.toLocaleTimeString() };
+};
+
 const loadCommunityPoolFundData = async () => {
   loading.value = true;
   error.value = null;
@@ -176,6 +267,8 @@ const loadCommunityPoolFundData = async () => {
   try {
     fundData.value = await getCommunityPoolFundData();
     console.log('Community Pool Fund Data:', fundData.value);
+    // reset to first page when new data is loaded
+    currentPage.value = 1;
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'An unknown error occurred';
     console.error('Error fetching community pool fund data:', err);
@@ -206,6 +299,16 @@ const fetchChartData = async () => {
 onMounted(async () => {
   await loadCommunityPoolFundData();
   await fetchChartData();
+
+  // add event listeners
+  window.addEventListener('keydown', handleKeydown);
+  window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(() => {
+  // clean up event listeners
+  window.removeEventListener('keydown', handleKeydown);
+  window.removeEventListener('resize', handleResize);
 });
 </script>
 
@@ -374,6 +477,25 @@ onMounted(async () => {
       font-size: 1.4rem;
     }
   }
+
+  // mobile responsiveness for pagination controls only
+  @media (max-width: 768px) {
+    .pagination-controls {
+      flex-direction: column;
+      gap: 15px;
+
+      .pagination-btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+      }
+
+      .page-info {
+        order: -1;
+        padding: 10px 20px;
+        font-size: 1.1rem;
+      }
+    }
+  }
 }
 
 @keyframes shimmer {
@@ -430,8 +552,12 @@ onMounted(async () => {
     margin-bottom: 20px;
 
     p {
-      margin: 0;
+      margin: 0 0 8px 0;
       font-size: 1.1rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 
@@ -445,11 +571,61 @@ onMounted(async () => {
     overflow-y: auto;
   }
 
+  .pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 15px 0;
+    border-top: 1px solid #2AFD88;
+
+    .pagination-btn {
+      background: #2AFD88;
+      color: #0F3153;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease-in-out;
+
+      &:hover:not(:disabled) {
+        background: #22e077;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(34, 224, 119, 0.3);
+      }
+
+      &:disabled {
+        background: #666;
+        color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: 0 1px 4px rgba(34, 224, 119, 0.3);
+      }
+    }
+
+    .page-info {
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      background: #02447A;
+      padding: 8px 16px;
+      border-radius: 4px;
+      border: 1px solid #2AFD88;
+    }
+  }
+
   .amounts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 15px;
     margin-top: 15px;
+    transition: all 0.3s ease;
+    // grid columns are set dynamically via :style binding
   }
 
   .amount-item {
@@ -474,6 +650,12 @@ onMounted(async () => {
       font-family: 'Courier New', monospace;
       font-size: 1.1rem;
       font-weight: bold;
+      color: white;
+    }
+
+    .timestamp {
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
       color: white;
     }
 

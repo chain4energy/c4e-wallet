@@ -15,7 +15,6 @@ export class SidebarConfig{
     this.config.set(PagesEnum.FAUCET, this.createFaucet());
     this.config.set(PagesEnum.BOOST, this.createBoost());
     this.config.set(PagesEnum.DISTRIBUTION, this.createDistribution());
-    this.config.set(PagesEnum.CHARGERA, this.createChargEra());
     this.config.set(PagesEnum.GREENTREASURY, this.createGreenTreasury());
   }
 
@@ -108,15 +107,6 @@ export class SidebarConfig{
     retVal.id = 8;
     retVal.href = '/distribution';
     retVal.title = 'Distribution';
-    retVal.icon = new SidebarIcon('HandCoins');
-    return retVal;
-  }
-
-  private createChargEra(): SidebarElement{
-    const retVal = new SidebarElement();
-    retVal.id = 9;
-    retVal.href = '/chargera';
-    retVal.title = 'ChargEra';
     retVal.icon = new SidebarIcon('HandCoins');
     return retVal;
   }

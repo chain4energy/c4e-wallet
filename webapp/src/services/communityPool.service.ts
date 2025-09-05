@@ -3,6 +3,10 @@ import { useConfigurationStore } from '@/store/configuration.store';
 interface Transaction {
   messages: unknown;
   success: boolean;
+  block?: {
+    timestamp: string;
+    height: string;
+  };
 }
 
 interface AmountInfo {
@@ -28,6 +32,7 @@ interface CommunityPoolData {
 interface FundData {
   amount: string;
   depositor: string;
+  timestamp: string;
 }
 
 interface GraphQLError {
@@ -41,6 +46,9 @@ interface GraphQLResponse {
   errors?: GraphQLError[];
 }
 
+/*
+{"query":"queryFundCommunityPool { message(where: {type: {_eq: \"cosmos.distribution.v1beta1.MsgFundCommunityPool\"}, transaction: {success: {_eq: true}}}){transaction_hash value transaction {messages success block {timestamp height} } }}"}
+*/
 // query looks for successful MsgFundCommunityPool messages only
 const graphqlQuery = {
   query: `
@@ -54,6 +62,10 @@ const graphqlQuery = {
         transaction {
           messages
           success
+          block {
+            timestamp
+            height
+          }
         }
       }
     }
@@ -157,14 +169,20 @@ export const getCommunityPoolFundData = async (): Promise<FundData[]> => {
     return data.message.map(message => {
       if (!message || !message.value || typeof message.value !== 'object') {
         console.warn('Invalid message structure:', message);
-        return { amount: 'N/A', depositor: 'N/A' };
+        return { amount: 'N/A', depositor: 'N/A', timestamp: 'N/A' };
       }
 
       const amountValue = extractAmount(message.value);
       const amount = amountValue !== 'N/A' ? `${amountValue} C4E` : 'N/A';
       const depositor = message.value.depositor || 'N/A';
 
-      return { amount, depositor };
+      // extract timestamp from transaction block
+      let timestamp = 'N/A';
+      if (message.transaction && message.transaction.block && message.transaction.block.timestamp) {
+        timestamp = message.transaction.block.timestamp;
+      }
+
+      return { amount, depositor, timestamp };
     });
   } catch (error) {
     console.error('Error in getCommunityPoolFundData:', error);

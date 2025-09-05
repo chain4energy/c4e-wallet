@@ -71,6 +71,7 @@ data:
       "faucetAvailable": true,
       "publicSaleVisible": false,
       "useAminoOnly": false,
+      "greenTreasuryVisible": true,
       "loyaltyDropService": {
         "loyaltyDropBaseUrl": "https://loyalty-drop-dev.c4e.io/api/loyalty-drop"
       },
@@ -274,6 +275,7 @@ data:
         "faucetAvailable": false,
         "publicSaleVisible": false,
         "useAminoOnly": false,
+        "greenTreasuryVisible": true,
         "loyaltyDropService": {
           "loyaltyDropBaseUrl": "https://loyalty-drop-mainnet.c4e.io/api/loyalty-drop"
         },

@@ -112,6 +112,7 @@ export interface Configuration {
   currentPublicSaleRoundId: number;
   transferDenom: string;
   publicSaleVisible: boolean;
+  greenTreasuryVisible: boolean;
   useAminoOnly: boolean;
   loyaltyDropService: JsonLoyaltyDropConfig;
   circulatingSupplyVisible:  boolean;
