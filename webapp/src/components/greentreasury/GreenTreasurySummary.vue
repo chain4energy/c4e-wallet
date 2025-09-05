@@ -1,0 +1,548 @@
+<template>
+  <div class="green-treasury-container">
+    <div class="community-pool-chart-section">
+      <div v-if="chartLoading" class="loading">
+        Loading community pool chart data...
+      </div>
+
+      <div v-else-if="chartError" class="error">
+        Chart Error: {{ chartError }}
+      </div>
+
+      <div v-else-if="chartData" class="chart-container">
+        <div class="horizontal-chart-container">
+          <div class="chart-title">Community Pool Distribution</div>
+
+          <div class="progress-bar-container">
+            <div class="progress-bar">
+              <div
+                class="progress-segment funded"
+                :style="{ width: fundedPercentage + '%' }"
+                :title="`Funded: ${formatAmount(chartData.fundedAmount)} C4E (${fundedPercentage.toFixed(1)}%)`"
+              ></div>
+            </div>
+          </div>
+
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-info">
+                <div class="legend-color funded"></div>
+                <span class="legend-label">Green Treasury</span>
+              </div>
+              <div class="legend-values">
+                <div class="legend-percentage">{{ fundedPercentage.toFixed(1) }}%</div>
+                <div class="legend-amount">{{ formatAmount(chartData.fundedAmount) }} C4E</div>
+              </div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-info">
+                <div class="legend-color remaining"></div>
+                <span class="legend-label">Generic Community Pool</span>
+              </div>
+              <div class="legend-values">
+                <div class="legend-percentage">{{ remainingPercentage.toFixed(1) }}%</div>
+                <div class="legend-amount">{{ formatAmount(chartData.remainingPool) }} C4E</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="total-info">
+            <strong>Total Community Pool: {{ formatAmount(chartData.totalPool) }} C4E</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="community-pool-section">
+      <h2>Green Treasury Funding</h2>
+
+      <div v-if="loading" class="loading">
+        Loading Green Treasury data...
+      </div>
+
+      <div v-else-if="error" class="error">
+        Error: {{ error }}
+      </div>
+
+      <div v-else-if="fundData.length > 0" class="community-pool-data">
+        <div class="data-summary">
+          <p><strong>Deposits:</strong> {{ fundData.length }}</p>
+        </div>
+
+        <div class="amounts-list">
+          <h3></h3>
+          <div class="amounts-grid">
+            <div
+              v-for="(fund, index) in fundData.slice(0, 20)"
+              :key="index"
+              class="amount-item"
+            >
+              <div class="amount-value">{{ formatFundAmount(fund.amount) }}</div>
+              <div
+                class="depositor-address"
+                @click="copyAddress(fund.depositor)"
+                :title="fund.depositor"
+              >
+                {{ shortenAddress(fund.depositor) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="no-data">
+        No Green Treasury funding data available.
+      </div>
+    </div>
+  </div>
+</template><script setup lang="ts">
+import { ref, onMounted, computed } from 'vue';
+import { getCommunityPoolFundData, type FundData } from '@/services/communityPool.service';
+import { calculateChartData, type CommunityPoolChartData } from '@/services/communityPoolChart.service';
+import { useToast } from "vue-toastification";
+import i18n from "@/plugins/i18n";
+
+const loading = ref(false);
+const error = ref<string | null>(null);
+const fundData = ref<FundData[]>([]);
+
+const chartLoading = ref(false);
+const chartError = ref<string | null>(null);
+const chartData = ref<CommunityPoolChartData | null>(null);
+
+const fundedPercentage = computed(() => {
+  if (!chartData.value) return 0;
+  return (chartData.value.fundedAmount / chartData.value.totalPool) * 100;
+});
+
+const remainingPercentage = computed(() => {
+  if (!chartData.value) return 100;
+  return (chartData.value.remainingPool / chartData.value.totalPool) * 100;
+});
+
+const formatAmount = (amount: number): string => {
+  return amount.toLocaleString('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  });
+};
+
+const formatFundAmount = (amount: string): string => {
+  if (amount === 'N/A') return amount;
+
+  // Extract the number from the string (e.g., "1000.50 C4E" -> "1000.50")
+  const match = amount.match(/^([0-9.]+)\s*C4E$/);
+  if (match) {
+    const numericValue = parseFloat(match[1]);
+    if (!isNaN(numericValue)) {
+      return `${numericValue.toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      })} C4E`;
+    }
+  }
+
+  return amount; // fallback to original if parsing fails
+};
+
+const shortenAddress = (address: string): string => {
+  if (!address || address === 'N/A') return address;
+  if (address.length <= 10) return address;
+  return `${address.slice(0, 6)}...${address.slice(-3)}`;
+};
+const copyAddress = async (address: string) => {
+  if (!address || address === 'N/A') return;
+
+  try {
+    await navigator.clipboard.writeText(address);
+    console.log('Address copied to clipboard:', address);
+    useToast().success(i18n.global.t('COPY.ADDRESS'));
+  } catch (err) {
+    console.error('Failed to copy address:', err);
+    // fallback for older browsers
+    const textArea = document.createElement('textarea');
+    textArea.value = address;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+  }
+};
+
+const loadCommunityPoolFundData = async () => {
+  loading.value = true;
+  error.value = null;
+
+  try {
+    fundData.value = await getCommunityPoolFundData();
+    console.log('Community Pool Fund Data:', fundData.value);
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'An unknown error occurred';
+    console.error('Error fetching community pool fund data:', err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const fetchChartData = async () => {
+  try {
+    chartLoading.value = true;
+    chartError.value = null;
+
+    console.log('Calculating chart data...');
+    chartData.value = await calculateChartData(fundData.value);
+    console.log('Chart data calculated:', chartData.value);
+
+  } catch (err) {
+    console.error('Error calculating chart data:', err);
+    chartError.value = 'Failed to calculate chart data';
+    const toast = useToast();
+    toast.error(i18n.global.t('greenTreasury.errors.chartFailed'));
+  } finally {
+    chartLoading.value = false;
+  }
+};
+
+onMounted(async () => {
+  await loadCommunityPoolFundData();
+  await fetchChartData();
+});
+</script>
+
+<style scoped lang="scss">
+
+.green-treasury-container {
+  margin: 0;
+  padding: 0;
+}
+
+.horizontal-chart-container {
+  margin: 0 auto 30px auto;
+  padding: 20px 33px;
+  background: #0F3153;
+  box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
+  border-radius: 5px;
+  font-family: 'Inter', sans-serif;
+  color: white;
+
+  .chart-title {
+    color: white;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-align: center;
+    border-bottom: 1px solid #2AFD88;
+    padding: 20px;
+  }
+
+  .progress-bar-container {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(90deg, #396dce 0%, #5bc0de 100%) !important;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin: 25px 0;
+    border: 2px solid #dee2e6;
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 25px;
+      overflow: hidden;
+      background: transparent !important;
+
+      .progress-segment {
+        height: 100%;
+        transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+
+        &.funded {
+          background: linear-gradient(90deg, #28a745 0%, #34ce57 100%) !important;
+          box-shadow: inset 0 2px 4px rgba(40, 167, 69, 0.3);
+          border-radius: 25px 0 0 25px;
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+          animation: shimmer 3s infinite;
+        }
+      }
+    }
+  }
+
+  .chart-legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 25px 0;
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      background: #02447A;
+      border-radius: 4px;
+      box-shadow: 0 0 2px 2px #02447A;
+      border: 1px solid #02447A;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      color: white;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 6px rgba(42, 253, 136, 0.3);
+      }
+
+      .legend-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .legend-color {
+          width: 18px;
+          height: 18px;
+          border-radius: 4px;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+
+          &.funded {
+            background: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
+          }
+
+          &.remaining {
+            background: linear-gradient(135deg, #17a2b8 0%, #5bc0de 100%);
+          }
+        }
+
+        .legend-label {
+          font-weight: 600;
+          color: white;
+          font-size: 0.95rem;
+        }
+      }
+
+      .legend-values {
+        text-align: right;
+
+        .legend-percentage {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: white;
+          margin-bottom: 2px;
+        }
+
+        .legend-amount {
+          font-size: 0.85rem;
+          color: #ccc;
+          font-family: 'Courier New', monospace;
+        }
+      }
+    }
+  }
+
+  .total-info {
+    text-align: center;
+    padding: 15px;
+    background: #02447A;
+    border-radius: 4px;
+    box-shadow: 0 0 2px 2px #02447A;
+    border: 1px solid #2AFD88;
+    color: white;
+    font-size: 1.1rem;
+    margin-top: 20px;
+  }
+
+  // mobile users should be important too :)
+  @media (max-width: 768px) {
+    .chart-legend {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .progress-bar-container {
+      height: 40px;
+      margin: 20px 0;
+    }
+
+    .chart-title {
+      font-size: 1.4rem;
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.community-pool-section {
+  margin-top: 30px;
+  padding: 20px 33px;
+  background: #0F3153;
+  box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
+  border-radius: 5px;
+  font-family: 'Inter', sans-serif;
+  color: white;
+
+  h2 {
+    color: white;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    border-bottom: 1px solid #2AFD88;
+    padding: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  h3 {
+    color: white;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 20px;
+    color: #ccc;
+    font-style: italic;
+  }
+
+  .error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #f5c6cb;
+  }
+
+  .data-summary {
+    background: #02447A;
+    color: white;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 0 2px 2px #02447A;
+    margin-bottom: 20px;
+
+    p {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+  }
+
+  .messages-list {
+    max-height: 600px;
+    overflow-y: auto;
+  }
+
+  .amounts-list {
+    max-height: 600px;
+    overflow-y: auto;
+  }
+
+  .amounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .amount-item {
+    background: #02447A;
+    border: 1px solid #02447A;
+    border-radius: 4px;
+    padding: 15px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 0 2px 2px #02447A;
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 6px rgba(42, 253, 136, 0.3);
+    }
+
+    .amount-value {
+      font-family: 'Courier New', monospace;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .depositor-address {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      color: #ccc;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: rgba(42, 253, 136, 0.1);
+      border: 1px solid #2AFD88;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        background: rgba(42, 253, 136, 0.2);
+        border-color: #2AFD88;
+        color: white;
+      }
+
+      &:active {
+        background: rgba(42, 253, 136, 0.3);
+        transform: scale(0.98);
+      }
+    }
+  }
+
+  .message-item {
+    background: #02447A;
+    border: 1px solid #02447A;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 2px 2px #02447A;
+    color: white;
+
+    .message-hash {
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      word-break: break-all;
+    }
+
+    .message-value {
+      margin-bottom: 8px;
+      color: #ccc;
+    }
+
+    .message-success {
+      .success {
+        color: #2AFD88;
+        font-weight: bold;
+      }
+
+      .failed {
+        color: #dc3545;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 40px;
+    color: #ccc;
+    font-style: italic;
+    background: #02447A;
+    border-radius: 4px;
+    border: 2px dashed #2AFD88;
+  }
+}
+</style>

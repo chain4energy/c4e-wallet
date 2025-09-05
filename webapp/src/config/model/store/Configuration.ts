@@ -219,6 +219,8 @@ export class Configuration implements JsonConfiguration {
   currentPublicSaleRoundId: number;
   transferDenom: string;
   publicSaleVisible: boolean;
+  chargEraVisible: boolean;
+  greenTreasuryVisible: boolean;
   useAminoOnly:boolean;
   loyaltyDropService: LoyaltyDropConfig;
   circulatingSupplyVisible: boolean;
@@ -281,6 +283,8 @@ export class Configuration implements JsonConfiguration {
       this.currentPublicSaleRoundId = configuration.currentPublicSaleRoundId;
       this.transferDenom = configuration.transferDenom;
       this.publicSaleVisible=configuration.publicSaleVisible;
+      this.chargEraVisible = configuration.chargEraVisible;
+      this.greenTreasuryVisible = configuration.greenTreasuryVisible;
       this.useAminoOnly=configuration.useAminoOnly;
       this.loyaltyDropService = new LoyaltyDropConfig(configuration.loyaltyDropService);
       this.circulatingSupplyVisible = configuration.circulatingSupplyVisible;
@@ -337,6 +341,8 @@ export class Configuration implements JsonConfiguration {
       this.currentPublicSaleRoundId = 0;
       this.transferDenom = '';
       this.publicSaleVisible=false;
+      this.chargEraVisible = false;
+      this.greenTreasuryVisible = false;
       this.useAminoOnly=false;
       this.loyaltyDropService = new LoyaltyDropConfig(undefined);
       this.circulatingSupplyVisible = false;

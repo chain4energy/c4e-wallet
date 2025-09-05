@@ -12,6 +12,12 @@ export class PermissionsService{
     if(this.faucetAvailable()) {
       tempPagesEnum.push(PagesEnum.FAUCET);
     }
+    if(this.chargEraVisible()) {
+      tempPagesEnum.push(PagesEnum.CHARGERA);
+    }
+    if(this.greenTreasuryVisible()) {
+      tempPagesEnum.push(PagesEnum.GREENTREASURY);
+    }
     return tempPagesEnum;
   }
 
@@ -22,6 +28,15 @@ export class PermissionsService{
   publicSaleVisible(): boolean {
     return useConfigurationStore().config.publicSaleVisible;
   }
+
+  chargEraVisible(): boolean {
+    return useConfigurationStore().config.chargEraVisible;
+  }
+
+  greenTreasuryVisible(): boolean {
+    return useConfigurationStore().config.greenTreasuryVisible;
+  }
+
   createSideBar(): SidebarElement[]{
     const sidebarConfig = new SidebarConfig();
     const rerVal = Array<SidebarElement>();
