@@ -2,16 +2,16 @@
   <div class="green-treasury-container">
     <div class="community-pool-chart-section">
       <div v-if="chartLoading" class="loading">
-        Loading community pool chart data...
+        {{$t("GREENTREASURYVIEW.LOADING_CHART")}}
       </div>
 
       <div v-else-if="chartError" class="error">
-        Chart Error: {{ chartError }}
+        {{ $t("GREENTREASURYVIEW.CHART_ERROR") }}: {{ chartError }}
       </div>
 
       <div v-else-if="chartData" class="chart-container">
         <div class="horizontal-chart-container">
-          <div class="chart-title">Community Pool Distribution</div>
+          <div class="chart-title">{{$t("GREENTREASURYVIEW.COMMUNITY_POOL_DISTRIBUTION") }}</div>
 
           <div class="progress-bar-container">
             <div class="progress-bar">
@@ -27,7 +27,7 @@
             <div class="legend-item">
               <div class="legend-info">
                 <div class="legend-color funded"></div>
-                <span class="legend-label">Green Treasury</span>
+                <span class="legend-label">{{$t("SECTION_TITLES.GREENTREASURY")}}</span>
               </div>
               <div class="legend-values">
                 <div class="legend-percentage">{{ fundedPercentage.toFixed(1) }}%</div>
@@ -37,7 +37,7 @@
             <div class="legend-item">
               <div class="legend-info">
                 <div class="legend-color remaining"></div>
-                <span class="legend-label">Generic Community Pool</span>
+                <span class="legend-label">{{ $t("GREENTREASURYVIEW.GENERIC_COMMUNITY_POOL") }}</span>
               </div>
               <div class="legend-values">
                 <div class="legend-percentage">{{ remainingPercentage.toFixed(1) }}%</div>
@@ -47,26 +47,26 @@
           </div>
 
           <div class="total-info">
-            <strong>Total Community Pool: {{ formatAmount(chartData.totalPool) }} C4E</strong>
+            <strong>{{$t("GREENTREASURYVIEW.TOTAL_COMMUNITY_POOL")}}: {{ formatAmount(chartData.totalPool) }} C4E</strong>
           </div>
         </div>
       </div>
     </div>
 
     <div class="community-pool-section">
-      <h2>Green Treasury Funding</h2>
+      <h2>{{ $t("GREENTREASURYVIEW.GREENTREASURY_FUNDING") }}</h2>
 
       <div v-if="loading" class="loading">
-        Loading Green Treasury data...
+        {{$t("GREENTREASURYVIEW.LOADING_GREEN_TREASURY")}}
       </div>
 
       <div v-else-if="error" class="error">
-        Error: {{ error }}
+        {{$t("GREENTREASURYVIEW.ERROR")}}: {{ error }}
       </div>
 
       <div v-else-if="fundData.length > 0" class="community-pool-data">
         <div class="data-summary">
-          <p><strong>Total Deposits:</strong> {{ fundData.length }}</p>
+          <p><strong>{{$t("GREENTREASURYVIEW.TOTAL_DEPOSITS")}}:</strong> {{ fundData.length }}</p>
         </div>
 
         <div class="amounts-list">
@@ -80,11 +80,11 @@
               <div class="amount-value">{{ formatFundAmount(fund.amount) }}</div>
               <div class="timestamp" :title="`${splitTimestamp(fund.timestamp).date} ${splitTimestamp(fund.timestamp).time}`">{{ splitTimestamp(fund.timestamp).date }}</div>
               <div
-                class="depositor-address"
-                @click="copyAddress(fund.depositor)"
-                :title="fund.depositor"
+                class="transaction-hash"
+                @click="copyAddress(fund.transaction_hash)"
+                :title="fund.transaction_hash"
               >
-                {{ shortenAddress(fund.depositor) }}
+                {{ shortenAddress(fund.transaction_hash) }}
               </div>
             </div>
           </div>
@@ -95,11 +95,11 @@
               :disabled="currentPage === 1"
               class="pagination-btn"
             >
-              ← Previous
+              ← {{$t("GREENTREASURYVIEW.PREVIOUS")}}
             </button>
 
             <div class="page-info">
-              <span>Page {{ currentPage }} of {{ totalPages }}</span>
+              <span>{{$t("GREENTREASURYVIEW.PAGE")}} {{ currentPage }} {{$t("GREENTREASURYVIEW.OF")}} {{ totalPages }}</span>
             </div>
 
             <button
@@ -107,27 +107,33 @@
               :disabled="currentPage === totalPages"
               class="pagination-btn"
             >
-              Next →
+              {{$t("GREENTREASURYVIEW.NEXT")}} →
             </button>
           </div>
         </div>
       </div>
 
       <div v-else class="no-data">
-        No Green Treasury funding data available.
+        {{$t("GREENTREASURYVIEW.NO_DATA")}}
       </div>
     </div>
   </div>
 </template><script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { getCommunityPoolFundData, type FundData } from '@/services/communityPool.service';
 import { calculateChartData, type CommunityPoolChartData } from '@/services/communityPoolChart.service';
+import { useConfigurationStore } from '@/store/configuration.store';
 import { useToast } from "vue-toastification";
 import i18n from "@/plugins/i18n";
+import { useRouter } from 'vue-router';
 
 const loading = ref(false);
 const error = ref<string | null>(null);
 const fundData = ref<FundData[]>([]);
+
+const configStore = useConfigurationStore();
+const explorerUrl = configStore.config?.explorerUrl;
+const router = useRouter();
 
 // pagination variables
 const currentPage = ref(1);
@@ -238,8 +244,22 @@ const copyAddress = async (address: string) => {
 
   try {
     await navigator.clipboard.writeText(address);
-    console.log('Address copied to clipboard:', address);
-    useToast().success(i18n.global.t('COPY.ADDRESS'));
+    console.log('Transaction hash copied to clipboard:', address);
+    useToast().success(i18n.global.t('COPY.TX_HASH'));
+    
+    if (explorerUrl) {
+      const explorerLink = `${explorerUrl}/transactions/${address}`;
+      const toast = useToast();
+
+      const toastMessage = `${i18n.global.t("GREENTREASURYVIEW.VIEW_IN_EXPLORER")}: ${address.slice(0, 8)}...${address.slice(-6)}`;
+      
+      toast.info(toastMessage, {
+        timeout: 8000,
+        onClick: () => {
+          window.open(explorerLink, '_blank');
+        }
+      });
+    }
   } catch (err) {
     console.error('Failed to copy address:', err);
     // fallback for older browsers
@@ -310,6 +330,49 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown);
   window.removeEventListener('resize', handleResize);
 });
+
+// watch for network configuration changes and reload data
+watch(
+  () => useConfigurationStore().config?.hasuraURL,
+  async (newUrl, oldUrl) => {
+    if (newUrl && oldUrl && newUrl !== oldUrl) {
+      console.log('Network configuration changed, checking Green Treasury availability...');
+      
+      // check if green treasury is available on the network
+      const configStore = useConfigurationStore();
+      if (!configStore.config?.greenTreasuryVisible) {
+        console.log('Green Treasury not available on this network, redirecting to dashboard...');
+        await router.push('/dashboard');
+        return;
+      }
+      
+      console.log('Reloading Green Treasury data...');
+      await loadCommunityPoolFundData();
+      await fetchChartData();
+    }
+  }
+);
+
+watch(
+  () => useConfigurationStore().config?.bcApiURL,
+  async (newUrl, oldUrl) => {
+    if (newUrl && oldUrl && newUrl !== oldUrl) {
+      console.log('Blockchain API configuration changed, checking Green Treasury availability...');
+      
+      // check if green treasury is available on this network
+      const configStore = useConfigurationStore();
+      if (!configStore.config?.greenTreasuryVisible) {
+        console.log('Green Treasury not available on this network, redirecting to dashboard...');
+        await router.push('/dashboard');
+        return;
+      }
+      
+      console.log('Reloading Green Treasury data...');
+      await loadCommunityPoolFundData();
+      await fetchChartData();
+    }
+  }
+);
 </script>
 
 <style scoped lang="scss">
@@ -659,7 +722,7 @@ onUnmounted(() => {
       color: white;
     }
 
-    .depositor-address {
+    .transaction-hash {
       font-family: 'Courier New', monospace;
       font-size: 0.85rem;
       color: #ccc;

@@ -116,6 +116,8 @@
     "MAX_SUPPLY": "Max supply",
     "POOLS": "Pools",
     "COMMUNITY_POOL": "Community pool",
+    "GREENTREASURY_POOL": "Green treasury pool",
+    "GENERIC_COMMUNITY_POOL": "Generic community pool",
     "STRATEGIC_REVERSE_POOL": "Strategic reserve pool",
     "AIRDROP": "Fairdrop pool",
     "REMAINING_TOKENS": "Remaining tokens",
@@ -496,6 +498,23 @@
     "REQUEST_TOKENS": "Request Tokens",
     "INPUT_ADDRESS": "Input an address to request token",
     "TITLE": "C4E Faucet"
+  },
+  "GREENTREASURYVIEW": {
+    "COMMUNITY_POOL_DISTRIBUTION": "Community Pool Contribution",
+    "GENERIC_COMMUNITY_POOL": "Generic community pool",
+    "TOTAL_COMMUNITY_POOL": "Total community pool",
+    "GREENTREASURY_FUNDING": "Green Treasury Funding",
+    "TOTAL_DEPOSITS": "Total deposits",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "PAGE": "Page",
+    "OF": "of",
+    "NO_DATA": "No Green Treasury funding data available.",
+    "LOADING_CHART": "Loading community pool chart data...",
+    "LOADING_GREEN_TREASURY": "Loading Green Treasury data...",
+    "ERROR": "Error",
+    "CHART_ERROR": "Chart Error",
+    "VIEW_IN_EXPLORER": "Click to view transaction in explorer"
   },
   "ENUMS": {
     "LOGIN_TYPE": {

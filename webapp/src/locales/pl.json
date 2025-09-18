@@ -116,6 +116,8 @@
     "MAX_SUPPLY": "Maksymalna podaż",
     "POOLS": "Pule",
     "COMMUNITY_POOL": "Pula społeczności",
+    "GREENTREASURY_POOL": "Pula Green Treasury",
+    "GENERIC_COMMUNITY_POOL": "Pula ogólna społeczności",
     "STRATEGIC_REVERSE_POOL": "Pula strategiczna",
     "AIRDROP": "Pula Fairdrop",
     "REMAINING_TOKENS": "Pozostałe tokeny",
@@ -488,6 +490,23 @@
     "REQUEST_TOKENS": "Doładuj Tokeny",
     "INPUT_ADDRESS": "Podaj adres na który zostaną doładowane tokeny",
     "TITLE": "Kranik C4E"
+  },
+  "GREENTREASURYVIEW": {
+    "COMMUNITY_POOL_DISTRIBUTION": "Dystrybucja puli społecznościowej",
+    "GENERIC_COMMUNITY_POOL": "Pula ogólna społeczności",
+    "TOTAL_COMMUNITY_POOL": "Całkowita pula społeczności",
+    "GREENTREASURY_FUNDING": "Fundatorzy Green Treasury",
+    "TOTAL_DEPOSITS": "Całkowite depozyty",
+    "PREVIOUS": "Poprzedni",
+    "NEXT": "Następny",
+    "PAGE": "Strona",
+    "OF": "z",
+    "NO_DATA": "Brak danych o finansowaniu Green Treasury.",
+    "LOADING_CHART": "Ładowanie danych wykresu puli społecznościowej...",
+    "LOADING_GREEN_TREASURY": "Ładowanie danych Green Treasury...",
+    "ERROR": "Błąd",
+    "CHART_ERROR": "Błąd wykresu",
+    "VIEW_IN_EXPLORER": "Kliknij, aby zobaczyć transakcję w eksploratorze"
   },
   "ENUMS": {
     "LOGIN_TYPE": {

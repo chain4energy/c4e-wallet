@@ -33,6 +33,7 @@ interface FundData {
   amount: string;
   depositor: string;
   timestamp: string;
+  transaction_hash: string;
 }
 
 interface GraphQLError {
@@ -169,12 +170,13 @@ export const getCommunityPoolFundData = async (): Promise<FundData[]> => {
     return data.message.map(message => {
       if (!message || !message.value || typeof message.value !== 'object') {
         console.warn('Invalid message structure:', message);
-        return { amount: 'N/A', depositor: 'N/A', timestamp: 'N/A' };
+        return { amount: 'N/A', depositor: 'N/A', timestamp: 'N/A', transaction_hash: 'N/A' };
       }
 
       const amountValue = extractAmount(message.value);
       const amount = amountValue !== 'N/A' ? `${amountValue} C4E` : 'N/A';
       const depositor = message.value.depositor || 'N/A';
+      const transaction_hash = message.transaction_hash || 'N/A';
 
       // extract timestamp from transaction block
       let timestamp = 'N/A';
@@ -182,7 +184,7 @@ export const getCommunityPoolFundData = async (): Promise<FundData[]> => {
         timestamp = message.transaction.block.timestamp;
       }
 
-      return { amount, depositor, timestamp };
+      return { amount, depositor, timestamp, transaction_hash };
     });
   } catch (error) {
     console.error('Error in getCommunityPoolFundData:', error);

@@ -2,7 +2,9 @@ import {BigDecimal} from "@/models/store/big.decimal";
 import i18n from "@/plugins/i18n";
 import { formatBigNumberLocalized } from "@/utils/locale-number-formatter";
 
-const communityPoolColor = '#72BF44';
+const communityPoolColor = '#87CEEB';
+const greenTreasuryColor = '#72BF44';
+const genericCommunityPoolColor = '#87CEEB';
 const strategicReversePoolColor = '#27697F';
 const airdropPoolColor = '#FFF1A9';
 
@@ -10,6 +12,33 @@ const bondedColor = '#26697f';
 const unBoundedColor = '#fff1a9';
 const unBoundingColor = '#72bf44';
 const remainingTokensColor = '#E4E4E4';
+
+export function createDashboardPoolsChartDataWithSeparation(
+  remainingTokens: number | BigDecimal, 
+  genericCommunityPool: number | BigDecimal, 
+  greenTreasury: number | BigDecimal, 
+  strategicReversePool: number | BigDecimal, 
+  airdropPool: number | BigDecimal, 
+  totalSupply: number | BigDecimal, 
+  precision = 4
+) {
+  const formatter = function (params: any) {
+    const sum = (params.value / Number(totalSupply)) * 100;
+    return `
+      <b>${params.data.name}</b></br>
+      <b>${formatBigNumberLocalized(params.value)} (${sum.toFixed(2)}%)</b>`;
+  };
+  return createDashboardPoolsSingleChartData(
+    formatter,
+    [
+      { value: genericCommunityPool, name: 'Generic Community Pool', color: genericCommunityPoolColor },
+      { value: greenTreasury, name: 'Green Treasury', color: greenTreasuryColor },
+      { value: remainingTokens, name: i18n.global.t('DASHBOARD_VIEW.REMAINING_TOKENS'), color: remainingTokensColor },
+      { value: strategicReversePool, name: i18n.global.t('DASHBOARD_VIEW.STRATEGIC_REVERSE_POOL'), color: strategicReversePoolColor },
+      { value: airdropPool, name: i18n.global.t('DASHBOARD_VIEW.AIRDROP'), color: airdropPoolColor }
+    ], precision
+  );
+}
 
 export function createDashboardPoolsChartData(remainingTokens: number | BigDecimal, communityPool: number | BigDecimal, strategicReversePool: number | BigDecimal, airdropPool: number | BigDecimal, totalSupply: number | BigDecimal, precision = 4) {
   const formatter = function (params: any) {

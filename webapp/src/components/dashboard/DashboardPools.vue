@@ -4,10 +4,18 @@
     <h5 style="font-weight: bold;">{{ $t("DASHBOARD_VIEW.POOLS") }}</h5>
     <div class="items">
         <div class="legend-item">
-          <div class="dot" style="background: #72BF44"> </div>
-          <div> {{ $t("DASHBOARD_VIEW.COMMUNITY_POOL") }}</div>
+          <div class="dot" style="background: #87CEEB"> </div>
+          <div> {{ $t("DASHBOARD_VIEW.GENERIC_COMMUNITY_POOL") }}</div>
           <Icon name="ArrowRight" />
-          <CoinAmount :amount="tokensStore.getCommunityPool" :show-denom="true" style="font-weight: bold"/>
+          <CoinAmount v-if="!loading" :amount="genericCommunityPoolForDisplay" :show-denom="true" style="font-weight: bold"/>
+          <span v-else style="font-weight: bold">Loading...</span>
+        </div>
+        <div class="legend-item">
+          <div class="dot" style="background: #72BF44"> </div>
+          <div> {{ $t("DASHBOARD_VIEW.GREENTREASURY_POOL") }}</div>
+          <Icon name="ArrowRight" />
+          <CoinAmount v-if="!loading" :amount="greenTreasuryForDisplay" :show-denom="true" style="font-weight: bold"/>
+          <span v-else style="font-weight: bold">Loading...</span>
         </div>
         <div class="legend-item">
           <div class="dot" style="background: #E4E4E4"> </div>
@@ -33,7 +41,7 @@
     margin-right: auto " ref="poolsRef">
       <ShadowedSvgChart id="poolschartdiv" >
         <v-chart :option="option" autoresize />
-        <C4EIcon icon="c4e-circle" class="inside" :size="poolsRef.clientWidth/3"/>
+        <C4EIcon icon="c4e-circle" class="inside" :size="poolsRef?.clientWidth ? poolsRef.clientWidth/3 : 100"/>
       </ShadowedSvgChart>
     </div>
   </div>
@@ -44,15 +52,19 @@ import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { SVGRenderer } from "echarts/renderers";
-import {computed, ref} from "vue";
+import {computed, ref, onMounted, watch} from "vue";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import Icon from "../features/IconComponent.vue";
 import {useTokensStore} from "@/store/tokens.store";
-import { createDashboardPoolsChartData } from "@/charts/dashboard";
+import { createDashboardPoolsChartData, createDashboardPoolsChartDataWithSeparation } from "@/charts/dashboard";
 import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 import C4EIcon from "../commons/C4EIcon.vue";
 import CoinAmount from "../commons/CoinAmount.vue";
 import { useConfigurationStore } from "@/store/configuration.store";
+import { getCommunityPoolFundData, type FundData } from '@/services/communityPool.service';
+import { calculateChartData, type CommunityPoolChartData } from '@/services/communityPoolChart.service';
+import { BigDecimal } from '@/models/store/big.decimal';
+import { DecCoin } from '@/models/store/common';
 use([
   SVGRenderer,
   PieChart,
@@ -62,9 +74,42 @@ use([
 ]);
 
 const tokensStore = useTokensStore();
-const poolsRef = ref(0);
+const poolsRef = ref<HTMLElement>();
+
+// reactive state for green treasury data
+const loading = ref(false);
+const error = ref<string | null>(null);
+const fundData = ref<FundData[]>([]);
+const chartData = ref<CommunityPoolChartData | null>(null);
+const greenTreasuryAmount = ref(0);
+
 const communityPool = computed(() => {
-  return useConfigurationStore().config.getConvertedAmount(tokensStore.getCommunityPool.amount);
+  const totalCommunityPool = tokensStore.getCommunityPool.amount;
+  const greenTreasuryInMicrounits = new BigDecimal(greenTreasuryAmount.value * 1000000);
+  
+  // subtract green treasury amount from community pool
+  const genericCommunityPoolAmount = totalCommunityPool.subtract(greenTreasuryInMicrounits);
+  
+  return useConfigurationStore().config.getConvertedAmount(genericCommunityPoolAmount);
+});
+
+const greenTreasuryForDisplay = computed(() => {
+  const configStore = useConfigurationStore();
+  const denom = configStore.config.stakingDenom;
+  // convert to uc4e
+  const amountInMicrounits = greenTreasuryAmount.value * 1000000;
+  return new DecCoin(new BigDecimal(amountInMicrounits), denom);
+});
+
+const genericCommunityPoolForDisplay = computed(() => {
+  const configStore = useConfigurationStore();
+  const denom = configStore.config.stakingDenom;
+  const totalCommunityPool = tokensStore.getCommunityPool.amount;
+  const greenTreasuryInMicrounits = new BigDecimal(greenTreasuryAmount.value * 1000000);
+  
+  const genericAmount = totalCommunityPool.subtract(greenTreasuryInMicrounits);
+  
+  return new DecCoin(genericAmount, denom);
 });
 
 const strategicReversePool = computed(() => {
@@ -84,9 +129,81 @@ const remainingTokens = computed(() => {
   return useConfigurationStore().config.getConvertedAmount(tokensStore.getRemainingTokens.amount);
 });
 
+// load green treasury data
+const loadGreenTreasuryData = async () => {
+  loading.value = true;
+  error.value = null;
+  
+  try {
+    console.log('Loading Green Treasury fund data...');
+    fundData.value = await getCommunityPoolFundData();
+    console.log('Fund data loaded:', fundData.value.length, 'items');
+
+    // calculate chart data
+    chartData.value = await calculateChartData(fundData.value);
+    console.log('Chart data calculated:', chartData.value);
+
+    // set the amount
+    greenTreasuryAmount.value = chartData.value.fundedAmount;
+
+  } catch (err) {
+    console.error('Error loading Green Treasury data:', err);
+    error.value = 'Failed to load Green Treasury data';
+    // fallback
+    greenTreasuryAmount.value = 0;
+  } finally {
+    loading.value = false;
+  }
+};
+
 const option = computed(() => {
-  return createDashboardPoolsChartData(remainingTokens.value, communityPool.value, strategicReversePool.value, airdropPool.value, totalSupply.value);
+  if (!loading.value && chartData.value) {
+    // separate charts for green treausy and community pool
+    return createDashboardPoolsChartDataWithSeparation(
+      remainingTokens.value,
+      communityPool.value, // generic community pool (-green treasury)
+      greenTreasuryAmount.value,
+      strategicReversePool.value,
+      airdropPool.value,
+      totalSupply.value
+    );
+  } else {
+    // while loading fallback to original chart
+    return createDashboardPoolsChartData(
+      remainingTokens.value,
+      useConfigurationStore().config.getConvertedAmount(tokensStore.getCommunityPool.amount),
+      strategicReversePool.value,
+      airdropPool.value,
+      totalSupply.value
+    );
+  }
 });
+
+// load data on mount
+onMounted(async () => {
+  await loadGreenTreasuryData();
+});
+
+// check for network changes
+watch(
+  () => useConfigurationStore().config?.hasuraURL,
+  (newUrl, oldUrl) => {
+    if (newUrl && oldUrl && newUrl !== oldUrl) {
+      console.log('Network configuration changed, reloading Green Treasury data...');
+      loadGreenTreasuryData();
+    }
+  }
+);
+
+watch(
+  () => useConfigurationStore().config?.bcApiURL,
+  (newUrl, oldUrl) => {
+    if (newUrl && oldUrl && newUrl !== oldUrl) {
+      console.log('Blockchain API configuration changed, reloading Green Treasury data...');
+      loadGreenTreasuryData();
+    }
+  }
+);
 
 
 </script>
