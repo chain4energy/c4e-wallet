@@ -81,7 +81,7 @@
               <div class="timestamp" :title="`${splitTimestamp(fund.timestamp).date} ${splitTimestamp(fund.timestamp).time}`">{{ splitTimestamp(fund.timestamp).date }}</div>
               <div
                 class="transaction-hash"
-                @click="copyAddress(fund.transaction_hash)"
+                @click="openExplorer(fund.transaction_hash)"
                 :title="fund.transaction_hash"
               >
                 {{ shortenAddress(fund.transaction_hash) }}
@@ -239,6 +239,23 @@ const shortenAddress = (address: string): string => {
   if (address.length <= 10) return address;
   return `${address.slice(0, 6)}...${address.slice(-3)}`;
 };
+const openExplorer = async (address: string) => {
+  if (!address || address === 'N/A') return;
+
+  try {
+    const explorerLink = `${explorerUrl}/transactions/${address}`;
+    console.log('Opening explorer link:', explorerLink);
+    const toast = useToast();
+    window.open(explorerLink, '_blank');
+
+    useToast().info(i18n.global.t('GREENTREASURYVIEW.EXPLORER_OPEN'), {
+      timeout: 5000
+    });
+  } catch (err){
+    console.error('Failed to open explorer:', err);
+  }
+} 
+
 const copyAddress = async (address: string) => {
   if (!address || address === 'N/A') return;
 

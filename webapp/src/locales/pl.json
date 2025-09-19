@@ -506,7 +506,8 @@
     "LOADING_GREEN_TREASURY": "Ładowanie danych Green Treasury...",
     "ERROR": "Błąd",
     "CHART_ERROR": "Błąd wykresu",
-    "VIEW_IN_EXPLORER": "Kliknij, aby zobaczyć transakcję w eksploratorze"
+    "VIEW_IN_EXPLORER": "Kliknij, aby zobaczyć transakcję w eksploratorze",
+    "EXPLORER_OPEN": "Otworzono explorator"
   },
   "ENUMS": {
     "LOGIN_TYPE": {

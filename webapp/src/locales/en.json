@@ -514,7 +514,8 @@
     "LOADING_GREEN_TREASURY": "Loading Green Treasury data...",
     "ERROR": "Error",
     "CHART_ERROR": "Chart Error",
-    "VIEW_IN_EXPLORER": "Click to view transaction in explorer"
+    "VIEW_IN_EXPLORER": "Click to view transaction in explorer",
+    "EXPLORER_OPEN": "Explorer opened in new tab"
   },
   "ENUMS": {
     "LOGIN_TYPE": {
