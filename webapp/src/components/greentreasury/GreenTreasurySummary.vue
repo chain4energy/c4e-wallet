@@ -239,13 +239,13 @@ const shortenAddress = (address: string): string => {
   if (address.length <= 10) return address;
   return `${address.slice(0, 6)}...${address.slice(-3)}`;
 };
+
 const openExplorer = async (address: string) => {
   if (!address || address === 'N/A') return;
 
   try {
     const explorerLink = `${explorerUrl}/transactions/${address}`;
     console.log('Opening explorer link:', explorerLink);
-    const toast = useToast();
     window.open(explorerLink, '_blank');
 
     useToast().info(i18n.global.t('GREENTREASURYVIEW.EXPLORER_OPEN'), {
@@ -253,39 +253,6 @@ const openExplorer = async (address: string) => {
     });
   } catch (err){
     console.error('Failed to open explorer:', err);
-  }
-} 
-
-const copyAddress = async (address: string) => {
-  if (!address || address === 'N/A') return;
-
-  try {
-    await navigator.clipboard.writeText(address);
-    console.log('Transaction hash copied to clipboard:', address);
-    useToast().success(i18n.global.t('COPY.TX_HASH'));
-    
-    if (explorerUrl) {
-      const explorerLink = `${explorerUrl}/transactions/${address}`;
-      const toast = useToast();
-
-      const toastMessage = `${i18n.global.t("GREENTREASURYVIEW.VIEW_IN_EXPLORER")}: ${address.slice(0, 8)}...${address.slice(-6)}`;
-      
-      toast.info(toastMessage, {
-        timeout: 8000,
-        onClick: () => {
-          window.open(explorerLink, '_blank');
-        }
-      });
-    }
-  } catch (err) {
-    console.error('Failed to copy address:', err);
-    // fallback for older browsers
-    const textArea = document.createElement('textarea');
-    textArea.value = address;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
   }
 };
 
@@ -354,7 +321,7 @@ watch(
   async (newUrl, oldUrl) => {
     if (newUrl && oldUrl && newUrl !== oldUrl) {
       console.log('Network configuration changed, checking Green Treasury availability...');
-      
+
       // check if green treasury is available on the network
       const configStore = useConfigurationStore();
       if (!configStore.config?.greenTreasuryVisible) {
@@ -362,7 +329,7 @@ watch(
         await router.push('/dashboard');
         return;
       }
-      
+
       console.log('Reloading Green Treasury data...');
       await loadCommunityPoolFundData();
       await fetchChartData();
@@ -375,7 +342,7 @@ watch(
   async (newUrl, oldUrl) => {
     if (newUrl && oldUrl && newUrl !== oldUrl) {
       console.log('Blockchain API configuration changed, checking Green Treasury availability...');
-      
+
       // check if green treasury is available on this network
       const configStore = useConfigurationStore();
       if (!configStore.config?.greenTreasuryVisible) {
@@ -383,7 +350,7 @@ watch(
         await router.push('/dashboard');
         return;
       }
-      
+
       console.log('Reloading Green Treasury data...');
       await loadCommunityPoolFundData();
       await fetchChartData();
