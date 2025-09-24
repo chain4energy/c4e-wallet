@@ -32,7 +32,7 @@ data:
         "undelegate": 320000,
         "redelegate": 440000,
         "claimRewards": 320000,
-        "transfer": 320000
+        "transfer": 3200000
       },
       "viewDenoms": [
         {
@@ -134,7 +134,7 @@ data:
         "undelegate": 320000,
         "redelegate": 440000,
         "claimRewards": 320000,
-        "transfer": 320000
+        "transfer": 3200000
       },
       "viewDenoms": [
         {
@@ -236,7 +236,7 @@ data:
           "undelegate": 320000,
           "redelegate": 440000,
           "claimRewards": 320000,
-          "transfer": 320000
+          "transfer": 3200000
         },
         "viewDenoms": [
           {
@@ -339,7 +339,7 @@ data:
           "undelegate": 220000,
           "redelegate": 310000,
           "claimRewards": 400000,
-          "transfer": 250000
+          "transfer": 3200000
         },
         "viewDenoms": [
           {
@@ -443,7 +443,7 @@ data:
           "undelegate": 250000,
           "redelegate": 250000,
           "claimRewards": 250000,
-          "transfer": 250000
+          "transfer": 3200000
         },
         "viewDenoms": [
           {

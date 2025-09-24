@@ -31,7 +31,7 @@ data:
            "undelegate": 320000,
            "redelegate": 440000,
            "claimRewards": 320000,
-           "transfer": 320000
+           "transfer": 3200000
          },
          "viewDenoms": [
            {
@@ -132,7 +132,7 @@ data:
            "undelegate": 320000,
            "redelegate": 440000,
            "claimRewards": 320000,
-           "transfer": 320000
+           "transfer": 3200000
          },
          "viewDenoms": [
            {
