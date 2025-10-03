@@ -17,3 +17,6 @@ NODE_ENV=development node setup.js
 NODE_ENV=development node server.js
 </pre>
 
+## Changelog
+
+Changelog can be found [here](./CHANGELOG.md).

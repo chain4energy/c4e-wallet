@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Features
 - **Governance API**: Updated the application to integrate with the new governance API for enhanced data accuracy and display.
+- **Green Treasury**: Added a new page displaying detailed information about the Community Pool distribution and deposits to the Green Treasury.
 
 ### Bug fixes
 - Fixed an issue in the governance module where percentage calculation could lead to a division by zero error.
@@ -53,11 +54,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Misc Improvements
 - **Governance**: Updated the `DetailsChart` and Governance page to correctly display vote values.
+- **Pools**: Updated the Pool on the Dashboard page to display Generic Community Pool and Green Treasury Pool separately.
 - **UI**: Moved the "Staked" and "Unstaking" badges on the Validators page to the right for better visibility.
 - **UI**: Removed the "Join now for an exclusive ChargEra token boost!" banner.
 - **Web**: Updated the office location listed on the Terms and Conditions page.
 - **Web**: Removed an unnecessary MetaMask check on page load.
-- **Fees**: Increased the transfer fee from 320000 to 3200000 on Mainnet.
+- **Fees**: Increased the transfer fee to avoid transaction failures.
 
 ## [1.3.5](https://github.com/chain4energy/c4e-wallet/releases/tag/1.3.5) - 2025-01-13
 
