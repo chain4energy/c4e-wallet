@@ -27,7 +27,7 @@
             <div class="legend-item">
               <div class="legend-info">
                 <div class="legend-color funded"></div>
-                <span class="legend-label">{{$t("SECTION_TITLES.ENERGYTREASURY")}}</span>
+                <span class="legend-label">{{$t("SECTION_TITLES.GREENTREASURY")}}</span>
               </div>
               <div class="legend-values">
                 <div class="legend-percentage">{{ fundedPercentage.toFixed(1) }}%</div>

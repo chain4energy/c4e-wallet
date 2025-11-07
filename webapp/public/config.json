@@ -70,7 +70,7 @@
     "currentPublicSaleRoundId": 1,
     "publicSaleVisible": false,
     "useAminoOnly": false,
-    "greenTreasuryVisible": false,
+    "greenTreasuryVisible": true,
     "loyaltyDropService": {
       "loyaltyDropBaseUrl": "https://loyalty-drop-mainnet.c4e.io/api/loyalty-drop"
     },
