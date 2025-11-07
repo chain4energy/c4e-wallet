@@ -40,6 +40,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Bug fixes
+- Updates some packages causing issues during deployment
+
+### Misc Improvements
+- Rebranded "Green Treasury" to "Energy Treasury"
+
 ## [1.4.0](https://github.com/chain4energy/c4e-wallet/releases/tag/1.4.0) - 2025-10-10
 
 ### Features

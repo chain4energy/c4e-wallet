@@ -114,8 +114,8 @@ export class SidebarConfig{
   private createGreenTreasury(): SidebarElement{
     const retVal = new SidebarElement();
     retVal.id = 10;
-    retVal.href = '/greentreasury';
-    retVal.title = 'GreenTreasury';
+    retVal.href = '/energytreasury';
+    retVal.title = 'EnergyTreasury';
     retVal.icon = new SidebarIcon('TreeDeciduous');
     return retVal;
   }
