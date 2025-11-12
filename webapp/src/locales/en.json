@@ -117,7 +117,7 @@
     "POOLS": "Pools",
     "COMMUNITY_POOL": "Community pool",
     "GREENTREASURY_POOL": "Energy treasury pool",
-    "GENERIC_COMMUNITY_POOL": "Generic community pool",
+    "GENERIC_COMMUNITY_POOL": "Genesis community pool",
     "STRATEGIC_REVERSE_POOL": "Strategic reserve pool",
     "AIRDROP": "Fairdrop pool",
     "REMAINING_TOKENS": "Remaining tokens",
@@ -502,7 +502,7 @@
   },
   "GREENTREASURYVIEW": {
     "COMMUNITY_POOL_DISTRIBUTION": "Community Pool Contribution",
-    "GENERIC_COMMUNITY_POOL": "Generic community pool",
+    "GENERIC_COMMUNITY_POOL": "Genesis community pool",
     "TOTAL_COMMUNITY_POOL": "Total community pool",
     "GREENTREASURY_FUNDING": "Energy Treasury Funding",
     "TOTAL_DEPOSITS": "Total deposits",
