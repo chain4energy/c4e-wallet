@@ -21,6 +21,10 @@ export function createRouterBeforeEach (logger: LoggerService) {
       next('/');
       return;
     }
+    if(to.meta.requiresGreenTreasury == true && !useConfigurationStore().config.greenTreasuryVisible) {
+      next('/');
+      return;
+    }
     if (to.matched.some(record => record.meta.requiresAuth)) {
       if (useUserServiceStore().isLoggedIn) {
         next();

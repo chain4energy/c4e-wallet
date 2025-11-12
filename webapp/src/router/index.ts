@@ -148,7 +148,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'energytreasury',
     component: () => import('@/views/GreenTreasuryView.vue'),
       meta: {
-      requiresNotMainNetwork: true
+      requiresGreenTreasury: true
     }
   },
   portfolioRoutes,
