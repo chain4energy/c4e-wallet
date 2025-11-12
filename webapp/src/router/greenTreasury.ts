@@ -1,7 +1,7 @@
 import GreenTreasuryView from '@/views/GreenTreasuryView.vue';
 
 export const greenTreasuryRoutes = {
-  path : '/greentreasury',
-  name : 'greentreasury',
+  path : '/energytreasury',
+  name : 'energytreasury',
   component : GreenTreasuryView
 };

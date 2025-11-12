@@ -320,17 +320,17 @@ watch(
   () => useConfigurationStore().config?.hasuraURL,
   async (newUrl, oldUrl) => {
     if (newUrl && oldUrl && newUrl !== oldUrl) {
-      console.log('Network configuration changed, checking Green Treasury availability...');
+      console.log('Network configuration changed, checking Energy Treasury availability...');
 
       // check if green treasury is available on the network
-      const configStore = useConfigurationStore();
+      /*const configStore = useConfigurationStore();
       if (!configStore.config?.greenTreasuryVisible) {
-        console.log('Green Treasury not available on this network, redirecting to dashboard...');
+        console.log('Energy Treasury not available on this network, redirecting to dashboard...');
         await router.push('/dashboard');
         return;
-      }
+      }*/
 
-      console.log('Reloading Green Treasury data...');
+      console.log('Reloading Energy Treasury data...');
       await loadCommunityPoolFundData();
       await fetchChartData();
     }
@@ -341,17 +341,17 @@ watch(
   () => useConfigurationStore().config?.bcApiURL,
   async (newUrl, oldUrl) => {
     if (newUrl && oldUrl && newUrl !== oldUrl) {
-      console.log('Blockchain API configuration changed, checking Green Treasury availability...');
+      console.log('Blockchain API configuration changed, checking Energy Treasury availability...');
 
       // check if green treasury is available on this network
       const configStore = useConfigurationStore();
       if (!configStore.config?.greenTreasuryVisible) {
-        console.log('Green Treasury not available on this network, redirecting to dashboard...');
+        console.log('Energy Treasury not available on this network, redirecting to dashboard...');
         await router.push('/dashboard');
         return;
       }
 
-      console.log('Reloading Green Treasury data...');
+      console.log('Reloading Energy Treasury data...');
       await loadCommunityPoolFundData();
       await fetchChartData();
     }

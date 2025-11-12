@@ -144,11 +144,11 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/greentreasury',
-    name: 'greentreasury',
+    path: '/energytreasury',
+    name: 'energytreasury',
     component: () => import('@/views/GreenTreasuryView.vue'),
       meta: {
-      requiresNotMainNetwork: true
+      requiresGreenTreasury: true
     }
   },
   portfolioRoutes,

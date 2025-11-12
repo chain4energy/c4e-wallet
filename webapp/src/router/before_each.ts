@@ -15,9 +15,15 @@ export function createRouterBeforeEach (logger: LoggerService) {
     }
     if(to.meta.requiresNotMainNetwork == true && !useConfigurationStore().config.faucetAvailable) {
       next('/');
+      return;
     }
     if(to.meta.isPublicSale == true && !useConfigurationStore().config.publicSaleVisible) {
       next('/');
+      return;
+    }
+    if(to.meta.requiresGreenTreasury == true && !useConfigurationStore().config.greenTreasuryVisible) {
+      next('/');
+      return;
     }
     if (to.matched.some(record => record.meta.requiresAuth)) {
       if (useUserServiceStore().isLoggedIn) {

@@ -31,8 +31,8 @@ export function createDashboardPoolsChartDataWithSeparation(
   return createDashboardPoolsSingleChartData(
     formatter,
     [
-      { value: genericCommunityPool, name: 'Generic Community Pool', color: genericCommunityPoolColor },
-      { value: greenTreasury, name: 'Green Treasury', color: greenTreasuryColor },
+      { value: genericCommunityPool, name: i18n.global.t('DASHBOARD_VIEW.GENERIC_COMMUNITY_POOL'), color: genericCommunityPoolColor },
+      { value: greenTreasury, name: i18n.global.t('DASHBOARD_VIEW.GREENTREASURY_POOL'), color: greenTreasuryColor },
       { value: remainingTokens, name: i18n.global.t('DASHBOARD_VIEW.REMAINING_TOKENS'), color: remainingTokensColor },
       { value: strategicReversePool, name: i18n.global.t('DASHBOARD_VIEW.STRATEGIC_REVERSE_POOL'), color: strategicReversePoolColor },
       { value: airdropPool, name: i18n.global.t('DASHBOARD_VIEW.AIRDROP'), color: airdropPoolColor }

@@ -135,7 +135,7 @@ const loadGreenTreasuryData = async () => {
   error.value = null;
   
   try {
-    console.log('Loading Green Treasury fund data...');
+    console.log('Loading Energy Treasury fund data...');
     fundData.value = await getCommunityPoolFundData();
     console.log('Fund data loaded:', fundData.value.length, 'items');
 
@@ -147,8 +147,8 @@ const loadGreenTreasuryData = async () => {
     greenTreasuryAmount.value = chartData.value.fundedAmount;
 
   } catch (err) {
-    console.error('Error loading Green Treasury data:', err);
-    error.value = 'Failed to load Green Treasury data';
+    console.error('Error loading Energy Treasury data:', err);
+    error.value = 'Failed to load Energy Treasury data';
     // fallback
     greenTreasuryAmount.value = 0;
   } finally {
@@ -189,7 +189,7 @@ watch(
   () => useConfigurationStore().config?.hasuraURL,
   (newUrl, oldUrl) => {
     if (newUrl && oldUrl && newUrl !== oldUrl) {
-      console.log('Network configuration changed, reloading Green Treasury data...');
+      console.log('Network configuration changed, reloading Energy Treasury data...');
       loadGreenTreasuryData();
     }
   }
@@ -199,7 +199,7 @@ watch(
   () => useConfigurationStore().config?.bcApiURL,
   (newUrl, oldUrl) => {
     if (newUrl && oldUrl && newUrl !== oldUrl) {
-      console.log('Blockchain API configuration changed, reloading Green Treasury data...');
+      console.log('Blockchain API configuration changed, reloading Energy Treasury data...');
       loadGreenTreasuryData();
     }
   }
