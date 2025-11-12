@@ -323,12 +323,12 @@ watch(
       console.log('Network configuration changed, checking Energy Treasury availability...');
 
       // check if green treasury is available on the network
-      const configStore = useConfigurationStore();
+      /*const configStore = useConfigurationStore();
       if (!configStore.config?.greenTreasuryVisible) {
         console.log('Energy Treasury not available on this network, redirecting to dashboard...');
         await router.push('/dashboard');
         return;
-      }
+      }*/
 
       console.log('Reloading Energy Treasury data...');
       await loadCommunityPoolFundData();
