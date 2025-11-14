@@ -497,7 +497,7 @@
     "GENERIC_COMMUNITY_POOL": "Pula ogólna społeczności",
     "TOTAL_COMMUNITY_POOL": "Całkowita pula społeczności",
     "GREENTREASURY_FUNDING": "Fundatorzy Energy Treasury",
-    "TOTAL_DEPOSITS": "Całkowite depozyty",
+    "TOTAL_DEPOSITS": "Wszystkie depozyty",
     "PREVIOUS": "Poprzedni",
     "NEXT": "Następny",
     "PAGE": "Strona",
@@ -508,7 +508,24 @@
     "ERROR": "Błąd",
     "CHART_ERROR": "Błąd wykresu",
     "VIEW_IN_EXPLORER": "Kliknij, aby zobaczyć transakcję w eksploratorze",
-    "EXPLORER_OPEN": "Otworzono explorator"
+    "EXPLORER_OPEN": "Otworzono w exploratorze",
+    "FAQ": {
+      "TITLE": {
+        "TREASURY": "Co to jest Energy Treasury?",
+        "COMMUNITY_POOL": "Co to jest pula społeczności?",
+        "FUNDING": "Finansowanie Energy Treasury"
+      },
+      "CONTENT": {
+        "TREASURY1": "Energy Treasury stanowi część ekosystemu C4E, utworzoną w wyniku wdrożenia postanowień z {proposal12link}, odpowiedzialną za wspieranie ciągłego rozwoju projektu oraz promowanie jego adopcji na zdecentralizowanych rynkach energii.",
+        "TREASURY2": "Środki znajdujące się w skarbcu oraz przekazywane do niego wspierają działania marketingowe, rozwój społeczności, rozwój technologiczny oraz globalne inicjatywy C4E, a ich alokacja ustalana jest poprzez dedykowane sesje głosowania zapewniające zrównoważony rozwój projektu.",
+        "COMMUNITY_POOL1": "Wkłady do Community Pool składają się ze środków Genesis Community Pool oraz Energy Treasury Pool, będąc jednocześnie częścią C4E Energy Treasury.",
+        "COMMUNITY_POOL2": "Wykorzystanie środków Energy Treasury ustalane jest poprzez sesje głosowania dotyczących propozycji społeczności, wspierając inicjatywy ekosystemowe.",
+        "FUNDING1": "Energy Treasury finansowane jest poprzez dedykowane transfery tokenów C4E, zdeponowanych na skutek decyzji społeczności, alokowanych przez partnerów lub pochodzących z innych źródeł."
+      },
+      "LINKS": {
+        "proposal12link": "<span class='proposal-link'>Proposala #12</span>"
+      }
+    }
   },
   "ENUMS": {
     "LOGIN_TYPE": {

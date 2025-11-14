@@ -117,6 +117,33 @@
         {{$t("GREENTREASURYVIEW.NO_DATA")}}
       </div>
     </div>
+
+    <div class="info-boxes-section">
+      <div class="info-boxes-grid">
+        <div class="info-box">
+          <h3 class="info-box-header">{{$t("GREENTREASURYVIEW.FAQ.TITLE.TREASURY")}}</h3>
+          <div class="info-box-content">
+            <p v-html="$t('GREENTREASURYVIEW.FAQ.CONTENT.TREASURY1', { proposal12link: $t('GREENTREASURYVIEW.FAQ.LINKS.proposal12link') })" @click="handleContentClick"></p>
+            <p>{{$t("GREENTREASURYVIEW.FAQ.CONTENT.TREASURY2")}}</p>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <h3 class="info-box-header">{{$t("GREENTREASURYVIEW.FAQ.TITLE.COMMUNITY_POOL")}}</h3>
+          <div class="info-box-content">
+            <p>{{$t("GREENTREASURYVIEW.FAQ.CONTENT.COMMUNITY_POOL1")}}</p>
+            <p>{{$t("GREENTREASURYVIEW.FAQ.CONTENT.COMMUNITY_POOL2")}}</p>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <h3 class="info-box-header">{{$t("GREENTREASURYVIEW.FAQ.TITLE.FUNDING")}}</h3>
+          <div class="info-box-content">
+            <p>{{$t("GREENTREASURYVIEW.FAQ.CONTENT.FUNDING1")}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template><script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
@@ -232,6 +259,17 @@ const formatFundAmount = (amount: string): string => {
   }
 
   return amount; // fallback to original if parsing fails
+};
+
+const openProposalLink = () => {
+  window.open('https://wallet.c4e.io/governance/12', '_blank');
+};
+
+const handleContentClick = (event: Event) => {
+  const target = event.target as HTMLElement;
+  if (target && target.classList.contains('proposal-link')) {
+    openProposalLink();
+  }
 };
 
 const shortenAddress = (address: string): string => {
@@ -774,4 +812,95 @@ watch(
     border: 2px dashed #2AFD88;
   }
 }
+
+.info-boxes-section {
+  margin-top: 30px;
+  
+  .info-boxes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      gap: 15px;
+    }
+  }
+  
+  .info-box {
+    background: #0F3153;
+    box-shadow: 0 0 4px 4px rgb(0 0 0 / 10%);
+    border-radius: 5px;
+    padding: 20px 25px;
+    font-family: 'Inter', sans-serif;
+    color: white;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(42, 253, 136, 0.2);
+    }
+    
+    .info-box-header {
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #2AFD88;
+      padding-bottom: 10px;
+      text-align: center;
+    }
+    
+    .info-box-content {
+      line-height: 1.6;
+      
+      p {
+        margin: 0 0 15px 0;
+        font-size: 0.95rem;
+        color: #e8e9ea;
+        text-align: justify;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+      
+      .proposal-link {
+        color: #2AFD88 !important;
+        text-decoration: none;
+        font-weight: 700 !important;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        
+        &:hover {
+          color: #22e077 !important;
+          text-shadow: 0 0 8px rgba(34, 224, 119, 0.4);
+        }
+        
+        &:active {
+          transform: scale(0.98);
+        }
+      }
+
+      :deep(.proposal-link) {
+        color: #2AFD88 !important;
+        font-weight: 700 !important;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        
+        &:hover {
+          color: #22e077 !important;
+          text-shadow: 0 0 8px rgba(34, 224, 119, 0.4);
+        }
+      }
+    }
+  }
+}
+
+
 </style>

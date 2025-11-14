@@ -516,7 +516,24 @@
     "ERROR": "Error",
     "CHART_ERROR": "Chart Error",
     "VIEW_IN_EXPLORER": "Click to view transaction in explorer",
-    "EXPLORER_OPEN": "Explorer opened in new tab"
+    "EXPLORER_OPEN": "Explorer opened in new tab",
+    "FAQ": {
+      "TITLE": {
+        "TREASURY": "What is the Energy Treasury?",
+        "COMMUNITY_POOL": "What is the Community Pool?",
+        "FUNDING": "Energy Treasury Funding"
+      },
+      "CONTENT": {
+        "TREASURY1": "The Energy Treasury is a part of the C4E ecosystem, established as a result of the passed {proposal12link}, responsible for fostering continuous project growth and expanding C4E's presence and adoption in decentralized energy markets.",
+        "TREASURY2": "Funds present within the treasury and provided to it support marketing, community growth, development, and C4E's global initiatives with allocations decided through governance sessions, ensuring the sustainable expansion of the project.",
+        "COMMUNITY_POOL1": "Community Pool contributions consist of Genesis Community Pool funds and Energy Treasury Pool funds, all of which are part of the C4E Energy Treasury.",
+        "COMMUNITY_POOL2": "The use of Energy Treasury funds is determined through governance proposals that support ecosystem and community-driven initiatives.",
+        "FUNDING1": "Energy Treasury funding transactions are transfers that have been deposited into the C4E Energy Treasury through various means, including governance decisions, partner allocations, and other sources."
+      },
+      "LINKS": {
+        "proposal12link": "<span class='proposal-link'>Proposal #12</span>"
+      }
+    }
   },
   "ENUMS": {
     "LOGIN_TYPE": {
