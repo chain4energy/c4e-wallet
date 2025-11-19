@@ -147,20 +147,24 @@
   </div>
 </template><script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
-import { getCommunityPoolFundData, type FundData } from '@/services/communityPool.service';
 import { calculateChartData, type CommunityPoolChartData } from '@/services/communityPoolChart.service';
 import { useConfigurationStore } from '@/store/configuration.store';
+import { useCommunityPoolStore } from '@/store/communityPool.store';
 import { useToast } from "vue-toastification";
 import i18n from "@/plugins/i18n";
 import { useRouter } from 'vue-router';
 
-const loading = ref(false);
+const isCalculating = ref(false);
 const error = ref<string | null>(null);
-const fundData = ref<FundData[]>([]);
 
 const configStore = useConfigurationStore();
+const communityPoolStore = useCommunityPoolStore();
 const explorerUrl = configStore.config?.explorerUrl;
 const router = useRouter();
+
+// computed property that gets fund data from store
+const fundData = computed(() => communityPoolStore.getFundData);
+const loading = computed(() => fundData.value.length === 0);
 
 // pagination variables
 const currentPage = ref(1);
@@ -302,25 +306,12 @@ const splitTimestamp = (timestamp: string): { date: string; time: string } => {
   return { date: dateObj.toLocaleDateString(), time: dateObj.toLocaleTimeString() };
 };
 
-const loadCommunityPoolFundData = async () => {
-  loading.value = true;
-  error.value = null;
-
-  try {
-    fundData.value = await getCommunityPoolFundData();
-    console.log('Community Pool Fund Data:', fundData.value);
-    // reset to first page when new data is loaded
-    currentPage.value = 1;
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : 'An unknown error occurred';
-    console.error('Error fetching community pool fund data:', err);
-  } finally {
-    loading.value = false;
+const updateChartData = async () => {
+  if (fundData.value.length === 0 || isCalculating.value) {
+    return;
   }
-};
-
-const fetchChartData = async () => {
   try {
+    isCalculating.value = true;
     chartLoading.value = true;
     chartError.value = null;
 
@@ -334,14 +325,25 @@ const fetchChartData = async () => {
     const toast = useToast();
     toast.error(i18n.global.t('greenTreasury.errors.chartFailed'));
   } finally {
+    isCalculating.value = false;
     chartLoading.value = false;
   }
 };
 
-onMounted(async () => {
-  await loadCommunityPoolFundData();
-  await fetchChartData();
+// calculate chart data when store data becomes available or changes
+watch(
+  () => fundData.value.length,
+  (newLength) => {
+    if (newLength > 0) {
+      // reset to first page when new data is available
+      currentPage.value = 1;
+      updateChartData();
+    }
+  },
+  { immediate: true }
+);
 
+onMounted(() => {
   // add event listeners
   window.addEventListener('keydown', handleKeydown);
   window.addEventListener('resize', handleResize);
@@ -356,42 +358,34 @@ onUnmounted(() => {
 // watch for network configuration changes and reload data
 watch(
   () => useConfigurationStore().config?.hasuraURL,
-  async (newUrl, oldUrl) => {
+  (newUrl, oldUrl) => {
     if (newUrl && oldUrl && newUrl !== oldUrl) {
-      console.log('Network configuration changed, checking Energy Treasury availability...');
-
-      // check if green treasury is available on the network
-      /*const configStore = useConfigurationStore();
-      if (!configStore.config?.greenTreasuryVisible) {
-        console.log('Energy Treasury not available on this network, redirecting to dashboard...');
-        await router.push('/dashboard');
-        return;
-      }*/
-
-      console.log('Reloading Energy Treasury data...');
-      await loadCommunityPoolFundData();
-      await fetchChartData();
+      console.log('Network configuration changed, recalculating Energy Treasury data...');
+      if (fundData.value.length > 0) {
+        updateChartData();
+      }
     }
   }
 );
 
 watch(
   () => useConfigurationStore().config?.bcApiURL,
-  async (newUrl, oldUrl) => {
+  (newUrl, oldUrl) => {
     if (newUrl && oldUrl && newUrl !== oldUrl) {
       console.log('Blockchain API configuration changed, checking Energy Treasury availability...');
 
-      // check if green treasury is available on this network
+      // check if green treasury is available on the network
       const configStore = useConfigurationStore();
       if (!configStore.config?.greenTreasuryVisible) {
         console.log('Energy Treasury not available on this network, redirecting to dashboard...');
-        await router.push('/dashboard');
+        router.push('/dashboard');
         return;
       }
 
-      console.log('Reloading Energy Treasury data...');
-      await loadCommunityPoolFundData();
-      await fetchChartData();
+      console.log('Recalculating Energy Treasury data...');
+      if (fundData.value.length > 0) {
+        updateChartData();
+      }
     }
   }
 );

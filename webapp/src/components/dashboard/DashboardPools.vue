@@ -7,15 +7,13 @@
           <div class="dot" style="background: #87CEEB"> </div>
           <div> {{ $t("DASHBOARD_VIEW.GENERIC_COMMUNITY_POOL") }}</div>
           <Icon name="ArrowRight" />
-          <CoinAmount v-if="!loading" :amount="genericCommunityPoolForDisplay" :show-denom="true" style="font-weight: bold"/>
-          <span v-else style="font-weight: bold">Loading...</span>
+          <CoinAmount :amount="genericCommunityPoolForDisplay" :show-denom="true" style="font-weight: bold"/>
         </div>
         <div class="legend-item">
           <div class="dot" style="background: #72BF44"> </div>
           <div> {{ $t("DASHBOARD_VIEW.GREENTREASURY_POOL") }}</div>
           <Icon name="ArrowRight" />
-          <CoinAmount v-if="!loading" :amount="greenTreasuryForDisplay" :show-denom="true" style="font-weight: bold"/>
-          <span v-else style="font-weight: bold">Loading...</span>
+          <CoinAmount :amount="greenTreasuryForDisplay" :show-denom="true" style="font-weight: bold"/>
         </div>
         <div class="legend-item">
           <div class="dot" style="background: #E4E4E4"> </div>
@@ -52,7 +50,7 @@ import { PieChart } from "echarts/charts";
 import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { SVGRenderer } from "echarts/renderers";
-import {computed, ref, onMounted, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import Icon from "../features/IconComponent.vue";
 import {useTokensStore} from "@/store/tokens.store";
@@ -61,7 +59,7 @@ import ShadowedSvgChart from "../commons/ShadowedSvgChart.vue";
 import C4EIcon from "../commons/C4EIcon.vue";
 import CoinAmount from "../commons/CoinAmount.vue";
 import { useConfigurationStore } from "@/store/configuration.store";
-import { getCommunityPoolFundData, type FundData } from '@/services/communityPool.service';
+import { useCommunityPoolStore } from "@/store/communityPool.store";
 import { calculateChartData, type CommunityPoolChartData } from '@/services/communityPoolChart.service';
 import { BigDecimal } from '@/models/store/big.decimal';
 import { DecCoin } from '@/models/store/common';
@@ -74,14 +72,39 @@ use([
 ]);
 
 const tokensStore = useTokensStore();
+const communityPoolStore = useCommunityPoolStore();
 const poolsRef = ref<HTMLElement>();
 
 // reactive state for green treasury data
-const loading = ref(false);
-const error = ref<string | null>(null);
-const fundData = ref<FundData[]>([]);
 const chartData = ref<CommunityPoolChartData | null>(null);
-const greenTreasuryAmount = ref(0);
+const isCalculating = ref(false);
+
+// computed property that gets fund data from store
+const fundData = computed(() => communityPoolStore.getFundData);
+
+// computed property for green treasury amount
+const greenTreasuryAmount = computed(() => {
+  if (!fundData.value || fundData.value.length === 0) {
+    return 0;
+  }
+  
+  // if we have chart data already calculated, use it
+  if (chartData.value) {
+    return chartData.value.fundedAmount;
+  }
+  
+  // otherwise calculate on the fly (simple sum for initial display)
+  return fundData.value.reduce((sum, item) => {
+    const match = item.amount.match(/^([\d.]+)\s*C4E$/);
+    if (match) {
+      const numericValue = Number.parseFloat(match[1]);
+      if (!Number.isNaN(numericValue)) {
+        return sum + numericValue;
+      }
+    }
+    return sum;
+  }, 0);
+});
 
 const communityPool = computed(() => {
   const totalCommunityPool = tokensStore.getCommunityPool.amount;
@@ -129,35 +152,22 @@ const remainingTokens = computed(() => {
   return useConfigurationStore().config.getConvertedAmount(tokensStore.getRemainingTokens.amount);
 });
 
-// load green treasury data
-const loadGreenTreasuryData = async () => {
-  loading.value = true;
-  error.value = null;
-  
-  try {
-    console.log('Loading Energy Treasury fund data...');
-    fundData.value = await getCommunityPoolFundData();
-    console.log('Fund data loaded:', fundData.value.length, 'items');
-
-    // calculate chart data
-    chartData.value = await calculateChartData(fundData.value);
-    console.log('Chart data calculated:', chartData.value);
-
-    // set the amount
-    greenTreasuryAmount.value = chartData.value.fundedAmount;
-
-  } catch (err) {
-    console.error('Error loading Energy Treasury data:', err);
-    error.value = 'Failed to load Energy Treasury data';
-    // fallback
-    greenTreasuryAmount.value = 0;
-  } finally {
-    loading.value = false;
+// calculate detailed chart data when store data is available
+const updateChartData = async () => {
+  if (fundData.value.length > 0 && !isCalculating.value) {
+    isCalculating.value = true;
+    try {
+      chartData.value = await calculateChartData(fundData.value);
+    } catch (err) {
+      console.error('Error calculating chart data:', err);
+    } finally {
+      isCalculating.value = false;
+    }
   }
 };
 
 const option = computed(() => {
-  if (!loading.value && chartData.value) {
+  if (chartData.value) {
     // separate charts for green treausy and community pool
     return createDashboardPoolsChartDataWithSeparation(
       remainingTokens.value,
@@ -179,28 +189,23 @@ const option = computed(() => {
   }
 });
 
-// load data on mount
-onMounted(async () => {
-  await loadGreenTreasuryData();
-});
-
-// check for network changes
+// calculate chart data when store data becomes available
 watch(
-  () => useConfigurationStore().config?.hasuraURL,
-  (newUrl, oldUrl) => {
-    if (newUrl && oldUrl && newUrl !== oldUrl) {
-      console.log('Network configuration changed, reloading Energy Treasury data...');
-      loadGreenTreasuryData();
+  () => fundData.value.length,
+  (newLength) => {
+    if (newLength > 0) {
+      updateChartData();
     }
-  }
+  },
+  { immediate: true }
 );
 
+// recalculate when network changes
 watch(
-  () => useConfigurationStore().config?.bcApiURL,
-  (newUrl, oldUrl) => {
-    if (newUrl && oldUrl && newUrl !== oldUrl) {
-      console.log('Blockchain API configuration changed, reloading Energy Treasury data...');
-      loadGreenTreasuryData();
+  () => [useConfigurationStore().config?.hasuraURL, useConfigurationStore().config?.bcApiURL],
+  () => {
+    if (fundData.value.length > 0) {
+      updateChartData();
     }
   }
 );

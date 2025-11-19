@@ -84,6 +84,23 @@ export default {
       '    price' +
       '    timestamp' +
       '  }' +
+      '}',
+    COMMUNITY_POOL_FUND_QUERY: 'query queryFundCommunityPool {' +
+      'message(where: {' +
+      '  type: {_eq: "cosmos.distribution.v1beta1.MsgFundCommunityPool"},' +
+      '  transaction: {success: {_eq: true}}' +
+      '}) {' +
+      '  transaction_hash' +
+      '  value' +
+      '  transaction {' +
+      '    messages' +
+      '    success' +
+      '    block {' +
+      '      timestamp' +
+      '      height' +
+      '    }' +
+      '  }' +
+      '}' +
       '}'
   },
   keybase: {

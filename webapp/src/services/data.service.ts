@@ -5,6 +5,7 @@ import {useSplashStore} from "@/store/splash.store";
 import {useTokensStore} from "@/store/tokens.store";
 import {useUserStore} from "@/store/user.store";
 import {useValidatorsStore} from "@/store/validators.store";
+import {useCommunityPoolStore} from "@/store/communityPool.store";
 import {LoggedService} from "./logged.service";
 import {LogLevel} from "./logger/log-level";
 import {ServiceTypeEnum} from "./logger/service-type.enum";
@@ -33,6 +34,7 @@ class DataService extends LoggedService {
   private accountTimeout = 10000;
   private spendableTimeout = 10000;
   private loyaltyDropUserBoostTimeout = 10000;
+  private communityPoolTimeout = 600000;
   private lastBlockTimeout = 0;
   private lastDashboardTimeout = 0;
   private lastValidatorsTimeout = 0;
@@ -40,6 +42,7 @@ class DataService extends LoggedService {
   private lastSpendablesTimeout = 0;
   private lastLoyaltyDropUserBoostTimeout = 0;
   private lastLoyaltyDropPoolsConfigTimeout = 0;
+  private lastCommunityPoolTimeout = 0;
 
   private blockIntervalId = 0;
   private dashboardIntervalId = 0;
@@ -48,6 +51,7 @@ class DataService extends LoggedService {
   private spendablesIntervalId = 0;
   private loyaltyDropUserBoostIntervalId = 0;
   private loyaltyDropPoolsConfigIntervalId = 0;
+  private communityPoolIntervalId = 0;
 
   private onProposalDetailsError?: () => void;
 
@@ -151,6 +155,7 @@ class DataService extends LoggedService {
         useValidatorsStore().fetchStackingParams(lockScreen),
         useProposalsStore().fetchTallyParams(),
         useProposalsStore().fetchDepositParams(),
+        useCommunityPoolStore().fetchCommunityPoolData(lockScreen),
 
       ]).then(() => {
         this.setIntervals();
@@ -163,11 +168,13 @@ class DataService extends LoggedService {
     this.lastBlockTimeout = now;
     this.lastDashboardTimeout = now;
     this.lastValidatorsTimeout = now;
+    this.lastCommunityPoolTimeout = now;
 
 
     this.blockIntervalId = this.checkAndSetInterval(this.blockIntervalId, refreshBlocksData, this.blockTimeout, "refreshBlocksData");
     this.dashboardIntervalId = this.checkAndSetInterval(this.dashboardIntervalId, refreshDashboard, this.dashboardTimeout, "refreshDashboard");
     this.validatorsIntervalId = this.checkAndSetInterval(this.validatorsIntervalId, refreshValidators, this.validatorsTimeout, "refreshValidators");
+    this.communityPoolIntervalId = this.checkAndSetInterval(this.communityPoolIntervalId, refreshCommunityPool, this.communityPoolTimeout, "refreshCommunityPool");
     if (useUserStore().isLoggedIn) {
       this.lastAccountTimeout = now;
       this.accountIntervalId = this.checkAndSetInterval(this.accountIntervalId, refreshAccountData, this.accountTimeout, "refreshAccountData");
@@ -200,6 +207,8 @@ class DataService extends LoggedService {
     this.spendablesIntervalId= 0;
     window.clearInterval(this.loyaltyDropUserBoostIntervalId);
     this.loyaltyDropUserBoostIntervalId= 0;
+    window.clearInterval(this.communityPoolIntervalId);
+    this.communityPoolIntervalId= 0;
 
   }
   async waitTillCondition(condition: () => boolean) {
@@ -545,6 +554,15 @@ class DataService extends LoggedService {
     }
   }
 
+  public refreshCommunityPool() {
+    this.logToConsole(LogLevel.DEBUG, 'refreshCommunityPool');
+    if (!this.skipRefreshing(this.lastCommunityPoolTimeout, 'refreshCommunityPool')) {
+      useCommunityPoolStore().fetchCommunityPoolData(false).then(() => {
+        this.lastCommunityPoolTimeout = new Date().getTime();
+      });
+    }
+  }
+
   public refreshLoyaltyDropPoolsConfig() {
     this.logToConsole(LogLevel.DEBUG, 'refreshLoyaltyDropPoolsConfig');
     if (this.isLoyaltyDropViewSelected && !this.skipRefreshing(this.lastLoyaltyDropPoolsConfigTimeout, 'refreshLoyaltyDropPoolsConfig')) {
@@ -689,6 +707,9 @@ function refreshValidators() {
   DataService.getInstance().refreshValidators();
 }
 
+function refreshCommunityPool() {
+  DataService.getInstance().refreshCommunityPool();
+}
 
 function refreshSpendables(lockscreen: boolean) {
   DataService.getInstance().refreshSpendables(lockscreen);
