@@ -511,15 +511,15 @@
     "EXPLORER_OPEN": "Otworzono w exploratorze",
     "FAQ": {
       "TITLE": {
-        "TREASURY": "Co to jest Energy Treasury?",
-        "COMMUNITY_POOL": "Co to jest pula społeczności?",
+        "TREASURY": "Czym jest Energy Treasury?",
+        "COMMUNITY_POOL": "Na czym polega pula społeczności?",
         "FUNDING": "Finansowanie Energy Treasury"
       },
       "CONTENT": {
-        "TREASURY1": "Energy Treasury stanowi część ekosystemu C4E, utworzoną w wyniku wdrożenia postanowień z {proposal12link}, odpowiedzialną za wspieranie ciągłego rozwoju projektu oraz promowanie jego adopcji na zdecentralizowanych rynkach energii.",
-        "TREASURY2": "Środki znajdujące się w skarbcu oraz przekazywane do niego wspierają działania marketingowe, rozwój społeczności, rozwój technologiczny oraz globalne inicjatywy C4E, a ich alokacja ustalana jest poprzez dedykowane sesje głosowania zapewniające zrównoważony rozwój projektu.",
-        "COMMUNITY_POOL1": "Wkłady do Community Pool składają się ze środków Genesis Community Pool oraz Energy Treasury Pool, będąc jednocześnie częścią C4E Energy Treasury.",
-        "COMMUNITY_POOL2": "Wykorzystanie środków Energy Treasury ustalane jest poprzez sesje głosowania dotyczących propozycji społeczności, wspierając inicjatywy ekosystemowe.",
+        "TREASURY1": "Energy Treasury stanowi część ekosystemu C4E, utworzoną w wyniku wdrożenia postanowień z {proposal12link}, odpowiedzialną za stałe wspieranie projektu oraz promowanie jego adopcji na zdecentralizowanych rynkach energii.",
+        "TREASURY2": "Środki znajdujące się w skarbcu oraz przekazywane do niego wspierają działania marketingowe i na rzecz społeczności, rozwój technologiczny oraz globalne inicjatywy C4E, a ich alokacja ustalana jest poprzez dedykowane sesje głosowania przyczyniające się do zrównoważonego rozwoju projektu.",
+        "COMMUNITY_POOL1": "Wkłady do Puli Społecznościowej składają się ze środków Puli Ogólnej Społeczności oraz Energy Treasury, będąc jednocześnie częścią C4E Energy Treasury.",
+        "COMMUNITY_POOL2": "Wykorzystanie środków Energy Treasury ustalane jest poprzez sesje głosowania, które dotyczą propozycji społeczności i wspierają inicjatywy ekosystemowe.",
         "FUNDING1": "Energy Treasury finansowane jest poprzez dedykowane transfery tokenów C4E, zdeponowanych na skutek decyzji społeczności, alokowanych przez partnerów lub pochodzących z innych źródeł."
       },
       "LINKS": {
