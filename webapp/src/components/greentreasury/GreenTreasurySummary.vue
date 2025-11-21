@@ -204,9 +204,15 @@ const totalPages = computed(() => {
 });
 
 const paginatedFundData = computed(() => {
+  // sort by timestamp
+  const sortedData = [...fundData.value].sort((a, b) => {
+    if (a.timestamp === 'N/A' || b.timestamp === 'N/A') return 0;
+    return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+  });
+  
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + itemsPerPage.value;
-  return fundData.value.slice(start, end);
+  return sortedData.slice(start, end);
 });
 
 // dynamic grid style based on items per page
