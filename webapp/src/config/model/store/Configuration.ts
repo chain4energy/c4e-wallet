@@ -203,6 +203,7 @@ export class Configuration implements JsonConfiguration {
   dashboardDataRefreshTimeout: number;
   validatorsDataRefreshTimeout: number;
   accountDataRefreshTimeout: number;
+  communityPoolTimeout: number;
   proposalsPageLimit: number;
   queries: Queries;
   explorerUrl: string;
@@ -263,6 +264,7 @@ export class Configuration implements JsonConfiguration {
       this.dashboardDataRefreshTimeout = configuration.dashboardDataRefreshTimeout;
       this.validatorsDataRefreshTimeout = configuration.validatorsDataRefreshTimeout;
       this.accountDataRefreshTimeout = configuration.accountDataRefreshTimeout;
+      this.communityPoolTimeout = configuration.communityPoolTimeout;
       this.proposalsPageLimit = configuration.proposalsPageLimit;
       this.queries = new Queries(configuration.queries);
       this.explorerUrl = configuration.explorerUrl;
@@ -321,6 +323,7 @@ export class Configuration implements JsonConfiguration {
       this.dashboardDataRefreshTimeout = 60000;
       this.validatorsDataRefreshTimeout = 60000;
       this.accountDataRefreshTimeout = 60000;
+      this.communityPoolTimeout = 600000;
       this.proposalsPageLimit = 10;
       this.queries = new Queries(undefined);
       this.explorerUrl = '';

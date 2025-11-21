@@ -94,6 +94,7 @@ export interface Configuration {
   dashboardDataRefreshTimeout: number,
   validatorsDataRefreshTimeout: number,
   accountDataRefreshTimeout: number,
+  communityPoolTimeout: number,
   proposalsPageLimit: number,
   queries: JsonQueries;
   explorerUrl: string,

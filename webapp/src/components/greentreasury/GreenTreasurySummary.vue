@@ -159,7 +159,7 @@ const error = ref<string | null>(null);
 
 const configStore = useConfigurationStore();
 const communityPoolStore = useCommunityPoolStore();
-const explorerUrl = configStore.config?.explorerUrl;
+const explorerUrl = computed(() => configStore.config?.explorerUrl);
 const router = useRouter();
 
 // computed property that gets fund data from store
@@ -271,8 +271,19 @@ const formatFundAmount = (amount: string): string => {
   return amount; // fallback to original if parsing fails
 };
 
-const openProposalLink = () => {
-  window.open('https://wallet.c4e.io/governance/12', '_blank');
+const openProposalLink = async () => {
+  // check if user is not on mainnet, redirect to mainnet first
+  const currentNetwork = configStore.configName;
+  
+  if (!currentNetwork?.startsWith('Mainnet')) {
+    console.log('Switching to Mainnet to view Proposal #12');
+    configStore.setNetwork('Mainnet');
+    // wait a moment for network switch
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  
+  // navigate to proposal page
+  await router.push('/governance/12');
 };
 
 const handleContentClick = (event: Event) => {
@@ -292,7 +303,7 @@ const openExplorer = async (address: string) => {
   if (!address || address === 'N/A') return;
 
   try {
-    const explorerLink = `${explorerUrl}/transactions/${address}`;
+    const explorerLink = `${explorerUrl.value}/transactions/${address}`;
     console.log('Opening explorer link:', explorerLink);
     window.open(explorerLink, '_blank');
 

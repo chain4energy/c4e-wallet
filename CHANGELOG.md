@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Bug fixes
 - Fixed an issue where the Energy Treasury donations table did not sort correctly by date.
+- Fixed a bug in Energy Treasury, where clicking on a transaction TX HASH after switching to a different network opened an incorrect link.
 
 ### Misc Improvements
 - Updated api communication for Energy Treasury data fetching to improve performance and faster loading times.

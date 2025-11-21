@@ -94,6 +94,7 @@ class DataService extends LoggedService {
         this.dashboardTimeout = config.dashboardDataRefreshTimeout;
         this.validatorsTimeout = config.validatorsDataRefreshTimeout;
         this.accountTimeout = config.accountDataRefreshTimeout;
+        this.communityPoolTimeout = config.communityPoolTimeout;
         this.loyaltyDropUserBoostTimeout = config.loyaltyDropService.loyaltyDropUserBoostRefreshTimeout;
       }
     );
