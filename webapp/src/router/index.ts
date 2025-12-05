@@ -19,6 +19,7 @@ import {portfolioRoutes} from "@/router/portfolioRoutes";
 import {resetPasswordRoutes} from "@/router/resetPasswordRoutes";
 import boostRoutes from "@/router/boostRoutes";
 import DistributionView from "@/views/DistributionView.vue";
+import GreenTreasuryView from '@/views/GreenTreasuryView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -146,7 +147,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/energytreasury',
     name: 'energytreasury',
-    component: () => import('@/views/GreenTreasuryView.vue'),
+    component: GreenTreasuryView,
       meta: {
       requiresGreenTreasury: true
     }
